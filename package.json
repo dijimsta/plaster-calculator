@@ -1,0 +1,12 @@
+{
+  "name": "@inivi/plaster-calculator",
+  "private": true,
+  "workspaces": [
+    "apps/plaster-calculator-web",
+    "functions/plaster-calculator-functions"
+  ],
+  "devDependencies": {
+    "firebase-tools": "^15.17.0",
+    "typescript": "^6.0.3"
+  }
+}
