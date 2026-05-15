@@ -9,5 +9,22 @@
       "firebase-debug.log",
       "firebase-debug.*.log"
     ]
+  },
+  "emulators": {
+    "apphosting": {
+      "port": 5050,
+      "rootDirectory": "./apps/plaster-calculator-web",
+      "startCommand": "yarn dev"
+    },
+    "auth": {
+      "port": 9099
+    },
+    "tasks": {
+      "port": 9499
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }

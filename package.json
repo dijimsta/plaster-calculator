@@ -7,7 +7,8 @@
     "functions/plaster-calculator-functions"
   ],
   "scripts": {
-    "deploy": "firebase deploy"
+    "deploy": "firebase deploy",
+    "start": "firebase emulators:start"
   },
   "devDependencies": {
     "firebase-tools": "^15.18.0",
