@@ -10,12 +10,13 @@ import {
   type User,
 } from "firebase/auth";
 import { useRouter } from "next/navigation.js";
-import Link from "next/link.js";
+import { default as LinkModule } from "next/link.js";
 
 import { auth } from "../firebase/firebase.utils.js";
 
 import styles from "./login.module.css";
 
+const Link = LinkModule.default;
 const googleProvider = new GoogleAuthProvider();
 
 export default function LoginPage() {
