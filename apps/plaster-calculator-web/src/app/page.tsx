@@ -10,7 +10,7 @@ import {
   type User,
 } from "firebase/auth";
 import { useRouter } from "next/navigation.js";
-import Link from "next/link";
+import Link from "next/link.js";
 
 import { auth } from "../firebase/firebase.utils.js";
 
