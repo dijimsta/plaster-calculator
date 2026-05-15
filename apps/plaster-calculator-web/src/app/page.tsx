@@ -5,11 +5,12 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   onAuthStateChanged,
+  type User,
 } from "firebase/auth";
 import { useRouter } from "next/navigation.js";
+import Link from "next/link";
 
 import { auth } from "../firebase/firebase.utils.js";
 
@@ -24,18 +25,13 @@ export default function LoginPage() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
     return onAuthStateChanged(auth, (user) => {
-      if (user) {
-        router.replace("/dashboard");
-      }
-    });
-  }, [router]);
-
-  useEffect(() => {
-    getRedirectResult(auth).catch((err: unknown) => {
-      setError(err instanceof Error ? err.message : "Google sign-in failed.");
+      setCurrentUser(user);
+      setAuthChecked(true);
     });
   }, []);
 
@@ -49,6 +45,7 @@ export default function LoginPage() {
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
+      router.push("/app");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
     } finally {
@@ -60,11 +57,40 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      await signInWithRedirect(auth, googleProvider);
+      await signInWithPopup(auth, googleProvider);
+      router.push("/app");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Google sign-in failed.");
       setLoading(false);
     }
+  }
+
+  if (!authChecked) {
+    return null;
+  }
+
+  if (currentUser) {
+    return (
+      <div className={styles["page"]}>
+        <div className={styles["hero"]}>
+          <div className={styles["brand"]}>
+            <h1 className={styles["logo"]}>Plaster Calculator</h1>
+            <p className={styles["tagline"]}>
+              Calculate plaster quantities quickly and accurately for any project.
+            </p>
+          </div>
+
+          <div className={styles["card"]}>
+            <p style={{ margin: "0 0 16px", color: "#1c1e21", fontSize: "1rem" }}>
+              Welcome back, <strong>{currentUser.displayName ?? currentUser.email}</strong>!
+            </p>
+            <Link href="/app" className={styles["submitButton"]} style={{ display: "block", textAlign: "center", textDecoration: "none", boxSizing: "border-box" }}>
+              Go to App
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
