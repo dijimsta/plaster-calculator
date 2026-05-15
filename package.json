@@ -7,8 +7,9 @@
     "functions/plaster-calculator-functions"
   ],
   "scripts": {
+    "build": "tsc --build tsconfig.build.json",
     "deploy": "firebase deploy",
-    "start": "firebase emulators:start"
+    "start": "yarn build && firebase emulators:start"
   },
   "devDependencies": {
     "firebase-tools": "^15.18.0",

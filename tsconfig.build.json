@@ -1,0 +1,8 @@
+{
+    "references": [
+        {
+            "path": "./functions/plaster-calculator-functions/tsconfig.build.json"
+        }
+    ],
+    "files": []
+}

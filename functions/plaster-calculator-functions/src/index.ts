@@ -8,7 +8,7 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-import {onRequest} from "firebase-functions/https";
+import {onCall, HttpsError} from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 
 // Start writing functions
@@ -26,7 +26,11 @@ import * as logger from "firebase-functions/logger";
 // this will be the maximum concurrent request count.
 setGlobalOptions({maxInstances: 10});
 
-export const helloWorld = onRequest((request, response) => {
+export const helloWorld = onCall((request) => {
+    if (!request.auth) {
+        throw new HttpsError("unauthenticated", "Must be signed in to call this function.");
+    }
+    const name = request.auth.token['name'] ?? request.auth.token.email ?? "stranger";
     logger.info("Hello logs!", {structuredData: true});
-    response.send("Hello from Firebase!");
+    return { message: `Hello, ${name}!` };
 });

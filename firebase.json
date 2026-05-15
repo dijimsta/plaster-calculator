@@ -1,4 +1,8 @@
 {
+  "functions": {
+    "source": "functions/plaster-calculator-functions",
+    "runtime": "nodejs24"
+  },
   "apphosting": {
     "backendId": "web",
     "rootDir": "./apps/plaster-calculator-web",
@@ -18,6 +22,9 @@
     },
     "auth": {
       "port": 9099
+    },
+    "functions": {
+      "port": 5001
     },
     "tasks": {
       "port": 9499

@@ -1,10 +1,13 @@
 .idea/
 .next/
-
-*.log
-
 .nx/cache
 .nx/workspace-data
+
+out/
+
+*.log
+*.tsbuildinfo
+
 
 # Visual Studio Code
 .vscode/*
