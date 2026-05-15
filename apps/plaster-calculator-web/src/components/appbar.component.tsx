@@ -10,7 +10,7 @@ export default function AppBar() {
 
   async function handleLogout() {
     await signOut(auth);
-    router.replace("/login");
+    router.replace("/");
   }
 
   return (
