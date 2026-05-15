@@ -1,7 +1,7 @@
 {
   "apphosting": {
     "backendId": "web",
-    "rootDir": "apps/plaster-calculator-web",
+    "rootDir": "./apps/plaster-calculator-web",
     "ignore": [
       "node_modules",
       ".next",
