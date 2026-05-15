@@ -1,0 +1,13 @@
+{
+  "apphosting": {
+    "backendId": "web",
+    "rootDir": "apps/plaster-calculator-web",
+    "ignore": [
+      "node_modules",
+      ".next",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log"
+    ]
+  }
+}
