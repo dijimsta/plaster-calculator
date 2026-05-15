@@ -1,3 +1,25 @@
+.idea/
+.next/
+
+*.log
+
+.nx/cache
+.nx/workspace-data
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+!*.code-workspace
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+
+# Yarn
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
@@ -15,13 +37,3 @@ node_modules
 
 #!.yarn/cache
 .pnp.*
-
-
-.idea/
-.next/
-
-*.log
-
-
-.nx/cache
-.nx/workspace-data
