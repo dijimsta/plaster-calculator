@@ -32,6 +32,8 @@ cryptography==48.0.0
     #   pyjwt
 deprecation==2.1.0
     # via cloudevents
+easyocr==1.7.2
+    # via floorplan-analyzer (pyproject.toml)
 filelock==3.29.0
     # via torch
 firebase-admin==7.4.0
@@ -141,9 +143,12 @@ networkx==3.6.1
     # via
     #   scikit-image
     #   torch
+ninja==1.13.0
+    # via easyocr
 numpy==2.4.5
     # via
     #   floorplan-analyzer (pyproject.toml)
+    #   easyocr
     #   imageio
     #   numpy-typing-compat
     #   opencv-python-headless
@@ -153,10 +158,13 @@ numpy==2.4.5
     #   shapely
     #   svgpathtools
     #   tifffile
+    #   torchvision
 numpy-typing-compat==20251206.2.4
     # via optype
 opencv-python-headless==4.13.0.92
-    # via floorplan-analyzer (pyproject.toml)
+    # via
+    #   floorplan-analyzer (pyproject.toml)
+    #   easyocr
 optype==0.17.0
     # via scipy-stubs
 packaging==26.2
@@ -168,8 +176,10 @@ packaging==26.2
 pillow==12.2.0
     # via
     #   floorplan-analyzer (pyproject.toml)
+    #   easyocr
     #   imageio
     #   scikit-image
+    #   torchvision
 proto-plus==1.28.0
     # via
     #   google-api-core
@@ -187,24 +197,33 @@ pyasn1==0.6.3
     # via pyasn1-modules
 pyasn1-modules==0.4.2
     # via google-auth
+pyclipper==1.4.0
+    # via easyocr
 pycparser==3.0
     # via cffi
 pyjwt==2.12.1
     # via
     #   firebase-admin
     #   firebase-functions
+python-bidi==0.6.10
+    # via easyocr
 pyyaml==6.0.3
-    # via firebase-functions
+    # via
+    #   easyocr
+    #   firebase-functions
 requests==2.34.2
     # via
     #   cachecontrol
     #   google-api-core
     #   google-cloud-storage
 scikit-image==0.26.0
-    # via floorplan-analyzer (pyproject.toml)
+    # via
+    #   floorplan-analyzer (pyproject.toml)
+    #   easyocr
 scipy==1.17.1
     # via
     #   floorplan-analyzer (pyproject.toml)
+    #   easyocr
     #   scikit-image
     #   svgpathtools
 scipy-stubs==1.17.1.4
@@ -212,7 +231,9 @@ scipy-stubs==1.17.1.4
 setuptools==81.0.0
     # via torch
 shapely==2.1.2
-    # via floorplan-analyzer (pyproject.toml)
+    # via
+    #   floorplan-analyzer (pyproject.toml)
+    #   easyocr
 starlette==0.52.1
     # via functions-framework
 svgpathtools==1.7.2
@@ -224,7 +245,12 @@ sympy==1.14.0
 tifffile==2026.5.15
     # via scikit-image
 torch==2.12.0
-    # via floorplan-analyzer (pyproject.toml)
+    # via
+    #   floorplan-analyzer (pyproject.toml)
+    #   easyocr
+    #   torchvision
+torchvision==0.27.0
+    # via easyocr
 typing-extensions==4.15.0
     # via
     #   firebase-functions
