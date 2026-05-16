@@ -1,9 +1,11 @@
+.firebase/
 .idea/
 .next/
 .nx/cache
 .nx/workspace-data
 
 out/
+tmp/
 
 *.log
 *.tsbuildinfo
