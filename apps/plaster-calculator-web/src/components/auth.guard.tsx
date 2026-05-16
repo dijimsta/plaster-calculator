@@ -9,8 +9,6 @@ export function AuthGuard({ children }: PropsWithChildren) {
     const router = useRouter();
     const user = useUser();
 
-    console.log({ user });
-
     useEffect(() => {
         if (user === null) {
             router.replace("/");
@@ -19,7 +17,7 @@ export function AuthGuard({ children }: PropsWithChildren) {
 
     if (user) {
         return <>{children}</>;
-    } else {
-        return null;
     }
+
+    return null;
 }

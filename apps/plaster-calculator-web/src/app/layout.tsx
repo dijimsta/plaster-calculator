@@ -1,4 +1,5 @@
 import { type PropsWithChildren } from "react";
+import "./globals.css";
 
 export const metadata = {
     title: "Plaster Calculator",
@@ -9,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
     return (
         <html lang="en">
-            <body>{children}</body>
+            <body suppressHydrationWarning>{children}</body>
         </html>
     );
 }
