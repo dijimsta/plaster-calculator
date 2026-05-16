@@ -55,6 +55,16 @@ export default function AppBar() {
                 >
                     Movies
                 </Link>
+                <Link
+                    href="/app/uploads"
+                    style={{
+                        color: "#165dff",
+                        fontWeight: 600,
+                        textDecoration: "none",
+                    }}
+                >
+                    Uploads
+                </Link>
                 <button onClick={handleLogout}>Logout</button>
             </nav>
         </header>
