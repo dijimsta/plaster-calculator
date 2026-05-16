@@ -12,18 +12,9 @@ os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
 
 from firebase_functions import https_fn, options
 
-from cubicasa_core import (
-    load_model,
-    render_segmentation_map,
-    run_get_polygons,
-    run_inference,
-)
-from cubicasa_api.ocr_flood_fill import run_ocr_flood_fill_process
-from cubicasa_api.ocr_flood_fill_smoothed import (
-    DEFAULT_UNKNOWN_ROOM_MIN_AREA,
-    run_ocr_flood_fill_smoothed_process,
-)
-from cubicasa_api.xixi import ROOM_TYPE_MIN_FRACTION, run_xixi_process
+# Heavy ML imports (torch, easyocr, cubicasa_*) are deferred into each
+# handler so the Firebase Functions emulator can discover the function
+# manifest within its 10s import budget.
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +29,8 @@ OCR_CPU = 4
 
 @lru_cache(maxsize=1)
 def _model():
+    from cubicasa_core import load_model
+
     return load_model()
 
 
@@ -130,6 +123,8 @@ def health(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request(memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU)
 def analyse(req: https_fn.Request) -> https_fn.Response:
+    from cubicasa_core import run_inference
+
     try:
         image_bytes, _ = _read_image_bytes(req)
         result = run_inference(image_bytes, _model())
@@ -145,6 +140,8 @@ def analyse(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request(memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU)
 def xixi_process(req: https_fn.Request) -> https_fn.Response:
+    from cubicasa_api.xixi import ROOM_TYPE_MIN_FRACTION, run_xixi_process
+
     try:
         image_bytes, filename = _read_image_bytes(req)
         min_area = _read_int_query(req, "min_area", 800, minimum=0)
@@ -178,6 +175,8 @@ def xixi_process(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request(memory=OCR_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=OCR_CPU)
 def ocr_flood_fill(req: https_fn.Request) -> https_fn.Response:
+    from cubicasa_api.ocr_flood_fill import run_ocr_flood_fill_process
+
     try:
         image_bytes, filename = _read_image_bytes(req)
         min_area = _read_int_query(req, "min_area", 0, minimum=0)
@@ -205,6 +204,11 @@ def ocr_flood_fill(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request(memory=OCR_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=OCR_CPU)
 def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
+    from cubicasa_api.ocr_flood_fill_smoothed import (
+        DEFAULT_UNKNOWN_ROOM_MIN_AREA,
+        run_ocr_flood_fill_smoothed_process,
+    )
+
     try:
         image_bytes, filename = _read_image_bytes(req)
         min_area = _read_int_query(req, "min_area", 0, minimum=0)
@@ -248,6 +252,8 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request(memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU)
 def debug_segmentation(req: https_fn.Request) -> https_fn.Response:
+    from cubicasa_core import render_segmentation_map
+
     try:
         image_bytes, _ = _read_image_bytes(req)
         seg_img = render_segmentation_map(image_bytes, _model())
@@ -266,6 +272,8 @@ def debug_segmentation(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request(memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU)
 def debug_get_polygons(req: https_fn.Request) -> https_fn.Response:
+    from cubicasa_core import run_get_polygons
+
     try:
         image_bytes, _ = _read_image_bytes(req)
         threshold = _read_float_query(req, "threshold", 0.5, minimum=0.0, maximum=1.0)
