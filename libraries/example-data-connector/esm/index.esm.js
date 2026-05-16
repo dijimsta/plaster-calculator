@@ -12,6 +12,12 @@ export function createMovie(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeMutation('CreateMovie', inputVars, inputOpts);
 }
 
+export function deleteMovie(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteMovie', inputVars, inputOpts);
+}
+
 export function upsertUser(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

@@ -2,7 +2,7 @@ specVersion: "v1"
 serviceId: "plaster-calculator"
 location: "australia-southeast2"
 schemas:
-    - source: "./schemas"
+    - source: "./data/schemas"
       datasource:
           postgresql:
               database: "fdcdb"
@@ -10,4 +10,4 @@ schemas:
                   instanceId: "plaster-calculator-fdc"
                   schemaValidation: "STRICT"
 connectorDirs:
-    - ./connectors/example
+    - ./data/connectors/example

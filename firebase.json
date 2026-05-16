@@ -11,7 +11,7 @@
         ]
     },
     "dataconnect": {
-        "source": "./data"
+        "source": "."
     },
     "functions": {
         "source": "functions/plaster-calculator-functions",

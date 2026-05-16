@@ -6,6 +6,12 @@ mutation CreateMovie($title: String!, $genre: String!, $imageUrl: String!)
   movie_insert(data: { title: $title, genre: $genre, imageUrl: $imageUrl })
 }
 
+# Delete a movie by id. This operation is intended to be called only from
+# trusted Cloud Functions through the generated Admin SDK.
+mutation DeleteMovie($id: UUID!) @auth(level: NO_ACCESS) {
+  movie_delete(id: $id)
+}
+
 # Upsert (update or insert) a user's username based on their auth.uid
 mutation UpsertUser($username: String!) @auth(level: USER) {
   # The "auth.uid" server value ensures that users can only register their own user.

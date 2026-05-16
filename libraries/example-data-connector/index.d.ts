@@ -28,6 +28,14 @@ export interface CreateMovieVariables {
   imageUrl: string;
 }
 
+export interface DeleteMovieData {
+  movie_delete?: Movie_Key | null;
+}
+
+export interface DeleteMovieVariables {
+  id: UUIDString;
+}
+
 export interface DeleteReviewData {
   review_delete?: Review_Key | null;
 }
@@ -142,6 +150,11 @@ export interface User_Key {
 export function createMovie(dc: DataConnect, vars: CreateMovieVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateMovieData>>;
 /** Generated Node Admin SDK operation action function for the 'CreateMovie' Mutation. Allow users to pass in custom DataConnect instances. */
 export function createMovie(vars: CreateMovieVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateMovieData>>;
+
+/** Generated Node Admin SDK operation action function for the 'DeleteMovie' Mutation. Allow users to execute without passing in DataConnect. */
+export function deleteMovie(dc: DataConnect, vars: DeleteMovieVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteMovieData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteMovie' Mutation. Allow users to pass in custom DataConnect instances. */
+export function deleteMovie(vars: DeleteMovieVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteMovieData>>;
 
 /** Generated Node Admin SDK operation action function for the 'UpsertUser' Mutation. Allow users to execute without passing in DataConnect. */
 export function upsertUser(dc: DataConnect, vars: UpsertUserVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertUserData>>;
