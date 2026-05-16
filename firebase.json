@@ -13,13 +13,22 @@
     "dataconnect": {
         "source": "."
     },
-    "functions": {
-        "source": "functions/plaster-calculator-functions",
-        "runtime": "nodejs24",
-        "predeploy": [
-            "yarn workspace @inivi/plaster-calculator-functions bundle"
-        ]
-    },
+    "functions": [
+        {
+            "source": "functions/plaster-calculator-functions",
+            "codebase": "plaster-calculator-functions",
+            "runtime": "nodejs24",
+            "predeploy": [
+                "yarn workspace @inivi/plaster-calculator-functions bundle"
+            ]
+        },
+        {
+            "source": "functions/floorplan-analyzer",
+            "codebase": "floorplan-analyzer",
+            "runtime": "python314",
+            "predeploy": ["./scripts/predeploy-floorplan-analyzer-functions.sh"]
+        }
+    ],
     "storage": {
         "rules": "storage.rules"
     },

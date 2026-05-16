@@ -15,7 +15,7 @@
         "deploy:storage": "firebase deploy --only storage",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "start": "yarn build && firebase emulators:start"
+        "start": "./scripts/predeploy-floorplan-analyzer-functions.sh && yarn build && firebase emulators:start"
     },
     "devDependencies": {
         "firebase-tools": "^15.18.0",
