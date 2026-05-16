@@ -1,134 +1,386 @@
-import { validateAdminArgs } from 'firebase-admin/data-connect';
+import { validateAdminArgs } from "firebase-admin/data-connect";
 
 export const connectorConfig = {
-  connector: 'example',
-  serviceId: 'plaster-calculator',
-  location: 'australia-southeast2'
+    connector: "example",
+    serviceId: "plaster-calculator",
+    location: "australia-southeast2",
 };
 
 export function createMovie(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateMovie', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation("CreateMovie", inputVars, inputOpts);
 }
 
 export function deleteMovie(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('DeleteMovie', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation("DeleteMovie", inputVars, inputOpts);
 }
 
 export function upsertUser(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('UpsertUser', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation("UpsertUser", inputVars, inputOpts);
 }
 
 export function addReview(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('AddReview', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation("AddReview", inputVars, inputOpts);
 }
 
 export function deleteReview(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('DeleteReview', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation("DeleteReview", inputVars, inputOpts);
 }
 
-export function createProjectFromUpload(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateProjectFromUpload', inputVars, inputOpts);
+export function createProjectFromUpload(
+    dcOrVarsOrOptions,
+    varsOrOptions,
+    options,
+) {
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation(
+        "CreateProjectFromUpload",
+        inputVars,
+        inputOpts,
+    );
 }
 
 export function renameProject(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('RenameProject', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation("RenameProject", inputVars, inputOpts);
 }
 
 export function touchProject(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('TouchProject', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation("TouchProject", inputVars, inputOpts);
 }
 
-export function deleteFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('DeleteFloorplanPages', inputVars, inputOpts);
+export function deleteFloorplanPages(
+    dcOrVarsOrOptions,
+    varsOrOptions,
+    options,
+) {
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation(
+        "DeleteFloorplanPages",
+        inputVars,
+        inputOpts,
+    );
 }
 
 export function deleteProject(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('DeleteProject', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation("DeleteProject", inputVars, inputOpts);
 }
 
 export function createFloorplanPage(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateFloorplanPage', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation(
+        "CreateFloorplanPage",
+        inputVars,
+        inputOpts,
+    );
 }
 
 export function updateFloorplanPage(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('UpdateFloorplanPage', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation(
+        "UpdateFloorplanPage",
+        inputVars,
+        inputOpts,
+    );
 }
 
-export function updateFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('UpdateFloorplanPages', inputVars, inputOpts);
+export function updateFloorplanPages(
+    dcOrVarsOrOptions,
+    varsOrOptions,
+    options,
+) {
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeMutation(
+        "UpdateFloorplanPages",
+        inputVars,
+        inputOpts,
+    );
 }
 
 export function listMovies(dcOrOptions, options) {
-  const { dc: dcInstance, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrOptions, options, undefined);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListMovies', undefined, inputOpts);
+    const { dc: dcInstance, options: inputOpts } = validateAdminArgs(
+        connectorConfig,
+        dcOrOptions,
+        options,
+        undefined,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeQuery("ListMovies", undefined, inputOpts);
 }
 
 export function listUsers(dcOrOptions, options) {
-  const { dc: dcInstance, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrOptions, options, undefined);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListUsers', undefined, inputOpts);
+    const { dc: dcInstance, options: inputOpts } = validateAdminArgs(
+        connectorConfig,
+        dcOrOptions,
+        options,
+        undefined,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeQuery("ListUsers", undefined, inputOpts);
 }
 
 export function listUserReviews(dcOrOptions, options) {
-  const { dc: dcInstance, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrOptions, options, undefined);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListUserReviews', undefined, inputOpts);
+    const { dc: dcInstance, options: inputOpts } = validateAdminArgs(
+        connectorConfig,
+        dcOrOptions,
+        options,
+        undefined,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeQuery("ListUserReviews", undefined, inputOpts);
 }
 
 export function getMovieById(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetMovieById', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeQuery("GetMovieById", inputVars, inputOpts);
 }
 
 export function searchMovie(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, false);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('SearchMovie', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        false,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeQuery("SearchMovie", inputVars, inputOpts);
 }
 
 export function listProjectsByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListProjectsByOwner', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeQuery("ListProjectsByOwner", inputVars, inputOpts);
 }
 
 export function getProjectById(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetProjectById', inputVars, inputOpts);
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeQuery("GetProjectById", inputVars, inputOpts);
 }
 
-export function getFloorplanPageById(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetFloorplanPageById', inputVars, inputOpts);
+export function getFloorplanPageById(
+    dcOrVarsOrOptions,
+    varsOrOptions,
+    options,
+) {
+    const {
+        dc: dcInstance,
+        vars: inputVars,
+        options: inputOpts,
+    } = validateAdminArgs(
+        connectorConfig,
+        dcOrVarsOrOptions,
+        varsOrOptions,
+        options,
+        true,
+        true,
+    );
+    dcInstance.useGen(true);
+    return dcInstance.executeQuery(
+        "GetFloorplanPageById",
+        inputVars,
+        inputOpts,
+    );
 }
-

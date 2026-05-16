@@ -48,10 +48,10 @@ type ExportCsvResponse = {
     csv: string;
 };
 
-const listProjectsCallable = httpsCallable<unknown, { projects: ProjectSummary[] }>(
-    functions,
-    "listProjects",
-);
+const listProjectsCallable = httpsCallable<
+    unknown,
+    { projects: ProjectSummary[] }
+>(functions, "listProjects");
 const createProjectFromUploadCallable = httpsCallable<
     CreateProjectFromUploadRequest,
     UploadResponse
@@ -64,10 +64,10 @@ const renameProjectCallable = httpsCallable<
     { projectId: string; name: string },
     ProjectDetail
 >(functions, "renameProject");
-const deleteProjectCallable = httpsCallable<{ projectId: string }, { ok: true }>(
-    functions,
-    "deleteProject",
-);
+const deleteProjectCallable = httpsCallable<
+    { projectId: string },
+    { ok: true }
+>(functions, "deleteProject");
 const listProjectPdfPagePreviewsCallable = httpsCallable<
     { projectId: string },
     { pages: PdfPagePreview[] }
@@ -76,10 +76,10 @@ const listProcessingStrategiesCallable = httpsCallable<
     unknown,
     { strategies: ProcessingStrategyInfo[] }
 >(functions, "listProcessingStrategies");
-const processProjectCallable = httpsCallable<ProcessProjectRequest, ProjectDetail>(
-    functions,
-    "processProject",
-);
+const processProjectCallable = httpsCallable<
+    ProcessProjectRequest,
+    ProjectDetail
+>(functions, "processProject");
 const getFloorplanPageCallable = httpsCallable<
     { projectId: string; pageId: string },
     FloorplanPage
@@ -213,7 +213,10 @@ export async function applyScaleToProject(
     projectId: string,
     scaleMmPerPx: number | null,
 ) {
-    const result = await updateFloorplanPagesCallable({ projectId, scaleMmPerPx });
+    const result = await updateFloorplanPagesCallable({
+        projectId,
+        scaleMmPerPx,
+    });
     return result.data;
 }
 
@@ -221,4 +224,3 @@ export async function exportProjectCsv(projectId: string) {
     const result = await exportProjectCsvCallable({ projectId });
     return result.data;
 }
-

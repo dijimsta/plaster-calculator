@@ -279,13 +279,14 @@ export const deleteExampleMovie = onCall<
     return { movies: response.data.movies };
 });
 
-export const listProjects = onCall<unknown, Promise<{ projects: ProjectSummary[] }>>(
-    async (request) => {
-        const auth = requireAuth(request);
-        const response = await listProjectsByOwner({ ownerId: auth.uid });
-        return { projects: response.data.projects.map(toSummary) };
-    },
-);
+export const listProjects = onCall<
+    unknown,
+    Promise<{ projects: ProjectSummary[] }>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const response = await listProjectsByOwner({ ownerId: auth.uid });
+    return { projects: response.data.projects.map(toSummary) };
+});
 
 export const createProjectFromUpload = onCall<
     CreateProjectFromUploadRequest,
@@ -352,23 +353,27 @@ export const getProject = onCall<ProjectIdRequest, Promise<ProjectDetail>>(
     },
 );
 
-export const renameProject = onCall<RenameProjectRequest, Promise<ProjectDetail>>(
-    async (request) => {
-        const auth = requireAuth(request);
-        const projectId = readRequiredString(request.data.projectId, "Project ID");
-        await requireOwnedProject(projectId, auth.uid);
-        await dcRenameProject({
-            id: projectId,
-            name: readRequiredString(request.data.name, "Name"),
-        });
-        return toDetail(await requireOwnedProject(projectId, auth.uid));
-    },
-);
+export const renameProject = onCall<
+    RenameProjectRequest,
+    Promise<ProjectDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    await requireOwnedProject(projectId, auth.uid);
+    await dcRenameProject({
+        id: projectId,
+        name: readRequiredString(request.data.name, "Name"),
+    });
+    return toDetail(await requireOwnedProject(projectId, auth.uid));
+});
 
 export const deleteProject = onCall<ProjectIdRequest, Promise<{ ok: true }>>(
     async (request) => {
         const auth = requireAuth(request);
-        const projectId = readRequiredString(request.data.projectId, "Project ID");
+        const projectId = readRequiredString(
+            request.data.projectId,
+            "Project ID",
+        );
         const project = await requireOwnedProject(projectId, auth.uid);
 
         await deleteOwnedProjectStorage(project, auth.uid);
@@ -409,53 +414,58 @@ export const listProcessingStrategies = onCall<
     return { strategies: processingStrategies };
 });
 
-export const processProject = onCall<ProcessProjectRequest, Promise<ProjectDetail>>(
-    async (request) => {
-        const auth = requireAuth(request);
-        const projectId = readRequiredString(request.data.projectId, "Project ID");
-        const project = await requireOwnedProject(projectId, auth.uid);
-        const pageNumbers = readPageNumbers(request.data.pageNumbers, project);
-        const strategyKey = readOptionalString(request.data.strategyKey);
-        const strategy =
-            processingStrategies.find((item) => item.key === strategyKey) ??
-            processingStrategies[0];
+export const processProject = onCall<
+    ProcessProjectRequest,
+    Promise<ProjectDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    const project = await requireOwnedProject(projectId, auth.uid);
+    const pageNumbers = readPageNumbers(request.data.pageNumbers, project);
+    const strategyKey = readOptionalString(request.data.strategyKey);
+    const strategy =
+        processingStrategies.find((item) => item.key === strategyKey) ??
+        processingStrategies[0];
 
-        if (!strategy) {
-            throw new HttpsError(
-                "internal",
-                "No processing strategy is configured.",
-            );
-        }
+    if (!strategy) {
+        throw new HttpsError(
+            "internal",
+            "No processing strategy is configured.",
+        );
+    }
 
-        await touchProject({
-            id: projectId,
-            status: "PROCESSING",
-            processingError: null,
+    await touchProject({
+        id: projectId,
+        status: "PROCESSING",
+        processingError: null,
+    });
+    await dcDeleteFloorplanPages({ projectId });
+
+    for (const pageNumber of pageNumbers) {
+        const page = createMockPage(pageNumber, strategy.key);
+        await dcCreateFloorplanPage({
+            projectId,
+            pageNumber: page.pageNumber,
+            status: page.status,
+            sourceImagePath: page.imageUrl,
+            previewImagePath: page.previewUrl,
+            overlayJson: page.overlay,
+            scaleMmPerPx: page.scaleMmPerPx,
+            ceilingHeightMm: page.ceilingHeightMm,
+            referencePointsJson: page.referencePoints,
+            referenceLengthMm: page.referenceLengthMm,
+            processingStrategy: page.processingStrategy ?? null,
+            processingMetadataJson: page.processingMetadata ?? null,
         });
-        await dcDeleteFloorplanPages({ projectId });
+    }
 
-        for (const pageNumber of pageNumbers) {
-            const page = createMockPage(pageNumber, strategy.key);
-            await dcCreateFloorplanPage({
-                projectId,
-                pageNumber: page.pageNumber,
-                status: page.status,
-                sourceImagePath: page.imageUrl,
-                previewImagePath: page.previewUrl,
-                overlayJson: page.overlay,
-                scaleMmPerPx: page.scaleMmPerPx,
-                ceilingHeightMm: page.ceilingHeightMm,
-                referencePointsJson: page.referencePoints,
-                referenceLengthMm: page.referenceLengthMm,
-                processingStrategy: page.processingStrategy ?? null,
-                processingMetadataJson: page.processingMetadata ?? null,
-            });
-        }
-
-        await touchProject({ id: projectId, status: "READY", processingError: null });
-        return toDetail(await requireOwnedProject(projectId, auth.uid));
-    },
-);
+    await touchProject({
+        id: projectId,
+        status: "READY",
+        processingError: null,
+    });
+    return toDetail(await requireOwnedProject(projectId, auth.uid));
+});
 
 export const getFloorplanPage = onCall<
     UpdateFloorplanPageRequest,
@@ -656,10 +666,7 @@ function toProjectStatus(value: string): ProjectStatus {
     return "DRAFT";
 }
 
-function readPageNumbers(
-    value: unknown,
-    project: ProjectWithPages,
-) {
+function readPageNumbers(value: unknown, project: ProjectWithPages) {
     if (!Array.isArray(value) || value.length === 0) {
         return [1];
     }
@@ -699,8 +706,14 @@ function inferUploadType(fileName: string, contentType: string): UploadType {
         : "IMAGE";
 }
 
-function isOwnedUploadPath(storagePath: string, uid: string, projectId: string) {
-    return storagePath.startsWith(`uploads/${uid}/projects/${projectId}/uploads/`);
+function isOwnedUploadPath(
+    storagePath: string,
+    uid: string,
+    projectId: string,
+) {
+    return storagePath.startsWith(
+        `uploads/${uid}/projects/${projectId}/uploads/`,
+    );
 }
 
 async function deleteOwnedProjectStorage(
@@ -828,9 +841,7 @@ function buildProjectCsv(project: ProjectWithPages) {
 
             const row: ExportRow = {
                 label:
-                    typeof area["label"] === "string"
-                        ? area["label"]
-                        : "Area",
+                    typeof area["label"] === "string" ? area["label"] : "Area",
                 pageNumber: page.pageNumber,
                 wallValues: wallBreakdown(
                     area,
@@ -855,7 +866,12 @@ function buildProjectCsv(project: ProjectWithPages) {
     const sortedCeilingColumns = Array.from(ceilingColumns).sort();
     const totals = new Map<string, number>();
     const csvRows = [
-        ["Area Label", "Page Number", ...sortedWallColumns, ...sortedCeilingColumns],
+        [
+            "Area Label",
+            "Page Number",
+            ...sortedWallColumns,
+            ...sortedCeilingColumns,
+        ],
     ];
 
     for (const row of rows) {
@@ -876,7 +892,9 @@ function buildProjectCsv(project: ProjectWithPages) {
     csvRows.push([
         "Total",
         "",
-        ...sortedWallColumns.map((column) => formatNumber(totals.get(column) ?? 0)),
+        ...sortedWallColumns.map((column) =>
+            formatNumber(totals.get(column) ?? 0),
+        ),
         ...sortedCeilingColumns.map((column) =>
             formatNumber(totals.get(column) ?? 0),
         ),
@@ -929,8 +947,8 @@ function ceilingAreaM2(area: JsonRecord, scaleMmPerPx: number) {
     }
 
     const runM =
-        edgeMidpointDistance(points, lowEdgeIndex, highEdgeIndex) *
-        scaleMmPerPx /
+        (edgeMidpointDistance(points, lowEdgeIndex, highEdgeIndex) *
+            scaleMmPerPx) /
         1000;
     if (runM <= 0) {
         return flatM2;
@@ -1009,7 +1027,8 @@ function wallBreakdown(
             continue;
         }
 
-        const lengthM = Math.hypot(b[0] - a[0], b[1] - a[1]) * scaleMmPerPx / 1000;
+        const lengthM =
+            (Math.hypot(b[0] - a[0], b[1] - a[1]) * scaleMmPerPx) / 1000;
         totals.set(column, (totals.get(column) ?? 0) + lengthM);
     }
 

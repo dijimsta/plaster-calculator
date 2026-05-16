@@ -59,9 +59,9 @@ export default function HomePage() {
     const [largePreview, setLargePreview] = useState<PdfPagePreview | null>(
         null,
     );
-    const [processingProjectId, setProcessingProjectId] = useState<string | null>(
-        null,
-    );
+    const [processingProjectId, setProcessingProjectId] = useState<
+        string | null
+    >(null);
     const [processingStrategies, setProcessingStrategies] = useState<
         ProcessingStrategyInfo[]
     >([]);
@@ -111,7 +111,9 @@ export default function HomePage() {
             setProjects(await listProjects());
         } catch (error) {
             setMessage(
-                error instanceof Error ? error.message : "Unable to load projects",
+                error instanceof Error
+                    ? error.message
+                    : "Unable to load projects",
             );
         } finally {
             setProjectsLoading(false);
@@ -442,13 +444,20 @@ export default function HomePage() {
                                 aria-live="polite"
                             >
                                 <LoaderCircle className="spin" size={24} />
-                                <span className="muted">Loading projects...</span>
+                                <span className="muted">
+                                    Loading projects...
+                                </span>
                             </div>
                         ) : (
                             <>
                                 {filtered.map((project) => (
-                                    <div className="project-item" key={project.id}>
-                                        <Link href={`/app/projects/${project.id}`}>
+                                    <div
+                                        className="project-item"
+                                        key={project.id}
+                                    >
+                                        <Link
+                                            href={`/app/projects/${project.id}`}
+                                        >
                                             {renamingId === project.id ? (
                                                 <input
                                                     className="input"
@@ -467,7 +476,9 @@ export default function HomePage() {
                                                             "Enter"
                                                         ) {
                                                             event.preventDefault();
-                                                            saveRename(project.id);
+                                                            saveRename(
+                                                                project.id,
+                                                            );
                                                         }
                                                     }}
                                                 />
@@ -477,7 +488,8 @@ export default function HomePage() {
                                             <span className="muted project-meta-line">
                                                 {project.originalFileName} ·{" "}
                                                 {project.uploadType} ·{" "}
-                                                {project.status} · {project.pageCount}{" "}
+                                                {project.status} ·{" "}
+                                                {project.pageCount}{" "}
                                                 {project.pageCount === 1
                                                     ? "page"
                                                     : "pages"}{" "}
@@ -501,7 +513,9 @@ export default function HomePage() {
                                                 <button
                                                     className="btn icon"
                                                     onClick={() => {
-                                                        setRenamingId(project.id);
+                                                        setRenamingId(
+                                                            project.id,
+                                                        );
                                                         setRenameValue(
                                                             project.name,
                                                         );
@@ -513,7 +527,9 @@ export default function HomePage() {
                                             )}
                                             <button
                                                 className="btn icon"
-                                                onClick={() => removeProject(project)}
+                                                onClick={() =>
+                                                    removeProject(project)
+                                                }
                                                 title="Delete project"
                                             >
                                                 <Trash2 size={18} />
