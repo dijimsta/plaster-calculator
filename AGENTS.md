@@ -1,48 +1,47 @@
-# Monorepo
+# Repository Guidelines
 
 ## Workflow
 
-Always verify changes work before committing. If you cannot verify the changes yourself, ask the user to verify
-before committing.
+Verify changes before committing. If you cannot verify them yourself, ask the user to do it before the commit is made.
 
 ## Jira
 
-Every branch and PR must be associated with a Jira ticket. When starting work or creating a PR, ask the user if
-there is an existing ticket, if a new one should be created, or if they explicitly want to skip.
+Jira tickets are optional.
 
-**Branch naming:** `{jira-ticket}/{short-description}`
+If a ticket exists, include it in branch names, PR titles, and commit messages. If there is no ticket, use plain
+descriptive names and titles. Do not interrupt normal work to ask whether Jira should be used.
 
-**PR title:** `[WORK-42] Short description`
+Examples:
 
-**Commit messages:** Append the issue key in square brackets at the end of the subject line. Omit if there is no
-associated ticket.
-
-```
+```text
 WORK-42/add-login-endpoint
-WORK-99/fix-npe-on-startup
+fix-login-endpoint
+
+[WORK-42] Add login endpoint
+Add login endpoint
 ```
+
+For commit messages, append the issue key in square brackets at the end of the subject when a ticket exists. Omit it
+when there is no ticket.
 
 ## Commit Messages
 
-All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
+All commits must use the [Conventional Commits](https://www.conventionalcommits.org/) format:
 
-```
+```text
 type(scope): description [ISSUE-KEY]
 ```
 
-**Valid types:** `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+Rules:
 
-**Scope:** Must be a Gradle subproject name from `settings.gradle`. Read that file to find valid scopes before writing a
-commit message. Scope is required — every commit should be attributable to a module. For repo-level changes (root
-config, tooling, CI), use `monorepo` as the scope.
+- `type` must be one of `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, or `revert`.
+- `scope` is required. Use the affected app, function, library, or `monorepo` for repo-level work such as root config, tooling, or CI.
+- Keep each commit focused on one app, function, library, or repo-level concern. Split multi-area work into separate commits when practical.
 
-**One module per commit:** Each commit must contain changes for a single Gradle subproject only. If changes span
-multiple modules, split them into separate commits.
+Examples:
 
-**Examples:**
-
-```
-feat(plaster-calculator-api): add user authentication endpoint [WORK-42]
-fix(plaster-calculator-desktop): handle null pointer in payment processor [WORK-99]
-chore(monorepo): update Gradle wrapper to 8.5
+```text
+feat(plaster-calculator-web): add movies view [WORK-42]
+fix(plaster-calculator-functions): handle missing auth context [WORK-99]
+chore(monorepo): update Firebase configuration
 ```
