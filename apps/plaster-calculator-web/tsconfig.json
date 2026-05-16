@@ -2,6 +2,13 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "jsx": "preserve",
+        "baseUrl": ".",
+        "exactOptionalPropertyTypes": false,
+        "noUncheckedIndexedAccess": false,
+        "noPropertyAccessFromIndexSignature": false,
+        "paths": {
+            "@/*": ["src/*"]
+        },
         "plugins": [
             {
                 "name": "next"
