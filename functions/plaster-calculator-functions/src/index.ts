@@ -12,22 +12,22 @@ import { getStorage } from "firebase-admin/storage";
 import { randomUUID } from "node:crypto";
 import {
     createMovie,
-    createPlanFromUpload as dcCreatePlanFromUpload,
-    createPlanPage as dcCreatePlanPage,
+    createProjectFromUpload as dcCreateProjectFromUpload,
+    createFloorplanPage as dcCreateFloorplanPage,
     deleteMovie,
-    deletePlan as dcDeletePlan,
-    deletePlanPages as dcDeletePlanPages,
-    getPlanById,
-    getPlanPageById,
+    deleteProject as dcDeleteProject,
+    deleteFloorplanPages as dcDeleteFloorplanPages,
+    getProjectById,
+    getFloorplanPageById,
     listMovies,
-    listPlansByOwner,
-    renamePlan as dcRenamePlan,
-    touchPlan,
-    updatePlanPage as dcUpdatePlanPage,
-    type GetPlanByIdData,
-    type GetPlanPageByIdData,
+    listProjectsByOwner,
+    renameProject as dcRenameProject,
+    touchProject,
+    updateFloorplanPage as dcUpdateFloorplanPage,
+    type GetProjectByIdData,
+    type GetFloorplanPageByIdData,
     type ListMoviesData,
-    type ListPlansByOwnerData,
+    type ListProjectsByOwnerData,
 } from "@inivi/example-data-connector";
 import { setGlobalOptions } from "firebase-functions";
 import {
@@ -44,9 +44,9 @@ if (getApps().length === 0) {
 }
 
 type Movie = ListMoviesData["movies"][number];
-type PlanListRow = ListPlansByOwnerData["plans"][number];
-type PlanWithPages = NonNullable<GetPlanByIdData["plan"]>;
-type PlanPageRow = NonNullable<GetPlanPageByIdData["planPage"]>;
+type ProjectListRow = ListProjectsByOwnerData["projects"][number];
+type ProjectWithPages = NonNullable<GetProjectByIdData["project"]>;
+type FloorplanPageRow = NonNullable<GetFloorplanPageByIdData["floorplanPage"]>;
 
 interface CreateExampleMovieRequest {
     title?: unknown;
@@ -63,24 +63,24 @@ interface ExampleMoviesResponse {
 }
 
 type UploadType = "PDF" | "IMAGE";
-type PlanStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
+type ProjectStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
 
-interface PlanSummary {
+interface ProjectSummary {
     id: string;
     name: string;
     originalFileName: string;
     uploadType: UploadType;
-    status: PlanStatus;
+    status: ProjectStatus;
     processingError?: string | null;
     createdAt: string;
     updatedAt: string;
     pageCount: number;
 }
 
-interface PlanPage {
+interface FloorplanPage {
     id: string;
     pageNumber: number;
-    status: PlanStatus;
+    status: ProjectStatus;
     imageUrl: string;
     previewUrl: string;
     overlay: string | null;
@@ -93,9 +93,9 @@ interface PlanPage {
     updatedAt: string;
 }
 
-interface PlanDetail extends PlanSummary {
+interface ProjectDetail extends ProjectSummary {
     ownerId?: string | null;
-    pages: PlanPage[];
+    pages: FloorplanPage[];
 }
 
 interface PdfPagePreview {
@@ -111,14 +111,14 @@ interface ProcessingStrategyInfo {
 }
 
 interface UploadResponse {
-    planId: string;
+    projectId: string;
     uploadType: UploadType;
     pageCount: number;
-    status: PlanStatus;
+    status: ProjectStatus;
 }
 
-interface CreatePlanFromUploadRequest {
-    planId?: unknown;
+interface CreateProjectFromUploadRequest {
+    projectId?: unknown;
     name?: unknown;
     originalFileName?: unknown;
     contentType?: unknown;
@@ -126,20 +126,20 @@ interface CreatePlanFromUploadRequest {
     storagePath?: unknown;
 }
 
-interface PlanIdRequest {
-    planId?: unknown;
+interface ProjectIdRequest {
+    projectId?: unknown;
 }
 
-interface RenamePlanRequest extends PlanIdRequest {
+interface RenameProjectRequest extends ProjectIdRequest {
     name?: unknown;
 }
 
-interface ProcessPlanRequest extends PlanIdRequest {
+interface ProcessProjectRequest extends ProjectIdRequest {
     pageNumbers?: unknown;
     strategyKey?: unknown;
 }
 
-interface UpdatePlanPageRequest extends PlanIdRequest {
+interface UpdateFloorplanPageRequest extends ProjectIdRequest {
     pageId?: unknown;
     overlay?: unknown;
     scaleMmPerPx?: unknown;
@@ -148,12 +148,12 @@ interface UpdatePlanPageRequest extends PlanIdRequest {
     referenceLengthMm?: unknown;
 }
 
-interface UpdatePlanPagesRequest extends PlanIdRequest {
+interface UpdateFloorplanPagesRequest extends ProjectIdRequest {
     scaleMmPerPx?: unknown;
     ceilingHeightMm?: unknown;
 }
 
-interface ExportPlanCsvResponse {
+interface ExportProjectCsvResponse {
     fileName: string;
     mimeType: "text/csv";
     csv: string;
@@ -279,20 +279,20 @@ export const deleteExampleMovie = onCall<
     return { movies: response.data.movies };
 });
 
-export const listPlans = onCall<unknown, Promise<{ plans: PlanSummary[] }>>(
+export const listProjects = onCall<unknown, Promise<{ projects: ProjectSummary[] }>>(
     async (request) => {
         const auth = requireAuth(request);
-        const response = await listPlansByOwner({ ownerId: auth.uid });
-        return { plans: response.data.plans.map(toSummary) };
+        const response = await listProjectsByOwner({ ownerId: auth.uid });
+        return { projects: response.data.projects.map(toSummary) };
     },
 );
 
-export const createPlanFromUpload = onCall<
-    CreatePlanFromUploadRequest,
+export const createProjectFromUpload = onCall<
+    CreateProjectFromUploadRequest,
     Promise<UploadResponse>
 >(async (request) => {
     const auth = requireAuth(request);
-    const planId = readRequiredString(request.data.planId, "Plan ID");
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
     const name = readRequiredString(request.data.name, "Name");
     const originalFileName = readRequiredString(
         request.data.originalFileName,
@@ -308,7 +308,7 @@ export const createPlanFromUpload = onCall<
     );
     readRequiredNumber(request.data.size, "Size");
 
-    if (!isOwnedUploadPath(storagePath, auth.uid, planId)) {
+    if (!isOwnedUploadPath(storagePath, auth.uid, projectId)) {
         throw new HttpsError(
             "permission-denied",
             "Upload path must belong to the signed-in user.",
@@ -322,8 +322,8 @@ export const createPlanFromUpload = onCall<
 
     const uploadType = inferUploadType(originalFileName, contentType);
     const pageCount = uploadType === "PDF" ? 3 : 1;
-    const response = await dcCreatePlanFromUpload({
-        id: planId,
+    const response = await dcCreateProjectFromUpload({
+        id: projectId,
         ownerId: auth.uid,
         name,
         originalFileName,
@@ -334,65 +334,65 @@ export const createPlanFromUpload = onCall<
     });
 
     return {
-        planId: response.data.plan_insert.id,
+        projectId: response.data.project_insert.id,
         uploadType,
         pageCount,
         status: "DRAFT",
     };
 });
 
-export const getPlan = onCall<PlanIdRequest, Promise<PlanDetail>>(
+export const getProject = onCall<ProjectIdRequest, Promise<ProjectDetail>>(
     async (request) => {
         const auth = requireAuth(request);
-        const plan = await requireOwnedPlan(
-            readRequiredString(request.data.planId, "Plan ID"),
+        const project = await requireOwnedProject(
+            readRequiredString(request.data.projectId, "Project ID"),
             auth.uid,
         );
-        return toDetail(plan);
+        return toDetail(project);
     },
 );
 
-export const renamePlan = onCall<RenamePlanRequest, Promise<PlanDetail>>(
+export const renameProject = onCall<RenameProjectRequest, Promise<ProjectDetail>>(
     async (request) => {
         const auth = requireAuth(request);
-        const planId = readRequiredString(request.data.planId, "Plan ID");
-        await requireOwnedPlan(planId, auth.uid);
-        await dcRenamePlan({
-            id: planId,
+        const projectId = readRequiredString(request.data.projectId, "Project ID");
+        await requireOwnedProject(projectId, auth.uid);
+        await dcRenameProject({
+            id: projectId,
             name: readRequiredString(request.data.name, "Name"),
         });
-        return toDetail(await requireOwnedPlan(planId, auth.uid));
+        return toDetail(await requireOwnedProject(projectId, auth.uid));
     },
 );
 
-export const deletePlan = onCall<PlanIdRequest, Promise<{ ok: true }>>(
+export const deleteProject = onCall<ProjectIdRequest, Promise<{ ok: true }>>(
     async (request) => {
         const auth = requireAuth(request);
-        const planId = readRequiredString(request.data.planId, "Plan ID");
-        const plan = await requireOwnedPlan(planId, auth.uid);
+        const projectId = readRequiredString(request.data.projectId, "Project ID");
+        const project = await requireOwnedProject(projectId, auth.uid);
 
-        await deleteOwnedPlanStorage(plan, auth.uid);
-        await dcDeletePlanPages({ planId });
-        await dcDeletePlan({ id: planId });
+        await deleteOwnedProjectStorage(project, auth.uid);
+        await dcDeleteFloorplanPages({ projectId });
+        await dcDeleteProject({ id: projectId });
 
         return { ok: true };
     },
 );
 
-export const listPdfPagePreviews = onCall<
-    PlanIdRequest,
+export const listProjectPdfPagePreviews = onCall<
+    ProjectIdRequest,
     Promise<{ pages: PdfPagePreview[] }>
 >(async (request) => {
     const auth = requireAuth(request);
-    const plan = await requireOwnedPlan(
-        readRequiredString(request.data.planId, "Plan ID"),
+    const project = await requireOwnedProject(
+        readRequiredString(request.data.projectId, "Project ID"),
         auth.uid,
     );
 
     // Deprecated mock: move PDF thumbnail rendering to the web client with PDF.js.
     const pages =
-        plan.uploadType === "PDF"
-            ? Array.from({ length: plan.pageCount }, (_, index) => ({
+        project.uploadType === "PDF"
+            ? Array.from({ length: project.pageCount }, (_, index) => ({
                   pageNumber: index + 1,
                   previewUrl: mockImageDataUrl(`PDF page ${index + 1}`),
               }))
@@ -409,12 +409,12 @@ export const listProcessingStrategies = onCall<
     return { strategies: processingStrategies };
 });
 
-export const processPlan = onCall<ProcessPlanRequest, Promise<PlanDetail>>(
+export const processProject = onCall<ProcessProjectRequest, Promise<ProjectDetail>>(
     async (request) => {
         const auth = requireAuth(request);
-        const planId = readRequiredString(request.data.planId, "Plan ID");
-        const plan = await requireOwnedPlan(planId, auth.uid);
-        const pageNumbers = readPageNumbers(request.data.pageNumbers, plan);
+        const projectId = readRequiredString(request.data.projectId, "Project ID");
+        const project = await requireOwnedProject(projectId, auth.uid);
+        const pageNumbers = readPageNumbers(request.data.pageNumbers, project);
         const strategyKey = readOptionalString(request.data.strategyKey);
         const strategy =
             processingStrategies.find((item) => item.key === strategyKey) ??
@@ -427,17 +427,17 @@ export const processPlan = onCall<ProcessPlanRequest, Promise<PlanDetail>>(
             );
         }
 
-        await touchPlan({
-            id: planId,
+        await touchProject({
+            id: projectId,
             status: "PROCESSING",
             processingError: null,
         });
-        await dcDeletePlanPages({ planId });
+        await dcDeleteFloorplanPages({ projectId });
 
         for (const pageNumber of pageNumbers) {
             const page = createMockPage(pageNumber, strategy.key);
-            await dcCreatePlanPage({
-                planId,
+            await dcCreateFloorplanPage({
+                projectId,
                 pageNumber: page.pageNumber,
                 status: page.status,
                 sourceImagePath: page.imageUrl,
@@ -452,36 +452,36 @@ export const processPlan = onCall<ProcessPlanRequest, Promise<PlanDetail>>(
             });
         }
 
-        await touchPlan({ id: planId, status: "READY", processingError: null });
-        return toDetail(await requireOwnedPlan(planId, auth.uid));
+        await touchProject({ id: projectId, status: "READY", processingError: null });
+        return toDetail(await requireOwnedProject(projectId, auth.uid));
     },
 );
 
-export const getPlanPage = onCall<
-    UpdatePlanPageRequest,
-    Promise<PlanPage>
+export const getFloorplanPage = onCall<
+    UpdateFloorplanPageRequest,
+    Promise<FloorplanPage>
 >(async (request) => {
     const auth = requireAuth(request);
-    const planId = readRequiredString(request.data.planId, "Plan ID");
-    await requireOwnedPlan(planId, auth.uid);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    await requireOwnedProject(projectId, auth.uid);
     return toPage(
-        await requirePlanPage(
-            planId,
+        await requireFloorplanPage(
+            projectId,
             readRequiredString(request.data.pageId, "Page ID"),
         ),
     );
 });
 
-export const updatePlanPage = onCall<
-    UpdatePlanPageRequest,
-    Promise<PlanPage>
+export const updateFloorplanPage = onCall<
+    UpdateFloorplanPageRequest,
+    Promise<FloorplanPage>
 >(async (request) => {
     const auth = requireAuth(request);
-    const planId = readRequiredString(request.data.planId, "Plan ID");
-    await requireOwnedPlan(planId, auth.uid);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    await requireOwnedProject(projectId, auth.uid);
 
-    const page = await requirePlanPage(
-        planId,
+    const page = await requireFloorplanPage(
+        projectId,
         readRequiredString(request.data.pageId, "Page ID"),
     );
     const data = request.data;
@@ -503,7 +503,7 @@ export const updatePlanPage = onCall<
         ? readNullableNumber(data.referenceLengthMm, "Reference length")
         : (page.referenceLengthMm ?? null);
 
-    await dcUpdatePlanPage({
+    await dcUpdateFloorplanPage({
         id: page.id,
         overlayJson: overlayJson ?? null,
         scaleMmPerPx,
@@ -511,18 +511,18 @@ export const updatePlanPage = onCall<
         referencePointsJson,
         referenceLengthMm,
     });
-    await touchPlan({ id: planId });
+    await touchProject({ id: projectId });
 
-    return toPage(await requirePlanPage(planId, page.id));
+    return toPage(await requireFloorplanPage(projectId, page.id));
 });
 
-export const updatePlanPages = onCall<
-    UpdatePlanPagesRequest,
-    Promise<PlanDetail>
+export const updateFloorplanPages = onCall<
+    UpdateFloorplanPagesRequest,
+    Promise<ProjectDetail>
 >(async (request) => {
     const auth = requireAuth(request);
-    const planId = readRequiredString(request.data.planId, "Plan ID");
-    const plan = await requireOwnedPlan(planId, auth.uid);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    const project = await requireOwnedProject(projectId, auth.uid);
     const data = request.data;
 
     const hasScale = hasField(data, "scaleMmPerPx");
@@ -535,7 +535,7 @@ export const updatePlanPages = onCall<
         );
     }
 
-    for (const page of plan.pages) {
+    for (const page of project.pages) {
         const nextScaleMmPerPx: number | null = hasScale
             ? (readNullableNumber(data.scaleMmPerPx, "Scale") ??
               page.scaleMmPerPx ??
@@ -547,7 +547,7 @@ export const updatePlanPages = onCall<
               null)
             : (page.ceilingHeightMm ?? null);
 
-        await dcUpdatePlanPage({
+        await dcUpdateFloorplanPage({
             id: page.id,
             overlayJson: page.overlayJson ?? null,
             scaleMmPerPx: nextScaleMmPerPx,
@@ -557,40 +557,40 @@ export const updatePlanPages = onCall<
         });
     }
 
-    await touchPlan({ id: planId });
-    return toDetail(await requireOwnedPlan(planId, auth.uid));
+    await touchProject({ id: projectId });
+    return toDetail(await requireOwnedProject(projectId, auth.uid));
 });
 
-export const exportPlanCsv = onCall<
-    PlanIdRequest,
-    Promise<ExportPlanCsvResponse>
+export const exportProjectCsv = onCall<
+    ProjectIdRequest,
+    Promise<ExportProjectCsvResponse>
 >(async (request) => {
     const auth = requireAuth(request);
-    const plan = await requireOwnedPlan(
-        readRequiredString(request.data.planId, "Plan ID"),
+    const project = await requireOwnedProject(
+        readRequiredString(request.data.projectId, "Project ID"),
         auth.uid,
     );
 
     return {
-        fileName: `plaster-estimate-${csvFileNamePart(plan.name)}.csv`,
+        fileName: `plaster-estimate-${csvFileNamePart(project.name)}.csv`,
         mimeType: "text/csv",
-        csv: buildPlanCsv(plan),
+        csv: buildProjectCsv(project),
     };
 });
 
-async function requireOwnedPlan(planId: string, ownerId: string) {
-    const response = await getPlanById({ id: planId });
-    const plan = response.data.plan;
-    if (!plan || plan.ownerId !== ownerId) {
-        throw new HttpsError("not-found", "Plan was not found.");
+async function requireOwnedProject(projectId: string, ownerId: string) {
+    const response = await getProjectById({ id: projectId });
+    const project = response.data.project;
+    if (!project || project.ownerId !== ownerId) {
+        throw new HttpsError("not-found", "Project was not found.");
     }
 
-    return plan;
+    return project;
 }
 
-async function requirePlanPage(planId: string, pageId: string) {
-    const response = await getPlanPageById({ planId, pageId });
-    const page = response.data.planPage;
+async function requireFloorplanPage(projectId: string, pageId: string) {
+    const response = await getFloorplanPageById({ projectId, pageId });
+    const page = response.data.floorplanPage;
     if (!page) {
         throw new HttpsError("not-found", "Page was not found.");
     }
@@ -598,34 +598,34 @@ async function requirePlanPage(planId: string, pageId: string) {
     return page;
 }
 
-function toSummary(plan: PlanListRow | PlanWithPages): PlanSummary {
+function toSummary(project: ProjectListRow | ProjectWithPages): ProjectSummary {
     return {
-        id: plan.id,
-        name: plan.name,
-        originalFileName: plan.originalFileName,
-        uploadType: toUploadType(plan.uploadType),
-        status: toPlanStatus(plan.status),
-        processingError: plan.processingError ?? null,
-        createdAt: plan.createdAt,
-        updatedAt: plan.updatedAt,
-        pageCount: plan.pageCount,
+        id: project.id,
+        name: project.name,
+        originalFileName: project.originalFileName,
+        uploadType: toUploadType(project.uploadType),
+        status: toProjectStatus(project.status),
+        processingError: project.processingError ?? null,
+        createdAt: project.createdAt,
+        updatedAt: project.updatedAt,
+        pageCount: project.pageCount,
     };
 }
 
-function toDetail(plan: PlanWithPages): PlanDetail {
+function toDetail(project: ProjectWithPages): ProjectDetail {
     return {
-        ...toSummary(plan),
-        ownerId: plan.ownerId,
-        pages: plan.pages.map(toPage),
+        ...toSummary(project),
+        ownerId: project.ownerId,
+        pages: project.pages.map(toPage),
     };
 }
 
-function toPage(page: PlanPageRow): PlanPage {
+function toPage(page: FloorplanPageRow): FloorplanPage {
     const imageUrl = storagePathToUrl(page.sourceImagePath);
     return {
         id: page.id,
         pageNumber: page.pageNumber,
-        status: toPlanStatus(page.status),
+        status: toProjectStatus(page.status),
         imageUrl,
         previewUrl: storagePathToUrl(page.previewImagePath) || imageUrl,
         overlay: page.overlayJson ?? null,
@@ -643,7 +643,7 @@ function toUploadType(value: string): UploadType {
     return value === "PDF" ? "PDF" : "IMAGE";
 }
 
-function toPlanStatus(value: string): PlanStatus {
+function toProjectStatus(value: string): ProjectStatus {
     if (
         value === "DRAFT" ||
         value === "PROCESSING" ||
@@ -658,7 +658,7 @@ function toPlanStatus(value: string): PlanStatus {
 
 function readPageNumbers(
     value: unknown,
-    plan: PlanWithPages,
+    project: ProjectWithPages,
 ) {
     if (!Array.isArray(value) || value.length === 0) {
         return [1];
@@ -671,7 +671,7 @@ function readPageNumbers(
         (left, right) => left - right,
     );
 
-    if (plan.uploadType === "IMAGE") {
+    if (project.uploadType === "IMAGE") {
         return [1];
     }
 
@@ -679,7 +679,7 @@ function readPageNumbers(
         if (
             !Number.isInteger(pageNumber) ||
             pageNumber < 1 ||
-            pageNumber > plan.pageCount
+            pageNumber > project.pageCount
         ) {
             throw new HttpsError(
                 "invalid-argument",
@@ -699,18 +699,18 @@ function inferUploadType(fileName: string, contentType: string): UploadType {
         : "IMAGE";
 }
 
-function isOwnedUploadPath(storagePath: string, uid: string, planId: string) {
-    return storagePath.startsWith(`uploads/${uid}/projects/${planId}/uploads/`);
+function isOwnedUploadPath(storagePath: string, uid: string, projectId: string) {
+    return storagePath.startsWith(`uploads/${uid}/projects/${projectId}/uploads/`);
 }
 
-async function deleteOwnedPlanStorage(
-    plan: PlanWithPages,
+async function deleteOwnedProjectStorage(
+    project: ProjectWithPages,
     uid: string,
 ) {
     const bucket = getStorage().bucket();
     const paths = [
-        plan.originalPath,
-        ...plan.pages.flatMap((page) => [
+        project.originalPath,
+        ...project.pages.flatMap((page) => [
             page.sourceImagePath,
             page.previewImagePath,
             page.rawJsonPath,
@@ -726,7 +726,7 @@ async function deleteOwnedPlanStorage(
 
     await bucket.deleteFiles({
         force: true,
-        prefix: `uploads/${uid}/projects/${plan.id}/`,
+        prefix: `uploads/${uid}/projects/${project.id}/`,
     });
 }
 
@@ -753,7 +753,7 @@ function encodeStoragePath(path: string) {
 function createMockPage(
     pageNumber: number,
     strategyKey: string,
-): PlanPage {
+): FloorplanPage {
     const now = new Date().toISOString();
     const overlay =
         strategyKey === "mock-detected-rooms"
@@ -782,7 +782,7 @@ function createMockPage(
         id: randomUUID(),
         pageNumber,
         status: "READY",
-        imageUrl: mockImageDataUrl(`Plan page ${pageNumber}`),
+        imageUrl: mockImageDataUrl(`Project page ${pageNumber}`),
         previewUrl: mockImageDataUrl(`Preview ${pageNumber}`),
         overlay: JSON.stringify(overlay),
         scaleMmPerPx: null,
@@ -808,12 +808,12 @@ function escapeXml(value: string) {
         .replace(/"/g, "&quot;");
 }
 
-function buildPlanCsv(plan: PlanWithPages) {
+function buildProjectCsv(project: ProjectWithPages) {
     const rows: ExportRow[] = [];
     const wallColumns = new Set<string>();
     const ceilingColumns = new Set<string>();
 
-    for (const page of plan.pages) {
+    for (const page of project.pages) {
         if (!page.overlayJson || page.scaleMmPerPx == null) {
             continue;
         }
@@ -1120,7 +1120,7 @@ function csvFileNamePart(value: string) {
         .trim()
         .replace(/[^A-Za-z0-9._-]+/g, "-")
         .replace(/^-+|-+$/g, "");
-    return cleaned || "plan";
+    return cleaned || "project";
 }
 
 function csvCell(value: string) {

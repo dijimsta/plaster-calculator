@@ -51,7 +51,7 @@ type Review @table(name: "Reviews", key: ["movie", "user"]) {
     reviewDate: Date! @default(expr: "request.time")
 }
 
-type Plan @table @index(fields: ["ownerId", "updatedAt"], order: [ASC, DESC]) {
+type Project @table @index(fields: ["ownerId", "updatedAt"], order: [ASC, DESC]) {
     id: UUID! @default(expr: "uuidV4()")
     ownerId: String!
     name: String!
@@ -65,10 +65,12 @@ type Plan @table @index(fields: ["ownerId", "updatedAt"], order: [ASC, DESC]) {
     updatedAt: Timestamp! @default(expr: "request.time")
 }
 
-type PlanPage @table @index(fields: ["planId", "pageNumber"], order: [ASC, ASC]) {
+type FloorplanPage
+    @table
+    @index(fields: ["projectId", "pageNumber"], order: [ASC, ASC]) {
     id: UUID! @default(expr: "uuidV4()")
-    plan: Plan! @ref(fields: "planId", references: "id")
-    planId: UUID!
+    project: Project! @ref(fields: "projectId", references: "id")
+    projectId: UUID!
     pageNumber: Int!
     status: String!
     sourceImagePath: String

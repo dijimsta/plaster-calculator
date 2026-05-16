@@ -284,16 +284,16 @@ select {
     width: 100%;
 }
 
-.plan-list {
+.project-list {
     display: grid;
     gap: 10px;
 }
 
-.plan-history-panel {
+.project-history-panel {
     align-self: start;
 }
 
-.plan-list-state {
+.project-list-state {
     align-items: center;
     color: var(--muted);
     display: flex;
@@ -302,7 +302,7 @@ select {
     min-height: 160px;
 }
 
-.plan-item {
+.project-item {
     align-items: center;
     border: 1px solid var(--line);
     border-radius: 8px;
@@ -313,24 +313,24 @@ select {
     padding: 12px;
 }
 
-.plan-item a {
+.project-item a {
     display: grid;
     gap: 8px;
     min-width: 0;
 }
 
-.plan-item strong {
+.project-item strong {
     overflow-wrap: anywhere;
 }
 
-.plan-meta-line {
+.project-meta-line {
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.plan-actions {
+.project-actions {
     flex-wrap: nowrap;
 }
 
@@ -535,15 +535,15 @@ select {
 }
 
 @media (max-width: 720px) {
-    .plan-item {
+    .project-item {
         grid-template-columns: 1fr;
     }
 
-    .plan-actions {
+    .project-actions {
         justify-content: flex-end;
     }
 
-    .plan-meta-line {
+    .project-meta-line {
         white-space: normal;
     }
 }

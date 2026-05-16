@@ -36,52 +36,52 @@ export function deleteReview(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeMutation('DeleteReview', inputVars, inputOpts);
 }
 
-export function createPlanFromUpload(dcOrVarsOrOptions, varsOrOptions, options) {
+export function createProjectFromUpload(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreatePlanFromUpload', inputVars, inputOpts);
+  return dcInstance.executeMutation('CreateProjectFromUpload', inputVars, inputOpts);
 }
 
-export function renamePlan(dcOrVarsOrOptions, varsOrOptions, options) {
+export function renameProject(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('RenamePlan', inputVars, inputOpts);
+  return dcInstance.executeMutation('RenameProject', inputVars, inputOpts);
 }
 
-export function touchPlan(dcOrVarsOrOptions, varsOrOptions, options) {
+export function touchProject(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('TouchPlan', inputVars, inputOpts);
+  return dcInstance.executeMutation('TouchProject', inputVars, inputOpts);
 }
 
-export function deletePlanPages(dcOrVarsOrOptions, varsOrOptions, options) {
+export function deleteFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('DeletePlanPages', inputVars, inputOpts);
+  return dcInstance.executeMutation('DeleteFloorplanPages', inputVars, inputOpts);
 }
 
-export function deletePlan(dcOrVarsOrOptions, varsOrOptions, options) {
+export function deleteProject(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('DeletePlan', inputVars, inputOpts);
+  return dcInstance.executeMutation('DeleteProject', inputVars, inputOpts);
 }
 
-export function createPlanPage(dcOrVarsOrOptions, varsOrOptions, options) {
+export function createFloorplanPage(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreatePlanPage', inputVars, inputOpts);
+  return dcInstance.executeMutation('CreateFloorplanPage', inputVars, inputOpts);
 }
 
-export function updatePlanPage(dcOrVarsOrOptions, varsOrOptions, options) {
+export function updateFloorplanPage(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('UpdatePlanPage', inputVars, inputOpts);
+  return dcInstance.executeMutation('UpdateFloorplanPage', inputVars, inputOpts);
 }
 
-export function updatePlanPages(dcOrVarsOrOptions, varsOrOptions, options) {
+export function updateFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('UpdatePlanPages', inputVars, inputOpts);
+  return dcInstance.executeMutation('UpdateFloorplanPages', inputVars, inputOpts);
 }
 
 export function listMovies(dcOrOptions, options) {
@@ -114,21 +114,21 @@ export function searchMovie(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeQuery('SearchMovie', inputVars, inputOpts);
 }
 
-export function listPlansByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
+export function listProjectsByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListPlansByOwner', inputVars, inputOpts);
+  return dcInstance.executeQuery('ListProjectsByOwner', inputVars, inputOpts);
 }
 
-export function getPlanById(dcOrVarsOrOptions, varsOrOptions, options) {
+export function getProjectById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetPlanById', inputVars, inputOpts);
+  return dcInstance.executeQuery('GetProjectById', inputVars, inputOpts);
 }
 
-export function getPlanPageById(dcOrVarsOrOptions, varsOrOptions, options) {
+export function getFloorplanPageById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetPlanPageById', inputVars, inputOpts);
+  return dcInstance.executeQuery('GetFloorplanPageById', inputVars, inputOpts);
 }
 

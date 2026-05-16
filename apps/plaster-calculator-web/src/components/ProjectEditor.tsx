@@ -29,13 +29,13 @@ import type {
     AreaPolygon,
     EdgeOverride,
     Overlay,
-    PlanDetail,
-    PlanPage,
+    ProjectDetail,
+    FloorplanPage,
     Point,
 } from "@/types.js";
 import {
-    applyCeilingHeightToPlan,
-    applyScaleToPlan,
+    applyCeilingHeightToProject,
+    applyScaleToProject,
     savePageOverlay,
 } from "@/lib/api.js";
 import type { PageValidationInput, ValidationIssue } from "@/lib/validation.js";
@@ -59,15 +59,15 @@ type DragState = {
     startClientY: number;
 };
 
-export default function PlanEditor({
-    plan,
+export default function ProjectEditor({
+    project,
     page,
     onSaved,
     onDraftChange,
     validationIssues = [],
 }: {
-    plan: PlanDetail;
-    page: PlanPage;
+    project: ProjectDetail;
+    page: FloorplanPage;
     onSaved: () => void;
     onDraftChange?: (pageId: string, draft: PageValidationInput) => void;
     validationIssues?: ValidationIssue[];
@@ -1082,7 +1082,7 @@ export default function PlanEditor({
             setSaving(true);
         }
         try {
-            await savePageOverlay(plan.id, page.id, {
+            await savePageOverlay(project.id, page.id, {
                 overlay,
                 scaleMmPerPx,
                 ceilingHeightMm,
@@ -1109,7 +1109,7 @@ export default function PlanEditor({
     async function applyHeightToAllPages() {
         try {
             if (dirty) await save(false);
-            await applyCeilingHeightToPlan(plan.id, ceilingHeightMm);
+            await applyCeilingHeightToProject(project.id, ceilingHeightMm);
             setStatus("Ceiling height applied to all pages");
             onSaved();
         } catch (error) {
@@ -1128,7 +1128,7 @@ export default function PlanEditor({
         }
         try {
             if (dirty) await save(false);
-            await applyScaleToPlan(plan.id, scaleMmPerPx);
+            await applyScaleToProject(project.id, scaleMmPerPx);
             setStatus("Scale applied to all pages");
             onSaved();
         } catch (error) {

@@ -83,8 +83,8 @@ query SearchMovie($titleInput: String, $genre: String)
     }
 }
 
-query ListPlansByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
-    plans(
+query ListProjectsByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
+    projects(
         where: { ownerId: { eq: $ownerId } }
         orderBy: [{ updatedAt: DESC }]
     ) {
@@ -102,8 +102,8 @@ query ListPlansByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
     }
 }
 
-query GetPlanById($id: UUID!) @auth(level: NO_ACCESS) {
-    plan(id: $id) {
+query GetProjectById($id: UUID!) @auth(level: NO_ACCESS) {
+    project(id: $id) {
         id
         ownerId
         name
@@ -115,9 +115,9 @@ query GetPlanById($id: UUID!) @auth(level: NO_ACCESS) {
         pageCount
         createdAt
         updatedAt
-        pages: planPages_on_plan(orderBy: [{ pageNumber: ASC }]) {
+        pages: floorplanPages_on_project(orderBy: [{ pageNumber: ASC }]) {
             id
-            planId
+            projectId
             pageNumber
             status
             sourceImagePath
@@ -137,10 +137,13 @@ query GetPlanById($id: UUID!) @auth(level: NO_ACCESS) {
     }
 }
 
-query GetPlanPageById($planId: UUID!, $pageId: UUID!) @auth(level: NO_ACCESS) {
-    planPage(first: { where: { id: { eq: $pageId }, planId: { eq: $planId } } }) {
+query GetFloorplanPageById($projectId: UUID!, $pageId: UUID!)
+@auth(level: NO_ACCESS) {
+    floorplanPage(
+        first: { where: { id: { eq: $pageId }, projectId: { eq: $projectId } } }
+    ) {
         id
-        planId
+        projectId
         pageNumber
         status
         sourceImagePath

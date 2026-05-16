@@ -41,7 +41,7 @@ mutation DeleteReview($movieId: UUID!) @auth(level: USER) {
     review_delete(key: { userId_expr: "auth.uid", movieId: $movieId })
 }
 
-mutation CreatePlanFromUpload(
+mutation CreateProjectFromUpload(
     $id: UUID!
     $ownerId: String!
     $name: String!
@@ -51,7 +51,7 @@ mutation CreatePlanFromUpload(
     $status: String!
     $pageCount: Int!
 ) @auth(level: NO_ACCESS) {
-    plan_insert(
+    project_insert(
         data: {
             id: $id
             ownerId: $ownerId
@@ -67,16 +67,16 @@ mutation CreatePlanFromUpload(
     )
 }
 
-mutation RenamePlan($id: UUID!, $name: String!) @auth(level: NO_ACCESS) {
-    plan_update(
+mutation RenameProject($id: UUID!, $name: String!) @auth(level: NO_ACCESS) {
+    project_update(
         id: $id
         data: { name: $name, updatedAt_expr: "request.time" }
     )
 }
 
-mutation TouchPlan($id: UUID!, $status: String, $processingError: String)
+mutation TouchProject($id: UUID!, $status: String, $processingError: String)
 @auth(level: NO_ACCESS) {
-    plan_update(
+    project_update(
         id: $id
         data: {
             status: $status
@@ -86,16 +86,16 @@ mutation TouchPlan($id: UUID!, $status: String, $processingError: String)
     )
 }
 
-mutation DeletePlanPages($planId: UUID!) @auth(level: NO_ACCESS) {
-    planPage_deleteMany(where: { planId: { eq: $planId } })
+mutation DeleteFloorplanPages($projectId: UUID!) @auth(level: NO_ACCESS) {
+    floorplanPage_deleteMany(where: { projectId: { eq: $projectId } })
 }
 
-mutation DeletePlan($id: UUID!) @auth(level: NO_ACCESS) {
-    plan_delete(id: $id)
+mutation DeleteProject($id: UUID!) @auth(level: NO_ACCESS) {
+    project_delete(id: $id)
 }
 
-mutation CreatePlanPage(
-    $planId: UUID!
+mutation CreateFloorplanPage(
+    $projectId: UUID!
     $pageNumber: Int!
     $status: String!
     $sourceImagePath: String
@@ -108,9 +108,9 @@ mutation CreatePlanPage(
     $processingStrategy: String
     $processingMetadataJson: String
 ) @auth(level: NO_ACCESS) {
-    planPage_insert(
+    floorplanPage_insert(
         data: {
-            planId: $planId
+            projectId: $projectId
             pageNumber: $pageNumber
             status: $status
             sourceImagePath: $sourceImagePath
@@ -128,7 +128,7 @@ mutation CreatePlanPage(
     )
 }
 
-mutation UpdatePlanPage(
+mutation UpdateFloorplanPage(
     $id: UUID!
     $overlayJson: String
     $scaleMmPerPx: Float
@@ -136,7 +136,7 @@ mutation UpdatePlanPage(
     $referencePointsJson: String
     $referenceLengthMm: Float
 ) @auth(level: NO_ACCESS) {
-    planPage_update(
+    floorplanPage_update(
         id: $id
         data: {
             overlayJson: $overlayJson
@@ -149,13 +149,13 @@ mutation UpdatePlanPage(
     )
 }
 
-mutation UpdatePlanPages(
-    $planId: UUID!
+mutation UpdateFloorplanPages(
+    $projectId: UUID!
     $scaleMmPerPx: Float
     $ceilingHeightMm: Float
 ) @auth(level: NO_ACCESS) {
-    planPage_updateMany(
-        where: { planId: { eq: $planId } }
+    floorplanPage_updateMany(
+        where: { projectId: { eq: $projectId } }
         data: {
             scaleMmPerPx: $scaleMmPerPx
             ceilingHeightMm: $ceilingHeightMm

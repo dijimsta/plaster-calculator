@@ -18,37 +18,12 @@ export interface AddReviewVariables {
   reviewText: string;
 }
 
-export interface CreateMovieData {
-  movie_insert: Movie_Key;
+export interface CreateFloorplanPageData {
+  floorplanPage_insert: FloorplanPage_Key;
 }
 
-export interface CreateMovieVariables {
-  title: string;
-  genre: string;
-  imageUrl: string;
-}
-
-export interface CreatePlanFromUploadData {
-  plan_insert: Plan_Key;
-}
-
-export interface CreatePlanFromUploadVariables {
-  id: UUIDString;
-  ownerId: string;
-  name: string;
-  originalFileName: string;
-  uploadType: string;
-  originalPath: string;
-  status: string;
-  pageCount: number;
-}
-
-export interface CreatePlanPageData {
-  planPage_insert: PlanPage_Key;
-}
-
-export interface CreatePlanPageVariables {
-  planId: UUIDString;
+export interface CreateFloorplanPageVariables {
+  projectId: UUIDString;
   pageNumber: number;
   status: string;
   sourceImagePath?: string | null;
@@ -62,6 +37,39 @@ export interface CreatePlanPageVariables {
   processingMetadataJson?: string | null;
 }
 
+export interface CreateMovieData {
+  movie_insert: Movie_Key;
+}
+
+export interface CreateMovieVariables {
+  title: string;
+  genre: string;
+  imageUrl: string;
+}
+
+export interface CreateProjectFromUploadData {
+  project_insert: Project_Key;
+}
+
+export interface CreateProjectFromUploadVariables {
+  id: UUIDString;
+  ownerId: string;
+  name: string;
+  originalFileName: string;
+  uploadType: string;
+  originalPath: string;
+  status: string;
+  pageCount: number;
+}
+
+export interface DeleteFloorplanPagesData {
+  floorplanPage_deleteMany: number;
+}
+
+export interface DeleteFloorplanPagesVariables {
+  projectId: UUIDString;
+}
+
 export interface DeleteMovieData {
   movie_delete?: Movie_Key | null;
 }
@@ -70,19 +78,11 @@ export interface DeleteMovieVariables {
   id: UUIDString;
 }
 
-export interface DeletePlanData {
-  plan_delete?: Plan_Key | null;
+export interface DeleteProjectData {
+  project_delete?: Project_Key | null;
 }
 
-export interface DeletePlanPagesData {
-  planPage_deleteMany: number;
-}
-
-export interface DeletePlanPagesVariables {
-  planId: UUIDString;
-}
-
-export interface DeletePlanVariables {
+export interface DeleteProjectVariables {
   id: UUIDString;
 }
 
@@ -92,6 +92,38 @@ export interface DeleteReviewData {
 
 export interface DeleteReviewVariables {
   movieId: UUIDString;
+}
+
+export interface FloorplanPage_Key {
+  id: UUIDString;
+  __typename?: 'FloorplanPage_Key';
+}
+
+export interface GetFloorplanPageByIdData {
+  floorplanPage?: {
+    id: UUIDString;
+    projectId: UUIDString;
+    pageNumber: number;
+    status: string;
+    sourceImagePath?: string | null;
+    previewImagePath?: string | null;
+    rawJsonPath?: string | null;
+    rawFloorplanPath?: string | null;
+    overlayJson?: string | null;
+    scaleMmPerPx?: number | null;
+    ceilingHeightMm?: number | null;
+    referencePointsJson?: string | null;
+    referenceLengthMm?: number | null;
+    processingStrategy?: string | null;
+    processingMetadataJson?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & FloorplanPage_Key;
+}
+
+export interface GetFloorplanPageByIdVariables {
+  projectId: UUIDString;
+  pageId: UUIDString;
 }
 
 export interface GetMovieByIdData {
@@ -121,8 +153,8 @@ export interface GetMovieByIdVariables {
   id: UUIDString;
 }
 
-export interface GetPlanByIdData {
-  plan?: {
+export interface GetProjectByIdData {
+  project?: {
     id: UUIDString;
     ownerId: string;
     name: string;
@@ -136,7 +168,7 @@ export interface GetPlanByIdData {
     updatedAt: TimestampString;
     pages: ({
       id: UUIDString;
-      planId: UUIDString;
+      projectId: UUIDString;
       pageNumber: number;
       status: string;
       sourceImagePath?: string | null;
@@ -152,39 +184,12 @@ export interface GetPlanByIdData {
       processingMetadataJson?: string | null;
       createdAt: TimestampString;
       updatedAt: TimestampString;
-    } & PlanPage_Key)[];
-  } & Plan_Key;
+    } & FloorplanPage_Key)[];
+  } & Project_Key;
 }
 
-export interface GetPlanByIdVariables {
+export interface GetProjectByIdVariables {
   id: UUIDString;
-}
-
-export interface GetPlanPageByIdData {
-  planPage?: {
-    id: UUIDString;
-    planId: UUIDString;
-    pageNumber: number;
-    status: string;
-    sourceImagePath?: string | null;
-    previewImagePath?: string | null;
-    rawJsonPath?: string | null;
-    rawFloorplanPath?: string | null;
-    overlayJson?: string | null;
-    scaleMmPerPx?: number | null;
-    ceilingHeightMm?: number | null;
-    referencePointsJson?: string | null;
-    referenceLengthMm?: number | null;
-    processingStrategy?: string | null;
-    processingMetadataJson?: string | null;
-    createdAt: TimestampString;
-    updatedAt: TimestampString;
-  } & PlanPage_Key;
-}
-
-export interface GetPlanPageByIdVariables {
-  planId: UUIDString;
-  pageId: UUIDString;
 }
 
 export interface ListMoviesData {
@@ -196,8 +201,8 @@ export interface ListMoviesData {
   } & Movie_Key)[];
 }
 
-export interface ListPlansByOwnerData {
-  plans: ({
+export interface ListProjectsByOwnerData {
+  projects: ({
     id: UUIDString;
     ownerId: string;
     name: string;
@@ -209,10 +214,10 @@ export interface ListPlansByOwnerData {
     pageCount: number;
     createdAt: TimestampString;
     updatedAt: TimestampString;
-  } & Plan_Key)[];
+  } & Project_Key)[];
 }
 
-export interface ListPlansByOwnerVariables {
+export interface ListProjectsByOwnerVariables {
   ownerId: string;
 }
 
@@ -249,21 +254,16 @@ export interface Movie_Key {
   __typename?: 'Movie_Key';
 }
 
-export interface PlanPage_Key {
+export interface Project_Key {
   id: UUIDString;
-  __typename?: 'PlanPage_Key';
+  __typename?: 'Project_Key';
 }
 
-export interface Plan_Key {
-  id: UUIDString;
-  __typename?: 'Plan_Key';
+export interface RenameProjectData {
+  project_update?: Project_Key | null;
 }
 
-export interface RenamePlanData {
-  plan_update?: Plan_Key | null;
-}
-
-export interface RenamePlanVariables {
+export interface RenameProjectVariables {
   id: UUIDString;
   name: string;
 }
@@ -288,21 +288,21 @@ export interface SearchMovieVariables {
   genre?: string | null;
 }
 
-export interface TouchPlanData {
-  plan_update?: Plan_Key | null;
+export interface TouchProjectData {
+  project_update?: Project_Key | null;
 }
 
-export interface TouchPlanVariables {
+export interface TouchProjectVariables {
   id: UUIDString;
   status?: string | null;
   processingError?: string | null;
 }
 
-export interface UpdatePlanPageData {
-  planPage_update?: PlanPage_Key | null;
+export interface UpdateFloorplanPageData {
+  floorplanPage_update?: FloorplanPage_Key | null;
 }
 
-export interface UpdatePlanPageVariables {
+export interface UpdateFloorplanPageVariables {
   id: UUIDString;
   overlayJson?: string | null;
   scaleMmPerPx?: number | null;
@@ -311,12 +311,12 @@ export interface UpdatePlanPageVariables {
   referenceLengthMm?: number | null;
 }
 
-export interface UpdatePlanPagesData {
-  planPage_updateMany: number;
+export interface UpdateFloorplanPagesData {
+  floorplanPage_updateMany: number;
 }
 
-export interface UpdatePlanPagesVariables {
-  planId: UUIDString;
+export interface UpdateFloorplanPagesVariables {
+  projectId: UUIDString;
   scaleMmPerPx?: number | null;
   ceilingHeightMm?: number | null;
 }
@@ -359,45 +359,45 @@ export function deleteReview(dc: DataConnect, vars: DeleteReviewVariables, optio
 /** Generated Node Admin SDK operation action function for the 'DeleteReview' Mutation. Allow users to pass in custom DataConnect instances. */
 export function deleteReview(vars: DeleteReviewVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteReviewData>>;
 
-/** Generated Node Admin SDK operation action function for the 'CreatePlanFromUpload' Mutation. Allow users to execute without passing in DataConnect. */
-export function createPlanFromUpload(dc: DataConnect, vars: CreatePlanFromUploadVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreatePlanFromUploadData>>;
-/** Generated Node Admin SDK operation action function for the 'CreatePlanFromUpload' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createPlanFromUpload(vars: CreatePlanFromUploadVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreatePlanFromUploadData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateProjectFromUpload' Mutation. Allow users to execute without passing in DataConnect. */
+export function createProjectFromUpload(dc: DataConnect, vars: CreateProjectFromUploadVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectFromUploadData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateProjectFromUpload' Mutation. Allow users to pass in custom DataConnect instances. */
+export function createProjectFromUpload(vars: CreateProjectFromUploadVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectFromUploadData>>;
 
-/** Generated Node Admin SDK operation action function for the 'RenamePlan' Mutation. Allow users to execute without passing in DataConnect. */
-export function renamePlan(dc: DataConnect, vars: RenamePlanVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<RenamePlanData>>;
-/** Generated Node Admin SDK operation action function for the 'RenamePlan' Mutation. Allow users to pass in custom DataConnect instances. */
-export function renamePlan(vars: RenamePlanVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<RenamePlanData>>;
+/** Generated Node Admin SDK operation action function for the 'RenameProject' Mutation. Allow users to execute without passing in DataConnect. */
+export function renameProject(dc: DataConnect, vars: RenameProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<RenameProjectData>>;
+/** Generated Node Admin SDK operation action function for the 'RenameProject' Mutation. Allow users to pass in custom DataConnect instances. */
+export function renameProject(vars: RenameProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<RenameProjectData>>;
 
-/** Generated Node Admin SDK operation action function for the 'TouchPlan' Mutation. Allow users to execute without passing in DataConnect. */
-export function touchPlan(dc: DataConnect, vars: TouchPlanVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<TouchPlanData>>;
-/** Generated Node Admin SDK operation action function for the 'TouchPlan' Mutation. Allow users to pass in custom DataConnect instances. */
-export function touchPlan(vars: TouchPlanVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<TouchPlanData>>;
+/** Generated Node Admin SDK operation action function for the 'TouchProject' Mutation. Allow users to execute without passing in DataConnect. */
+export function touchProject(dc: DataConnect, vars: TouchProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<TouchProjectData>>;
+/** Generated Node Admin SDK operation action function for the 'TouchProject' Mutation. Allow users to pass in custom DataConnect instances. */
+export function touchProject(vars: TouchProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<TouchProjectData>>;
 
-/** Generated Node Admin SDK operation action function for the 'DeletePlanPages' Mutation. Allow users to execute without passing in DataConnect. */
-export function deletePlanPages(dc: DataConnect, vars: DeletePlanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeletePlanPagesData>>;
-/** Generated Node Admin SDK operation action function for the 'DeletePlanPages' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deletePlanPages(vars: DeletePlanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeletePlanPagesData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteFloorplanPages' Mutation. Allow users to execute without passing in DataConnect. */
+export function deleteFloorplanPages(dc: DataConnect, vars: DeleteFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteFloorplanPagesData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteFloorplanPages' Mutation. Allow users to pass in custom DataConnect instances. */
+export function deleteFloorplanPages(vars: DeleteFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteFloorplanPagesData>>;
 
-/** Generated Node Admin SDK operation action function for the 'DeletePlan' Mutation. Allow users to execute without passing in DataConnect. */
-export function deletePlan(dc: DataConnect, vars: DeletePlanVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeletePlanData>>;
-/** Generated Node Admin SDK operation action function for the 'DeletePlan' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deletePlan(vars: DeletePlanVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeletePlanData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteProject' Mutation. Allow users to execute without passing in DataConnect. */
+export function deleteProject(dc: DataConnect, vars: DeleteProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteProjectData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteProject' Mutation. Allow users to pass in custom DataConnect instances. */
+export function deleteProject(vars: DeleteProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteProjectData>>;
 
-/** Generated Node Admin SDK operation action function for the 'CreatePlanPage' Mutation. Allow users to execute without passing in DataConnect. */
-export function createPlanPage(dc: DataConnect, vars: CreatePlanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreatePlanPageData>>;
-/** Generated Node Admin SDK operation action function for the 'CreatePlanPage' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createPlanPage(vars: CreatePlanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreatePlanPageData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateFloorplanPage' Mutation. Allow users to execute without passing in DataConnect. */
+export function createFloorplanPage(dc: DataConnect, vars: CreateFloorplanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateFloorplanPageData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateFloorplanPage' Mutation. Allow users to pass in custom DataConnect instances. */
+export function createFloorplanPage(vars: CreateFloorplanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateFloorplanPageData>>;
 
-/** Generated Node Admin SDK operation action function for the 'UpdatePlanPage' Mutation. Allow users to execute without passing in DataConnect. */
-export function updatePlanPage(dc: DataConnect, vars: UpdatePlanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdatePlanPageData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdatePlanPage' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updatePlanPage(vars: UpdatePlanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdatePlanPageData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPage' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateFloorplanPage(dc: DataConnect, vars: UpdateFloorplanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPageData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPage' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateFloorplanPage(vars: UpdateFloorplanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPageData>>;
 
-/** Generated Node Admin SDK operation action function for the 'UpdatePlanPages' Mutation. Allow users to execute without passing in DataConnect. */
-export function updatePlanPages(dc: DataConnect, vars: UpdatePlanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdatePlanPagesData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdatePlanPages' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updatePlanPages(vars: UpdatePlanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdatePlanPagesData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPages' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateFloorplanPages(dc: DataConnect, vars: UpdateFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPagesData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPages' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateFloorplanPages(vars: UpdateFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPagesData>>;
 
 /** Generated Node Admin SDK operation action function for the 'ListMovies' Query. Allow users to execute without passing in DataConnect. */
 export function listMovies(dc: DataConnect, options?: OperationOptions): Promise<ExecuteOperationResponse<ListMoviesData>>;
@@ -424,18 +424,18 @@ export function searchMovie(dc: DataConnect, vars?: SearchMovieVariables, option
 /** Generated Node Admin SDK operation action function for the 'SearchMovie' Query. Allow users to pass in custom DataConnect instances. */
 export function searchMovie(vars?: SearchMovieVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<SearchMovieData>>;
 
-/** Generated Node Admin SDK operation action function for the 'ListPlansByOwner' Query. Allow users to execute without passing in DataConnect. */
-export function listPlansByOwner(dc: DataConnect, vars: ListPlansByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListPlansByOwnerData>>;
-/** Generated Node Admin SDK operation action function for the 'ListPlansByOwner' Query. Allow users to pass in custom DataConnect instances. */
-export function listPlansByOwner(vars: ListPlansByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListPlansByOwnerData>>;
+/** Generated Node Admin SDK operation action function for the 'ListProjectsByOwner' Query. Allow users to execute without passing in DataConnect. */
+export function listProjectsByOwner(dc: DataConnect, vars: ListProjectsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerData>>;
+/** Generated Node Admin SDK operation action function for the 'ListProjectsByOwner' Query. Allow users to pass in custom DataConnect instances. */
+export function listProjectsByOwner(vars: ListProjectsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerData>>;
 
-/** Generated Node Admin SDK operation action function for the 'GetPlanById' Query. Allow users to execute without passing in DataConnect. */
-export function getPlanById(dc: DataConnect, vars: GetPlanByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetPlanByIdData>>;
-/** Generated Node Admin SDK operation action function for the 'GetPlanById' Query. Allow users to pass in custom DataConnect instances. */
-export function getPlanById(vars: GetPlanByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetPlanByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to execute without passing in DataConnect. */
+export function getProjectById(dc: DataConnect, vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to pass in custom DataConnect instances. */
+export function getProjectById(vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
 
-/** Generated Node Admin SDK operation action function for the 'GetPlanPageById' Query. Allow users to execute without passing in DataConnect. */
-export function getPlanPageById(dc: DataConnect, vars: GetPlanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetPlanPageByIdData>>;
-/** Generated Node Admin SDK operation action function for the 'GetPlanPageById' Query. Allow users to pass in custom DataConnect instances. */
-export function getPlanPageById(vars: GetPlanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetPlanPageByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetFloorplanPageById' Query. Allow users to execute without passing in DataConnect. */
+export function getFloorplanPageById(dc: DataConnect, vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetFloorplanPageById' Query. Allow users to pass in custom DataConnect instances. */
+export function getFloorplanPageById(vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
 
