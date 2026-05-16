@@ -14,7 +14,7 @@
         "deploy:functions": "firebase deploy --only functions",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "start": "yarn build && firebase emulators:start"
+        "start": "yarn build && yarn workspace @inivi/plaster-calculator-functions bundle && firebase emulators:start"
     },
     "devDependencies": {
         "firebase-tools": "^15.18.0",

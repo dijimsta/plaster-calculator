@@ -14,8 +14,10 @@
         "source": "."
     },
     "functions": {
-        "source": "functions/plaster-calculator-functions",
-        "runtime": "nodejs24"
+        "source": "functions/plaster-calculator-functions/deploy",
+        "predeploy": [
+            "yarn workspace @inivi/plaster-calculator-functions bundle"
+        ]
     },
     "emulators": {
         "apphosting": {
