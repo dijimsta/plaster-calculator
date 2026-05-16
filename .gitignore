@@ -4,10 +4,14 @@
 .next/
 .nx/cache
 .nx/workspace-data
+.venv/
+
+__pycache__/
 
 dist/
 out/
 tmp/
+venv/
 
 *.log
 *.tsbuildinfo

@@ -23,5 +23,9 @@ await build({
     external: Object.keys(pkg.dependencies),
 });
 
+// Update entry point and exports in package.json
+pkg.main = "./dist/index.js";
+pkg.exports = "./dist/index.js";
+
 // Write the modified package.json to the dist directory
 writeFileSync("package.json", JSON.stringify(pkg, null, TAB_WIDTH));
