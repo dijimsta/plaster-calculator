@@ -118,6 +118,7 @@ interface UploadResponse {
 }
 
 interface CreatePlanFromUploadRequest {
+    planId?: unknown;
     name?: unknown;
     originalFileName?: unknown;
     contentType?: unknown;
@@ -291,6 +292,7 @@ export const createPlanFromUpload = onCall<
     Promise<UploadResponse>
 >(async (request) => {
     const auth = requireAuth(request);
+    const planId = readRequiredString(request.data.planId, "Plan ID");
     const name = readRequiredString(request.data.name, "Name");
     const originalFileName = readRequiredString(
         request.data.originalFileName,
@@ -306,7 +308,7 @@ export const createPlanFromUpload = onCall<
     );
     readRequiredNumber(request.data.size, "Size");
 
-    if (!isOwnedUploadPath(storagePath, auth.uid)) {
+    if (!isOwnedUploadPath(storagePath, auth.uid, planId)) {
         throw new HttpsError(
             "permission-denied",
             "Upload path must belong to the signed-in user.",
@@ -321,6 +323,7 @@ export const createPlanFromUpload = onCall<
     const uploadType = inferUploadType(originalFileName, contentType);
     const pageCount = uploadType === "PDF" ? 3 : 1;
     const response = await dcCreatePlanFromUpload({
+        id: planId,
         ownerId: auth.uid,
         name,
         originalFileName,
@@ -696,8 +699,8 @@ function inferUploadType(fileName: string, contentType: string): UploadType {
         : "IMAGE";
 }
 
-function isOwnedUploadPath(storagePath: string, uid: string) {
-    return storagePath.startsWith(`plans/${uid}/uploads/`);
+function isOwnedUploadPath(storagePath: string, uid: string, planId: string) {
+    return storagePath.startsWith(`uploads/${uid}/${planId}/`);
 }
 
 async function deleteOwnedPlanStorage(
@@ -716,14 +719,14 @@ async function deleteOwnedPlanStorage(
     ].filter((path): path is string => Boolean(path));
 
     for (const path of new Set(paths)) {
-        if (path.startsWith(`plans/${uid}/`) && !path.startsWith("data:")) {
+        if (path.startsWith(`uploads/${uid}/`) && !path.startsWith("data:")) {
             await bucket.file(path).delete({ ignoreNotFound: true });
         }
     }
 
     await bucket.deleteFiles({
         force: true,
-        prefix: `plans/${uid}/generated/${plan.id}/`,
+        prefix: `uploads/${uid}/${plan.id}/`,
     });
 }
 

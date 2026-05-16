@@ -2,7 +2,7 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    match /plans/{userId}/uploads/{allPaths=**} {
+    match /uploads/{userId}/{allPaths=**} {
       allow read, delete: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null
         && request.auth.uid == userId
@@ -11,15 +11,6 @@ service firebase.storage {
           request.resource.contentType.matches('image/.*')
           || request.resource.contentType == 'application/pdf'
         );
-      allow update: if false;
-    }
-
-    match /uploads/{userId}/{allPaths=**} {
-      allow read, delete: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null
-        && request.auth.uid == userId
-        && request.resource.size < 5 * 1024 * 1024
-        && request.resource.contentType.matches('image/.*');
       allow update: if false;
     }
 

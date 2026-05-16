@@ -42,6 +42,7 @@ mutation DeleteReview($movieId: UUID!) @auth(level: USER) {
 }
 
 mutation CreatePlanFromUpload(
+    $id: UUID!
     $ownerId: String!
     $name: String!
     $originalFileName: String!
@@ -52,6 +53,7 @@ mutation CreatePlanFromUpload(
 ) @auth(level: NO_ACCESS) {
     plan_insert(
         data: {
+            id: $id
             ownerId: $ownerId
             name: $name
             originalFileName: $originalFileName

@@ -18,6 +18,7 @@ type UploadResponse = {
 };
 
 type CreatePlanFromUploadRequest = {
+    planId: string;
     name: string;
     originalFileName: string;
     contentType: string;
@@ -111,13 +112,14 @@ export async function uploadPlan(name: string, file: File) {
         throw new Error("Must be signed in to upload a plan.");
     }
 
-    const uploadId = crypto.randomUUID();
-    const storagePath = `plans/${uid}/uploads/${uploadId}/${sanitizeStorageName(file.name)}`;
+    const planId = crypto.randomUUID();
+    const storagePath = `uploads/${uid}/${planId}/${sanitizeStorageName(file.name)}`;
     await uploadBytes(ref(storage, storagePath), file, {
         contentType: file.type || "application/octet-stream",
     });
 
     const result = await createPlanFromUploadCallable({
+        planId,
         name,
         originalFileName: file.name,
         contentType: file.type || "application/octet-stream",

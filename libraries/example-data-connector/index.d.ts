@@ -33,6 +33,7 @@ export interface CreatePlanFromUploadData {
 }
 
 export interface CreatePlanFromUploadVariables {
+  id: UUIDString;
   ownerId: string;
   name: string;
   originalFileName: string;
