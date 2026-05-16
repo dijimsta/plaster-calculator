@@ -8,17 +8,31 @@
  */
 
 import { getApps, initializeApp } from "firebase-admin/app";
+import { getStorage } from "firebase-admin/storage";
 import { randomUUID } from "node:crypto";
 import {
     createMovie,
+    createProjectFromUpload as dcCreateProjectFromUpload,
+    createFloorplanPage as dcCreateFloorplanPage,
     deleteMovie,
+    deleteProject as dcDeleteProject,
+    deleteFloorplanPages as dcDeleteFloorplanPages,
+    getProjectById,
+    getFloorplanPageById,
     listMovies,
+    listProjectsByOwner,
+    renameProject as dcRenameProject,
+    touchProject,
+    updateFloorplanPage as dcUpdateFloorplanPage,
+    type GetProjectByIdData,
+    type GetFloorplanPageByIdData,
     type ListMoviesData,
+    type ListProjectsByOwnerData,
 } from "@inivi/example-data-connector";
 import { setGlobalOptions } from "firebase-functions";
 import {
-    onCall,
     HttpsError,
+    onCall,
     type CallableRequest,
 } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
@@ -46,6 +60,9 @@ if (getApps().length === 0) {
 }
 
 type Movie = ListMoviesData["movies"][number];
+type ProjectListRow = ListProjectsByOwnerData["projects"][number];
+type ProjectWithPages = NonNullable<GetProjectByIdData["project"]>;
+type FloorplanPageRow = NonNullable<GetFloorplanPageByIdData["floorplanPage"]>;
 
 interface CreateExampleMovieRequest {
     title?: unknown;
@@ -60,6 +77,119 @@ interface DeleteExampleMovieRequest {
 interface ExampleMoviesResponse {
     movies: Movie[];
 }
+
+type UploadType = "PDF" | "IMAGE";
+type ProjectStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
+
+interface ProjectSummary {
+    id: string;
+    name: string;
+    originalFileName: string;
+    uploadType: UploadType;
+    status: ProjectStatus;
+    processingError?: string | null;
+    createdAt: string;
+    updatedAt: string;
+    pageCount: number;
+}
+
+interface FloorplanPage {
+    id: string;
+    pageNumber: number;
+    status: ProjectStatus;
+    imageUrl: string;
+    previewUrl: string;
+    overlay: string | null;
+    scaleMmPerPx: number | null;
+    ceilingHeightMm: number | null;
+    referencePoints: string | null;
+    referenceLengthMm: number | null;
+    processingStrategy?: string | null;
+    processingMetadata?: string | null;
+    updatedAt: string;
+}
+
+interface ProjectDetail extends ProjectSummary {
+    ownerId?: string | null;
+    pages: FloorplanPage[];
+}
+
+interface PdfPagePreview {
+    pageNumber: number;
+    previewUrl: string;
+}
+
+interface ProcessingStrategyInfo {
+    key: string;
+    label: string;
+    description: string;
+    defaultStrategy: boolean;
+}
+
+interface UploadResponse {
+    projectId: string;
+    uploadType: UploadType;
+    pageCount: number;
+    status: ProjectStatus;
+}
+
+interface CreateProjectFromUploadRequest {
+    projectId?: unknown;
+    name?: unknown;
+    originalFileName?: unknown;
+    contentType?: unknown;
+    size?: unknown;
+    storagePath?: unknown;
+}
+
+interface ProjectIdRequest {
+    projectId?: unknown;
+}
+
+interface RenameProjectRequest extends ProjectIdRequest {
+    name?: unknown;
+}
+
+interface ProcessProjectRequest extends ProjectIdRequest {
+    pageNumbers?: unknown;
+    strategyKey?: unknown;
+}
+
+interface UpdateFloorplanPageRequest extends ProjectIdRequest {
+    pageId?: unknown;
+    overlay?: unknown;
+    scaleMmPerPx?: unknown;
+    ceilingHeightMm?: unknown;
+    referencePoints?: unknown;
+    referenceLengthMm?: unknown;
+}
+
+interface UpdateFloorplanPagesRequest extends ProjectIdRequest {
+    scaleMmPerPx?: unknown;
+    ceilingHeightMm?: unknown;
+}
+
+interface ExportProjectCsvResponse {
+    fileName: string;
+    mimeType: "text/csv";
+    csv: string;
+}
+
+const processingStrategies: ProcessingStrategyInfo[] = [
+    {
+        key: "mock-empty-overlay",
+        label: "Mock empty overlay",
+        description:
+            "Creates editable placeholder pages until real processing is implemented.",
+        defaultStrategy: true,
+    },
+    {
+        key: "mock-detected-rooms",
+        label: "Mock detected rooms",
+        description: "Creates a sample detected room overlay for UI testing.",
+        defaultStrategy: false,
+    },
+];
 
 function requireAuth(request: CallableRequest<unknown>) {
     const auth = request.auth;
@@ -80,6 +210,42 @@ function readRequiredString(value: unknown, field: string) {
     }
 
     return value.trim();
+}
+
+function readRequiredNumber(value: unknown, field: string) {
+    if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new HttpsError("invalid-argument", `${field} is required.`);
+    }
+
+    return value;
+}
+
+function readOptionalString(value: unknown) {
+    if (value == null || value === "") {
+        return undefined;
+    }
+
+    if (typeof value !== "string") {
+        throw new HttpsError("invalid-argument", "Expected a string value.");
+    }
+
+    return value.trim();
+}
+
+function readNullableNumber(value: unknown, field: string) {
+    if (value == null || value === "") {
+        return null;
+    }
+
+    if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new HttpsError("invalid-argument", `${field} must be a number.`);
+    }
+
+    return value;
+}
+
+function hasField(data: object, field: string) {
+    return Object.prototype.hasOwnProperty.call(data, field);
 }
 
 export const helloWorld = onCall((request) => {
@@ -129,144 +295,21 @@ export const deleteExampleMovie = onCall<
     return { movies: response.data.movies };
 });
 
-type UploadType = "PDF" | "IMAGE";
-type PlanStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
-
-interface PlanSummary {
-    id: string;
-    name: string;
-    originalFileName: string;
-    uploadType: UploadType;
-    status: PlanStatus;
-    processingError?: string | null;
-    createdAt: string;
-    updatedAt: string;
-    pageCount: number;
-}
-
-interface PlanPage {
-    id: string;
-    pageNumber: number;
-    status: PlanStatus;
-    imageUrl: string;
-    previewUrl: string;
-    overlay: string | null;
-    scaleMmPerPx: number | null;
-    ceilingHeightMm: number | null;
-    referencePoints: string | null;
-    referenceLengthMm: number | null;
-    processingStrategy?: string | null;
-    processingMetadata?: string | null;
-    updatedAt: string;
-}
-
-interface PlanDetail extends PlanSummary {
-    ownerId?: string | null;
-    pages: PlanPage[];
-}
-
-interface PdfPagePreview {
-    pageNumber: number;
-    previewUrl: string;
-}
-
-interface ProcessingStrategyInfo {
-    key: string;
-    label: string;
-    description: string;
-    defaultStrategy: boolean;
-}
-
-interface UploadResponse {
-    planId: string;
-    uploadType: UploadType;
-    pageCount: number;
-    status: PlanStatus;
-}
-
-interface CreatePlanFromUploadRequest {
-    name?: unknown;
-    originalFileName?: unknown;
-    contentType?: unknown;
-    size?: unknown;
-    storagePath?: unknown;
-}
-
-interface PlanIdRequest {
-    planId?: unknown;
-}
-
-interface RenamePlanRequest extends PlanIdRequest {
-    name?: unknown;
-}
-
-interface ProcessPlanRequest extends PlanIdRequest {
-    pageNumbers?: unknown;
-    strategyKey?: unknown;
-}
-
-interface SavePlanPageOverlayRequest extends PlanIdRequest {
-    pageId?: unknown;
-    overlay?: unknown;
-    scaleMmPerPx?: unknown;
-    ceilingHeightMm?: unknown;
-    referencePoints?: unknown;
-    referenceLengthMm?: unknown;
-}
-
-interface ApplyPlanCeilingHeightRequest extends PlanIdRequest {
-    ceilingHeightMm?: unknown;
-}
-
-interface ApplyPlanScaleRequest extends PlanIdRequest {
-    scaleMmPerPx?: unknown;
-}
-
-interface ExportPlanCsvResponse {
-    fileName: string;
-    mimeType: "text/csv";
-    csv: string;
-}
-
-const mockPlans = new Map<string, PlanDetail>();
-
-const processingStrategies: ProcessingStrategyInfo[] = [
-    {
-        key: "mock-empty-overlay",
-        label: "Mock empty overlay",
-        description:
-            "Creates editable placeholder pages until real processing is implemented.",
-        defaultStrategy: true,
-    },
-    {
-        key: "mock-detected-rooms",
-        label: "Mock detected rooms",
-        description: "Creates a sample detected room overlay for UI testing.",
-        defaultStrategy: false,
-    },
-];
-
-export const listPlans = onCall<unknown, { plans: PlanSummary[] }>(
-    (request) => {
-        const auth = requireAuth(request);
-        ensureSeedPlan(auth.uid);
-
-        const plans = Array.from(mockPlans.values())
-            .filter((plan) => plan.ownerId === auth.uid)
-            .sort((left, right) =>
-                right.updatedAt.localeCompare(left.updatedAt),
-            )
-            .map(toSummary);
-
-        return { plans };
-    },
-);
-
-export const createPlanFromUpload = onCall<
-    CreatePlanFromUploadRequest,
-    UploadResponse
->((request) => {
+export const listProjects = onCall<
+    unknown,
+    Promise<{ projects: ProjectSummary[] }>
+>(async (request) => {
     const auth = requireAuth(request);
+    const response = await listProjectsByOwner({ ownerId: auth.uid });
+    return { projects: response.data.projects.map(toSummary) };
+});
+
+export const createProjectFromUpload = onCall<
+    CreateProjectFromUploadRequest,
+    Promise<UploadResponse>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
     const name = readRequiredString(request.data.name, "Name");
     const originalFileName = readRequiredString(
         request.data.originalFileName,
@@ -282,79 +325,95 @@ export const createPlanFromUpload = onCall<
     );
     readRequiredNumber(request.data.size, "Size");
 
-    if (!storagePath.startsWith(`plans/${auth.uid}/uploads/`)) {
+    if (!isOwnedUploadPath(storagePath, auth.uid, projectId)) {
         throw new HttpsError(
             "permission-denied",
             "Upload path must belong to the signed-in user.",
         );
     }
 
-    const now = new Date().toISOString();
+    const [exists] = await getStorage().bucket().file(storagePath).exists();
+    if (!exists) {
+        throw new HttpsError("not-found", "Uploaded file was not found.");
+    }
+
     const uploadType = inferUploadType(originalFileName, contentType);
     const pageCount = uploadType === "PDF" ? 3 : 1;
-    const plan: PlanDetail = {
-        id: randomUUID(),
+    const response = await dcCreateProjectFromUpload({
+        id: projectId,
         ownerId: auth.uid,
         name,
         originalFileName,
         uploadType,
+        originalPath: storagePath,
         status: "DRAFT",
-        processingError: null,
-        createdAt: now,
-        updatedAt: now,
         pageCount,
-        pages: [],
-    };
+    });
 
-    mockPlans.set(plan.id, plan);
     return {
-        planId: plan.id,
-        uploadType: plan.uploadType,
-        pageCount: plan.pageCount,
-        status: plan.status,
+        projectId: response.data.project_insert.id,
+        uploadType,
+        pageCount,
+        status: "DRAFT",
     };
 });
 
-export const getPlan = onCall<PlanIdRequest, PlanDetail>((request) => {
+export const getProject = onCall<ProjectIdRequest, Promise<ProjectDetail>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const project = await requireOwnedProject(
+            readRequiredString(request.data.projectId, "Project ID"),
+            auth.uid,
+        );
+        return toDetail(project);
+    },
+);
+
+export const renameProject = onCall<
+    RenameProjectRequest,
+    Promise<ProjectDetail>
+>(async (request) => {
     const auth = requireAuth(request);
-    const planId = readRequiredString(request.data.planId, "Plan ID");
-    ensureSeedPlan(auth.uid, planId);
-    return clonePlan(requirePlan(planId, auth.uid));
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    await requireOwnedProject(projectId, auth.uid);
+    await dcRenameProject({
+        id: projectId,
+        name: readRequiredString(request.data.name, "Name"),
+    });
+    return toDetail(await requireOwnedProject(projectId, auth.uid));
 });
 
-export const renamePlan = onCall<RenamePlanRequest, PlanDetail>((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
-        auth.uid,
-    );
-    plan.name = readRequiredString(request.data.name, "Name");
-    touch(plan);
-    return clonePlan(plan);
-});
+export const deleteProject = onCall<ProjectIdRequest, Promise<{ ok: true }>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const projectId = readRequiredString(
+            request.data.projectId,
+            "Project ID",
+        );
+        const project = await requireOwnedProject(projectId, auth.uid);
 
-export const deletePlan = onCall<PlanIdRequest, { ok: true }>((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
-        auth.uid,
-    );
-    mockPlans.delete(plan.id);
-    return { ok: true };
-});
+        await deleteOwnedProjectStorage(project, auth.uid);
+        await dcDeleteFloorplanPages({ projectId });
+        await dcDeleteProject({ id: projectId });
 
-export const listPdfPagePreviews = onCall<
-    PlanIdRequest,
-    { pages: PdfPagePreview[] }
->((request) => {
+        return { ok: true };
+    },
+);
+
+export const listProjectPdfPagePreviews = onCall<
+    ProjectIdRequest,
+    Promise<{ pages: PdfPagePreview[] }>
+>(async (request) => {
     const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
+    const project = await requireOwnedProject(
+        readRequiredString(request.data.projectId, "Project ID"),
         auth.uid,
     );
+
+    // Deprecated mock: move PDF thumbnail rendering to the web client with PDF.js.
     const pages =
-        plan.uploadType === "PDF"
-            ? Array.from({ length: plan.pageCount }, (_, index) => ({
+        project.uploadType === "PDF"
+            ? Array.from({ length: project.pageCount }, (_, index) => ({
                   pageNumber: index + 1,
                   previewUrl: mockImageDataUrl(`PDF page ${index + 1}`),
               }))
@@ -371,13 +430,14 @@ export const listProcessingStrategies = onCall<
     return { strategies: processingStrategies };
 });
 
-export const processPlan = onCall<ProcessPlanRequest, PlanDetail>((request) => {
+export const processProject = onCall<
+    ProcessProjectRequest,
+    Promise<ProjectDetail>
+>(async (request) => {
     const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
-        auth.uid,
-    );
-    const pageNumbers = readPageNumbers(request.data.pageNumbers, plan);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    const project = await requireOwnedProject(projectId, auth.uid);
+    const pageNumbers = readPageNumbers(request.data.pageNumbers, project);
     const strategyKey = readOptionalString(request.data.strategyKey);
     const strategy =
         processingStrategies.find((item) => item.key === strategyKey) ??
@@ -390,172 +450,239 @@ export const processPlan = onCall<ProcessPlanRequest, PlanDetail>((request) => {
         );
     }
 
-    plan.pages = pageNumbers.map((pageNumber) =>
-        createMockPage(pageNumber, strategy.key),
-    );
-    plan.status = "READY";
-    plan.processingError = null;
-    touch(plan);
+    await touchProject({
+        id: projectId,
+        status: "PROCESSING",
+        processingError: null,
+    });
+    await dcDeleteFloorplanPages({ projectId });
 
-    return clonePlan(plan);
+    for (const pageNumber of pageNumbers) {
+        const page = createMockPage(pageNumber, strategy.key);
+        await dcCreateFloorplanPage({
+            projectId,
+            pageNumber: page.pageNumber,
+            status: page.status,
+            sourceImagePath: page.imageUrl,
+            previewImagePath: page.previewUrl,
+            overlayJson: page.overlay,
+            scaleMmPerPx: page.scaleMmPerPx,
+            ceilingHeightMm: page.ceilingHeightMm,
+            referencePointsJson: page.referencePoints,
+            referenceLengthMm: page.referenceLengthMm,
+            processingStrategy: page.processingStrategy ?? null,
+            processingMetadataJson: page.processingMetadata ?? null,
+        });
+    }
+
+    await touchProject({
+        id: projectId,
+        status: "READY",
+        processingError: null,
+    });
+    return toDetail(await requireOwnedProject(projectId, auth.uid));
 });
 
-export const getPlanPage = onCall<SavePlanPageOverlayRequest, PlanPage>(
-    (request) => {
-        const auth = requireAuth(request);
-        const plan = requirePlan(
-            readRequiredString(request.data.planId, "Plan ID"),
-            auth.uid,
-        );
-        return clonePage(
-            requirePage(
-                plan,
-                readRequiredString(request.data.pageId, "Page ID"),
-            ),
-        );
-    },
-);
-
-export const savePlanPageOverlay = onCall<SavePlanPageOverlayRequest, PlanPage>(
-    (request) => {
-        const auth = requireAuth(request);
-        const plan = requirePlan(
-            readRequiredString(request.data.planId, "Plan ID"),
-            auth.uid,
-        );
-        const page = requirePage(
-            plan,
-            readRequiredString(request.data.pageId, "Page ID"),
-        );
-
-        page.overlay = JSON.stringify(request.data.overlay ?? { areas: [] });
-        page.scaleMmPerPx = readNullableNumber(
-            request.data.scaleMmPerPx,
-            "Scale",
-        );
-        page.ceilingHeightMm = readNullableNumber(
-            request.data.ceilingHeightMm,
-            "Ceiling height",
-        );
-        page.referencePoints =
-            request.data.referencePoints == null
-                ? null
-                : JSON.stringify(request.data.referencePoints);
-        page.referenceLengthMm = readNullableNumber(
-            request.data.referenceLengthMm,
-            "Reference length",
-        );
-        page.updatedAt = new Date().toISOString();
-        touch(plan);
-
-        return clonePage(page);
-    },
-);
-
-export const applyPlanCeilingHeight = onCall<
-    ApplyPlanCeilingHeightRequest,
-    PlanDetail
->((request) => {
+export const getFloorplanPage = onCall<
+    UpdateFloorplanPageRequest,
+    Promise<FloorplanPage>
+>(async (request) => {
     const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    await requireOwnedProject(projectId, auth.uid);
+    return toPage(
+        await requireFloorplanPage(
+            projectId,
+            readRequiredString(request.data.pageId, "Page ID"),
+        ),
+    );
+});
+
+export const updateFloorplanPage = onCall<
+    UpdateFloorplanPageRequest,
+    Promise<FloorplanPage>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    await requireOwnedProject(projectId, auth.uid);
+
+    const page = await requireFloorplanPage(
+        projectId,
+        readRequiredString(request.data.pageId, "Page ID"),
+    );
+    const data = request.data;
+    const overlayJson = hasField(data, "overlay")
+        ? JSON.stringify(data.overlay ?? { areas: [] })
+        : page.overlayJson;
+    const scaleMmPerPx = hasField(data, "scaleMmPerPx")
+        ? readNullableNumber(data.scaleMmPerPx, "Scale")
+        : (page.scaleMmPerPx ?? null);
+    const ceilingHeightMm = hasField(data, "ceilingHeightMm")
+        ? readNullableNumber(data.ceilingHeightMm, "Ceiling height")
+        : (page.ceilingHeightMm ?? null);
+    const referencePointsJson = hasField(data, "referencePoints")
+        ? data.referencePoints == null
+            ? null
+            : JSON.stringify(data.referencePoints)
+        : (page.referencePointsJson ?? null);
+    const referenceLengthMm = hasField(data, "referenceLengthMm")
+        ? readNullableNumber(data.referenceLengthMm, "Reference length")
+        : (page.referenceLengthMm ?? null);
+
+    await dcUpdateFloorplanPage({
+        id: page.id,
+        overlayJson: overlayJson ?? null,
+        scaleMmPerPx,
+        ceilingHeightMm,
+        referencePointsJson,
+        referenceLengthMm,
+    });
+    await touchProject({ id: projectId });
+
+    return toPage(await requireFloorplanPage(projectId, page.id));
+});
+
+export const updateFloorplanPages = onCall<
+    UpdateFloorplanPagesRequest,
+    Promise<ProjectDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    const project = await requireOwnedProject(projectId, auth.uid);
+    const data = request.data;
+
+    const hasScale = hasField(data, "scaleMmPerPx");
+    const hasCeilingHeight = hasField(data, "ceilingHeightMm");
+
+    if (!hasScale && !hasCeilingHeight) {
+        throw new HttpsError(
+            "invalid-argument",
+            "Scale or ceiling height is required.",
+        );
+    }
+
+    for (const page of project.pages) {
+        const nextScaleMmPerPx: number | null = hasScale
+            ? (readNullableNumber(data.scaleMmPerPx, "Scale") ??
+              page.scaleMmPerPx ??
+              null)
+            : (page.scaleMmPerPx ?? null);
+        const nextCeilingHeightMm: number | null = hasCeilingHeight
+            ? (readNullableNumber(data.ceilingHeightMm, "Ceiling height") ??
+              page.ceilingHeightMm ??
+              null)
+            : (page.ceilingHeightMm ?? null);
+
+        await dcUpdateFloorplanPage({
+            id: page.id,
+            overlayJson: page.overlayJson ?? null,
+            scaleMmPerPx: nextScaleMmPerPx,
+            ceilingHeightMm: nextCeilingHeightMm,
+            referencePointsJson: page.referencePointsJson ?? null,
+            referenceLengthMm: page.referenceLengthMm ?? null,
+        });
+    }
+
+    await touchProject({ id: projectId });
+    return toDetail(await requireOwnedProject(projectId, auth.uid));
+});
+
+export const exportProjectCsv = onCall<
+    ProjectIdRequest,
+    Promise<ExportProjectCsvResponse>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const project = await requireOwnedProject(
+        readRequiredString(request.data.projectId, "Project ID"),
         auth.uid,
     );
-    const ceilingHeightMm = readNullableNumber(
-        request.data.ceilingHeightMm,
-        "Ceiling height",
-    );
 
-    plan.pages.forEach((page) => {
-        page.ceilingHeightMm = ceilingHeightMm;
-        page.updatedAt = new Date().toISOString();
-    });
-    touch(plan);
-    return clonePlan(plan);
+    return {
+        fileName: `plaster-estimate-${csvFileNamePart(project.name)}.csv`,
+        mimeType: "text/csv",
+        csv: buildProjectCsv(project),
+    };
 });
 
-export const applyPlanScale = onCall<ApplyPlanScaleRequest, PlanDetail>(
-    (request) => {
-        const auth = requireAuth(request);
-        const plan = requirePlan(
-            readRequiredString(request.data.planId, "Plan ID"),
-            auth.uid,
-        );
-        const scaleMmPerPx = readNullableNumber(
-            request.data.scaleMmPerPx,
-            "Scale",
-        );
-
-        plan.pages.forEach((page) => {
-            page.scaleMmPerPx = scaleMmPerPx;
-            page.updatedAt = new Date().toISOString();
-        });
-        touch(plan);
-        return clonePlan(plan);
-    },
-);
-
-export const exportPlanCsv = onCall<PlanIdRequest, ExportPlanCsvResponse>(
-    (request) => {
-        const auth = requireAuth(request);
-        const plan = requirePlan(
-            readRequiredString(request.data.planId, "Plan ID"),
-            auth.uid,
-        );
-        const rows = [
-            ["Plan", "Page", "Area count", "Scale mm/px", "Ceiling height mm"],
-            ...plan.pages.map((page) => [
-                plan.name,
-                String(page.pageNumber),
-                String(countAreas(page.overlay)),
-                page.scaleMmPerPx == null ? "" : String(page.scaleMmPerPx),
-                page.ceilingHeightMm == null
-                    ? ""
-                    : String(page.ceilingHeightMm),
-            ]),
-        ];
-
-        return {
-            fileName: `plaster-estimate-${csvFileNamePart(plan.name)}.csv`,
-            mimeType: "text/csv",
-            csv: rows.map((row) => row.map(csvCell).join(",")).join("\n"),
-        };
-    },
-);
-
-function readRequiredNumber(value: unknown, field: string) {
-    if (typeof value !== "number" || !Number.isFinite(value)) {
-        throw new HttpsError("invalid-argument", `${field} is required.`);
+async function requireOwnedProject(projectId: string, ownerId: string) {
+    const response = await getProjectById({ id: projectId });
+    const project = response.data.project;
+    if (!project || project.ownerId !== ownerId) {
+        throw new HttpsError("not-found", "Project was not found.");
     }
 
-    return value;
+    return project;
 }
 
-function readOptionalString(value: unknown) {
-    if (value == null || value === "") {
-        return undefined;
+async function requireFloorplanPage(projectId: string, pageId: string) {
+    const response = await getFloorplanPageById({ projectId, pageId });
+    const page = response.data.floorplanPage;
+    if (!page) {
+        throw new HttpsError("not-found", "Page was not found.");
     }
 
-    if (typeof value !== "string") {
-        throw new HttpsError("invalid-argument", "Expected a string value.");
-    }
-
-    return value.trim();
+    return page;
 }
 
-function readNullableNumber(value: unknown, field: string) {
-    if (value == null || value === "") {
-        return null;
-    }
-
-    if (typeof value !== "number" || !Number.isFinite(value)) {
-        throw new HttpsError("invalid-argument", `${field} must be a number.`);
-    }
-
-    return value;
+function toSummary(project: ProjectListRow | ProjectWithPages): ProjectSummary {
+    return {
+        id: project.id,
+        name: project.name,
+        originalFileName: project.originalFileName,
+        uploadType: toUploadType(project.uploadType),
+        status: toProjectStatus(project.status),
+        processingError: project.processingError ?? null,
+        createdAt: project.createdAt,
+        updatedAt: project.updatedAt,
+        pageCount: project.pageCount,
+    };
 }
 
-function readPageNumbers(value: unknown, plan: PlanDetail) {
+function toDetail(project: ProjectWithPages): ProjectDetail {
+    return {
+        ...toSummary(project),
+        ownerId: project.ownerId,
+        pages: project.pages.map(toPage),
+    };
+}
+
+function toPage(page: FloorplanPageRow): FloorplanPage {
+    const imageUrl = storagePathToUrl(page.sourceImagePath);
+    return {
+        id: page.id,
+        pageNumber: page.pageNumber,
+        status: toProjectStatus(page.status),
+        imageUrl,
+        previewUrl: storagePathToUrl(page.previewImagePath) || imageUrl,
+        overlay: page.overlayJson ?? null,
+        scaleMmPerPx: page.scaleMmPerPx ?? null,
+        ceilingHeightMm: page.ceilingHeightMm ?? null,
+        referencePoints: page.referencePointsJson ?? null,
+        referenceLengthMm: page.referenceLengthMm ?? null,
+        processingStrategy: page.processingStrategy ?? null,
+        processingMetadata: page.processingMetadataJson ?? null,
+        updatedAt: page.updatedAt,
+    };
+}
+
+function toUploadType(value: string): UploadType {
+    return value === "PDF" ? "PDF" : "IMAGE";
+}
+
+function toProjectStatus(value: string): ProjectStatus {
+    if (
+        value === "DRAFT" ||
+        value === "PROCESSING" ||
+        value === "READY" ||
+        value === "FAILED"
+    ) {
+        return value;
+    }
+
+    return "DRAFT";
+}
+
+function readPageNumbers(value: unknown, project: ProjectWithPages) {
     if (!Array.isArray(value) || value.length === 0) {
         return [1];
     }
@@ -567,7 +694,7 @@ function readPageNumbers(value: unknown, plan: PlanDetail) {
         (left, right) => left - right,
     );
 
-    if (plan.uploadType === "IMAGE") {
+    if (project.uploadType === "IMAGE") {
         return [1];
     }
 
@@ -575,7 +702,7 @@ function readPageNumbers(value: unknown, plan: PlanDetail) {
         if (
             !Number.isInteger(pageNumber) ||
             pageNumber < 1 ||
-            pageNumber > plan.pageCount
+            pageNumber > project.pageCount
         ) {
             throw new HttpsError(
                 "invalid-argument",
@@ -595,58 +722,67 @@ function inferUploadType(fileName: string, contentType: string): UploadType {
         : "IMAGE";
 }
 
-function requirePlan(planId: string, ownerId: string) {
-    const plan = mockPlans.get(planId);
-    if (!plan || plan.ownerId !== ownerId) {
-        throw new HttpsError("not-found", "Plan was not found.");
-    }
-
-    return plan;
-}
-
-function requirePage(plan: PlanDetail, pageId: string) {
-    const page = plan.pages.find((item) => item.id === pageId);
-    if (!page) {
-        throw new HttpsError("not-found", "Page was not found.");
-    }
-
-    return page;
-}
-
-function ensureSeedPlan(ownerId: string, preferredPlanId?: string) {
-    const hasPlan = Array.from(mockPlans.values()).some(
-        (plan) =>
-            plan.ownerId === ownerId &&
-            (preferredPlanId == null || plan.id === preferredPlanId),
+function isOwnedUploadPath(
+    storagePath: string,
+    uid: string,
+    projectId: string,
+) {
+    return storagePath.startsWith(
+        `uploads/${uid}/projects/${projectId}/uploads/`,
     );
-    if (hasPlan) {
-        return;
+}
+
+async function deleteOwnedProjectStorage(
+    project: ProjectWithPages,
+    uid: string,
+) {
+    const bucket = getStorage().bucket();
+    const paths = [
+        project.originalPath,
+        ...project.pages.flatMap((page) => [
+            page.sourceImagePath,
+            page.previewImagePath,
+            page.rawJsonPath,
+            page.rawFloorplanPath,
+        ]),
+    ].filter((path): path is string => Boolean(path));
+
+    for (const path of new Set(paths)) {
+        if (path.startsWith(`uploads/${uid}/`) && !path.startsWith("data:")) {
+            await bucket.file(path).delete({ ignoreNotFound: true });
+        }
     }
 
-    const now = new Date().toISOString();
-    const planId = preferredPlanId ?? randomUUID();
-    const plan: PlanDetail = {
-        id: planId,
-        ownerId,
-        name: "Mock test plan",
-        originalFileName: "mock-floorplan.pdf",
-        uploadType: "PDF",
-        status: "READY",
-        processingError: null,
-        createdAt: now,
-        updatedAt: now,
-        pageCount: 1,
-        pages: [createMockPage(1, "mock-detected-rooms", `${planId}-page-1`)],
-    };
+    await bucket.deleteFiles({
+        force: true,
+        prefix: `uploads/${uid}/projects/${project.id}/`,
+    });
+}
 
-    mockPlans.set(plan.id, plan);
+function storagePathToUrl(path?: string | null) {
+    if (!path) {
+        return "";
+    }
+
+    if (path.startsWith("data:") || path.startsWith("http")) {
+        return path;
+    }
+
+    const bucketName = getStorage().bucket().name;
+    return `https://storage.googleapis.com/${bucketName}/${encodeStoragePath(path)}`;
+}
+
+function encodeStoragePath(path: string) {
+    return path
+        .split("/")
+        .map((part) => encodeURIComponent(part))
+        .join("/");
 }
 
 function createMockPage(
     pageNumber: number,
     strategyKey: string,
-    pageId: string = randomUUID(),
-): PlanPage {
+): FloorplanPage {
     const now = new Date().toISOString();
     const overlay =
         strategyKey === "mock-detected-rooms"
@@ -672,10 +808,10 @@ function createMockPage(
             : { imageSizePx: { width: 1200, height: 900 }, areas: [] };
 
     return {
-        id: pageId,
+        id: randomUUID(),
         pageNumber,
         status: "READY",
-        imageUrl: mockImageDataUrl(`Plan page ${pageNumber}`),
+        imageUrl: mockImageDataUrl(`Project page ${pageNumber}`),
         previewUrl: mockImageDataUrl(`Preview ${pageNumber}`),
         overlay: JSON.stringify(overlay),
         scaleMmPerPx: null,
@@ -686,35 +822,6 @@ function createMockPage(
         processingMetadata: JSON.stringify({ mocked: true }),
         updatedAt: now,
     };
-}
-
-function toSummary(plan: PlanDetail): PlanSummary {
-    return {
-        id: plan.id,
-        name: plan.name,
-        originalFileName: plan.originalFileName,
-        uploadType: plan.uploadType,
-        status: plan.status,
-        processingError: plan.processingError ?? null,
-        createdAt: plan.createdAt,
-        updatedAt: plan.updatedAt,
-        pageCount: plan.pageCount,
-    };
-}
-
-function touch(plan: PlanDetail) {
-    plan.updatedAt = new Date().toISOString();
-}
-
-function clonePlan(plan: PlanDetail): PlanDetail {
-    return {
-        ...plan,
-        pages: plan.pages.map(clonePage),
-    };
-}
-
-function clonePage(page: PlanPage): PlanPage {
-    return { ...page };
 }
 
 function mockImageDataUrl(label: string) {
@@ -730,19 +837,317 @@ function escapeXml(value: string) {
         .replace(/"/g, "&quot;");
 }
 
-function countAreas(overlay: string | null) {
-    if (!overlay) {
+function buildProjectCsv(project: ProjectWithPages) {
+    const rows: ExportRow[] = [];
+    const wallColumns = new Set<string>();
+    const ceilingColumns = new Set<string>();
+
+    for (const page of project.pages) {
+        if (!page.overlayJson || page.scaleMmPerPx == null) {
+            continue;
+        }
+
+        const overlay = parseJsonObject(page.overlayJson);
+        const areas = Array.isArray(overlay["areas"]) ? overlay["areas"] : [];
+
+        for (const area of areas) {
+            if (!isRecord(area) || Boolean(area["deleted"])) {
+                continue;
+            }
+
+            const row: ExportRow = {
+                label:
+                    typeof area["label"] === "string" ? area["label"] : "Area",
+                pageNumber: page.pageNumber,
+                wallValues: wallBreakdown(
+                    area,
+                    page.scaleMmPerPx,
+                    page.ceilingHeightMm ?? null,
+                ),
+                ceilingValues: new Map([
+                    [
+                        ceilingColumn(area),
+                        ceilingAreaM2(area, page.scaleMmPerPx),
+                    ],
+                ]),
+            };
+
+            row.wallValues.forEach((_, key) => wallColumns.add(key));
+            row.ceilingValues.forEach((_, key) => ceilingColumns.add(key));
+            rows.push(row);
+        }
+    }
+
+    const sortedWallColumns = Array.from(wallColumns).sort();
+    const sortedCeilingColumns = Array.from(ceilingColumns).sort();
+    const totals = new Map<string, number>();
+    const csvRows = [
+        [
+            "Area Label",
+            "Page Number",
+            ...sortedWallColumns,
+            ...sortedCeilingColumns,
+        ],
+    ];
+
+    for (const row of rows) {
+        const cells = [row.label, String(row.pageNumber)];
+        for (const column of sortedWallColumns) {
+            const value = row.wallValues.get(column) ?? 0;
+            addTotal(totals, column, value);
+            cells.push(formatNumber(value));
+        }
+        for (const column of sortedCeilingColumns) {
+            const value = row.ceilingValues.get(column) ?? 0;
+            addTotal(totals, column, value);
+            cells.push(formatNumber(value));
+        }
+        csvRows.push(cells);
+    }
+
+    csvRows.push([
+        "Total",
+        "",
+        ...sortedWallColumns.map((column) =>
+            formatNumber(totals.get(column) ?? 0),
+        ),
+        ...sortedCeilingColumns.map((column) =>
+            formatNumber(totals.get(column) ?? 0),
+        ),
+    ]);
+
+    return csvRows.map((row) => row.map(csvCell).join(",")).join("\n") + "\n";
+}
+
+interface ExportRow {
+    label: string;
+    pageNumber: number;
+    wallValues: Map<string, number>;
+    ceilingValues: Map<string, number>;
+}
+
+type JsonRecord = Record<string, unknown>;
+type Point = [number, number];
+
+function addTotal(totals: Map<string, number>, column: string, value: number) {
+    totals.set(column, (totals.get(column) ?? 0) + value);
+}
+
+function ceilingColumn(area: JsonRecord) {
+    const ceilingType = readString(area["ceilingPlasterType"], "Recessed Edge");
+    return `Ceiling (${ceilingType}) in m2`;
+}
+
+function ceilingAreaM2(area: JsonRecord, scaleMmPerPx: number) {
+    const points = readPoints(area["points"]);
+    const flatM2 = polygonAreaPx(points) * Math.pow(scaleMmPerPx / 1000, 2);
+    if (readString(area["ceilingMode"], "flat") !== "raked") {
+        return flatM2;
+    }
+
+    const raked = isRecord(area["rakedCeiling"]) ? area["rakedCeiling"] : null;
+    if (!raked) {
+        return flatM2;
+    }
+
+    const lowEdgeIndex = readInteger(raked["lowEdgeIndex"], -1);
+    const highEdgeIndex = readInteger(raked["highEdgeIndex"], -1);
+    const lowHeight = readNumberOrNull(raked["lowHeightMm"]);
+    const highHeight = readNumberOrNull(raked["highHeightMm"]);
+    if (
+        lowHeight == null ||
+        highHeight == null ||
+        lowEdgeIndex === highEdgeIndex
+    ) {
+        return flatM2;
+    }
+
+    const runM =
+        (edgeMidpointDistance(points, lowEdgeIndex, highEdgeIndex) *
+            scaleMmPerPx) /
+        1000;
+    if (runM <= 0) {
+        return flatM2;
+    }
+
+    const riseM = Math.abs(highHeight - lowHeight) / 1000;
+    return flatM2 * Math.sqrt(1 + Math.pow(riseM / runM, 2));
+}
+
+function edgeMidpointDistance(
+    points: Point[],
+    firstEdge: number,
+    secondEdge: number,
+) {
+    if (
+        firstEdge < 0 ||
+        secondEdge < 0 ||
+        firstEdge >= points.length ||
+        secondEdge >= points.length
+    ) {
         return 0;
     }
 
-    try {
-        const parsed = JSON.parse(overlay) as {
-            areas?: Array<{ deleted?: boolean }>;
-        };
-        return parsed.areas?.filter((area) => !area.deleted).length ?? 0;
-    } catch {
+    const firstA = points[firstEdge];
+    const firstB = points[(firstEdge + 1) % points.length];
+    const secondA = points[secondEdge];
+    const secondB = points[(secondEdge + 1) % points.length];
+    if (!firstA || !firstB || !secondA || !secondB) {
         return 0;
     }
+
+    const firstX = (firstA[0] + firstB[0]) / 2;
+    const firstY = (firstA[1] + firstB[1]) / 2;
+    const secondX = (secondA[0] + secondB[0]) / 2;
+    const secondY = (secondA[1] + secondB[1]) / 2;
+    return Math.hypot(secondX - firstX, secondY - firstY);
+}
+
+function wallBreakdown(
+    area: JsonRecord,
+    scaleMmPerPx: number,
+    pageHeightMm: number | null,
+) {
+    const totals = new Map<string, number>();
+    if (Boolean(area["isOutdoor"])) {
+        return totals;
+    }
+
+    const points = readPoints(area["points"]);
+    if (points.length < 2) {
+        return totals;
+    }
+
+    const overrides: JsonRecord = isRecord(area["edgeOverrides"])
+        ? area["edgeOverrides"]
+        : {};
+
+    for (let index = 0; index < points.length; index += 1) {
+        const rawOverride = overrides[String(index)];
+        const override: JsonRecord | null = isRecord(rawOverride)
+            ? rawOverride
+            : null;
+        if (override && Boolean(override["noPlaster"])) {
+            continue;
+        }
+
+        const wallType =
+            override && typeof override["wallPlasterType"] === "string"
+                ? override["wallPlasterType"]
+                : readString(area["wallPlasterType"], "Recessed Edge");
+        const height = wallHeightForEdge(area, pageHeightMm, index);
+        const column = `${wallType} @ ${heightLabel(height)} in m`;
+        const a = points[index];
+        const b = points[(index + 1) % points.length];
+        if (!a || !b) {
+            continue;
+        }
+
+        const lengthM =
+            (Math.hypot(b[0] - a[0], b[1] - a[1]) * scaleMmPerPx) / 1000;
+        totals.set(column, (totals.get(column) ?? 0) + lengthM);
+    }
+
+    return totals;
+}
+
+function wallHeightForEdge(
+    area: JsonRecord,
+    pageHeightMm: number | null,
+    edgeIndex: number,
+) {
+    if (
+        readString(area["ceilingMode"], "flat") === "raked" &&
+        isRecord(area["rakedCeiling"])
+    ) {
+        const raked = area["rakedCeiling"];
+        const low = readNumberOrNull(raked["lowHeightMm"]);
+        const high = readNumberOrNull(raked["highHeightMm"]);
+        if (low != null && high != null) {
+            return edgeIndex === readInteger(raked["lowEdgeIndex"], -1)
+                ? low
+                : high;
+        }
+    }
+
+    const areaHeight = readNumberOrNull(area["ceilingHeightMm"]);
+    if (areaHeight != null) {
+        return areaHeight;
+    }
+
+    return pageHeightMm ?? 0;
+}
+
+function parseJsonObject(value: string): JsonRecord {
+    try {
+        const parsed: unknown = JSON.parse(value);
+        return isRecord(parsed) ? parsed : {};
+    } catch {
+        return {};
+    }
+}
+
+function readPoints(value: unknown): Point[] {
+    if (!Array.isArray(value)) {
+        return [];
+    }
+
+    return value.flatMap((item) => {
+        if (
+            Array.isArray(item) &&
+            item.length >= 2 &&
+            typeof item[0] === "number" &&
+            typeof item[1] === "number"
+        ) {
+            return [[item[0], item[1]] as Point];
+        }
+
+        return [];
+    });
+}
+
+function polygonAreaPx(points: Point[]) {
+    if (points.length < 3) {
+        return 0;
+    }
+
+    let sum = 0;
+    for (let index = 0; index < points.length; index += 1) {
+        const current = points[index];
+        const next = points[(index + 1) % points.length];
+        if (!current || !next) {
+            continue;
+        }
+        sum += current[0] * next[1] - next[0] * current[1];
+    }
+
+    return Math.abs(sum) / 2;
+}
+
+function isRecord(value: unknown): value is JsonRecord {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function readString(value: unknown, fallback: string) {
+    return typeof value === "string" ? value : fallback;
+}
+
+function readInteger(value: unknown, fallback: number) {
+    return typeof value === "number" && Number.isInteger(value)
+        ? value
+        : fallback;
+}
+
+function readNumberOrNull(value: unknown) {
+    return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function heightLabel(heightMm: number) {
+    return `${heightMm.toFixed(0)}mm`;
+}
+
+function formatNumber(value: number) {
+    return value.toFixed(3);
 }
 
 function csvFileNamePart(value: string) {
@@ -750,7 +1155,7 @@ function csvFileNamePart(value: string) {
         .trim()
         .replace(/[^A-Za-z0-9._-]+/g, "-")
         .replace(/^-+|-+$/g, "");
-    return cleaned || "plan";
+    return cleaned || "project";
 }
 
 function csvCell(value: string) {

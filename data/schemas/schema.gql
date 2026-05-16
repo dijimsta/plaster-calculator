@@ -50,3 +50,42 @@ type Review @table(name: "Reviews", key: ["movie", "user"]) {
     reviewText: String
     reviewDate: Date! @default(expr: "request.time")
 }
+
+type Project
+    @table
+    @index(fields: ["ownerId", "updatedAt"], order: [ASC, DESC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    ownerId: String!
+    name: String!
+    originalFileName: String!
+    uploadType: String!
+    originalPath: String!
+    status: String!
+    processingError: String
+    pageCount: Int!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type FloorplanPage
+    @table
+    @index(fields: ["projectId", "pageNumber"], order: [ASC, ASC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    project: Project! @ref(fields: "projectId", references: "id")
+    projectId: UUID!
+    pageNumber: Int!
+    status: String!
+    sourceImagePath: String
+    previewImagePath: String
+    rawJsonPath: String
+    rawFloorplanPath: String
+    overlayJson: String
+    scaleMmPerPx: Float
+    ceilingHeightMm: Float
+    referencePointsJson: String
+    referenceLengthMm: Float
+    processingStrategy: String
+    processingMetadataJson: String
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}

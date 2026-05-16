@@ -6,12 +6,12 @@ import { ArrowLeft, Download, Pencil, RefreshCcw, X } from "lucide-react";
 import { default as DynamicModule } from "next/dynamic.js";
 import ThemeSettingsButton from "@/components/ThemeSettingsButton.js";
 import {
-    exportPlanCsv,
-    getPlan,
-    renamePlan,
+    exportProjectCsv,
+    getProject,
+    renameProject,
     savePageOverlay,
 } from "@/lib/api.js";
-import type { PlanDetail } from "@/types.js";
+import type { ProjectDetail } from "@/types.js";
 import {
     parseOverlay,
     parseReferencePoints,
@@ -21,18 +21,18 @@ import {
 } from "@/lib/validation.js";
 
 const dynamic = DynamicModule.default;
-const PlanEditor = dynamic(() => import("@/components/PlanEditor.js"), {
+const ProjectEditor = dynamic(() => import("@/components/ProjectEditor.js"), {
     ssr: false,
 });
 const Link = LinkModule.default;
 
-export default function PlanPage({
+export default function ProjectPage({
     params,
 }: {
-    params: Promise<{ planId: string }>;
+    params: Promise<{ projectId: string }>;
 }) {
-    const { planId } = use(params);
-    const [plan, setPlan] = useState<PlanDetail | null>(null);
+    const { projectId } = use(params);
+    const [project, setProject] = useState<ProjectDetail | null>(null);
     const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
     const [error, setError] = useState("");
     const [toast, setToast] = useState("");
@@ -48,11 +48,11 @@ export default function PlanPage({
 
     useEffect(() => {
         load();
-    }, [planId]);
+    }, [projectId]);
 
     useEffect(() => {
-        if (!plan || validationIssues.length === 0) return;
-        const issues = plan.pages.flatMap((page) =>
+        if (!project || validationIssues.length === 0) return;
+        const issues = project.pages.flatMap((page) =>
             validatePageForExport(pageDrafts[page.id] ?? page),
         );
         setValidationIssues(issues);
@@ -67,8 +67,8 @@ export default function PlanPage({
 
     async function load() {
         try {
-            const detail = await getPlan(planId);
-            setPlan(detail);
+            const detail = await getProject(projectId);
+            setProject(detail);
             setRenameValue(detail.name);
             setSelectedPageId((current) =>
                 current && detail.pages.some((page) => page.id === current)
@@ -79,25 +79,25 @@ export default function PlanPage({
             setValidationIssues([]);
         } catch (err) {
             setError(
-                err instanceof Error ? err.message : "Unable to load plan",
+                err instanceof Error ? err.message : "Unable to load project",
             );
         }
     }
 
     const selectedPage = useMemo(
-        () => plan?.pages.find((page) => page.id === selectedPageId) ?? null,
-        [plan, selectedPageId],
+        () => project?.pages.find((page) => page.id === selectedPageId) ?? null,
+        [project, selectedPageId],
     );
 
     async function saveRename() {
-        if (!plan || !renameValue.trim()) return;
+        if (!project || !renameValue.trim()) return;
         try {
-            const renamed = await renamePlan(plan.id, renameValue.trim());
-            setPlan(renamed);
+            const renamed = await renameProject(project.id, renameValue.trim());
+            setProject(renamed);
             setRenaming(false);
         } catch (err) {
             setError(
-                err instanceof Error ? err.message : "Unable to rename plan",
+                err instanceof Error ? err.message : "Unable to rename project",
             );
         }
     }
@@ -110,10 +110,10 @@ export default function PlanPage({
     );
 
     async function saveDraftBeforeLeavingPage() {
-        if (!plan || !selectedPageId) return;
+        if (!project || !selectedPageId) return;
         const draft = pageDrafts[selectedPageId];
         if (!draft) return;
-        const savedPage = await savePageOverlay(plan.id, selectedPageId, {
+        const savedPage = await savePageOverlay(project.id, selectedPageId, {
             overlay: parseOverlay(draft.overlay),
             scaleMmPerPx: draft.scaleMmPerPx,
             ceilingHeightMm: draft.ceilingHeightMm,
@@ -122,7 +122,7 @@ export default function PlanPage({
                 : null,
             referenceLengthMm: draft.referenceLengthMm,
         });
-        setPlan((current) =>
+        setProject((current) =>
             current
                 ? {
                       ...current,
@@ -158,8 +158,8 @@ export default function PlanPage({
     }
 
     async function validateAndExport() {
-        if (!plan) return;
-        const issues = plan.pages.flatMap((page) =>
+        if (!project) return;
+        const issues = project.pages.flatMap((page) =>
             validatePageForExport(pageDrafts[page.id] ?? page),
         );
         setValidationIssues(issues);
@@ -175,7 +175,7 @@ export default function PlanPage({
         try {
             await saveDraftBeforeLeavingPage();
             setError("");
-            const exportFile = await exportPlanCsv(plan.id);
+            const exportFile = await exportProjectCsv(project.id);
             const blob = new Blob([exportFile.csv], {
                 type: exportFile.mimeType,
             });
@@ -212,9 +212,9 @@ export default function PlanPage({
             <header className="topbar">
                 <div className="button-row">
                     <Link className="btn" href="/app">
-                        <ArrowLeft size={18} /> Plans
+                        <ArrowLeft size={18} /> Projects
                     </Link>
-                    {plan && (
+                    {project && (
                         <button
                             className="btn"
                             onClick={() => void validateAndExport()}
@@ -249,19 +249,19 @@ export default function PlanPage({
                             className="button-row"
                             style={{ justifyContent: "flex-end" }}
                         >
-                            <h1>{plan?.name ?? "Plan"}</h1>
-                            {plan && (
+                            <h1>{project?.name ?? "Project"}</h1>
+                            {project && (
                                 <button
                                     className="btn icon"
                                     onClick={() => setRenaming(true)}
-                                    title="Rename plan"
+                                    title="Rename project"
                                 >
                                     <Pencil size={18} />
                                 </button>
                             )}
                         </div>
                     )}
-                    <span>{plan?.originalFileName ?? "Loading..."}</span>
+                    <span>{project?.originalFileName ?? "Loading..."}</span>
                 </div>
                 <div className="button-row">
                     <ThemeSettingsButton />
@@ -272,13 +272,13 @@ export default function PlanPage({
             </header>
 
             {error && <p className="error">{error}</p>}
-            {plan && plan.pages.length > 1 && (
+            {project && project.pages.length > 1 && (
                 <div
                     className="topbar"
                     style={{ justifyContent: "flex-start" }}
                 >
                     <div className="segmented">
-                        {plan.pages.map((page) => (
+                        {project.pages.map((page) => (
                             <button
                                 key={page.id}
                                 className={
@@ -293,9 +293,9 @@ export default function PlanPage({
                     </div>
                 </div>
             )}
-            {plan && selectedPage && (
-                <PlanEditor
-                    plan={plan}
+            {project && selectedPage && (
+                <ProjectEditor
+                    project={project}
                     page={selectedPage}
                     onSaved={load}
                     onDraftChange={updateDraft}
@@ -304,9 +304,9 @@ export default function PlanPage({
                     )}
                 />
             )}
-            {plan && plan.pages.length === 0 && (
+            {project && project.pages.length === 0 && (
                 <section className="panel">
-                    This plan has not been processed yet.
+                    This project has not been processed yet.
                 </section>
             )}
         </main>

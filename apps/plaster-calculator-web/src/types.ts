@@ -1,4 +1,4 @@
-export type PlanSummary = {
+export type ProjectSummary = {
     id: string;
     name: string;
     originalFileName: string;
@@ -10,7 +10,7 @@ export type PlanSummary = {
     pageCount: number;
 };
 
-export type PlanPage = {
+export type FloorplanPage = {
     id: string;
     pageNumber: number;
     status: string;
@@ -26,9 +26,9 @@ export type PlanPage = {
     updatedAt: string;
 };
 
-export type PlanDetail = PlanSummary & {
+export type ProjectDetail = ProjectSummary & {
     ownerId?: string | null;
-    pages: PlanPage[];
+    pages: FloorplanPage[];
 };
 
 export type PdfPagePreview = {

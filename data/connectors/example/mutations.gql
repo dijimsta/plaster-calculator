@@ -40,3 +40,126 @@ mutation DeleteReview($movieId: UUID!) @auth(level: USER) {
     # The "auth.uid" server value ensures that users can only delete their own reviews.
     review_delete(key: { userId_expr: "auth.uid", movieId: $movieId })
 }
+
+mutation CreateProjectFromUpload(
+    $id: UUID!
+    $ownerId: String!
+    $name: String!
+    $originalFileName: String!
+    $uploadType: String!
+    $originalPath: String!
+    $status: String!
+    $pageCount: Int!
+) @auth(level: NO_ACCESS) {
+    project_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            name: $name
+            originalFileName: $originalFileName
+            uploadType: $uploadType
+            originalPath: $originalPath
+            status: $status
+            pageCount: $pageCount
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation RenameProject($id: UUID!, $name: String!) @auth(level: NO_ACCESS) {
+    project_update(
+        id: $id
+        data: { name: $name, updatedAt_expr: "request.time" }
+    )
+}
+
+mutation TouchProject($id: UUID!, $status: String, $processingError: String)
+@auth(level: NO_ACCESS) {
+    project_update(
+        id: $id
+        data: {
+            status: $status
+            processingError: $processingError
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation DeleteFloorplanPages($projectId: UUID!) @auth(level: NO_ACCESS) {
+    floorplanPage_deleteMany(where: { projectId: { eq: $projectId } })
+}
+
+mutation DeleteProject($id: UUID!) @auth(level: NO_ACCESS) {
+    project_delete(id: $id)
+}
+
+mutation CreateFloorplanPage(
+    $projectId: UUID!
+    $pageNumber: Int!
+    $status: String!
+    $sourceImagePath: String
+    $previewImagePath: String
+    $overlayJson: String
+    $scaleMmPerPx: Float
+    $ceilingHeightMm: Float
+    $referencePointsJson: String
+    $referenceLengthMm: Float
+    $processingStrategy: String
+    $processingMetadataJson: String
+) @auth(level: NO_ACCESS) {
+    floorplanPage_insert(
+        data: {
+            projectId: $projectId
+            pageNumber: $pageNumber
+            status: $status
+            sourceImagePath: $sourceImagePath
+            previewImagePath: $previewImagePath
+            overlayJson: $overlayJson
+            scaleMmPerPx: $scaleMmPerPx
+            ceilingHeightMm: $ceilingHeightMm
+            referencePointsJson: $referencePointsJson
+            referenceLengthMm: $referenceLengthMm
+            processingStrategy: $processingStrategy
+            processingMetadataJson: $processingMetadataJson
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateFloorplanPage(
+    $id: UUID!
+    $overlayJson: String
+    $scaleMmPerPx: Float
+    $ceilingHeightMm: Float
+    $referencePointsJson: String
+    $referenceLengthMm: Float
+) @auth(level: NO_ACCESS) {
+    floorplanPage_update(
+        id: $id
+        data: {
+            overlayJson: $overlayJson
+            scaleMmPerPx: $scaleMmPerPx
+            ceilingHeightMm: $ceilingHeightMm
+            referencePointsJson: $referencePointsJson
+            referenceLengthMm: $referenceLengthMm
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateFloorplanPages(
+    $projectId: UUID!
+    $scaleMmPerPx: Float
+    $ceilingHeightMm: Float
+) @auth(level: NO_ACCESS) {
+    floorplanPage_updateMany(
+        where: { projectId: { eq: $projectId } }
+        data: {
+            scaleMmPerPx: $scaleMmPerPx
+            ceilingHeightMm: $ceilingHeightMm
+            updatedAt_expr: "request.time"
+        }
+    )
+}

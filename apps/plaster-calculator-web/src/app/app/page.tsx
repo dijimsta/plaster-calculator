@@ -22,46 +22,46 @@ import {
 } from "lucide-react";
 import ThemeSettingsButton from "@/components/ThemeSettingsButton.js";
 import {
-    deletePlan,
+    deleteProject,
     getPdfPages,
-    getPlan,
-    listPlans,
+    getProject,
+    listProjects,
     listProcessingStrategies,
-    processPlan,
-    renamePlan,
-    uploadPlan,
+    processProject,
+    renameProject,
+    uploadProject,
 } from "@/lib/api.js";
 import type {
     PdfPagePreview,
-    PlanSummary,
+    ProjectSummary,
     ProcessingStrategyInfo,
 } from "@/types.js";
 
 const Link = LinkModule.default;
 
 export default function HomePage() {
-    const [plans, setPlans] = useState<PlanSummary[]>([]);
+    const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [query, setQuery] = useState("");
     const [name, setName] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [plansLoading, setPlansLoading] = useState(true);
+    const [projectsLoading, setProjectsLoading] = useState(true);
     const [message, setMessage] = useState("");
     const [toast, setToast] = useState("");
-    const [toastPlan, setToastPlan] = useState<{
+    const [toastProject, setToastProject] = useState<{
         id: string;
         name: string;
     } | null>(null);
-    const [draftPlanId, setDraftPlanId] = useState<string | null>(null);
+    const [draftProjectId, setDraftProjectId] = useState<string | null>(null);
     const [pdfPages, setPdfPages] = useState<PdfPagePreview[]>([]);
     const [selectedPages, setSelectedPages] = useState<number[]>([]);
     const [largePreview, setLargePreview] = useState<PdfPagePreview | null>(
         null,
     );
-    const [processingPlanId, setProcessingPlanId] = useState<string | null>(
-        null,
-    );
+    const [processingProjectId, setProcessingProjectId] = useState<
+        string | null
+    >(null);
     const [processingStrategies, setProcessingStrategies] = useState<
         ProcessingStrategyInfo[]
     >([]);
@@ -75,23 +75,23 @@ export default function HomePage() {
     }, []);
 
     useEffect(() => {
-        if (!processingPlanId) return;
+        if (!processingProjectId) return;
         const timer = window.setInterval(async () => {
             try {
-                const plan = await getPlan(processingPlanId);
+                const project = await getProject(processingProjectId);
                 await refresh();
-                if (plan.status === "READY") {
+                if (project.status === "READY") {
                     setToast("finished processing.");
-                    setToastPlan({ id: plan.id, name: plan.name });
-                    setProcessingPlanId(null);
+                    setToastProject({ id: project.id, name: project.name });
+                    setProcessingProjectId(null);
                     window.clearInterval(timer);
                 }
-                if (plan.status === "FAILED") {
+                if (project.status === "FAILED") {
                     setToast(
-                        `${plan.name} failed to process${plan.processingError ? `: ${plan.processingError}` : "."}`,
+                        `${project.name} failed to process${project.processingError ? `: ${project.processingError}` : "."}`,
                     );
-                    setToastPlan(null);
-                    setProcessingPlanId(null);
+                    setToastProject(null);
+                    setProcessingProjectId(null);
                     window.clearInterval(timer);
                 }
             } catch (error) {
@@ -103,18 +103,20 @@ export default function HomePage() {
             }
         }, 3000);
         return () => window.clearInterval(timer);
-    }, [processingPlanId]);
+    }, [processingProjectId]);
 
     async function refresh() {
-        setPlansLoading(true);
+        setProjectsLoading(true);
         try {
-            setPlans(await listPlans());
+            setProjects(await listProjects());
         } catch (error) {
             setMessage(
-                error instanceof Error ? error.message : "Unable to load plans",
+                error instanceof Error
+                    ? error.message
+                    : "Unable to load projects",
             );
         } finally {
-            setPlansLoading(false);
+            setProjectsLoading(false);
         }
     }
 
@@ -142,13 +144,13 @@ export default function HomePage() {
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
         return q
-            ? plans.filter(
-                  (plan) =>
-                      plan.name.toLowerCase().includes(q) ||
-                      plan.originalFileName.toLowerCase().includes(q),
+            ? projects.filter(
+                  (project) =>
+                      project.name.toLowerCase().includes(q) ||
+                      project.originalFileName.toLowerCase().includes(q),
               )
-            : plans;
-    }, [plans, query]);
+            : projects;
+    }, [projects, query]);
 
     async function submit(event: FormEvent) {
         event.preventDefault();
@@ -156,22 +158,22 @@ export default function HomePage() {
         setLoading(true);
         setMessage("Uploading floorplan...");
         try {
-            const upload = await uploadPlan(name || file.name, file);
+            const upload = await uploadProject(name || file.name, file);
             if (upload.uploadType === "PDF") {
-                const pages = await getPdfPages(upload.planId);
-                setDraftPlanId(upload.planId);
+                const pages = await getPdfPages(upload.projectId);
+                setDraftProjectId(upload.projectId);
                 setPdfPages(pages);
                 setSelectedPages([]);
                 setMessage("");
             } else {
                 setMessage("Processing image in the background...");
-                const plan = await processPlan(
-                    upload.planId,
+                const project = await processProject(
+                    upload.projectId,
                     [1],
                     selectedStrategyKey || undefined,
                 );
-                setProcessingPlanId(plan.id);
-                setToast(`${plan.name} is processing.`);
+                setProcessingProjectId(project.id);
+                setToast(`${project.name} is processing.`);
             }
             await refresh();
         } catch (error) {
@@ -196,16 +198,16 @@ export default function HomePage() {
     }
 
     async function processSelectedPdfPages() {
-        if (!draftPlanId || selectedPages.length === 0) return;
+        if (!draftProjectId || selectedPages.length === 0) return;
         setLoading(true);
         try {
-            const plan = await processPlan(
-                draftPlanId,
+            const project = await processProject(
+                draftProjectId,
                 selectedPages,
                 selectedStrategyKey || undefined,
             );
-            setProcessingPlanId(plan.id);
-            setToast(`${plan.name} is processing.`);
+            setProcessingProjectId(project.id);
+            setToast(`${project.name} is processing.`);
             closePdfModal();
             await refresh();
         } catch (error) {
@@ -218,7 +220,7 @@ export default function HomePage() {
     }
 
     function closePdfModal() {
-        setDraftPlanId(null);
+        setDraftProjectId(null);
         setPdfPages([]);
         setSelectedPages([]);
         setLargePreview(null);
@@ -259,16 +261,16 @@ export default function HomePage() {
         );
     }
 
-    async function removePlan(plan: PlanSummary) {
+    async function removeProject(project: ProjectSummary) {
         const confirmed = window.confirm(
-            `Delete "${plan.name}" and all stored files for this plan?`,
+            `Delete "${project.name}" and all stored files for this project?`,
         );
         if (!confirmed) return;
-        setMessage("Deleting plan...");
+        setMessage("Deleting project...");
         try {
-            await deletePlan(plan.id);
+            await deleteProject(project.id);
             await refresh();
-            setMessage("Plan deleted.");
+            setMessage("Project deleted.");
         } catch (error) {
             setMessage(
                 error instanceof Error ? error.message : "Delete failed",
@@ -276,13 +278,13 @@ export default function HomePage() {
         }
     }
 
-    async function saveRename(planId: string) {
+    async function saveRename(projectId: string) {
         const trimmed = renameValue.trim();
         if (!trimmed) return;
         try {
-            await renamePlan(planId, trimmed);
+            await renameProject(projectId, trimmed);
             setRenamingId(null);
-            setToast("Plan renamed.");
+            setToast("Project renamed.");
             await refresh();
         } catch (error) {
             setToast(error instanceof Error ? error.message : "Rename failed");
@@ -291,16 +293,16 @@ export default function HomePage() {
 
     return (
         <main className="shell">
-            {(toast || processingPlanId) && (
+            {(toast || processingProjectId) && (
                 <div className="toast">
                     <CheckCircle2 size={18} />
                     <span>
-                        {processingPlanId ? (
-                            "A plan is processing. This list will update automatically."
-                        ) : toastPlan ? (
+                        {processingProjectId ? (
+                            "A project is processing. This list will update automatically."
+                        ) : toastProject ? (
                             <>
-                                <Link href={`/app/plans/${toastPlan.id}`}>
-                                    {toastPlan.name}
+                                <Link href={`/app/projects/${toastProject.id}`}>
+                                    {toastProject.name}
                                 </Link>{" "}
                                 {toast}
                             </>
@@ -308,12 +310,12 @@ export default function HomePage() {
                             toast
                         )}
                     </span>
-                    {!processingPlanId && (
+                    {!processingProjectId && (
                         <button
                             className="btn icon"
                             onClick={() => {
                                 setToast("");
-                                setToastPlan(null);
+                                setToastProject(null);
                             }}
                         >
                             <X size={16} />
@@ -332,7 +334,7 @@ export default function HomePage() {
                     <button
                         className="btn"
                         onClick={refresh}
-                        title="Refresh plans"
+                        title="Refresh projects"
                     >
                         <RefreshCcw size={18} /> Refresh
                     </button>
@@ -341,9 +343,9 @@ export default function HomePage() {
 
             <section className="layout-grid">
                 <form className="panel stack" onSubmit={submit}>
-                    <h2>New Plan</h2>
+                    <h2>New Project</h2>
                     <div className="field">
-                        <label htmlFor="name">Address or plan name</label>
+                        <label htmlFor="name">Address or project name</label>
                         <input
                             id="name"
                             className="input"
@@ -407,9 +409,9 @@ export default function HomePage() {
                     )}
                 </form>
 
-                <section className="panel stack plan-history-panel">
+                <section className="panel stack project-history-panel">
                     <div className="editor-toolbar">
-                        <h2>Plan History</h2>
+                        <h2>Project History</h2>
                         <div className="field" style={{ minWidth: 260 }}>
                             <label htmlFor="search">Search</label>
                             <div style={{ position: "relative" }}>
@@ -434,22 +436,29 @@ export default function HomePage() {
                             </div>
                         </div>
                     </div>
-                    <div className="plan-list">
-                        {plansLoading ? (
+                    <div className="project-list">
+                        {projectsLoading ? (
                             <div
-                                className="plan-list-state"
+                                className="project-list-state"
                                 role="status"
                                 aria-live="polite"
                             >
                                 <LoaderCircle className="spin" size={24} />
-                                <span className="muted">Loading plans...</span>
+                                <span className="muted">
+                                    Loading projects...
+                                </span>
                             </div>
                         ) : (
                             <>
-                                {filtered.map((plan) => (
-                                    <div className="plan-item" key={plan.id}>
-                                        <Link href={`/app/plans/${plan.id}`}>
-                                            {renamingId === plan.id ? (
+                                {filtered.map((project) => (
+                                    <div
+                                        className="project-item"
+                                        key={project.id}
+                                    >
+                                        <Link
+                                            href={`/app/projects/${project.id}`}
+                                        >
+                                            {renamingId === project.id ? (
                                                 <input
                                                     className="input"
                                                     value={renameValue}
@@ -467,32 +476,35 @@ export default function HomePage() {
                                                             "Enter"
                                                         ) {
                                                             event.preventDefault();
-                                                            saveRename(plan.id);
+                                                            saveRename(
+                                                                project.id,
+                                                            );
                                                         }
                                                     }}
                                                 />
                                             ) : (
-                                                <strong>{plan.name}</strong>
+                                                <strong>{project.name}</strong>
                                             )}
-                                            <span className="muted plan-meta-line">
-                                                {plan.originalFileName} ·{" "}
-                                                {plan.uploadType} ·{" "}
-                                                {plan.status} · {plan.pageCount}{" "}
-                                                {plan.pageCount === 1
+                                            <span className="muted project-meta-line">
+                                                {project.originalFileName} ·{" "}
+                                                {project.uploadType} ·{" "}
+                                                {project.status} ·{" "}
+                                                {project.pageCount}{" "}
+                                                {project.pageCount === 1
                                                     ? "page"
                                                     : "pages"}{" "}
                                                 ·{" "}
                                                 {new Date(
-                                                    plan.updatedAt,
+                                                    project.updatedAt,
                                                 ).toLocaleString()}
                                             </span>
                                         </Link>
-                                        <div className="button-row plan-actions">
-                                            {renamingId === plan.id ? (
+                                        <div className="button-row project-actions">
+                                            {renamingId === project.id ? (
                                                 <button
                                                     className="btn"
                                                     onClick={() =>
-                                                        saveRename(plan.id)
+                                                        saveRename(project.id)
                                                     }
                                                 >
                                                     Save
@@ -501,20 +513,24 @@ export default function HomePage() {
                                                 <button
                                                     className="btn icon"
                                                     onClick={() => {
-                                                        setRenamingId(plan.id);
+                                                        setRenamingId(
+                                                            project.id,
+                                                        );
                                                         setRenameValue(
-                                                            plan.name,
+                                                            project.name,
                                                         );
                                                     }}
-                                                    title="Rename plan"
+                                                    title="Rename project"
                                                 >
                                                     <Pencil size={18} />
                                                 </button>
                                             )}
                                             <button
                                                 className="btn icon"
-                                                onClick={() => removePlan(plan)}
-                                                title="Delete plan"
+                                                onClick={() =>
+                                                    removeProject(project)
+                                                }
+                                                title="Delete project"
                                             >
                                                 <Trash2 size={18} />
                                             </button>
@@ -522,7 +538,7 @@ export default function HomePage() {
                                     </div>
                                 ))}
                                 {filtered.length === 0 && (
-                                    <p className="muted">No plans yet.</p>
+                                    <p className="muted">No projects yet.</p>
                                 )}
                             </>
                         )}
@@ -530,7 +546,7 @@ export default function HomePage() {
                 </section>
             </section>
 
-            {draftPlanId && (
+            {draftProjectId && (
                 <div className="modal-backdrop">
                     <section className="modal">
                         <header className="editor-toolbar">

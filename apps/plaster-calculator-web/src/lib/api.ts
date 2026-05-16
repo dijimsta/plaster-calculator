@@ -4,20 +4,21 @@ import { ref, uploadBytes } from "firebase/storage";
 import { auth, functions, storage } from "@/firebase/firebase.utils.js";
 import type {
     PdfPagePreview,
-    PlanDetail,
-    PlanPage,
-    PlanSummary,
+    ProjectDetail,
+    FloorplanPage,
+    ProjectSummary,
     ProcessingStrategyInfo,
 } from "@/types.js";
 
 type UploadResponse = {
-    planId: string;
+    projectId: string;
     uploadType: "PDF" | "IMAGE";
     pageCount: number;
     status: string;
 };
 
-type CreatePlanFromUploadRequest = {
+type CreateProjectFromUploadRequest = {
+    projectId: string;
     name: string;
     originalFileName: string;
     contentType: string;
@@ -25,14 +26,14 @@ type CreatePlanFromUploadRequest = {
     storagePath: string;
 };
 
-type ProcessPlanRequest = {
-    planId: string;
+type ProcessProjectRequest = {
+    projectId: string;
     pageNumbers: number[];
     strategyKey?: string;
 };
 
 type SavePageOverlayRequest = {
-    planId: string;
+    projectId: string;
     pageId: string;
     overlay: unknown;
     scaleMmPerPx: number | null;
@@ -47,167 +48,84 @@ type ExportCsvResponse = {
     csv: string;
 };
 
-const listPlansCallable = httpsCallable<unknown, { plans: PlanSummary[] }>(
-    functions,
-    "listPlans",
-);
-const createPlanFromUploadCallable = httpsCallable<
-    CreatePlanFromUploadRequest,
+const listProjectsCallable = httpsCallable<
+    unknown,
+    { projects: ProjectSummary[] }
+>(functions, "listProjects");
+const createProjectFromUploadCallable = httpsCallable<
+    CreateProjectFromUploadRequest,
     UploadResponse
->(functions, "createPlanFromUpload");
-const getPlanCallable = httpsCallable<{ planId: string }, PlanDetail>(
+>(functions, "createProjectFromUpload");
+const getProjectCallable = httpsCallable<{ projectId: string }, ProjectDetail>(
     functions,
-    "getPlan",
+    "getProject",
 );
-const renamePlanCallable = httpsCallable<
-    { planId: string; name: string },
-    PlanDetail
->(functions, "renamePlan");
-const deletePlanCallable = httpsCallable<{ planId: string }, { ok: true }>(
-    functions,
-    "deletePlan",
-);
-const listPdfPagePreviewsCallable = httpsCallable<
-    { planId: string },
+const renameProjectCallable = httpsCallable<
+    { projectId: string; name: string },
+    ProjectDetail
+>(functions, "renameProject");
+const deleteProjectCallable = httpsCallable<
+    { projectId: string },
+    { ok: true }
+>(functions, "deleteProject");
+const listProjectPdfPagePreviewsCallable = httpsCallable<
+    { projectId: string },
     { pages: PdfPagePreview[] }
->(functions, "listPdfPagePreviews");
+>(functions, "listProjectPdfPagePreviews");
 const listProcessingStrategiesCallable = httpsCallable<
     unknown,
     { strategies: ProcessingStrategyInfo[] }
 >(functions, "listProcessingStrategies");
-const processPlanCallable = httpsCallable<ProcessPlanRequest, PlanDetail>(
-    functions,
-    "processPlan",
-);
-const getPlanPageCallable = httpsCallable<
-    { planId: string; pageId: string },
-    PlanPage
->(functions, "getPlanPage");
-const savePlanPageOverlayCallable = httpsCallable<
+const processProjectCallable = httpsCallable<
+    ProcessProjectRequest,
+    ProjectDetail
+>(functions, "processProject");
+const getFloorplanPageCallable = httpsCallable<
+    { projectId: string; pageId: string },
+    FloorplanPage
+>(functions, "getFloorplanPage");
+const updateFloorplanPageCallable = httpsCallable<
     SavePageOverlayRequest,
-    PlanPage
->(functions, "savePlanPageOverlay");
-const applyPlanCeilingHeightCallable = httpsCallable<
-    { planId: string; ceilingHeightMm: number | null },
-    PlanDetail
->(functions, "applyPlanCeilingHeight");
-const applyPlanScaleCallable = httpsCallable<
-    { planId: string; scaleMmPerPx: number | null },
-    PlanDetail
->(functions, "applyPlanScale");
-const exportPlanCsvCallable = httpsCallable<
-    { planId: string },
+    FloorplanPage
+>(functions, "updateFloorplanPage");
+const updateFloorplanPagesCallable = httpsCallable<
+    {
+        projectId: string;
+        scaleMmPerPx?: number | null;
+        ceilingHeightMm?: number | null;
+    },
+    ProjectDetail
+>(functions, "updateFloorplanPages");
+const exportProjectCsvCallable = httpsCallable<
+    { projectId: string },
     ExportCsvResponse
->(functions, "exportPlanCsv");
+>(functions, "exportProjectCsv");
 
-export async function listPlans() {
-    const result = await listPlansCallable();
-    return result.data.plans;
+export async function listProjects() {
+    const result = await listProjectsCallable();
+    return result.data.projects;
 }
 
-export async function uploadPlan(name: string, file: File) {
+export async function uploadProject(name: string, file: File) {
     const uid = auth.currentUser?.uid;
     if (!uid) {
-        throw new Error("Must be signed in to upload a plan.");
+        throw new Error("Must be signed in to upload a project.");
     }
 
-    const uploadId = crypto.randomUUID();
-    const storagePath = `plans/${uid}/uploads/${uploadId}/${sanitizeStorageName(file.name)}`;
+    const projectId = crypto.randomUUID();
+    const storagePath = `uploads/${uid}/projects/${projectId}/uploads/${sanitizeStorageName(file.name)}`;
     await uploadBytes(ref(storage, storagePath), file, {
         contentType: file.type || "application/octet-stream",
     });
 
-    const result = await createPlanFromUploadCallable({
+    const result = await createProjectFromUploadCallable({
+        projectId,
         name,
         originalFileName: file.name,
         contentType: file.type || "application/octet-stream",
         size: file.size,
         storagePath,
     });
-    return result.data;
-}
-
-export async function getPlan(planId: string) {
-    const result = await getPlanCallable({ planId });
-    return result.data;
-}
-
-export async function renamePlan(planId: string, name: string) {
-    const result = await renamePlanCallable({ planId, name });
-    return result.data;
-}
-
-export async function deletePlan(planId: string) {
-    await deletePlanCallable({ planId });
-}
-
-export async function getPdfPages(planId: string) {
-    const result = await listPdfPagePreviewsCallable({ planId });
-    return result.data.pages;
-}
-
-export async function listProcessingStrategies() {
-    const result = await listProcessingStrategiesCallable();
-    return result.data.strategies;
-}
-
-export async function processPlan(
-    planId: string,
-    pageNumbers: number[],
-    strategyKey?: string,
-) {
-    const result = await processPlanCallable({
-        planId,
-        pageNumbers,
-        strategyKey,
-    });
-    return result.data;
-}
-
-export async function getPage(planId: string, pageId: string) {
-    const result = await getPlanPageCallable({ planId, pageId });
-    return result.data;
-}
-
-export async function savePageOverlay(
-    planId: string,
-    pageId: string,
-    payload: unknown,
-) {
-    const body = payload as Partial<SavePageOverlayRequest>;
-    const result = await savePlanPageOverlayCallable({
-        planId,
-        pageId,
-        overlay: body.overlay ?? { areas: [] },
-        scaleMmPerPx: body.scaleMmPerPx ?? null,
-        ceilingHeightMm: body.ceilingHeightMm ?? null,
-        referencePoints: body.referencePoints ?? null,
-        referenceLengthMm: body.referenceLengthMm ?? null,
-    });
-    return result.data;
-}
-
-export async function applyCeilingHeightToPlan(
-    planId: string,
-    ceilingHeightMm: number | null,
-) {
-    const result = await applyPlanCeilingHeightCallable({
-        planId,
-        ceilingHeightMm,
-    });
-    return result.data;
-}
-
-export async function applyScaleToPlan(
-    planId: string,
-    scaleMmPerPx: number | null,
-) {
-    const result = await applyPlanScaleCallable({ planId, scaleMmPerPx });
-    return result.data;
-}
-
-export async function exportPlanCsv(planId: string) {
-    const result = await exportPlanCsvCallable({ planId });
     return result.data;
 }
 
@@ -218,4 +136,91 @@ function sanitizeStorageName(value: string) {
             .replace(/[^A-Za-z0-9._-]+/g, "-")
             .replace(/^-+|-+$/g, "") || "upload"
     );
+}
+
+export async function getProject(projectId: string) {
+    const result = await getProjectCallable({ projectId });
+    return result.data;
+}
+
+export async function renameProject(projectId: string, name: string) {
+    const result = await renameProjectCallable({ projectId, name });
+    return result.data;
+}
+
+export async function deleteProject(projectId: string) {
+    await deleteProjectCallable({ projectId });
+}
+
+export async function getPdfPages(projectId: string) {
+    const result = await listProjectPdfPagePreviewsCallable({ projectId });
+    return result.data.pages;
+}
+
+export async function listProcessingStrategies() {
+    const result = await listProcessingStrategiesCallable();
+    return result.data.strategies;
+}
+
+export async function processProject(
+    projectId: string,
+    pageNumbers: number[],
+    strategyKey?: string,
+) {
+    const result = await processProjectCallable({
+        projectId,
+        pageNumbers,
+        strategyKey,
+    });
+    return result.data;
+}
+
+export async function getPage(projectId: string, pageId: string) {
+    const result = await getFloorplanPageCallable({ projectId, pageId });
+    return result.data;
+}
+
+export async function savePageOverlay(
+    projectId: string,
+    pageId: string,
+    payload: unknown,
+) {
+    const body = payload as Partial<SavePageOverlayRequest>;
+    const result = await updateFloorplanPageCallable({
+        projectId,
+        pageId,
+        overlay: body.overlay ?? { areas: [] },
+        scaleMmPerPx: body.scaleMmPerPx ?? null,
+        ceilingHeightMm: body.ceilingHeightMm ?? null,
+        referencePoints: body.referencePoints ?? null,
+        referenceLengthMm: body.referenceLengthMm ?? null,
+    });
+    return result.data;
+}
+
+export async function applyCeilingHeightToProject(
+    projectId: string,
+    ceilingHeightMm: number | null,
+) {
+    const result = await updateFloorplanPagesCallable({
+        projectId,
+        ceilingHeightMm,
+    });
+    return result.data;
+}
+
+export async function applyScaleToProject(
+    projectId: string,
+    scaleMmPerPx: number | null,
+) {
+    const result = await updateFloorplanPagesCallable({
+        projectId,
+        scaleMmPerPx,
+    });
+    return result.data;
+}
+
+export async function exportProjectCsv(projectId: string) {
+    const result = await exportProjectCsvCallable({ projectId });
+    return result.data;
 }
