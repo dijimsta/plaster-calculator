@@ -13,12 +13,11 @@ import { getFirestore } from "firebase/firestore";
 // const app = initializeApp();
 
 const firebaseConfig = {
-  // Your config options. Get the values by running 'npx -y firebase-tools@latest apps:sdkconfig <platform> <app-id>'
+    // Your config options. Get the values by running 'npx -y firebase-tools@latest apps:sdkconfig <platform> <app-id>'
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 ```
 
 ## Writing Data
@@ -32,9 +31,9 @@ import { doc, setDoc } from "firebase/firestore";
 
 // Create/Overwrite document with ID "LA"
 await setDoc(doc(db, "cities", "LA"), {
-  name: "Los Angeles",
-  state: "CA",
-  country: "USA"
+    name: "Los Angeles",
+    state: "CA",
+    country: "USA",
 });
 
 // To merge with existing data instead of overwriting:
@@ -49,8 +48,8 @@ Use when you don't care about the document ID.
 import { collection, addDoc } from "firebase/firestore";
 
 const docRef = await addDoc(collection(db, "cities"), {
-  name: "Tokyo",
-  country: "Japan"
+    name: "Tokyo",
+    country: "Japan",
 });
 console.log("Document written with ID: ", docRef.id);
 ```
@@ -66,7 +65,7 @@ import { doc, updateDoc } from "firebase/firestore";
 const laRef = doc(db, "cities", "LA");
 
 await updateDoc(laRef, {
-  capital: true
+    capital: true,
 });
 ```
 
@@ -80,18 +79,18 @@ import { runTransaction, doc } from "firebase/firestore";
 const sfDocRef = doc(db, "cities", "SF");
 
 try {
-  await runTransaction(db, async (transaction) => {
-    const sfDoc = await transaction.get(sfDocRef);
-    if (!sfDoc.exists()) {
-      throw "Document does not exist!";
-    }
+    await runTransaction(db, async (transaction) => {
+        const sfDoc = await transaction.get(sfDocRef);
+        if (!sfDoc.exists()) {
+            throw "Document does not exist!";
+        }
 
-    const newPopulation = sfDoc.data().population + 1;
-    transaction.update(sfDocRef, { population: newPopulation });
-  });
-  console.log("Transaction successfully committed!");
+        const newPopulation = sfDoc.data().population + 1;
+        transaction.update(sfDocRef, { population: newPopulation });
+    });
+    console.log("Transaction successfully committed!");
 } catch (e) {
-  console.log("Transaction failed: ", e);
+    console.log("Transaction failed: ", e);
 }
 ```
 
@@ -106,9 +105,9 @@ const docRef = doc(db, "cities", "SF");
 const docSnap = await getDoc(docRef);
 
 if (docSnap.exists()) {
-  console.log("Document data:", docSnap.data());
+    console.log("Document data:", docSnap.data());
 } else {
-  console.log("No such document!");
+    console.log("No such document!");
 }
 ```
 
@@ -121,8 +120,8 @@ import { collection, getDocs } from "firebase/firestore";
 
 const querySnapshot = await getDocs(collection(db, "cities"));
 querySnapshot.forEach((doc) => {
-  // doc.data() is never undefined for query doc snapshots
-  console.log(doc.id, " => ", doc.data());
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
 });
 ```
 
@@ -148,17 +147,17 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 const q = query(collection(db, "cities"), where("state", "==", "CA"));
 const unsubscribe = onSnapshot(q, (snapshot) => {
-  snapshot.docChanges().forEach((change) => {
-    if (change.type === "added") {
-        console.log("New city: ", change.doc.data());
-    }
-    if (change.type === "modified") {
-        console.log("Modified city: ", change.doc.data());
-    }
-    if (change.type === "removed") {
-        console.log("Removed city: ", change.doc.data());
-    }
-  });
+    snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+            console.log("New city: ", change.doc.data());
+        }
+        if (change.type === "modified") {
+            console.log("Modified city: ", change.doc.data());
+        }
+        if (change.type === "removed") {
+            console.log("Removed city: ", change.doc.data());
+        }
+    });
 });
 ```
 
@@ -178,7 +177,11 @@ const q1 = query(citiesRef, where("state", "==", "CA"));
 
 // Compound (AND)
 // Note: Requires an index if filtering on different fields
-const q2 = query(citiesRef, where("state", "==", "CA"), where("population", ">", 1000000));
+const q2 = query(
+    citiesRef,
+    where("state", "==", "CA"),
+    where("population", ">", 1000000),
+);
 ```
 
 ### Order and Limit

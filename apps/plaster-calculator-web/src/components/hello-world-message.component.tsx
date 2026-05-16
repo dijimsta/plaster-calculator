@@ -8,7 +8,10 @@ export default function HelloWorldMessage() {
     const [message, setMessage] = useState<string | null>(null);
 
     useEffect(() => {
-        const helloWorld = httpsCallable<void, { message: string }>(functions, "helloWorld");
+        const helloWorld = httpsCallable<void, { message: string }>(
+            functions,
+            "helloWorld",
+        );
         helloWorld()
             .then((result) => setMessage(result.data.message))
             .catch(() => setMessage("Failed to load message"));

@@ -1,13 +1,11 @@
 {
-  "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "defaultProject": "@inivi/plaster-calculator-web",
-  "targetDefaults": {
-    "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "cache": true
-    }
-  },
-  "neverConnectToCloud": true
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "defaultProject": "@inivi/plaster-calculator-web",
+    "targetDefaults": {
+        "build": {
+            "dependsOn": ["^build"],
+            "cache": true
+        }
+    },
+    "neverConnectToCloud": true
 }

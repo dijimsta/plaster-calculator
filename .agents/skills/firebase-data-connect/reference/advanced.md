@@ -1,6 +1,7 @@
 # Advanced Features Reference
 
 ## Contents
+
 - [Vector Similarity Search](#vector-similarity-search)
 - [Full-Text Search](#full-text-search)
 - [Cloud Functions Integration](#cloud-functions-integration)
@@ -16,11 +17,11 @@ Semantic search using Vertex AI embeddings and PostgreSQL's `pgvector`.
 
 ```graphql
 type Movie @table {
-  id: UUID! @default(expr: "uuidV4()")
-  title: String!
-  description: String
-  # Vector field for embeddings - size must match model output (768 for gecko)
-  descriptionEmbedding: Vector! @col(size: 768)
+    id: UUID! @default(expr: "uuidV4()")
+    title: String!
+    description: String
+    # Vector field for embeddings - size must match model output (768 for gecko)
+    descriptionEmbedding: Vector! @col(size: 768)
 }
 ```
 
@@ -29,16 +30,18 @@ type Movie @table {
 Use `_embed` server value to auto-generate embeddings via Vertex AI:
 
 ```graphql
-mutation CreateMovieWithEmbedding($title: String!, $description: String!) 
-  @auth(level: USER) {
-  movie_insert(data: {
-    title: $title,
-    description: $description,
-    descriptionEmbedding_embed: {
-      model: "textembedding-gecko@003",
-      text: $description
-    }
-  })
+mutation CreateMovieWithEmbedding($title: String!, $description: String!)
+@auth(level: USER) {
+    movie_insert(
+        data: {
+            title: $title
+            description: $description
+            descriptionEmbedding_embed: {
+                model: "textembedding-gecko@003"
+                text: $description
+            }
+        }
+    )
 }
 ```
 
@@ -48,46 +51,52 @@ SQL Connect generates `_similarity` fields for Vector columns:
 
 ```graphql
 query SearchMovies($query: String!) @auth(level: PUBLIC) {
-  movies_descriptionEmbedding_similarity(
-    compare_embed: { model: "textembedding-gecko@003", text: $query },
-    method: L2,         # L2, COSINE, or INNER_PRODUCT
-    within: 2.0,        # Max distance threshold
-    limit: 5
-  ) {
-    id
-    title
-    description
-    _metadata { distance }  # See how close each result is
-  }
+    movies_descriptionEmbedding_similarity(
+        compare_embed: { model: "textembedding-gecko@003", text: $query }
+        method: L2 # L2, COSINE, or INNER_PRODUCT
+        within: 2.0 # Max distance threshold
+        limit: 5
+    ) {
+        id
+        title
+        description
+        _metadata {
+            distance
+        } # See how close each result is
+    }
 }
 ```
 
 ### Similarity Parameters
 
-| Parameter | Description |
-|-----------|-------------|
-| `compare` | Raw Vector to compare against |
-| `compare_embed` | Generate embedding from text via Vertex AI |
-| `method` | Distance function: `L2`, `COSINE`, `INNER_PRODUCT` |
-| `within` | Max distance (results further are excluded) |
-| `where` | Additional filters |
-| `limit` | Max results to return |
+| Parameter       | Description                                        |
+| --------------- | -------------------------------------------------- |
+| `compare`       | Raw Vector to compare against                      |
+| `compare_embed` | Generate embedding from text via Vertex AI         |
+| `method`        | Distance function: `L2`, `COSINE`, `INNER_PRODUCT` |
+| `within`        | Max distance (results further are excluded)        |
+| `where`         | Additional filters                                 |
+| `limit`         | Max results to return                              |
 
 ### Custom Embeddings
 
 Pass pre-computed vectors directly:
 
 ```graphql
-mutation StoreCustomEmbedding($id: UUID!, $embedding: Vector!) @auth(level: USER) {
-  movie_update(id: $id, data: { descriptionEmbedding: $embedding })
+mutation StoreCustomEmbedding($id: UUID!, $embedding: Vector!)
+@auth(level: USER) {
+    movie_update(id: $id, data: { descriptionEmbedding: $embedding })
 }
 
 query SearchWithCustomVector($vector: Vector!) @auth(level: PUBLIC) {
-  movies_descriptionEmbedding_similarity(
-    compare: $vector,
-    method: COSINE,
-    limit: 10
-  ) { id title }
+    movies_descriptionEmbedding_similarity(
+        compare: $vector
+        method: COSINE
+        limit: 10
+    ) {
+        id
+        title
+    }
 }
 ```
 
@@ -101,9 +110,9 @@ Fast keyword/phrase search using PostgreSQL's full-text capabilities.
 
 ```graphql
 type Movie @table {
-  title: String! @searchable
-  description: String @searchable(language: "english")
-  genre: String @searchable
+    title: String! @searchable
+    description: String @searchable(language: "english")
+    genre: String @searchable
 }
 ```
 
@@ -113,36 +122,43 @@ SQL Connect generates `_search` fields:
 
 ```graphql
 query SearchMovies($query: String!) @auth(level: PUBLIC) {
-  movies_search(
-    query: $query,
-    queryFormat: QUERY,  # QUERY, PLAIN, PHRASE, or ADVANCED
-    limit: 20
-  ) {
-    id title description
-    _metadata { relevance }  # Relevance score
-  }
+    movies_search(
+        query: $query
+        queryFormat: QUERY # QUERY, PLAIN, PHRASE, or ADVANCED
+        limit: 20
+    ) {
+        id
+        title
+        description
+        _metadata {
+            relevance
+        } # Relevance score
+    }
 }
 ```
 
 ### Query Formats
 
-| Format | Description |
-|--------|-------------|
-| `QUERY` | Web-style (default): quotes, AND, OR supported |
-| `PLAIN` | Match all words, any order |
-| `PHRASE` | Match exact phrase |
-| `ADVANCED` | Full tsquery syntax |
+| Format     | Description                                    |
+| ---------- | ---------------------------------------------- |
+| `QUERY`    | Web-style (default): quotes, AND, OR supported |
+| `PLAIN`    | Match all words, any order                     |
+| `PHRASE`   | Match exact phrase                             |
+| `ADVANCED` | Full tsquery syntax                            |
 
 ### Tuning Results
 
 ```graphql
 query SearchWithThreshold($query: String!) @auth(level: PUBLIC) {
-  movies_search(
-    query: $query,
-    relevanceThreshold: 0.05,  # Min relevance score
-    where: { genre: { eq: "Action" }},
-    orderBy: [{ releaseYear: DESC }]
-  ) { id title }
+    movies_search(
+        query: $query
+        relevanceThreshold: 0.05 # Min relevance score
+        where: { genre: { eq: "Action" } }
+        orderBy: [{ releaseYear: DESC }]
+    ) {
+        id
+        title
+    }
 }
 ```
 
@@ -172,7 +188,7 @@ export const onUserCreate = onMutationExecuted(
   (event) => {
     const variables = event.data.payload.variables;
     const returnedData = event.data.payload.data;
-    
+
     logger.info("User created:", returnedData);
     // Send welcome email, sync to analytics, etc.
   }
@@ -210,16 +226,18 @@ def on_user_create(event: dataconnect_fn.Event):
 ```typescript
 // Trigger on all User* mutations
 export const onUserMutation = onMutationExecuted(
-  { operation: "User*" },
-  (event) => { /* ... */ }
+    { operation: "User*" },
+    (event) => {
+        /* ... */
+    },
 );
 
 // Capture operation name
 export const onAnyMutation = onMutationExecuted(
-  { service: "myService", operation: "{operationName}" },
-  (event) => {
-    console.log("Operation:", event.params.operationName);
-  }
+    { service: "myService", operation: "{operationName}" },
+    (event) => {
+        console.log("Operation:", event.params.operationName);
+    },
 );
 ```
 
@@ -236,26 +254,30 @@ export const onAnyMutation = onMutationExecuted(
 
 ## Data Seeding & Bulk Operations
 
-### Local Prototyping with _insertMany
+### Local Prototyping with \_insertMany
 
 ```graphql
 mutation SeedMovies @transaction {
-  movie_insertMany(data: [
-    { id: "uuid-1", title: "Movie 1", genre: "Action" },
-    { id: "uuid-2", title: "Movie 2", genre: "Drama" },
-    { id: "uuid-3", title: "Movie 3", genre: "Comedy" }
-  ])
+    movie_insertMany(
+        data: [
+            { id: "uuid-1", title: "Movie 1", genre: "Action" }
+            { id: "uuid-2", title: "Movie 2", genre: "Drama" }
+            { id: "uuid-3", title: "Movie 3", genre: "Comedy" }
+        ]
+    )
 }
 ```
 
-### Reset Data with _upsertMany
+### Reset Data with \_upsertMany
 
 ```graphql
 mutation ResetData {
-  movie_upsertMany(data: [
-    { id: "uuid-1", title: "Movie 1", genre: "Action" },
-    { id: "uuid-2", title: "Movie 2", genre: "Drama" }
-  ])
+    movie_upsertMany(
+        data: [
+            { id: "uuid-1", title: "Movie 1", genre: "Action" }
+            { id: "uuid-2", title: "Movie 2", genre: "Drama" }
+        ]
+    )
 }
 ```
 
@@ -263,22 +285,22 @@ mutation ResetData {
 
 ```graphql
 mutation ClearMovies {
-  movie_deleteMany(all: true)
+    movie_deleteMany(all: true)
 }
 ```
 
 ### Production: Admin SDK Bulk Operations
 
 ```typescript
-import { initializeApp } from 'firebase-admin/app';
-import { getDataConnect } from 'firebase-admin/data-connect';
+import { initializeApp } from "firebase-admin/app";
+import { getDataConnect } from "firebase-admin/data-connect";
 
 const app = initializeApp();
 const dc = getDataConnect({ location: "us-central1", serviceId: "my-service" });
 
 const movies = [
-  { id: "uuid-1", title: "Movie 1", genre: "Action" },
-  { id: "uuid-2", title: "Movie 2", genre: "Drama" }
+    { id: "uuid-1", title: "Movie 1", genre: "Action" },
+    { id: "uuid-2", title: "Movie 2", genre: "Drama" },
 ];
 
 // Bulk insert

@@ -4,11 +4,11 @@
 
 The project uses the Firebase Local Emulator Suite for local development. The following emulators are configured:
 
-| Emulator    | Port |
-|-------------|------|
-| Auth        | 9099 |
-| App Hosting | 5050 |
-| Tasks       | 9499 |
+| Emulator    | Port           |
+| ----------- | -------------- |
+| Auth        | 9099           |
+| App Hosting | 5050           |
+| Tasks       | 9499           |
 | Emulator UI | 4000 (default) |
 
 ### Prerequisites
