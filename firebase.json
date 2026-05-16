@@ -1,37 +1,43 @@
 {
-  "functions": {
-    "source": "functions/plaster-calculator-functions",
-    "runtime": "nodejs24"
-  },
-  "apphosting": {
-    "backendId": "web",
-    "rootDir": "./apps/plaster-calculator-web",
-    "ignore": [
-      "node_modules",
-      ".next",
-      ".git",
-      "firebase-debug.log",
-      "firebase-debug.*.log"
-    ]
-  },
-  "emulators": {
     "apphosting": {
-      "port": 5050,
-      "rootDirectory": "./apps/plaster-calculator-web",
-      "startCommand": "yarn dev"
+        "backendId": "web",
+        "rootDir": "./apps/plaster-calculator-web",
+        "ignore": [
+            "node_modules",
+            ".next",
+            ".git",
+            "firebase-debug.log",
+            "firebase-debug.*.log"
+        ]
     },
-    "auth": {
-      "port": 9099
+    "dataconnect": {
+        "source": "./data"
     },
     "functions": {
-      "port": 5001
+        "source": "functions/plaster-calculator-functions",
+        "runtime": "nodejs24"
     },
-    "tasks": {
-      "port": 9499
-    },
-    "ui": {
-      "enabled": true
-    },
-    "singleProjectMode": true
-  }
+    "emulators": {
+        "apphosting": {
+            "port": 5050,
+            "rootDirectory": "./apps/plaster-calculator-web",
+            "startCommand": "yarn dev"
+        },
+        "auth": {
+            "port": 9099
+        },
+        "functions": {
+            "port": 5001
+        },
+        "tasks": {
+            "port": 9499
+        },
+        "ui": {
+            "enabled": true
+        },
+        "singleProjectMode": true,
+        "dataconnect": {
+            "dataDir": "tmp/data/dataconnect"
+        }
+    }
 }

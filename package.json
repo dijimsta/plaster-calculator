@@ -1,21 +1,22 @@
 {
-  "name": "@inivi/plaster-calculator",
-  "type": "module",
-  "private": true,
-  "workspaces": [
-    "apps/plaster-calculator-web",
-    "functions/plaster-calculator-functions"
-  ],
-  "scripts": {
-    "build": "tsc --build tsconfig.build.json",
-    "deploy": "firebase deploy",
-    "start": "yarn build && firebase emulators:start"
-  },
-  "devDependencies": {
-    "firebase-tools": "^15.18.0",
-    "nx": "22.7.2",
-    "prettier": "^3.8.3",
-    "typescript": "^6.0.3"
-  },
-  "packageManager": "yarn@4.14.1"
+    "name": "@inivi/plaster-calculator",
+    "type": "module",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "functions/*",
+        "libraries/*"
+    ],
+    "scripts": {
+        "build": "tsc --build tsconfig.build.json",
+        "deploy": "firebase deploy",
+        "start": "yarn build && firebase emulators:start"
+    },
+    "devDependencies": {
+        "firebase-tools": "^15.18.0",
+        "nx": "22.7.2",
+        "prettier": "^3.8.3",
+        "typescript": "^6.0.3"
+    },
+    "packageManager": "yarn@4.14.1"
 }

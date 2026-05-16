@@ -432,16 +432,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dataconnect/generated@file:src/dataconnect-generated::locator=%40inivi%2Fplaster-calculator-web%40workspace%3Aapps%2Fplaster-calculator-web":
-  version: 1.0.0
-  resolution: "@dataconnect/generated@file:src/dataconnect-generated#src/dataconnect-generated::hash=d364f0&locator=%40inivi%2Fplaster-calculator-web%40workspace%3Aapps%2Fplaster-calculator-web"
-  peerDependencies:
-    "@tanstack-query-firebase/react": ^2.0.0
-    firebase: ^12.11.0
-  checksum: 10c0/f90901315e4dc9a88c48a68d98036fc977efc479e911181ad09cb1358e00fe29ddbe0d40fa737f41a410551976bb9de1d17cfd0eb88435eb17adef3fd49d03d1
-  languageName: node
-  linkType: hard
-
 "@electric-sql/pglite-tools@npm:^0.2.8":
   version: 0.2.21
   resolution: "@electric-sql/pglite-tools@npm:0.2.21"
@@ -1480,10 +1470,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@inivi/example-data-connector@workspace:*, @inivi/example-data-connector@workspace:libraries/example-data-connector":
+  version: 0.0.0-use.local
+  resolution: "@inivi/example-data-connector@workspace:libraries/example-data-connector"
+  peerDependencies:
+    firebase-admin: ^13.4.0
+  languageName: unknown
+  linkType: soft
+
 "@inivi/plaster-calculator-functions@workspace:functions/plaster-calculator-functions":
   version: 0.0.0-use.local
   resolution: "@inivi/plaster-calculator-functions@workspace:functions/plaster-calculator-functions"
   dependencies:
+    "@inivi/example-data-connector": "workspace:*"
     firebase-admin: "npm:^13.10.0"
     firebase-functions: "npm:^7.2.5"
     firebase-functions-test: "npm:^3.5.0"
@@ -1496,7 +1495,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@inivi/plaster-calculator-web@workspace:apps/plaster-calculator-web"
   dependencies:
-    "@dataconnect/generated": "file:src/dataconnect-generated"
     "@types/react": "npm:^19.2.14"
     "@types/react-dom": "npm:^19.2.3"
     firebase: "npm:^12.13.0"
