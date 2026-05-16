@@ -17,7 +17,7 @@ const app =
     getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
 export const auth = getAuth(app);
-export const functions = getFunctions(app);
+export const functions = getFunctions(app, "us-west1");
 export const storage = getStorage(app);
 
 if (process.env.NODE_ENV === "development") {

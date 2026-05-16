@@ -36,6 +36,8 @@ import {
     type CallableRequest,
 } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
+import { GoogleAuth } from "google-auth-library";
+import JSZip from "jszip";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -175,21 +177,97 @@ interface ExportProjectCsvResponse {
     csv: string;
 }
 
-const processingStrategies: ProcessingStrategyInfo[] = [
+const FLOORPLAN_ANALYZER_REGION = "us-west1";
+
+type FloorplanAnalyzerEndpoint =
+    | "ocr_flood_fill_smoothed"
+    | "ocr_flood_fill"
+    | "xixi_process";
+
+interface ProcessingStrategy extends ProcessingStrategyInfo {
+    endpoint: FloorplanAnalyzerEndpoint;
+    queryParams: Record<string, string>;
+    polygonsKey: "rooms" | "walls";
+}
+
+const processingStrategies: ProcessingStrategy[] = [
     {
-        key: "mock-empty-overlay",
-        label: "Mock empty overlay",
+        key: "ocr-flood-fill-smoothed",
+        label: "Detected rooms (OCR + smoothed polygons)",
         description:
-            "Creates editable placeholder pages until real processing is implemented.",
+            "Reads room labels with OCR, floods within wall masks, and smooths polygons for editing.",
         defaultStrategy: true,
+        endpoint: "ocr_flood_fill_smoothed",
+        queryParams: {},
+        polygonsKey: "rooms",
     },
     {
-        key: "mock-detected-rooms",
-        label: "Mock detected rooms",
-        description: "Creates a sample detected room overlay for UI testing.",
+        key: "ocr-flood-fill",
+        label: "Detected rooms (OCR flood fill)",
+        description: "Reads room labels with OCR and floods within wall masks.",
         defaultStrategy: false,
+        endpoint: "ocr_flood_fill",
+        queryParams: {},
+        polygonsKey: "rooms",
+    },
+    {
+        key: "xixi-process",
+        label: "Wall contour segmentation",
+        description:
+            "Extracts walls and rooms from the segmentation map without OCR seeds.",
+        defaultStrategy: false,
+        endpoint: "xixi_process",
+        queryParams: {},
+        polygonsKey: "walls",
     },
 ];
+
+interface AnalyzerPolygon {
+    id?: number;
+    label?: string;
+    polygon?: number[][];
+    bbox?: number[];
+    room_type?: string | null;
+    area_px?: number;
+    pixel_area_px?: number;
+    perimeter_px?: number;
+    approx_length_px?: number;
+    is_hole?: boolean;
+}
+
+interface AnalyzerResult {
+    image_size_px?: { width: number; height: number };
+    rooms?: AnalyzerPolygon[];
+    walls?: AnalyzerPolygon[];
+    strategy?: string;
+    ocr_seed_count?: number;
+    room_count?: number;
+    wall_count?: number;
+}
+
+interface OverlayArea {
+    id: string;
+    label: string;
+    points: [number, number][];
+    wallPlasterType: string;
+    ceilingPlasterType: string;
+    ceilingMode: "flat";
+    isOutdoor: boolean;
+    source: "detected";
+    deleted: false;
+    sourceRoomType: string | null;
+    sourceAreaPx?: number;
+    sourceApproxLengthPx?: number;
+    sourceIsHole?: boolean;
+}
+
+interface OverlayDocument {
+    sourceFile?: string;
+    imageSizePx?: { width: number; height: number };
+    areas: OverlayArea[];
+}
+
+const googleAuth = new GoogleAuth();
 
 function requireAuth(request: CallableRequest<unknown>) {
     const auth = request.auth;
@@ -337,6 +415,8 @@ export const createProjectFromUpload = onCall<
         throw new HttpsError("not-found", "Uploaded file was not found.");
     }
 
+    const originalUrl = await ensureFileDownloadUrl(storagePath);
+
     const uploadType = inferUploadType(originalFileName, contentType);
     const pageCount = uploadType === "PDF" ? 3 : 1;
     const response = await dcCreateProjectFromUpload({
@@ -345,7 +425,7 @@ export const createProjectFromUpload = onCall<
         name,
         originalFileName,
         uploadType,
-        originalPath: storagePath,
+        originalPath: originalUrl,
         status: "DRAFT",
         pageCount,
     });
@@ -433,7 +513,7 @@ export const listProcessingStrategies = onCall<
 export const processProject = onCall<
     ProcessProjectRequest,
     Promise<ProjectDetail>
->(async (request) => {
+>({ timeoutSeconds: 540, memory: "512MiB" }, async (request) => {
     const auth = requireAuth(request);
     const projectId = readRequiredString(request.data.projectId, "Project ID");
     const project = await requireOwnedProject(projectId, auth.uid);
@@ -441,12 +521,20 @@ export const processProject = onCall<
     const strategyKey = readOptionalString(request.data.strategyKey);
     const strategy =
         processingStrategies.find((item) => item.key === strategyKey) ??
+        processingStrategies.find((item) => item.defaultStrategy) ??
         processingStrategies[0];
 
     if (!strategy) {
         throw new HttpsError(
             "internal",
             "No processing strategy is configured.",
+        );
+    }
+
+    if (project.uploadType !== "IMAGE") {
+        throw new HttpsError(
+            "unimplemented",
+            "PDF processing is not yet wired to floorplan-analyzer. Upload the floorplan as an image to run analysis.",
         );
     }
 
@@ -457,22 +545,33 @@ export const processProject = onCall<
     });
     await dcDeleteFloorplanPages({ projectId });
 
-    for (const pageNumber of pageNumbers) {
-        const page = createMockPage(pageNumber, strategy.key);
-        await dcCreateFloorplanPage({
-            projectId,
-            pageNumber: page.pageNumber,
-            status: page.status,
-            sourceImagePath: page.imageUrl,
-            previewImagePath: page.previewUrl,
-            overlayJson: page.overlay,
-            scaleMmPerPx: page.scaleMmPerPx,
-            ceilingHeightMm: page.ceilingHeightMm,
-            referencePointsJson: page.referencePoints,
-            referenceLengthMm: page.referenceLengthMm,
-            processingStrategy: page.processingStrategy ?? null,
-            processingMetadataJson: page.processingMetadata ?? null,
+    try {
+        const imageBytes = await fetchOriginalImage(project.originalPath);
+        for (const pageNumber of pageNumbers) {
+            await analysePage(
+                auth.uid,
+                projectId,
+                pageNumber,
+                project.originalPath,
+                project.originalFileName,
+                imageBytes,
+                strategy,
+            );
+        }
+    } catch (error) {
+        const message =
+            error instanceof Error
+                ? error.message
+                : "Floorplan analysis failed.";
+        logger.error("processProject failed", { projectId, message });
+        await touchProject({
+            id: projectId,
+            status: "FAILED",
+            processingError: message,
         });
+        throw error instanceof HttpsError
+            ? error
+            : new HttpsError("internal", message);
     }
 
     await touchProject({
@@ -779,49 +878,319 @@ function encodeStoragePath(path: string) {
         .join("/");
 }
 
-function createMockPage(
+async function analysePage(
+    uid: string,
+    projectId: string,
     pageNumber: number,
-    strategyKey: string,
-): FloorplanPage {
-    const now = new Date().toISOString();
-    const overlay =
-        strategyKey === "mock-detected-rooms"
-            ? {
-                  imageSizePx: { width: 1200, height: 900 },
-                  areas: [
-                      {
-                          id: randomUUID(),
-                          label: `Area ${pageNumber}`,
-                          points: [
-                              [180, 180],
-                              [620, 180],
-                              [620, 480],
-                              [180, 480],
-                          ],
-                          wallPlasterType: "Recessed Edge",
-                          ceilingPlasterType: "Recessed Edge",
-                          source: "detected",
-                          deleted: false,
-                      },
-                  ],
-              }
-            : { imageSizePx: { width: 1200, height: 900 }, areas: [] };
+    originalUrl: string,
+    originalFileName: string,
+    imageBytes: Buffer,
+    strategy: ProcessingStrategy,
+): Promise<void> {
+    const { result, floorplanPng } = await callFloorplanAnalyzer(
+        strategy.endpoint,
+        imageBytes,
+        originalFileName,
+        strategy.queryParams,
+    );
 
-    return {
-        id: randomUUID(),
+    const overlay = buildOverlayFromAnalyzerResult(
+        strategy,
+        originalFileName,
+        result,
+    );
+
+    const floorplanPath = `uploads/${uid}/projects/${projectId}/pages/${pageNumber}/floorplan.png`;
+    const floorplanUrl = await uploadStorageBuffer(
+        floorplanPath,
+        floorplanPng,
+        "image/png",
+    );
+
+    const jsonPath = `uploads/${uid}/projects/${projectId}/pages/${pageNumber}/result.json`;
+    const jsonUrl = await uploadStorageBuffer(
+        jsonPath,
+        Buffer.from(JSON.stringify(result), "utf-8"),
+        "application/json",
+    );
+
+    await dcCreateFloorplanPage({
+        projectId,
         pageNumber,
         status: "READY",
-        imageUrl: mockImageDataUrl(`Project page ${pageNumber}`),
-        previewUrl: mockImageDataUrl(`Preview ${pageNumber}`),
-        overlay: JSON.stringify(overlay),
+        sourceImagePath: originalUrl,
+        previewImagePath: floorplanUrl,
+        overlayJson: JSON.stringify(overlay),
         scaleMmPerPx: null,
         ceilingHeightMm: null,
-        referencePoints: null,
+        referencePointsJson: null,
         referenceLengthMm: null,
-        processingStrategy: strategyKey,
-        processingMetadata: JSON.stringify({ mocked: true }),
-        updatedAt: now,
+        processingStrategy: strategy.key,
+        processingMetadataJson: JSON.stringify({
+            strategy: strategy.key,
+            endpoint: strategy.endpoint,
+            polygonsKey: strategy.polygonsKey,
+            imageSizePx: result.image_size_px ?? null,
+            roomCount: overlay.areas.length,
+            ocrSeedCount: result.ocr_seed_count ?? null,
+            jsonUrl,
+            floorplanUrl,
+        }),
+    });
+}
+
+async function fetchOriginalImage(originalUrl: string): Promise<Buffer> {
+    if (!originalUrl) {
+        throw new HttpsError(
+            "failed-precondition",
+            "Project is missing an uploaded image.",
+        );
+    }
+
+    const response = await fetch(originalUrl);
+    if (!response.ok) {
+        throw new HttpsError(
+            "internal",
+            `Could not fetch the uploaded image (HTTP ${response.status}).`,
+        );
+    }
+
+    return Buffer.from(await response.arrayBuffer());
+}
+
+async function callFloorplanAnalyzer(
+    endpoint: FloorplanAnalyzerEndpoint,
+    imageBytes: Buffer,
+    filename: string,
+    queryParams: Record<string, string>,
+): Promise<{ result: AnalyzerResult; floorplanPng: Buffer }> {
+    const url = floorplanAnalyzerUrl(endpoint, queryParams);
+    const form = new FormData();
+    const arrayBuffer = imageBytes.buffer.slice(
+        imageBytes.byteOffset,
+        imageBytes.byteOffset + imageBytes.byteLength,
+    ) as ArrayBuffer;
+    const blob = new Blob([arrayBuffer], {
+        type: "application/octet-stream",
+    });
+    form.append("image", blob, filename || "upload.bin");
+
+    const headers: Record<string, string> = {};
+    if (!isEmulator()) {
+        const audience = audienceForEndpoint(endpoint);
+        headers["Authorization"] = `Bearer ${await getIdToken(audience)}`;
+    }
+
+    const response = await fetch(url, {
+        method: "POST",
+        body: form,
+        headers,
+    });
+
+    if (!response.ok) {
+        const text = await response.text().catch(() => "");
+        throw new HttpsError(
+            "internal",
+            `floorplan-analyzer ${endpoint} failed (HTTP ${response.status})${text ? `: ${text}` : ""}`,
+        );
+    }
+
+    const zipBuffer = Buffer.from(await response.arrayBuffer());
+    const zip = await JSZip.loadAsync(zipBuffer);
+
+    const jsonFile =
+        zip.file("rooms.json") ??
+        zip.file("walls.json") ??
+        zip.file("result.json");
+    if (!jsonFile) {
+        throw new HttpsError(
+            "internal",
+            "floorplan-analyzer response was missing rooms.json/walls.json.",
+        );
+    }
+
+    const pngFile = zip.file("floorplan.png");
+    if (!pngFile) {
+        throw new HttpsError(
+            "internal",
+            "floorplan-analyzer response was missing floorplan.png.",
+        );
+    }
+
+    const result = JSON.parse(await jsonFile.async("string")) as AnalyzerResult;
+    const floorplanPng = Buffer.from(await pngFile.async("uint8array"));
+
+    return { result, floorplanPng };
+}
+
+function floorplanAnalyzerUrl(
+    endpoint: FloorplanAnalyzerEndpoint,
+    queryParams: Record<string, string>,
+): string {
+    const project = projectId();
+    const query = toQueryString(queryParams);
+    if (isEmulator()) {
+        const host = process.env["FUNCTIONS_EMULATOR_HOST"] ?? "127.0.0.1:5001";
+        return `http://${host}/${project}/${FLOORPLAN_ANALYZER_REGION}/${endpoint}${query}`;
+    }
+    return `https://${FLOORPLAN_ANALYZER_REGION}-${project}.cloudfunctions.net/${endpoint}${query}`;
+}
+
+function audienceForEndpoint(endpoint: FloorplanAnalyzerEndpoint): string {
+    const project = projectId();
+    return `https://${FLOORPLAN_ANALYZER_REGION}-${project}.cloudfunctions.net/${endpoint}`;
+}
+
+function toQueryString(queryParams: Record<string, string>): string {
+    const entries = Object.entries(queryParams);
+    if (entries.length === 0) {
+        return "";
+    }
+    const search = new URLSearchParams(entries);
+    return `?${search.toString()}`;
+}
+
+async function getIdToken(audience: string): Promise<string> {
+    const client = await googleAuth.getIdTokenClient(audience);
+    return client.idTokenProvider.fetchIdToken(audience);
+}
+
+function buildOverlayFromAnalyzerResult(
+    strategy: ProcessingStrategy,
+    sourceFile: string,
+    result: AnalyzerResult,
+): OverlayDocument {
+    const items =
+        strategy.polygonsKey === "walls"
+            ? (result.walls ?? [])
+            : (result.rooms ?? []);
+    const areas = items
+        .map((item) => analyzerItemToOverlayArea(item))
+        .filter((area): area is OverlayArea => area !== null);
+    return {
+        sourceFile,
+        ...(result.image_size_px ? { imageSizePx: result.image_size_px } : {}),
+        areas,
     };
+}
+
+function analyzerItemToOverlayArea(item: AnalyzerPolygon): OverlayArea | null {
+    if (!Array.isArray(item.polygon) || item.polygon.length < 3) {
+        return null;
+    }
+
+    const points: [number, number][] = [];
+    for (const pt of item.polygon) {
+        if (
+            Array.isArray(pt) &&
+            pt.length >= 2 &&
+            typeof pt[0] === "number" &&
+            typeof pt[1] === "number"
+        ) {
+            points.push([pt[0], pt[1]]);
+        }
+    }
+    if (points.length < 3) {
+        return null;
+    }
+
+    const roomType = item.room_type ?? null;
+    const isOutdoor = roomType === "Outdoor";
+    const candidateLabel =
+        (typeof item.label === "string" && item.label.trim()) ||
+        (roomType ? roomType : "") ||
+        (typeof item.id === "number" ? `Area ${item.id}` : "Area");
+
+    const area: OverlayArea = {
+        id: randomUUID(),
+        label: candidateLabel,
+        points,
+        wallPlasterType: "Recessed Edge",
+        ceilingPlasterType: "Recessed Edge",
+        ceilingMode: "flat",
+        isOutdoor,
+        source: "detected",
+        deleted: false,
+        sourceRoomType: roomType,
+    };
+
+    if (typeof item.area_px === "number") {
+        area.sourceAreaPx = item.area_px;
+    }
+    if (typeof item.approx_length_px === "number") {
+        area.sourceApproxLengthPx = item.approx_length_px;
+    } else if (typeof item.perimeter_px === "number") {
+        area.sourceApproxLengthPx = item.perimeter_px;
+    }
+    if (typeof item.is_hole === "boolean") {
+        area.sourceIsHole = item.is_hole;
+    }
+
+    return area;
+}
+
+async function uploadStorageBuffer(
+    path: string,
+    body: Buffer,
+    contentType: string,
+): Promise<string> {
+    const token = randomUUID();
+    const bucket = getStorage().bucket();
+    const file = bucket.file(path);
+    await file.save(body, {
+        contentType,
+        metadata: {
+            metadata: {
+                firebaseStorageDownloadTokens: token,
+            },
+        },
+    });
+    return firebaseStorageDownloadUrl(bucket.name, path, token);
+}
+
+async function ensureFileDownloadUrl(path: string): Promise<string> {
+    const bucket = getStorage().bucket();
+    const file = bucket.file(path);
+    const [metadata] = await file.getMetadata();
+    const customMetadata = (metadata.metadata ?? {}) as Record<string, unknown>;
+    const existing = customMetadata["firebaseStorageDownloadTokens"];
+    let token = typeof existing === "string" ? existing.split(",")[0] : "";
+    if (!token) {
+        token = randomUUID();
+        await file.setMetadata({
+            metadata: { firebaseStorageDownloadTokens: token },
+        });
+    }
+    return firebaseStorageDownloadUrl(bucket.name, path, token);
+}
+
+function firebaseStorageDownloadUrl(
+    bucketName: string,
+    path: string,
+    token: string,
+): string {
+    const emulatorHost =
+        process.env["STORAGE_EMULATOR_HOST"] ??
+        process.env["FIREBASE_STORAGE_EMULATOR_HOST"];
+    const base = emulatorHost
+        ? emulatorHost.startsWith("http")
+            ? emulatorHost
+            : `http://${emulatorHost}`
+        : "https://firebasestorage.googleapis.com";
+    return `${base}/v0/b/${bucketName}/o/${encodeURIComponent(path)}?alt=media&token=${token}`;
+}
+
+function isEmulator(): boolean {
+    return Boolean(process.env["FUNCTIONS_EMULATOR"]);
+}
+
+function projectId(): string {
+    return (
+        process.env["GCLOUD_PROJECT"] ??
+        process.env["GCP_PROJECT"] ??
+        process.env["FIREBASE_PROJECT"] ??
+        "plaster-calculator"
+    );
 }
 
 function mockImageDataUrl(label: string) {
