@@ -1,6 +1,7 @@
 # Configuration Reference
 
 ## Contents
+
 - [Project Structure](#project-structure)
 - [dataconnect.yaml](#dataconnectyaml)
 - [connector.yaml](#connectoryaml)
@@ -37,34 +38,34 @@ serviceId: "my-service"
 location: "us-central1"
 schemaValidation: "STRICT" # or "COMPATIBLE"
 schema:
-  source: "./schema"
-  datasource:
-    postgresql:
-      database: "fdcdb"
-      cloudSql:
-        instanceId: "my-instance"
+    source: "./schema"
+    datasource:
+        postgresql:
+            database: "fdcdb"
+            cloudSql:
+                instanceId: "my-instance"
 connectorDirs: ["./connector"]
 ```
 
-| Field | Description |
-|-------|-------------|
-| `specVersion` | Always `"v1"` |
-| `serviceId` | Unique identifier for the service |
-| `location` | GCP region (us-central1, us-east4, europe-west1, etc.) |
-| `schemaValidation` | Deployment mode: `"STRICT"` (must match exactly) or `"COMPATIBLE"` (backward compatible) |
-| `schema.source` | Path to schema directory |
-| `schema.datasource` | PostgreSQL connection config |
-| `connectorDirs` | List of connector directories |
+| Field               | Description                                                                              |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| `specVersion`       | Always `"v1"`                                                                            |
+| `serviceId`         | Unique identifier for the service                                                        |
+| `location`          | GCP region (us-central1, us-east4, europe-west1, etc.)                                   |
+| `schemaValidation`  | Deployment mode: `"STRICT"` (must match exactly) or `"COMPATIBLE"` (backward compatible) |
+| `schema.source`     | Path to schema directory                                                                 |
+| `schema.datasource` | PostgreSQL connection config                                                             |
+| `connectorDirs`     | List of connector directories                                                            |
 
 ### Cloud SQL Configuration
 
 ```yaml
 schema:
-  datasource:
-    postgresql:
-      database: "my-database"      # Database name
-      cloudSql:
-        instanceId: "my-instance"  # Cloud SQL instance ID
+    datasource:
+        postgresql:
+            database: "my-database" # Database name
+            cloudSql:
+                instanceId: "my-instance" # Cloud SQL instance ID
 ```
 
 ---
@@ -76,24 +77,24 @@ Connector configuration and SDK generation:
 ```yaml
 connectorId: "default"
 generate:
-  javascriptSdk:
-    outputDir: "../web/src/lib/dataconnect"
-    package: "@myapp/dataconnect"
-  kotlinSdk:
-    outputDir: "../android/app/src/main/kotlin/com/myapp/dataconnect"
-    package: "com.myapp.dataconnect"
-  swiftSdk:
-    outputDir: "../ios/MyApp/DataConnect"
+    javascriptSdk:
+        outputDir: "../web/src/lib/dataconnect"
+        package: "@myapp/dataconnect"
+    kotlinSdk:
+        outputDir: "../android/app/src/main/kotlin/com/myapp/dataconnect"
+        package: "com.myapp.dataconnect"
+    swiftSdk:
+        outputDir: "../ios/MyApp/DataConnect"
 ```
 
 ### SDK Generation Options
 
-| SDK | Fields |
-|-----|--------|
-| `javascriptSdk` | `outputDir`, `package` |
-| `kotlinSdk` | `outputDir`, `package` |
-| `swiftSdk` | `outputDir` |
-| `nodeAdminSdk` | `outputDir`, `package` (for Admin SDK) |
+| SDK             | Fields                                 |
+| --------------- | -------------------------------------- |
+| `javascriptSdk` | `outputDir`, `package`                 |
+| `kotlinSdk`     | `outputDir`, `package`                 |
+| `swiftSdk`      | `outputDir`                            |
+| `nodeAdminSdk`  | `outputDir`, `package` (for Admin SDK) |
 
 ---
 
@@ -160,6 +161,7 @@ npx -y firebase-tools@latest emulators:start --only dataconnect
 ```
 
 Default ports:
+
 - SQL Connect: `9399`
 - PostgreSQL: `9939` (local PostgreSQL instance)
 
@@ -167,11 +169,11 @@ Default ports:
 
 ```json
 {
-  "emulators": {
-    "dataconnect": {
-      "port": 9399
+    "emulators": {
+        "dataconnect": {
+            "port": 9399
+        }
     }
-  }
 }
 ```
 
@@ -232,6 +234,7 @@ npx -y firebase-tools@latest dataconnect:sql:migrate --force
 ### Breaking Changes
 
 Some schema changes require special handling:
+
 - Removing required fields
 - Changing field types
 - Removing tables
@@ -244,7 +247,7 @@ Use `--force` flag to acknowledge breaking changes during deploy.
 # GitHub Actions example
 - name: Deploy SQL Connect
   run: |
-    npx -y firebase-tools@latest deploy --only dataconnect --token ${{ secrets.FIREBASE_TOKEN }} --force
+      npx -y firebase-tools@latest deploy --only dataconnect --token ${{ secrets.FIREBASE_TOKEN }} --force
 ```
 
 ---
@@ -252,6 +255,7 @@ Use `--force` flag to acknowledge breaking changes during deploy.
 ## VS Code Extension
 
 Install "Firebase SQL Connect" extension for:
+
 - Schema intellisense and validation
 - GraphQL operation testing
 - Emulator integration
@@ -261,7 +265,7 @@ Install "Firebase SQL Connect" extension for:
 
 ```json
 {
-  "firebase.dataConnect.autoGenerateSdk": true,
-  "firebase.dataConnect.emulator.port": 9399
+    "firebase.dataConnect.autoGenerateSdk": true,
+    "firebase.dataConnect.emulator.port": 9399
 }
 ```

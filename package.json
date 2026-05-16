@@ -12,6 +12,8 @@
         "deploy": "firebase deploy",
         "deploy:dataconnect": "firebase deploy --only dataconnect",
         "deploy:functions": "firebase deploy --only functions",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
         "start": "yarn build && firebase emulators:start"
     },
     "devDependencies": {
