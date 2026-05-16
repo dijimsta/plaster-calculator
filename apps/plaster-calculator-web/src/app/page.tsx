@@ -100,7 +100,7 @@ export default function LoginPage() {
         <div className={styles["brand"]}>
           <h1 className={styles["logo"]}>Plaster Calculator</h1>
           <p className={styles["tagline"]}>
-            Calculate plaster quantities quickly and accurately for any project.
+            Quote your plastering quickly and accurately for any project.
           </p>
         </div>
 
