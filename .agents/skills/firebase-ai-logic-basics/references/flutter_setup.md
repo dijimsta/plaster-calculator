@@ -4,6 +4,7 @@ This guide covers how to integrate Firebase AI Logic (Gemini API) into your Flut
 
 > [!IMPORTANT]
 > **Foundational Workflows & CLI-First Approach:**
+>
 > 1. **Review Foundation:** Before implementing platform-specific code, ALWAYS review the foundational `firebase-basics` skill to ensure familiarity with core workflows.
 > 2. **Backend Provisioning via CLI:** Use the Firebase CLI for backend setup. Running `npx firebase-tools init ailogic` is MANDATORY to provision the service. `flutterfire configure` does NOT enable the AI service and will result in `PERMISSION_DENIED` if skipped.
 > 3. **Client Configuration:** Use `flutterfire configure` strictly for generating `firebase_options.dart`. Avoid manual Console configuration.
@@ -17,11 +18,11 @@ Add the necessary Firebase dependencies to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter:
-    sdk: flutter
-  firebase_core: ^4.0.0
-  firebase_auth: ^6.0.0
-  firebase_ai: ^3.0.0
+    flutter:
+        sdk: flutter
+    firebase_core: ^4.0.0
+    firebase_auth: ^6.0.0
+    firebase_ai: ^3.0.0
 ```
 
 Run `flutter pub get` to install the packages.
@@ -61,7 +62,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 Future<String> generateText(String prompt) async {
   final googleAI = FirebaseAI.googleAI(auth: FirebaseAuth.instance);
-  
+
   // Use the latest Gemini Flash model
   final model = googleAI.generativeModel(model: 'gemini-flash-latest');
 

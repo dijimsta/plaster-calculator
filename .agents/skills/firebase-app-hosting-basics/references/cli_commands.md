@@ -6,14 +6,14 @@ The Firebase CLI provides a comprehensive suite of commands to manage App Hostin
 
 ### `npx -y firebase-tools@latest init apphosting`
 
-- **Purpose**: Interactive command that sets up App Hosting in your local project. 
-Use this command only if you are able to handle interactive CLI inputs well. 
-Alternatively, you can manually edit `firebase.json` and `apphosting.yml`.
+- **Purpose**: Interactive command that sets up App Hosting in your local project.
+  Use this command only if you are able to handle interactive CLI inputs well.
+  Alternatively, you can manually edit `firebase.json` and `apphosting.yml`.
 
 - **Effect**:
-  - Detects your web framework.
-  - Creates/updates `apphosting.yaml`.
-  - Can optionally create a backend if one doesn't exist.
+    - Detects your web framework.
+    - Creates/updates `apphosting.yaml`.
+    - Can optionally create a backend if one doesn't exist.
 
 ## Backend Management
 
@@ -55,17 +55,16 @@ App Hosting uses Cloud Secret Manager to securely handle sensitive environment v
 
 - **Purpose**: Manually triggers a new rollout (deployment).
 - **Options**:
-  - `--git-branch <branch>`: Deploy the latest commit from a specific branch.
-  - `--git-commit <commit-hash>`: Deploy a specific commit.
+    - `--git-branch <branch>`: Deploy the latest commit from a specific branch.
+    - `--git-commit <commit-hash>`: Deploy a specific commit.
 - **Use Case**: Useful for redeploying without code changes, or rolling back to a specific commit.
 
 ### `npx -y firebase-tools@latest apphosting:backends:create`
 
 - **Purpose**: Creates a new App Hosting backend. Use this when setting up automated deployments via GitHub.
 - **Options**:
-  - `--app <webAppId>`: The ID of an existing Firebase web app to associate with the backend.
-  - `--backend <backendId>`: The ID of the new backend.
-  - `--primary-region <location>`: The primary region for the backend.
-  - `--root-dir <rootDir>`: The root directory for the backend. If omitted, defaults to the root directory of the project.
-  - `--service-account <service-account>`: The service account used to run the server. If omitted, defaults to the default service account.
-  
+    - `--app <webAppId>`: The ID of an existing Firebase web app to associate with the backend.
+    - `--backend <backendId>`: The ID of the new backend.
+    - `--primary-region <location>`: The primary region for the backend.
+    - `--root-dir <rootDir>`: The root directory for the backend. If omitted, defaults to the root directory of the project.
+    - `--service-account <service-account>`: The service account used to run the server. If omitted, defaults to the default service account.

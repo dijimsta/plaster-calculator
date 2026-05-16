@@ -6,20 +6,20 @@ import { useRouter } from "next/navigation.js";
 import { useUser } from "../auth/user.hook.js";
 
 export function AuthGuard({ children }: PropsWithChildren) {
-  const router = useRouter();
-  const user = useUser();
+    const router = useRouter();
+    const user = useUser();
 
-  console.log({ user });
+    console.log({ user });
 
-  useEffect(() => {
-    if (user === null) {
-      router.replace("/");
+    useEffect(() => {
+        if (user === null) {
+            router.replace("/");
+        }
+    }, [user, router]);
+
+    if (user) {
+        return <>{children}</>;
+    } else {
+        return null;
     }
-  }, [user, router]);
-
-  if (user) {
-    return <>{children}</>;
-  } else {
-    return null;
-  }
 }
