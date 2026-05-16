@@ -83,18 +83,18 @@ const getPlanPageCallable = httpsCallable<
     { planId: string; pageId: string },
     PlanPage
 >(functions, "getPlanPage");
-const savePlanPageOverlayCallable = httpsCallable<
+const updatePlanPageCallable = httpsCallable<
     SavePageOverlayRequest,
     PlanPage
->(functions, "savePlanPageOverlay");
-const applyPlanCeilingHeightCallable = httpsCallable<
-    { planId: string; ceilingHeightMm: number | null },
+>(functions, "updatePlanPage");
+const updatePlanPagesCallable = httpsCallable<
+    {
+        planId: string;
+        scaleMmPerPx?: number | null;
+        ceilingHeightMm?: number | null;
+    },
     PlanDetail
->(functions, "applyPlanCeilingHeight");
-const applyPlanScaleCallable = httpsCallable<
-    { planId: string; scaleMmPerPx: number | null },
-    PlanDetail
->(functions, "applyPlanScale");
+>(functions, "updatePlanPages");
 const exportPlanCsvCallable = httpsCallable<
     { planId: string },
     ExportCsvResponse
@@ -175,7 +175,7 @@ export async function savePageOverlay(
     payload: unknown,
 ) {
     const body = payload as Partial<SavePageOverlayRequest>;
-    const result = await savePlanPageOverlayCallable({
+    const result = await updatePlanPageCallable({
         planId,
         pageId,
         overlay: body.overlay ?? { areas: [] },
@@ -191,7 +191,7 @@ export async function applyCeilingHeightToPlan(
     planId: string,
     ceilingHeightMm: number | null,
 ) {
-    const result = await applyPlanCeilingHeightCallable({
+    const result = await updatePlanPagesCallable({
         planId,
         ceilingHeightMm,
     });
@@ -202,7 +202,7 @@ export async function applyScaleToPlan(
     planId: string,
     scaleMmPerPx: number | null,
 ) {
-    const result = await applyPlanScaleCallable({ planId, scaleMmPerPx });
+    const result = await updatePlanPagesCallable({ planId, scaleMmPerPx });
     return result.data;
 }
 

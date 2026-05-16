@@ -8,34 +8,35 @@
  */
 
 import { getApps, initializeApp } from "firebase-admin/app";
+import { getStorage } from "firebase-admin/storage";
 import { randomUUID } from "node:crypto";
 import {
     createMovie,
+    createPlanFromUpload as dcCreatePlanFromUpload,
+    createPlanPage as dcCreatePlanPage,
     deleteMovie,
+    deletePlan as dcDeletePlan,
+    deletePlanPages as dcDeletePlanPages,
+    getPlanById,
+    getPlanPageById,
     listMovies,
+    listPlansByOwner,
+    renamePlan as dcRenamePlan,
+    touchPlan,
+    updatePlanPage as dcUpdatePlanPage,
+    type GetPlanByIdData,
+    type GetPlanPageByIdData,
     type ListMoviesData,
+    type ListPlansByOwnerData,
 } from "@inivi/example-data-connector";
 import { setGlobalOptions } from "firebase-functions";
 import {
-    onCall,
     HttpsError,
+    onCall,
     type CallableRequest,
 } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
 setGlobalOptions({ maxInstances: 10 });
 
 if (getApps().length === 0) {
@@ -43,6 +44,9 @@ if (getApps().length === 0) {
 }
 
 type Movie = ListMoviesData["movies"][number];
+type PlanListRow = ListPlansByOwnerData["plans"][number];
+type PlanWithPages = NonNullable<GetPlanByIdData["plan"]>;
+type PlanPageRow = NonNullable<GetPlanPageByIdData["planPage"]>;
 
 interface CreateExampleMovieRequest {
     title?: unknown;
@@ -57,74 +61,6 @@ interface DeleteExampleMovieRequest {
 interface ExampleMoviesResponse {
     movies: Movie[];
 }
-
-function requireAuth(request: CallableRequest<unknown>) {
-    const auth = request.auth;
-
-    if (!auth) {
-        throw new HttpsError(
-            "unauthenticated",
-            "Must be signed in to call this function.",
-        );
-    }
-
-    return auth;
-}
-
-function readRequiredString(value: unknown, field: string) {
-    if (typeof value !== "string" || value.trim().length === 0) {
-        throw new HttpsError("invalid-argument", `${field} is required.`);
-    }
-
-    return value.trim();
-}
-
-export const helloWorld = onCall((request) => {
-    const auth = requireAuth(request);
-    const name = auth.token["name"] ?? auth.token.email ?? "stranger";
-    logger.info("Hello logs!", { structuredData: true });
-    return { message: `Hello, ${name}!` };
-});
-
-export const listExampleMovies = onCall<
-    unknown,
-    Promise<ExampleMoviesResponse>
->(async (request) => {
-    requireAuth(request);
-
-    const response = await listMovies();
-    return { movies: response.data.movies };
-});
-
-export const createExampleMovie = onCall<
-    CreateExampleMovieRequest,
-    Promise<ExampleMoviesResponse>
->(async (request) => {
-    requireAuth(request);
-
-    await createMovie({
-        title: readRequiredString(request.data.title, "Title"),
-        genre: readRequiredString(request.data.genre, "Genre"),
-        imageUrl: readRequiredString(request.data.imageUrl, "Image URL"),
-    });
-
-    const response = await listMovies();
-    return { movies: response.data.movies };
-});
-
-export const deleteExampleMovie = onCall<
-    DeleteExampleMovieRequest,
-    Promise<ExampleMoviesResponse>
->(async (request) => {
-    requireAuth(request);
-
-    await deleteMovie({
-        id: readRequiredString(request.data.id, "Movie ID"),
-    });
-
-    const response = await listMovies();
-    return { movies: response.data.movies };
-});
 
 type UploadType = "PDF" | "IMAGE";
 type PlanStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
@@ -202,7 +138,7 @@ interface ProcessPlanRequest extends PlanIdRequest {
     strategyKey?: unknown;
 }
 
-interface SavePlanPageOverlayRequest extends PlanIdRequest {
+interface UpdatePlanPageRequest extends PlanIdRequest {
     pageId?: unknown;
     overlay?: unknown;
     scaleMmPerPx?: unknown;
@@ -211,12 +147,9 @@ interface SavePlanPageOverlayRequest extends PlanIdRequest {
     referenceLengthMm?: unknown;
 }
 
-interface ApplyPlanCeilingHeightRequest extends PlanIdRequest {
-    ceilingHeightMm?: unknown;
-}
-
-interface ApplyPlanScaleRequest extends PlanIdRequest {
+interface UpdatePlanPagesRequest extends PlanIdRequest {
     scaleMmPerPx?: unknown;
+    ceilingHeightMm?: unknown;
 }
 
 interface ExportPlanCsvResponse {
@@ -224,8 +157,6 @@ interface ExportPlanCsvResponse {
     mimeType: "text/csv";
     csv: string;
 }
-
-const mockPlans = new Map<string, PlanDetail>();
 
 const processingStrategies: ProcessingStrategyInfo[] = [
     {
@@ -243,282 +174,26 @@ const processingStrategies: ProcessingStrategyInfo[] = [
     },
 ];
 
-export const listPlans = onCall<unknown, { plans: PlanSummary[] }>(
-    (request) => {
-        const auth = requireAuth(request);
-        ensureSeedPlan(auth.uid);
+function requireAuth(request: CallableRequest<unknown>) {
+    const auth = request.auth;
 
-        const plans = Array.from(mockPlans.values())
-            .filter((plan) => plan.ownerId === auth.uid)
-            .sort((left, right) =>
-                right.updatedAt.localeCompare(left.updatedAt),
-            )
-            .map(toSummary);
-
-        return { plans };
-    },
-);
-
-export const createPlanFromUpload = onCall<
-    CreatePlanFromUploadRequest,
-    UploadResponse
->((request) => {
-    const auth = requireAuth(request);
-    const name = readRequiredString(request.data.name, "Name");
-    const originalFileName = readRequiredString(
-        request.data.originalFileName,
-        "Original file name",
-    );
-    const contentType = readRequiredString(
-        request.data.contentType,
-        "Content type",
-    );
-    const storagePath = readRequiredString(
-        request.data.storagePath,
-        "Storage path",
-    );
-    readRequiredNumber(request.data.size, "Size");
-
-    if (!storagePath.startsWith(`plans/${auth.uid}/uploads/`)) {
+    if (!auth) {
         throw new HttpsError(
-            "permission-denied",
-            "Upload path must belong to the signed-in user.",
+            "unauthenticated",
+            "Must be signed in to call this function.",
         );
     }
 
-    const now = new Date().toISOString();
-    const uploadType = inferUploadType(originalFileName, contentType);
-    const pageCount = uploadType === "PDF" ? 3 : 1;
-    const plan: PlanDetail = {
-        id: randomUUID(),
-        ownerId: auth.uid,
-        name,
-        originalFileName,
-        uploadType,
-        status: "DRAFT",
-        processingError: null,
-        createdAt: now,
-        updatedAt: now,
-        pageCount,
-        pages: [],
-    };
+    return auth;
+}
 
-    mockPlans.set(plan.id, plan);
-    return {
-        planId: plan.id,
-        uploadType: plan.uploadType,
-        pageCount: plan.pageCount,
-        status: plan.status,
-    };
-});
-
-export const getPlan = onCall<PlanIdRequest, PlanDetail>((request) => {
-    const auth = requireAuth(request);
-    const planId = readRequiredString(request.data.planId, "Plan ID");
-    ensureSeedPlan(auth.uid, planId);
-    return clonePlan(requirePlan(planId, auth.uid));
-});
-
-export const renamePlan = onCall<RenamePlanRequest, PlanDetail>((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
-        auth.uid,
-    );
-    plan.name = readRequiredString(request.data.name, "Name");
-    touch(plan);
-    return clonePlan(plan);
-});
-
-export const deletePlan = onCall<PlanIdRequest, { ok: true }>((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
-        auth.uid,
-    );
-    mockPlans.delete(plan.id);
-    return { ok: true };
-});
-
-export const listPdfPagePreviews = onCall<
-    PlanIdRequest,
-    { pages: PdfPagePreview[] }
->((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
-        auth.uid,
-    );
-    const pages =
-        plan.uploadType === "PDF"
-            ? Array.from({ length: plan.pageCount }, (_, index) => ({
-                  pageNumber: index + 1,
-                  previewUrl: mockImageDataUrl(`PDF page ${index + 1}`),
-              }))
-            : [];
-
-    return { pages };
-});
-
-export const listProcessingStrategies = onCall<
-    unknown,
-    { strategies: ProcessingStrategyInfo[] }
->((request) => {
-    requireAuth(request);
-    return { strategies: processingStrategies };
-});
-
-export const processPlan = onCall<ProcessPlanRequest, PlanDetail>((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
-        auth.uid,
-    );
-    const pageNumbers = readPageNumbers(request.data.pageNumbers, plan);
-    const strategyKey = readOptionalString(request.data.strategyKey);
-    const strategy =
-        processingStrategies.find((item) => item.key === strategyKey) ??
-        processingStrategies[0];
-
-    if (!strategy) {
-        throw new HttpsError(
-            "internal",
-            "No processing strategy is configured.",
-        );
+function readRequiredString(value: unknown, field: string) {
+    if (typeof value !== "string" || value.trim().length === 0) {
+        throw new HttpsError("invalid-argument", `${field} is required.`);
     }
 
-    plan.pages = pageNumbers.map((pageNumber) =>
-        createMockPage(pageNumber, strategy.key),
-    );
-    plan.status = "READY";
-    plan.processingError = null;
-    touch(plan);
-
-    return clonePlan(plan);
-});
-
-export const getPlanPage = onCall<SavePlanPageOverlayRequest, PlanPage>(
-    (request) => {
-        const auth = requireAuth(request);
-        const plan = requirePlan(
-            readRequiredString(request.data.planId, "Plan ID"),
-            auth.uid,
-        );
-        return clonePage(
-            requirePage(
-                plan,
-                readRequiredString(request.data.pageId, "Page ID"),
-            ),
-        );
-    },
-);
-
-export const savePlanPageOverlay = onCall<SavePlanPageOverlayRequest, PlanPage>(
-    (request) => {
-        const auth = requireAuth(request);
-        const plan = requirePlan(
-            readRequiredString(request.data.planId, "Plan ID"),
-            auth.uid,
-        );
-        const page = requirePage(
-            plan,
-            readRequiredString(request.data.pageId, "Page ID"),
-        );
-
-        page.overlay = JSON.stringify(request.data.overlay ?? { areas: [] });
-        page.scaleMmPerPx = readNullableNumber(
-            request.data.scaleMmPerPx,
-            "Scale",
-        );
-        page.ceilingHeightMm = readNullableNumber(
-            request.data.ceilingHeightMm,
-            "Ceiling height",
-        );
-        page.referencePoints =
-            request.data.referencePoints == null
-                ? null
-                : JSON.stringify(request.data.referencePoints);
-        page.referenceLengthMm = readNullableNumber(
-            request.data.referenceLengthMm,
-            "Reference length",
-        );
-        page.updatedAt = new Date().toISOString();
-        touch(plan);
-
-        return clonePage(page);
-    },
-);
-
-export const applyPlanCeilingHeight = onCall<
-    ApplyPlanCeilingHeightRequest,
-    PlanDetail
->((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(
-        readRequiredString(request.data.planId, "Plan ID"),
-        auth.uid,
-    );
-    const ceilingHeightMm = readNullableNumber(
-        request.data.ceilingHeightMm,
-        "Ceiling height",
-    );
-
-    plan.pages.forEach((page) => {
-        page.ceilingHeightMm = ceilingHeightMm;
-        page.updatedAt = new Date().toISOString();
-    });
-    touch(plan);
-    return clonePlan(plan);
-});
-
-export const applyPlanScale = onCall<ApplyPlanScaleRequest, PlanDetail>(
-    (request) => {
-        const auth = requireAuth(request);
-        const plan = requirePlan(
-            readRequiredString(request.data.planId, "Plan ID"),
-            auth.uid,
-        );
-        const scaleMmPerPx = readNullableNumber(
-            request.data.scaleMmPerPx,
-            "Scale",
-        );
-
-        plan.pages.forEach((page) => {
-            page.scaleMmPerPx = scaleMmPerPx;
-            page.updatedAt = new Date().toISOString();
-        });
-        touch(plan);
-        return clonePlan(plan);
-    },
-);
-
-export const exportPlanCsv = onCall<PlanIdRequest, ExportPlanCsvResponse>(
-    (request) => {
-        const auth = requireAuth(request);
-        const plan = requirePlan(
-            readRequiredString(request.data.planId, "Plan ID"),
-            auth.uid,
-        );
-        const rows = [
-            ["Plan", "Page", "Area count", "Scale mm/px", "Ceiling height mm"],
-            ...plan.pages.map((page) => [
-                plan.name,
-                String(page.pageNumber),
-                String(countAreas(page.overlay)),
-                page.scaleMmPerPx == null ? "" : String(page.scaleMmPerPx),
-                page.ceilingHeightMm == null
-                    ? ""
-                    : String(page.ceilingHeightMm),
-            ]),
-        ];
-
-        return {
-            fileName: `plaster-estimate-${csvFileNamePart(plan.name)}.csv`,
-            mimeType: "text/csv",
-            csv: rows.map((row) => row.map(csvCell).join(",")).join("\n"),
-        };
-    },
-);
+    return value.trim();
+}
 
 function readRequiredNumber(value: unknown, field: string) {
     if (typeof value !== "number" || !Number.isFinite(value)) {
@@ -552,7 +227,436 @@ function readNullableNumber(value: unknown, field: string) {
     return value;
 }
 
-function readPageNumbers(value: unknown, plan: PlanDetail) {
+function hasField(data: object, field: string) {
+    return Object.prototype.hasOwnProperty.call(data, field);
+}
+
+export const helloWorld = onCall((request) => {
+    const auth = requireAuth(request);
+    const name = auth.token["name"] ?? auth.token.email ?? "stranger";
+    logger.info("Hello logs!", { structuredData: true });
+    return { message: `Hello, ${name}!` };
+});
+
+export const listExampleMovies = onCall<
+    unknown,
+    Promise<ExampleMoviesResponse>
+>(async (request) => {
+    requireAuth(request);
+
+    const response = await listMovies();
+    return { movies: response.data.movies };
+});
+
+export const createExampleMovie = onCall<
+    CreateExampleMovieRequest,
+    Promise<ExampleMoviesResponse>
+>(async (request) => {
+    requireAuth(request);
+
+    await createMovie({
+        title: readRequiredString(request.data.title, "Title"),
+        genre: readRequiredString(request.data.genre, "Genre"),
+        imageUrl: readRequiredString(request.data.imageUrl, "Image URL"),
+    });
+
+    const response = await listMovies();
+    return { movies: response.data.movies };
+});
+
+export const deleteExampleMovie = onCall<
+    DeleteExampleMovieRequest,
+    Promise<ExampleMoviesResponse>
+>(async (request) => {
+    requireAuth(request);
+
+    await deleteMovie({
+        id: readRequiredString(request.data.id, "Movie ID"),
+    });
+
+    const response = await listMovies();
+    return { movies: response.data.movies };
+});
+
+export const listPlans = onCall<unknown, Promise<{ plans: PlanSummary[] }>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const response = await listPlansByOwner({ ownerId: auth.uid });
+        return { plans: response.data.plans.map(toSummary) };
+    },
+);
+
+export const createPlanFromUpload = onCall<
+    CreatePlanFromUploadRequest,
+    Promise<UploadResponse>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const name = readRequiredString(request.data.name, "Name");
+    const originalFileName = readRequiredString(
+        request.data.originalFileName,
+        "Original file name",
+    );
+    const contentType = readRequiredString(
+        request.data.contentType,
+        "Content type",
+    );
+    const storagePath = readRequiredString(
+        request.data.storagePath,
+        "Storage path",
+    );
+    readRequiredNumber(request.data.size, "Size");
+
+    if (!isOwnedUploadPath(storagePath, auth.uid)) {
+        throw new HttpsError(
+            "permission-denied",
+            "Upload path must belong to the signed-in user.",
+        );
+    }
+
+    const [exists] = await getStorage().bucket().file(storagePath).exists();
+    if (!exists) {
+        throw new HttpsError("not-found", "Uploaded file was not found.");
+    }
+
+    const uploadType = inferUploadType(originalFileName, contentType);
+    const pageCount = uploadType === "PDF" ? 3 : 1;
+    const response = await dcCreatePlanFromUpload({
+        ownerId: auth.uid,
+        name,
+        originalFileName,
+        uploadType,
+        originalPath: storagePath,
+        status: "DRAFT",
+        pageCount,
+    });
+
+    return {
+        planId: response.data.plan_insert.id,
+        uploadType,
+        pageCount,
+        status: "DRAFT",
+    };
+});
+
+export const getPlan = onCall<PlanIdRequest, Promise<PlanDetail>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const plan = await requireOwnedPlan(
+            readRequiredString(request.data.planId, "Plan ID"),
+            auth.uid,
+        );
+        return toDetail(plan);
+    },
+);
+
+export const renamePlan = onCall<RenamePlanRequest, Promise<PlanDetail>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const planId = readRequiredString(request.data.planId, "Plan ID");
+        await requireOwnedPlan(planId, auth.uid);
+        await dcRenamePlan({
+            id: planId,
+            name: readRequiredString(request.data.name, "Name"),
+        });
+        return toDetail(await requireOwnedPlan(planId, auth.uid));
+    },
+);
+
+export const deletePlan = onCall<PlanIdRequest, Promise<{ ok: true }>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const planId = readRequiredString(request.data.planId, "Plan ID");
+        const plan = await requireOwnedPlan(planId, auth.uid);
+
+        await deleteOwnedPlanStorage(plan, auth.uid);
+        await dcDeletePlanPages({ planId });
+        await dcDeletePlan({ id: planId });
+
+        return { ok: true };
+    },
+);
+
+export const listPdfPagePreviews = onCall<
+    PlanIdRequest,
+    Promise<{ pages: PdfPagePreview[] }>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const plan = await requireOwnedPlan(
+        readRequiredString(request.data.planId, "Plan ID"),
+        auth.uid,
+    );
+
+    // Deprecated mock: move PDF thumbnail rendering to the web client with PDF.js.
+    const pages =
+        plan.uploadType === "PDF"
+            ? Array.from({ length: plan.pageCount }, (_, index) => ({
+                  pageNumber: index + 1,
+                  previewUrl: mockImageDataUrl(`PDF page ${index + 1}`),
+              }))
+            : [];
+
+    return { pages };
+});
+
+export const listProcessingStrategies = onCall<
+    unknown,
+    { strategies: ProcessingStrategyInfo[] }
+>((request) => {
+    requireAuth(request);
+    return { strategies: processingStrategies };
+});
+
+export const processPlan = onCall<ProcessPlanRequest, Promise<PlanDetail>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const planId = readRequiredString(request.data.planId, "Plan ID");
+        const plan = await requireOwnedPlan(planId, auth.uid);
+        const pageNumbers = readPageNumbers(request.data.pageNumbers, plan);
+        const strategyKey = readOptionalString(request.data.strategyKey);
+        const strategy =
+            processingStrategies.find((item) => item.key === strategyKey) ??
+            processingStrategies[0];
+
+        if (!strategy) {
+            throw new HttpsError(
+                "internal",
+                "No processing strategy is configured.",
+            );
+        }
+
+        await touchPlan({
+            id: planId,
+            status: "PROCESSING",
+            processingError: null,
+        });
+        await dcDeletePlanPages({ planId });
+
+        for (const pageNumber of pageNumbers) {
+            const page = createMockPage(pageNumber, strategy.key);
+            await dcCreatePlanPage({
+                planId,
+                pageNumber: page.pageNumber,
+                status: page.status,
+                sourceImagePath: page.imageUrl,
+                previewImagePath: page.previewUrl,
+                overlayJson: page.overlay,
+                scaleMmPerPx: page.scaleMmPerPx,
+                ceilingHeightMm: page.ceilingHeightMm,
+                referencePointsJson: page.referencePoints,
+                referenceLengthMm: page.referenceLengthMm,
+                processingStrategy: page.processingStrategy ?? null,
+                processingMetadataJson: page.processingMetadata ?? null,
+            });
+        }
+
+        await touchPlan({ id: planId, status: "READY", processingError: null });
+        return toDetail(await requireOwnedPlan(planId, auth.uid));
+    },
+);
+
+export const getPlanPage = onCall<
+    UpdatePlanPageRequest,
+    Promise<PlanPage>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const planId = readRequiredString(request.data.planId, "Plan ID");
+    await requireOwnedPlan(planId, auth.uid);
+    return toPage(
+        await requirePlanPage(
+            planId,
+            readRequiredString(request.data.pageId, "Page ID"),
+        ),
+    );
+});
+
+export const updatePlanPage = onCall<
+    UpdatePlanPageRequest,
+    Promise<PlanPage>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const planId = readRequiredString(request.data.planId, "Plan ID");
+    await requireOwnedPlan(planId, auth.uid);
+
+    const page = await requirePlanPage(
+        planId,
+        readRequiredString(request.data.pageId, "Page ID"),
+    );
+    const data = request.data;
+    const overlayJson = hasField(data, "overlay")
+        ? JSON.stringify(data.overlay ?? { areas: [] })
+        : page.overlayJson;
+    const scaleMmPerPx = hasField(data, "scaleMmPerPx")
+        ? readNullableNumber(data.scaleMmPerPx, "Scale")
+        : (page.scaleMmPerPx ?? null);
+    const ceilingHeightMm = hasField(data, "ceilingHeightMm")
+        ? readNullableNumber(data.ceilingHeightMm, "Ceiling height")
+        : (page.ceilingHeightMm ?? null);
+    const referencePointsJson = hasField(data, "referencePoints")
+        ? data.referencePoints == null
+            ? null
+            : JSON.stringify(data.referencePoints)
+        : (page.referencePointsJson ?? null);
+    const referenceLengthMm = hasField(data, "referenceLengthMm")
+        ? readNullableNumber(data.referenceLengthMm, "Reference length")
+        : (page.referenceLengthMm ?? null);
+
+    await dcUpdatePlanPage({
+        id: page.id,
+        overlayJson: overlayJson ?? null,
+        scaleMmPerPx,
+        ceilingHeightMm,
+        referencePointsJson,
+        referenceLengthMm,
+    });
+    await touchPlan({ id: planId });
+
+    return toPage(await requirePlanPage(planId, page.id));
+});
+
+export const updatePlanPages = onCall<
+    UpdatePlanPagesRequest,
+    Promise<PlanDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const planId = readRequiredString(request.data.planId, "Plan ID");
+    const plan = await requireOwnedPlan(planId, auth.uid);
+    const data = request.data;
+
+    const hasScale = hasField(data, "scaleMmPerPx");
+    const hasCeilingHeight = hasField(data, "ceilingHeightMm");
+
+    if (!hasScale && !hasCeilingHeight) {
+        throw new HttpsError(
+            "invalid-argument",
+            "Scale or ceiling height is required.",
+        );
+    }
+
+    for (const page of plan.pages) {
+        const nextScaleMmPerPx: number | null = hasScale
+            ? (readNullableNumber(data.scaleMmPerPx, "Scale") ??
+              page.scaleMmPerPx ??
+              null)
+            : (page.scaleMmPerPx ?? null);
+        const nextCeilingHeightMm: number | null = hasCeilingHeight
+            ? (readNullableNumber(data.ceilingHeightMm, "Ceiling height") ??
+              page.ceilingHeightMm ??
+              null)
+            : (page.ceilingHeightMm ?? null);
+
+        await dcUpdatePlanPage({
+            id: page.id,
+            overlayJson: page.overlayJson ?? null,
+            scaleMmPerPx: nextScaleMmPerPx,
+            ceilingHeightMm: nextCeilingHeightMm,
+            referencePointsJson: page.referencePointsJson ?? null,
+            referenceLengthMm: page.referenceLengthMm ?? null,
+        });
+    }
+
+    await touchPlan({ id: planId });
+    return toDetail(await requireOwnedPlan(planId, auth.uid));
+});
+
+export const exportPlanCsv = onCall<
+    PlanIdRequest,
+    Promise<ExportPlanCsvResponse>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const plan = await requireOwnedPlan(
+        readRequiredString(request.data.planId, "Plan ID"),
+        auth.uid,
+    );
+
+    return {
+        fileName: `plaster-estimate-${csvFileNamePart(plan.name)}.csv`,
+        mimeType: "text/csv",
+        csv: buildPlanCsv(plan),
+    };
+});
+
+async function requireOwnedPlan(planId: string, ownerId: string) {
+    const response = await getPlanById({ id: planId });
+    const plan = response.data.plan;
+    if (!plan || plan.ownerId !== ownerId) {
+        throw new HttpsError("not-found", "Plan was not found.");
+    }
+
+    return plan;
+}
+
+async function requirePlanPage(planId: string, pageId: string) {
+    const response = await getPlanPageById({ planId, pageId });
+    const page = response.data.planPage;
+    if (!page) {
+        throw new HttpsError("not-found", "Page was not found.");
+    }
+
+    return page;
+}
+
+function toSummary(plan: PlanListRow | PlanWithPages): PlanSummary {
+    return {
+        id: plan.id,
+        name: plan.name,
+        originalFileName: plan.originalFileName,
+        uploadType: toUploadType(plan.uploadType),
+        status: toPlanStatus(plan.status),
+        processingError: plan.processingError ?? null,
+        createdAt: plan.createdAt,
+        updatedAt: plan.updatedAt,
+        pageCount: plan.pageCount,
+    };
+}
+
+function toDetail(plan: PlanWithPages): PlanDetail {
+    return {
+        ...toSummary(plan),
+        ownerId: plan.ownerId,
+        pages: plan.pages.map(toPage),
+    };
+}
+
+function toPage(page: PlanPageRow): PlanPage {
+    const imageUrl = storagePathToUrl(page.sourceImagePath);
+    return {
+        id: page.id,
+        pageNumber: page.pageNumber,
+        status: toPlanStatus(page.status),
+        imageUrl,
+        previewUrl: storagePathToUrl(page.previewImagePath) || imageUrl,
+        overlay: page.overlayJson ?? null,
+        scaleMmPerPx: page.scaleMmPerPx ?? null,
+        ceilingHeightMm: page.ceilingHeightMm ?? null,
+        referencePoints: page.referencePointsJson ?? null,
+        referenceLengthMm: page.referenceLengthMm ?? null,
+        processingStrategy: page.processingStrategy ?? null,
+        processingMetadata: page.processingMetadataJson ?? null,
+        updatedAt: page.updatedAt,
+    };
+}
+
+function toUploadType(value: string): UploadType {
+    return value === "PDF" ? "PDF" : "IMAGE";
+}
+
+function toPlanStatus(value: string): PlanStatus {
+    if (
+        value === "DRAFT" ||
+        value === "PROCESSING" ||
+        value === "READY" ||
+        value === "FAILED"
+    ) {
+        return value;
+    }
+
+    return "DRAFT";
+}
+
+function readPageNumbers(
+    value: unknown,
+    plan: PlanWithPages,
+) {
     if (!Array.isArray(value) || value.length === 0) {
         return [1];
     }
@@ -592,57 +696,60 @@ function inferUploadType(fileName: string, contentType: string): UploadType {
         : "IMAGE";
 }
 
-function requirePlan(planId: string, ownerId: string) {
-    const plan = mockPlans.get(planId);
-    if (!plan || plan.ownerId !== ownerId) {
-        throw new HttpsError("not-found", "Plan was not found.");
-    }
-
-    return plan;
+function isOwnedUploadPath(storagePath: string, uid: string) {
+    return storagePath.startsWith(`plans/${uid}/uploads/`);
 }
 
-function requirePage(plan: PlanDetail, pageId: string) {
-    const page = plan.pages.find((item) => item.id === pageId);
-    if (!page) {
-        throw new HttpsError("not-found", "Page was not found.");
+async function deleteOwnedPlanStorage(
+    plan: PlanWithPages,
+    uid: string,
+) {
+    const bucket = getStorage().bucket();
+    const paths = [
+        plan.originalPath,
+        ...plan.pages.flatMap((page) => [
+            page.sourceImagePath,
+            page.previewImagePath,
+            page.rawJsonPath,
+            page.rawFloorplanPath,
+        ]),
+    ].filter((path): path is string => Boolean(path));
+
+    for (const path of new Set(paths)) {
+        if (path.startsWith(`plans/${uid}/`) && !path.startsWith("data:")) {
+            await bucket.file(path).delete({ ignoreNotFound: true });
+        }
     }
 
-    return page;
+    await bucket.deleteFiles({
+        force: true,
+        prefix: `plans/${uid}/generated/${plan.id}/`,
+    });
 }
 
-function ensureSeedPlan(ownerId: string, preferredPlanId?: string) {
-    const hasPlan = Array.from(mockPlans.values()).some(
-        (plan) =>
-            plan.ownerId === ownerId &&
-            (preferredPlanId == null || plan.id === preferredPlanId),
-    );
-    if (hasPlan) {
-        return;
+function storagePathToUrl(path?: string | null) {
+    if (!path) {
+        return "";
     }
 
-    const now = new Date().toISOString();
-    const planId = preferredPlanId ?? randomUUID();
-    const plan: PlanDetail = {
-        id: planId,
-        ownerId,
-        name: "Mock test plan",
-        originalFileName: "mock-floorplan.pdf",
-        uploadType: "PDF",
-        status: "READY",
-        processingError: null,
-        createdAt: now,
-        updatedAt: now,
-        pageCount: 1,
-        pages: [createMockPage(1, "mock-detected-rooms", `${planId}-page-1`)],
-    };
+    if (path.startsWith("data:") || path.startsWith("http")) {
+        return path;
+    }
 
-    mockPlans.set(plan.id, plan);
+    const bucketName = getStorage().bucket().name;
+    return `https://storage.googleapis.com/${bucketName}/${encodeStoragePath(path)}`;
+}
+
+function encodeStoragePath(path: string) {
+    return path
+        .split("/")
+        .map((part) => encodeURIComponent(part))
+        .join("/");
 }
 
 function createMockPage(
     pageNumber: number,
     strategyKey: string,
-    pageId: string = randomUUID(),
 ): PlanPage {
     const now = new Date().toISOString();
     const overlay =
@@ -669,7 +776,7 @@ function createMockPage(
             : { imageSizePx: { width: 1200, height: 900 }, areas: [] };
 
     return {
-        id: pageId,
+        id: randomUUID(),
         pageNumber,
         status: "READY",
         imageUrl: mockImageDataUrl(`Plan page ${pageNumber}`),
@@ -685,35 +792,6 @@ function createMockPage(
     };
 }
 
-function toSummary(plan: PlanDetail): PlanSummary {
-    return {
-        id: plan.id,
-        name: plan.name,
-        originalFileName: plan.originalFileName,
-        uploadType: plan.uploadType,
-        status: plan.status,
-        processingError: plan.processingError ?? null,
-        createdAt: plan.createdAt,
-        updatedAt: plan.updatedAt,
-        pageCount: plan.pageCount,
-    };
-}
-
-function touch(plan: PlanDetail) {
-    plan.updatedAt = new Date().toISOString();
-}
-
-function clonePlan(plan: PlanDetail): PlanDetail {
-    return {
-        ...plan,
-        pages: plan.pages.map(clonePage),
-    };
-}
-
-function clonePage(page: PlanPage): PlanPage {
-    return { ...page };
-}
-
 function mockImageDataUrl(label: string) {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900"><rect width="1200" height="900" fill="#eef3f5"/><path d="M160 150h880v600H160zM300 150v600M160 360h880M720 360v390" fill="none" stroke="#64748b" stroke-width="18"/><text x="600" y="820" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#334155">${escapeXml(label)}</text></svg>`;
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
@@ -727,19 +805,311 @@ function escapeXml(value: string) {
         .replace(/"/g, "&quot;");
 }
 
-function countAreas(overlay: string | null) {
-    if (!overlay) {
+function buildPlanCsv(plan: PlanWithPages) {
+    const rows: ExportRow[] = [];
+    const wallColumns = new Set<string>();
+    const ceilingColumns = new Set<string>();
+
+    for (const page of plan.pages) {
+        if (!page.overlayJson || page.scaleMmPerPx == null) {
+            continue;
+        }
+
+        const overlay = parseJsonObject(page.overlayJson);
+        const areas = Array.isArray(overlay["areas"]) ? overlay["areas"] : [];
+
+        for (const area of areas) {
+            if (!isRecord(area) || Boolean(area["deleted"])) {
+                continue;
+            }
+
+            const row: ExportRow = {
+                label:
+                    typeof area["label"] === "string"
+                        ? area["label"]
+                        : "Area",
+                pageNumber: page.pageNumber,
+                wallValues: wallBreakdown(
+                    area,
+                    page.scaleMmPerPx,
+                    page.ceilingHeightMm ?? null,
+                ),
+                ceilingValues: new Map([
+                    [
+                        ceilingColumn(area),
+                        ceilingAreaM2(area, page.scaleMmPerPx),
+                    ],
+                ]),
+            };
+
+            row.wallValues.forEach((_, key) => wallColumns.add(key));
+            row.ceilingValues.forEach((_, key) => ceilingColumns.add(key));
+            rows.push(row);
+        }
+    }
+
+    const sortedWallColumns = Array.from(wallColumns).sort();
+    const sortedCeilingColumns = Array.from(ceilingColumns).sort();
+    const totals = new Map<string, number>();
+    const csvRows = [
+        ["Area Label", "Page Number", ...sortedWallColumns, ...sortedCeilingColumns],
+    ];
+
+    for (const row of rows) {
+        const cells = [row.label, String(row.pageNumber)];
+        for (const column of sortedWallColumns) {
+            const value = row.wallValues.get(column) ?? 0;
+            addTotal(totals, column, value);
+            cells.push(formatNumber(value));
+        }
+        for (const column of sortedCeilingColumns) {
+            const value = row.ceilingValues.get(column) ?? 0;
+            addTotal(totals, column, value);
+            cells.push(formatNumber(value));
+        }
+        csvRows.push(cells);
+    }
+
+    csvRows.push([
+        "Total",
+        "",
+        ...sortedWallColumns.map((column) => formatNumber(totals.get(column) ?? 0)),
+        ...sortedCeilingColumns.map((column) =>
+            formatNumber(totals.get(column) ?? 0),
+        ),
+    ]);
+
+    return csvRows.map((row) => row.map(csvCell).join(",")).join("\n") + "\n";
+}
+
+interface ExportRow {
+    label: string;
+    pageNumber: number;
+    wallValues: Map<string, number>;
+    ceilingValues: Map<string, number>;
+}
+
+type JsonRecord = Record<string, unknown>;
+type Point = [number, number];
+
+function addTotal(totals: Map<string, number>, column: string, value: number) {
+    totals.set(column, (totals.get(column) ?? 0) + value);
+}
+
+function ceilingColumn(area: JsonRecord) {
+    const ceilingType = readString(area["ceilingPlasterType"], "Recessed Edge");
+    return `Ceiling (${ceilingType}) in m2`;
+}
+
+function ceilingAreaM2(area: JsonRecord, scaleMmPerPx: number) {
+    const points = readPoints(area["points"]);
+    const flatM2 = polygonAreaPx(points) * Math.pow(scaleMmPerPx / 1000, 2);
+    if (readString(area["ceilingMode"], "flat") !== "raked") {
+        return flatM2;
+    }
+
+    const raked = isRecord(area["rakedCeiling"]) ? area["rakedCeiling"] : null;
+    if (!raked) {
+        return flatM2;
+    }
+
+    const lowEdgeIndex = readInteger(raked["lowEdgeIndex"], -1);
+    const highEdgeIndex = readInteger(raked["highEdgeIndex"], -1);
+    const lowHeight = readNumberOrNull(raked["lowHeightMm"]);
+    const highHeight = readNumberOrNull(raked["highHeightMm"]);
+    if (
+        lowHeight == null ||
+        highHeight == null ||
+        lowEdgeIndex === highEdgeIndex
+    ) {
+        return flatM2;
+    }
+
+    const runM =
+        edgeMidpointDistance(points, lowEdgeIndex, highEdgeIndex) *
+        scaleMmPerPx /
+        1000;
+    if (runM <= 0) {
+        return flatM2;
+    }
+
+    const riseM = Math.abs(highHeight - lowHeight) / 1000;
+    return flatM2 * Math.sqrt(1 + Math.pow(riseM / runM, 2));
+}
+
+function edgeMidpointDistance(
+    points: Point[],
+    firstEdge: number,
+    secondEdge: number,
+) {
+    if (
+        firstEdge < 0 ||
+        secondEdge < 0 ||
+        firstEdge >= points.length ||
+        secondEdge >= points.length
+    ) {
         return 0;
     }
 
-    try {
-        const parsed = JSON.parse(overlay) as {
-            areas?: Array<{ deleted?: boolean }>;
-        };
-        return parsed.areas?.filter((area) => !area.deleted).length ?? 0;
-    } catch {
+    const firstA = points[firstEdge];
+    const firstB = points[(firstEdge + 1) % points.length];
+    const secondA = points[secondEdge];
+    const secondB = points[(secondEdge + 1) % points.length];
+    if (!firstA || !firstB || !secondA || !secondB) {
         return 0;
     }
+
+    const firstX = (firstA[0] + firstB[0]) / 2;
+    const firstY = (firstA[1] + firstB[1]) / 2;
+    const secondX = (secondA[0] + secondB[0]) / 2;
+    const secondY = (secondA[1] + secondB[1]) / 2;
+    return Math.hypot(secondX - firstX, secondY - firstY);
+}
+
+function wallBreakdown(
+    area: JsonRecord,
+    scaleMmPerPx: number,
+    pageHeightMm: number | null,
+) {
+    const totals = new Map<string, number>();
+    if (Boolean(area["isOutdoor"])) {
+        return totals;
+    }
+
+    const points = readPoints(area["points"]);
+    if (points.length < 2) {
+        return totals;
+    }
+
+    const overrides: JsonRecord = isRecord(area["edgeOverrides"])
+        ? area["edgeOverrides"]
+        : {};
+
+    for (let index = 0; index < points.length; index += 1) {
+        const rawOverride = overrides[String(index)];
+        const override: JsonRecord | null = isRecord(rawOverride)
+            ? rawOverride
+            : null;
+        if (override && Boolean(override["noPlaster"])) {
+            continue;
+        }
+
+        const wallType =
+            override && typeof override["wallPlasterType"] === "string"
+                ? override["wallPlasterType"]
+                : readString(area["wallPlasterType"], "Recessed Edge");
+        const height = wallHeightForEdge(area, pageHeightMm, index);
+        const column = `${wallType} @ ${heightLabel(height)} in m`;
+        const a = points[index];
+        const b = points[(index + 1) % points.length];
+        if (!a || !b) {
+            continue;
+        }
+
+        const lengthM = Math.hypot(b[0] - a[0], b[1] - a[1]) * scaleMmPerPx / 1000;
+        totals.set(column, (totals.get(column) ?? 0) + lengthM);
+    }
+
+    return totals;
+}
+
+function wallHeightForEdge(
+    area: JsonRecord,
+    pageHeightMm: number | null,
+    edgeIndex: number,
+) {
+    if (
+        readString(area["ceilingMode"], "flat") === "raked" &&
+        isRecord(area["rakedCeiling"])
+    ) {
+        const raked = area["rakedCeiling"];
+        const low = readNumberOrNull(raked["lowHeightMm"]);
+        const high = readNumberOrNull(raked["highHeightMm"]);
+        if (low != null && high != null) {
+            return edgeIndex === readInteger(raked["lowEdgeIndex"], -1)
+                ? low
+                : high;
+        }
+    }
+
+    const areaHeight = readNumberOrNull(area["ceilingHeightMm"]);
+    if (areaHeight != null) {
+        return areaHeight;
+    }
+
+    return pageHeightMm ?? 0;
+}
+
+function parseJsonObject(value: string): JsonRecord {
+    try {
+        const parsed: unknown = JSON.parse(value);
+        return isRecord(parsed) ? parsed : {};
+    } catch {
+        return {};
+    }
+}
+
+function readPoints(value: unknown): Point[] {
+    if (!Array.isArray(value)) {
+        return [];
+    }
+
+    return value.flatMap((item) => {
+        if (
+            Array.isArray(item) &&
+            item.length >= 2 &&
+            typeof item[0] === "number" &&
+            typeof item[1] === "number"
+        ) {
+            return [[item[0], item[1]] as Point];
+        }
+
+        return [];
+    });
+}
+
+function polygonAreaPx(points: Point[]) {
+    if (points.length < 3) {
+        return 0;
+    }
+
+    let sum = 0;
+    for (let index = 0; index < points.length; index += 1) {
+        const current = points[index];
+        const next = points[(index + 1) % points.length];
+        if (!current || !next) {
+            continue;
+        }
+        sum += current[0] * next[1] - next[0] * current[1];
+    }
+
+    return Math.abs(sum) / 2;
+}
+
+function isRecord(value: unknown): value is JsonRecord {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function readString(value: unknown, fallback: string) {
+    return typeof value === "string" ? value : fallback;
+}
+
+function readInteger(value: unknown, fallback: number) {
+    return typeof value === "number" && Number.isInteger(value)
+        ? value
+        : fallback;
+}
+
+function readNumberOrNull(value: unknown) {
+    return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function heightLabel(heightMm: number) {
+    return `${heightMm.toFixed(0)}mm`;
+}
+
+function formatNumber(value: number) {
+    return value.toFixed(3);
 }
 
 function csvFileNamePart(value: string) {

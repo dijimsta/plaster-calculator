@@ -82,3 +82,79 @@ query SearchMovie($titleInput: String, $genre: String)
         imageUrl
     }
 }
+
+query ListPlansByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
+    plans(
+        where: { ownerId: { eq: $ownerId } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
+        id
+        ownerId
+        name
+        originalFileName
+        uploadType
+        originalPath
+        status
+        processingError
+        pageCount
+        createdAt
+        updatedAt
+    }
+}
+
+query GetPlanById($id: UUID!) @auth(level: NO_ACCESS) {
+    plan(id: $id) {
+        id
+        ownerId
+        name
+        originalFileName
+        uploadType
+        originalPath
+        status
+        processingError
+        pageCount
+        createdAt
+        updatedAt
+        pages: planPages_on_plan(orderBy: [{ pageNumber: ASC }]) {
+            id
+            planId
+            pageNumber
+            status
+            sourceImagePath
+            previewImagePath
+            rawJsonPath
+            rawFloorplanPath
+            overlayJson
+            scaleMmPerPx
+            ceilingHeightMm
+            referencePointsJson
+            referenceLengthMm
+            processingStrategy
+            processingMetadataJson
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+query GetPlanPageById($planId: UUID!, $pageId: UUID!) @auth(level: NO_ACCESS) {
+    planPage(first: { where: { id: { eq: $pageId }, planId: { eq: $planId } } }) {
+        id
+        planId
+        pageNumber
+        status
+        sourceImagePath
+        previewImagePath
+        rawJsonPath
+        rawFloorplanPath
+        overlayJson
+        scaleMmPerPx
+        ceilingHeightMm
+        referencePointsJson
+        referenceLengthMm
+        processingStrategy
+        processingMetadataJson
+        createdAt
+        updatedAt
+    }
+}
