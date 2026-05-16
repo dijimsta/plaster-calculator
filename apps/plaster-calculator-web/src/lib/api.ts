@@ -113,7 +113,7 @@ export async function uploadPlan(name: string, file: File) {
     }
 
     const planId = crypto.randomUUID();
-    const storagePath = `uploads/${uid}/${planId}/${sanitizeStorageName(file.name)}`;
+    const storagePath = `uploads/${uid}/projects/${planId}/uploads/${sanitizeStorageName(file.name)}`;
     await uploadBytes(ref(storage, storagePath), file, {
         contentType: file.type || "application/octet-stream",
     });
@@ -127,6 +127,15 @@ export async function uploadPlan(name: string, file: File) {
         storagePath,
     });
     return result.data;
+}
+
+function sanitizeStorageName(value: string) {
+    return (
+        value
+            .trim()
+            .replace(/[^A-Za-z0-9._-]+/g, "-")
+            .replace(/^-+|-+$/g, "") || "upload"
+    );
 }
 
 export async function getPlan(planId: string) {
@@ -213,11 +222,3 @@ export async function exportPlanCsv(planId: string) {
     return result.data;
 }
 
-function sanitizeStorageName(value: string) {
-    return (
-        value
-            .trim()
-            .replace(/[^A-Za-z0-9._-]+/g, "-")
-            .replace(/^-+|-+$/g, "") || "upload"
-    );
-}

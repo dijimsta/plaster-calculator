@@ -700,7 +700,7 @@ function inferUploadType(fileName: string, contentType: string): UploadType {
 }
 
 function isOwnedUploadPath(storagePath: string, uid: string, planId: string) {
-    return storagePath.startsWith(`uploads/${uid}/${planId}/`);
+    return storagePath.startsWith(`uploads/${uid}/projects/${planId}/uploads/`);
 }
 
 async function deleteOwnedPlanStorage(
@@ -726,7 +726,7 @@ async function deleteOwnedPlanStorage(
 
     await bucket.deleteFiles({
         force: true,
-        prefix: `uploads/${uid}/${plan.id}/`,
+        prefix: `uploads/${uid}/projects/${plan.id}/`,
     });
 }
 
