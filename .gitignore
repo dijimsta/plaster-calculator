@@ -5,6 +5,7 @@
 .nx/cache
 .nx/workspace-data
 
+dist/
 out/
 tmp/
 

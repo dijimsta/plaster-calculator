@@ -15,7 +15,10 @@
     },
     "functions": {
         "source": "functions/plaster-calculator-functions",
-        "runtime": "nodejs24"
+        "runtime": "nodejs24",
+        "predeploy": [
+            "yarn workspace @inivi/plaster-calculator-functions bundle"
+        ]
     },
     "storage": {
         "rules": "storage.rules"
