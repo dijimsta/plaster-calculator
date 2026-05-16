@@ -231,7 +231,8 @@ const processingStrategies: ProcessingStrategyInfo[] = [
     {
         key: "mock-empty-overlay",
         label: "Mock empty overlay",
-        description: "Creates editable placeholder pages until real processing is implemented.",
+        description:
+            "Creates editable placeholder pages until real processing is implemented.",
         defaultStrategy: true,
     },
     {
@@ -242,17 +243,21 @@ const processingStrategies: ProcessingStrategyInfo[] = [
     },
 ];
 
-export const listPlans = onCall<unknown, { plans: PlanSummary[] }>((request) => {
-    const auth = requireAuth(request);
-    ensureSeedPlan(auth.uid);
+export const listPlans = onCall<unknown, { plans: PlanSummary[] }>(
+    (request) => {
+        const auth = requireAuth(request);
+        ensureSeedPlan(auth.uid);
 
-    const plans = Array.from(mockPlans.values())
-        .filter((plan) => plan.ownerId === auth.uid)
-        .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
-        .map(toSummary);
+        const plans = Array.from(mockPlans.values())
+            .filter((plan) => plan.ownerId === auth.uid)
+            .sort((left, right) =>
+                right.updatedAt.localeCompare(left.updatedAt),
+            )
+            .map(toSummary);
 
-    return { plans };
-});
+        return { plans };
+    },
+);
 
 export const createPlanFromUpload = onCall<
     CreatePlanFromUploadRequest,
@@ -316,7 +321,10 @@ export const getPlan = onCall<PlanIdRequest, PlanDetail>((request) => {
 
 export const renamePlan = onCall<RenamePlanRequest, PlanDetail>((request) => {
     const auth = requireAuth(request);
-    const plan = requirePlan(readRequiredString(request.data.planId, "Plan ID"), auth.uid);
+    const plan = requirePlan(
+        readRequiredString(request.data.planId, "Plan ID"),
+        auth.uid,
+    );
     plan.name = readRequiredString(request.data.name, "Name");
     touch(plan);
     return clonePlan(plan);
@@ -324,7 +332,10 @@ export const renamePlan = onCall<RenamePlanRequest, PlanDetail>((request) => {
 
 export const deletePlan = onCall<PlanIdRequest, { ok: true }>((request) => {
     const auth = requireAuth(request);
-    const plan = requirePlan(readRequiredString(request.data.planId, "Plan ID"), auth.uid);
+    const plan = requirePlan(
+        readRequiredString(request.data.planId, "Plan ID"),
+        auth.uid,
+    );
     mockPlans.delete(plan.id);
     return { ok: true };
 });
@@ -334,13 +345,17 @@ export const listPdfPagePreviews = onCall<
     { pages: PdfPagePreview[] }
 >((request) => {
     const auth = requireAuth(request);
-    const plan = requirePlan(readRequiredString(request.data.planId, "Plan ID"), auth.uid);
-    const pages = plan.uploadType === "PDF"
-        ? Array.from({ length: plan.pageCount }, (_, index) => ({
-            pageNumber: index + 1,
-            previewUrl: mockImageDataUrl(`PDF page ${index + 1}`),
-        }))
-        : [];
+    const plan = requirePlan(
+        readRequiredString(request.data.planId, "Plan ID"),
+        auth.uid,
+    );
+    const pages =
+        plan.uploadType === "PDF"
+            ? Array.from({ length: plan.pageCount }, (_, index) => ({
+                  pageNumber: index + 1,
+                  previewUrl: mockImageDataUrl(`PDF page ${index + 1}`),
+              }))
+            : [];
 
     return { pages };
 });
@@ -355,17 +370,26 @@ export const listProcessingStrategies = onCall<
 
 export const processPlan = onCall<ProcessPlanRequest, PlanDetail>((request) => {
     const auth = requireAuth(request);
-    const plan = requirePlan(readRequiredString(request.data.planId, "Plan ID"), auth.uid);
+    const plan = requirePlan(
+        readRequiredString(request.data.planId, "Plan ID"),
+        auth.uid,
+    );
     const pageNumbers = readPageNumbers(request.data.pageNumbers, plan);
     const strategyKey = readOptionalString(request.data.strategyKey);
-    const strategy = processingStrategies.find((item) => item.key === strategyKey)
-        ?? processingStrategies[0];
+    const strategy =
+        processingStrategies.find((item) => item.key === strategyKey) ??
+        processingStrategies[0];
 
     if (!strategy) {
-        throw new HttpsError("internal", "No processing strategy is configured.");
+        throw new HttpsError(
+            "internal",
+            "No processing strategy is configured.",
+        );
     }
 
-    plan.pages = pageNumbers.map((pageNumber) => createMockPage(pageNumber, strategy.key));
+    plan.pages = pageNumbers.map((pageNumber) =>
+        createMockPage(pageNumber, strategy.key),
+    );
     plan.status = "READY";
     plan.processingError = null;
     touch(plan);
@@ -373,48 +397,67 @@ export const processPlan = onCall<ProcessPlanRequest, PlanDetail>((request) => {
     return clonePlan(plan);
 });
 
-export const getPlanPage = onCall<
-    SavePlanPageOverlayRequest,
-    PlanPage
->((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(readRequiredString(request.data.planId, "Plan ID"), auth.uid);
-    return clonePage(requirePage(plan, readRequiredString(request.data.pageId, "Page ID")));
-});
+export const getPlanPage = onCall<SavePlanPageOverlayRequest, PlanPage>(
+    (request) => {
+        const auth = requireAuth(request);
+        const plan = requirePlan(
+            readRequiredString(request.data.planId, "Plan ID"),
+            auth.uid,
+        );
+        return clonePage(
+            requirePage(
+                plan,
+                readRequiredString(request.data.pageId, "Page ID"),
+            ),
+        );
+    },
+);
 
-export const savePlanPageOverlay = onCall<
-    SavePlanPageOverlayRequest,
-    PlanPage
->((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(readRequiredString(request.data.planId, "Plan ID"), auth.uid);
-    const page = requirePage(plan, readRequiredString(request.data.pageId, "Page ID"));
+export const savePlanPageOverlay = onCall<SavePlanPageOverlayRequest, PlanPage>(
+    (request) => {
+        const auth = requireAuth(request);
+        const plan = requirePlan(
+            readRequiredString(request.data.planId, "Plan ID"),
+            auth.uid,
+        );
+        const page = requirePage(
+            plan,
+            readRequiredString(request.data.pageId, "Page ID"),
+        );
 
-    page.overlay = JSON.stringify(request.data.overlay ?? { areas: [] });
-    page.scaleMmPerPx = readNullableNumber(request.data.scaleMmPerPx, "Scale");
-    page.ceilingHeightMm = readNullableNumber(
-        request.data.ceilingHeightMm,
-        "Ceiling height",
-    );
-    page.referencePoints = request.data.referencePoints == null
-        ? null
-        : JSON.stringify(request.data.referencePoints);
-    page.referenceLengthMm = readNullableNumber(
-        request.data.referenceLengthMm,
-        "Reference length",
-    );
-    page.updatedAt = new Date().toISOString();
-    touch(plan);
+        page.overlay = JSON.stringify(request.data.overlay ?? { areas: [] });
+        page.scaleMmPerPx = readNullableNumber(
+            request.data.scaleMmPerPx,
+            "Scale",
+        );
+        page.ceilingHeightMm = readNullableNumber(
+            request.data.ceilingHeightMm,
+            "Ceiling height",
+        );
+        page.referencePoints =
+            request.data.referencePoints == null
+                ? null
+                : JSON.stringify(request.data.referencePoints);
+        page.referenceLengthMm = readNullableNumber(
+            request.data.referenceLengthMm,
+            "Reference length",
+        );
+        page.updatedAt = new Date().toISOString();
+        touch(plan);
 
-    return clonePage(page);
-});
+        return clonePage(page);
+    },
+);
 
 export const applyPlanCeilingHeight = onCall<
     ApplyPlanCeilingHeightRequest,
     PlanDetail
 >((request) => {
     const auth = requireAuth(request);
-    const plan = requirePlan(readRequiredString(request.data.planId, "Plan ID"), auth.uid);
+    const plan = requirePlan(
+        readRequiredString(request.data.planId, "Plan ID"),
+        auth.uid,
+    );
     const ceilingHeightMm = readNullableNumber(
         request.data.ceilingHeightMm,
         "Ceiling height",
@@ -428,39 +471,54 @@ export const applyPlanCeilingHeight = onCall<
     return clonePlan(plan);
 });
 
-export const applyPlanScale = onCall<ApplyPlanScaleRequest, PlanDetail>((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(readRequiredString(request.data.planId, "Plan ID"), auth.uid);
-    const scaleMmPerPx = readNullableNumber(request.data.scaleMmPerPx, "Scale");
+export const applyPlanScale = onCall<ApplyPlanScaleRequest, PlanDetail>(
+    (request) => {
+        const auth = requireAuth(request);
+        const plan = requirePlan(
+            readRequiredString(request.data.planId, "Plan ID"),
+            auth.uid,
+        );
+        const scaleMmPerPx = readNullableNumber(
+            request.data.scaleMmPerPx,
+            "Scale",
+        );
 
-    plan.pages.forEach((page) => {
-        page.scaleMmPerPx = scaleMmPerPx;
-        page.updatedAt = new Date().toISOString();
-    });
-    touch(plan);
-    return clonePlan(plan);
-});
+        plan.pages.forEach((page) => {
+            page.scaleMmPerPx = scaleMmPerPx;
+            page.updatedAt = new Date().toISOString();
+        });
+        touch(plan);
+        return clonePlan(plan);
+    },
+);
 
-export const exportPlanCsv = onCall<PlanIdRequest, ExportPlanCsvResponse>((request) => {
-    const auth = requireAuth(request);
-    const plan = requirePlan(readRequiredString(request.data.planId, "Plan ID"), auth.uid);
-    const rows = [
-        ["Plan", "Page", "Area count", "Scale mm/px", "Ceiling height mm"],
-        ...plan.pages.map((page) => [
-            plan.name,
-            String(page.pageNumber),
-            String(countAreas(page.overlay)),
-            page.scaleMmPerPx == null ? "" : String(page.scaleMmPerPx),
-            page.ceilingHeightMm == null ? "" : String(page.ceilingHeightMm),
-        ]),
-    ];
+export const exportPlanCsv = onCall<PlanIdRequest, ExportPlanCsvResponse>(
+    (request) => {
+        const auth = requireAuth(request);
+        const plan = requirePlan(
+            readRequiredString(request.data.planId, "Plan ID"),
+            auth.uid,
+        );
+        const rows = [
+            ["Plan", "Page", "Area count", "Scale mm/px", "Ceiling height mm"],
+            ...plan.pages.map((page) => [
+                plan.name,
+                String(page.pageNumber),
+                String(countAreas(page.overlay)),
+                page.scaleMmPerPx == null ? "" : String(page.scaleMmPerPx),
+                page.ceilingHeightMm == null
+                    ? ""
+                    : String(page.ceilingHeightMm),
+            ]),
+        ];
 
-    return {
-        fileName: `plaster-estimate-${csvFileNamePart(plan.name)}.csv`,
-        mimeType: "text/csv",
-        csv: rows.map((row) => row.map(csvCell).join(",")).join("\n"),
-    };
-});
+        return {
+            fileName: `plaster-estimate-${csvFileNamePart(plan.name)}.csv`,
+            mimeType: "text/csv",
+            csv: rows.map((row) => row.map(csvCell).join(",")).join("\n"),
+        };
+    },
+);
 
 function readRequiredNumber(value: unknown, field: string) {
     if (typeof value !== "number" || !Number.isFinite(value)) {
@@ -499,16 +557,27 @@ function readPageNumbers(value: unknown, plan: PlanDetail) {
         return [1];
     }
 
-    const numbers = value.map((item) => readRequiredNumber(item, "Page number"));
-    const unique = Array.from(new Set(numbers)).sort((left, right) => left - right);
+    const numbers = value.map((item) =>
+        readRequiredNumber(item, "Page number"),
+    );
+    const unique = Array.from(new Set(numbers)).sort(
+        (left, right) => left - right,
+    );
 
     if (plan.uploadType === "IMAGE") {
         return [1];
     }
 
     unique.forEach((pageNumber) => {
-        if (!Number.isInteger(pageNumber) || pageNumber < 1 || pageNumber > plan.pageCount) {
-            throw new HttpsError("invalid-argument", "Page number is outside the uploaded PDF range.");
+        if (
+            !Number.isInteger(pageNumber) ||
+            pageNumber < 1 ||
+            pageNumber > plan.pageCount
+        ) {
+            throw new HttpsError(
+                "invalid-argument",
+                "Page number is outside the uploaded PDF range.",
+            );
         }
     });
 
@@ -518,7 +587,9 @@ function readPageNumbers(value: unknown, plan: PlanDetail) {
 function inferUploadType(fileName: string, contentType: string): UploadType {
     const lowerName = fileName.toLowerCase();
     const lowerType = contentType.toLowerCase();
-    return lowerName.endsWith(".pdf") || lowerType.includes("pdf") ? "PDF" : "IMAGE";
+    return lowerName.endsWith(".pdf") || lowerType.includes("pdf")
+        ? "PDF"
+        : "IMAGE";
 }
 
 function requirePlan(planId: string, ownerId: string) {
@@ -541,8 +612,9 @@ function requirePage(plan: PlanDetail, pageId: string) {
 
 function ensureSeedPlan(ownerId: string, preferredPlanId?: string) {
     const hasPlan = Array.from(mockPlans.values()).some(
-        (plan) => plan.ownerId === ownerId
-            && (preferredPlanId == null || plan.id === preferredPlanId),
+        (plan) =>
+            plan.ownerId === ownerId &&
+            (preferredPlanId == null || plan.id === preferredPlanId),
     );
     if (hasPlan) {
         return;
@@ -567,24 +639,34 @@ function ensureSeedPlan(ownerId: string, preferredPlanId?: string) {
     mockPlans.set(plan.id, plan);
 }
 
-function createMockPage(pageNumber: number, strategyKey: string, pageId: string = randomUUID()): PlanPage {
+function createMockPage(
+    pageNumber: number,
+    strategyKey: string,
+    pageId: string = randomUUID(),
+): PlanPage {
     const now = new Date().toISOString();
-    const overlay = strategyKey === "mock-detected-rooms"
-        ? {
-            imageSizePx: { width: 1200, height: 900 },
-            areas: [
-                {
-                    id: randomUUID(),
-                    label: `Area ${pageNumber}`,
-                    points: [[180, 180], [620, 180], [620, 480], [180, 480]],
-                    wallPlasterType: "Recessed Edge",
-                    ceilingPlasterType: "Recessed Edge",
-                    source: "detected",
-                    deleted: false,
-                },
-            ],
-        }
-        : { imageSizePx: { width: 1200, height: 900 }, areas: [] };
+    const overlay =
+        strategyKey === "mock-detected-rooms"
+            ? {
+                  imageSizePx: { width: 1200, height: 900 },
+                  areas: [
+                      {
+                          id: randomUUID(),
+                          label: `Area ${pageNumber}`,
+                          points: [
+                              [180, 180],
+                              [620, 180],
+                              [620, 480],
+                              [180, 480],
+                          ],
+                          wallPlasterType: "Recessed Edge",
+                          ceilingPlasterType: "Recessed Edge",
+                          source: "detected",
+                          deleted: false,
+                      },
+                  ],
+              }
+            : { imageSizePx: { width: 1200, height: 900 }, areas: [] };
 
     return {
         id: pageId,
@@ -651,7 +733,9 @@ function countAreas(overlay: string | null) {
     }
 
     try {
-        const parsed = JSON.parse(overlay) as { areas?: Array<{ deleted?: boolean }> };
+        const parsed = JSON.parse(overlay) as {
+            areas?: Array<{ deleted?: boolean }>;
+        };
         return parsed.areas?.filter((area) => !area.deleted).length ?? 0;
     } catch {
         return 0;
@@ -659,10 +743,13 @@ function countAreas(overlay: string | null) {
 }
 
 function csvFileNamePart(value: string) {
-    const cleaned = value.trim().replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
+    const cleaned = value
+        .trim()
+        .replace(/[^A-Za-z0-9._-]+/g, "-")
+        .replace(/^-+|-+$/g, "");
     return cleaned || "plan";
 }
 
 function csvCell(value: string) {
-    return `"${value.replace(/"/g, "\"\"")}"`;
+    return `"${value.replace(/"/g, '""')}"`;
 }
