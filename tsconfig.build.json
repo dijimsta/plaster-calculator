@@ -4,6 +4,9 @@
             "path": "./apps/admin-cli/tsconfig.build.json"
         },
         {
+            "path": "./apps/plaster-calculator-web/tsconfig.json"
+        },
+        {
             "path": "./functions/plaster-calculator-functions/tsconfig.build.json"
         }
     ],

@@ -4,6 +4,12 @@
 
 Verify changes before committing. If you cannot verify them yourself, ask the user to do it before the commit is made.
 
+## Configuration Guardrails
+
+Do not loosen, disable, or override TypeScript, ESLint, formatting, or styling configuration to make errors disappear.
+Fix the underlying code instead. Only change these configurations when the user explicitly asks for a configuration
+change, or when the change is the direct purpose of the task.
+
 ## Jira
 
 Jira tickets are optional.

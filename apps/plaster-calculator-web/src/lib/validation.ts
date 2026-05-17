@@ -1,4 +1,4 @@
-import type { AreaPolygon, Overlay, FloorplanPage, Point } from "@/types.js";
+import type { AreaPolygon, Overlay, FloorplanPage, Point } from "../types.js";
 
 export type PageValidationInput = Pick<
     FloorplanPage,

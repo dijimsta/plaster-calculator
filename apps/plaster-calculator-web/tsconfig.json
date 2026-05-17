@@ -1,14 +1,8 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
+        "composite": false,
         "jsx": "preserve",
-        "baseUrl": ".",
-        "exactOptionalPropertyTypes": false,
-        "noUncheckedIndexedAccess": false,
-        "noPropertyAccessFromIndexSignature": false,
-        "paths": {
-            "@/*": ["src/*"]
-        },
         "plugins": [
             {
                 "name": "next"
@@ -16,14 +10,9 @@
             {
                 "name": "typescript-plugin-css-modules"
             }
-        ]
+        ],
+        "skipLibCheck": true
     },
-    "include": [
-        "next-env.d.ts",
-        "**/*.css",
-        "**/*.ts",
-        "**/*.tsx",
-        ".next/types/**/*.ts"
-    ],
+    "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
     "exclude": ["node_modules"]
 }

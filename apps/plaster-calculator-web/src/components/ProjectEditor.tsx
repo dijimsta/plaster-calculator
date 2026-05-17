@@ -32,17 +32,24 @@ import type {
     ProjectDetail,
     FloorplanPage,
     Point,
-} from "@/types.js";
+} from "../types.js";
 import {
     applyCeilingHeightToProject,
     applyScaleToProject,
     savePageOverlay,
-} from "@/lib/api.js";
-import type { PageValidationInput, ValidationIssue } from "@/lib/validation.js";
+} from "../lib/api.js";
+import type {
+    PageValidationInput,
+    ValidationIssue,
+} from "../lib/validation.js";
 
 const BOARD_TYPES = ["Recessed Edge", "Water Resistant", "Sound Check"];
+const DEFAULT_BOARD_COLOR = {
+    edge: "#0f766e",
+    fill: "rgba(15,118,110,0.22)",
+};
 const BOARD_COLORS: Record<string, { edge: string; fill: string }> = {
-    "Recessed Edge": { edge: "#0f766e", fill: "rgba(15,118,110,0.22)" },
+    "Recessed Edge": DEFAULT_BOARD_COLOR,
     "Water Resistant": { edge: "#2563eb", fill: "rgba(37,99,235,0.20)" },
     "Sound Check": { edge: "#c2410c", fill: "rgba(194,65,12,0.20)" },
 };
@@ -478,8 +485,8 @@ export default function ProjectEditor({
                 ? selectedEdge.edgeIndex
                 : (selectedPoint ?? 0);
         const nextIndex = (anchorIndex + 1) % selectedArea.points.length;
-        const a = selectedArea.points[anchorIndex];
-        const b = selectedArea.points[nextIndex];
+        const a = pointAt(selectedArea.points, anchorIndex);
+        const b = pointAt(selectedArea.points, nextIndex);
         const point: Point = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
         updateArea(selectedArea.id, (area) => ({
             ...area,
@@ -544,7 +551,12 @@ export default function ProjectEditor({
             setStatus("Select two points with Ctrl-click before splitting");
             return;
         }
-        const [start, end] = [...selectedPointIndexes].sort((a, b) => a - b);
+        const sortedPointIndexes = [...selectedPointIndexes].sort(
+            (a, b) => a - b,
+        );
+        const start = sortedPointIndexes[0];
+        const end = sortedPointIndexes[1];
+        if (start == null || end == null) return;
         const firstPoints = selectedArea.points.slice(start, end + 1);
         const secondPoints = [
             ...selectedArea.points.slice(end),
@@ -602,9 +614,12 @@ export default function ProjectEditor({
             setStatus("Select two points before straightening");
             return;
         }
-        const [a, b] = [...selectedPointIndexes].sort(
+        const sortedPointIndexes = [...selectedPointIndexes].sort(
             (left, right) => left - right,
         );
+        const a = sortedPointIndexes[0];
+        const b = sortedPointIndexes[1];
+        if (a == null || b == null) return;
         const forwardLength = pathLengthBetween(selectedArea.points, a, b, 1);
         const backwardLength = pathLengthBetween(selectedArea.points, b, a, 1);
         const removeForward = forwardLength <= backwardLength;
@@ -858,6 +873,7 @@ export default function ProjectEditor({
             const snapped = snapDraftPoint(pointer);
             if (
                 draftPoints.length >= 3 &&
+                draftPoints[0] &&
                 pointDistance(pointer, draftPoints[0]) <= 14 / zoom
             ) {
                 finishFreeShape(draftPoints);
@@ -874,16 +890,24 @@ export default function ProjectEditor({
         if (referencePoints.length === 0) {
             setReferencePoints([pointer]);
         } else {
-            setReferencePoints([referencePoints[0], pointer]);
+            const firstReferencePoint = referencePoints[0];
+            if (!firstReferencePoint) return;
+            setReferencePoints([firstReferencePoint, pointer]);
             setIsSettingReference(false);
         }
     }
 
     function applyScale() {
         if (referencePoints.length !== 2) return;
+        const firstReferencePoint = referencePoints[0];
+        const secondReferencePoint = referencePoints[1];
+        if (!firstReferencePoint || !secondReferencePoint) return;
         const length = Number(referenceLengthMm);
         if (!Number.isFinite(length) || length <= 0) return;
-        const distance = pointDistance(referencePoints[0], referencePoints[1]);
+        const distance = pointDistance(
+            firstReferencePoint,
+            secondReferencePoint,
+        );
         setScaleMmPerPx(length / distance);
         setReferenceLengthMm(String(length));
         setDirty(true);
@@ -1047,7 +1071,7 @@ export default function ProjectEditor({
         const snapshotArea =
             drag.before.areas.find((item) => item.id === area.id) ?? area;
         const originalPoint =
-            snapshotArea.points[pointIndex] ?? area.points[pointIndex];
+            snapshotArea.points[pointIndex] ?? pointAt(area.points, pointIndex);
         const pointerPoint: Point = [
             originalPoint[0] + offset.dx,
             originalPoint[1] + offset.dy,
@@ -1067,11 +1091,14 @@ export default function ProjectEditor({
         pointIndex: number,
         pointer: Point,
     ) {
-        const previous =
-            area.points[
-                (pointIndex - 1 + area.points.length) % area.points.length
-            ];
-        const next = area.points[(pointIndex + 1) % area.points.length];
+        const previous = pointAt(
+            area.points,
+            (pointIndex - 1 + area.points.length) % area.points.length,
+        );
+        const next = pointAt(
+            area.points,
+            (pointIndex + 1) % area.points.length,
+        );
         return snapToReferences(pointer, [previous, next], zoom);
     }
 
@@ -1622,7 +1649,10 @@ export default function ProjectEditor({
                                     area.points.map((point, index) => {
                                         const nextIndex =
                                             (index + 1) % area.points.length;
-                                        const next = area.points[nextIndex];
+                                        const next = pointAt(
+                                            area.points,
+                                            nextIndex,
+                                        );
                                         const override =
                                             area.edgeOverrides?.[String(index)];
                                         const edgeSelected =
@@ -1696,7 +1726,10 @@ export default function ProjectEditor({
                                     area.points.map((point, index) => {
                                         const nextIndex =
                                             (index + 1) % area.points.length;
-                                        const next = area.points[nextIndex];
+                                        const next = pointAt(
+                                            area.points,
+                                            nextIndex,
+                                        );
                                         return (
                                             <Line
                                                 key={`edge-hit-${area.id}-${index}`}
@@ -2608,11 +2641,19 @@ function cloneOverlay(value: Overlay): Overlay {
 }
 
 function colorFor(type: string) {
-    return BOARD_COLORS[type] ?? BOARD_COLORS["Recessed Edge"];
+    return BOARD_COLORS[type] ?? DEFAULT_BOARD_COLOR;
 }
 
 function pointDistance(a: Point, b: Point) {
     return Math.hypot(b[0] - a[0], b[1] - a[1]);
+}
+
+function pointAt(points: Point[], index: number): Point {
+    const point = points[index];
+    if (!point) {
+        throw new Error(`Missing polygon point at index ${index}.`);
+    }
+    return point;
 }
 
 function pathLengthBetween(
@@ -2626,7 +2667,10 @@ function pathLengthBetween(
     let index = start;
     while (index !== end) {
         const nextIndex = (index + step + points.length) % points.length;
-        total += pointDistance(points[index], points[nextIndex]);
+        total += pointDistance(
+            pointAt(points, index),
+            pointAt(points, nextIndex),
+        );
         index = nextIndex;
     }
     return total;
@@ -2634,12 +2678,13 @@ function pathLengthBetween(
 
 function wallLengthByType(area: AreaPolygon) {
     if (area.isOutdoor) return [];
+    if (area.points.length < 2) return [];
     const totals = new Map<string, number>();
     area.points.forEach((point, index) => {
         const override = area.edgeOverrides?.[String(index)];
         if (override?.noPlaster) return;
         const type = override?.wallPlasterType ?? area.wallPlasterType;
-        const next = area.points[(index + 1) % area.points.length];
+        const next = pointAt(area.points, (index + 1) % area.points.length);
         totals.set(type, (totals.get(type) ?? 0) + pointDistance(point, next));
     });
     return Array.from(totals.entries()).map(([type, lengthPx]) => ({
@@ -2649,8 +2694,9 @@ function wallLengthByType(area: AreaPolygon) {
 }
 
 function polygonArea(points: Point[]) {
+    if (points.length < 3) return 0;
     const sum = points.reduce((total, point, index) => {
-        const next = points[(index + 1) % points.length];
+        const next = pointAt(points, (index + 1) % points.length);
         return total + point[0] * next[1] - next[0] * point[1];
     }, 0);
     return Math.abs(sum / 2);
@@ -2678,8 +2724,8 @@ function ceilingAreaM2ForArea(area: AreaPolygon, scaleMmPerPx: number) {
 
 function edgeMidpoint(points: Point[], edgeIndex: number): Point | null {
     if (edgeIndex < 0 || edgeIndex >= points.length) return null;
-    const a = points[edgeIndex];
-    const b = points[(edgeIndex + 1) % points.length];
+    const a = pointAt(points, edgeIndex);
+    const b = pointAt(points, (edgeIndex + 1) % points.length);
     return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
 }
 

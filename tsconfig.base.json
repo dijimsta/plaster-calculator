@@ -1,29 +1,29 @@
 {
     // Visit https://aka.ms/tsconfig to read more about this file
     "compilerOptions": {
-        // File Layout
-        // "rootDir": "./src",
-        // "outDir": "./dist",
         // Environment Settings
         // See also https://aka.ms/tsconfig/module
         "module": "nodenext",
         "moduleResolution": "nodenext",
+        "moduleDetection": "force",
+        "resolveJsonModule": true,
+        "resolvePackageJsonExports": true,
+        "resolvePackageJsonImports": true,
+        "rewriteRelativeImportExtensions": true,
         "target": "esnext",
-        "types": [],
-        // For nodejs:
-        // "lib": ["esnext"],
-        // "types": ["node"],
-        // and npm install -D @types/node
-        "noEmit": true,
-        "composite": true,
-        "incremental": true,
+
         // Other Outputs
         "sourceMap": true,
         "declaration": true,
         "declarationMap": true,
+        "composite": true,
+        "incremental": true,
+        "noEmit": true,
+
         // Stricter Typechecking Options
         "noUncheckedIndexedAccess": true,
-        "exactOptionalPropertyTypes": true,
+        "exactOptionalPropertyTypes": false,
+
         // Style Options
         "noImplicitReturns": true,
         "noImplicitOverride": true,
@@ -31,12 +31,25 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noPropertyAccessFromIndexSignature": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+
         // Recommended Options
         "strict": true,
-        "verbatimModuleSyntax": true,
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictBindCallApply": true,
+        "strictBuiltinIteratorReturn": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "useUnknownInCatchVariables": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedDeclarations": false,
         "isolatedModules": true,
+        "verbatimModuleSyntax": true,
         "noUncheckedSideEffectImports": true,
-        "moduleDetection": "force",
-        "skipLibCheck": true
+        "skipLibCheck": false
     }
 }
