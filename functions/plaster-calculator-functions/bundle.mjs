@@ -1,14 +1,15 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 import { build } from "esbuild";
 
 const TAB_WIDTH = 4;
 const pkg = JSON.parse(readFileSync("package.json", "utf-8"));
+const deployPkg = structuredClone(pkg);
 
 // Remove workspace dependencies from the bundled package.json
-Object.keys(pkg.dependencies).forEach((dependency) => {
-    if (pkg.dependencies[dependency].startsWith("workspace:")) {
-        delete pkg.dependencies[dependency];
+Object.keys(deployPkg.dependencies).forEach((dependency) => {
+    if (deployPkg.dependencies[dependency].startsWith("workspace:")) {
+        delete deployPkg.dependencies[dependency];
     }
 });
 
@@ -20,12 +21,13 @@ await build({
     target: "node24",
     format: "esm",
     outdir: "dist",
-    external: Object.keys(pkg.dependencies),
+    external: Object.keys(deployPkg.dependencies),
 });
 
 // Update entry point and exports in package.json
-pkg.main = "./dist/index.js";
-pkg.exports = "./dist/index.js";
+deployPkg.main = "./index.js";
+deployPkg.exports = "./index.js";
 
-// Write the modified package.json to the dist directory
-writeFileSync("package.json", JSON.stringify(pkg, null, TAB_WIDTH));
+// Write deployment metadata beside the bundled output without mutating source.
+mkdirSync("dist", { recursive: true });
+writeFileSync("dist/package.json", JSON.stringify(deployPkg, null, TAB_WIDTH));

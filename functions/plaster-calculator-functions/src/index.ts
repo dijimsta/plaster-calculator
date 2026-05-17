@@ -116,11 +116,6 @@ interface ProjectDetail extends ProjectSummary {
     pages: FloorplanPage[];
 }
 
-interface PdfPagePreview {
-    pageNumber: number;
-    previewUrl: string;
-}
-
 interface ProcessingStrategyInfo {
     key: string;
     label: string;
@@ -142,6 +137,7 @@ interface CreateProjectFromUploadRequest {
     contentType?: unknown;
     size?: unknown;
     storagePath?: unknown;
+    pageCount?: unknown;
 }
 
 interface ProjectIdRequest {
@@ -155,6 +151,7 @@ interface RenameProjectRequest extends ProjectIdRequest {
 interface ProcessProjectRequest extends ProjectIdRequest {
     pageNumbers?: unknown;
     strategyKey?: unknown;
+    pageImagePaths?: unknown;
 }
 
 interface UpdateFloorplanPageRequest extends ProjectIdRequest {
@@ -298,6 +295,17 @@ function readRequiredNumber(value: unknown, field: string) {
     return value;
 }
 
+function readPdfPageCount(value: unknown) {
+    if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
+        throw new HttpsError(
+            "invalid-argument",
+            "PDF page count must be a positive integer.",
+        );
+    }
+
+    return value;
+}
+
 function readOptionalString(value: unknown) {
     if (value == null || value === "") {
         return undefined;
@@ -418,8 +426,9 @@ export const createProjectFromUpload = onCall<
     const originalUrl = await ensureFileDownloadUrl(storagePath);
 
     const uploadType = inferUploadType(originalFileName, contentType);
-    const pageCount = uploadType === "PDF" ? 3 : 1;
-    const response = await dcCreateProjectFromUpload({
+    const pageCount =
+        uploadType === "PDF" ? readPdfPageCount(request.data.pageCount) : 1;
+    await dcCreateProjectFromUpload({
         id: projectId,
         ownerId: auth.uid,
         name,
@@ -431,7 +440,7 @@ export const createProjectFromUpload = onCall<
     });
 
     return {
-        projectId: response.data.project_insert.id,
+        projectId,
         uploadType,
         pageCount,
         status: "DRAFT",
@@ -480,28 +489,6 @@ export const deleteProject = onCall<ProjectIdRequest, Promise<{ ok: true }>>(
     },
 );
 
-export const listProjectPdfPagePreviews = onCall<
-    ProjectIdRequest,
-    Promise<{ pages: PdfPagePreview[] }>
->(async (request) => {
-    const auth = requireAuth(request);
-    const project = await requireOwnedProject(
-        readRequiredString(request.data.projectId, "Project ID"),
-        auth.uid,
-    );
-
-    // Deprecated mock: move PDF thumbnail rendering to the web client with PDF.js.
-    const pages =
-        project.uploadType === "PDF"
-            ? Array.from({ length: project.pageCount }, (_, index) => ({
-                  pageNumber: index + 1,
-                  previewUrl: mockImageDataUrl(`PDF page ${index + 1}`),
-              }))
-            : [];
-
-    return { pages };
-});
-
 export const listProcessingStrategies = onCall<
     unknown,
     { strategies: ProcessingStrategyInfo[] }
@@ -531,12 +518,15 @@ export const processProject = onCall<
         );
     }
 
-    if (project.uploadType !== "IMAGE") {
-        throw new HttpsError(
-            "unimplemented",
-            "PDF processing is not yet wired to floorplan-analyzer. Upload the floorplan as an image to run analysis.",
-        );
-    }
+    const pdfPageImagePaths =
+        project.uploadType === "PDF"
+            ? await readPdfPageImagePaths(
+                  request.data.pageImagePaths,
+                  pageNumbers,
+                  auth.uid,
+                  projectId,
+              )
+            : new Map<number, string>();
 
     await touchProject({
         id: projectId,
@@ -546,17 +536,39 @@ export const processProject = onCall<
     await dcDeleteFloorplanPages({ projectId });
 
     try {
-        const imageBytes = await fetchOriginalImage(project.originalPath);
-        for (const pageNumber of pageNumbers) {
-            await analysePage(
-                auth.uid,
-                projectId,
-                pageNumber,
-                project.originalPath,
-                project.originalFileName,
-                imageBytes,
-                strategy,
-            );
+        if (project.uploadType === "IMAGE") {
+            const imageBytes = await fetchOriginalImage(project.originalPath);
+            for (const pageNumber of pageNumbers) {
+                await analysePage(
+                    auth.uid,
+                    projectId,
+                    pageNumber,
+                    project.originalPath,
+                    project.originalFileName,
+                    imageBytes,
+                    strategy,
+                );
+            }
+        } else {
+            for (const pageNumber of pageNumbers) {
+                const sourcePath = pdfPageImagePaths.get(pageNumber);
+                if (!sourcePath) {
+                    throw new HttpsError(
+                        "invalid-argument",
+                        `Missing source image for PDF page ${pageNumber}.`,
+                    );
+                }
+                const { bytes, url } = await fetchStorageImage(sourcePath);
+                await analysePage(
+                    auth.uid,
+                    projectId,
+                    pageNumber,
+                    url,
+                    `${project.originalFileName} page ${pageNumber}`,
+                    bytes,
+                    strategy,
+                );
+            }
         }
     } catch (error) {
         const message =
@@ -813,6 +825,44 @@ function readPageNumbers(value: unknown, project: ProjectWithPages) {
     return unique;
 }
 
+async function readPdfPageImagePaths(
+    value: unknown,
+    pageNumbers: number[],
+    uid: string,
+    projectId: string,
+) {
+    if (!isRecord(value)) {
+        throw new HttpsError(
+            "invalid-argument",
+            "Selected PDF page images are required.",
+        );
+    }
+
+    const paths = new Map<number, string>();
+    for (const pageNumber of pageNumbers) {
+        const rawPath = value[String(pageNumber)];
+        if (typeof rawPath !== "string" || rawPath.trim().length === 0) {
+            throw new HttpsError(
+                "invalid-argument",
+                `Source image is required for PDF page ${pageNumber}.`,
+            );
+        }
+
+        const path = rawPath.trim();
+        if (!isOwnedPageSourcePath(path, uid, projectId, pageNumber)) {
+            throw new HttpsError(
+                "permission-denied",
+                "PDF page source image path must belong to the signed-in user and project.",
+            );
+        }
+
+        await requireStorageImage(path);
+        paths.set(pageNumber, path);
+    }
+
+    return paths;
+}
+
 function inferUploadType(fileName: string, contentType: string): UploadType {
     const lowerName = fileName.toLowerCase();
     const lowerType = contentType.toLowerCase();
@@ -828,6 +878,18 @@ function isOwnedUploadPath(
 ) {
     return storagePath.startsWith(
         `uploads/${uid}/projects/${projectId}/uploads/`,
+    );
+}
+
+function isOwnedPageSourcePath(
+    storagePath: string,
+    uid: string,
+    projectId: string,
+    pageNumber: number,
+) {
+    return (
+        storagePath ===
+        `uploads/${uid}/projects/${projectId}/pages/${pageNumber}/source.png`
     );
 }
 
@@ -956,6 +1018,38 @@ async function fetchOriginalImage(originalUrl: string): Promise<Buffer> {
     }
 
     return Buffer.from(await response.arrayBuffer());
+}
+
+async function requireStorageImage(path: string): Promise<void> {
+    const file = getStorage().bucket().file(path);
+    const [exists] = await file.exists();
+    if (!exists) {
+        throw new HttpsError(
+            "not-found",
+            "PDF page source image was not found.",
+        );
+    }
+
+    const [metadata] = await file.getMetadata();
+    const contentType = metadata.contentType ?? "";
+    if (!contentType.startsWith("image/")) {
+        throw new HttpsError(
+            "invalid-argument",
+            "PDF page source file must be an image.",
+        );
+    }
+}
+
+async function fetchStorageImage(
+    path: string,
+): Promise<{ bytes: Buffer; url: string }> {
+    await requireStorageImage(path);
+    const file = getStorage().bucket().file(path);
+    const [bytes] = await file.download();
+    return {
+        bytes,
+        url: await ensureFileDownloadUrl(path),
+    };
 }
 
 async function callFloorplanAnalyzer(
@@ -1096,6 +1190,7 @@ function analyzerItemToOverlayArea(item: AnalyzerPolygon): OverlayArea | null {
 
     const roomType = item.room_type ?? null;
     const isOutdoor = roomType === "Outdoor";
+    const defaultPlasterType = defaultPlasterTypeForRoom(roomType);
     const candidateLabel =
         (typeof item.label === "string" && item.label.trim()) ||
         (roomType ? roomType : "") ||
@@ -1105,8 +1200,8 @@ function analyzerItemToOverlayArea(item: AnalyzerPolygon): OverlayArea | null {
         id: randomUUID(),
         label: candidateLabel,
         points,
-        wallPlasterType: "Recessed Edge",
-        ceilingPlasterType: "Recessed Edge",
+        wallPlasterType: defaultPlasterType,
+        ceilingPlasterType: defaultPlasterType,
         ceilingMode: "flat",
         isOutdoor,
         source: "detected",
@@ -1127,6 +1222,10 @@ function analyzerItemToOverlayArea(item: AnalyzerPolygon): OverlayArea | null {
     }
 
     return area;
+}
+
+function defaultPlasterTypeForRoom(roomType: string | null): string {
+    return roomType === "Bath" ? "Water Resistant" : "Recessed Edge";
 }
 
 async function uploadStorageBuffer(
@@ -1191,19 +1290,6 @@ function projectId(): string {
         process.env["FIREBASE_PROJECT"] ??
         "plaster-calculator"
     );
-}
-
-function mockImageDataUrl(label: string) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900"><rect width="1200" height="900" fill="#eef3f5"/><path d="M160 150h880v600H160zM300 150v600M160 360h880M720 360v390" fill="none" stroke="#64748b" stroke-width="18"/><text x="600" y="820" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#334155">${escapeXml(label)}</text></svg>`;
-    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-}
-
-function escapeXml(value: string) {
-    return value
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
 }
 
 function buildProjectCsv(project: ProjectWithPages) {

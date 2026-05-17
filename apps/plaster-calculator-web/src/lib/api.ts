@@ -3,7 +3,6 @@ import { ref, uploadBytes } from "firebase/storage";
 
 import { auth, functions, storage } from "@/firebase/firebase.utils.js";
 import type {
-    PdfPagePreview,
     ProjectDetail,
     FloorplanPage,
     ProjectSummary,
@@ -24,12 +23,14 @@ type CreateProjectFromUploadRequest = {
     contentType: string;
     size: number;
     storagePath: string;
+    pageCount?: number;
 };
 
 type ProcessProjectRequest = {
     projectId: string;
     pageNumbers: number[];
     strategyKey?: string;
+    pageImagePaths?: Record<number, string>;
 };
 
 type SavePageOverlayRequest = {
@@ -68,10 +69,6 @@ const deleteProjectCallable = httpsCallable<
     { projectId: string },
     { ok: true }
 >(functions, "deleteProject");
-const listProjectPdfPagePreviewsCallable = httpsCallable<
-    { projectId: string },
-    { pages: PdfPagePreview[] }
->(functions, "listProjectPdfPagePreviews");
 const listProcessingStrategiesCallable = httpsCallable<
     unknown,
     { strategies: ProcessingStrategyInfo[] }
@@ -106,7 +103,11 @@ export async function listProjects() {
     return result.data.projects;
 }
 
-export async function uploadProject(name: string, file: File) {
+export async function uploadProject(
+    name: string,
+    file: File,
+    pageCount?: number,
+) {
     const uid = auth.currentUser?.uid;
     if (!uid) {
         throw new Error("Must be signed in to upload a project.");
@@ -125,8 +126,26 @@ export async function uploadProject(name: string, file: File) {
         contentType: file.type || "application/octet-stream",
         size: file.size,
         storagePath,
+        pageCount,
     });
     return result.data;
+}
+
+export async function uploadPdfPageSource(
+    projectId: string,
+    pageNumber: number,
+    sourcePng: Blob,
+) {
+    const uid = auth.currentUser?.uid;
+    if (!uid) {
+        throw new Error("Must be signed in to upload PDF pages.");
+    }
+
+    const storagePath = `uploads/${uid}/projects/${projectId}/pages/${pageNumber}/source.png`;
+    await uploadBytes(ref(storage, storagePath), sourcePng, {
+        contentType: "image/png",
+    });
+    return storagePath;
 }
 
 function sanitizeStorageName(value: string) {
@@ -152,11 +171,6 @@ export async function deleteProject(projectId: string) {
     await deleteProjectCallable({ projectId });
 }
 
-export async function getPdfPages(projectId: string) {
-    const result = await listProjectPdfPagePreviewsCallable({ projectId });
-    return result.data.pages;
-}
-
 export async function listProcessingStrategies() {
     const result = await listProcessingStrategiesCallable();
     return result.data.strategies;
@@ -166,11 +180,13 @@ export async function processProject(
     projectId: string,
     pageNumbers: number[],
     strategyKey?: string,
+    pageImagePaths?: Record<number, string>,
 ) {
     const result = await processProjectCallable({
         projectId,
         pageNumbers,
         strategyKey,
+        pageImagePaths,
     });
     return result.data;
 }

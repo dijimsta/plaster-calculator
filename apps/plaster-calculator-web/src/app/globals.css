@@ -361,6 +361,23 @@ select {
     padding: 9px 10px;
 }
 
+.pdf-upload-progress {
+    display: grid;
+    gap: 8px;
+}
+
+.pdf-upload-progress-label {
+    color: var(--muted);
+    display: flex;
+    font-size: 14px;
+    justify-content: space-between;
+}
+
+.pdf-upload-progress progress {
+    accent-color: var(--brand);
+    width: 100%;
+}
+
 .editor-shell {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 320px;
@@ -478,34 +495,6 @@ select {
 
 .settings-modal {
     max-width: 520px;
-}
-
-.large-preview {
-    align-items: center;
-    background: #eef3f5;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    cursor: zoom-out;
-    display: flex;
-    justify-content: center;
-    max-height: 62vh;
-    overflow: auto;
-    padding: 12px;
-}
-
-.large-preview img {
-    max-height: 58vh;
-    max-width: 100%;
-    object-fit: contain;
-}
-
-.preview-tile button {
-    background: transparent;
-    border: 0;
-    cursor: zoom-in;
-    display: block;
-    padding: 0;
-    width: 100%;
 }
 
 .popover-menu {
