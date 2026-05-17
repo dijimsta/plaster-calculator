@@ -23,7 +23,7 @@ import {
 import ThemeSettingsButton from "@/components/ThemeSettingsButton.js";
 import {
     deleteProject,
-    getProject,
+    getProjectStatus,
     listProjects,
     listProcessingStrategies,
     processProject,
@@ -87,13 +87,20 @@ export default function HomePage() {
         if (!processingProjectId) return;
         const timer = window.setInterval(async () => {
             try {
-                const project = await getProject(processingProjectId);
-                await refresh();
+                const project = await getProjectStatus(processingProjectId);
+                setProjects((current) =>
+                    current.some((item) => item.id === project.id)
+                        ? current.map((item) =>
+                              item.id === project.id ? project : item,
+                          )
+                        : [project, ...current],
+                );
                 if (project.status === "READY") {
                     setToast("finished processing.");
                     setToastProject({ id: project.id, name: project.name });
                     setProcessingProjectId(null);
                     window.clearInterval(timer);
+                    await refresh();
                 }
                 if (project.status === "FAILED") {
                     setToast(
@@ -102,6 +109,7 @@ export default function HomePage() {
                     setToastProject(null);
                     setProcessingProjectId(null);
                     window.clearInterval(timer);
+                    await refresh();
                 }
             } catch (error) {
                 setToast(
@@ -210,7 +218,7 @@ export default function HomePage() {
                     [1],
                     selectedStrategyKey || undefined,
                 );
-                setProcessingProjectId(project.id);
+                setProcessingProjectId(null);
                 setToast(`${project.name} finished processing.`);
                 setToastProject({ id: project.id, name: project.name });
             }
@@ -284,7 +292,7 @@ export default function HomePage() {
                 selectedStrategyKey || undefined,
                 pageImagePaths,
             );
-            setProcessingProjectId(project.id);
+            setProcessingProjectId(null);
             setToast(`${project.name} finished processing.`);
             setToastProject({ id: project.id, name: project.name });
             await refresh();

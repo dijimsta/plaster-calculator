@@ -61,6 +61,10 @@ const getProjectCallable = httpsCallable<{ projectId: string }, ProjectDetail>(
     functions,
     "getProject",
 );
+const getProjectStatusCallable = httpsCallable<
+    { projectId: string },
+    ProjectSummary
+>(functions, "getProjectStatus");
 const renameProjectCallable = httpsCallable<
     { projectId: string; name: string },
     ProjectDetail
@@ -159,6 +163,11 @@ function sanitizeStorageName(value: string) {
 
 export async function getProject(projectId: string) {
     const result = await getProjectCallable({ projectId });
+    return result.data;
+}
+
+export async function getProjectStatus(projectId: string) {
+    const result = await getProjectStatusCallable({ projectId });
     return result.data;
 }
 
