@@ -677,6 +677,8 @@ export const exportProjectCsv = onCall<
 });
 
 async function requireOwnedProject(projectId: string, ownerId: string) {
+    // TODO: Add a lightweight ownership helper backed by getProjectById for
+    // callsites that do not need floorplan pages.
     const response = await getProjectDetailsById({ id: projectId });
     const project = response.data.project;
     if (!project || project.ownerId !== ownerId) {
