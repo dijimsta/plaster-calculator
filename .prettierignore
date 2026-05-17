@@ -1,0 +1,12 @@
+node_modules
+.next
+.vercel
+public
+dist
+
+libraries/example-data-connector
+
+# Ignore dependency locks
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
