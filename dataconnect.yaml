@@ -1,13 +1,13 @@
 specVersion: "v1"
 serviceId: "plaster-calculator"
-location: "australia-southeast2"
+location: "us-west1"
 schemas:
     - source: "./data/schemas"
       datasource:
           postgresql:
-              database: "fdcdb"
+              database: "plaster-calculator"
               cloudSql:
-                  instanceId: "plaster-calculator-fdc"
+                  instanceId: "plaster-calculator"
                   schemaValidation: "STRICT"
 connectorDirs:
     - ./data/connectors/example
