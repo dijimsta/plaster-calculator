@@ -1,0 +1,12 @@
+[
+    {
+        "origin": [
+            "https://plastercalculator.com",
+            "https://www.plastercalculator.com",
+            "https://plaster-calculator.web.app",
+            "https://plaster-calculator.firebaseapp.com"
+        ],
+        "method": ["GET", "HEAD"],
+        "maxAgeSeconds": 3600
+    }
+]
