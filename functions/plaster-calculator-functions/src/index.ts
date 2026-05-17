@@ -1429,7 +1429,7 @@ function wallBreakdown(
     pageHeightMm: number | null,
 ) {
     const totals = new Map<string, number>();
-    if (Boolean(area["isOutdoor"])) {
+    if (area["isOutdoor"]) {
         return totals;
     }
 
