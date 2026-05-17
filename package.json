@@ -9,6 +9,7 @@
     ],
     "scripts": {
         "build": "tsc --build tsconfig.build.json",
+        "admin-cli": "yarn workspace @apps/admin-cli build && node apps/admin-cli/out/main.js",
         "deploy": "firebase deploy",
         "deploy:dataconnect": "firebase deploy --only dataconnect",
         "deploy:functions": "firebase deploy --only functions",

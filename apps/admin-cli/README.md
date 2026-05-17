@@ -31,14 +31,8 @@ Do not commit service account JSON files.
 
 ## Usage
 
-Build the CLI:
+Start the interactive CLI:
 
 ```bash
-yarn workspace @inivi/admin-cli build
-```
-
-List Firebase Auth users:
-
-```bash
-yarn admin-cli users list
+yarn admin-cli
 ```
