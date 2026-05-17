@@ -20,7 +20,7 @@ import {
     Upload,
     X,
 } from "lucide-react";
-import ThemeSettingsButton from "@/components/ThemeSettingsButton.js";
+import ThemeSettingsButton from "../../components/ThemeSettingsButton.js";
 import {
     deleteProject,
     getProjectStatus,
@@ -30,15 +30,15 @@ import {
     renameProject,
     uploadPdfPageSource,
     uploadProject,
-} from "@/lib/api.js";
+} from "../../lib/api.js";
 import {
     loadPdfDocument,
     renderPdfPageSourcePng,
     renderPdfThumbnails,
     revokePdfPreviews,
     type PdfPagePreview,
-} from "@/lib/pdf.js";
-import type { ProjectSummary, ProcessingStrategyInfo } from "@/types.js";
+} from "../../lib/pdf.js";
+import type { ProjectSummary, ProcessingStrategyInfo } from "../../types.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const Link = LinkModule.default;
@@ -254,8 +254,7 @@ export default function HomePage() {
         const pageImagePaths: Record<number, string> = {};
         const total = selectedPages.length;
         try {
-            for (let index = 0; index < selectedPages.length; index += 1) {
-                const pageNumber = selectedPages[index];
+            for (const [index, pageNumber] of selectedPages.entries()) {
                 setPageUploadProgress({
                     current: index,
                     total,

@@ -26,7 +26,7 @@ export default function ThemeSettingsButton() {
                         ? "dark"
                         : "light"
                     : themeMode;
-            document.documentElement.dataset.theme = resolved;
+            document.documentElement.dataset["theme"] = resolved;
             window.localStorage.setItem("plaster-theme", themeMode);
         };
         applyTheme();

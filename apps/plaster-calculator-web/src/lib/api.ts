@@ -1,13 +1,13 @@
 import { httpsCallable } from "firebase/functions";
 import { ref, uploadBytes } from "firebase/storage";
 
-import { auth, functions, storage } from "@/firebase/firebase.utils.js";
+import { auth, functions, storage } from "../firebase/firebase.utils.js";
 import type {
     ProjectDetail,
     FloorplanPage,
     ProjectSummary,
     ProcessingStrategyInfo,
-} from "@/types.js";
+} from "../types.js";
 
 type UploadResponse = {
     projectId: string;
