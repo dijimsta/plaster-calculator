@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 options.set_global_options(region="us-west1", max_instances=5)
 
 INFERENCE_MEMORY = options.MemoryOption.GB_4
-OCR_MEMORY = options.MemoryOption.GB_8
+OCR_MEMORY = options.MemoryOption.GB_16
 INFERENCE_TIMEOUT = 540
 INFERENCE_CPU = 2
 OCR_CPU = 4
