@@ -10,6 +10,8 @@ import {
     Rect,
     Stage,
 } from "react-konva";
+import type { Stage as KonvaStage } from "konva/lib/Stage.js";
+import type { KonvaEventObject } from "konva/lib/Node.js";
 import {
     AlignHorizontalJustifyCenter,
     CopyPlus,
@@ -121,7 +123,7 @@ export default function ProjectEditor({
     const [status, setStatus] = useState("");
     const [history, setHistory] = useState<Overlay[]>([]);
     const [future, setFuture] = useState<Overlay[]>([]);
-    const stageRef = useRef<any>(null);
+    const stageRef = useRef<KonvaStage>(null);
     const canvasWrapRef = useRef<HTMLDivElement | null>(null);
     const overlayRef = useRef<Overlay>(overlay);
     const pointDragRef = useRef<DragState | null>(null);
@@ -964,7 +966,7 @@ export default function ProjectEditor({
         }
     }
 
-    function startScrollDrag(event: any) {
+    function startScrollDrag(event: KonvaEventObject<MouseEvent>) {
         if (
             isSettingReference ||
             isDrawingFreeShape ||
@@ -983,7 +985,7 @@ export default function ProjectEditor({
         event.target.getStage()!.container().style.cursor = "grabbing";
     }
 
-    function moveScrollDrag(event: any) {
+    function moveScrollDrag(event: KonvaEventObject<MouseEvent>) {
         if (isDrawingFreeShape) {
             const pointer = imagePointer();
             if (pointer) {
@@ -1002,7 +1004,7 @@ export default function ProjectEditor({
         element.scrollTop = drag.scrollTop - dy;
     }
 
-    function endScrollDrag(event: any) {
+    function endScrollDrag(event: KonvaEventObject<MouseEvent>) {
         if (!scrollDragRef.current) return;
         event.target.getStage()!.container().style.cursor =
             isSettingReference || isDrawingFreeShape ? "crosshair" : "grab";
@@ -1045,15 +1047,19 @@ export default function ProjectEditor({
         return { dx, dy };
     }
 
-    function clientPoint(event: any) {
-        const pointer =
-            event.evt.touches?.[0] ??
-            event.evt.changedTouches?.[0] ??
-            event.evt;
-        return { x: pointer.clientX ?? 0, y: pointer.clientY ?? 0 };
+    function clientPoint(event: KonvaEventObject<MouseEvent | TouchEvent>) {
+        const evt = event.evt;
+        if ("touches" in evt) {
+            const touch = evt.touches[0] ?? evt.changedTouches[0];
+            return { x: touch?.clientX ?? 0, y: touch?.clientY ?? 0 };
+        }
+        return { x: evt.clientX, y: evt.clientY };
     }
 
-    function dragOffset(drag: DragState, event: any) {
+    function dragOffset(
+        drag: DragState,
+        event: KonvaEventObject<MouseEvent | TouchEvent>,
+    ) {
         const pointer = clientPoint(event);
         return {
             dx: (pointer.x - drag.startClientX) / zoom,
@@ -1065,7 +1071,7 @@ export default function ProjectEditor({
         drag: DragState,
         area: AreaPolygon,
         pointIndex: number,
-        event: any,
+        event: KonvaEventObject<MouseEvent | TouchEvent>,
     ) {
         const offset = dragOffset(drag, event);
         const snapshotArea =
