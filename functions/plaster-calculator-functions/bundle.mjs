@@ -20,6 +20,7 @@ await build({
     target: "node24",
     format: "esm",
     outdir: "dist",
+    sourcemap: true,
     external: Object.keys(pkg.dependencies),
 });
 
