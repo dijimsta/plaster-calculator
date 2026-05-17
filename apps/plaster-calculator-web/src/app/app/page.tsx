@@ -203,13 +203,16 @@ export default function HomePage() {
                 setMessage("");
             } else {
                 setMessage("Processing image in the background...");
+                setProcessingProjectId(upload.projectId);
+                setToast("Project is processing.");
                 const project = await processProject(
                     upload.projectId,
                     [1],
                     selectedStrategyKey || undefined,
                 );
                 setProcessingProjectId(project.id);
-                setToast(`${project.name} is processing.`);
+                setToast(`${project.name} finished processing.`);
+                setToastProject({ id: project.id, name: project.name });
             }
             await refresh();
         } catch (error) {
