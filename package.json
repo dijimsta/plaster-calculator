@@ -18,6 +18,7 @@
         "start": "node scripts/predeploy-floorplan-analyzer-functions.mjs && yarn build && yarn workspace @inivi/plaster-calculator-functions bundle && firebase emulators:start"
     },
     "devDependencies": {
+        "@apps/admin-cli": "workspace:*",
         "firebase-tools": "^15.18.0",
         "nx": "22.7.2",
         "prettier": "^3.8.3",
