@@ -1,0 +1,22 @@
+{
+    "name": "@apps/admin-cli",
+    "type": "module",
+    "version": "0.1.0",
+    "private": true,
+    "bin": "./out/cli.js",
+    "scripts": {
+        "build": "tsc --build tsconfig.build.json",
+        "users:list": "yarn build && node out/cli.js users list"
+    },
+    "dependencies": {
+        "commander": "^14.0.3",
+        "firebase-admin": "^13.10.0",
+        "ink": "^7.0.3",
+        "react": "^19.2.6"
+    },
+    "devDependencies": {
+        "@types/node": "^24.12.4",
+        "@types/react": "^19.2.14",
+        "typescript": "^6.0.3"
+    }
+}
