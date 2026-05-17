@@ -21,7 +21,8 @@ await build({
     target: "node24",
     format: "esm",
     outdir: "dist",
-    external: Object.keys(deployPkg.dependencies),
+    sourcemap: true,
+    external: Object.keys(pkg.dependencies),
 });
 
 // Update entry point and exports in package.json
