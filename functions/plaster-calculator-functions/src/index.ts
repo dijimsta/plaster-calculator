@@ -15,16 +15,16 @@ import {
     createFloorplanPage as dcCreateFloorplanPage,
     deleteProject as dcDeleteProject,
     deleteFloorplanPages as dcDeleteFloorplanPages,
-    getProjectById,
-    getFloorplanPageById,
     getProjectDetailsById,
+    getFloorplanPageById,
+    getProjectById,
     listProjectsByOwner,
     renameProject as dcRenameProject,
     touchProject,
     updateFloorplanPage as dcUpdateFloorplanPage,
-    type GetProjectByIdData,
-    type GetFloorplanPageByIdData,
     type GetProjectDetailsByIdData,
+    type GetFloorplanPageByIdData,
+    type GetProjectByIdData,
     type ListProjectsByOwnerData,
 } from "@inivi/example-data-connector";
 import { setGlobalOptions } from "firebase-functions";
@@ -60,8 +60,8 @@ if (getApps().length === 0) {
 }
 
 type ProjectListRow = ListProjectsByOwnerData["projects"][number];
-type ProjectWithPages = NonNullable<GetProjectByIdData["project"]>;
-type ProjectDetailsRow = NonNullable<GetProjectDetailsByIdData["project"]>;
+type ProjectWithPages = NonNullable<GetProjectDetailsByIdData["project"]>;
+type ProjectDetailsRow = NonNullable<GetProjectByIdData["project"]>;
 type FloorplanPageRow = NonNullable<GetFloorplanPageByIdData["floorplanPage"]>;
 
 type UploadType = "PDF" | "IMAGE";
@@ -407,7 +407,7 @@ export const getProjectStatus = onCall<
     Promise<ProjectSummary>
 >(async (request) => {
     const auth = requireAuth(request);
-    const response = await getProjectDetailsById({
+    const response = await getProjectById({
         id: readRequiredString(request.data.projectId, "Project ID"),
     });
     const project = response.data.project;
@@ -677,7 +677,7 @@ export const exportProjectCsv = onCall<
 });
 
 async function requireOwnedProject(projectId: string, ownerId: string) {
-    const response = await getProjectById({ id: projectId });
+    const response = await getProjectDetailsById({ id: projectId });
     const project = response.data.project;
     if (!project || project.ownerId !== ownerId) {
         throw new HttpsError("not-found", "Project was not found.");

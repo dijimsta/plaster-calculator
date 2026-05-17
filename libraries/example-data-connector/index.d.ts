@@ -103,25 +103,6 @@ export interface GetProjectByIdData {
     pageCount: number;
     createdAt: TimestampString;
     updatedAt: TimestampString;
-    pages: ({
-      id: UUIDString;
-      projectId: UUIDString;
-      pageNumber: number;
-      status: string;
-      sourceImagePath?: string | null;
-      previewImagePath?: string | null;
-      rawJsonPath?: string | null;
-      rawFloorplanPath?: string | null;
-      overlayJson?: string | null;
-      scaleMmPerPx?: number | null;
-      ceilingHeightMm?: number | null;
-      referencePointsJson?: string | null;
-      referenceLengthMm?: number | null;
-      processingStrategy?: string | null;
-      processingMetadataJson?: string | null;
-      createdAt: TimestampString;
-      updatedAt: TimestampString;
-    } & FloorplanPage_Key)[];
   } & Project_Key;
 }
 
@@ -142,6 +123,25 @@ export interface GetProjectDetailsByIdData {
     pageCount: number;
     createdAt: TimestampString;
     updatedAt: TimestampString;
+    pages: ({
+      id: UUIDString;
+      projectId: UUIDString;
+      pageNumber: number;
+      status: string;
+      sourceImagePath?: string | null;
+      previewImagePath?: string | null;
+      rawJsonPath?: string | null;
+      rawFloorplanPath?: string | null;
+      overlayJson?: string | null;
+      scaleMmPerPx?: number | null;
+      ceilingHeightMm?: number | null;
+      referencePointsJson?: string | null;
+      referenceLengthMm?: number | null;
+      processingStrategy?: string | null;
+      processingMetadataJson?: string | null;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+    } & FloorplanPage_Key)[];
   } & Project_Key;
 }
 
@@ -261,15 +261,15 @@ export function listProjectsByOwner(dc: DataConnect, vars: ListProjectsByOwnerVa
 /** Generated Node Admin SDK operation action function for the 'ListProjectsByOwner' Query. Allow users to pass in custom DataConnect instances. */
 export function listProjectsByOwner(vars: ListProjectsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerData>>;
 
-/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to execute without passing in DataConnect. */
-export function getProjectById(dc: DataConnect, vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
-/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to pass in custom DataConnect instances. */
-export function getProjectById(vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
-
 /** Generated Node Admin SDK operation action function for the 'GetProjectDetailsById' Query. Allow users to execute without passing in DataConnect. */
 export function getProjectDetailsById(dc: DataConnect, vars: GetProjectDetailsByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectDetailsByIdData>>;
 /** Generated Node Admin SDK operation action function for the 'GetProjectDetailsById' Query. Allow users to pass in custom DataConnect instances. */
 export function getProjectDetailsById(vars: GetProjectDetailsByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectDetailsByIdData>>;
+
+/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to execute without passing in DataConnect. */
+export function getProjectById(dc: DataConnect, vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to pass in custom DataConnect instances. */
+export function getProjectById(vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
 
 /** Generated Node Admin SDK operation action function for the 'GetFloorplanPageById' Query. Allow users to execute without passing in DataConnect. */
 export function getFloorplanPageById(dc: DataConnect, vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;

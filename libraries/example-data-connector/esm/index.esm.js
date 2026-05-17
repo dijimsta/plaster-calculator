@@ -60,16 +60,16 @@ export function listProjectsByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeQuery('ListProjectsByOwner', inputVars, inputOpts);
 }
 
-export function getProjectById(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetProjectById', inputVars, inputOpts);
-}
-
 export function getProjectDetailsById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
   return dcInstance.executeQuery('GetProjectDetailsById', inputVars, inputOpts);
+}
+
+export function getProjectById(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetProjectById', inputVars, inputOpts);
 }
 
 export function getFloorplanPageById(dcOrVarsOrOptions, varsOrOptions, options) {

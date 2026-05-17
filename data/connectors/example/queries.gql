@@ -17,7 +17,7 @@ query ListProjectsByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
     }
 }
 
-query GetProjectById($id: UUID!) @auth(level: NO_ACCESS) {
+query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id
         ownerId
@@ -52,7 +52,7 @@ query GetProjectById($id: UUID!) @auth(level: NO_ACCESS) {
     }
 }
 
-query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
+query GetProjectById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id
         ownerId
