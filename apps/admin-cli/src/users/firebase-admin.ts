@@ -1,4 +1,3 @@
-import { getApps, initializeApp } from "firebase-admin/app";
 import { getAuth, type UserRecord } from "firebase-admin/auth";
 
 export type AuthUserSummary = {
@@ -10,15 +9,12 @@ export type AuthUserSummary = {
     createdAt: string;
     lastSignInAt?: string;
     claims: {
-        admin: boolean;
-        developer: boolean;
-        paidCustomer: boolean;
+        isDeveloper: boolean;
+        isTrialUser: boolean;
     };
 };
 
 export async function listAuthUsers() {
-    ensureFirebaseAdmin();
-
     const users: AuthUserSummary[] = [];
     let pageToken: string | undefined;
 
@@ -31,10 +27,21 @@ export async function listAuthUsers() {
     return users;
 }
 
-function ensureFirebaseAdmin() {
-    if (getApps().length === 0) {
-        initializeApp();
-    }
+export async function updateAuthUserScopes(
+    uid: string,
+    scopes: AuthUserSummary["claims"],
+) {
+    const auth = getAuth();
+    const user = await auth.getUser(uid);
+    const nextClaims = {
+        ...(user.customClaims ?? {}),
+        isDeveloper: scopes.isDeveloper,
+        isTrialUser: scopes.isTrialUser,
+    };
+
+    await auth.setCustomUserClaims(uid, nextClaims);
+
+    return toUserSummary(await auth.getUser(uid));
 }
 
 function toUserSummary(user: UserRecord): AuthUserSummary {
@@ -52,9 +59,8 @@ function toUserSummary(user: UserRecord): AuthUserSummary {
             ? { lastSignInAt: metadata.lastSignInTime }
             : {}),
         claims: {
-            admin: claims["admin"] === true,
-            developer: claims["developer"] === true,
-            paidCustomer: claims["paidCustomer"] === true,
+            isDeveloper: claims["isDeveloper"] === true,
+            isTrialUser: claims["isTrialUser"] === true,
         },
     };
 }
