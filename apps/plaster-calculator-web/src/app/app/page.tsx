@@ -23,19 +23,26 @@ import {
 import ThemeSettingsButton from "@/components/ThemeSettingsButton.js";
 import {
     deleteProject,
-    getPdfPages,
     getProject,
     listProjects,
     listProcessingStrategies,
     processProject,
     renameProject,
+    uploadPdfPageSource,
     uploadProject,
 } from "@/lib/api.js";
+import {
+    loadPdfDocument,
+    renderPdfPageSourcePng,
+    renderPdfThumbnails,
+    revokePdfPreviews,
+    type PdfPagePreview,
+} from "@/lib/pdf.js";
 import type {
-    PdfPagePreview,
     ProjectSummary,
     ProcessingStrategyInfo,
 } from "@/types.js";
+import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const Link = LinkModule.default;
 
@@ -54,11 +61,16 @@ export default function HomePage() {
         name: string;
     } | null>(null);
     const [draftProjectId, setDraftProjectId] = useState<string | null>(null);
-    const [pdfPages, setPdfPages] = useState<PdfPagePreview[]>([]);
-    const [selectedPages, setSelectedPages] = useState<number[]>([]);
-    const [largePreview, setLargePreview] = useState<PdfPagePreview | null>(
+    const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(
         null,
     );
+    const [pdfPages, setPdfPages] = useState<PdfPagePreview[]>([]);
+    const [selectedPages, setSelectedPages] = useState<number[]>([]);
+    const [pageUploadProgress, setPageUploadProgress] = useState<{
+        current: number;
+        total: number;
+        label: string;
+    } | null>(null);
     const [processingProjectId, setProcessingProjectId] = useState<
         string | null
     >(null);
@@ -152,18 +164,45 @@ export default function HomePage() {
             : projects;
     }, [projects, query]);
 
+    function isPdfFile(candidate: File) {
+        return (
+            candidate.type === "application/pdf" ||
+            candidate.name.toLowerCase().endsWith(".pdf")
+        );
+    }
+
     async function submit(event: FormEvent) {
         event.preventDefault();
         if (!file) return;
         setLoading(true);
         setMessage("Uploading floorplan...");
+        let preparedPdf: PDFDocumentProxy | null = null;
+        let preparedPages: PdfPagePreview[] = [];
         try {
-            const upload = await uploadProject(name || file.name, file);
+            const isPdf = isPdfFile(file);
+            if (isPdf) {
+                setMessage("Preparing PDF preview...");
+                preparedPdf = await loadPdfDocument(file);
+                preparedPages = await renderPdfThumbnails(preparedPdf);
+                setMessage("Uploading original PDF...");
+            }
+
+            const upload = await uploadProject(
+                name || file.name,
+                file,
+                preparedPdf?.numPages,
+            );
             if (upload.uploadType === "PDF") {
-                const pages = await getPdfPages(upload.projectId);
+                if (!preparedPdf || preparedPages.length === 0) {
+                    throw new Error("Unable to prepare PDF pages.");
+                }
+                cleanupPdfModal();
                 setDraftProjectId(upload.projectId);
-                setPdfPages(pages);
+                setPdfDocument(preparedPdf);
+                setPdfPages(preparedPages);
                 setSelectedPages([]);
+                preparedPdf = null;
+                preparedPages = [];
                 setMessage("");
             } else {
                 setMessage("Processing image in the background...");
@@ -177,6 +216,8 @@ export default function HomePage() {
             }
             await refresh();
         } catch (error) {
+            preparedPdf?.destroy();
+            revokePdfPreviews(preparedPages);
             setMessage(
                 error instanceof Error ? error.message : "Upload failed",
             );
@@ -198,32 +239,78 @@ export default function HomePage() {
     }
 
     async function processSelectedPdfPages() {
-        if (!draftProjectId || selectedPages.length === 0) return;
+        if (!draftProjectId || !pdfDocument || selectedPages.length === 0) {
+            return;
+        }
         setLoading(true);
+        const pageImagePaths: Record<number, string> = {};
+        const total = selectedPages.length;
         try {
+            for (let index = 0; index < selectedPages.length; index += 1) {
+                const pageNumber = selectedPages[index];
+                setPageUploadProgress({
+                    current: index,
+                    total,
+                    label: `Rendering page ${pageNumber} at 200 DPI...`,
+                });
+                const sourcePng = await renderPdfPageSourcePng(
+                    pdfDocument,
+                    pageNumber,
+                );
+                setPageUploadProgress({
+                    current: index,
+                    total,
+                    label: `Uploading page ${pageNumber}...`,
+                });
+                pageImagePaths[pageNumber] = await uploadPdfPageSource(
+                    draftProjectId,
+                    pageNumber,
+                    sourcePng,
+                );
+                setPageUploadProgress({
+                    current: index + 1,
+                    total,
+                    label: `Uploaded page ${pageNumber}.`,
+                });
+            }
+            setMessage("Processing PDF pages in the background...");
+            const processingProjectId = draftProjectId;
+            cleanupPdfModal();
+            setProcessingProjectId(processingProjectId);
+            setToast("Project is processing.");
             const project = await processProject(
-                draftProjectId,
+                processingProjectId,
                 selectedPages,
                 selectedStrategyKey || undefined,
+                pageImagePaths,
             );
             setProcessingProjectId(project.id);
-            setToast(`${project.name} is processing.`);
-            closePdfModal();
+            setToast(`${project.name} finished processing.`);
+            setToastProject({ id: project.id, name: project.name });
             await refresh();
         } catch (error) {
             setMessage(
                 error instanceof Error ? error.message : "Processing failed",
             );
         } finally {
+            setPageUploadProgress(null);
             setLoading(false);
         }
     }
 
     function closePdfModal() {
+        if (loading) return;
+        cleanupPdfModal();
+    }
+
+    function cleanupPdfModal() {
+        pdfDocument?.destroy();
+        revokePdfPreviews(pdfPages);
         setDraftProjectId(null);
+        setPdfDocument(null);
         setPdfPages([]);
         setSelectedPages([]);
-        setLargePreview(null);
+        setPageUploadProgress(null);
     }
 
     function togglePage(pageNumber: number) {
@@ -553,26 +640,30 @@ export default function HomePage() {
                             <div>
                                 <h2>Select PDF Pages</h2>
                                 <p className="muted">
-                                    Click a thumbnail to preview. Tick the pages
-                                    to process.
+                                    Tick the pages to process.
                                 </p>
                             </div>
                             <button
                                 className="btn icon"
+                                disabled={loading}
                                 onClick={closePdfModal}
                             >
                                 <X size={18} />
                             </button>
                         </header>
                         {renderStrategySelect("pdf-processing-strategy")}
-                        {largePreview && (
-                            <div
-                                className="large-preview"
-                                onClick={() => setLargePreview(null)}
-                            >
-                                <img
-                                    src={largePreview.previewUrl}
-                                    alt={`Page ${largePreview.pageNumber}`}
+                        {pageUploadProgress && (
+                            <div className="pdf-upload-progress">
+                                <div className="pdf-upload-progress-label">
+                                    <span>{pageUploadProgress.label}</span>
+                                    <span>
+                                        {pageUploadProgress.current} /{" "}
+                                        {pageUploadProgress.total}
+                                    </span>
+                                </div>
+                                <progress
+                                    max={pageUploadProgress.total}
+                                    value={pageUploadProgress.current}
                                 />
                             </div>
                         )}
@@ -582,15 +673,10 @@ export default function HomePage() {
                                     className="preview-tile"
                                     key={page.pageNumber}
                                 >
-                                    <button
-                                        type="button"
-                                        onClick={() => setLargePreview(page)}
-                                    >
-                                        <img
-                                            src={page.previewUrl}
-                                            alt={`Page ${page.pageNumber}`}
-                                        />
-                                    </button>
+                                    <img
+                                        src={page.previewUrl}
+                                        alt={`Page ${page.pageNumber}`}
+                                    />
                                     <footer>
                                         <span>Page {page.pageNumber}</span>
                                         <input
@@ -610,7 +696,11 @@ export default function HomePage() {
                             className="button-row"
                             style={{ justifyContent: "flex-end" }}
                         >
-                            <button className="btn" onClick={closePdfModal}>
+                            <button
+                                className="btn"
+                                disabled={loading}
+                                onClick={closePdfModal}
+                            >
                                 Cancel
                             </button>
                             <button

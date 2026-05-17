@@ -31,11 +31,6 @@ export type ProjectDetail = ProjectSummary & {
     pages: FloorplanPage[];
 };
 
-export type PdfPagePreview = {
-    pageNumber: number;
-    previewUrl: string;
-};
-
 export type ProcessingStrategyInfo = {
     key: string;
     label: string;
