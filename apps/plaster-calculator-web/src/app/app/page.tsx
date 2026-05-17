@@ -38,10 +38,7 @@ import {
     revokePdfPreviews,
     type PdfPagePreview,
 } from "@/lib/pdf.js";
-import type {
-    ProjectSummary,
-    ProcessingStrategyInfo,
-} from "@/types.js";
+import type { ProjectSummary, ProcessingStrategyInfo } from "@/types.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const Link = LinkModule.default;

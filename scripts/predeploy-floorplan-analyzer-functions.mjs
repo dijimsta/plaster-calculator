@@ -6,7 +6,13 @@ const scriptsDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(scriptsDir, "..");
 const analyzerDir = join(rootDir, "functions", "floorplan-analyzer");
 
-run("uv", ["pip", "compile", "pyproject.toml", "--output-file", "requirements.txt"]);
+run("uv", [
+    "pip",
+    "compile",
+    "pyproject.toml",
+    "--output-file",
+    "requirements.txt",
+]);
 run("uv", ["venv", "venv"]);
 run("uv", ["pip", "sync", "requirements.txt", "--python", "venv"]);
 

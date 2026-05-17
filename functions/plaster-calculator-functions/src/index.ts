@@ -296,11 +296,7 @@ function readRequiredNumber(value: unknown, field: string) {
 }
 
 function readPdfPageCount(value: unknown) {
-    if (
-        typeof value !== "number" ||
-        !Number.isInteger(value) ||
-        value < 1
-    ) {
+    if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
         throw new HttpsError(
             "invalid-argument",
             "PDF page count must be a positive integer.",
@@ -431,9 +427,7 @@ export const createProjectFromUpload = onCall<
 
     const uploadType = inferUploadType(originalFileName, contentType);
     const pageCount =
-        uploadType === "PDF"
-            ? readPdfPageCount(request.data.pageCount)
-            : 1;
+        uploadType === "PDF" ? readPdfPageCount(request.data.pageCount) : 1;
     await dcCreateProjectFromUpload({
         id: projectId,
         ownerId: auth.uid,
@@ -1030,7 +1024,10 @@ async function requireStorageImage(path: string): Promise<void> {
     const file = getStorage().bucket().file(path);
     const [exists] = await file.exists();
     if (!exists) {
-        throw new HttpsError("not-found", "PDF page source image was not found.");
+        throw new HttpsError(
+            "not-found",
+            "PDF page source image was not found.",
+        );
     }
 
     const [metadata] = await file.getMetadata();
