@@ -11,22 +11,20 @@ import { getApps, initializeApp } from "firebase-admin/app";
 import { getStorage } from "firebase-admin/storage";
 import { randomUUID } from "node:crypto";
 import {
-    createMovie,
     createProjectFromUpload as dcCreateProjectFromUpload,
     createFloorplanPage as dcCreateFloorplanPage,
-    deleteMovie,
     deleteProject as dcDeleteProject,
     deleteFloorplanPages as dcDeleteFloorplanPages,
     getProjectById,
     getFloorplanPageById,
-    listMovies,
+    getProjectStatusById,
     listProjectsByOwner,
     renameProject as dcRenameProject,
     touchProject,
     updateFloorplanPage as dcUpdateFloorplanPage,
     type GetProjectByIdData,
     type GetFloorplanPageByIdData,
-    type ListMoviesData,
+    type GetProjectStatusByIdData,
     type ListProjectsByOwnerData,
 } from "@inivi/example-data-connector";
 import { setGlobalOptions } from "firebase-functions";
@@ -61,24 +59,10 @@ if (getApps().length === 0) {
     initializeApp();
 }
 
-type Movie = ListMoviesData["movies"][number];
 type ProjectListRow = ListProjectsByOwnerData["projects"][number];
 type ProjectWithPages = NonNullable<GetProjectByIdData["project"]>;
+type ProjectStatusRow = NonNullable<GetProjectStatusByIdData["project"]>;
 type FloorplanPageRow = NonNullable<GetFloorplanPageByIdData["floorplanPage"]>;
-
-interface CreateExampleMovieRequest {
-    title?: unknown;
-    genre?: unknown;
-    imageUrl?: unknown;
-}
-
-interface DeleteExampleMovieRequest {
-    id?: unknown;
-}
-
-interface ExampleMoviesResponse {
-    movies: Movie[];
-}
 
 type UploadType = "PDF" | "IMAGE";
 type ProjectStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
@@ -341,46 +325,6 @@ export const helloWorld = onCall((request) => {
     return { message: `Hello, ${name}!` };
 });
 
-export const listExampleMovies = onCall<
-    unknown,
-    Promise<ExampleMoviesResponse>
->(async (request) => {
-    requireAuth(request);
-
-    const response = await listMovies();
-    return { movies: response.data.movies };
-});
-
-export const createExampleMovie = onCall<
-    CreateExampleMovieRequest,
-    Promise<ExampleMoviesResponse>
->(async (request) => {
-    requireAuth(request);
-
-    await createMovie({
-        title: readRequiredString(request.data.title, "Title"),
-        genre: readRequiredString(request.data.genre, "Genre"),
-        imageUrl: readRequiredString(request.data.imageUrl, "Image URL"),
-    });
-
-    const response = await listMovies();
-    return { movies: response.data.movies };
-});
-
-export const deleteExampleMovie = onCall<
-    DeleteExampleMovieRequest,
-    Promise<ExampleMoviesResponse>
->(async (request) => {
-    requireAuth(request);
-
-    await deleteMovie({
-        id: readRequiredString(request.data.id, "Movie ID"),
-    });
-
-    const response = await listMovies();
-    return { movies: response.data.movies };
-});
-
 export const listProjects = onCall<
     unknown,
     Promise<{ projects: ProjectSummary[] }>
@@ -457,6 +401,23 @@ export const getProject = onCall<ProjectIdRequest, Promise<ProjectDetail>>(
         return toDetail(project);
     },
 );
+
+export const getProjectStatus = onCall<
+    ProjectIdRequest,
+    Promise<ProjectSummary>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const response = await getProjectStatusById({
+        id: readRequiredString(request.data.projectId, "Project ID"),
+    });
+    const project = response.data.project;
+
+    if (!project || project.ownerId !== auth.uid) {
+        throw new HttpsError("not-found", "Project was not found.");
+    }
+
+    return toSummary(project);
+});
 
 export const renameProject = onCall<
     RenameProjectRequest,
@@ -735,7 +696,9 @@ async function requireFloorplanPage(projectId: string, pageId: string) {
     return page;
 }
 
-function toSummary(project: ProjectListRow | ProjectWithPages): ProjectSummary {
+function toSummary(
+    project: ProjectListRow | ProjectWithPages | ProjectStatusRow,
+): ProjectSummary {
     return {
         id: project.id,
         name: project.name,

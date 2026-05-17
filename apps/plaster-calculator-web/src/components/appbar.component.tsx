@@ -45,26 +45,6 @@ export default function AppBar() {
                     gap: "0.75rem",
                 }}
             >
-                <Link
-                    href="/app/movies"
-                    style={{
-                        color: "#165dff",
-                        fontWeight: 600,
-                        textDecoration: "none",
-                    }}
-                >
-                    Movies
-                </Link>
-                <Link
-                    href="/app/uploads"
-                    style={{
-                        color: "#165dff",
-                        fontWeight: 600,
-                        textDecoration: "none",
-                    }}
-                >
-                    Uploads
-                </Link>
                 <button onClick={handleLogout}>Logout</button>
             </nav>
         </header>
