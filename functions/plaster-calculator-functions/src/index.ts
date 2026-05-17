@@ -17,14 +17,14 @@ import {
     deleteFloorplanPages as dcDeleteFloorplanPages,
     getProjectById,
     getFloorplanPageById,
-    getProjectStatusById,
+    getProjectDetailsById,
     listProjectsByOwner,
     renameProject as dcRenameProject,
     touchProject,
     updateFloorplanPage as dcUpdateFloorplanPage,
     type GetProjectByIdData,
     type GetFloorplanPageByIdData,
-    type GetProjectStatusByIdData,
+    type GetProjectDetailsByIdData,
     type ListProjectsByOwnerData,
 } from "@inivi/example-data-connector";
 import { setGlobalOptions } from "firebase-functions";
@@ -61,7 +61,7 @@ if (getApps().length === 0) {
 
 type ProjectListRow = ListProjectsByOwnerData["projects"][number];
 type ProjectWithPages = NonNullable<GetProjectByIdData["project"]>;
-type ProjectStatusRow = NonNullable<GetProjectStatusByIdData["project"]>;
+type ProjectDetailsRow = NonNullable<GetProjectDetailsByIdData["project"]>;
 type FloorplanPageRow = NonNullable<GetFloorplanPageByIdData["floorplanPage"]>;
 
 type UploadType = "PDF" | "IMAGE";
@@ -407,7 +407,7 @@ export const getProjectStatus = onCall<
     Promise<ProjectSummary>
 >(async (request) => {
     const auth = requireAuth(request);
-    const response = await getProjectStatusById({
+    const response = await getProjectDetailsById({
         id: readRequiredString(request.data.projectId, "Project ID"),
     });
     const project = response.data.project;
@@ -697,7 +697,7 @@ async function requireFloorplanPage(projectId: string, pageId: string) {
 }
 
 function toSummary(
-    project: ProjectListRow | ProjectWithPages | ProjectStatusRow,
+    project: ProjectListRow | ProjectWithPages | ProjectDetailsRow,
 ): ProjectSummary {
     return {
         id: project.id,

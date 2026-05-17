@@ -129,7 +129,7 @@ export interface GetProjectByIdVariables {
   id: UUIDString;
 }
 
-export interface GetProjectStatusByIdData {
+export interface GetProjectDetailsByIdData {
   project?: {
     id: UUIDString;
     ownerId: string;
@@ -145,7 +145,7 @@ export interface GetProjectStatusByIdData {
   } & Project_Key;
 }
 
-export interface GetProjectStatusByIdVariables {
+export interface GetProjectDetailsByIdVariables {
   id: UUIDString;
 }
 
@@ -216,26 +216,6 @@ export interface UpdateFloorplanPagesVariables {
   ceilingHeightMm?: number | null;
 }
 
-/** Generated Node Admin SDK operation action function for the 'ListProjectsByOwner' Query. Allow users to execute without passing in DataConnect. */
-export function listProjectsByOwner(dc: DataConnect, vars: ListProjectsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerData>>;
-/** Generated Node Admin SDK operation action function for the 'ListProjectsByOwner' Query. Allow users to pass in custom DataConnect instances. */
-export function listProjectsByOwner(vars: ListProjectsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerData>>;
-
-/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to execute without passing in DataConnect. */
-export function getProjectById(dc: DataConnect, vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
-/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to pass in custom DataConnect instances. */
-export function getProjectById(vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
-
-/** Generated Node Admin SDK operation action function for the 'GetProjectStatusById' Query. Allow users to execute without passing in DataConnect. */
-export function getProjectStatusById(dc: DataConnect, vars: GetProjectStatusByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectStatusByIdData>>;
-/** Generated Node Admin SDK operation action function for the 'GetProjectStatusById' Query. Allow users to pass in custom DataConnect instances. */
-export function getProjectStatusById(vars: GetProjectStatusByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectStatusByIdData>>;
-
-/** Generated Node Admin SDK operation action function for the 'GetFloorplanPageById' Query. Allow users to execute without passing in DataConnect. */
-export function getFloorplanPageById(dc: DataConnect, vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
-/** Generated Node Admin SDK operation action function for the 'GetFloorplanPageById' Query. Allow users to pass in custom DataConnect instances. */
-export function getFloorplanPageById(vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
-
 /** Generated Node Admin SDK operation action function for the 'CreateProjectFromUpload' Mutation. Allow users to execute without passing in DataConnect. */
 export function createProjectFromUpload(dc: DataConnect, vars: CreateProjectFromUploadVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectFromUploadData>>;
 /** Generated Node Admin SDK operation action function for the 'CreateProjectFromUpload' Mutation. Allow users to pass in custom DataConnect instances. */
@@ -275,4 +255,24 @@ export function updateFloorplanPage(vars: UpdateFloorplanPageVariables, options?
 export function updateFloorplanPages(dc: DataConnect, vars: UpdateFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPagesData>>;
 /** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPages' Mutation. Allow users to pass in custom DataConnect instances. */
 export function updateFloorplanPages(vars: UpdateFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPagesData>>;
+
+/** Generated Node Admin SDK operation action function for the 'ListProjectsByOwner' Query. Allow users to execute without passing in DataConnect. */
+export function listProjectsByOwner(dc: DataConnect, vars: ListProjectsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerData>>;
+/** Generated Node Admin SDK operation action function for the 'ListProjectsByOwner' Query. Allow users to pass in custom DataConnect instances. */
+export function listProjectsByOwner(vars: ListProjectsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerData>>;
+
+/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to execute without passing in DataConnect. */
+export function getProjectById(dc: DataConnect, vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetProjectById' Query. Allow users to pass in custom DataConnect instances. */
+export function getProjectById(vars: GetProjectByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectByIdData>>;
+
+/** Generated Node Admin SDK operation action function for the 'GetProjectDetailsById' Query. Allow users to execute without passing in DataConnect. */
+export function getProjectDetailsById(dc: DataConnect, vars: GetProjectDetailsByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectDetailsByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetProjectDetailsById' Query. Allow users to pass in custom DataConnect instances. */
+export function getProjectDetailsById(vars: GetProjectDetailsByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectDetailsByIdData>>;
+
+/** Generated Node Admin SDK operation action function for the 'GetFloorplanPageById' Query. Allow users to execute without passing in DataConnect. */
+export function getFloorplanPageById(dc: DataConnect, vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetFloorplanPageById' Query. Allow users to pass in custom DataConnect instances. */
+export function getFloorplanPageById(vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
 

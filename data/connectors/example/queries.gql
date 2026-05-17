@@ -52,7 +52,7 @@ query GetProjectById($id: UUID!) @auth(level: NO_ACCESS) {
     }
 }
 
-query GetProjectStatusById($id: UUID!) @auth(level: NO_ACCESS) {
+query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id
         ownerId

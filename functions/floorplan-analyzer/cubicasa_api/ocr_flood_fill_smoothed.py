@@ -149,10 +149,10 @@ OCR_ROOM_TYPE_BY_KEYWORD = {
     "bathroom": "Bath",
     "ens": "Bath",
     "ensuite": "Bath",
-    "powder": "Bath",
-    "pdr": "Bath",
-    "wc": "Bath",
-    "toilet": "Bath",
+    "powder": "Toilet",
+    "pdr": "Toilet",
+    "wc": "Toilet",
+    "toilet": "Toilet",
 
     # Laundry
     "laundry": "Laundry",
