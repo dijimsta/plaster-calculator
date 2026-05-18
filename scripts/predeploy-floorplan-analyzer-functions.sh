@@ -6,5 +6,5 @@ ROOT_DIR=${SCRIPTS_DIR}/..
 cd ${ROOT_DIR}/functions/floorplan-analyzer
 
 uv pip compile pyproject.toml --output-file requirements.txt
-uv venv venv --clear
+uv venv venv --clear --seed --python python3.14
 uv pip sync requirements.txt --python venv

@@ -5,19 +5,21 @@
     "workspaces": [
         "apps/*",
         "functions/*",
+        "generated/*",
         "libraries/*"
     ],
     "scripts": {
         "build": "tsc --build tsconfig.build.json",
-        "admin-cli": "yarn workspace @apps/admin-cli build && node apps/admin-cli/out/main.js",
-        "deploy": "firebase deploy",
         "deploy:dataconnect": "firebase deploy --only dataconnect",
         "deploy:functions": "firebase deploy --only functions",
         "deploy:storage": "firebase deploy --only storage",
+        "emulators:start": "firebase emulators:start --import=./tmp/data/emulators --export-on-exit",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "lint": "eslint .",
-        "start": "scripts/predeploy-floorplan-analyzer-functions.sh && yarn build && firebase emulators:start --import=./tmp/data/emulators --export-on-exit"
+        "generate:dataconnect": "firebase dataconnect:sdk:generate",
+        "lint": "eslint . --fix",
+        "lint:check": "eslint .",
+        "start": "scripts/predeploy-floorplan-analyzer-functions.sh && yarn build && yarn emulators:start"
     },
     "devDependencies": {
         "@apps/admin-cli": "workspace:*",
