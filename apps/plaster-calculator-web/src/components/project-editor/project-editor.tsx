@@ -1,23 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Stage as KonvaStage } from "konva/lib/Stage.js";
-import type {
-    AreaPolygon,
-    Point,
-} from "../../types.js";
-import {
-    applyCeilingHeightToProject,
-    applyScaleToProject,
-    savePageOverlay,
-} from "../../lib/api.js";
-import type { ValidationIssue } from "../../lib/validation.js";
+import type { Point } from "../../types.js";
 import { ui } from "../../lib/styles.js";
-import {
-    ceilingAreaM2ForArea,
-    wallLengthByType,
-} from "../../lib/editor/overlay-geometry.js";
-import { useEditorAutosave } from "../../hooks/use-editor-autosave.js";
 import { useEditorImage } from "../../hooks/use-editor-image.js";
 import { useEditorKeyboardShortcuts } from "../../hooks/use-editor-keyboard-shortcuts.js";
 import { useEditorViewport } from "../../hooks/use-editor-viewport.js";
@@ -25,6 +11,9 @@ import { useEditorHistory } from "../../hooks/use-editor-history.js";
 import { useEditorSelection } from "../../hooks/use-editor-selection.js";
 import { useEditorOverlay } from "../../hooks/use-editor-overlay.js";
 import { useEditorActions } from "../../hooks/use-editor-actions.js";
+import { useEditorDerivedState } from "../../hooks/use-editor-derived-state.js";
+import { useEditorPersistence } from "../../hooks/use-editor-persistence.js";
+import { useEditorValidation } from "../../hooks/use-editor-validation.js";
 import type {
     OverlayMode,
     ProjectEditorProps,
@@ -32,8 +21,6 @@ import type {
 } from "./project-editor.types.js";
 import { EditorToolbar } from "./editor-toolbar.js";
 import { EditorSidebar } from "./editor-sidebar.js";
-import { CeilingControls } from "./ceiling-controls.js";
-import { ValidationMessage } from "./validation-message.js";
 import { EditorCanvas } from "./editor-canvas.js";
 
 export function ProjectEditor({
@@ -87,9 +74,6 @@ export function ProjectEditor({
     const [draftPointer, setDraftPointer] = useState<Point | null>(null);
     const [snapGuide, setSnapGuide] = useState<SnapGuide>(null);
     const [zoom, setZoom] = useState(1);
-    const [saving, setSaving] = useState(false);
-    const [autoSaving, setAutoSaving] = useState(false);
-    const [status, setStatus] = useState("");
     const stageRef = useRef<KonvaStage>(null);
     const canvasWrapRef = useRef<HTMLDivElement | null>(null);
     const scrollDragRef = useRef<{
@@ -100,6 +84,47 @@ export function ProjectEditor({
         moved: boolean;
     } | null>(null);
     const viewport = useEditorViewport(canvasWrapRef);
+    const {
+        imageHeight,
+        imageWidth,
+        metrics,
+        selectedArea,
+        selectedAreas,
+        selectedEdgeArea,
+        selectedEdgeOverride,
+        stageHeight,
+        stageWidth,
+        summary,
+        visibleAreas,
+    } = useEditorDerivedState({
+        image,
+        overlay,
+        scaleMmPerPx,
+        selectedAreaId,
+        selectedAreaIds,
+        selectedEdge,
+        zoom,
+    });
+    const {
+        autoSaving,
+        saving,
+        status,
+        applyHeightToAllPages,
+        applyScaleToAllPages,
+        save,
+        setStatus,
+    } = useEditorPersistence({
+        ceilingHeightMm,
+        dirty,
+        onSaved,
+        overlay,
+        pageId: page.id,
+        projectId: project.id,
+        referenceLengthMm,
+        referencePoints,
+        scaleMmPerPx,
+        setDirty,
+    });
     const {
         future,
         history,
@@ -125,26 +150,6 @@ export function ProjectEditor({
         setDraftPointer(null);
     }, [page.id]);
 
-    const selectedArea =
-        overlay.areas.find(
-            (area) => area.id === selectedAreaId && !area.deleted,
-        ) ?? null;
-    const visibleAreas = overlay.areas.filter((area) => !area.deleted);
-    const selectedAreas = visibleAreas.filter((area) =>
-        selectedAreaIds.includes(area.id),
-    );
-    const selectedEdgeArea =
-        visibleAreas.find((area) => area.id === selectedEdge?.areaId) ?? null;
-    const selectedEdgeOverride =
-        selectedEdgeArea && selectedEdge
-            ? selectedEdgeArea.edgeOverrides?.[String(selectedEdge.edgeIndex)]
-            : null;
-    const imageWidth =
-        image?.naturalWidth ?? overlay.imageSizePx?.width ?? 1200;
-    const imageHeight =
-        image?.naturalHeight ?? overlay.imageSizePx?.height ?? 900;
-    const stageWidth = imageWidth * zoom;
-    const stageHeight = imageHeight * zoom;
     const {
         addPoint,
         addRectangle,
@@ -205,163 +210,20 @@ export function ProjectEditor({
         setZoom,
     });
 
-
-
-    const metrics = useMemo(() => {
-        if (!selectedArea || !scaleMmPerPx) return null;
-        const wallLengthM =
-            (wallLengthByType(selectedArea).reduce(
-                (total, item) => total + item.lengthPx,
-                0,
-            ) *
-                scaleMmPerPx) /
-            1000;
-        const ceilingAreaM2 = ceilingAreaM2ForArea(selectedArea, scaleMmPerPx);
-        return { wallLengthM, ceilingAreaM2 };
-    }, [selectedArea, scaleMmPerPx]);
-
-    const summary = useMemo(() => {
-        if (!scaleMmPerPx) return null;
-        const wallTotals = new Map<string, number>();
-        const ceilingTotals = new Map<string, number>();
-        visibleAreas.forEach((area) => {
-            wallLengthByType(area).forEach((item) => {
-                wallTotals.set(
-                    item.type,
-                    (wallTotals.get(item.type) ?? 0) +
-                        (item.lengthPx * scaleMmPerPx) / 1000,
-                );
-            });
-            const ceilingAreaM2 = ceilingAreaM2ForArea(area, scaleMmPerPx);
-            ceilingTotals.set(
-                area.ceilingPlasterType,
-                (ceilingTotals.get(area.ceilingPlasterType) ?? 0) +
-                    ceilingAreaM2,
-            );
-        });
-        return {
-            wallTotals: Array.from(wallTotals.entries()).filter(
-                ([, total]) => total > 0,
-            ),
-            ceilingTotals: Array.from(ceilingTotals.entries()).filter(
-                ([, total]) => total > 0,
-            ),
-        };
-    }, [visibleAreas, scaleMmPerPx]);
-
-    async function save(refresh = true, automatic = false) {
-        if (automatic) {
-            setAutoSaving(true);
-        } else {
-            setSaving(true);
-        }
-        try {
-            await savePageOverlay(project.id, page.id, {
-                overlay,
-                scaleMmPerPx,
-                ceilingHeightMm,
-                referencePoints:
-                    referencePoints.length === 2 ? referencePoints : null,
-                referenceLengthMm: referenceLengthMm
-                    ? Number(referenceLengthMm)
-                    : null,
-            });
-            setDirty(false);
-            setStatus(`Saved ${new Date().toLocaleTimeString()}`);
-            if (refresh) onSaved();
-        } catch (error) {
-            setStatus(error instanceof Error ? error.message : "Save failed");
-        } finally {
-            if (automatic) {
-                setAutoSaving(false);
-            } else {
-                setSaving(false);
-            }
-        }
-    }
-
-    async function applyHeightToAllPages() {
-        try {
-            if (dirty) await save(false);
-            await applyCeilingHeightToProject(project.id, ceilingHeightMm);
-            setStatus("Ceiling height applied to all pages");
-            onSaved();
-        } catch (error) {
-            setStatus(
-                error instanceof Error
-                    ? error.message
-                    : "Unable to apply ceiling height",
-            );
-        }
-    }
-
-    async function applyScaleToAllPages() {
-        if (!scaleMmPerPx || scaleMmPerPx <= 0) {
-            setStatus("Set a reference before applying scale to all pages");
-            return;
-        }
-        try {
-            if (dirty) await save(false);
-            await applyScaleToProject(project.id, scaleMmPerPx);
-            setStatus("Scale applied to all pages");
-            onSaved();
-        } catch (error) {
-            setStatus(
-                error instanceof Error
-                    ? error.message
-                    : "Unable to apply scale",
-            );
-        }
-    }
-
-    function pageIssue(field: ValidationIssue["field"]) {
-        return (
-            validationIssues.find(
-                (issue) => !issue.areaId && issue.field === field,
-            )?.message ?? ""
-        );
-    }
-
-    function areaIssue(areaId: string, field: ValidationIssue["field"]) {
-        return (
-            validationIssues.find(
-                (issue) => issue.areaId === areaId && issue.field === field,
-            )?.message ?? ""
-        );
-    }
-
-    function hasPageHeightIssue() {
-        return validationIssues.some(
-            (issue) => issue.field === "ceilingHeightMm",
-        );
-    }
-
-    function fieldError(message: string) {
-        return <ValidationMessage message={message} />;
-    }
-
-    function renderCeilingControls(area: AreaPolygon) {
-        return (
-            <CeilingControls
-                area={area}
-                ceilingHeightMm={ceilingHeightMm}
-                selectedEdge={selectedEdge}
-                areaIssue={areaIssue}
-                setCeilingMode={setCeilingMode}
-                setRakedEdge={setRakedEdge}
-                setRakedHeight={setRakedHeight}
-                setSelectedAreaHeight={setSelectedAreaHeight}
-            />
-        );
-    }
-    useEditorAutosave({
-        autoSaving,
+    const {
+        areaIssue,
+        fieldError,
+        hasPageHeightIssue,
+        pageIssue,
+        renderCeilingControls,
+    } = useEditorValidation({
         ceilingHeightMm,
-        dirty,
-        overlay,
-        saving,
-        scaleMmPerPx,
-        save,
+        selectedEdge,
+        setCeilingMode,
+        setRakedEdge,
+        setRakedHeight,
+        setSelectedAreaHeight,
+        validationIssues,
     });
 
     useEditorKeyboardShortcuts({
