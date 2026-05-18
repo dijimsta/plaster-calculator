@@ -26,9 +26,7 @@
             "source": "functions/floorplan-analyzer",
             "codebase": "floorplan-analyzer",
             "runtime": "python314",
-            "predeploy": [
-                "node scripts/predeploy-floorplan-analyzer-functions.mjs"
-            ]
+            "predeploy": ["scripts/predeploy-floorplan-analyzer-functions.sh"]
         }
     ],
     "storage": {
@@ -56,8 +54,6 @@
             "enabled": true
         },
         "singleProjectMode": true,
-        "dataconnect": {
-            "dataDir": "tmp/data/dataconnect"
-        }
+        "dataconnect": {}
     }
 }

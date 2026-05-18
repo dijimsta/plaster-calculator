@@ -159,6 +159,7 @@ interface ExportProjectCsvResponse {
 }
 
 const FLOORPLAN_ANALYZER_REGION = "us-west1";
+const LONG_RUNNING_TIMEOUT_SECONDS = 60 * 60;
 
 type FloorplanAnalyzerEndpoint =
     | "ocr_flood_fill_smoothed"
@@ -461,99 +462,107 @@ export const listProcessingStrategies = onCall<
 export const processProject = onCall<
     ProcessProjectRequest,
     Promise<ProjectDetail>
->({ timeoutSeconds: 540, memory: "512MiB" }, async (request) => {
-    const auth = requireAuth(request);
-    const projectId = readRequiredString(request.data.projectId, "Project ID");
-    const project = await requireOwnedProject(projectId, auth.uid);
-    const pageNumbers = readPageNumbers(request.data.pageNumbers, project);
-    const strategyKey = readOptionalString(request.data.strategyKey);
-    const strategy =
-        processingStrategies.find((item) => item.key === strategyKey) ??
-        processingStrategies.find((item) => item.defaultStrategy) ??
-        processingStrategies[0];
-
-    if (!strategy) {
-        throw new HttpsError(
-            "internal",
-            "No processing strategy is configured.",
+>(
+    { timeoutSeconds: LONG_RUNNING_TIMEOUT_SECONDS, memory: "512MiB" },
+    async (request) => {
+        const auth = requireAuth(request);
+        const projectId = readRequiredString(
+            request.data.projectId,
+            "Project ID",
         );
-    }
+        const project = await requireOwnedProject(projectId, auth.uid);
+        const pageNumbers = readPageNumbers(request.data.pageNumbers, project);
+        const strategyKey = readOptionalString(request.data.strategyKey);
+        const strategy =
+            processingStrategies.find((item) => item.key === strategyKey) ??
+            processingStrategies.find((item) => item.defaultStrategy) ??
+            processingStrategies[0];
 
-    const pdfPageImagePaths =
-        project.uploadType === "PDF"
-            ? await readPdfPageImagePaths(
-                  request.data.pageImagePaths,
-                  pageNumbers,
-                  auth.uid,
-                  projectId,
-              )
-            : new Map<number, string>();
-
-    await touchProject({
-        id: projectId,
-        status: "PROCESSING",
-        processingError: null,
-    });
-    await dcDeleteFloorplanPages({ projectId });
-
-    try {
-        if (project.uploadType === "IMAGE") {
-            const imageBytes = await fetchOriginalImage(project.originalPath);
-            for (const pageNumber of pageNumbers) {
-                await analysePage(
-                    auth.uid,
-                    projectId,
-                    pageNumber,
-                    project.originalPath,
-                    project.originalFileName,
-                    imageBytes,
-                    strategy,
-                );
-            }
-        } else {
-            for (const pageNumber of pageNumbers) {
-                const sourcePath = pdfPageImagePaths.get(pageNumber);
-                if (!sourcePath) {
-                    throw new HttpsError(
-                        "invalid-argument",
-                        `Missing source image for PDF page ${pageNumber}.`,
-                    );
-                }
-                const { bytes, url } = await fetchStorageImage(sourcePath);
-                await analysePage(
-                    auth.uid,
-                    projectId,
-                    pageNumber,
-                    url,
-                    `${project.originalFileName} page ${pageNumber}`,
-                    bytes,
-                    strategy,
-                );
-            }
+        if (!strategy) {
+            throw new HttpsError(
+                "internal",
+                "No processing strategy is configured.",
+            );
         }
-    } catch (error) {
-        const message =
-            error instanceof Error
-                ? error.message
-                : "Floorplan analysis failed.";
-        logger.error("processProject failed", { projectId, message });
+
+        const pdfPageImagePaths =
+            project.uploadType === "PDF"
+                ? await readPdfPageImagePaths(
+                      request.data.pageImagePaths,
+                      pageNumbers,
+                      auth.uid,
+                      projectId,
+                  )
+                : new Map<number, string>();
+
         await touchProject({
             id: projectId,
-            status: "FAILED",
-            processingError: message,
+            status: "PROCESSING",
+            processingError: null,
         });
-        throw error instanceof HttpsError
-            ? error
-            : new HttpsError("internal", message);
-    }
+        await dcDeleteFloorplanPages({ projectId });
 
-    await touchProject({
-        id: projectId,
-        status: "READY",
-        processingError: null,
-    });
-    return toDetail(await requireOwnedProject(projectId, auth.uid));
-});
+        try {
+            if (project.uploadType === "IMAGE") {
+                const imageBytes = await fetchOriginalImage(
+                    project.originalPath,
+                );
+                for (const pageNumber of pageNumbers) {
+                    await analysePage(
+                        auth.uid,
+                        projectId,
+                        pageNumber,
+                        project.originalPath,
+                        project.originalFileName,
+                        imageBytes,
+                        strategy,
+                    );
+                }
+            } else {
+                for (const pageNumber of pageNumbers) {
+                    const sourcePath = pdfPageImagePaths.get(pageNumber);
+                    if (!sourcePath) {
+                        throw new HttpsError(
+                            "invalid-argument",
+                            `Missing source image for PDF page ${pageNumber}.`,
+                        );
+                    }
+                    const { bytes, url } = await fetchStorageImage(sourcePath);
+                    await analysePage(
+                        auth.uid,
+                        projectId,
+                        pageNumber,
+                        url,
+                        `${project.originalFileName} page ${pageNumber}`,
+                        bytes,
+                        strategy,
+                    );
+                }
+            }
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Floorplan analysis failed.";
+            logger.error("processProject failed", { projectId, message });
+            await touchProject({
+                id: projectId,
+                status: "FAILED",
+                processingError: message,
+            });
+            throw error instanceof HttpsError
+                ? error
+                : new HttpsError("internal", message);
+        }
+
+        await touchProject({
+            id: projectId,
+            status: "READY",
+            processingError: null,
+        });
+        return toDetail(await requireOwnedProject(projectId, auth.uid));
+    },
+);
 
 export const getFloorplanPage = onCall<
     UpdateFloorplanPageRequest,
@@ -1024,27 +1033,19 @@ async function callFloorplanAnalyzer(
     queryParams: Record<string, string>,
 ): Promise<{ result: AnalyzerResult; floorplanPng: Buffer }> {
     const url = floorplanAnalyzerUrl(endpoint, queryParams);
-    const form = new FormData();
-    const arrayBuffer = imageBytes.buffer.slice(
-        imageBytes.byteOffset,
-        imageBytes.byteOffset + imageBytes.byteLength,
-    ) as ArrayBuffer;
-    const blob = new Blob([arrayBuffer], {
-        type: "application/octet-stream",
-    });
-    form.append("image", blob, filename || "upload.bin");
-
     const headers: Record<string, string> = {};
     if (!isEmulator()) {
         const audience = audienceForEndpoint(endpoint);
         headers["Authorization"] = `Bearer ${await getIdToken(audience)}`;
     }
 
-    const response = await fetch(url, {
-        method: "POST",
-        body: form,
+    const response = await fetchFloorplanAnalyzerWithRetry(
+        url,
+        endpoint,
+        imageBytes,
+        filename,
         headers,
-    });
+    );
 
     if (!response.ok) {
         const text = await response.text().catch(() => "");
@@ -1080,6 +1081,78 @@ async function callFloorplanAnalyzer(
     const floorplanPng = Buffer.from(await pngFile.async("uint8array"));
 
     return { result, floorplanPng };
+}
+
+async function fetchFloorplanAnalyzerWithRetry(
+    url: string,
+    endpoint: FloorplanAnalyzerEndpoint,
+    imageBytes: Buffer,
+    filename: string,
+    headers: Record<string, string>,
+): Promise<Response> {
+    const maxAttempts = isEmulator() ? 2 : 1;
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                body: buildAnalyzerForm(imageBytes, filename),
+                headers,
+                signal: AbortSignal.timeout(
+                    LONG_RUNNING_TIMEOUT_SECONDS * 1000,
+                ),
+            });
+
+            if (response.ok || attempt === maxAttempts) {
+                return response;
+            }
+
+            const text = await response.text().catch(() => "");
+            logger.warn("floorplan-analyzer request failed; retrying", {
+                endpoint,
+                attempt,
+                status: response.status,
+                text,
+            });
+        } catch (error) {
+            lastError = error;
+            if (attempt === maxAttempts) {
+                throw error;
+            }
+
+            logger.warn("floorplan-analyzer request errored; retrying", {
+                endpoint,
+                attempt,
+                message: error instanceof Error ? error.message : String(error),
+            });
+        }
+
+        await sleep(3_000);
+    }
+
+    throw lastError instanceof Error
+        ? lastError
+        : new Error("floorplan-analyzer request failed.");
+}
+
+function buildAnalyzerForm(imageBytes: Buffer, filename: string): FormData {
+    const form = new FormData();
+    const arrayBuffer = imageBytes.buffer.slice(
+        imageBytes.byteOffset,
+        imageBytes.byteOffset + imageBytes.byteLength,
+    ) as ArrayBuffer;
+    const blob = new Blob([arrayBuffer], {
+        type: "application/octet-stream",
+    });
+    form.append("image", blob, filename || "upload.bin");
+    return form;
+}
+
+function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }
 
 function floorplanAnalyzerUrl(

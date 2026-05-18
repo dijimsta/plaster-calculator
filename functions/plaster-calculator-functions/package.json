@@ -2,8 +2,8 @@
     "name": "@inivi/plaster-calculator-functions",
     "type": "module",
     "private": true,
-    "main": "./dist/index.js",
-    "exports": "./dist/index.js",
+    "main": "./out/index.js",
+    "exports": "./out/index.js",
     "engines": {
         "node": "24"
     },

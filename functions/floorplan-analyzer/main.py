@@ -4,8 +4,11 @@ import io
 import json
 import logging
 import os
+import time
 import zipfile
 from functools import lru_cache
+
+_MODULE_IMPORT_START = time.perf_counter()
 
 os.environ.setdefault("EASYOCR_MODULE_PATH", "/tmp/easyocr")
 os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
@@ -17,14 +20,34 @@ from firebase_functions import https_fn, options
 # manifest within its 10s import budget.
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 
 options.set_global_options(region="us-west1", max_instances=5)
 
 INFERENCE_MEMORY = options.MemoryOption.GB_4
 OCR_MEMORY = options.MemoryOption.GB_16
-INFERENCE_TIMEOUT = 540
+INFERENCE_TIMEOUT = 60 * 60
 INFERENCE_CPU = 2
 OCR_CPU = 4
+
+
+def _elapsed_ms(start: float) -> int:
+    return int((time.perf_counter() - start) * 1000)
+
+
+def _log_info(message: str, **fields: object) -> None:
+    payload = {"message": message, **fields}
+    line = json.dumps(payload, default=str, sort_keys=True)
+    logger.info(line)
+    print(line, flush=True)
+
+
+_log_info(
+    "floorplan-analyzer module imported",
+    elapsed_ms=_elapsed_ms(_MODULE_IMPORT_START),
+    easyocr_module_path=os.environ.get("EASYOCR_MODULE_PATH"),
+    matplotlib_config_dir=os.environ.get("MPLCONFIGDIR"),
+)
 
 
 @lru_cache(maxsize=1)
@@ -204,13 +227,26 @@ def ocr_flood_fill(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request(memory=OCR_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=OCR_CPU)
 def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
-    from cubicasa_api.ocr_flood_fill_smoothed import (
-        DEFAULT_UNKNOWN_ROOM_MIN_AREA,
-        run_ocr_flood_fill_smoothed_process,
+    started_at = time.perf_counter()
+    _log_info(
+        "ocr_flood_fill_smoothed request started",
+        method=req.method,
+        content_length=req.content_length,
+        content_type=req.content_type,
+        query=dict(req.args),
     )
 
     try:
+        read_started_at = time.perf_counter()
         image_bytes, filename = _read_image_bytes(req)
+        _log_info(
+            "ocr_flood_fill_smoothed image read",
+            elapsed_ms=_elapsed_ms(started_at),
+            filename=filename,
+            image_bytes=len(image_bytes),
+            read_ms=_elapsed_ms(read_started_at),
+        )
+
         min_area = _read_int_query(req, "min_area", 0, minimum=0)
         wall_kernel_size = _read_int_query(req, "wall_kernel_size", 15, minimum=1)
         simplify_epsilon_ratio = _read_float_query(
@@ -222,12 +258,46 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
         min_point_distance_px = _read_float_query(
             req, "min_point_distance_px", 3.0, minimum=0.0
         )
+
+        import_started_at = time.perf_counter()
+        from cubicasa_api.ocr_flood_fill_smoothed import (
+            DEFAULT_UNKNOWN_ROOM_MIN_AREA,
+            run_ocr_flood_fill_smoothed_process,
+        )
+
+        _log_info(
+            "ocr_flood_fill_smoothed imports loaded",
+            elapsed_ms=_elapsed_ms(started_at),
+            import_ms=_elapsed_ms(import_started_at),
+        )
+
         unknown_room_min_area = _read_int_query(
             req, "unknown_room_min_area", DEFAULT_UNKNOWN_ROOM_MIN_AREA, minimum=0
         )
+        _log_info(
+            "ocr_flood_fill_smoothed parameters parsed",
+            elapsed_ms=_elapsed_ms(started_at),
+            min_area=min_area,
+            wall_kernel_size=wall_kernel_size,
+            simplify_epsilon_ratio=simplify_epsilon_ratio,
+            ortho_tolerance_degrees=ortho_tolerance_degrees,
+            min_point_distance_px=min_point_distance_px,
+            unknown_room_min_area=unknown_room_min_area,
+        )
+
+        model_started_at = time.perf_counter()
+        model = _model()
+        _log_info(
+            "ocr_flood_fill_smoothed model loaded",
+            elapsed_ms=_elapsed_ms(started_at),
+            model_ms=_elapsed_ms(model_started_at),
+            model_cached=_model.cache_info().hits > 0,
+        )
+
+        process_started_at = time.perf_counter()
         result, floorplan_png = run_ocr_flood_fill_smoothed_process(
             image_bytes,
-            _model(),
+            model,
             source_file=filename,
             min_area=min_area,
             wall_kernel_size=wall_kernel_size,
@@ -236,14 +306,44 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
             min_point_distance_px=min_point_distance_px,
             unknown_room_min_area=unknown_room_min_area,
         )
+        _log_info(
+            "ocr_flood_fill_smoothed processing completed",
+            elapsed_ms=_elapsed_ms(started_at),
+            processing_ms=_elapsed_ms(process_started_at),
+            room_count=result.get("room_count"),
+            ocr_seed_count=result.get("ocr_seed_count"),
+            unknown_room_count=result.get("unknown_room_count"),
+            floorplan_png_bytes=len(floorplan_png),
+        )
     except _HttpStatusError as exc:
+        _log_info(
+            "ocr_flood_fill_smoothed request rejected",
+            elapsed_ms=_elapsed_ms(started_at),
+            status=exc.status,
+            detail=exc.message,
+        )
         return _error_response(exc.status, exc.message)
     except (RuntimeError, ValueError, OSError) as exc:
+        logger.exception("OCR flood-fill smoothed endpoint validation failed")
+        _log_info(
+            "ocr_flood_fill_smoothed validation failed",
+            elapsed_ms=_elapsed_ms(started_at),
+            error_type=type(exc).__name__,
+            detail=str(exc),
+        )
         return _error_response(422, str(exc))
     except Exception:
         logger.exception("OCR flood-fill smoothed endpoint failed")
+        _log_info(
+            "ocr_flood_fill_smoothed failed",
+            elapsed_ms=_elapsed_ms(started_at),
+        )
         return _error_response(500, "OCR flood-fill smoothed endpoint failed")
 
+    _log_info(
+        "ocr_flood_fill_smoothed response ready",
+        elapsed_ms=_elapsed_ms(started_at),
+    )
     return _zip_response(
         "ocr-flood-fill-smoothed.zip",
         {"rooms.json": json.dumps(result), "floorplan.png": floorplan_png},

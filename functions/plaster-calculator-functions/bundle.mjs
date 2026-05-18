@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 
 import { build } from "esbuild";
 
@@ -26,9 +26,8 @@ await build({
 });
 
 // Update entry point and exports in package.json
-deployPkg.main = "./index.js";
-deployPkg.exports = "./index.js";
+deployPkg.main = "./dist/index.js";
+deployPkg.exports = "./dist/index.js";
 
 // Write deployment metadata beside the bundled output without mutating source.
-mkdirSync("dist", { recursive: true });
-writeFileSync("dist/package.json", JSON.stringify(deployPkg, null, TAB_WIDTH));
+writeFileSync("package.json", JSON.stringify(deployPkg, null, TAB_WIDTH));

@@ -9,6 +9,8 @@ import type {
     ProcessingStrategyInfo,
 } from "../types.js";
 
+const LONG_RUNNING_CALLABLE_TIMEOUT_MS = 60 * 60 * 1000;
+
 type UploadResponse = {
     projectId: string;
     uploadType: "PDF" | "IMAGE";
@@ -80,7 +82,9 @@ const listProcessingStrategiesCallable = httpsCallable<
 const processProjectCallable = httpsCallable<
     ProcessProjectRequest,
     ProjectDetail
->(functions, "processProject");
+>(functions, "processProject", {
+    timeout: LONG_RUNNING_CALLABLE_TIMEOUT_MS,
+});
 const getFloorplanPageCallable = httpsCallable<
     { projectId: string; pageId: string },
     FloorplanPage
