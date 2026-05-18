@@ -12,94 +12,93 @@ import {
 } from "react-konva";
 import type { Stage as KonvaStage } from "konva/lib/Stage.js";
 import type { KonvaEventObject } from "konva/lib/Node.js";
-import {
-    AlignHorizontalJustifyCenter,
-    CopyPlus,
-    Loader2,
-    MousePointer2,
-    Minus,
-    Plus,
-    Redo2,
-    Save,
-    Scissors,
-    Square,
-    Trash2,
-    Undo2,
-    ZoomIn,
-} from "lucide-react";
 import type {
     AreaPolygon,
     EdgeOverride,
     Overlay,
-    ProjectDetail,
-    FloorplanPage,
     Point,
-} from "../types.js";
+} from "../../types.js";
 import {
     applyCeilingHeightToProject,
     applyScaleToProject,
     savePageOverlay,
-} from "../lib/api.js";
+} from "../../lib/api.js";
+import type { ValidationIssue } from "../../lib/validation.js";
+import { activeTheme, ui } from "../../lib/styles.js";
+import {
+    colorFor,
+} from "../../lib/editor/board-materials.js";
+import {
+    ceilingAreaM2ForArea,
+    clamp,
+    effectiveFlatHeight,
+    pathLengthBetween,
+    pointAt,
+    pointDistance,
+    wallLengthByType,
+} from "../../lib/editor/overlay-geometry.js";
+import {
+    cloneOverlay,
+    parseOverlay,
+    parseReferencePoints,
+} from "../../lib/editor/overlay-serialization.js";
+import {
+    edgeOverridesAfterInsert,
+    edgeOverridesAfterRemoveMany,
+    rakedAfterPointRemoval,
+    splitEdgeOverrides,
+} from "../../lib/editor/edge-overrides.js";
+import { snapToReferences } from "../../lib/editor/snap-guides.js";
+import { useEditorAutosave } from "../../hooks/use-editor-autosave.js";
+import { useEditorImage } from "../../hooks/use-editor-image.js";
+import { useEditorKeyboardShortcuts } from "../../hooks/use-editor-keyboard-shortcuts.js";
+import { useEditorViewport } from "../../hooks/use-editor-viewport.js";
+import { useEditorHistory } from "../../hooks/use-editor-history.js";
+import { useEditorSelection } from "../../hooks/use-editor-selection.js";
 import type {
-    PageValidationInput,
-    ValidationIssue,
-} from "../lib/validation.js";
-import { activeTheme, cx, ui } from "../lib/styles.js";
+    DragState,
+    OverlayMode,
+    ProjectEditorProps,
+    SnapGuide,
+} from "./project-editor.types.js";
+import { EditorToolbar } from "./editor-toolbar.js";
+import { EditorSidebar } from "./editor-sidebar.js";
+import { CeilingControls } from "./ceiling-controls.js";
+import { ValidationMessage } from "./validation-message.js";
 
-const BOARD_TYPES = [
-    "Recessed Edge",
-    "Water Resistant",
-    "Sound Check",
-] as const;
-type BoardType = (typeof BOARD_TYPES)[number];
-const DEFAULT_BOARD_COLOR = activeTheme.editor.boardColors["Recessed Edge"];
-const BOARD_COLORS = activeTheme.editor.boardColors;
-const BOARD_SWATCH_CLASSES: Record<BoardType, string> = {
-    "Recessed Edge": "bg-slate-700 dark:bg-slate-300",
-    "Water Resistant": "bg-blue-600",
-    "Sound Check": "bg-orange-700",
-};
 const SELECTED_COLOR = activeTheme.editor.selected;
 const SELECTED_POINT_COLOR = activeTheme.editor.selectedPoint;
 const LOW_EDGE_COLOR = activeTheme.editor.lowEdge;
 const HIGH_EDGE_COLOR = activeTheme.editor.highEdge;
-const SNAP_THRESHOLD_PX = 10;
-type OverlayMode = "walls" | "ceilings" | "both";
-type SnapGuide = { x?: number; y?: number } | null;
-type DragState = {
-    before: Overlay;
-    startClientX: number;
-    startClientY: number;
-};
 
-export default function ProjectEditor({
+export function ProjectEditor({
     project,
     page,
     onSaved,
     onDraftChange,
     validationIssues = [],
-}: {
-    project: ProjectDetail;
-    page: FloorplanPage;
-    onSaved: () => void;
-    onDraftChange?: (pageId: string, draft: PageValidationInput) => void;
-    validationIssues?: ValidationIssue[];
-}) {
-    const [image, setImage] = useState<HTMLImageElement | null>(null);
-    const [imageError, setImageError] = useState("");
+}: ProjectEditorProps) {
+    const { image, imageError } = useEditorImage(page.imageUrl);
     const [overlay, setOverlay] = useState<Overlay>(() =>
         parseOverlay(page.overlay),
     );
-    const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
-    const [selectedAreaIds, setSelectedAreaIds] = useState<string[]>([]);
-    const [selectedEdge, setSelectedEdge] = useState<{
-        areaId: string;
-        edgeIndex: number;
-    } | null>(null);
-    const [selectedPoint, setSelectedPoint] = useState<number | null>(null);
-    const [selectedPointIndexes, setSelectedPointIndexes] = useState<number[]>(
-        [],
-    );
+    const {
+        selectedAreaId,
+        selectedAreaIds,
+        selectedEdge,
+        selectedPoint,
+        selectedPointIndexes,
+        clearSelection,
+        hasSelection,
+        selectArea,
+        selectEdge,
+        selectPoint,
+        setSelectedAreaId,
+        setSelectedAreaIds,
+        setSelectedEdge,
+        setSelectedPoint,
+        setSelectedPointIndexes,
+    } = useEditorSelection();
     const [overlayMode, setOverlayMode] = useState<OverlayMode>("both");
     const [scaleMmPerPx, setScaleMmPerPx] = useState<number | null>(
         page.scaleMmPerPx,
@@ -120,13 +119,10 @@ export default function ProjectEditor({
     const [draftPointer, setDraftPointer] = useState<Point | null>(null);
     const [snapGuide, setSnapGuide] = useState<SnapGuide>(null);
     const [zoom, setZoom] = useState(1);
-    const [viewport, setViewport] = useState({ width: 1200, height: 760 });
     const [dirty, setDirty] = useState(false);
     const [saving, setSaving] = useState(false);
     const [autoSaving, setAutoSaving] = useState(false);
     const [status, setStatus] = useState("");
-    const [history, setHistory] = useState<Overlay[]>([]);
-    const [future, setFuture] = useState<Overlay[]>([]);
     const stageRef = useRef<KonvaStage>(null);
     const canvasWrapRef = useRef<HTMLDivElement | null>(null);
     const overlayRef = useRef<Overlay>(overlay);
@@ -140,17 +136,21 @@ export default function ProjectEditor({
         scrollTop: number;
         moved: boolean;
     } | null>(null);
-
-    useEffect(() => {
-        setImage(null);
-        setImageError("");
-        const img = new window.Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => setImage(img);
-        img.onerror = () =>
-            setImageError(`Could not load floorplan image: ${page.imageUrl}`);
-        img.src = page.imageUrl;
-    }, [page.imageUrl]);
+    const viewport = useEditorViewport(canvasWrapRef);
+    const {
+        future,
+        history,
+        commit,
+        commitFromSnapshot,
+        redo,
+        resetHistory,
+        undo,
+    } = useEditorHistory({
+        overlay,
+        setDirty,
+        setOverlay,
+        setStatus,
+    });
 
     useEffect(() => {
         setOverlay(parseOverlay(page.overlay));
@@ -159,8 +159,7 @@ export default function ProjectEditor({
         setReferencePoints(parseReferencePoints(page.referencePoints));
         setReferenceLengthMm(page.referenceLengthMm?.toString() ?? "");
         setDirty(false);
-        setHistory([]);
-        setFuture([]);
+        resetHistory();
         setSelectedAreaId(null);
         setSelectedAreaIds([]);
         setSelectedEdge(null);
@@ -176,27 +175,6 @@ export default function ProjectEditor({
         page.referencePoints,
         page.referenceLengthMm,
     ]);
-
-    useEffect(() => {
-        const element = canvasWrapRef.current;
-        if (!element) return;
-        const update = () =>
-            setViewport({
-                width: element.clientWidth,
-                height: element.clientHeight,
-            });
-        update();
-        const observer = new ResizeObserver(update);
-        observer.observe(element);
-        return () => observer.disconnect();
-    }, []);
-
-    useEffect(() => {
-        const timer = window.setInterval(() => {
-            if (dirty && !saving && !autoSaving) void save(false, true);
-        }, 15000);
-        return () => window.clearInterval(timer);
-    }, [dirty, overlay, scaleMmPerPx, ceilingHeightMm, saving, autoSaving]);
 
     useEffect(() => {
         overlayRef.current = overlay;
@@ -225,61 +203,6 @@ export default function ProjectEditor({
         referencePoints,
         referenceLengthMm,
         onDraftChange,
-    ]);
-
-    useEffect(() => {
-        function onKeyDown(event: KeyboardEvent) {
-            const target = event.target as HTMLElement | null;
-            if (
-                target &&
-                ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)
-            )
-                return;
-            if (
-                (event.ctrlKey || event.metaKey) &&
-                event.key.toLowerCase() === "z"
-            ) {
-                event.preventDefault();
-                undo();
-                return;
-            }
-            if (
-                (event.ctrlKey || event.metaKey) &&
-                (event.key.toLowerCase() === "y" ||
-                    (event.shiftKey && event.key.toLowerCase() === "z"))
-            ) {
-                event.preventDefault();
-                redo();
-                return;
-            }
-            if (event.key === "Delete" || event.key === "Backspace") {
-                event.preventDefault();
-                deleteSelection();
-                return;
-            }
-            if (event.key === "Escape" && isDrawingFreeShape) {
-                event.preventDefault();
-                cancelFreeShape();
-                return;
-            }
-            if (event.key === "Escape" && hasSelection()) {
-                event.preventDefault();
-                clearSelection();
-            }
-        }
-        window.addEventListener("keydown", onKeyDown);
-        return () => window.removeEventListener("keydown", onKeyDown);
-    }, [
-        history,
-        future,
-        overlay,
-        selectedAreaId,
-        selectedAreaIds,
-        selectedEdge,
-        selectedPoint,
-        selectedPointIndexes,
-        isDrawingFreeShape,
-        draftPoints,
     ]);
 
     const selectedArea =
@@ -345,40 +268,6 @@ export default function ProjectEditor({
         };
     }, [visibleAreas, scaleMmPerPx]);
 
-    function commit(next: Overlay) {
-        setHistory((items) => [...items.slice(-49), cloneOverlay(overlay)]);
-        setFuture([]);
-        setOverlay(next);
-        setDirty(true);
-        setStatus("Unsaved changes");
-    }
-
-    function commitFromSnapshot(before: Overlay, next: Overlay) {
-        setHistory((items) => [...items.slice(-49), cloneOverlay(before)]);
-        setFuture([]);
-        setOverlay(next);
-        setDirty(true);
-        setStatus("Unsaved changes");
-    }
-
-    function clearSelection() {
-        setSelectedAreaId(null);
-        setSelectedAreaIds([]);
-        setSelectedEdge(null);
-        setSelectedPoint(null);
-        setSelectedPointIndexes([]);
-    }
-
-    function hasSelection() {
-        return (
-            !!selectedAreaId ||
-            selectedAreaIds.length > 0 ||
-            !!selectedEdge ||
-            selectedPoint != null ||
-            selectedPointIndexes.length > 0
-        );
-    }
-
     function updateArea(
         areaId: string,
         updater: (area: AreaPolygon) => AreaPolygon,
@@ -389,24 +278,6 @@ export default function ProjectEditor({
                 area.id === areaId ? updater(area) : area,
             ),
         });
-    }
-
-    function undo() {
-        const previous = history[history.length - 1];
-        if (!previous) return;
-        setFuture((items) => [cloneOverlay(overlay), ...items]);
-        setHistory((items) => items.slice(0, -1));
-        setOverlay(previous);
-        setDirty(true);
-    }
-
-    function redo() {
-        const next = future[0];
-        if (!next) return;
-        setHistory((items) => [...items, cloneOverlay(overlay)]);
-        setFuture((items) => items.slice(1));
-        setOverlay(next);
-        setDirty(true);
     }
 
     function addRectangle() {
@@ -695,56 +566,14 @@ export default function ProjectEditor({
         });
     }
 
-    function selectPoint(index: number, additive: boolean) {
-        setSelectedEdge(null);
-        setSelectedPoint(index);
-        if (!additive) {
-            setSelectedPointIndexes([index]);
-            return;
-        }
-        setSelectedPointIndexes((current) => {
-            if (current.includes(index))
-                return current.filter((item) => item !== index);
-            return [...current, index];
-        });
-    }
-
-    function selectArea(areaId: string, additive: boolean) {
-        setSelectedEdge(null);
-        setSelectedPoint(null);
-        setSelectedPointIndexes([]);
-        if (!additive) {
-            setSelectedAreaId(areaId);
-            setSelectedAreaIds([areaId]);
-            return;
-        }
-        setSelectedAreaIds((current) => {
-            const next = current.includes(areaId)
-                ? current.filter((id) => id !== areaId)
-                : [...current, areaId];
-            setSelectedAreaId(
-                next.includes(areaId)
-                    ? areaId
-                    : (next[next.length - 1] ?? null),
-            );
-            return next;
-        });
-    }
-
     function commonMaterialValue(
         field: "wallPlasterType" | "ceilingPlasterType",
     ) {
         const values = selectedAreas.map((area) => area[field]);
         if (values.length === 0) return "";
-        return values.every((value) => value === values[0]) ? values[0] : "";
-    }
-
-    function selectEdge(areaId: string, edgeIndex: number) {
-        setSelectedAreaId(areaId);
-        setSelectedAreaIds([areaId]);
-        setSelectedPoint(null);
-        setSelectedPointIndexes([]);
-        setSelectedEdge({ areaId, edgeIndex });
+        return values.every((value) => value === values[0])
+            ? (values[0] ?? "")
+            : "";
     }
 
     function updateSelectedEdgeOverride(
@@ -1200,304 +1029,73 @@ export default function ProjectEditor({
     }
 
     function fieldError(message: string) {
-        return message ? (
-            <span className={ui.fieldError}>{message}</span>
-        ) : null;
+        return <ValidationMessage message={message} />;
     }
 
     function renderCeilingControls(area: AreaPolygon) {
-        const mode = area.ceilingMode ?? "flat";
-        const raked = area.rakedCeiling;
-        const roomHeightError = areaIssue(area.id, "ceilingHeightMm");
-        const lowEdgeError = areaIssue(area.id, "rakedLowEdge");
-        const highEdgeError = areaIssue(area.id, "rakedHighEdge");
-        const lowHeightError = areaIssue(area.id, "rakedLowHeight");
-        const highHeightError = areaIssue(area.id, "rakedHighHeight");
         return (
-            <>
-                <div className={ui.field}>
-                    <label>Room ceiling</label>
-                    <select
-                        className={ui.input}
-                        value={mode}
-                        onChange={(event) =>
-                            setCeilingMode(
-                                event.target.value as "flat" | "raked",
-                            )
-                        }
-                    >
-                        <option value="flat">Flat</option>
-                        <option value="raked">Raked</option>
-                    </select>
-                </div>
-                {mode === "flat" && (
-                    <div className={ui.field}>
-                        <label>Room height override mm</label>
-                        <input
-                            className={cx(
-                                ui.input,
-                                roomHeightError && ui.inputInvalid,
-                            )}
-                            type="number"
-                            placeholder={
-                                ceilingHeightMm == null
-                                    ? "Page height not set"
-                                    : String(ceilingHeightMm)
-                            }
-                            value={area.ceilingHeightMm ?? ""}
-                            onChange={(event) =>
-                                setSelectedAreaHeight(event.target.value)
-                            }
-                        />
-                        {fieldError(roomHeightError)}
-                    </div>
-                )}
-                {mode === "raked" && (
-                    <>
-                        <div className={ui.buttonRow}>
-                            <button
-                                className={cx(
-                                    ui.button,
-                                    lowEdgeError && ui.buttonInvalid,
-                                )}
-                                onClick={() => setRakedEdge("low")}
-                                disabled={
-                                    !selectedEdge ||
-                                    selectedEdge.areaId !== area.id
-                                }
-                            >
-                                Set selected low edge
-                            </button>
-                            <button
-                                className={cx(
-                                    ui.button,
-                                    highEdgeError && ui.buttonInvalid,
-                                )}
-                                onClick={() => setRakedEdge("high")}
-                                disabled={
-                                    !selectedEdge ||
-                                    selectedEdge.areaId !== area.id
-                                }
-                            >
-                                Set selected high edge
-                            </button>
-                        </div>
-                        {(lowEdgeError || highEdgeError) && (
-                            <span className={ui.fieldError}>
-                                {lowEdgeError || highEdgeError}
-                            </span>
-                        )}
-                        <div className={ui.metric}>
-                            Low edge:{" "}
-                            {raked && raked.lowEdgeIndex >= 0
-                                ? raked.lowEdgeIndex + 1
-                                : "-"}{" "}
-                            | High edge:{" "}
-                            {raked && raked.highEdgeIndex >= 0
-                                ? raked.highEdgeIndex + 1
-                                : "-"}
-                        </div>
-                        <div className={ui.field}>
-                            <label>Low height mm</label>
-                            <input
-                                className={cx(
-                                    ui.input,
-                                    lowHeightError && ui.inputInvalid,
-                                )}
-                                type="number"
-                                value={raked?.lowHeightMm ?? ""}
-                                onChange={(event) =>
-                                    setRakedHeight(
-                                        "lowHeightMm",
-                                        event.target.value,
-                                    )
-                                }
-                            />
-                            {fieldError(lowHeightError)}
-                        </div>
-                        <div className={ui.field}>
-                            <label>High height mm</label>
-                            <input
-                                className={cx(
-                                    ui.input,
-                                    highHeightError && ui.inputInvalid,
-                                )}
-                                type="number"
-                                value={raked?.highHeightMm ?? ""}
-                                onChange={(event) =>
-                                    setRakedHeight(
-                                        "highHeightMm",
-                                        event.target.value,
-                                    )
-                                }
-                            />
-                            {fieldError(highHeightError)}
-                        </div>
-                    </>
-                )}
-            </>
+            <CeilingControls
+                area={area}
+                ceilingHeightMm={ceilingHeightMm}
+                selectedEdge={selectedEdge}
+                areaIssue={areaIssue}
+                setCeilingMode={setCeilingMode}
+                setRakedEdge={setRakedEdge}
+                setRakedHeight={setRakedHeight}
+                setSelectedAreaHeight={setSelectedAreaHeight}
+            />
         );
     }
+    useEditorAutosave({
+        autoSaving,
+        ceilingHeightMm,
+        dirty,
+        overlay,
+        saving,
+        scaleMmPerPx,
+        save,
+    });
+
+    useEditorKeyboardShortcuts({
+        isDrawingFreeShape,
+        onCancelFreeShape: cancelFreeShape,
+        onClearSelection: clearSelection,
+        onDeleteSelection: deleteSelection,
+        onRedo: redo,
+        onUndo: undo,
+        hasSelection,
+    });
 
     return (
         <section className={ui.editorShell}>
             <div className={ui.panel}>
-                <div className={ui.editorToolbar}>
-                    <div className={ui.buttonRow}>
-                        <button
-                            className={cx(ui.button, ui.buttonIcon)}
-                            onClick={undo}
-                            disabled={history.length === 0}
-                            title="Undo"
-                        >
-                            <Undo2 size={18} />
-                        </button>
-                        <button
-                            className={cx(ui.button, ui.buttonIcon)}
-                            onClick={redo}
-                            disabled={future.length === 0}
-                            title="Redo"
-                        >
-                            <Redo2 size={18} />
-                        </button>
-                        <button
-                            className={cx(ui.button, ui.buttonIcon)}
-                            onClick={clearSelection}
-                            disabled={!hasSelection()}
-                            title="Deselect all"
-                        >
-                            <MousePointer2 size={18} />
-                        </button>
-                        <div className="relative">
-                            <button
-                                className={cx(ui.button, ui.buttonIcon)}
-                                onClick={() => setAddMenuOpen((open) => !open)}
-                                title="Add area"
-                            >
-                                <Plus size={18} />
-                            </button>
-                            {addMenuOpen && (
-                                <div className={ui.popoverMenu}>
-                                    <button
-                                        className={ui.button}
-                                        onClick={addRectangle}
-                                    >
-                                        <Square size={16} /> Rectangle
-                                    </button>
-                                    <button
-                                        className={ui.button}
-                                        onClick={startFreeShape}
-                                    >
-                                        <MousePointer2 size={16} /> Free shape
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                        <button
-                            className={cx(ui.button, ui.buttonIcon)}
-                            onClick={addPoint}
-                            disabled={!selectedArea}
-                            title="Add point"
-                        >
-                            <CopyPlus size={18} />
-                        </button>
-                        <button
-                            className={cx(ui.button, ui.buttonIcon)}
-                            onClick={straightenSelectedPoints}
-                            disabled={
-                                !selectedArea ||
-                                selectedPointIndexes.length !== 2
-                            }
-                            title="Straighten between selected points"
-                        >
-                            <AlignHorizontalJustifyCenter size={18} />
-                        </button>
-                        <button
-                            className={cx(ui.button, ui.buttonIcon)}
-                            onClick={splitArea}
-                            disabled={
-                                !selectedArea ||
-                                selectedPointIndexes.length !== 2
-                            }
-                            title="Split selected polygon"
-                        >
-                            <Scissors size={18} />
-                        </button>
-                        <button
-                            className={cx(ui.button, ui.buttonIcon)}
-                            onClick={deleteSelection}
-                            disabled={!selectedArea}
-                            title={
-                                selectedPointIndexes.length > 0
-                                    ? "Delete selected points"
-                                    : "Delete selected area"
-                            }
-                        >
-                            <Trash2 size={18} />
-                        </button>
-                    </div>
-                    <div className={ui.buttonRow}>
-                        <button
-                            className={cx(ui.button, ui.buttonIcon)}
-                            onClick={() => changeZoom(zoom - 0.15)}
-                            title="Zoom out"
-                        >
-                            <Minus size={18} />
-                        </button>
-                        <button
-                            className={ui.button}
-                            onClick={resetView}
-                            title="Reset zoom"
-                        >
-                            <ZoomIn size={18} /> {Math.round(zoom * 100)}%
-                        </button>
-                        <button
-                            className={cx(ui.button, ui.buttonIcon)}
-                            onClick={() => changeZoom(zoom + 0.15)}
-                            title="Zoom in"
-                        >
-                            <Plus size={18} />
-                        </button>
-                        <div className={ui.segmented}>
-                            {(
-                                ["walls", "ceilings", "both"] as OverlayMode[]
-                            ).map((mode) => (
-                                <button
-                                    key={mode}
-                                    className={cx(
-                                        ui.segmentedButton,
-                                        overlayMode === mode &&
-                                            ui.segmentedButtonActive,
-                                    )}
-                                    onClick={() => setOverlayMode(mode)}
-                                >
-                                    {mode === "walls"
-                                        ? "Walls"
-                                        : mode === "ceilings"
-                                          ? "Ceilings"
-                                          : "Both"}
-                                </button>
-                            ))}
-                        </div>
-                        <button
-                            className={cx(ui.button, ui.buttonPrimary)}
-                            onClick={() => void save()}
-                            disabled={saving || autoSaving || !dirty}
-                        >
-                            {saving || autoSaving ? (
-                                <Loader2 className="animate-spin" size={18} />
-                            ) : (
-                                <Save size={18} />
-                            )}
-                            {autoSaving
-                                ? "Auto Saving"
-                                : saving
-                                  ? "Saving"
-                                  : "Save"}
-                        </button>
-                    </div>
-                </div>
-
+                <EditorToolbar
+                    addMenuOpen={addMenuOpen}
+                    autoSaving={autoSaving}
+                    dirty={dirty}
+                    futureCount={future.length}
+                    historyCount={history.length}
+                    overlayMode={overlayMode}
+                    saving={saving}
+                    selectedArea={selectedArea}
+                    selectedPointCount={selectedPointIndexes.length}
+                    zoom={zoom}
+                    onAddPoint={addPoint}
+                    onAddRectangle={addRectangle}
+                    onChangeZoom={changeZoom}
+                    onClearSelection={clearSelection}
+                    onDeleteSelection={deleteSelection}
+                    onRedo={redo}
+                    onResetView={resetView}
+                    onSave={() => void save()}
+                    onSetAddMenuOpen={setAddMenuOpen}
+                    onSetOverlayMode={setOverlayMode}
+                    onSplitArea={splitArea}
+                    onStartFreeShape={startFreeShape}
+                    onStraightenSelectedPoints={straightenSelectedPoints}
+                    onUndo={undo}
+                    hasSelection={hasSelection}
+                />
                 <div className={ui.canvasWrap} ref={canvasWrapRef}>
                     {imageError && <p className={ui.error}>{imageError}</p>}
                     <Stage
@@ -2181,750 +1779,47 @@ export default function ProjectEditor({
                 </div>
             </div>
 
-            <aside className={ui.inspector}>
-                <section className={cx(ui.panel, ui.stack)}>
-                    <h3>Page {page.pageNumber}</h3>
-                    <span className={ui.muted}>
-                        {status || "Ready"}{" "}
-                        {dirty ? "- autosaves every 15 seconds" : ""}
-                    </span>
-                    <div className={ui.field}>
-                        <label>Ceiling height mm</label>
-                        <input
-                            className={cx(
-                                ui.input,
-                                hasPageHeightIssue() && ui.inputInvalid,
-                            )}
-                            type="number"
-                            value={ceilingHeightMm ?? ""}
-                            onChange={(event) => {
-                                setCeilingHeightMm(
-                                    event.target.value
-                                        ? Number(event.target.value)
-                                        : null,
-                                );
-                                setDirty(true);
-                            }}
-                        />
-                        {hasPageHeightIssue() &&
-                            fieldError("Ceiling height is required")}
-                    </div>
-                    <button
-                        className={ui.button}
-                        onClick={applyHeightToAllPages}
-                    >
-                        Apply height to all pages
-                    </button>
-                </section>
-
-                <section className={cx(ui.panel, ui.stack)}>
-                    <h3>Scale</h3>
-                    <div className={ui.buttonRow}>
-                        <button
-                            className={cx(
-                                ui.button,
-                                isSettingReference && ui.buttonPrimary,
-                            )}
-                            onClick={
-                                isSettingReference
-                                    ? () => setIsSettingReference(false)
-                                    : startReferenceMode
-                            }
-                        >
-                            <MousePointer2 size={18} />{" "}
-                            {isSettingReference
-                                ? "Cancel reference"
-                                : "Set reference"}
-                        </button>
-                        <button
-                            className={ui.button}
-                            onClick={() => {
-                                setReferencePoints([]);
-                                setIsSettingReference(false);
-                            }}
-                        >
-                            Reset
-                        </button>
-                    </div>
-                    <p className={ui.muted}>
-                        {isSettingReference
-                            ? "Click two points on the image."
-                            : `${referencePoints.length}/2 reference points set.`}
-                    </p>
-                    <div className={ui.field}>
-                        <label>Reference length mm</label>
-                        <input
-                            className={cx(
-                                ui.input,
-                                pageIssue("reference") && ui.inputInvalid,
-                            )}
-                            value={referenceLengthMm}
-                            onChange={(event) => {
-                                setReferenceLengthMm(event.target.value);
-                                setDirty(true);
-                            }}
-                            type="number"
-                        />
-                        {fieldError(pageIssue("reference"))}
-                    </div>
-                    <button
-                        className={cx(ui.button, ui.buttonPrimary)}
-                        onClick={applyScale}
-                        disabled={referencePoints.length !== 2}
-                    >
-                        Apply scale
-                    </button>
-                    <button
-                        className={ui.button}
-                        onClick={applyScaleToAllPages}
-                        disabled={!scaleMmPerPx}
-                    >
-                        Apply scale to all pages
-                    </button>
-                    <div className={ui.metric}>
-                        Scale:{" "}
-                        {scaleMmPerPx
-                            ? `${scaleMmPerPx.toFixed(3)} mm/px`
-                            : "not set"}
-                    </div>
-                </section>
-
-                <section className={cx(ui.panel, ui.stack)}>
-                    <h3>Summary</h3>
-                    {!summary && (
-                        <div className={ui.validationCta}>
-                            <p
-                                className={
-                                    pageIssue("reference") ? ui.error : ui.muted
-                                }
-                            >
-                                {pageIssue("reference") ||
-                                    "Summary is not available because reference is not yet set."}
-                            </p>
-                            <button
-                                className={cx(ui.button, ui.buttonPrimary)}
-                                onClick={startReferenceMode}
-                            >
-                                <MousePointer2 size={18} /> Set reference
-                            </button>
-                        </div>
-                    )}
-                    {summary && (
-                        <>
-                            <div className={ui.field}>
-                                <span className={ui.label}>Wall length</span>
-                                {summary.wallTotals.length === 0 && (
-                                    <p className={ui.muted}>
-                                        No counted wall lengths.
-                                    </p>
-                                )}
-                                {summary.wallTotals.map(([type, total]) => (
-                                    <div
-                                        className={ui.metric}
-                                        key={`wall-${type}`}
-                                    >
-                                        {type}: {total.toFixed(2)} m
-                                    </div>
-                                ))}
-                            </div>
-                            <div className={ui.field}>
-                                <span className={ui.label}>Ceiling area</span>
-                                {summary.ceilingTotals.map(([type, total]) => (
-                                    <div
-                                        className={ui.metric}
-                                        key={`ceiling-${type}`}
-                                    >
-                                        {type}: {total.toFixed(2)} m2
-                                    </div>
-                                ))}
-                            </div>
-                        </>
-                    )}
-                </section>
-
-                <section className={cx(ui.panel, ui.stack)}>
-                    <h3>Areas</h3>
-                    <div className={ui.buttonRow}>
-                        {BOARD_TYPES.map((type) => (
-                            <span
-                                className={cx(
-                                    ui.muted,
-                                    "inline-flex items-center gap-1.5",
-                                )}
-                                key={type}
-                            >
-                                <span
-                                    className={cx(
-                                        "inline-block h-3 w-3 rounded",
-                                        BOARD_SWATCH_CLASSES[type],
-                                    )}
-                                />
-                                {type}
-                            </span>
-                        ))}
-                    </div>
-                    <div className={ui.areaList}>
-                        {visibleAreas.map((area) => (
-                            <button
-                                className={cx(
-                                    ui.areaRow,
-                                    selectedAreaIds.includes(area.id) &&
-                                        ui.areaRowActive,
-                                )}
-                                key={area.id}
-                                onClick={(event) => {
-                                    selectArea(
-                                        area.id,
-                                        event.ctrlKey || event.metaKey,
-                                    );
-                                }}
-                            >
-                                <strong>{area.label}</strong>
-                            </button>
-                        ))}
-                    </div>
-                </section>
-
-                <section className={cx(ui.panel, ui.stack)}>
-                    <h3>Selection</h3>
-                    {!selectedArea && !selectedEdgeArea && (
-                        <p className={ui.muted}>
-                            Select an area to edit labels and board types.
-                        </p>
-                    )}
-                    {selectedEdgeArea && selectedEdge && (
-                        <>
-                            <div className={ui.metric}>
-                                Edge {selectedEdge.edgeIndex + 1} selected in{" "}
-                                {selectedEdgeArea.label}
-                            </div>
-                            {selectedAreaIds.length === 1 &&
-                                selectedArea?.id === selectedEdgeArea.id &&
-                                renderCeilingControls(selectedArea)}
-                            <label className={cx(ui.button, "justify-start")}>
-                                <input
-                                    type="checkbox"
-                                    checked={!!selectedEdgeOverride?.noPlaster}
-                                    onChange={(event) =>
-                                        setSelectedEdgeNoPlaster(
-                                            event.target.checked,
-                                        )
-                                    }
-                                />
-                                No plaster
-                            </label>
-                            <div className={ui.field}>
-                                <label>Wall board</label>
-                                <select
-                                    className={ui.input}
-                                    value={
-                                        selectedEdgeOverride?.wallPlasterType ??
-                                        selectedEdgeArea.wallPlasterType
-                                    }
-                                    onChange={(event) =>
-                                        setSelectedEdgeMaterial(
-                                            event.target.value,
-                                        )
-                                    }
-                                    disabled={
-                                        !!selectedEdgeOverride?.noPlaster ||
-                                        !!selectedEdgeArea.isOutdoor
-                                    }
-                                >
-                                    {BOARD_TYPES.map((type) => (
-                                        <option key={type}>{type}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <button
-                                className={ui.button}
-                                onClick={clearSelectedEdgeOverride}
-                                disabled={!selectedEdgeOverride}
-                            >
-                                Clear override
-                            </button>
-                        </>
-                    )}
-                    {!selectedEdge &&
-                        selectedArea &&
-                        selectedAreaIds.length > 1 && (
-                            <>
-                                <div className={ui.metric}>
-                                    {selectedAreaIds.length} areas selected.
-                                    Material changes apply to all selected
-                                    areas.
-                                </div>
-                                <div className={ui.field}>
-                                    <label>Wall board</label>
-                                    <select
-                                        className={ui.input}
-                                        value={commonMaterialValue(
-                                            "wallPlasterType",
-                                        )}
-                                        onChange={(event) =>
-                                            setMaterial(
-                                                "wallPlasterType",
-                                                event.target.value,
-                                            )
-                                        }
-                                    >
-                                        <option value="" disabled>
-                                            Mixed
-                                        </option>
-                                        {BOARD_TYPES.map((type) => (
-                                            <option key={type}>{type}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className={ui.field}>
-                                    <label>Ceiling board</label>
-                                    <select
-                                        className={ui.input}
-                                        value={commonMaterialValue(
-                                            "ceilingPlasterType",
-                                        )}
-                                        onChange={(event) =>
-                                            setMaterial(
-                                                "ceilingPlasterType",
-                                                event.target.value,
-                                            )
-                                        }
-                                    >
-                                        <option value="" disabled>
-                                            Mixed
-                                        </option>
-                                        {BOARD_TYPES.map((type) => (
-                                            <option key={type}>{type}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </>
-                        )}
-                    {!selectedEdge &&
-                        selectedArea &&
-                        selectedAreaIds.length <= 1 && (
-                            <>
-                                <div className={ui.field}>
-                                    <label>Area label</label>
-                                    <input
-                                        className={cx(
-                                            ui.input,
-                                            areaIssue(
-                                                selectedArea.id,
-                                                "areaLabel",
-                                            ) && ui.inputInvalid,
-                                        )}
-                                        value={selectedArea.label}
-                                        onChange={(event) =>
-                                            updateArea(
-                                                selectedArea.id,
-                                                (area) => ({
-                                                    ...area,
-                                                    label: event.target.value,
-                                                }),
-                                            )
-                                        }
-                                    />
-                                    {fieldError(
-                                        areaIssue(selectedArea.id, "areaLabel"),
-                                    )}
-                                </div>
-                                <label
-                                    className={cx(ui.button, "justify-start")}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={!!selectedArea.isOutdoor}
-                                        onChange={toggleOutdoor}
-                                    />
-                                    Outdoor area
-                                </label>
-                                {renderCeilingControls(selectedArea)}
-                                {!selectedArea.isOutdoor && (
-                                    <>
-                                        <div className={ui.field}>
-                                            <label>Wall board</label>
-                                            <select
-                                                className={cx(
-                                                    ui.input,
-                                                    areaIssue(
-                                                        selectedArea.id,
-                                                        "wallPlasterType",
-                                                    ) && ui.inputInvalid,
-                                                )}
-                                                value={
-                                                    selectedArea.wallPlasterType
-                                                }
-                                                onChange={(event) =>
-                                                    setMaterial(
-                                                        "wallPlasterType",
-                                                        event.target.value,
-                                                    )
-                                                }
-                                            >
-                                                {BOARD_TYPES.map((type) => (
-                                                    <option key={type}>
-                                                        {type}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            {fieldError(
-                                                areaIssue(
-                                                    selectedArea.id,
-                                                    "wallPlasterType",
-                                                ),
-                                            )}
-                                        </div>
-                                        <div className={ui.field}>
-                                            <label>Ceiling board</label>
-                                            <select
-                                                className={cx(
-                                                    ui.input,
-                                                    areaIssue(
-                                                        selectedArea.id,
-                                                        "ceilingPlasterType",
-                                                    ) && ui.inputInvalid,
-                                                )}
-                                                value={
-                                                    selectedArea.ceilingPlasterType
-                                                }
-                                                onChange={(event) =>
-                                                    setMaterial(
-                                                        "ceilingPlasterType",
-                                                        event.target.value,
-                                                    )
-                                                }
-                                            >
-                                                {BOARD_TYPES.map((type) => (
-                                                    <option key={type}>
-                                                        {type}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            {fieldError(
-                                                areaIssue(
-                                                    selectedArea.id,
-                                                    "ceilingPlasterType",
-                                                ),
-                                            )}
-                                        </div>
-                                    </>
-                                )}
-                                {selectedArea.isOutdoor && (
-                                    <div className={ui.field}>
-                                        <label>Ceiling board</label>
-                                        <select
-                                            className={cx(
-                                                ui.input,
-                                                areaIssue(
-                                                    selectedArea.id,
-                                                    "ceilingPlasterType",
-                                                ) && ui.inputInvalid,
-                                            )}
-                                            value={
-                                                selectedArea.ceilingPlasterType
-                                            }
-                                            onChange={(event) =>
-                                                setMaterial(
-                                                    "ceilingPlasterType",
-                                                    event.target.value,
-                                                )
-                                            }
-                                        >
-                                            {BOARD_TYPES.map((type) => (
-                                                <option key={type}>
-                                                    {type}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        {fieldError(
-                                            areaIssue(
-                                                selectedArea.id,
-                                                "ceilingPlasterType",
-                                            ),
-                                        )}
-                                    </div>
-                                )}
-                                {fieldError(
-                                    areaIssue(selectedArea.id, "polygon"),
-                                )}
-                                <div className={ui.metric}>
-                                    Selected points:{" "}
-                                    {selectedPointIndexes.length}
-                                </div>
-                                <div className={ui.metric}>
-                                    Wall length:{" "}
-                                    {selectedArea.isOutdoor
-                                        ? "not counted"
-                                        : metrics
-                                          ? `${metrics.wallLengthM.toFixed(2)} m`
-                                          : "set scale"}
-                                </div>
-                                <div className={ui.metric}>
-                                    Ceiling area:{" "}
-                                    {metrics
-                                        ? `${metrics.ceilingAreaM2.toFixed(2)} m2`
-                                        : "set scale"}
-                                </div>
-                            </>
-                        )}
-                </section>
-            </aside>
+            <EditorSidebar
+                page={page}
+                status={status}
+                dirty={dirty}
+                ceilingHeightMm={ceilingHeightMm}
+                scaleMmPerPx={scaleMmPerPx}
+                referencePoints={referencePoints}
+                referenceLengthMm={referenceLengthMm}
+                isSettingReference={isSettingReference}
+                summary={summary}
+                visibleAreas={visibleAreas}
+                selectedAreaIds={selectedAreaIds}
+                selectedArea={selectedArea}
+                selectedEdgeArea={selectedEdgeArea}
+                selectedEdge={selectedEdge}
+                selectedEdgeOverride={selectedEdgeOverride}
+                selectedPointIndexes={selectedPointIndexes}
+                metrics={metrics}
+                areaIssue={areaIssue}
+                applyHeightToAllPages={applyHeightToAllPages}
+                applyScale={applyScale}
+                applyScaleToAllPages={applyScaleToAllPages}
+                clearSelectedEdgeOverride={clearSelectedEdgeOverride}
+                commonMaterialValue={commonMaterialValue}
+                fieldError={fieldError}
+                hasPageHeightIssue={hasPageHeightIssue}
+                pageIssue={pageIssue}
+                renderCeilingControls={renderCeilingControls}
+                selectArea={selectArea}
+                setCeilingHeightMm={setCeilingHeightMm}
+                setDirty={setDirty}
+                setIsSettingReference={setIsSettingReference}
+                setMaterial={setMaterial}
+                setReferenceLengthMm={setReferenceLengthMm}
+                setReferencePoints={setReferencePoints}
+                setSelectedEdgeMaterial={setSelectedEdgeMaterial}
+                setSelectedEdgeNoPlaster={setSelectedEdgeNoPlaster}
+                startReferenceMode={startReferenceMode}
+                toggleOutdoor={toggleOutdoor}
+                updateArea={updateArea}
+            />
         </section>
     );
-}
-
-function parseOverlay(value: string | null): Overlay {
-    if (!value) return { areas: [] };
-    try {
-        return JSON.parse(value) as Overlay;
-    } catch {
-        return { areas: [] };
-    }
-}
-
-function parseReferencePoints(value: string | null): Point[] {
-    if (!value) return [];
-    try {
-        const parsed = JSON.parse(value) as Point[];
-        return Array.isArray(parsed) ? parsed : [];
-    } catch {
-        return [];
-    }
-}
-
-function cloneOverlay(value: Overlay): Overlay {
-    return JSON.parse(JSON.stringify(value)) as Overlay;
-}
-
-function colorFor(type: string) {
-    return BOARD_COLORS[type as BoardType] ?? DEFAULT_BOARD_COLOR;
-}
-
-function pointDistance(a: Point, b: Point) {
-    return Math.hypot(b[0] - a[0], b[1] - a[1]);
-}
-
-function pointAt(points: Point[], index: number): Point {
-    const point = points[index];
-    if (!point) {
-        throw new Error(`Missing polygon point at index ${index}.`);
-    }
-    return point;
-}
-
-function pathLengthBetween(
-    points: Point[],
-    start: number,
-    end: number,
-    step: 1 | -1,
-) {
-    if (points.length < 2) return 0;
-    let total = 0;
-    let index = start;
-    while (index !== end) {
-        const nextIndex = (index + step + points.length) % points.length;
-        total += pointDistance(
-            pointAt(points, index),
-            pointAt(points, nextIndex),
-        );
-        index = nextIndex;
-    }
-    return total;
-}
-
-function wallLengthByType(area: AreaPolygon) {
-    if (area.isOutdoor) return [];
-    if (area.points.length < 2) return [];
-    const totals = new Map<string, number>();
-    area.points.forEach((point, index) => {
-        const override = area.edgeOverrides?.[String(index)];
-        if (override?.noPlaster) return;
-        const type = override?.wallPlasterType ?? area.wallPlasterType;
-        const next = pointAt(area.points, (index + 1) % area.points.length);
-        totals.set(type, (totals.get(type) ?? 0) + pointDistance(point, next));
-    });
-    return Array.from(totals.entries()).map(([type, lengthPx]) => ({
-        type,
-        lengthPx,
-    }));
-}
-
-function polygonArea(points: Point[]) {
-    if (points.length < 3) return 0;
-    const sum = points.reduce((total, point, index) => {
-        const next = pointAt(points, (index + 1) % points.length);
-        return total + point[0] * next[1] - next[0] * point[1];
-    }, 0);
-    return Math.abs(sum / 2);
-}
-
-function ceilingAreaM2ForArea(area: AreaPolygon, scaleMmPerPx: number) {
-    const flatM2 = polygonArea(area.points) * Math.pow(scaleMmPerPx / 1000, 2);
-    const raked = area.ceilingMode === "raked" ? area.rakedCeiling : null;
-    if (
-        !raked ||
-        raked.lowHeightMm == null ||
-        raked.highHeightMm == null ||
-        raked.lowEdgeIndex === raked.highEdgeIndex
-    ) {
-        return flatM2;
-    }
-    const lowMid = edgeMidpoint(area.points, raked.lowEdgeIndex);
-    const highMid = edgeMidpoint(area.points, raked.highEdgeIndex);
-    if (!lowMid || !highMid) return flatM2;
-    const runM = (pointDistance(lowMid, highMid) * scaleMmPerPx) / 1000;
-    if (runM <= 0) return flatM2;
-    const riseM = Math.abs(raked.highHeightMm - raked.lowHeightMm) / 1000;
-    return flatM2 * Math.sqrt(1 + Math.pow(riseM / runM, 2));
-}
-
-function edgeMidpoint(points: Point[], edgeIndex: number): Point | null {
-    if (edgeIndex < 0 || edgeIndex >= points.length) return null;
-    const a = pointAt(points, edgeIndex);
-    const b = pointAt(points, (edgeIndex + 1) % points.length);
-    return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-}
-
-function effectiveFlatHeight(area: AreaPolygon, pageHeightMm: number | null) {
-    return area.ceilingHeightMm ?? pageHeightMm ?? null;
-}
-
-function snapToReferences(
-    pointer: Point,
-    references: Point[],
-    zoom: number,
-): { point: Point; guide: SnapGuide } {
-    const threshold = SNAP_THRESHOLD_PX / zoom;
-    let x = pointer[0];
-    let y = pointer[1];
-    let guide: SnapGuide = null;
-    references.forEach((reference) => {
-        if (Math.abs(pointer[0] - reference[0]) <= threshold) {
-            x = reference[0];
-            guide = { ...(guide ?? {}), x };
-        }
-        if (Math.abs(pointer[1] - reference[1]) <= threshold) {
-            y = reference[1];
-            guide = { ...(guide ?? {}), y };
-        }
-    });
-    return { point: [x, y], guide };
-}
-
-function clamp(value: number, min: number, max: number) {
-    return Math.min(max, Math.max(min, value));
-}
-
-function cleanOverrides(overrides: Record<string, EdgeOverride>) {
-    const cleaned = Object.fromEntries(
-        Object.entries(overrides).filter(
-            ([, override]) => override.noPlaster || override.wallPlasterType,
-        ),
-    ) as Record<string, EdgeOverride>;
-    return Object.keys(cleaned).length ? cleaned : undefined;
-}
-
-function cloneOverride(override: EdgeOverride | undefined) {
-    return override ? { ...override } : undefined;
-}
-
-function edgeOverridesAfterInsert(
-    overrides: Record<string, EdgeOverride> | undefined,
-    anchorIndex: number,
-) {
-    if (!overrides) return undefined;
-    const next: Record<string, EdgeOverride> = {};
-    Object.entries(overrides).forEach(([key, override]) => {
-        const index = Number(key);
-        if (!Number.isInteger(index)) return;
-        if (index < anchorIndex) next[String(index)] = { ...override };
-        if (index === anchorIndex) {
-            next[String(index)] = { ...override };
-            next[String(index + 1)] = { ...override };
-        }
-        if (index > anchorIndex) next[String(index + 1)] = { ...override };
-    });
-    return cleanOverrides(next);
-}
-
-function edgeOverridesAfterRemoveMany(
-    overrides: Record<string, EdgeOverride> | undefined,
-    removed: Set<number>,
-    pointCount: number,
-) {
-    if (!overrides) return undefined;
-    const next: Record<string, EdgeOverride> = {};
-    const indexMap = new Map<number, number>();
-    let nextIndex = 0;
-    for (let index = 0; index < pointCount; index += 1) {
-        if (!removed.has(index)) {
-            indexMap.set(index, nextIndex);
-            nextIndex += 1;
-        }
-    }
-    Object.entries(overrides).forEach(([key, override]) => {
-        const index = Number(key);
-        if (!Number.isInteger(index)) return;
-        const startRemoved = removed.has(index);
-        const endRemoved = removed.has((index + 1) % pointCount);
-        if (startRemoved || endRemoved) return;
-        const mapped = indexMap.get(index);
-        if (mapped == null) return;
-        next[String(mapped)] = { ...override };
-    });
-    return cleanOverrides(next);
-}
-
-function rakedAfterPointRemoval(area: AreaPolygon, removed: Set<number>) {
-    if (!area.rakedCeiling) return undefined;
-    const mapEdge = (edgeIndex: number) => {
-        if (
-            removed.has(edgeIndex) ||
-            removed.has((edgeIndex + 1) % area.points.length)
-        )
-            return null;
-        let nextIndex = 0;
-        for (let index = 0; index < edgeIndex; index += 1) {
-            if (!removed.has(index)) nextIndex += 1;
-        }
-        return nextIndex;
-    };
-    const lowEdgeIndex = mapEdge(area.rakedCeiling.lowEdgeIndex);
-    const highEdgeIndex = mapEdge(area.rakedCeiling.highEdgeIndex);
-    if (
-        lowEdgeIndex == null ||
-        highEdgeIndex == null ||
-        lowEdgeIndex === highEdgeIndex
-    )
-        return undefined;
-    return { ...area.rakedCeiling, lowEdgeIndex, highEdgeIndex };
-}
-
-function splitEdgeOverrides(
-    area: AreaPolygon,
-    start: number,
-    end: number,
-    part: "first" | "second",
-) {
-    const overrides = area.edgeOverrides;
-    if (!overrides) return undefined;
-    const next: Record<string, EdgeOverride> = {};
-    if (part === "first") {
-        for (let oldIndex = start; oldIndex < end; oldIndex += 1) {
-            const override = cloneOverride(overrides[String(oldIndex)]);
-            if (override) next[String(oldIndex - start)] = override;
-        }
-        return cleanOverrides(next);
-    }
-    for (let oldIndex = end; oldIndex < area.points.length; oldIndex += 1) {
-        const override = cloneOverride(overrides[String(oldIndex)]);
-        if (override) next[String(oldIndex - end)] = override;
-    }
-    for (let oldIndex = 0; oldIndex < start; oldIndex += 1) {
-        const override = cloneOverride(overrides[String(oldIndex)]);
-        if (override)
-            next[String(area.points.length - end + oldIndex)] = override;
-    }
-    return cleanOverrides(next);
 }
