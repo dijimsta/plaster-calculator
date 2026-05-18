@@ -25,7 +25,6 @@ import type {
 import type { Point } from "../../types.js";
 import type { Stage as KonvaStage } from "konva/lib/Stage.js";
 
-
 export function ProjectEditor({
     project,
     page,
