@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
 import { Box, Text, useApp, useInput } from "ink";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
 import {
+    type AuthUserSummary,
     listAuthUsers,
     updateAuthUserScopes,
-    type AuthUserSummary,
 } from "./firebase-admin.js";
 
 type UsersState =

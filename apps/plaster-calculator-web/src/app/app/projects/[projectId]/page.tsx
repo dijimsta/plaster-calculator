@@ -1,9 +1,10 @@
 "use client";
 
-import { use, useCallback, useEffect, useMemo, useState } from "react";
-import { default as LinkModule } from "next/link.js";
 import { ArrowLeft, Download, Pencil, RefreshCcw, X } from "lucide-react";
 import { default as DynamicModule } from "next/dynamic.js";
+import { default as LinkModule } from "next/link.js";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
+
 import ThemeSettingsButton from "../../../../components/ThemeSettingsButton.js";
 import {
     exportProjectCsv,
@@ -11,15 +12,16 @@ import {
     renameProject,
     savePageOverlay,
 } from "../../../../lib/api.js";
-import type { ProjectDetail } from "../../../../types.js";
+import { cx, ui } from "../../../../lib/styles.js";
 import {
+    type PageValidationInput,
     parseOverlay,
     parseReferencePoints,
     validatePageForExport,
-    type PageValidationInput,
     type ValidationIssue,
 } from "../../../../lib/validation.js";
-import { cx, ui } from "../../../../lib/styles.js";
+
+import type { ProjectDetail } from "../../../../types.js";
 
 const dynamic = DynamicModule.default;
 const ProjectEditor = dynamic(

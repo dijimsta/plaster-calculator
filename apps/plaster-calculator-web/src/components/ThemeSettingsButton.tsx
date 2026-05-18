@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Settings, X } from "lucide-react";
+import { useEffect, useState } from "react";
+
 import { cx, ui } from "../lib/styles.js";
 
 type ThemeMode = "system" | "light" | "dark";

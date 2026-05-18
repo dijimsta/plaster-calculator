@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
-    signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
-    signInWithPopup,
     onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signInWithPopup,
     type User,
 } from "firebase/auth";
-import { useRouter } from "next/navigation.js";
 import { default as LinkModule } from "next/link.js";
+import { useRouter } from "next/navigation.js";
+import { useEffect, useState } from "react";
 
 import { auth } from "../firebase/firebase.utils.js";
 import { activeTheme, cx, ui } from "../lib/styles.js";

@@ -1,9 +1,11 @@
+import { parseOverlay } from "./editor/overlay-serialization.js";
+
 import type { AreaPolygon, FloorplanPage } from "../types.js";
+
 export {
     parseOverlay,
     parseReferencePoints,
 } from "./editor/overlay-serialization.js";
-import { parseOverlay } from "./editor/overlay-serialization.js";
 
 export type PageValidationInput = Pick<
     FloorplanPage,
