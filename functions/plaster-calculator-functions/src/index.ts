@@ -160,6 +160,10 @@ interface ExportProjectCsvResponse {
 
 const FLOORPLAN_ANALYZER_REGION = "us-west1";
 const LONG_RUNNING_TIMEOUT_SECONDS = 60 * 60;
+const CALLABLE_ALLOWED_ORIGINS = [
+    /^https:\/\/(www\.)?plastercalculator\.com$/,
+    /^http:\/\/localhost:\d+$/,
+];
 
 type FloorplanAnalyzerEndpoint =
     | "ocr_flood_fill_smoothed"
@@ -406,7 +410,7 @@ export const getProject = onCall<ProjectIdRequest, Promise<ProjectDetail>>(
 export const getProjectStatus = onCall<
     ProjectIdRequest,
     Promise<ProjectSummary>
->(async (request) => {
+>({ cors: CALLABLE_ALLOWED_ORIGINS }, async (request) => {
     const auth = requireAuth(request);
     const response = await getProjectById({
         id: readRequiredString(request.data.projectId, "Project ID"),
