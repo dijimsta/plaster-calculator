@@ -17,7 +17,7 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "lint": "eslint .",
-        "start": "scripts/predeploy-floorplan-analyzer-functions.sh && yarn build && firebase emulators:start --import=./tmp/data/emulators --export-on-exit"
+        "start": "node ./scripts/predeploy-floorplan-analyzer-functions.mjs && yarn build && firebase emulators:start --import=./tmp/data/emulators --export-on-exit"
     },
     "devDependencies": {
         "@apps/admin-cli": "workspace:*",
