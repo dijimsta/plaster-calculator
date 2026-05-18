@@ -25,7 +25,10 @@ import type { ProjectDetail } from "../../../../types.js";
 
 const dynamic = DynamicModule.default;
 const ProjectEditor = dynamic(
-    () => import("../../../../components/ProjectEditor.js"),
+    () =>
+        import("../../../../components/project-editor/index.js").then(
+            (module) => module.ProjectEditor,
+        ),
     {
         ssr: false,
     },
