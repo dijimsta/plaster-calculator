@@ -5,6 +5,7 @@ import { default as LinkModule } from "next/link.js";
 import { useRouter } from "next/navigation.js";
 
 import { auth } from "../firebase/firebase.utils.js";
+import { activeTheme, cx, ui } from "../lib/styles.js";
 
 const Link = LinkModule.default;
 
@@ -18,34 +19,25 @@ export default function AppBar() {
 
     return (
         <header
-            style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "0 1rem",
-                height: "64px",
-                borderBottom: "1px solid #e0e0e0",
-            }}
+            className={cx(
+                "flex h-16 items-center justify-between border-b px-4",
+                activeTheme.appBg,
+                activeTheme.line,
+            )}
         >
             <Link
+                className={cx(
+                    "text-xl font-semibold no-underline",
+                    activeTheme.text,
+                )}
                 href="/app"
-                style={{
-                    color: "#171a1f",
-                    fontWeight: 600,
-                    fontSize: "1.25rem",
-                    textDecoration: "none",
-                }}
             >
                 Plaster Calculator
             </Link>
-            <nav
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.75rem",
-                }}
-            >
-                <button onClick={handleLogout}>Logout</button>
+            <nav className="flex items-center gap-3">
+                <button className={ui.button} onClick={handleLogout}>
+                    Logout
+                </button>
             </nav>
         </header>
     );

@@ -38,6 +38,7 @@ import {
     revokePdfPreviews,
     type PdfPagePreview,
 } from "../../lib/pdf.js";
+import { cx, ui } from "../../lib/styles.js";
 import type { ProjectSummary, ProcessingStrategyInfo } from "../../types.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 
@@ -330,11 +331,11 @@ export default function HomePage() {
 
     function renderStrategySelect(id: string) {
         return (
-            <div className="field">
+            <div className={ui.field}>
                 <label htmlFor={id}>Processing strategy</label>
                 <select
                     id={id}
-                    className="input"
+                    className={ui.input}
                     value={selectedStrategyKey}
                     onChange={(event) =>
                         setSelectedStrategyKey(event.target.value)
@@ -386,9 +387,9 @@ export default function HomePage() {
     }
 
     return (
-        <main className="shell">
+        <main className={ui.shell}>
             {(toast || processingProjectId) && (
-                <div className="toast">
+                <div className={ui.toast}>
                     <CheckCircle2 size={18} />
                     <span>
                         {processingProjectId ? (
@@ -406,7 +407,7 @@ export default function HomePage() {
                     </span>
                     {!processingProjectId && (
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={() => {
                                 setToast("");
                                 setToastProject(null);
@@ -418,15 +419,17 @@ export default function HomePage() {
                 </div>
             )}
 
-            <header className="topbar">
-                <div className="brand">
-                    <h1>Plaster Calculator</h1>
-                    <span>Your quoting workspace</span>
+            <header className={ui.topbar}>
+                <div className="grid gap-1">
+                    <h1 className="m-0 text-2xl leading-tight">
+                        Plaster Calculator
+                    </h1>
+                    <span className={ui.muted}>Your quoting workspace</span>
                 </div>
-                <div className="button-row">
+                <div className={ui.buttonRow}>
                     <ThemeSettingsButton />
                     <button
-                        className="btn"
+                        className={ui.button}
                         onClick={refresh}
                         title="Refresh projects"
                     >
@@ -435,23 +438,26 @@ export default function HomePage() {
                 </div>
             </header>
 
-            <section className="layout-grid">
-                <form className="panel stack" onSubmit={submit}>
+            <section className={ui.layoutGrid}>
+                <form className={cx(ui.panel, ui.stack)} onSubmit={submit}>
                     <h2>New Project</h2>
-                    <div className="field">
+                    <div className={ui.field}>
                         <label htmlFor="name">Address or project name</label>
                         <input
                             id="name"
-                            className="input"
+                            className={ui.input}
                             value={name}
                             onChange={(event) => setName(event.target.value)}
                             placeholder="12 Example Street"
                         />
                     </div>
-                    <div className="field">
-                        <span className="field-label">PDF or image file</span>
+                    <div className={ui.field}>
+                        <span className={ui.label}>PDF or image file</span>
                         <label
-                            className={`file-dropzone${dragActive ? " active" : ""}`}
+                            className={cx(
+                                ui.fileDropzone,
+                                dragActive && ui.fileDropzoneActive,
+                            )}
                             htmlFor="file"
                             onDragEnter={(event) => {
                                 event.preventDefault();
@@ -468,6 +474,7 @@ export default function HomePage() {
                                 id="file"
                                 type="file"
                                 accept="application/pdf,image/*"
+                                className={ui.hiddenFileInput}
                                 onChange={(
                                     event: ChangeEvent<HTMLInputElement>,
                                 ) =>
@@ -478,7 +485,7 @@ export default function HomePage() {
                             <strong>
                                 {file ? file.name : "Drop a PDF or image here"}
                             </strong>
-                            <span>
+                            <span className={ui.muted}>
                                 {file
                                     ? "Click to choose a different file"
                                     : "Click to browse from your computer"}
@@ -486,7 +493,10 @@ export default function HomePage() {
                         </label>
                     </div>
                     {renderStrategySelect("processing-strategy")}
-                    <button className="btn primary" disabled={!file || loading}>
+                    <button
+                        className={cx(ui.button, ui.buttonPrimary)}
+                        disabled={!file || loading}
+                    >
                         <Upload size={18} /> Upload
                     </button>
                     {message && (
@@ -494,8 +504,8 @@ export default function HomePage() {
                             className={
                                 message.includes("failed") ||
                                 message.includes("Unable")
-                                    ? "error"
-                                    : "muted"
+                                    ? ui.error
+                                    : ui.muted
                             }
                         >
                             {message}
@@ -503,25 +513,19 @@ export default function HomePage() {
                     )}
                 </form>
 
-                <section className="panel stack project-history-panel">
-                    <div className="editor-toolbar">
+                <section className={cx(ui.panel, ui.stack, "self-start")}>
+                    <div className={ui.editorToolbar}>
                         <h2>Project History</h2>
-                        <div className="field" style={{ minWidth: 260 }}>
+                        <div className={cx(ui.field, "min-w-[260px]")}>
                             <label htmlFor="search">Search</label>
-                            <div style={{ position: "relative" }}>
+                            <div className="relative">
                                 <Search
                                     size={16}
-                                    style={{
-                                        left: 11,
-                                        position: "absolute",
-                                        top: 13,
-                                        color: "var(--muted)",
-                                    }}
+                                    className="absolute left-[11px] top-[13px] text-slate-500 dark:text-slate-400"
                                 />
                                 <input
                                     id="search"
-                                    className="input"
-                                    style={{ paddingLeft: 34 }}
+                                    className={cx(ui.input, "pl-[34px]")}
                                     value={query}
                                     onChange={(event) =>
                                         setQuery(event.target.value)
@@ -530,15 +534,18 @@ export default function HomePage() {
                             </div>
                         </div>
                     </div>
-                    <div className="project-list">
+                    <div className={ui.projectList}>
                         {projectsLoading ? (
                             <div
-                                className="project-list-state"
+                                className={ui.projectListState}
                                 role="status"
                                 aria-live="polite"
                             >
-                                <LoaderCircle className="spin" size={24} />
-                                <span className="muted">
+                                <LoaderCircle
+                                    className="animate-spin"
+                                    size={24}
+                                />
+                                <span className={ui.muted}>
                                     Loading projects...
                                 </span>
                             </div>
@@ -546,7 +553,7 @@ export default function HomePage() {
                             <>
                                 {filtered.map((project) => (
                                     <div
-                                        className="project-item"
+                                        className={ui.projectItem}
                                         key={project.id}
                                     >
                                         <Link
@@ -554,7 +561,7 @@ export default function HomePage() {
                                         >
                                             {renamingId === project.id ? (
                                                 <input
-                                                    className="input"
+                                                    className={ui.input}
                                                     value={renameValue}
                                                     onClick={(event) =>
                                                         event.preventDefault()
@@ -579,7 +586,12 @@ export default function HomePage() {
                                             ) : (
                                                 <strong>{project.name}</strong>
                                             )}
-                                            <span className="muted project-meta-line">
+                                            <span
+                                                className={cx(
+                                                    ui.muted,
+                                                    ui.projectMetaLine,
+                                                )}
+                                            >
                                                 {project.originalFileName} ·{" "}
                                                 {project.uploadType} ·{" "}
                                                 {project.status} ·{" "}
@@ -593,10 +605,10 @@ export default function HomePage() {
                                                 ).toLocaleString()}
                                             </span>
                                         </Link>
-                                        <div className="button-row project-actions">
+                                        <div className={ui.projectActions}>
                                             {renamingId === project.id ? (
                                                 <button
-                                                    className="btn"
+                                                    className={ui.button}
                                                     onClick={() =>
                                                         saveRename(project.id)
                                                     }
@@ -605,7 +617,10 @@ export default function HomePage() {
                                                 </button>
                                             ) : (
                                                 <button
-                                                    className="btn icon"
+                                                    className={cx(
+                                                        ui.button,
+                                                        ui.buttonIcon,
+                                                    )}
                                                     onClick={() => {
                                                         setRenamingId(
                                                             project.id,
@@ -620,7 +635,10 @@ export default function HomePage() {
                                                 </button>
                                             )}
                                             <button
-                                                className="btn icon"
+                                                className={cx(
+                                                    ui.button,
+                                                    ui.buttonIcon,
+                                                )}
                                                 onClick={() =>
                                                     removeProject(project)
                                                 }
@@ -632,7 +650,7 @@ export default function HomePage() {
                                     </div>
                                 ))}
                                 {filtered.length === 0 && (
-                                    <p className="muted">No projects yet.</p>
+                                    <p className={ui.muted}>No projects yet.</p>
                                 )}
                             </>
                         )}
@@ -641,17 +659,17 @@ export default function HomePage() {
             </section>
 
             {draftProjectId && (
-                <div className="modal-backdrop">
-                    <section className="modal">
-                        <header className="editor-toolbar">
+                <div className={ui.modalBackdrop}>
+                    <section className={ui.modal}>
+                        <header className={ui.editorToolbar}>
                             <div>
                                 <h2>Select PDF Pages</h2>
-                                <p className="muted">
+                                <p className={ui.muted}>
                                     Tick the pages to process.
                                 </p>
                             </div>
                             <button
-                                className="btn icon"
+                                className={cx(ui.button, ui.buttonIcon)}
                                 disabled={loading}
                                 onClick={closePdfModal}
                             >
@@ -660,8 +678,8 @@ export default function HomePage() {
                         </header>
                         {renderStrategySelect("pdf-processing-strategy")}
                         {pageUploadProgress && (
-                            <div className="pdf-upload-progress">
-                                <div className="pdf-upload-progress-label">
+                            <div className={ui.pdfProgress}>
+                                <div className={ui.pdfProgressLabel}>
                                     <span>{pageUploadProgress.label}</span>
                                     <span>
                                         {pageUploadProgress.current} /{" "}
@@ -669,15 +687,16 @@ export default function HomePage() {
                                     </span>
                                 </div>
                                 <progress
+                                    className="w-full accent-slate-900 dark:accent-slate-100"
                                     max={pageUploadProgress.total}
                                     value={pageUploadProgress.current}
                                 />
                             </div>
                         )}
-                        <div className="preview-grid">
+                        <div className={ui.previewGrid}>
                             {pdfPages.map((page) => (
                                 <div
-                                    className="preview-tile"
+                                    className={ui.previewTile}
                                     key={page.pageNumber}
                                 >
                                     <img
@@ -699,19 +718,16 @@ export default function HomePage() {
                                 </div>
                             ))}
                         </div>
-                        <footer
-                            className="button-row"
-                            style={{ justifyContent: "flex-end" }}
-                        >
+                        <footer className={cx(ui.buttonRow, "justify-end")}>
                             <button
-                                className="btn"
+                                className={ui.button}
                                 disabled={loading}
                                 onClick={closePdfModal}
                             >
                                 Cancel
                             </button>
                             <button
-                                className="btn primary"
+                                className={cx(ui.button, ui.buttonPrimary)}
                                 disabled={loading || selectedPages.length === 0}
                                 onClick={processSelectedPdfPages}
                             >

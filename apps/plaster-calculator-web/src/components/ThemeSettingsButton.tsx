@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Settings, X } from "lucide-react";
+import { cx, ui } from "../lib/styles.js";
 
 type ThemeMode = "system" | "light" | "dark";
 
@@ -37,7 +38,7 @@ export default function ThemeSettingsButton() {
     return (
         <>
             <button
-                className="btn icon"
+                className={cx(ui.button, ui.buttonIcon)}
                 onClick={() => setSettingsOpen(true)}
                 title="Settings"
             >
@@ -45,34 +46,36 @@ export default function ThemeSettingsButton() {
             </button>
 
             {settingsOpen && (
-                <div className="modal-backdrop">
-                    <section className="modal settings-modal">
-                        <header className="editor-toolbar">
+                <div className={ui.modalBackdrop}>
+                    <section className={cx(ui.modal, "max-w-[520px]")}>
+                        <header className={ui.editorToolbar}>
                             <div>
                                 <h2>Settings</h2>
-                                <p className="muted">
+                                <p className={ui.muted}>
                                     Choose the colour theme for this browser.
                                 </p>
                             </div>
                             <button
-                                className="btn icon"
+                                className={cx(ui.button, ui.buttonIcon)}
                                 onClick={() => setSettingsOpen(false)}
                                 title="Close settings"
                             >
                                 <X size={18} />
                             </button>
                         </header>
-                        <div className="field">
-                            <span className="field-label">Colour theme</span>
-                            <div className="segmented wide">
+                        <div className={ui.field}>
+                            <span className={ui.label}>Colour theme</span>
+                            <div className={cx(ui.segmented, ui.segmentedWide)}>
                                 {(
                                     ["system", "light", "dark"] as ThemeMode[]
                                 ).map((mode) => (
                                     <button
                                         key={mode}
-                                        className={
-                                            themeMode === mode ? "active" : ""
-                                        }
+                                        className={cx(
+                                            ui.segmentedButton,
+                                            themeMode === mode &&
+                                                ui.segmentedButtonActive,
+                                        )}
                                         onClick={() => setThemeMode(mode)}
                                     >
                                         {mode === "system"
