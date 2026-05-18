@@ -10,7 +10,7 @@ on:
             - generated/example-data-connector/**
 
 concurrency:
-    group: firebase-functions-deploy
+    group: deploy-plaster-calculator-functions
     cancel-in-progress: false
 
 jobs:

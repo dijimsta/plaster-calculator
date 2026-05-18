@@ -9,7 +9,7 @@ on:
             - functions/floorplan-analyzer/**
 
 concurrency:
-    group: firebase-functions-deploy
+    group: deploy-floorplan-analyzer
     cancel-in-progress: false
 
 jobs:
