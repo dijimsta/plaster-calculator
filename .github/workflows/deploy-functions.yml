@@ -5,11 +5,24 @@ on:
         branches:
             - main
         paths:
+            - "data/**"
             - "functions/**"
+            - "generated/**"
+            - "dataconnect.yaml"
+            - "firebase.json"
+            - "package.json"
+            - "yarn.lock"
 
 jobs:
     deploy:
+        name: Deploy ${{ matrix.codebase }}
         runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                codebase:
+                    - plaster-calculator-functions
+                    - floorplan-analyzer
         steps:
             - uses: actions/checkout@v4
 
@@ -23,10 +36,13 @@ jobs:
             - name: Install dependencies
               run: yarn install --immutable
 
+            - name: Generate Data Connect SDKs
+              run: yarn generate:dataconnect
+
             - name: Build functions
               run: yarn build
 
             - name: Deploy functions
-              run: yarn firebase deploy --only functions --project plaster-calculator --token "$FIREBASE_TOKEN"
+              run: yarn firebase deploy --only "functions:${{ matrix.codebase }}" --project plaster-calculator --token "$FIREBASE_TOKEN"
               env:
                   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
