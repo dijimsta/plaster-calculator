@@ -29,5 +29,5 @@ await build({
 deployPkg.main = "./dist/index.js";
 deployPkg.exports = "./dist/index.js";
 
-// Write deployment metadata beside the bundled output without mutating source.
+// Write the modified package.json
 writeFileSync("package.json", JSON.stringify(deployPkg, null, TAB_WIDTH));

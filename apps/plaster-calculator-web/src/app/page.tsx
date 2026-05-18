@@ -13,11 +13,37 @@ import { useRouter } from "next/navigation.js";
 import { default as LinkModule } from "next/link.js";
 
 import { auth } from "../firebase/firebase.utils.js";
-
-import styles from "./login.module.css";
+import { activeTheme, cx, ui } from "../lib/styles.js";
 
 const Link = LinkModule.default;
 const googleProvider = new GoogleAuthProvider();
+
+const pageClass = cx(
+    "flex min-h-screen items-center justify-center p-5",
+    activeTheme.appBg,
+    activeTheme.text,
+);
+const heroClass =
+    "flex w-full max-w-[980px] items-center justify-center gap-16 max-[768px]:flex-col max-[768px]:items-stretch max-[768px]:gap-6";
+const brandClass =
+    "max-w-[480px] flex-1 max-[768px]:max-w-none max-[768px]:text-center";
+const logoClass = "mb-4 text-5xl font-bold leading-none max-[768px]:text-4xl";
+const taglineClass =
+    "m-0 text-xl leading-relaxed text-slate-600 dark:text-slate-300 max-[768px]:text-lg";
+const cardClass = cx(
+    "w-full max-w-md shrink-0 max-[768px]:max-w-none",
+    ui.panel,
+);
+const formClass = "flex flex-col gap-3";
+const inputClass = cx(ui.input, "py-3.5");
+const submitButtonClass = cx(
+    ui.button,
+    ui.buttonPrimary,
+    "w-full py-3.5 font-bold no-underline",
+);
+const googleButtonClass = cx(ui.button, "w-full py-3.5 font-semibold");
+const registerLinkClass =
+    "cursor-pointer border-0 bg-transparent p-0 font-semibold text-slate-900 underline-offset-2 hover:underline dark:text-slate-100";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -76,40 +102,25 @@ export default function LoginPage() {
 
     if (currentUser) {
         return (
-            <div className={styles["page"]}>
-                <div className={styles["hero"]}>
-                    <div className={styles["brand"]}>
-                        <h1 className={styles["logo"]}>Plaster Calculator</h1>
-                        <p className={styles["tagline"]}>
+            <div className={pageClass}>
+                <div className={heroClass}>
+                    <div className={brandClass}>
+                        <h1 className={logoClass}>Plaster Calculator</h1>
+                        <p className={taglineClass}>
                             Calculate plaster quantities quickly and accurately
                             for any project.
                         </p>
                     </div>
 
-                    <div className={styles["card"]}>
-                        <p
-                            style={{
-                                margin: "0 0 16px",
-                                color: "#1c1e21",
-                                fontSize: "1rem",
-                            }}
-                        >
+                    <div className={cardClass}>
+                        <p className="mb-4 mt-0 text-base">
                             Welcome back,{" "}
                             <strong>
                                 {currentUser.displayName ?? currentUser.email}
                             </strong>
                             !
                         </p>
-                        <Link
-                            href="/app"
-                            className={styles["submitButton"]}
-                            style={{
-                                display: "block",
-                                textAlign: "center",
-                                textDecoration: "none",
-                                boxSizing: "border-box",
-                            }}
-                        >
+                        <Link href="/app" className={submitButtonClass}>
                             Go to App
                         </Link>
                     </div>
@@ -119,30 +130,31 @@ export default function LoginPage() {
     }
 
     return (
-        <div className={styles["page"]}>
-            <div className={styles["hero"]}>
-                <div className={styles["brand"]}>
-                    <h1 className={styles["logo"]}>Plaster Calculator</h1>
-                    <p className={styles["tagline"]}>
+        <div className={pageClass}>
+            <div className={heroClass}>
+                <div className={brandClass}>
+                    <h1 className={logoClass}>Plaster Calculator</h1>
+                    <p className={taglineClass}>
                         Quote your plastering quickly and accurately for any
                         project.
                     </p>
                 </div>
 
-                <div className={styles["card"]}>
-                    {error && <p className={styles["error"]}>{error}</p>}
+                <div className={cardClass}>
+                    {error && (
+                        <p className="rounded-md border border-red-300 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+                            {error}
+                        </p>
+                    )}
 
-                    <form
-                        className={styles["form"]}
-                        onSubmit={handleEmailSubmit}
-                    >
+                    <form className={formClass} onSubmit={handleEmailSubmit}>
                         <input
                             type="email"
                             required
                             autoComplete="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className={styles["input"]}
+                            className={inputClass}
                             placeholder="Email address"
                         />
                         <input
@@ -155,57 +167,38 @@ export default function LoginPage() {
                             }
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className={styles["input"]}
+                            className={inputClass}
                             placeholder="Password"
                         />
                         <button
                             type="submit"
                             disabled={loading}
-                            className={styles["submitButton"]}
+                            className={submitButtonClass}
                         >
                             {loading ? "Please wait…" : "Log in"}
                         </button>
                     </form>
 
-                    <div className={styles["divider"]}>or</div>
+                    <div className="my-1 flex items-center gap-3 text-sm text-slate-500 before:h-px before:flex-1 before:bg-slate-200 before:content-[''] after:h-px after:flex-1 after:bg-slate-200 after:content-[''] dark:text-slate-400 dark:before:bg-slate-800 dark:after:bg-slate-800">
+                        or
+                    </div>
 
                     <button
                         type="button"
                         onClick={handleGoogleSignIn}
                         disabled={loading}
-                        className={styles["googleButton"]}
+                        className={googleButtonClass}
                     >
-                        <svg
-                            className={styles["googleIcon"]}
-                            width="18"
-                            height="18"
-                            viewBox="0 0 18 18"
-                            aria-hidden="true"
-                        >
-                            <path
-                                fill="#4285F4"
-                                d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z"
-                            />
-                            <path
-                                fill="#34A853"
-                                d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z"
-                            />
-                            <path
-                                fill="#FBBC05"
-                                d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332Z"
-                            />
-                            <path
-                                fill="#EA4335"
-                                d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 6.294C4.672 4.169 6.656 3.58 9 3.58Z"
-                            />
-                        </svg>
+                        <span className="text-lg font-bold leading-none">
+                            G
+                        </span>
                         Continue with Google
                     </button>
 
-                    <div className={styles["registerPanel"]}>
+                    <div className="mt-4 border-t border-slate-200 pt-4 text-center dark:border-slate-800">
                         <button
                             type="button"
-                            className={styles["registerLink"]}
+                            className={registerLinkClass}
                             onClick={() => {
                                 setIsRegistering((v) => !v);
                                 setError(null);

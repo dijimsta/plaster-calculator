@@ -44,21 +44,25 @@ import type {
     PageValidationInput,
     ValidationIssue,
 } from "../lib/validation.js";
+import { activeTheme, cx, ui } from "../lib/styles.js";
 
-const BOARD_TYPES = ["Recessed Edge", "Water Resistant", "Sound Check"];
-const DEFAULT_BOARD_COLOR = {
-    edge: "#0f766e",
-    fill: "rgba(15,118,110,0.22)",
+const BOARD_TYPES = [
+    "Recessed Edge",
+    "Water Resistant",
+    "Sound Check",
+] as const;
+type BoardType = (typeof BOARD_TYPES)[number];
+const DEFAULT_BOARD_COLOR = activeTheme.editor.boardColors["Recessed Edge"];
+const BOARD_COLORS = activeTheme.editor.boardColors;
+const BOARD_SWATCH_CLASSES: Record<BoardType, string> = {
+    "Recessed Edge": "bg-slate-700 dark:bg-slate-300",
+    "Water Resistant": "bg-blue-600",
+    "Sound Check": "bg-orange-700",
 };
-const BOARD_COLORS: Record<string, { edge: string; fill: string }> = {
-    "Recessed Edge": DEFAULT_BOARD_COLOR,
-    "Water Resistant": { edge: "#2563eb", fill: "rgba(37,99,235,0.20)" },
-    "Sound Check": { edge: "#c2410c", fill: "rgba(194,65,12,0.20)" },
-};
-const SELECTED_COLOR = "#f97316";
-const SELECTED_POINT_COLOR = "#7c3aed";
-const LOW_EDGE_COLOR = "#0ea5e9";
-const HIGH_EDGE_COLOR = "#dc2626";
+const SELECTED_COLOR = activeTheme.editor.selected;
+const SELECTED_POINT_COLOR = activeTheme.editor.selectedPoint;
+const LOW_EDGE_COLOR = activeTheme.editor.lowEdge;
+const HIGH_EDGE_COLOR = activeTheme.editor.highEdge;
 const SNAP_THRESHOLD_PX = 10;
 type OverlayMode = "walls" | "ceilings" | "both";
 type SnapGuide = { x?: number; y?: number } | null;
@@ -1196,7 +1200,9 @@ export default function ProjectEditor({
     }
 
     function fieldError(message: string) {
-        return message ? <span className="field-error">{message}</span> : null;
+        return message ? (
+            <span className={ui.fieldError}>{message}</span>
+        ) : null;
     }
 
     function renderCeilingControls(area: AreaPolygon) {
@@ -1209,10 +1215,10 @@ export default function ProjectEditor({
         const highHeightError = areaIssue(area.id, "rakedHighHeight");
         return (
             <>
-                <div className="field">
+                <div className={ui.field}>
                     <label>Room ceiling</label>
                     <select
-                        className="input"
+                        className={ui.input}
                         value={mode}
                         onChange={(event) =>
                             setCeilingMode(
@@ -1225,10 +1231,13 @@ export default function ProjectEditor({
                     </select>
                 </div>
                 {mode === "flat" && (
-                    <div className="field">
+                    <div className={ui.field}>
                         <label>Room height override mm</label>
                         <input
-                            className={`input ${roomHeightError ? "invalid" : ""}`}
+                            className={cx(
+                                ui.input,
+                                roomHeightError && ui.inputInvalid,
+                            )}
                             type="number"
                             placeholder={
                                 ceilingHeightMm == null
@@ -1245,9 +1254,12 @@ export default function ProjectEditor({
                 )}
                 {mode === "raked" && (
                     <>
-                        <div className="button-row">
+                        <div className={ui.buttonRow}>
                             <button
-                                className={`btn ${lowEdgeError ? "invalid" : ""}`}
+                                className={cx(
+                                    ui.button,
+                                    lowEdgeError && ui.buttonInvalid,
+                                )}
                                 onClick={() => setRakedEdge("low")}
                                 disabled={
                                     !selectedEdge ||
@@ -1257,7 +1269,10 @@ export default function ProjectEditor({
                                 Set selected low edge
                             </button>
                             <button
-                                className={`btn ${highEdgeError ? "invalid" : ""}`}
+                                className={cx(
+                                    ui.button,
+                                    highEdgeError && ui.buttonInvalid,
+                                )}
                                 onClick={() => setRakedEdge("high")}
                                 disabled={
                                     !selectedEdge ||
@@ -1268,11 +1283,11 @@ export default function ProjectEditor({
                             </button>
                         </div>
                         {(lowEdgeError || highEdgeError) && (
-                            <span className="field-error">
+                            <span className={ui.fieldError}>
                                 {lowEdgeError || highEdgeError}
                             </span>
                         )}
-                        <div className="metric">
+                        <div className={ui.metric}>
                             Low edge:{" "}
                             {raked && raked.lowEdgeIndex >= 0
                                 ? raked.lowEdgeIndex + 1
@@ -1282,10 +1297,13 @@ export default function ProjectEditor({
                                 ? raked.highEdgeIndex + 1
                                 : "-"}
                         </div>
-                        <div className="field">
+                        <div className={ui.field}>
                             <label>Low height mm</label>
                             <input
-                                className={`input ${lowHeightError ? "invalid" : ""}`}
+                                className={cx(
+                                    ui.input,
+                                    lowHeightError && ui.inputInvalid,
+                                )}
                                 type="number"
                                 value={raked?.lowHeightMm ?? ""}
                                 onChange={(event) =>
@@ -1297,10 +1315,13 @@ export default function ProjectEditor({
                             />
                             {fieldError(lowHeightError)}
                         </div>
-                        <div className="field">
+                        <div className={ui.field}>
                             <label>High height mm</label>
                             <input
-                                className={`input ${highHeightError ? "invalid" : ""}`}
+                                className={cx(
+                                    ui.input,
+                                    highHeightError && ui.inputInvalid,
+                                )}
                                 type="number"
                                 value={raked?.highHeightMm ?? ""}
                                 onChange={(event) =>
@@ -1319,12 +1340,12 @@ export default function ProjectEditor({
     }
 
     return (
-        <section className="editor-shell">
-            <div className="panel">
-                <div className="editor-toolbar">
-                    <div className="button-row">
+        <section className={ui.editorShell}>
+            <div className={ui.panel}>
+                <div className={ui.editorToolbar}>
+                    <div className={ui.buttonRow}>
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={undo}
                             disabled={history.length === 0}
                             title="Undo"
@@ -1332,7 +1353,7 @@ export default function ProjectEditor({
                             <Undo2 size={18} />
                         </button>
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={redo}
                             disabled={future.length === 0}
                             title="Redo"
@@ -1340,31 +1361,31 @@ export default function ProjectEditor({
                             <Redo2 size={18} />
                         </button>
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={clearSelection}
                             disabled={!hasSelection()}
                             title="Deselect all"
                         >
                             <MousePointer2 size={18} />
                         </button>
-                        <div style={{ position: "relative" }}>
+                        <div className="relative">
                             <button
-                                className="btn icon"
+                                className={cx(ui.button, ui.buttonIcon)}
                                 onClick={() => setAddMenuOpen((open) => !open)}
                                 title="Add area"
                             >
                                 <Plus size={18} />
                             </button>
                             {addMenuOpen && (
-                                <div className="popover-menu">
+                                <div className={ui.popoverMenu}>
                                     <button
-                                        className="btn"
+                                        className={ui.button}
                                         onClick={addRectangle}
                                     >
                                         <Square size={16} /> Rectangle
                                     </button>
                                     <button
-                                        className="btn"
+                                        className={ui.button}
                                         onClick={startFreeShape}
                                     >
                                         <MousePointer2 size={16} /> Free shape
@@ -1373,7 +1394,7 @@ export default function ProjectEditor({
                             )}
                         </div>
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={addPoint}
                             disabled={!selectedArea}
                             title="Add point"
@@ -1381,7 +1402,7 @@ export default function ProjectEditor({
                             <CopyPlus size={18} />
                         </button>
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={straightenSelectedPoints}
                             disabled={
                                 !selectedArea ||
@@ -1392,7 +1413,7 @@ export default function ProjectEditor({
                             <AlignHorizontalJustifyCenter size={18} />
                         </button>
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={splitArea}
                             disabled={
                                 !selectedArea ||
@@ -1403,7 +1424,7 @@ export default function ProjectEditor({
                             <Scissors size={18} />
                         </button>
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={deleteSelection}
                             disabled={!selectedArea}
                             title={
@@ -1415,37 +1436,39 @@ export default function ProjectEditor({
                             <Trash2 size={18} />
                         </button>
                     </div>
-                    <div className="button-row">
+                    <div className={ui.buttonRow}>
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={() => changeZoom(zoom - 0.15)}
                             title="Zoom out"
                         >
                             <Minus size={18} />
                         </button>
                         <button
-                            className="btn"
+                            className={ui.button}
                             onClick={resetView}
                             title="Reset zoom"
                         >
                             <ZoomIn size={18} /> {Math.round(zoom * 100)}%
                         </button>
                         <button
-                            className="btn icon"
+                            className={cx(ui.button, ui.buttonIcon)}
                             onClick={() => changeZoom(zoom + 0.15)}
                             title="Zoom in"
                         >
                             <Plus size={18} />
                         </button>
-                        <div className="segmented">
+                        <div className={ui.segmented}>
                             {(
                                 ["walls", "ceilings", "both"] as OverlayMode[]
                             ).map((mode) => (
                                 <button
                                     key={mode}
-                                    className={
-                                        overlayMode === mode ? "active" : ""
-                                    }
+                                    className={cx(
+                                        ui.segmentedButton,
+                                        overlayMode === mode &&
+                                            ui.segmentedButtonActive,
+                                    )}
                                     onClick={() => setOverlayMode(mode)}
                                 >
                                     {mode === "walls"
@@ -1457,12 +1480,12 @@ export default function ProjectEditor({
                             ))}
                         </div>
                         <button
-                            className="btn primary"
+                            className={cx(ui.button, ui.buttonPrimary)}
                             onClick={() => void save()}
                             disabled={saving || autoSaving || !dirty}
                         >
                             {saving || autoSaving ? (
-                                <Loader2 className="spin" size={18} />
+                                <Loader2 className="animate-spin" size={18} />
                             ) : (
                                 <Save size={18} />
                             )}
@@ -1475,8 +1498,8 @@ export default function ProjectEditor({
                     </div>
                 </div>
 
-                <div className="canvas-wrap" ref={canvasWrapRef}>
-                    {imageError && <p className="error">{imageError}</p>}
+                <div className={ui.canvasWrap} ref={canvasWrapRef}>
+                    {imageError && <p className={ui.error}>{imageError}</p>}
                     <Stage
                         width={stageWidth}
                         height={stageHeight}
@@ -1498,7 +1521,7 @@ export default function ProjectEditor({
                                 <Rect
                                     width={imageWidth}
                                     height={imageHeight}
-                                    fill="#eef3f5"
+                                    fill={activeTheme.editor.stageBg}
                                     listening={false}
                                 />
                                 {image && (
@@ -1688,7 +1711,7 @@ export default function ProjectEditor({
                                             : highRakedEdge
                                               ? HIGH_EDGE_COLOR
                                               : noPlaster
-                                                ? "#64748b"
+                                                ? activeTheme.editor.noPlaster
                                                 : colorFor(wallType).edge;
                                         return (
                                             <Line
@@ -1944,7 +1967,7 @@ export default function ProjectEditor({
                                                         selectedPointIndexes.length ===
                                                             0)
                                                   ? SELECTED_COLOR
-                                                  : "#0f766e"
+                                                  : activeTheme.editor.point
                                         }
                                         stroke="white"
                                         strokeWidth={
@@ -2081,7 +2104,7 @@ export default function ProjectEditor({
                                             snapGuide.x,
                                             imageHeight,
                                         ]}
-                                        stroke="#2563eb"
+                                        stroke={activeTheme.editor.draft}
                                         strokeWidth={2 / zoom}
                                         dash={[8 / zoom, 6 / zoom]}
                                         listening={false}
@@ -2095,7 +2118,7 @@ export default function ProjectEditor({
                                             imageWidth,
                                             snapGuide.y,
                                         ]}
-                                        stroke="#2563eb"
+                                        stroke={activeTheme.editor.draft}
                                         strokeWidth={2 / zoom}
                                         dash={[8 / zoom, 6 / zoom]}
                                         listening={false}
@@ -2107,7 +2130,7 @@ export default function ProjectEditor({
                                         x={point[0]}
                                         y={point[1]}
                                         radius={8 / zoom}
-                                        fill="#2563eb"
+                                        fill={activeTheme.editor.draft}
                                         stroke="white"
                                         strokeWidth={2 / zoom}
                                     />
@@ -2115,7 +2138,7 @@ export default function ProjectEditor({
                                 {referencePoints.length === 2 && (
                                     <Line
                                         points={referencePoints.flat()}
-                                        stroke="#2563eb"
+                                        stroke={activeTheme.editor.draft}
                                         strokeWidth={3 / zoom}
                                         dash={[8 / zoom, 6 / zoom]}
                                     />
@@ -2127,7 +2150,7 @@ export default function ProjectEditor({
                                                 ? [...draftPoints, draftPointer]
                                                 : draftPoints
                                             ).flat()}
-                                            stroke="#2563eb"
+                                            stroke={activeTheme.editor.draft}
                                             strokeWidth={3 / zoom}
                                             dash={[8 / zoom, 6 / zoom]}
                                         />
@@ -2141,8 +2164,9 @@ export default function ProjectEditor({
                                                 }
                                                 fill={
                                                     index === 0
-                                                        ? "#f97316"
-                                                        : "#2563eb"
+                                                        ? SELECTED_COLOR
+                                                        : activeTheme.editor
+                                                              .draft
                                                 }
                                                 stroke="white"
                                                 strokeWidth={2 / zoom}
@@ -2157,17 +2181,20 @@ export default function ProjectEditor({
                 </div>
             </div>
 
-            <aside className="inspector">
-                <section className="panel stack">
+            <aside className={ui.inspector}>
+                <section className={cx(ui.panel, ui.stack)}>
                     <h3>Page {page.pageNumber}</h3>
-                    <span className="muted">
+                    <span className={ui.muted}>
                         {status || "Ready"}{" "}
                         {dirty ? "- autosaves every 15 seconds" : ""}
                     </span>
-                    <div className="field">
+                    <div className={ui.field}>
                         <label>Ceiling height mm</label>
                         <input
-                            className={`input ${hasPageHeightIssue() ? "invalid" : ""}`}
+                            className={cx(
+                                ui.input,
+                                hasPageHeightIssue() && ui.inputInvalid,
+                            )}
                             type="number"
                             value={ceilingHeightMm ?? ""}
                             onChange={(event) => {
@@ -2182,18 +2209,22 @@ export default function ProjectEditor({
                         {hasPageHeightIssue() &&
                             fieldError("Ceiling height is required")}
                     </div>
-                    <button className="btn" onClick={applyHeightToAllPages}>
+                    <button
+                        className={ui.button}
+                        onClick={applyHeightToAllPages}
+                    >
                         Apply height to all pages
                     </button>
                 </section>
 
-                <section className="panel stack">
+                <section className={cx(ui.panel, ui.stack)}>
                     <h3>Scale</h3>
-                    <div className="button-row">
+                    <div className={ui.buttonRow}>
                         <button
-                            className={
-                                isSettingReference ? "btn primary" : "btn"
-                            }
+                            className={cx(
+                                ui.button,
+                                isSettingReference && ui.buttonPrimary,
+                            )}
                             onClick={
                                 isSettingReference
                                     ? () => setIsSettingReference(false)
@@ -2206,7 +2237,7 @@ export default function ProjectEditor({
                                 : "Set reference"}
                         </button>
                         <button
-                            className="btn"
+                            className={ui.button}
                             onClick={() => {
                                 setReferencePoints([]);
                                 setIsSettingReference(false);
@@ -2215,15 +2246,18 @@ export default function ProjectEditor({
                             Reset
                         </button>
                     </div>
-                    <p className="muted">
+                    <p className={ui.muted}>
                         {isSettingReference
                             ? "Click two points on the image."
                             : `${referencePoints.length}/2 reference points set.`}
                     </p>
-                    <div className="field">
+                    <div className={ui.field}>
                         <label>Reference length mm</label>
                         <input
-                            className={`input ${pageIssue("reference") ? "invalid" : ""}`}
+                            className={cx(
+                                ui.input,
+                                pageIssue("reference") && ui.inputInvalid,
+                            )}
                             value={referenceLengthMm}
                             onChange={(event) => {
                                 setReferenceLengthMm(event.target.value);
@@ -2234,20 +2268,20 @@ export default function ProjectEditor({
                         {fieldError(pageIssue("reference"))}
                     </div>
                     <button
-                        className="btn primary"
+                        className={cx(ui.button, ui.buttonPrimary)}
                         onClick={applyScale}
                         disabled={referencePoints.length !== 2}
                     >
                         Apply scale
                     </button>
                     <button
-                        className="btn"
+                        className={ui.button}
                         onClick={applyScaleToAllPages}
                         disabled={!scaleMmPerPx}
                     >
                         Apply scale to all pages
                     </button>
-                    <div className="metric">
+                    <div className={ui.metric}>
                         Scale:{" "}
                         {scaleMmPerPx
                             ? `${scaleMmPerPx.toFixed(3)} mm/px`
@@ -2255,20 +2289,20 @@ export default function ProjectEditor({
                     </div>
                 </section>
 
-                <section className="panel stack">
+                <section className={cx(ui.panel, ui.stack)}>
                     <h3>Summary</h3>
                     {!summary && (
-                        <div className="validation-cta">
+                        <div className={ui.validationCta}>
                             <p
                                 className={
-                                    pageIssue("reference") ? "error" : "muted"
+                                    pageIssue("reference") ? ui.error : ui.muted
                                 }
                             >
                                 {pageIssue("reference") ||
                                     "Summary is not available because reference is not yet set."}
                             </p>
                             <button
-                                className="btn primary"
+                                className={cx(ui.button, ui.buttonPrimary)}
                                 onClick={startReferenceMode}
                             >
                                 <MousePointer2 size={18} /> Set reference
@@ -2277,29 +2311,27 @@ export default function ProjectEditor({
                     )}
                     {summary && (
                         <>
-                            <div className="field">
-                                <span className="field-label">Wall length</span>
+                            <div className={ui.field}>
+                                <span className={ui.label}>Wall length</span>
                                 {summary.wallTotals.length === 0 && (
-                                    <p className="muted">
+                                    <p className={ui.muted}>
                                         No counted wall lengths.
                                     </p>
                                 )}
                                 {summary.wallTotals.map(([type, total]) => (
                                     <div
-                                        className="metric"
+                                        className={ui.metric}
                                         key={`wall-${type}`}
                                     >
                                         {type}: {total.toFixed(2)} m
                                     </div>
                                 ))}
                             </div>
-                            <div className="field">
-                                <span className="field-label">
-                                    Ceiling area
-                                </span>
+                            <div className={ui.field}>
+                                <span className={ui.label}>Ceiling area</span>
                                 {summary.ceilingTotals.map(([type, total]) => (
                                     <div
-                                        className="metric"
+                                        className={ui.metric}
                                         key={`ceiling-${type}`}
                                     >
                                         {type}: {total.toFixed(2)} m2
@@ -2310,36 +2342,35 @@ export default function ProjectEditor({
                     )}
                 </section>
 
-                <section className="panel stack">
+                <section className={cx(ui.panel, ui.stack)}>
                     <h3>Areas</h3>
-                    <div className="button-row">
+                    <div className={ui.buttonRow}>
                         {BOARD_TYPES.map((type) => (
                             <span
-                                className="muted"
+                                className={cx(
+                                    ui.muted,
+                                    "inline-flex items-center gap-1.5",
+                                )}
                                 key={type}
-                                style={{
-                                    alignItems: "center",
-                                    display: "inline-flex",
-                                    gap: 6,
-                                }}
                             >
                                 <span
-                                    style={{
-                                        background: colorFor(type).edge,
-                                        borderRadius: 4,
-                                        display: "inline-block",
-                                        height: 12,
-                                        width: 12,
-                                    }}
+                                    className={cx(
+                                        "inline-block h-3 w-3 rounded",
+                                        BOARD_SWATCH_CLASSES[type],
+                                    )}
                                 />
                                 {type}
                             </span>
                         ))}
                     </div>
-                    <div className="area-list">
+                    <div className={ui.areaList}>
                         {visibleAreas.map((area) => (
                             <button
-                                className={`area-row ${selectedAreaIds.includes(area.id) ? "active" : ""}`}
+                                className={cx(
+                                    ui.areaRow,
+                                    selectedAreaIds.includes(area.id) &&
+                                        ui.areaRowActive,
+                                )}
                                 key={area.id}
                                 onClick={(event) => {
                                     selectArea(
@@ -2354,26 +2385,23 @@ export default function ProjectEditor({
                     </div>
                 </section>
 
-                <section className="panel stack">
+                <section className={cx(ui.panel, ui.stack)}>
                     <h3>Selection</h3>
                     {!selectedArea && !selectedEdgeArea && (
-                        <p className="muted">
+                        <p className={ui.muted}>
                             Select an area to edit labels and board types.
                         </p>
                     )}
                     {selectedEdgeArea && selectedEdge && (
                         <>
-                            <div className="metric">
+                            <div className={ui.metric}>
                                 Edge {selectedEdge.edgeIndex + 1} selected in{" "}
                                 {selectedEdgeArea.label}
                             </div>
                             {selectedAreaIds.length === 1 &&
                                 selectedArea?.id === selectedEdgeArea.id &&
                                 renderCeilingControls(selectedArea)}
-                            <label
-                                className="btn"
-                                style={{ justifyContent: "flex-start" }}
-                            >
+                            <label className={cx(ui.button, "justify-start")}>
                                 <input
                                     type="checkbox"
                                     checked={!!selectedEdgeOverride?.noPlaster}
@@ -2385,10 +2413,10 @@ export default function ProjectEditor({
                                 />
                                 No plaster
                             </label>
-                            <div className="field">
+                            <div className={ui.field}>
                                 <label>Wall board</label>
                                 <select
-                                    className="input"
+                                    className={ui.input}
                                     value={
                                         selectedEdgeOverride?.wallPlasterType ??
                                         selectedEdgeArea.wallPlasterType
@@ -2409,7 +2437,7 @@ export default function ProjectEditor({
                                 </select>
                             </div>
                             <button
-                                className="btn"
+                                className={ui.button}
                                 onClick={clearSelectedEdgeOverride}
                                 disabled={!selectedEdgeOverride}
                             >
@@ -2421,15 +2449,15 @@ export default function ProjectEditor({
                         selectedArea &&
                         selectedAreaIds.length > 1 && (
                             <>
-                                <div className="metric">
+                                <div className={ui.metric}>
                                     {selectedAreaIds.length} areas selected.
                                     Material changes apply to all selected
                                     areas.
                                 </div>
-                                <div className="field">
+                                <div className={ui.field}>
                                     <label>Wall board</label>
                                     <select
-                                        className="input"
+                                        className={ui.input}
                                         value={commonMaterialValue(
                                             "wallPlasterType",
                                         )}
@@ -2448,10 +2476,10 @@ export default function ProjectEditor({
                                         ))}
                                     </select>
                                 </div>
-                                <div className="field">
+                                <div className={ui.field}>
                                     <label>Ceiling board</label>
                                     <select
-                                        className="input"
+                                        className={ui.input}
                                         value={commonMaterialValue(
                                             "ceilingPlasterType",
                                         )}
@@ -2476,10 +2504,16 @@ export default function ProjectEditor({
                         selectedArea &&
                         selectedAreaIds.length <= 1 && (
                             <>
-                                <div className="field">
+                                <div className={ui.field}>
                                     <label>Area label</label>
                                     <input
-                                        className={`input ${areaIssue(selectedArea.id, "areaLabel") ? "invalid" : ""}`}
+                                        className={cx(
+                                            ui.input,
+                                            areaIssue(
+                                                selectedArea.id,
+                                                "areaLabel",
+                                            ) && ui.inputInvalid,
+                                        )}
                                         value={selectedArea.label}
                                         onChange={(event) =>
                                             updateArea(
@@ -2496,8 +2530,7 @@ export default function ProjectEditor({
                                     )}
                                 </div>
                                 <label
-                                    className="btn"
-                                    style={{ justifyContent: "flex-start" }}
+                                    className={cx(ui.button, "justify-start")}
                                 >
                                     <input
                                         type="checkbox"
@@ -2509,10 +2542,16 @@ export default function ProjectEditor({
                                 {renderCeilingControls(selectedArea)}
                                 {!selectedArea.isOutdoor && (
                                     <>
-                                        <div className="field">
+                                        <div className={ui.field}>
                                             <label>Wall board</label>
                                             <select
-                                                className={`input ${areaIssue(selectedArea.id, "wallPlasterType") ? "invalid" : ""}`}
+                                                className={cx(
+                                                    ui.input,
+                                                    areaIssue(
+                                                        selectedArea.id,
+                                                        "wallPlasterType",
+                                                    ) && ui.inputInvalid,
+                                                )}
                                                 value={
                                                     selectedArea.wallPlasterType
                                                 }
@@ -2536,10 +2575,16 @@ export default function ProjectEditor({
                                                 ),
                                             )}
                                         </div>
-                                        <div className="field">
+                                        <div className={ui.field}>
                                             <label>Ceiling board</label>
                                             <select
-                                                className={`input ${areaIssue(selectedArea.id, "ceilingPlasterType") ? "invalid" : ""}`}
+                                                className={cx(
+                                                    ui.input,
+                                                    areaIssue(
+                                                        selectedArea.id,
+                                                        "ceilingPlasterType",
+                                                    ) && ui.inputInvalid,
+                                                )}
                                                 value={
                                                     selectedArea.ceilingPlasterType
                                                 }
@@ -2566,10 +2611,16 @@ export default function ProjectEditor({
                                     </>
                                 )}
                                 {selectedArea.isOutdoor && (
-                                    <div className="field">
+                                    <div className={ui.field}>
                                         <label>Ceiling board</label>
                                         <select
-                                            className={`input ${areaIssue(selectedArea.id, "ceilingPlasterType") ? "invalid" : ""}`}
+                                            className={cx(
+                                                ui.input,
+                                                areaIssue(
+                                                    selectedArea.id,
+                                                    "ceilingPlasterType",
+                                                ) && ui.inputInvalid,
+                                            )}
                                             value={
                                                 selectedArea.ceilingPlasterType
                                             }
@@ -2597,11 +2648,11 @@ export default function ProjectEditor({
                                 {fieldError(
                                     areaIssue(selectedArea.id, "polygon"),
                                 )}
-                                <div className="metric">
+                                <div className={ui.metric}>
                                     Selected points:{" "}
                                     {selectedPointIndexes.length}
                                 </div>
-                                <div className="metric">
+                                <div className={ui.metric}>
                                     Wall length:{" "}
                                     {selectedArea.isOutdoor
                                         ? "not counted"
@@ -2609,7 +2660,7 @@ export default function ProjectEditor({
                                           ? `${metrics.wallLengthM.toFixed(2)} m`
                                           : "set scale"}
                                 </div>
-                                <div className="metric">
+                                <div className={ui.metric}>
                                     Ceiling area:{" "}
                                     {metrics
                                         ? `${metrics.ceilingAreaM2.toFixed(2)} m2`
@@ -2647,7 +2698,7 @@ function cloneOverlay(value: Overlay): Overlay {
 }
 
 function colorFor(type: string) {
-    return BOARD_COLORS[type] ?? DEFAULT_BOARD_COLOR;
+    return BOARD_COLORS[type as BoardType] ?? DEFAULT_BOARD_COLOR;
 }
 
 function pointDistance(a: Point, b: Point) {

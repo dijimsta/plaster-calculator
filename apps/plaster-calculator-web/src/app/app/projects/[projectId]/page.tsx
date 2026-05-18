@@ -19,6 +19,7 @@ import {
     type PageValidationInput,
     type ValidationIssue,
 } from "../../../../lib/validation.js";
+import { cx, ui } from "../../../../lib/styles.js";
 
 const dynamic = DynamicModule.default;
 const ProjectEditor = dynamic(
@@ -198,12 +199,12 @@ export default function ProjectPage({
     }
 
     return (
-        <main className="shell">
+        <main className={ui.shell}>
             {toast && (
-                <div className="toast">
+                <div className={ui.toast}>
                     <span>{toast}</span>
                     <button
-                        className="btn icon"
+                        className={cx(ui.button, ui.buttonIcon)}
                         onClick={() => setToast("")}
                         title="Dismiss message"
                         type="button"
@@ -212,25 +213,25 @@ export default function ProjectPage({
                     </button>
                 </div>
             )}
-            <header className="topbar">
-                <div className="button-row">
-                    <Link className="btn" href="/app">
+            <header className={ui.topbar}>
+                <div className={ui.buttonRow}>
+                    <Link className={ui.button} href="/app">
                         <ArrowLeft size={18} /> Projects
                     </Link>
                     {project && (
                         <button
-                            className="btn"
+                            className={ui.button}
                             onClick={() => void validateAndExport()}
                         >
                             <Download size={18} /> CSV
                         </button>
                     )}
                 </div>
-                <div className="brand" style={{ textAlign: "right" }}>
+                <div className="grid gap-1 text-right">
                     {renaming ? (
-                        <div className="button-row">
+                        <div className={ui.buttonRow}>
                             <input
-                                className="input"
+                                className={ui.input}
                                 value={renameValue}
                                 onChange={(event) =>
                                     setRenameValue(event.target.value)
@@ -241,21 +242,20 @@ export default function ProjectPage({
                                 }}
                             />
                             <button
-                                className="btn primary"
+                                className={cx(ui.button, ui.buttonPrimary)}
                                 onClick={saveRename}
                             >
                                 Save
                             </button>
                         </div>
                     ) : (
-                        <div
-                            className="button-row"
-                            style={{ justifyContent: "flex-end" }}
-                        >
-                            <h1>{project?.name ?? "Project"}</h1>
+                        <div className={cx(ui.buttonRow, "justify-end")}>
+                            <h1 className="m-0 text-2xl leading-tight">
+                                {project?.name ?? "Project"}
+                            </h1>
                             {project && (
                                 <button
-                                    className="btn icon"
+                                    className={cx(ui.button, ui.buttonIcon)}
                                     onClick={() => setRenaming(true)}
                                     title="Rename project"
                                 >
@@ -264,29 +264,30 @@ export default function ProjectPage({
                             )}
                         </div>
                     )}
-                    <span>{project?.originalFileName ?? "Loading..."}</span>
+                    <span className={ui.muted}>
+                        {project?.originalFileName ?? "Loading..."}
+                    </span>
                 </div>
-                <div className="button-row">
+                <div className={ui.buttonRow}>
                     <ThemeSettingsButton />
-                    <button className="btn" onClick={load}>
+                    <button className={ui.button} onClick={load}>
                         <RefreshCcw size={18} /> Refresh
                     </button>
                 </div>
             </header>
 
-            {error && <p className="error">{error}</p>}
+            {error && <p className={ui.error}>{error}</p>}
             {project && project.pages.length > 1 && (
-                <div
-                    className="topbar"
-                    style={{ justifyContent: "flex-start" }}
-                >
-                    <div className="segmented">
+                <div className={cx(ui.topbar, "justify-start")}>
+                    <div className={ui.segmented}>
                         {project.pages.map((page) => (
                             <button
                                 key={page.id}
-                                className={
-                                    page.id === selectedPageId ? "active" : ""
-                                }
+                                className={cx(
+                                    ui.segmentedButton,
+                                    page.id === selectedPageId &&
+                                        ui.segmentedButtonActive,
+                                )}
                                 onClick={() => void selectPage(page.id)}
                                 disabled={switchingPage}
                             >
@@ -308,7 +309,7 @@ export default function ProjectPage({
                 />
             )}
             {project && project.pages.length === 0 && (
-                <section className="panel">
+                <section className={ui.panel}>
                     This project has not been processed yet.
                 </section>
             )}
