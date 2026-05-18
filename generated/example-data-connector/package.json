@@ -1,5 +1,5 @@
 {
-  "name": "@inivi/example-data-connector",
+  "name": "@generated/example-data-connector",
   "version": "0.0.1",
   "author": "Firebase <firebase-support@google.com> (https://firebase.google.com/)",
   "description": "Generated Admin SDK For example",
