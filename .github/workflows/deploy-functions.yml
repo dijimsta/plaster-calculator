@@ -18,6 +18,8 @@ jobs:
                   node-version: 24
                   cache: yarn
 
+            - uses: astral-sh/setup-uv@v8
+
             - name: Install dependencies
               run: yarn install --immutable
 
