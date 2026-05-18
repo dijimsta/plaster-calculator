@@ -5,6 +5,10 @@ import { fileURLToPath } from "node:url";
 const scriptsDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(scriptsDir, "..");
 const functionDir = resolve(rootDir, "functions", "floorplan-analyzer");
+const python =
+    process.platform === "win32"
+        ? "venv\\Scripts\\python.exe"
+        : "venv/bin/python";
 
 const commands = [
     [
@@ -17,6 +21,15 @@ const commands = [
     ],
     ["uv", "venv", "venv", "--clear"],
     ["uv", "pip", "sync", "requirements.txt", "--python", "venv"],
+    [
+        python,
+        "-c",
+        [
+            "from pathlib import Path",
+            "from firebase_functions.private.serving import functions_as_yaml, get_functions",
+            "Path('functions.yaml').write_text(functions_as_yaml(get_functions()), encoding='utf-8')",
+        ].join("; "),
+    ],
 ];
 
 for (const [command, ...args] of commands) {
