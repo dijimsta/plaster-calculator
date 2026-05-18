@@ -19,7 +19,7 @@
         "generate:dataconnect": "firebase dataconnect:sdk:generate",
         "lint": "eslint . --fix",
         "lint:check": "eslint .",
-        "start": "scripts/predeploy-floorplan-analyzer-functions.sh && yarn build && yarn emulators:start"
+        "start": "node ./scripts/predeploy-floorplan-analyzer-functions.mjs && yarn build && yarn emulators:start"
     },
     "devDependencies": {
         "@apps/admin-cli": "workspace:*",
