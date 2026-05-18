@@ -1,0 +1,36 @@
+name: Deploy Data Connect
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+        paths:
+            - dataconnect.yaml
+            - data/**
+
+concurrency:
+    group: deploy-dataconnect
+    cancel-in-progress: false
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        environment:
+            name: dataconnect
+            url: https://console.firebase.google.com/project/plaster-calculator/dataconnect
+        steps:
+            - uses: actions/checkout@v6
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 24
+                  cache: yarn
+
+            - name: Install dependencies
+              run: yarn install --immutable
+
+            - name: Deploy Data Connect
+              run: yarn firebase deploy --only dataconnect --project plaster-calculator --token "$FIREBASE_TOKEN"
+              env:
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

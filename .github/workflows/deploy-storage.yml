@@ -1,0 +1,35 @@
+name: Deploy Storage
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+        paths:
+            - storage.rules
+
+concurrency:
+    group: deploy-storage
+    cancel-in-progress: false
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        environment:
+            name: storage
+            url: https://console.firebase.google.com/project/plaster-calculator/storage
+        steps:
+            - uses: actions/checkout@v6
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 24
+                  cache: yarn
+
+            - name: Install dependencies
+              run: yarn install --immutable
+
+            - name: Deploy Storage rules
+              run: yarn firebase deploy --only storage --project plaster-calculator --token "$FIREBASE_TOKEN"
+              env:
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
