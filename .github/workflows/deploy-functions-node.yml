@@ -1,17 +1,7 @@
 name: Deploy TypeScript Functions
 
 on:
-    push:
-        branches:
-            - main
-        paths:
-            - "data/**"
-            - "functions/plaster-calculator-functions/**"
-            - "generated/**"
-            - "dataconnect.yaml"
-            - "firebase.json"
-            - "package.json"
-            - "yarn.lock"
+    workflow_dispatch:
 
 jobs:
     deploy:
