@@ -1,4 +1,4 @@
-name: Deploy Firebase Functions
+name: Deploy TypeScript Functions
 
 on:
     push:
@@ -6,7 +6,7 @@ on:
             - main
         paths:
             - "data/**"
-            - "functions/**"
+            - "functions/plaster-calculator-functions/**"
             - "generated/**"
             - "dataconnect.yaml"
             - "firebase.json"
@@ -15,23 +15,14 @@ on:
 
 jobs:
     deploy:
-        name: Deploy ${{ matrix.codebase }}
         runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                codebase:
-                    - plaster-calculator-functions
-                    - floorplan-analyzer
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
 
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v6
               with:
                   node-version: 24
                   cache: yarn
-
-            - uses: astral-sh/setup-uv@v8.1.0
 
             - name: Install dependencies
               run: yarn install --immutable
@@ -43,6 +34,6 @@ jobs:
               run: yarn build
 
             - name: Deploy functions
-              run: yarn firebase deploy --only "functions:${{ matrix.codebase }}" --project plaster-calculator --token "$FIREBASE_TOKEN"
+              run: yarn firebase deploy --only functions:plaster-calculator-functions --project plaster-calculator --token "$FIREBASE_TOKEN"
               env:
                   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
