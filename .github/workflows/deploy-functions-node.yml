@@ -17,9 +17,6 @@ jobs:
             - name: Install dependencies
               run: yarn install --immutable
 
-            - name: Generate Data Connect SDKs
-              run: yarn generate:dataconnect
-
             - name: Build functions
               run: yarn build
 
