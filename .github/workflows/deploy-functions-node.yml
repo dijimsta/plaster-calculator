@@ -3,9 +3,16 @@ name: Deploy TypeScript Functions
 on:
     workflow_dispatch:
 
+concurrency:
+    group: firebase-functions-deploy
+    cancel-in-progress: false
+
 jobs:
     deploy:
         runs-on: ubuntu-latest
+        environment:
+            name: firebase-functions-node
+            url: https://console.firebase.google.com/project/plaster-calculator/functions
         steps:
             - uses: actions/checkout@v6
 
