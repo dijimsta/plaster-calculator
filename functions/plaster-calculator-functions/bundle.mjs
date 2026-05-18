@@ -1,17 +1,32 @@
 import { readFileSync, writeFileSync } from "node:fs";
+import pkg from "./package.json" with { type: "json" };
 
 import { build } from "esbuild";
 
 const TAB_WIDTH = 4;
-const pkg = JSON.parse(readFileSync("package.json", "utf-8"));
-const deployPkg = structuredClone(pkg);
+const WORKSPACE_PREFIX = "workspace:";
 
-// Remove workspace dependencies from the bundled package.json
-Object.keys(deployPkg.dependencies).forEach((dependency) => {
-    if (deployPkg.dependencies[dependency].startsWith("workspace:")) {
-        delete deployPkg.dependencies[dependency];
-    }
-});
+const [workspaceDependencies, external] = Object.entries(
+    pkg.dependencies,
+).reduce(
+    (
+        [previousWorkspaceDependencies, previousExternal],
+        [dependency, version],
+    ) => {
+        if (version.startsWith(WORKSPACE_PREFIX)) {
+            return [
+                [...previousWorkspaceDependencies, dependency],
+                previousExternal,
+            ];
+        } else {
+            return [
+                previousWorkspaceDependencies,
+                [...previousExternal, dependency],
+            ];
+        }
+    },
+    [[], []],
+);
 
 // Bundle the code using esbuild
 await build({
@@ -22,12 +37,17 @@ await build({
     format: "esm",
     outdir: "dist",
     sourcemap: true,
-    external: Object.keys(pkg.dependencies),
+    external,
 });
 
 // Update entry point and exports in package.json
-deployPkg.main = "./dist/index.js";
-deployPkg.exports = "./dist/index.js";
+pkg.main = "./dist/index.js";
+pkg.exports = "./dist/index.js";
+
+// Remove workspace dependencies from package.json
+workspaceDependencies.forEach((dependency) => {
+    delete pkg.dependencies[dependency];
+});
 
 // Write the modified package.json
-writeFileSync("package.json", JSON.stringify(deployPkg, null, TAB_WIDTH));
+writeFileSync("package.json", JSON.stringify(pkg, null, TAB_WIDTH));
