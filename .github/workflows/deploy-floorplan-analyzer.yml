@@ -1,11 +1,7 @@
 name: Deploy Floorplan Analyzer Functions
+
 on:
     workflow_dispatch:
-    push:
-        branches:
-            - main
-        paths:
-            - functions/floorplan-analyzer/**
 
 concurrency:
     group: deploy-floorplan-analyzer-functions
