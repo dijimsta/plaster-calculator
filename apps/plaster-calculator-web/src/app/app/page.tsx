@@ -1,15 +1,6 @@
 "use client";
 
 import {
-    useEffect,
-    useMemo,
-    useState,
-    type ChangeEvent,
-    type DragEvent,
-    type FormEvent,
-} from "react";
-import { default as LinkModule } from "next/link.js";
-import {
     CheckCircle2,
     FileUp,
     LoaderCircle,
@@ -20,12 +11,22 @@ import {
     Upload,
     X,
 } from "lucide-react";
+import { default as LinkModule } from "next/link.js";
+import {
+    type ChangeEvent,
+    type DragEvent,
+    type FormEvent,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
+
 import ThemeSettingsButton from "../../components/ThemeSettingsButton.js";
 import {
     deleteProject,
     getProjectStatus,
-    listProjects,
     listProcessingStrategies,
+    listProjects,
     processProject,
     renameProject,
     uploadPdfPageSource,
@@ -33,13 +34,14 @@ import {
 } from "../../lib/api.js";
 import {
     loadPdfDocument,
+    type PdfPagePreview,
     renderPdfPageSourcePng,
     renderPdfThumbnails,
     revokePdfPreviews,
-    type PdfPagePreview,
 } from "../../lib/pdf.js";
 import { cx, ui } from "../../lib/styles.js";
-import type { ProjectSummary, ProcessingStrategyInfo } from "../../types.js";
+
+import type { ProcessingStrategyInfo, ProjectSummary } from "../../types.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const Link = LinkModule.default;

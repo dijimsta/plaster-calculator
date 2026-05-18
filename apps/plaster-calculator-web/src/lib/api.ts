@@ -2,11 +2,12 @@ import { httpsCallable } from "firebase/functions";
 import { ref, uploadBytes } from "firebase/storage";
 
 import { auth, functions, storage } from "../firebase/firebase.utils.js";
+
 import type {
-    ProjectDetail,
     FloorplanPage,
-    ProjectSummary,
     ProcessingStrategyInfo,
+    ProjectDetail,
+    ProjectSummary,
 } from "../types.js";
 
 const LONG_RUNNING_CALLABLE_TIMEOUT_MS = 60 * 60 * 1000;

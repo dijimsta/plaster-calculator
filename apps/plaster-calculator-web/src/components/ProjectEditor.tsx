@@ -1,5 +1,20 @@
 "use client";
 
+import {
+    AlignHorizontalJustifyCenter,
+    CopyPlus,
+    Loader2,
+    Minus,
+    MousePointer2,
+    Plus,
+    Redo2,
+    Save,
+    Scissors,
+    Square,
+    Trash2,
+    Undo2,
+    ZoomIn,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
     Circle,
@@ -10,41 +25,28 @@ import {
     Rect,
     Stage,
 } from "react-konva";
-import type { Stage as KonvaStage } from "konva/lib/Stage.js";
-import type { KonvaEventObject } from "konva/lib/Node.js";
-import {
-    AlignHorizontalJustifyCenter,
-    CopyPlus,
-    Loader2,
-    MousePointer2,
-    Minus,
-    Plus,
-    Redo2,
-    Save,
-    Scissors,
-    Square,
-    Trash2,
-    Undo2,
-    ZoomIn,
-} from "lucide-react";
-import type {
-    AreaPolygon,
-    EdgeOverride,
-    Overlay,
-    ProjectDetail,
-    FloorplanPage,
-    Point,
-} from "../types.js";
+
 import {
     applyCeilingHeightToProject,
     applyScaleToProject,
     savePageOverlay,
 } from "../lib/api.js";
+import { activeTheme, cx, ui } from "../lib/styles.js";
+
 import type {
     PageValidationInput,
     ValidationIssue,
 } from "../lib/validation.js";
-import { activeTheme, cx, ui } from "../lib/styles.js";
+import type {
+    AreaPolygon,
+    EdgeOverride,
+    FloorplanPage,
+    Overlay,
+    Point,
+    ProjectDetail,
+} from "../types.js";
+import type { KonvaEventObject } from "konva/lib/Node.js";
+import type { Stage as KonvaStage } from "konva/lib/Stage.js";
 
 const BOARD_TYPES = [
     "Recessed Edge",
