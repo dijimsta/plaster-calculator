@@ -2,6 +2,12 @@ name: Deploy TypeScript Functions
 
 on:
     workflow_dispatch:
+    push:
+        branches:
+            - main
+        paths:
+            - functions/plaster-calculator-functions/**
+            - generated/example-data-connector/**
 
 concurrency:
     group: firebase-functions-deploy
