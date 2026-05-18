@@ -7,7 +7,14 @@ const rootDir = resolve(scriptsDir, "..");
 const functionDir = resolve(rootDir, "functions", "floorplan-analyzer");
 
 const commands = [
-    ["uv", "pip", "compile", "pyproject.toml", "--output-file", "requirements.txt"],
+    [
+        "uv",
+        "pip",
+        "compile",
+        "pyproject.toml",
+        "--output-file",
+        "requirements.txt",
+    ],
     ["uv", "venv", "venv", "--clear"],
     ["uv", "pip", "sync", "requirements.txt", "--python", "venv"],
 ];
