@@ -1,11 +1,7 @@
 name: Deploy Python Functions
 
 on:
-    push:
-        branches:
-            - main
-        paths:
-            - "functions/floorplan-analyzer/**"
+    workflow_dispatch:
 
 jobs:
     deploy:
