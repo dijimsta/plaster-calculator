@@ -78,7 +78,7 @@ export function EditorToolbar({
         <div className={ui.editorToolbar}>
             <div className={ui.buttonRow}>
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={onUndo}
                     disabled={historyCount === 0}
                     title="Undo"
@@ -86,7 +86,7 @@ export function EditorToolbar({
                     <Undo2 size={18} />
                 </button>
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={onRedo}
                     disabled={futureCount === 0}
                     title="Redo"
@@ -94,7 +94,7 @@ export function EditorToolbar({
                     <Redo2 size={18} />
                 </button>
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={onClearSelection}
                     disabled={!hasSelection()}
                     title="Deselect all"
@@ -103,7 +103,7 @@ export function EditorToolbar({
                 </button>
                 <div className="relative">
                     <button
-                        className={cx(ui.button, ui.buttonIcon)}
+                        className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                         onClick={() => onSetAddMenuOpen(!addMenuOpen)}
                         title="Add area"
                     >
@@ -112,13 +112,13 @@ export function EditorToolbar({
                     {addMenuOpen && (
                         <div className={ui.popoverMenu}>
                             <button
-                                className={ui.button}
+                                className={cx(ui.button, ui.buttonDefault)}
                                 onClick={onAddRectangle}
                             >
                                 <Square size={16} /> Rectangle
                             </button>
                             <button
-                                className={ui.button}
+                                className={cx(ui.button, ui.buttonDefault)}
                                 onClick={onStartFreeShape}
                             >
                                 <MousePointer2 size={16} /> Free shape
@@ -127,7 +127,7 @@ export function EditorToolbar({
                     )}
                 </div>
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={onAddPoint}
                     disabled={!selectedArea}
                     title="Add point"
@@ -135,7 +135,7 @@ export function EditorToolbar({
                     <CopyPlus size={18} />
                 </button>
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={onStraightenSelectedPoints}
                     disabled={!selectedArea || selectedPointCount !== 2}
                     title="Straighten between selected points"
@@ -143,7 +143,7 @@ export function EditorToolbar({
                     <AlignHorizontalJustifyCenter size={18} />
                 </button>
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={onSplitArea}
                     disabled={!selectedArea || selectedPointCount !== 2}
                     title="Split selected polygon"
@@ -151,7 +151,7 @@ export function EditorToolbar({
                     <Scissors size={18} />
                 </button>
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={onDeleteSelection}
                     disabled={!selectedArea}
                     title={
@@ -165,21 +165,21 @@ export function EditorToolbar({
             </div>
             <div className={ui.buttonRow}>
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={() => onChangeZoom(zoom - 0.15)}
                     title="Zoom out"
                 >
                     <Minus size={18} />
                 </button>
                 <button
-                    className={ui.button}
+                    className={cx(ui.button, ui.buttonDefault)}
                     onClick={onResetView}
                     title="Reset zoom"
                 >
                     <ZoomIn size={18} /> {Math.round(zoom * 100)}%
                 </button>
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={() => onChangeZoom(zoom + 0.15)}
                     title="Zoom in"
                 >

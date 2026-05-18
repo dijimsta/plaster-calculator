@@ -38,7 +38,7 @@ export default function ThemeSettingsButton() {
     return (
         <>
             <button
-                className={cx(ui.button, ui.buttonIcon)}
+                className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                 onClick={() => setSettingsOpen(true)}
                 title="Settings"
             >
@@ -56,7 +56,11 @@ export default function ThemeSettingsButton() {
                                 </p>
                             </div>
                             <button
-                                className={cx(ui.button, ui.buttonIcon)}
+                                className={cx(
+                                    ui.button,
+                                    ui.buttonDefault,
+                                    ui.buttonIcon,
+                                )}
                                 onClick={() => setSettingsOpen(false)}
                                 title="Close settings"
                             >

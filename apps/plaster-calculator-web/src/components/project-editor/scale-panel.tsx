@@ -42,7 +42,9 @@ export function ScalePanel({
                 <button
                     className={cx(
                         ui.button,
-                        isSettingReference && ui.buttonPrimary,
+                        isSettingReference
+                            ? ui.buttonPrimary
+                            : ui.buttonDefault,
                     )}
                     onClick={
                         isSettingReference
@@ -54,7 +56,7 @@ export function ScalePanel({
                     {isSettingReference ? "Cancel reference" : "Set reference"}
                 </button>
                 <button
-                    className={ui.button}
+                    className={cx(ui.button, ui.buttonDefault)}
                     onClick={() => {
                         setReferencePoints([]);
                         setIsSettingReference(false);
@@ -92,7 +94,7 @@ export function ScalePanel({
                 Apply scale
             </button>
             <button
-                className={ui.button}
+                className={cx(ui.button, ui.buttonDefault)}
                 onClick={applyScaleToAllPages}
                 disabled={!scaleMmPerPx}
             >

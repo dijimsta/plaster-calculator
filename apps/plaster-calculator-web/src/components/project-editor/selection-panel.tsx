@@ -122,7 +122,7 @@ function SelectedEdgeControls({
             {selectedAreaIds.length === 1 &&
                 selectedArea?.id === selectedEdgeArea.id &&
                 renderCeilingControls(selectedArea)}
-            <label className={cx(ui.button, "justify-start")}>
+            <label className={cx(ui.button, ui.buttonDefault, "justify-start")}>
                 <input
                     type="checkbox"
                     checked={!!selectedEdgeOverride?.noPlaster}
@@ -154,7 +154,7 @@ function SelectedEdgeControls({
                 </select>
             </div>
             <button
-                className={ui.button}
+                className={cx(ui.button, ui.buttonDefault)}
                 onClick={clearSelectedEdgeOverride}
                 disabled={!selectedEdgeOverride}
             >
@@ -237,7 +237,7 @@ function SingleAreaControls({
                 />
                 {fieldError(areaIssue(selectedArea.id, "areaLabel"))}
             </div>
-            <label className={cx(ui.button, "justify-start")}>
+            <label className={cx(ui.button, ui.buttonDefault, "justify-start")}>
                 <input
                     type="checkbox"
                     checked={!!selectedArea.isOutdoor}

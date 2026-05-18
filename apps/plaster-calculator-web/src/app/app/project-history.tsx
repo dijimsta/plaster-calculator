@@ -95,7 +95,10 @@ export function ProjectHistory({
                                 <div className={ui.projectActions}>
                                     {renamingId === project.id ? (
                                         <button
-                                            className={ui.button}
+                                            className={cx(
+                                                ui.button,
+                                                ui.buttonDefault,
+                                            )}
                                             onClick={() =>
                                                 saveRename(project.id)
                                             }
@@ -106,6 +109,7 @@ export function ProjectHistory({
                                         <button
                                             className={cx(
                                                 ui.button,
+                                                ui.buttonDefault,
                                                 ui.buttonIcon,
                                             )}
                                             onClick={() => {
@@ -120,6 +124,7 @@ export function ProjectHistory({
                                     <button
                                         className={cx(
                                             ui.button,
+                                            ui.buttonDefault,
                                             ui.buttonIcon,
                                         )}
                                         onClick={() => removeProject(project)}

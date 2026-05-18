@@ -26,7 +26,7 @@ import {
     type GetFloorplanPageByIdData,
     type GetProjectByIdData,
     type ListProjectsByOwnerData,
-} from "@inivi/example-data-connector";
+} from "@generated/example-data-connector";
 import { setGlobalOptions } from "firebase-functions";
 import {
     HttpsError,

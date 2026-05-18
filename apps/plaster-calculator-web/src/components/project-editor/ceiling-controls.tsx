@@ -82,6 +82,7 @@ export function CeilingControls({
                         <button
                             className={cx(
                                 ui.button,
+                                ui.buttonDefault,
                                 lowEdgeError && ui.buttonInvalid,
                             )}
                             onClick={() => setRakedEdge("low")}
@@ -94,6 +95,7 @@ export function CeilingControls({
                         <button
                             className={cx(
                                 ui.button,
+                                ui.buttonDefault,
                                 highEdgeError && ui.buttonInvalid,
                             )}
                             onClick={() => setRakedEdge("high")}

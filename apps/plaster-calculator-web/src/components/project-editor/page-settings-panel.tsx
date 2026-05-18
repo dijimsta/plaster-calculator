@@ -50,7 +50,10 @@ export function PageSettingsPanel({
                 {hasPageHeightIssue() &&
                     fieldError("Ceiling height is required")}
             </div>
-            <button className={ui.button} onClick={applyHeightToAllPages}>
+            <button
+                className={cx(ui.button, ui.buttonDefault)}
+                onClick={applyHeightToAllPages}
+            >
                 Apply height to all pages
             </button>
         </section>

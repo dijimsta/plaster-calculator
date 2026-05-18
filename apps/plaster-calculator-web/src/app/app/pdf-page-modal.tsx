@@ -25,7 +25,7 @@ export function PdfPageModal({
                         <p className={ui.muted}>Tick the pages to process.</p>
                     </div>
                     <button
-                        className={cx(ui.button, ui.buttonIcon)}
+                        className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                         disabled={loading}
                         onClick={closePdfModal}
                     >
@@ -76,7 +76,7 @@ export function PdfPageModal({
                 </div>
                 <footer className={cx(ui.buttonRow, "justify-end")}>
                     <button
-                        className={ui.button}
+                        className={cx(ui.button, ui.buttonDefault)}
                         disabled={loading}
                         onClick={closePdfModal}
                     >

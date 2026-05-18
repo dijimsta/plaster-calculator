@@ -33,7 +33,7 @@ export function DashboardToast({
             </span>
             {!processingProjectId && (
                 <button
-                    className={cx(ui.button, ui.buttonIcon)}
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={() => {
                         setToast("");
                         setToastProject(null);

@@ -18,7 +18,6 @@ export default tseslint.config(
             "**/venv/**",
             "**/.venv/**",
             "**/__pycache__/**",
-            "libraries/example-data-connector/**",
         ],
     },
     js.configs.recommended,

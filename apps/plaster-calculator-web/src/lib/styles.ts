@@ -127,11 +127,10 @@ function createUi(theme: Theme) {
         areaRowActive: theme.active,
         button: cx(
             "inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border px-3 py-[9px] outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-45",
-            theme.controlBg,
             theme.line,
-            theme.text,
             theme.focus,
         ),
+        buttonDefault: cx(theme.controlBg, theme.text),
         buttonIcon: "aspect-square w-10 p-2",
         buttonPrimary: cx(theme.primary, theme.inverseText),
         buttonInvalid: cx(theme.dangerBorder, theme.dangerRing),

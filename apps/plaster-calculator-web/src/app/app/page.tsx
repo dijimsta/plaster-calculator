@@ -2,7 +2,7 @@
 
 import { RefreshCcw } from "lucide-react";
 import ThemeSettingsButton from "../../components/ThemeSettingsButton.js";
-import { ui } from "../../lib/styles.js";
+import { cx, ui } from "../../lib/styles.js";
 import { DashboardToast } from "./dashboard-toast.js";
 import { useDashboardProjects } from "./hooks/use-dashboard-projects.js";
 import { useDashboardUpload } from "./hooks/use-dashboard-upload.js";
@@ -41,7 +41,7 @@ export default function HomePage() {
                 <div className={ui.buttonRow}>
                     <ThemeSettingsButton />
                     <button
-                        className={ui.button}
+                        className={cx(ui.button, ui.buttonDefault)}
                         onClick={projects.refresh}
                         title="Refresh projects"
                     >
