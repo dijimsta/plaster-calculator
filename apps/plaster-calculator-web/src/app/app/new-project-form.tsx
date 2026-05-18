@@ -1,0 +1,97 @@
+import { Upload } from "lucide-react";
+import { cx, ui } from "../../lib/styles.js";
+import type { FileInputChange, NewProjectFormProps } from "./dashboard.types.js";
+import { ProcessingStrategySelect } from "./processing-strategy-select.js";
+
+export function NewProjectForm({
+    dragActive,
+    file,
+    loading,
+    message,
+    name,
+    processingStrategies,
+    selectedStrategyKey,
+    handleDrop,
+    handleFileSelection,
+    setDragActive,
+    setName,
+    setSelectedStrategyKey,
+    submit,
+}: NewProjectFormProps) {
+    return (
+        <form className={cx(ui.panel, ui.stack)} onSubmit={submit}>
+            <h2>New Project</h2>
+            <div className={ui.field}>
+                <label htmlFor="name">Address or project name</label>
+                <input
+                    id="name"
+                    className={ui.input}
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder="12 Example Street"
+                />
+            </div>
+            <div className={ui.field}>
+                <span className={ui.label}>PDF or image file</span>
+                <label
+                    className={cx(
+                        ui.fileDropzone,
+                        dragActive && ui.fileDropzoneActive,
+                    )}
+                    htmlFor="file"
+                    onDragEnter={(event) => {
+                        event.preventDefault();
+                        setDragActive(true);
+                    }}
+                    onDragOver={(event) => {
+                        event.preventDefault();
+                        setDragActive(true);
+                    }}
+                    onDragLeave={() => setDragActive(false)}
+                    onDrop={handleDrop}
+                >
+                    <input
+                        id="file"
+                        type="file"
+                        accept="application/pdf,image/*"
+                        className={ui.hiddenFileInput}
+                        onChange={(event: FileInputChange) =>
+                            handleFileSelection(event.target.files?.[0])
+                        }
+                    />
+                    <Upload size={28} />
+                    <strong>{file ? file.name : "Drop a PDF or image here"}</strong>
+                    <span className={ui.muted}>
+                        {file
+                            ? "Click to choose a different file"
+                            : "Click to browse from your computer"}
+                    </span>
+                </label>
+            </div>
+            <ProcessingStrategySelect
+                id="processing-strategy"
+                processingStrategies={processingStrategies}
+                selectedStrategyKey={selectedStrategyKey}
+                setSelectedStrategyKey={setSelectedStrategyKey}
+            />
+            <button
+                className={cx(ui.button, ui.buttonPrimary)}
+                disabled={!file || loading}
+            >
+                <Upload size={18} /> Upload
+            </button>
+            {message && (
+                <p
+                    className={
+                        message.includes("failed") ||
+                        message.includes("Unable")
+                            ? ui.error
+                            : ui.muted
+                    }
+                >
+                    {message}
+                </p>
+            )}
+        </form>
+    );
+}
