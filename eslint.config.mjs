@@ -1,6 +1,8 @@
+import { fixupPluginRules } from "@eslint/compat";
 import js from "@eslint/js";
-import tseslint from "typescript-eslint";
+import importPlugin from "eslint-plugin-import";
 import globals from "globals";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
     {
@@ -18,7 +20,6 @@ export default tseslint.config(
             "**/venv/**",
             "**/.venv/**",
             "**/__pycache__/**",
-            "libraries/example-data-connector/**",
         ],
     },
     js.configs.recommended,
@@ -30,8 +31,48 @@ export default tseslint.config(
                 ...globals.browser,
             },
         },
+        plugins: {
+            import: fixupPluginRules(importPlugin),
+        },
+        settings: {
+            "import/parsers": {
+                "@typescript-eslint/parser": [".ts", ".tsx"],
+            },
+            "import/resolver": {
+                node: {
+                    extensions: [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx"],
+                },
+                typescript: {
+                    alwaysTryTypes: true,
+                    noWarnOnMultipleProjects: true,
+                    project: [
+                        "./tsconfig.base.json",
+                        "./apps/*/tsconfig.json",
+                        "./functions/*/tsconfig.json",
+                        "./libraries/*/tsconfig.json",
+                    ],
+                },
+            },
+        },
         rules: {
             complexity: ["error", 80],
+            "import/order": [
+                "error",
+                {
+                    alphabetize: {
+                        caseInsensitive: true,
+                        order: "asc",
+                    },
+                    groups: [
+                        "builtin",
+                        "external",
+                        "internal",
+                        ["parent", "sibling", "index"],
+                        "type",
+                    ],
+                    "newlines-between": "always",
+                },
+            ],
         },
     },
     {

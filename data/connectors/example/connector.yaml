@@ -1,5 +1,5 @@
 connectorId: example
 generate:
     adminNodeSdk:
-        - package: "@inivi/example-data-connector"
-          outputDir: ../../../libraries/example-data-connector
+        - package: "@generated/example-data-connector"
+          outputDir: ../../../generated/example-data-connector

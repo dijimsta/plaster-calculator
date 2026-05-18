@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Box, Text, useApp, useInput } from "ink";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 const menuItems = [

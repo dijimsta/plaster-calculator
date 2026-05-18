@@ -1,5 +1,20 @@
 "use client";
 
+import {
+    AlignHorizontalJustifyCenter,
+    CopyPlus,
+    Loader2,
+    Minus,
+    MousePointer2,
+    Plus,
+    Redo2,
+    Save,
+    Scissors,
+    Square,
+    Trash2,
+    Undo2,
+    ZoomIn,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
     Circle,
@@ -10,41 +25,28 @@ import {
     Rect,
     Stage,
 } from "react-konva";
-import type { Stage as KonvaStage } from "konva/lib/Stage.js";
-import type { KonvaEventObject } from "konva/lib/Node.js";
-import {
-    AlignHorizontalJustifyCenter,
-    CopyPlus,
-    Loader2,
-    MousePointer2,
-    Minus,
-    Plus,
-    Redo2,
-    Save,
-    Scissors,
-    Square,
-    Trash2,
-    Undo2,
-    ZoomIn,
-} from "lucide-react";
-import type {
-    AreaPolygon,
-    EdgeOverride,
-    Overlay,
-    ProjectDetail,
-    FloorplanPage,
-    Point,
-} from "../types.js";
+
 import {
     applyCeilingHeightToProject,
     applyScaleToProject,
     savePageOverlay,
 } from "../lib/api.js";
+import { activeTheme, cx, ui } from "../lib/styles.js";
+
 import type {
     PageValidationInput,
     ValidationIssue,
 } from "../lib/validation.js";
-import { activeTheme, cx, ui } from "../lib/styles.js";
+import type {
+    AreaPolygon,
+    EdgeOverride,
+    FloorplanPage,
+    Overlay,
+    Point,
+    ProjectDetail,
+} from "../types.js";
+import type { KonvaEventObject } from "konva/lib/Node.js";
+import type { Stage as KonvaStage } from "konva/lib/Stage.js";
 
 const BOARD_TYPES = [
     "Recessed Edge",
@@ -1258,6 +1260,7 @@ export default function ProjectEditor({
                             <button
                                 className={cx(
                                     ui.button,
+                                    ui.buttonDefault,
                                     lowEdgeError && ui.buttonInvalid,
                                 )}
                                 onClick={() => setRakedEdge("low")}
@@ -1271,6 +1274,7 @@ export default function ProjectEditor({
                             <button
                                 className={cx(
                                     ui.button,
+                                    ui.buttonDefault,
                                     highEdgeError && ui.buttonInvalid,
                                 )}
                                 onClick={() => setRakedEdge("high")}
@@ -1345,7 +1349,11 @@ export default function ProjectEditor({
                 <div className={ui.editorToolbar}>
                     <div className={ui.buttonRow}>
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={undo}
                             disabled={history.length === 0}
                             title="Undo"
@@ -1353,7 +1361,11 @@ export default function ProjectEditor({
                             <Undo2 size={18} />
                         </button>
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={redo}
                             disabled={future.length === 0}
                             title="Redo"
@@ -1361,7 +1373,11 @@ export default function ProjectEditor({
                             <Redo2 size={18} />
                         </button>
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={clearSelection}
                             disabled={!hasSelection()}
                             title="Deselect all"
@@ -1370,7 +1386,11 @@ export default function ProjectEditor({
                         </button>
                         <div className="relative">
                             <button
-                                className={cx(ui.button, ui.buttonIcon)}
+                                className={cx(
+                                    ui.button,
+                                    ui.buttonDefault,
+                                    ui.buttonIcon,
+                                )}
                                 onClick={() => setAddMenuOpen((open) => !open)}
                                 title="Add area"
                             >
@@ -1379,13 +1399,19 @@ export default function ProjectEditor({
                             {addMenuOpen && (
                                 <div className={ui.popoverMenu}>
                                     <button
-                                        className={ui.button}
+                                        className={cx(
+                                            ui.button,
+                                            ui.buttonDefault,
+                                        )}
                                         onClick={addRectangle}
                                     >
                                         <Square size={16} /> Rectangle
                                     </button>
                                     <button
-                                        className={ui.button}
+                                        className={cx(
+                                            ui.button,
+                                            ui.buttonDefault,
+                                        )}
                                         onClick={startFreeShape}
                                     >
                                         <MousePointer2 size={16} /> Free shape
@@ -1394,7 +1420,11 @@ export default function ProjectEditor({
                             )}
                         </div>
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={addPoint}
                             disabled={!selectedArea}
                             title="Add point"
@@ -1402,7 +1432,11 @@ export default function ProjectEditor({
                             <CopyPlus size={18} />
                         </button>
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={straightenSelectedPoints}
                             disabled={
                                 !selectedArea ||
@@ -1413,7 +1447,11 @@ export default function ProjectEditor({
                             <AlignHorizontalJustifyCenter size={18} />
                         </button>
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={splitArea}
                             disabled={
                                 !selectedArea ||
@@ -1424,7 +1462,11 @@ export default function ProjectEditor({
                             <Scissors size={18} />
                         </button>
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={deleteSelection}
                             disabled={!selectedArea}
                             title={
@@ -1438,21 +1480,29 @@ export default function ProjectEditor({
                     </div>
                     <div className={ui.buttonRow}>
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={() => changeZoom(zoom - 0.15)}
                             title="Zoom out"
                         >
                             <Minus size={18} />
                         </button>
                         <button
-                            className={ui.button}
+                            className={cx(ui.button, ui.buttonDefault)}
                             onClick={resetView}
                             title="Reset zoom"
                         >
                             <ZoomIn size={18} /> {Math.round(zoom * 100)}%
                         </button>
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={() => changeZoom(zoom + 0.15)}
                             title="Zoom in"
                         >
@@ -2210,7 +2260,7 @@ export default function ProjectEditor({
                             fieldError("Ceiling height is required")}
                     </div>
                     <button
-                        className={ui.button}
+                        className={cx(ui.button, ui.buttonDefault)}
                         onClick={applyHeightToAllPages}
                     >
                         Apply height to all pages
@@ -2223,7 +2273,9 @@ export default function ProjectEditor({
                         <button
                             className={cx(
                                 ui.button,
-                                isSettingReference && ui.buttonPrimary,
+                                isSettingReference
+                                    ? ui.buttonPrimary
+                                    : ui.buttonDefault,
                             )}
                             onClick={
                                 isSettingReference
@@ -2237,7 +2289,7 @@ export default function ProjectEditor({
                                 : "Set reference"}
                         </button>
                         <button
-                            className={ui.button}
+                            className={cx(ui.button, ui.buttonDefault)}
                             onClick={() => {
                                 setReferencePoints([]);
                                 setIsSettingReference(false);
@@ -2275,7 +2327,7 @@ export default function ProjectEditor({
                         Apply scale
                     </button>
                     <button
-                        className={ui.button}
+                        className={cx(ui.button, ui.buttonDefault)}
                         onClick={applyScaleToAllPages}
                         disabled={!scaleMmPerPx}
                     >
@@ -2401,7 +2453,13 @@ export default function ProjectEditor({
                             {selectedAreaIds.length === 1 &&
                                 selectedArea?.id === selectedEdgeArea.id &&
                                 renderCeilingControls(selectedArea)}
-                            <label className={cx(ui.button, "justify-start")}>
+                            <label
+                                className={cx(
+                                    ui.button,
+                                    ui.buttonDefault,
+                                    "justify-start",
+                                )}
+                            >
                                 <input
                                     type="checkbox"
                                     checked={!!selectedEdgeOverride?.noPlaster}
@@ -2437,7 +2495,7 @@ export default function ProjectEditor({
                                 </select>
                             </div>
                             <button
-                                className={ui.button}
+                                className={cx(ui.button, ui.buttonDefault)}
                                 onClick={clearSelectedEdgeOverride}
                                 disabled={!selectedEdgeOverride}
                             >
@@ -2530,7 +2588,11 @@ export default function ProjectEditor({
                                     )}
                                 </div>
                                 <label
-                                    className={cx(ui.button, "justify-start")}
+                                    className={cx(
+                                        ui.button,
+                                        ui.buttonDefault,
+                                        "justify-start",
+                                    )}
                                 >
                                     <input
                                         type="checkbox"

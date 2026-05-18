@@ -1,15 +1,6 @@
 "use client";
 
 import {
-    useEffect,
-    useMemo,
-    useState,
-    type ChangeEvent,
-    type DragEvent,
-    type FormEvent,
-} from "react";
-import { default as LinkModule } from "next/link.js";
-import {
     CheckCircle2,
     FileUp,
     LoaderCircle,
@@ -20,12 +11,22 @@ import {
     Upload,
     X,
 } from "lucide-react";
+import { default as LinkModule } from "next/link.js";
+import {
+    type ChangeEvent,
+    type DragEvent,
+    type FormEvent,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
+
 import ThemeSettingsButton from "../../components/ThemeSettingsButton.js";
 import {
     deleteProject,
     getProjectStatus,
-    listProjects,
     listProcessingStrategies,
+    listProjects,
     processProject,
     renameProject,
     uploadPdfPageSource,
@@ -33,13 +34,14 @@ import {
 } from "../../lib/api.js";
 import {
     loadPdfDocument,
+    type PdfPagePreview,
     renderPdfPageSourcePng,
     renderPdfThumbnails,
     revokePdfPreviews,
-    type PdfPagePreview,
 } from "../../lib/pdf.js";
 import { cx, ui } from "../../lib/styles.js";
-import type { ProjectSummary, ProcessingStrategyInfo } from "../../types.js";
+
+import type { ProcessingStrategyInfo, ProjectSummary } from "../../types.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const Link = LinkModule.default;
@@ -407,7 +409,11 @@ export default function HomePage() {
                     </span>
                     {!processingProjectId && (
                         <button
-                            className={cx(ui.button, ui.buttonIcon)}
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
                             onClick={() => {
                                 setToast("");
                                 setToastProject(null);
@@ -429,7 +435,7 @@ export default function HomePage() {
                 <div className={ui.buttonRow}>
                     <ThemeSettingsButton />
                     <button
-                        className={ui.button}
+                        className={cx(ui.button, ui.buttonDefault)}
                         onClick={refresh}
                         title="Refresh projects"
                     >
@@ -608,7 +614,10 @@ export default function HomePage() {
                                         <div className={ui.projectActions}>
                                             {renamingId === project.id ? (
                                                 <button
-                                                    className={ui.button}
+                                                    className={cx(
+                                                        ui.button,
+                                                        ui.buttonDefault,
+                                                    )}
                                                     onClick={() =>
                                                         saveRename(project.id)
                                                     }
@@ -619,6 +628,7 @@ export default function HomePage() {
                                                 <button
                                                     className={cx(
                                                         ui.button,
+                                                        ui.buttonDefault,
                                                         ui.buttonIcon,
                                                     )}
                                                     onClick={() => {
@@ -637,6 +647,7 @@ export default function HomePage() {
                                             <button
                                                 className={cx(
                                                     ui.button,
+                                                    ui.buttonDefault,
                                                     ui.buttonIcon,
                                                 )}
                                                 onClick={() =>
@@ -669,7 +680,11 @@ export default function HomePage() {
                                 </p>
                             </div>
                             <button
-                                className={cx(ui.button, ui.buttonIcon)}
+                                className={cx(
+                                    ui.button,
+                                    ui.buttonDefault,
+                                    ui.buttonIcon,
+                                )}
                                 disabled={loading}
                                 onClick={closePdfModal}
                             >
@@ -720,7 +735,7 @@ export default function HomePage() {
                         </div>
                         <footer className={cx(ui.buttonRow, "justify-end")}>
                             <button
-                                className={ui.button}
+                                className={cx(ui.button, ui.buttonDefault)}
                                 disabled={loading}
                                 onClick={closePdfModal}
                             >

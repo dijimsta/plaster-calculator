@@ -35,7 +35,10 @@ export default function AppBar() {
                 Plaster Calculator
             </Link>
             <nav className="flex items-center gap-3">
-                <button className={ui.button} onClick={handleLogout}>
+                <button
+                    className={cx(ui.button, ui.buttonDefault)}
+                    onClick={handleLogout}
+                >
                     Logout
                 </button>
             </nav>

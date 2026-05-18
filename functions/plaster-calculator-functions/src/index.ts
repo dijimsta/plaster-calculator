@@ -7,31 +7,32 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
+import { randomUUID } from "node:crypto";
+
+import {
+    createFloorplanPage as dcCreateFloorplanPage,
+    createProjectFromUpload as dcCreateProjectFromUpload,
+    deleteFloorplanPages as dcDeleteFloorplanPages,
+    deleteProject as dcDeleteProject,
+    renameProject as dcRenameProject,
+    updateFloorplanPage as dcUpdateFloorplanPage,
+    getFloorplanPageById,
+    type GetFloorplanPageByIdData,
+    getProjectById,
+    type GetProjectByIdData,
+    getProjectDetailsById,
+    type GetProjectDetailsByIdData,
+    listProjectsByOwner,
+    type ListProjectsByOwnerData,
+    touchProject,
+} from "@generated/example-data-connector";
 import { getApps, initializeApp } from "firebase-admin/app";
 import { getStorage } from "firebase-admin/storage";
-import { randomUUID } from "node:crypto";
-import {
-    createProjectFromUpload as dcCreateProjectFromUpload,
-    createFloorplanPage as dcCreateFloorplanPage,
-    deleteProject as dcDeleteProject,
-    deleteFloorplanPages as dcDeleteFloorplanPages,
-    getProjectDetailsById,
-    getFloorplanPageById,
-    getProjectById,
-    listProjectsByOwner,
-    renameProject as dcRenameProject,
-    touchProject,
-    updateFloorplanPage as dcUpdateFloorplanPage,
-    type GetProjectDetailsByIdData,
-    type GetFloorplanPageByIdData,
-    type GetProjectByIdData,
-    type ListProjectsByOwnerData,
-} from "@inivi/example-data-connector";
 import { setGlobalOptions } from "firebase-functions";
 import {
+    type CallableRequest,
     HttpsError,
     onCall,
-    type CallableRequest,
 } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 import { GoogleAuth } from "google-auth-library";

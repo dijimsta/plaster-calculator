@@ -1,9 +1,10 @@
 "use client";
 
-import { use, useCallback, useEffect, useMemo, useState } from "react";
-import { default as LinkModule } from "next/link.js";
 import { ArrowLeft, Download, Pencil, RefreshCcw, X } from "lucide-react";
 import { default as DynamicModule } from "next/dynamic.js";
+import { default as LinkModule } from "next/link.js";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
+
 import ThemeSettingsButton from "../../../../components/ThemeSettingsButton.js";
 import {
     exportProjectCsv,
@@ -11,15 +12,16 @@ import {
     renameProject,
     savePageOverlay,
 } from "../../../../lib/api.js";
-import type { ProjectDetail } from "../../../../types.js";
+import { cx, ui } from "../../../../lib/styles.js";
 import {
+    type PageValidationInput,
     parseOverlay,
     parseReferencePoints,
     validatePageForExport,
-    type PageValidationInput,
     type ValidationIssue,
 } from "../../../../lib/validation.js";
-import { cx, ui } from "../../../../lib/styles.js";
+
+import type { ProjectDetail } from "../../../../types.js";
 
 const dynamic = DynamicModule.default;
 const ProjectEditor = dynamic(
@@ -204,7 +206,11 @@ export default function ProjectPage({
                 <div className={ui.toast}>
                     <span>{toast}</span>
                     <button
-                        className={cx(ui.button, ui.buttonIcon)}
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
                         onClick={() => setToast("")}
                         title="Dismiss message"
                         type="button"
@@ -215,12 +221,15 @@ export default function ProjectPage({
             )}
             <header className={ui.topbar}>
                 <div className={ui.buttonRow}>
-                    <Link className={ui.button} href="/app">
+                    <Link
+                        className={cx(ui.button, ui.buttonDefault)}
+                        href="/app"
+                    >
                         <ArrowLeft size={18} /> Projects
                     </Link>
                     {project && (
                         <button
-                            className={ui.button}
+                            className={cx(ui.button, ui.buttonDefault)}
                             onClick={() => void validateAndExport()}
                         >
                             <Download size={18} /> CSV
@@ -255,7 +264,11 @@ export default function ProjectPage({
                             </h1>
                             {project && (
                                 <button
-                                    className={cx(ui.button, ui.buttonIcon)}
+                                    className={cx(
+                                        ui.button,
+                                        ui.buttonDefault,
+                                        ui.buttonIcon,
+                                    )}
                                     onClick={() => setRenaming(true)}
                                     title="Rename project"
                                 >
@@ -270,7 +283,10 @@ export default function ProjectPage({
                 </div>
                 <div className={ui.buttonRow}>
                     <ThemeSettingsButton />
-                    <button className={ui.button} onClick={load}>
+                    <button
+                        className={cx(ui.button, ui.buttonDefault)}
+                        onClick={load}
+                    >
                         <RefreshCcw size={18} /> Refresh
                     </button>
                 </div>

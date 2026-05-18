@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
-    signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
-    signInWithPopup,
     onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signInWithPopup,
     type User,
 } from "firebase/auth";
-import { useRouter } from "next/navigation.js";
 import { default as LinkModule } from "next/link.js";
+import { useRouter } from "next/navigation.js";
+import { useEffect, useState } from "react";
 
 import { auth } from "../firebase/firebase.utils.js";
 import { activeTheme, cx, ui } from "../lib/styles.js";
@@ -41,7 +41,11 @@ const submitButtonClass = cx(
     ui.buttonPrimary,
     "w-full py-3.5 font-bold no-underline",
 );
-const googleButtonClass = cx(ui.button, "w-full py-3.5 font-semibold");
+const googleButtonClass = cx(
+    ui.button,
+    ui.buttonDefault,
+    "w-full py-3.5 font-semibold",
+);
 const registerLinkClass =
     "cursor-pointer border-0 bg-transparent p-0 font-semibold text-slate-900 underline-offset-2 hover:underline dark:text-slate-100";
 

@@ -5,24 +5,29 @@
     "workspaces": [
         "apps/*",
         "functions/*",
+        "generated/*",
         "libraries/*"
     ],
     "scripts": {
         "build": "tsc --build tsconfig.build.json",
-        "admin-cli": "yarn workspace @apps/admin-cli build && node apps/admin-cli/out/main.js",
-        "deploy": "firebase deploy",
         "deploy:dataconnect": "firebase deploy --only dataconnect",
         "deploy:functions": "firebase deploy --only functions",
         "deploy:storage": "firebase deploy --only storage",
+        "emulators:start": "firebase emulators:start --import=./tmp/data/emulators --export-on-exit",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "lint": "eslint .",
-        "start": "node ./scripts/predeploy-floorplan-analyzer-functions.mjs && yarn build && firebase emulators:start --import=./tmp/data/emulators --export-on-exit"
+        "generate:dataconnect": "firebase dataconnect:sdk:generate",
+        "lint": "eslint . --fix",
+        "lint:check": "eslint .",
+        "start": "node ./scripts/predeploy-floorplan-analyzer-functions.mjs && yarn build && yarn emulators:start"
     },
     "devDependencies": {
         "@apps/admin-cli": "workspace:*",
+        "@eslint/compat": "^2.1.0",
         "@eslint/js": "^10.0.1",
         "eslint": "^10.4.0",
+        "eslint-import-resolver-typescript": "^4.4.4",
+        "eslint-plugin-import": "^2.32.0",
         "firebase-tools": "^15.18.0",
         "globals": "^17.6.0",
         "nx": "22.7.2",
