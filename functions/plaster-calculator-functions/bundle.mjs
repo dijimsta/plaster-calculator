@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import pkg from "./package.json" with { type: "json" };
 
 import { build } from "esbuild";
