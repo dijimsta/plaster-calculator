@@ -79,9 +79,7 @@ export function CanvasWallEdges({
                                       ? 4
                                       : 3) / zoom
                             }
-                            dash={
-                                noPlaster ? [10 / zoom, 7 / zoom] : undefined
-                            }
+                            dash={noPlaster ? [10 / zoom, 7 / zoom] : undefined}
                             opacity={noPlaster ? 0.7 : 1}
                             listening={false}
                         />

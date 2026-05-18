@@ -1,4 +1,5 @@
 # AGENTS.md — TypeScript Style Guide
+
 > Based on [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)
 
 ---
@@ -15,6 +16,7 @@
 ## 2. File & Module Structure
 
 ### File layout (top to bottom)
+
 1. Optional `@fileoverview` JSDoc
 2. Imports (grouped: external → internal → relative)
 3. Constants / module-level declarations
@@ -22,10 +24,12 @@
 5. Exported classes / functions
 
 ### File naming
+
 - Use `kebab-case` for filenames: `plaster-calculator.ts`, `mix-ratio.service.ts`
 - One primary export per file. The filename should reflect the export.
 
 ### Imports
+
 ```ts
 // ✅ Named imports — prefer these
 import { MixRatio } from './mix-ratio';
@@ -44,6 +48,7 @@ export default class Calculator { ... }
 - Never use TypeScript `namespace`. Use ES modules instead.
 
 ### Exports
+
 ```ts
 // ✅ Named exports only
 export class PlasterCalculator { ... }
@@ -64,17 +69,19 @@ export let currentRatio = 1.5; // use a getter function instead
 > **The single most common source of problems: classes that try to do too much.**
 
 ### Rules
+
 - A class should have **one clear responsibility**. If you need "and" to describe what it does, split it.
 - **Max ~150–200 lines** per class (excluding JSDoc/comments) is a strong signal to refactor.
 - Prefer **standalone exported functions** over static utility classes.
 
 ### Split large classes by extracting
-| Pattern | When to apply |
-|---|---|
-| Extract a **service** | Logic for fetching/saving data mixed into a UI component |
-| Extract a **helper module** | Static utility methods that don't use `this` |
+
+| Pattern                              | When to apply                                                  |
+| ------------------------------------ | -------------------------------------------------------------- |
+| Extract a **service**                | Logic for fetching/saving data mixed into a UI component       |
+| Extract a **helper module**          | Static utility methods that don't use `this`                   |
 | Extract a **sub-class or interface** | A class has multiple "modes" or conceptually separate concerns |
-| Extract a **type/interface file** | A class is half-types, half-logic |
+| Extract a **type/interface file**    | A class is half-types, half-logic                              |
 
 ```ts
 // ❌ Too broad
@@ -97,6 +104,7 @@ export function formatRatio(r: Ratio): string { ... }
 ```
 
 ### Avoid static container classes
+
 ```ts
 // ❌ Namespace disguised as a class
 class Utils {
@@ -110,6 +118,7 @@ export function clamp(n: number, min: number, max: number): number { ... }
 ```
 
 ### Class member order
+
 1. `static readonly` constants
 2. `readonly` instance properties
 3. Private fields
@@ -140,6 +149,7 @@ const hasError = errors.length > 0;
 ```
 
 ### Functions
+
 - Keep functions **under ~30 lines**. Extract helpers liberally.
 - Prefer pure functions (no side effects, same input → same output).
 - Avoid more than **3 parameters**; use an options object instead.
@@ -189,13 +199,14 @@ const value = maybeNull!.property;
 ## 6. Classes — Detailed Rules
 
 ### Constructor
+
 ```ts
 // ✅ Use parameter properties for simple injection
 class MixCalculator {
-  constructor(
-    private readonly validator: InputValidator,
-    private readonly formatter: OutputFormatter,
-  ) {}
+    constructor(
+        private readonly validator: InputValidator,
+        private readonly formatter: OutputFormatter,
+    ) {}
 }
 ```
 
@@ -205,11 +216,13 @@ class MixCalculator {
 - Initialize fields at declaration when possible — often eliminates the constructor entirely.
 
 ### Visibility
+
 - Use TypeScript `private` / `protected` / `public`, not `#privateFields`.
 - Default to `private`. Only widen to `protected` or `public` when necessary.
 - Do not use `obj['field']` to bypass visibility.
 
 ### Getters & setters
+
 ```ts
 // ✅ Getters must be pure (no side effects)
 get totalWeight(): number {
@@ -239,18 +252,18 @@ const label = mix?.label ?? 'Unknown';
 
 ## 8. Naming Conventions
 
-| Construct | Convention | Example |
-|---|---|---|
-| Classes | `PascalCase` | `MixRatioCalculator` |
-| Interfaces | `PascalCase` | `MixOptions` |
-| Type aliases | `PascalCase` | `WeightUnit` |
-| Enums | `PascalCase` | `MixState` |
-| Enum values | `UPPER_SNAKE_CASE` | `MixState.NOT_STARTED` |
-| Functions & methods | `camelCase` | `computeRatio()` |
-| Variables & parameters | `camelCase` | `waterVolumeL` |
-| Constants (module-level) | `UPPER_SNAKE_CASE` | `MAX_PLASTER_KG` |
-| Files | `kebab-case` | `mix-ratio-calculator.ts` |
-| Test files | `*.test.ts` | `mix-ratio-calculator.test.ts` |
+| Construct                | Convention         | Example                        |
+| ------------------------ | ------------------ | ------------------------------ |
+| Classes                  | `PascalCase`       | `MixRatioCalculator`           |
+| Interfaces               | `PascalCase`       | `MixOptions`                   |
+| Type aliases             | `PascalCase`       | `WeightUnit`                   |
+| Enums                    | `PascalCase`       | `MixState`                     |
+| Enum values              | `UPPER_SNAKE_CASE` | `MixState.NOT_STARTED`         |
+| Functions & methods      | `camelCase`        | `computeRatio()`               |
+| Variables & parameters   | `camelCase`        | `waterVolumeL`                 |
+| Constants (module-level) | `UPPER_SNAKE_CASE` | `MAX_PLASTER_KG`               |
+| Files                    | `kebab-case`       | `mix-ratio-calculator.ts`      |
+| Test files               | `*.test.ts`        | `mix-ratio-calculator.test.ts` |
 
 ---
 

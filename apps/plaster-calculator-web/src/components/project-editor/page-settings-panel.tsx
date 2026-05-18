@@ -29,7 +29,8 @@ export function PageSettingsPanel({
         <section className={cx(ui.panel, ui.stack)}>
             <h3>Page {page.pageNumber}</h3>
             <span className={ui.muted}>
-                {status || "Ready"} {dirty ? "- autosaves every 15 seconds" : ""}
+                {status || "Ready"}{" "}
+                {dirty ? "- autosaves every 15 seconds" : ""}
             </span>
             <div className={ui.field}>
                 <label>Ceiling height mm</label>
@@ -42,7 +43,9 @@ export function PageSettingsPanel({
                     value={ceilingHeightMm ?? ""}
                     onChange={(event) => {
                         setCeilingHeightMm(
-                            event.target.value ? Number(event.target.value) : null,
+                            event.target.value
+                                ? Number(event.target.value)
+                                : null,
                         );
                         setDirty(true);
                     }}

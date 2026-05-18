@@ -115,8 +115,7 @@ function moveArea(
                 ? {
                       ...currentArea,
                       points: currentArea.points.map(
-                          ([x, y]) =>
-                              [x + offset.dx, y + offset.dy] as Point,
+                          ([x, y]) => [x + offset.dx, y + offset.dy] as Point,
                       ),
                   }
                 : currentArea,
@@ -124,9 +123,10 @@ function moveArea(
     };
 }
 
-function clientPoint(
-    event: KonvaEventObject<MouseEvent | TouchEvent>,
-): { x: number; y: number } {
+function clientPoint(event: KonvaEventObject<MouseEvent | TouchEvent>): {
+    x: number;
+    y: number;
+} {
     const evt = event.evt;
     if ("touches" in evt) {
         const touch = evt.touches[0] ?? evt.changedTouches[0];

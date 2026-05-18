@@ -25,7 +25,11 @@ export function PdfPageModal({
                         <p className={ui.muted}>Tick the pages to process.</p>
                     </div>
                     <button
-                        className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
                         disabled={loading}
                         onClick={closePdfModal}
                     >

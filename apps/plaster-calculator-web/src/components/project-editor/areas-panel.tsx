@@ -48,10 +48,7 @@ export function AreasPanel({
                         )}
                         key={area.id}
                         onClick={(event) => {
-                            selectArea(
-                                area.id,
-                                event.ctrlKey || event.metaKey,
-                            );
+                            selectArea(area.id, event.ctrlKey || event.metaKey);
                         }}
                     >
                         <strong>{area.label}</strong>

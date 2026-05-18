@@ -25,5 +25,13 @@ export function useEditorAutosave({
             if (dirty && !saving && !autoSaving) void save(false, true);
         }, 15000);
         return () => window.clearInterval(timer);
-    }, [dirty, overlay, scaleMmPerPx, ceilingHeightMm, saving, autoSaving, save]);
+    }, [
+        dirty,
+        overlay,
+        scaleMmPerPx,
+        ceilingHeightMm,
+        saving,
+        autoSaving,
+        save,
+    ]);
 }

@@ -7,9 +7,14 @@ import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type { SelectionMetrics } from "./editor-sidebar.types.js";
 
 interface SelectionPanelProps {
-    readonly areaIssue: (areaId: string, field: ValidationIssue["field"]) => string;
+    readonly areaIssue: (
+        areaId: string,
+        field: ValidationIssue["field"],
+    ) => string;
     readonly clearSelectedEdgeOverride: () => void;
-    readonly commonMaterialValue: (field: "wallPlasterType" | "ceilingPlasterType") => string;
+    readonly commonMaterialValue: (
+        field: "wallPlasterType" | "ceilingPlasterType",
+    ) => string;
     readonly fieldError: (message: string) => ReactNode;
     readonly metrics: SelectionMetrics | null;
     readonly renderCeilingControls: (area: AreaPolygon) => ReactNode;
@@ -19,11 +24,17 @@ interface SelectionPanelProps {
     readonly selectedEdgeArea: AreaPolygon | null;
     readonly selectedEdgeOverride: EdgeOverride | undefined | null;
     readonly selectedPointIndexes: number[];
-    readonly setMaterial: (field: "wallPlasterType" | "ceilingPlasterType", value: string) => void;
+    readonly setMaterial: (
+        field: "wallPlasterType" | "ceilingPlasterType",
+        value: string,
+    ) => void;
     readonly setSelectedEdgeMaterial: (value: string) => void;
     readonly setSelectedEdgeNoPlaster: (noPlaster: boolean) => void;
     readonly toggleOutdoor: () => void;
-    readonly updateArea: (areaId: string, updater: (area: AreaPolygon) => AreaPolygon) => void;
+    readonly updateArea: (
+        areaId: string,
+        updater: (area: AreaPolygon) => AreaPolygon,
+    ) => void;
 }
 
 export function SelectionPanel({
@@ -266,7 +277,9 @@ function SingleAreaControls({
             </div>
             <div className={ui.metric}>
                 Ceiling area:{" "}
-                {metrics ? `${metrics.ceilingAreaM2.toFixed(2)} m2` : "set scale"}
+                {metrics
+                    ? `${metrics.ceilingAreaM2.toFixed(2)} m2`
+                    : "set scale"}
             </div>
         </>
     );

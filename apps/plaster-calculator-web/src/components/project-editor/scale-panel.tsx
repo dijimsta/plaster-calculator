@@ -102,9 +102,7 @@ export function ScalePanel({
             </button>
             <div className={ui.metric}>
                 Scale:{" "}
-                {scaleMmPerPx
-                    ? `${scaleMmPerPx.toFixed(3)} mm/px`
-                    : "not set"}
+                {scaleMmPerPx ? `${scaleMmPerPx.toFixed(3)} mm/px` : "not set"}
             </div>
         </section>
     );

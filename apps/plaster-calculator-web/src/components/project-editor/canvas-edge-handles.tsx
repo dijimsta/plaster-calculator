@@ -43,7 +43,9 @@ export function CanvasEdgeHandles({
                             points={[point[0], point[1], next[0], next[1]]}
                             stroke="transparent"
                             strokeWidth={18 / zoom}
-                            draggable={!isSettingReference && !isDrawingFreeShape}
+                            draggable={
+                                !isSettingReference && !isDrawingFreeShape
+                            }
                             onClick={(event) => {
                                 if (isSettingReference || isDrawingFreeShape)
                                     return;
@@ -195,9 +197,10 @@ function moveEdge(
     };
 }
 
-function clientPoint(
-    event: KonvaEventObject<MouseEvent | TouchEvent>,
-): { x: number; y: number } {
+function clientPoint(event: KonvaEventObject<MouseEvent | TouchEvent>): {
+    x: number;
+    y: number;
+} {
     const evt = event.evt;
     if ("touches" in evt) {
         const touch = evt.touches[0] ?? evt.changedTouches[0];

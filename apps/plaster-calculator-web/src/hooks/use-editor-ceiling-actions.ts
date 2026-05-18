@@ -101,9 +101,7 @@ export function useEditorCeilingActions({
         setSelectedAreaHeight,
     };
 
-    function updateSelectedArea(
-        updater: (area: AreaPolygon) => AreaPolygon,
-    ) {
+    function updateSelectedArea(updater: (area: AreaPolygon) => AreaPolygon) {
         if (!selectedArea) return;
         updateArea(selectedArea.id, updater);
     }

@@ -136,7 +136,10 @@ export function EditorCanvas({
         }, 0);
     }
 
-    function snapDraftPoint(pointer: Point): { point: Point; guide: SnapGuide } {
+    function snapDraftPoint(pointer: Point): {
+        point: Point;
+        guide: SnapGuide;
+    } {
         const anchor = draftPoints[draftPoints.length - 1];
         return anchor
             ? snapToReferences(pointer, [anchor], zoom)

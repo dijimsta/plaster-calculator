@@ -103,7 +103,11 @@ export function EditorToolbar({
                 </button>
                 <div className="relative">
                     <button
-                        className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
                         onClick={() => onSetAddMenuOpen(!addMenuOpen)}
                         title="Add area"
                     >

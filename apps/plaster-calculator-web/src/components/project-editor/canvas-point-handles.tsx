@@ -100,7 +100,14 @@ export function CanvasPointHandles({
                             y: nextPoint[1],
                         });
                         setSnapGuide(snapped.guide);
-                        setOverlay(movePoint(drag.before, selectedArea.id, index, nextPoint));
+                        setOverlay(
+                            movePoint(
+                                drag.before,
+                                selectedArea.id,
+                                index,
+                                nextPoint,
+                            ),
+                        );
                         setDirty(true);
                     }}
                     onDragEnd={(event) => {
@@ -158,7 +165,8 @@ function pointFill({
     const isSelectedEdgePoint =
         selectedEdge?.areaId === selectedArea.id &&
         (selectedEdge.edgeIndex === index ||
-            (selectedEdge.edgeIndex + 1) % selectedArea.points.length === index);
+            (selectedEdge.edgeIndex + 1) % selectedArea.points.length ===
+                index);
     const isSelectedAreaPoint =
         !selectedEdge &&
         selectedAreaIds.includes(selectedArea.id) &&
@@ -222,9 +230,10 @@ function snapDraggedPoint(
     return snapToReferences(pointer, [previous, next], zoom);
 }
 
-function clientPoint(
-    event: KonvaEventObject<MouseEvent | TouchEvent>,
-): { x: number; y: number } {
+function clientPoint(event: KonvaEventObject<MouseEvent | TouchEvent>): {
+    x: number;
+    y: number;
+} {
     const evt = event.evt;
     if ("touches" in evt) {
         const touch = evt.touches[0] ?? evt.changedTouches[0];

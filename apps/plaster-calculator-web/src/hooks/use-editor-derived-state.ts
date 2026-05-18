@@ -57,10 +57,12 @@ export function useEditorDerivedState({
         visibleAreas.find((area) => area.id === selectedEdge?.areaId) ?? null;
     const selectedEdgeOverride =
         selectedEdgeArea && selectedEdge
-            ? selectedEdgeArea.edgeOverrides?.[String(selectedEdge.edgeIndex)] ??
-              null
+            ? (selectedEdgeArea.edgeOverrides?.[
+                  String(selectedEdge.edgeIndex)
+              ] ?? null)
             : null;
-    const imageWidth = image?.naturalWidth ?? overlay.imageSizePx?.width ?? 1200;
+    const imageWidth =
+        image?.naturalWidth ?? overlay.imageSizePx?.width ?? 1200;
     const imageHeight =
         image?.naturalHeight ?? overlay.imageSizePx?.height ?? 900;
     const stageWidth = imageWidth * zoom;

@@ -81,8 +81,8 @@ export function ProjectHistory({
                                         )}
                                     >
                                         {project.originalFileName} /{" "}
-                                        {project.uploadType} / {project.status} /{" "}
-                                        {project.pageCount}{" "}
+                                        {project.uploadType} / {project.status}{" "}
+                                        / {project.pageCount}{" "}
                                         {project.pageCount === 1
                                             ? "page"
                                             : "pages"}{" "}

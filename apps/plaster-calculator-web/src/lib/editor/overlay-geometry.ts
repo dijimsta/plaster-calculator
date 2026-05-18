@@ -83,10 +83,7 @@ export function ceilingAreaM2ForArea(
     return flatM2 * Math.sqrt(1 + Math.pow(riseM / runM, 2));
 }
 
-export function edgeMidpoint(
-    points: Point[],
-    edgeIndex: number,
-): Point | null {
+export function edgeMidpoint(points: Point[], edgeIndex: number): Point | null {
     if (edgeIndex < 0 || edgeIndex >= points.length) return null;
     const a = pointAt(points, edgeIndex);
     const b = pointAt(points, (edgeIndex + 1) % points.length);

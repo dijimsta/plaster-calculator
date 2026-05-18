@@ -1,6 +1,9 @@
 import { Upload } from "lucide-react";
 import { cx, ui } from "../../lib/styles.js";
-import type { FileInputChange, NewProjectFormProps } from "./dashboard.types.js";
+import type {
+    FileInputChange,
+    NewProjectFormProps,
+} from "./dashboard.types.js";
 import { ProcessingStrategySelect } from "./processing-strategy-select.js";
 
 export function NewProjectForm({
@@ -60,7 +63,9 @@ export function NewProjectForm({
                         }
                     />
                     <Upload size={28} />
-                    <strong>{file ? file.name : "Drop a PDF or image here"}</strong>
+                    <strong>
+                        {file ? file.name : "Drop a PDF or image here"}
+                    </strong>
                     <span className={ui.muted}>
                         {file
                             ? "Click to choose a different file"
@@ -83,8 +88,7 @@ export function NewProjectForm({
             {message && (
                 <p
                     className={
-                        message.includes("failed") ||
-                        message.includes("Unable")
+                        message.includes("failed") || message.includes("Unable")
                             ? ui.error
                             : ui.muted
                     }

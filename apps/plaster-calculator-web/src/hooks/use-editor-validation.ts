@@ -57,9 +57,7 @@ export function useEditorValidation({
 
     const hasPageHeightIssue = useCallback(
         () =>
-            validationIssues.some(
-                (issue) => issue.field === "ceilingHeightMm",
-            ),
+            validationIssues.some((issue) => issue.field === "ceilingHeightMm"),
         [validationIssues],
     );
 

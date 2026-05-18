@@ -10,34 +10,36 @@ import {
     rakedAfterPointRemoval,
     splitEdgeOverrides,
 } from "../lib/editor/edge-overrides.js";
-import type { EditorActionsOptions, UpdateArea } from "./use-editor-actions.types.js";
+import type {
+    EditorActionsOptions,
+    UpdateArea,
+} from "./use-editor-actions.types.js";
 
-interface AreaActionsOptions
-    extends Pick<
-        EditorActionsOptions,
-        | "canvasWrapRef"
-        | "commit"
-        | "imageHeight"
-        | "imageWidth"
-        | "overlay"
-        | "selectedArea"
-        | "selectedEdge"
-        | "selectedPoint"
-        | "selectedPointIndexes"
-        | "viewport"
-        | "zoom"
-        | "setAddMenuOpen"
-        | "setDraftPointer"
-        | "setDraftPoints"
-        | "setIsDrawingFreeShape"
-        | "setSelectedAreaId"
-        | "setSelectedAreaIds"
-        | "setSelectedEdge"
-        | "setSelectedPoint"
-        | "setSelectedPointIndexes"
-        | "setSnapGuide"
-        | "setStatus"
-    > {
+interface AreaActionsOptions extends Pick<
+    EditorActionsOptions,
+    | "canvasWrapRef"
+    | "commit"
+    | "imageHeight"
+    | "imageWidth"
+    | "overlay"
+    | "selectedArea"
+    | "selectedEdge"
+    | "selectedPoint"
+    | "selectedPointIndexes"
+    | "viewport"
+    | "zoom"
+    | "setAddMenuOpen"
+    | "setDraftPointer"
+    | "setDraftPoints"
+    | "setIsDrawingFreeShape"
+    | "setSelectedAreaId"
+    | "setSelectedAreaIds"
+    | "setSelectedEdge"
+    | "setSelectedPoint"
+    | "setSelectedPointIndexes"
+    | "setSnapGuide"
+    | "setStatus"
+> {
     readonly updateArea: UpdateArea;
 }
 
@@ -203,7 +205,9 @@ export function useEditorAreaActions(options: AreaActionsOptions) {
             setStatus("Select two points before straightening");
             return;
         }
-        const sorted = [...selectedPointIndexes].sort((left, right) => left - right);
+        const sorted = [...selectedPointIndexes].sort(
+            (left, right) => left - right,
+        );
         const a = sorted[0];
         const b = sorted[1];
         if (a == null || b == null) return;
