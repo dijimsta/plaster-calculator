@@ -1,6 +1,6 @@
-import type { RefObject } from "react";
 import type { AreaPolygon, Overlay, Point } from "../types.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
+import type { RefObject } from "react";
 
 export interface ViewportSize {
     readonly width: number;

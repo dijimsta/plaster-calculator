@@ -1,7 +1,8 @@
-import type { AreaPolygon } from "../types.js";
-import type { SelectedEdge } from "./use-editor-selection.js";
 import { effectiveFlatHeight } from "../lib/editor/overlay-geometry.js";
+
+import type { AreaPolygon } from "../types.js";
 import type { UpdateArea } from "./use-editor-actions.types.js";
+import type { SelectedEdge } from "./use-editor-selection.js";
 
 interface CeilingActionsOptions {
     readonly ceilingHeightMm: number | null;

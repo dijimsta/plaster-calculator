@@ -1,7 +1,9 @@
 import { FileUp, X } from "lucide-react";
-import { cx, ui } from "../../lib/styles.js";
-import type { PdfPageModalProps } from "./dashboard.types.js";
+
 import { ProcessingStrategySelect } from "./processing-strategy-select.js";
+import { cx, ui } from "../../lib/styles.js";
+
+import type { PdfPageModalProps } from "./dashboard.types.js";
 
 export function PdfPageModal({
     id,

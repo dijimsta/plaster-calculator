@@ -1,27 +1,30 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { Stage as KonvaStage } from "konva/lib/Stage.js";
-import type { Point } from "../../types.js";
-import { ui } from "../../lib/styles.js";
-import { useEditorImage } from "../../hooks/use-editor-image.js";
-import { useEditorKeyboardShortcuts } from "../../hooks/use-editor-keyboard-shortcuts.js";
-import { useEditorViewport } from "../../hooks/use-editor-viewport.js";
-import { useEditorHistory } from "../../hooks/use-editor-history.js";
-import { useEditorSelection } from "../../hooks/use-editor-selection.js";
-import { useEditorOverlay } from "../../hooks/use-editor-overlay.js";
+
+import { EditorCanvas } from "./editor-canvas.js";
+import { EditorSidebar } from "./editor-sidebar.js";
+import { EditorToolbar } from "./editor-toolbar.js";
 import { useEditorActions } from "../../hooks/use-editor-actions.js";
 import { useEditorDerivedState } from "../../hooks/use-editor-derived-state.js";
+import { useEditorHistory } from "../../hooks/use-editor-history.js";
+import { useEditorImage } from "../../hooks/use-editor-image.js";
+import { useEditorKeyboardShortcuts } from "../../hooks/use-editor-keyboard-shortcuts.js";
+import { useEditorOverlay } from "../../hooks/use-editor-overlay.js";
 import { useEditorPersistence } from "../../hooks/use-editor-persistence.js";
+import { useEditorSelection } from "../../hooks/use-editor-selection.js";
 import { useEditorValidation } from "../../hooks/use-editor-validation.js";
+import { useEditorViewport } from "../../hooks/use-editor-viewport.js";
+import { ui } from "../../lib/styles.js";
+
 import type {
     OverlayMode,
     ProjectEditorProps,
     SnapGuide,
 } from "./project-editor.types.js";
-import { EditorToolbar } from "./editor-toolbar.js";
-import { EditorSidebar } from "./editor-sidebar.js";
-import { EditorCanvas } from "./editor-canvas.js";
+import type { Point } from "../../types.js";
+import type { Stage as KonvaStage } from "konva/lib/Stage.js";
+
 
 export function ProjectEditor({
     project,

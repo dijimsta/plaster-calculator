@@ -1,14 +1,16 @@
 import { useRef } from "react";
 import { Circle } from "react-konva";
-import type { KonvaEventObject } from "konva/lib/Node.js";
-import type { AreaPolygon, Overlay, Point } from "../../types.js";
-import { activeTheme } from "../../lib/styles.js";
-import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
+
 import { pointAt } from "../../lib/editor/overlay-geometry.js";
+import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
 import { snapToReferences } from "../../lib/editor/snap-guides.js";
+import { activeTheme } from "../../lib/styles.js";
+
+import type { CanvasPointHandlesProps } from "./canvas-point-handles.types.js";
 import type { DragState, SnapGuide } from "./project-editor.types.js";
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
-import type { CanvasPointHandlesProps } from "./canvas-point-handles.types.js";
+import type { AreaPolygon, Overlay, Point } from "../../types.js";
+import type { KonvaEventObject } from "konva/lib/Node.js";
 
 const SELECTED_COLOR = activeTheme.editor.selected;
 const SELECTED_POINT_COLOR = activeTheme.editor.selectedPoint;

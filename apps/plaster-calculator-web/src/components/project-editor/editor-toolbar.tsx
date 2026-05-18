@@ -13,9 +13,11 @@ import {
     Undo2,
     ZoomIn,
 } from "lucide-react";
-import type { AreaPolygon } from "../../types.js";
+
 import { cx, ui } from "../../lib/styles.js";
+
 import type { OverlayMode } from "./project-editor.types.js";
+import type { AreaPolygon } from "../../types.js";
 
 interface EditorToolbarProps {
     readonly addMenuOpen: boolean;

@@ -1,5 +1,5 @@
-import type { Point } from "../../types.js";
 import type { SnapGuide } from "../../components/project-editor/project-editor.types.js";
+import type { Point } from "../../types.js";
 
 const SNAP_THRESHOLD_PX = 10;
 

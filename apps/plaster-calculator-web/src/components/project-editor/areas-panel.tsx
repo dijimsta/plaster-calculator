@@ -1,9 +1,10 @@
-import type { AreaPolygon } from "../../types.js";
 import {
     BOARD_SWATCH_CLASSES,
     BOARD_TYPES,
 } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
+
+import type { AreaPolygon } from "../../types.js";
 
 interface AreasPanelProps {
     readonly selectedAreaIds: string[];

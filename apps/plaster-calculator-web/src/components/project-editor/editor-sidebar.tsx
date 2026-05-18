@@ -1,10 +1,11 @@
-import { ui } from "../../lib/styles.js";
 import { AreasPanel } from "./areas-panel.js";
-import type { EditorSidebarProps } from "./editor-sidebar.types.js";
 import { PageSettingsPanel } from "./page-settings-panel.js";
 import { ScalePanel } from "./scale-panel.js";
 import { SelectionPanel } from "./selection-panel.js";
 import { SummaryPanel } from "./summary-panel.js";
+import { ui } from "../../lib/styles.js";
+
+import type { EditorSidebarProps } from "./editor-sidebar.types.js";
 
 export function EditorSidebar({
     page,

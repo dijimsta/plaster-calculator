@@ -1,8 +1,8 @@
-import type { Overlay, ProjectDetail, FloorplanPage } from "../../types.js";
 import type {
     PageValidationInput,
     ValidationIssue,
 } from "../../lib/validation.js";
+import type { Overlay, ProjectDetail, FloorplanPage } from "../../types.js";
 
 export interface ProjectEditorProps {
     readonly project: ProjectDetail;

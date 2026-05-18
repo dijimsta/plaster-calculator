@@ -1,11 +1,13 @@
 import { useCallback, useState } from "react";
-import type { Overlay, Point } from "../types.js";
+
+import { useEditorAutosave } from "./use-editor-autosave.js";
 import {
     applyCeilingHeightToProject,
     applyScaleToProject,
     savePageOverlay,
 } from "../lib/api.js";
-import { useEditorAutosave } from "./use-editor-autosave.js";
+
+import type { Overlay, Point } from "../types.js";
 
 interface EditorPersistenceOptions {
     readonly ceilingHeightMm: number | null;

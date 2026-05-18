@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
-import type { AreaPolygon, EdgeOverride } from "../../types.js";
-import type { ValidationIssue } from "../../lib/validation.js";
 import { BOARD_TYPES } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
-import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+
 import type { SelectionMetrics } from "./editor-sidebar.types.js";
+import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import type { ValidationIssue } from "../../lib/validation.js";
+import type { AreaPolygon, EdgeOverride } from "../../types.js";
+import type { ReactNode } from "react";
 
 interface SelectionPanelProps {
     readonly areaIssue: (

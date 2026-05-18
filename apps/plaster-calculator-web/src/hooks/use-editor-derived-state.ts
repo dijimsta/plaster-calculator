@@ -1,14 +1,16 @@
 import { useMemo } from "react";
-import type { AreaPolygon, EdgeOverride, Overlay } from "../types.js";
+
 import {
     ceilingAreaM2ForArea,
     wallLengthByType,
 } from "../lib/editor/overlay-geometry.js";
+
+import type { SelectedEdge } from "./use-editor-selection.js";
 import type {
     EditorSummary,
     SelectionMetrics,
 } from "../components/project-editor/editor-sidebar.types.js";
-import type { SelectedEdge } from "./use-editor-selection.js";
+import type { AreaPolygon, EdgeOverride, Overlay } from "../types.js";
 
 interface EditorDerivedStateOptions {
     readonly image: HTMLImageElement | null;

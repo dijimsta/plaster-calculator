@@ -1,7 +1,7 @@
-import type { RefObject } from "react";
-import type { AreaPolygon, Overlay } from "../../types.js";
-import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type { SnapGuide } from "./project-editor.types.js";
+import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import type { AreaPolygon, Overlay } from "../../types.js";
+import type { RefObject } from "react";
 
 export interface CanvasPointHandlesProps {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;

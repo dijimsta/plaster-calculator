@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
-import type { FloorplanPage } from "../../types.js";
 import { cx, ui } from "../../lib/styles.js";
+
+import type { FloorplanPage } from "../../types.js";
+import type { ReactNode } from "react";
 
 interface PageSettingsPanelProps {
     readonly ceilingHeightMm: number | null;

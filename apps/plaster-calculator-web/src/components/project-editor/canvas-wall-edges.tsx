@@ -1,10 +1,12 @@
 import { Line } from "react-konva";
-import type { AreaPolygon } from "../../types.js";
-import { activeTheme } from "../../lib/styles.js";
+
 import { colorFor } from "../../lib/editor/board-materials.js";
 import { pointAt } from "../../lib/editor/overlay-geometry.js";
+import { activeTheme } from "../../lib/styles.js";
+
 import type { OverlayMode } from "./project-editor.types.js";
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import type { AreaPolygon } from "../../types.js";
 
 const SELECTED_COLOR = activeTheme.editor.selected;
 const LOW_EDGE_COLOR = activeTheme.editor.lowEdge;

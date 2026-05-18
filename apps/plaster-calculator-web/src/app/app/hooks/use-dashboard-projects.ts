@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+
 import {
     deleteProject,
     getProjectStatus,
@@ -6,6 +7,7 @@ import {
     listProcessingStrategies,
     renameProject,
 } from "../../../lib/api.js";
+
 import type { ProcessingStrategyInfo, ProjectSummary } from "../../../types.js";
 
 interface DashboardProjectsState {

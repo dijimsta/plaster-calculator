@@ -1,15 +1,16 @@
-import type { AreaPolygon, Point } from "../types.js";
-import {
-    clamp,
-    pathLengthBetween,
-    pointAt,
-} from "../lib/editor/overlay-geometry.js";
 import {
     edgeOverridesAfterInsert,
     edgeOverridesAfterRemoveMany,
     rakedAfterPointRemoval,
     splitEdgeOverrides,
 } from "../lib/editor/edge-overrides.js";
+import {
+    clamp,
+    pathLengthBetween,
+    pointAt,
+} from "../lib/editor/overlay-geometry.js";
+
+import type { AreaPolygon, Point } from "../types.js";
 import type {
     EditorActionsOptions,
     UpdateArea,

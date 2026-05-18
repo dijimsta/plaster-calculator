@@ -1,8 +1,8 @@
-import type { RefObject } from "react";
-import type { Stage as KonvaStage } from "konva/lib/Stage.js";
-import type { AreaPolygon, Overlay, Point } from "../../types.js";
-import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type { OverlayMode, SnapGuide } from "./project-editor.types.js";
+import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import type { AreaPolygon, Overlay, Point } from "../../types.js";
+import type { Stage as KonvaStage } from "konva/lib/Stage.js";
+import type { RefObject } from "react";
 
 export interface ScrollDragState {
     x: number;

@@ -1,7 +1,8 @@
-import type { RefObject } from "react";
-import type { Point } from "../types.js";
 import { clamp } from "../lib/editor/overlay-geometry.js";
+
+import type { Point } from "../types.js";
 import type { ViewportSize } from "./use-editor-actions.types.js";
+import type { RefObject } from "react";
 
 interface ScaleActionsOptions {
     readonly canvasWrapRef: RefObject<HTMLDivElement | null>;

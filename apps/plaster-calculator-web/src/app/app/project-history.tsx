@@ -1,6 +1,8 @@
-import { default as LinkModule } from "next/link.js";
 import { LoaderCircle, Pencil, Search, Trash2 } from "lucide-react";
+import { default as LinkModule } from "next/link.js";
+
 import { cx, ui } from "../../lib/styles.js";
+
 import type { ProjectHistoryProps } from "./dashboard.types.js";
 
 const Link = LinkModule.default;

@@ -1,8 +1,11 @@
-import type { AreaPolygon } from "../../types.js";
-import type { ValidationIssue } from "../../lib/validation.js";
-import { cx, ui } from "../../lib/styles.js";
-import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import { ValidationMessage } from "./validation-message.js";
+import { cx, ui } from "../../lib/styles.js";
+
+import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import type { ValidationIssue } from "../../lib/validation.js";
+import type { AreaPolygon } from "../../types.js";
+
+
 
 interface CeilingControlsProps {
     readonly area: AreaPolygon;

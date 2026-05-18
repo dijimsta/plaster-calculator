@@ -2,14 +2,14 @@
 
 import { RefreshCcw } from "lucide-react";
 
-import ThemeSettingsButton from "../../components/ThemeSettingsButton.js";
-import { cx, ui } from "../../lib/styles.js";
 import { DashboardToast } from "./dashboard-toast.js";
 import { useDashboardProjects } from "./hooks/use-dashboard-projects.js";
 import { useDashboardUpload } from "./hooks/use-dashboard-upload.js";
 import { NewProjectForm } from "./new-project-form.js";
 import { PdfPageModal } from "./pdf-page-modal.js";
 import { ProjectHistory } from "./project-history.js";
+import ThemeSettingsButton from "../../components/ThemeSettingsButton.js";
+import { cx, ui } from "../../lib/styles.js";
 
 export default function HomePage() {
     const projects = useDashboardProjects();

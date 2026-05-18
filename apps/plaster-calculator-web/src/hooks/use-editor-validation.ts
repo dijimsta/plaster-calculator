@@ -1,10 +1,12 @@
 import { createElement, useCallback } from "react";
-import type { ReactNode } from "react";
-import type { AreaPolygon } from "../types.js";
-import type { ValidationIssue } from "../lib/validation.js";
+
 import { CeilingControls } from "../components/project-editor/ceiling-controls.js";
 import { ValidationMessage } from "../components/project-editor/validation-message.js";
+
 import type { SelectedEdge } from "./use-editor-selection.js";
+import type { ValidationIssue } from "../lib/validation.js";
+import type { AreaPolygon } from "../types.js";
+import type { ReactNode } from "react";
 
 interface EditorValidationOptions {
     readonly ceilingHeightMm: number | null;

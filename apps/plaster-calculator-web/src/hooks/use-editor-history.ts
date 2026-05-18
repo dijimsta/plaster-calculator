@@ -1,6 +1,8 @@
 import { useState } from "react";
-import type { Overlay } from "../types.js";
+
 import { cloneOverlay } from "../lib/editor/overlay-serialization.js";
+
+import type { Overlay } from "../types.js";
 
 interface EditorHistoryState {
     readonly future: Overlay[];

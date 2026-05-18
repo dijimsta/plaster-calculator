@@ -1,10 +1,12 @@
 import { useRef, type RefObject } from "react";
 import { Line } from "react-konva";
-import type { KonvaEventObject } from "konva/lib/Node.js";
-import type { AreaPolygon, Overlay, Point } from "../../types.js";
-import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
+
 import { pointAt } from "../../lib/editor/overlay-geometry.js";
+import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
+
 import type { DragState } from "./project-editor.types.js";
+import type { AreaPolygon, Overlay, Point } from "../../types.js";
+import type { KonvaEventObject } from "konva/lib/Node.js";
 
 interface CanvasEdgeHandlesProps {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;

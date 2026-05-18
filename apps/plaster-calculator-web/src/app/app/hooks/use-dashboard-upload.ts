@@ -1,4 +1,5 @@
 import { useState, type DragEvent, type FormEvent } from "react";
+
 import {
     processProject,
     uploadPdfPageSource,
@@ -11,6 +12,7 @@ import {
     revokePdfPreviews,
     type PdfPagePreview,
 } from "../../../lib/pdf.js";
+
 import type { PageUploadProgress } from "../dashboard.types.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 

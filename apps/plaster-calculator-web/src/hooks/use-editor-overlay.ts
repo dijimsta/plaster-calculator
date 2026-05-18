@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
-import type { Overlay, FloorplanPage, Point } from "../types.js";
-import type { PageValidationInput } from "../lib/validation.js";
+
 import {
     parseOverlay,
     parseReferencePoints,
 } from "../lib/editor/overlay-serialization.js";
+
+import type { PageValidationInput } from "../lib/validation.js";
+import type { Overlay, FloorplanPage, Point } from "../types.js";
 
 interface EditorOverlayState {
     readonly ceilingHeightMm: number | null;

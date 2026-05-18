@@ -1,8 +1,10 @@
-import type { ReactNode } from "react";
 import { MousePointer2 } from "lucide-react";
-import type { Point } from "../../types.js";
-import type { ValidationIssue } from "../../lib/validation.js";
+
 import { cx, ui } from "../../lib/styles.js";
+
+import type { ValidationIssue } from "../../lib/validation.js";
+import type { Point } from "../../types.js";
+import type { ReactNode } from "react";
 
 interface ScalePanelProps {
     readonly isSettingReference: boolean;

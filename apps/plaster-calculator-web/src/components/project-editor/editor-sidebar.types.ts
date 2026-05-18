@@ -1,12 +1,12 @@
-import type { ReactNode } from "react";
+import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import type { ValidationIssue } from "../../lib/validation.js";
 import type {
     AreaPolygon,
     EdgeOverride,
     FloorplanPage,
     Point,
 } from "../../types.js";
-import type { ValidationIssue } from "../../lib/validation.js";
-import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import type { ReactNode } from "react";
 
 export interface EditorSummary {
     readonly wallTotals: [string, number][];

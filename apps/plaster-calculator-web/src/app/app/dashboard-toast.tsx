@@ -1,6 +1,8 @@
-import { default as LinkModule } from "next/link.js";
 import { CheckCircle2, X } from "lucide-react";
+import { default as LinkModule } from "next/link.js";
+
 import { cx, ui } from "../../lib/styles.js";
+
 import type { ToastState } from "./dashboard.types.js";
 
 const Link = LinkModule.default;

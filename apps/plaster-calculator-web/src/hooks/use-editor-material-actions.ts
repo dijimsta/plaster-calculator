@@ -1,6 +1,6 @@
 import type { AreaPolygon, EdgeOverride, Overlay } from "../types.js";
-import type { SelectedEdge } from "./use-editor-selection.js";
 import type { UpdateArea } from "./use-editor-actions.types.js";
+import type { SelectedEdge } from "./use-editor-selection.js";
 
 interface MaterialActionsOptions {
     readonly commit: (next: Overlay) => void;

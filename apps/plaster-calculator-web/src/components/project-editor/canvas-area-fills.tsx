@@ -1,10 +1,12 @@
 import { useRef, type RefObject } from "react";
 import { Line } from "react-konva";
-import type { KonvaEventObject } from "konva/lib/Node.js";
-import type { AreaPolygon, Overlay, Point } from "../../types.js";
+
 import { colorFor } from "../../lib/editor/board-materials.js";
 import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
+
 import type { DragState, OverlayMode } from "./project-editor.types.js";
+import type { AreaPolygon, Overlay, Point } from "../../types.js";
+import type { KonvaEventObject } from "konva/lib/Node.js";
 
 interface CanvasAreaFillsProps {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;

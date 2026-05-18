@@ -1,6 +1,6 @@
-import type { ChangeEvent, DragEvent, FormEvent } from "react";
 import type { PdfPagePreview } from "../../lib/pdf.js";
 import type { ProcessingStrategyInfo, ProjectSummary } from "../../types.js";
+import type { ChangeEvent, DragEvent, FormEvent } from "react";
 
 export interface PageUploadProgress {
     readonly current: number;

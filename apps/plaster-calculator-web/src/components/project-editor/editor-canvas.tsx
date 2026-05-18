@@ -1,16 +1,18 @@
 import { Group, Image as KonvaImage, Layer, Rect, Stage } from "react-konva";
-import type { KonvaEventObject } from "konva/lib/Node.js";
-import type { Point } from "../../types.js";
-import { activeTheme, ui } from "../../lib/styles.js";
-import { pointDistance } from "../../lib/editor/overlay-geometry.js";
-import { snapToReferences } from "../../lib/editor/snap-guides.js";
-import type { SnapGuide } from "./project-editor.types.js";
-import { CanvasGuides } from "./canvas-guides.js";
-import { CanvasWallEdges } from "./canvas-wall-edges.js";
+
 import { CanvasAreaFills } from "./canvas-area-fills.js";
 import { CanvasEdgeHandles } from "./canvas-edge-handles.js";
+import { CanvasGuides } from "./canvas-guides.js";
 import { CanvasPointHandles } from "./canvas-point-handles.js";
+import { CanvasWallEdges } from "./canvas-wall-edges.js";
+import { pointDistance } from "../../lib/editor/overlay-geometry.js";
+import { snapToReferences } from "../../lib/editor/snap-guides.js";
+import { activeTheme, ui } from "../../lib/styles.js";
+
 import type { EditorCanvasProps } from "./editor-canvas.types.js";
+import type { SnapGuide } from "./project-editor.types.js";
+import type { Point } from "../../types.js";
+import type { KonvaEventObject } from "konva/lib/Node.js";
 
 export function EditorCanvas({
     canvasWrapRef,

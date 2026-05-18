@@ -1,7 +1,9 @@
 import { Circle, Line } from "react-konva";
-import type { Point } from "../../types.js";
+
 import { activeTheme } from "../../lib/styles.js";
+
 import type { SnapGuide } from "./project-editor.types.js";
+import type { Point } from "../../types.js";
 
 const SELECTED_COLOR = activeTheme.editor.selected;
 

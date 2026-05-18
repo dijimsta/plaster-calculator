@@ -1,10 +1,12 @@
 import { Upload } from "lucide-react";
+
+import { ProcessingStrategySelect } from "./processing-strategy-select.js";
 import { cx, ui } from "../../lib/styles.js";
+
 import type {
     FileInputChange,
     NewProjectFormProps,
 } from "./dashboard.types.js";
-import { ProcessingStrategySelect } from "./processing-strategy-select.js";
 
 export function NewProjectForm({
     dragActive,

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+
 import type { Overlay } from "../types.js";
 
 interface EditorAutosaveOptions {
