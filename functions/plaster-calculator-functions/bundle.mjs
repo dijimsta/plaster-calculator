@@ -1,7 +1,8 @@
 import { writeFileSync } from "node:fs";
-import pkg from "./package.json" with { type: "json" };
 
 import { build } from "esbuild";
+
+import pkg from "./package.json" with { type: "json" };
 
 const TAB_WIDTH = 4;
 const WORKSPACE_PREFIX = "workspace:";

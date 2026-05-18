@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, type PropsWithChildren } from "react";
 import { useRouter } from "next/navigation.js";
+import { type PropsWithChildren, useEffect } from "react";
 
 import { useUser } from "../auth/user.hook.js";
 

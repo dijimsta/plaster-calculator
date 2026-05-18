@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { httpsCallable } from "firebase/functions";
+import { useEffect, useState } from "react";
+
 import { functions } from "../firebase/firebase.utils.js";
 
 export default function HelloWorldMessage() {
