@@ -12,45 +12,101 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.24.0
+
             - uses: actions/setup-node@v4
               with:
                   node-version: 24
-                  cache: yarn
+                  cache: pnpm
 
             - name: Install dependencies
-              run: yarn install --immutable
+              run: pnpm install --frozen-lockfile
 
             - name: Build
-              run: yarn build
+              run: pnpm build
 
     format:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
 
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.24.0
+
             - uses: actions/setup-node@v4
               with:
                   node-version: 24
-                  cache: yarn
+                  cache: pnpm
 
             - name: Install dependencies
-              run: yarn install --immutable
+              run: pnpm install --frozen-lockfile
 
             - name: Check formatting
-              run: yarn format:check
+              run: pnpm format:check
 
     lint:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
 
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.24.0
+
             - uses: actions/setup-node@v4
               with:
                   node-version: 24
-                  cache: yarn
+                  cache: pnpm
 
             - name: Install dependencies
-              run: yarn install --immutable
+              run: pnpm install --frozen-lockfile
 
             - name: Lint
-              run: yarn lint:check
+              run: pnpm lint:check
+
+    dataconnect-dry-run:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.24.0
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Dry run Data Connect deploy
+              run: pnpm exec firebase deploy --only dataconnect --project plaster-calculator --dry-run --token "$FIREBASE_TOKEN"
+              env:
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+    storage-dry-run:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.24.0
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Dry run Storage deploy
+              run: pnpm exec firebase deploy --only storage --project plaster-calculator --dry-run --token "$FIREBASE_TOKEN"
+              env:
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
