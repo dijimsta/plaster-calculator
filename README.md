@@ -48,3 +48,14 @@ gcloud storage buckets describe gs://plaster-calculator.firebasestorage.app \
 ```
 
 Add any new web origin (custom domain, preview deploy) to `storage.cors.json` and re-run the update command — changes can take a minute or two to propagate.
+
+## CI Firebase Authentication
+
+GitHub Actions uses two Firebase authentication paths:
+
+| Secret                     | Used by                         | Notes                                                                                           |
+| -------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `FIREBASE_SERVICE_ACCOUNT` | Data Connect dry-run and deploy | Full Google service account JSON. Required for Application Default Credentials.                 |
+| `FIREBASE_TOKEN`           | Storage and Functions deploys   | Legacy Firebase CLI token. Replace with service account auth when those workflows are migrated. |
+
+Data Connect deploy validation requires Application Default Credentials, so the Data Connect workflows authenticate with `google-github-actions/auth` before running `firebase deploy --only dataconnect`. Do not add `--token` back to those commands.

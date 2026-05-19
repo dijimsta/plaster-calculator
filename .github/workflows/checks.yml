@@ -84,10 +84,13 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
+            - name: Authenticate to Google Cloud
+              uses: google-github-actions/auth@v3
+              with:
+                  credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
             - name: Dry run Data Connect deploy
-              run: pnpm exec firebase deploy --only dataconnect --project plaster-calculator --dry-run --token "$FIREBASE_TOKEN"
-              env:
-                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+              run: pnpm exec firebase deploy --only dataconnect --project plaster-calculator --dry-run
 
     storage-dry-run:
         runs-on: ubuntu-latest
