@@ -1,9 +1,8 @@
-import { Auth } from "firebase-admin/auth";
-
 import {
     CustomUserClaimsSchema,
     type CustomUserClaims,
 } from "@libraries/plaster-calculator-common";
+import { Auth } from "firebase-admin/auth";
 
 export class UsersService {
     public constructor(private readonly auth: Auth) {}
