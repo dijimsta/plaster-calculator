@@ -10,11 +10,21 @@
 import { randomUUID } from "node:crypto";
 
 import {
+    createAccount as dcCreateAccount,
+    createAccountContact as dcCreateAccountContact,
     createFloorplanPage as dcCreateFloorplanPage,
     createProjectFromUpload as dcCreateProjectFromUpload,
+    createReminder as dcCreateReminder,
+    deleteAccount as dcDeleteAccount,
+    deleteAccountContact as dcDeleteAccountContact,
+    deleteAccountContacts as dcDeleteAccountContacts,
     deleteFloorplanPages as dcDeleteFloorplanPages,
     deleteProject as dcDeleteProject,
-    renameProject as dcRenameProject,
+    getAccountById,
+    type GetAccountByIdData,
+    getAccountContactById,
+    type GetAccountContactByIdData,
+    updateProject as dcUpdateProject,
     updateFloorplanPage as dcUpdateFloorplanPage,
     getFloorplanPageById,
     type GetFloorplanPageByIdData,
@@ -22,9 +32,23 @@ import {
     type GetProjectByIdData,
     getProjectDetailsById,
     type GetProjectDetailsByIdData,
+    getReminderById,
+    type GetReminderByIdData,
+    getUserSettings,
     listProjectsByOwner,
     type ListProjectsByOwnerData,
+    listAccountContactsByAccountId as dcListAccountContactsByAccountId,
+    type ListAccountContactsByAccountIdData,
+    listAccountsByOwner,
+    type ListAccountsByOwnerData,
+    listDueReminders as dcListDueReminders,
+    listProjectReminders as dcListProjectReminders,
+    type ListProjectRemindersData,
     touchProject,
+    updateAccount as dcUpdateAccount,
+    updateAccountContact as dcUpdateAccountContact,
+    updateReminder as dcUpdateReminder,
+    upsertUserSettings,
 } from "@generated/example-data-connector";
 import { getApps, initializeApp } from "firebase-admin/app";
 import { getStorage } from "firebase-admin/storage";
@@ -64,16 +88,34 @@ type ProjectListRow = ListProjectsByOwnerData["projects"][number];
 type ProjectWithPages = NonNullable<GetProjectDetailsByIdData["project"]>;
 type ProjectDetailsRow = NonNullable<GetProjectByIdData["project"]>;
 type FloorplanPageRow = NonNullable<GetFloorplanPageByIdData["floorplanPage"]>;
+type AccountListRow = ListAccountsByOwnerData["accounts"][number];
+type AccountWithContacts = NonNullable<GetAccountByIdData["account"]>;
+type AccountContactRow = NonNullable<
+    GetAccountContactByIdData["accountContact"]
+>;
+type AccountContactListRow =
+    ListAccountContactsByAccountIdData["accountContacts"][number];
+type ReminderRow = NonNullable<GetReminderByIdData["reminder"]>;
+type ProjectReminderRow = ListProjectRemindersData["reminders"][number];
 
 type UploadType = "PDF" | "IMAGE";
 type ProjectStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
+type SalesStatus = "QUOTING" | "QUOTE_SUBMITTED" | "WON" | "LOST";
+type ReminderStatus = "OPEN" | "DONE" | "CANCELLED";
+
+const defaultQuoteFollowUpEnabled = true;
+const defaultQuoteFollowUpDays = 3;
+const quoteFollowUpReminderPrefix = "Follow up quote for ";
 
 interface ProjectSummary {
     id: string;
+    accountId: string | null;
     name: string;
+    address: string | null;
     originalFileName: string;
     uploadType: UploadType;
     status: ProjectStatus;
+    salesStatus: SalesStatus;
     processingError?: string | null;
     createdAt: string;
     updatedAt: string;
@@ -101,6 +143,53 @@ interface ProjectDetail extends ProjectSummary {
     pages: FloorplanPage[];
 }
 
+interface AccountContact {
+    id: string;
+    accountId: string;
+    name: string;
+    email: string | null;
+    phoneNumber: string | null;
+    role: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface AccountSummary {
+    id: string;
+    ownerId?: string | null;
+    companyName: string;
+    businessNumber: string | null;
+    phoneNumber: string | null;
+    primaryContactId: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface AccountDetail extends AccountSummary {
+    contacts: AccountContact[];
+}
+
+interface UserSettings {
+    ownerId: string;
+    quoteFollowUpEnabled: boolean;
+    quoteFollowUpDays: number;
+    createdAt: string | null;
+    updatedAt: string | null;
+}
+
+interface Reminder {
+    id: string;
+    ownerId?: string | null;
+    projectId: string;
+    accountId: string | null;
+    name: string;
+    status: ReminderStatus;
+    dueAt: string;
+    completedAt: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
 interface ProcessingStrategyInfo {
     key: string;
     label: string;
@@ -117,7 +206,9 @@ interface UploadResponse {
 
 interface CreateProjectFromUploadRequest {
     projectId?: unknown;
+    accountId?: unknown;
     name?: unknown;
+    address?: unknown;
     originalFileName?: unknown;
     contentType?: unknown;
     size?: unknown;
@@ -131,6 +222,70 @@ interface ProjectIdRequest {
 
 interface RenameProjectRequest extends ProjectIdRequest {
     name?: unknown;
+}
+
+interface UpdateProjectRequest extends ProjectIdRequest {
+    name?: unknown;
+    accountId?: unknown;
+    address?: unknown;
+    salesStatus?: unknown;
+}
+
+interface AccountIdRequest {
+    accountId?: unknown;
+}
+
+interface ContactIdRequest extends AccountIdRequest {
+    contactId?: unknown;
+}
+
+interface CreateAccountRequest {
+    companyName?: unknown;
+    businessNumber?: unknown;
+    phoneNumber?: unknown;
+}
+
+interface UpdateAccountRequest extends AccountIdRequest {
+    companyName?: unknown;
+    businessNumber?: unknown;
+    phoneNumber?: unknown;
+    primaryContactId?: unknown;
+}
+
+interface CreateAccountContactRequest extends AccountIdRequest {
+    name?: unknown;
+    email?: unknown;
+    phoneNumber?: unknown;
+    role?: unknown;
+}
+
+interface UpdateAccountContactRequest extends ContactIdRequest {
+    name?: unknown;
+    email?: unknown;
+    phoneNumber?: unknown;
+    role?: unknown;
+}
+
+interface UpdateSettingsRequest {
+    quoteFollowUpEnabled?: unknown;
+    quoteFollowUpDays?: unknown;
+}
+
+interface ReminderIdRequest {
+    reminderId?: unknown;
+}
+
+interface CreateReminderRequest extends ProjectIdRequest {
+    accountId?: unknown;
+    name?: unknown;
+    dueAt?: unknown;
+}
+
+interface UpdateReminderRequest extends ReminderIdRequest {
+    accountId?: unknown;
+    name?: unknown;
+    dueAt?: unknown;
+    status?: unknown;
 }
 
 interface ProcessProjectRequest extends ProjectIdRequest {
@@ -304,6 +459,63 @@ function readOptionalString(value: unknown) {
     return value.trim();
 }
 
+function readOptionalNullableString(value: unknown, field: string) {
+    if (value == null) {
+        return null;
+    }
+
+    if (typeof value !== "string") {
+        throw new HttpsError("invalid-argument", `${field} must be a string.`);
+    }
+
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : null;
+}
+
+function readOptionalBoolean(value: unknown, field: string) {
+    if (value == null) {
+        return undefined;
+    }
+
+    if (typeof value !== "boolean") {
+        throw new HttpsError("invalid-argument", `${field} must be a boolean.`);
+    }
+
+    return value;
+}
+
+function readPositiveInteger(value: unknown, field: string) {
+    if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
+        throw new HttpsError(
+            "invalid-argument",
+            `${field} must be a positive integer.`,
+        );
+    }
+
+    return value;
+}
+
+function readOptionalPositiveInteger(value: unknown, field: string) {
+    if (value == null) {
+        return undefined;
+    }
+
+    return readPositiveInteger(value, field);
+}
+
+function readDueAt(value: unknown, field: string) {
+    const dueAt = readRequiredString(value, field);
+    const timestamp = Date.parse(dueAt);
+    if (Number.isNaN(timestamp)) {
+        throw new HttpsError(
+            "invalid-argument",
+            `${field} must be a valid timestamp.`,
+        );
+    }
+
+    return new Date(timestamp).toISOString();
+}
+
 function readNullableNumber(value: unknown, field: string) {
     if (value == null || value === "") {
         return null;
@@ -342,6 +554,11 @@ export const createProjectFromUpload = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const projectId = readRequiredString(request.data.projectId, "Project ID");
+    const accountId = readOptionalNullableString(
+        request.data.accountId,
+        "Account ID",
+    );
+    const address = readOptionalNullableString(request.data.address, "Address");
     const name = readRequiredString(request.data.name, "Name");
     const originalFileName = readRequiredString(
         request.data.originalFileName,
@@ -364,6 +581,10 @@ export const createProjectFromUpload = onCall<
         );
     }
 
+    if (accountId) {
+        await requireOwnedAccount(accountId, auth.uid);
+    }
+
     const [exists] = await getStorage().bucket().file(storagePath).exists();
     if (!exists) {
         throw new HttpsError("not-found", "Uploaded file was not found.");
@@ -377,11 +598,14 @@ export const createProjectFromUpload = onCall<
     await dcCreateProjectFromUpload({
         id: projectId,
         ownerId: auth.uid,
+        accountId,
         name,
+        address,
         originalFileName,
         uploadType,
         originalPath: originalUrl,
         status: "DRAFT",
+        salesStatus: "QUOTING",
         pageCount,
     });
 
@@ -427,13 +651,422 @@ export const renameProject = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const projectId = readRequiredString(request.data.projectId, "Project ID");
-    await requireOwnedProject(projectId, auth.uid);
-    await dcRenameProject({
-        id: projectId,
+    return updateOwnedProject(projectId, auth.uid, {
         name: readRequiredString(request.data.name, "Name"),
     });
-    return toDetail(await requireOwnedProject(projectId, auth.uid));
 });
+
+export const updateProject = onCall<
+    UpdateProjectRequest,
+    Promise<ProjectDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    const data = request.data;
+    const updates: ProjectUpdateFields = {};
+
+    if (hasField(data, "name")) {
+        updates.name = readRequiredString(data.name, "Name");
+    }
+
+    if (hasField(data, "accountId")) {
+        updates.accountId = readOptionalNullableString(
+            data.accountId,
+            "Account ID",
+        );
+    }
+
+    if (hasField(data, "address")) {
+        updates.address = readOptionalNullableString(data.address, "Address");
+    }
+
+    if (hasField(data, "salesStatus")) {
+        updates.salesStatus = readSalesStatus(data.salesStatus);
+    }
+
+    if (Object.keys(updates).length === 0) {
+        throw new HttpsError(
+            "invalid-argument",
+            "At least one project field is required.",
+        );
+    }
+
+    return updateOwnedProject(projectId, auth.uid, updates);
+});
+
+export const listAccounts = onCall<
+    unknown,
+    Promise<{ accounts: AccountSummary[] }>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const response = await listAccountsByOwner({ ownerId: auth.uid });
+    return { accounts: response.data.accounts.map(toAccountSummary) };
+});
+
+export const getAccount = onCall<AccountIdRequest, Promise<AccountDetail>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        return toAccountDetail(
+            await requireOwnedAccount(
+                readRequiredString(request.data.accountId, "Account ID"),
+                auth.uid,
+            ),
+        );
+    },
+);
+
+export const listAccountContactsByAccountId = onCall<
+    AccountIdRequest,
+    Promise<{ contacts: AccountContact[] }>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const accountId = readRequiredString(request.data.accountId, "Account ID");
+    await requireOwnedAccount(accountId, auth.uid);
+    const response = await dcListAccountContactsByAccountId({ accountId });
+    return { contacts: response.data.accountContacts.map(toAccountContact) };
+});
+
+export const createAccount = onCall<
+    CreateAccountRequest,
+    Promise<AccountDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const accountId = randomUUID();
+    await dcCreateAccount({
+        id: accountId,
+        ownerId: auth.uid,
+        companyName: readRequiredString(
+            request.data.companyName,
+            "Company name",
+        ),
+        businessNumber: readOptionalNullableString(
+            request.data.businessNumber,
+            "Business number",
+        ),
+        phoneNumber: readOptionalNullableString(
+            request.data.phoneNumber,
+            "Phone number",
+        ),
+    });
+
+    return toAccountDetail(await requireOwnedAccount(accountId, auth.uid));
+});
+
+export const updateAccount = onCall<
+    UpdateAccountRequest,
+    Promise<AccountDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const accountId = readRequiredString(request.data.accountId, "Account ID");
+    const account = await requireOwnedAccount(accountId, auth.uid);
+    const data = request.data;
+    const primaryContactId = hasField(data, "primaryContactId")
+        ? readOptionalNullableString(
+              data.primaryContactId,
+              "Primary contact ID",
+          )
+        : (account.primaryContactId ?? null);
+
+    if (primaryContactId) {
+        await requireOwnedAccountContact(accountId, primaryContactId, auth.uid);
+    }
+
+    await dcUpdateAccount({
+        id: accountId,
+        companyName: hasField(data, "companyName")
+            ? readRequiredString(data.companyName, "Company name")
+            : account.companyName,
+        businessNumber: hasField(data, "businessNumber")
+            ? readOptionalNullableString(data.businessNumber, "Business number")
+            : (account.businessNumber ?? null),
+        phoneNumber: hasField(data, "phoneNumber")
+            ? readOptionalNullableString(data.phoneNumber, "Phone number")
+            : (account.phoneNumber ?? null),
+        primaryContactId,
+    });
+
+    return toAccountDetail(await requireOwnedAccount(accountId, auth.uid));
+});
+
+export const deleteAccount = onCall<AccountIdRequest, Promise<{ ok: true }>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const accountId = readRequiredString(
+            request.data.accountId,
+            "Account ID",
+        );
+        await requireOwnedAccount(accountId, auth.uid);
+        await dcDeleteAccountContacts({ accountId });
+        await dcDeleteAccount({ id: accountId });
+        return { ok: true };
+    },
+);
+
+export const createAccountContact = onCall<
+    CreateAccountContactRequest,
+    Promise<AccountDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const accountId = readRequiredString(request.data.accountId, "Account ID");
+    const account = await requireOwnedAccount(accountId, auth.uid);
+    await dcCreateAccountContact({
+        id: randomUUID(),
+        accountId,
+        name: readRequiredString(request.data.name, "Contact name"),
+        email: readOptionalNullableString(request.data.email, "Email"),
+        phoneNumber: readOptionalNullableString(
+            request.data.phoneNumber,
+            "Phone number",
+        ),
+        role: readOptionalNullableString(request.data.role, "Role"),
+    });
+    await dcUpdateAccount({
+        id: accountId,
+        companyName: account.companyName,
+        businessNumber: account.businessNumber ?? null,
+        phoneNumber: account.phoneNumber ?? null,
+        primaryContactId: account.primaryContactId ?? null,
+    });
+    return toAccountDetail(await requireOwnedAccount(accountId, auth.uid));
+});
+
+export const updateAccountContact = onCall<
+    UpdateAccountContactRequest,
+    Promise<AccountDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const accountId = readRequiredString(request.data.accountId, "Account ID");
+    const contactId = readRequiredString(request.data.contactId, "Contact ID");
+    const contact = await requireOwnedAccountContact(
+        accountId,
+        contactId,
+        auth.uid,
+    );
+    const data = request.data;
+
+    await dcUpdateAccountContact({
+        id: contactId,
+        name: hasField(data, "name")
+            ? readRequiredString(data.name, "Contact name")
+            : contact.name,
+        email: hasField(data, "email")
+            ? readOptionalNullableString(data.email, "Email")
+            : (contact.email ?? null),
+        phoneNumber: hasField(data, "phoneNumber")
+            ? readOptionalNullableString(data.phoneNumber, "Phone number")
+            : (contact.phoneNumber ?? null),
+        role: hasField(data, "role")
+            ? readOptionalNullableString(data.role, "Role")
+            : (contact.role ?? null),
+    });
+
+    return toAccountDetail(await requireOwnedAccount(accountId, auth.uid));
+});
+
+export const deleteAccountContact = onCall<
+    ContactIdRequest,
+    Promise<AccountDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const accountId = readRequiredString(request.data.accountId, "Account ID");
+    const contactId = readRequiredString(request.data.contactId, "Contact ID");
+    const account = await requireOwnedAccount(accountId, auth.uid);
+    await requireOwnedAccountContact(accountId, contactId, auth.uid);
+
+    if (account.primaryContactId === contactId) {
+        await dcUpdateAccount({
+            id: accountId,
+            companyName: account.companyName,
+            businessNumber: account.businessNumber ?? null,
+            phoneNumber: account.phoneNumber ?? null,
+            primaryContactId: null,
+        });
+    }
+
+    await dcDeleteAccountContact({ id: contactId });
+    return toAccountDetail(await requireOwnedAccount(accountId, auth.uid));
+});
+
+export const setPrimaryAccountContact = onCall<
+    ContactIdRequest,
+    Promise<AccountDetail>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const accountId = readRequiredString(request.data.accountId, "Account ID");
+    const contactId = readRequiredString(request.data.contactId, "Contact ID");
+    const account = await requireOwnedAccount(accountId, auth.uid);
+    await requireOwnedAccountContact(accountId, contactId, auth.uid);
+    await dcUpdateAccount({
+        id: accountId,
+        companyName: account.companyName,
+        businessNumber: account.businessNumber ?? null,
+        phoneNumber: account.phoneNumber ?? null,
+        primaryContactId: contactId,
+    });
+    return toAccountDetail(await requireOwnedAccount(accountId, auth.uid));
+});
+
+export const getSettings = onCall<unknown, Promise<UserSettings>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        return getUserSettingsOrDefault(auth.uid);
+    },
+);
+
+export const updateSettings = onCall<
+    UpdateSettingsRequest,
+    Promise<UserSettings>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const settings = await getUserSettingsOrDefault(auth.uid);
+    const quoteFollowUpEnabled =
+        readOptionalBoolean(
+            request.data.quoteFollowUpEnabled,
+            "Quote follow-up enabled",
+        ) ?? settings.quoteFollowUpEnabled;
+    const quoteFollowUpDays =
+        readOptionalPositiveInteger(
+            request.data.quoteFollowUpDays,
+            "Quote follow-up days",
+        ) ?? settings.quoteFollowUpDays;
+
+    await upsertUserSettings({
+        ownerId: auth.uid,
+        quoteFollowUpEnabled,
+        quoteFollowUpDays,
+    });
+
+    return getUserSettingsOrDefault(auth.uid);
+});
+
+export const listDueReminders = onCall<
+    unknown,
+    Promise<{ reminders: Reminder[] }>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const response = await dcListDueReminders({ ownerId: auth.uid });
+    return { reminders: response.data.reminders.map(toReminder) };
+});
+
+export const listProjectReminders = onCall<
+    ProjectIdRequest,
+    Promise<{ reminders: Reminder[] }>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const projectId = readRequiredString(request.data.projectId, "Project ID");
+    await requireOwnedProject(projectId, auth.uid);
+    const response = await dcListProjectReminders({ projectId });
+    return {
+        reminders: response.data.reminders
+            .filter((reminder) => reminder.ownerId === auth.uid)
+            .map(toReminder),
+    };
+});
+
+export const createReminder = onCall<CreateReminderRequest, Promise<Reminder>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const project = await requireOwnedProject(
+            readRequiredString(request.data.projectId, "Project ID"),
+            auth.uid,
+        );
+        const accountId = hasField(request.data, "accountId")
+            ? readOptionalNullableString(request.data.accountId, "Account ID")
+            : (project.accountId ?? null);
+        if (accountId) {
+            await requireOwnedAccount(accountId, auth.uid);
+        }
+
+        const reminderId = randomUUID();
+        await dcCreateReminder({
+            id: reminderId,
+            ownerId: auth.uid,
+            projectId: project.id,
+            accountId,
+            name: readRequiredString(request.data.name, "Reminder name"),
+            status: "OPEN",
+            dueAt: readDueAt(request.data.dueAt, "Due date"),
+        });
+
+        return toReminder(await requireOwnedReminder(reminderId, auth.uid));
+    },
+);
+
+export const updateReminder = onCall<UpdateReminderRequest, Promise<Reminder>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const reminder = await requireOwnedReminder(
+            readRequiredString(request.data.reminderId, "Reminder ID"),
+            auth.uid,
+        );
+        const data = request.data;
+        const accountId = hasField(data, "accountId")
+            ? readOptionalNullableString(data.accountId, "Account ID")
+            : (reminder.accountId ?? null);
+
+        if (accountId) {
+            await requireOwnedAccount(accountId, auth.uid);
+        }
+
+        await dcUpdateReminder({
+            id: reminder.id,
+            accountId,
+            name: hasField(data, "name")
+                ? readRequiredString(data.name, "Reminder name")
+                : reminder.name,
+            status: hasField(data, "status")
+                ? readReminderStatus(data.status)
+                : toReminderStatus(reminder.status),
+            dueAt: hasField(data, "dueAt")
+                ? readDueAt(data.dueAt, "Due date")
+                : reminder.dueAt,
+            completedAt:
+                hasField(data, "status") && data.status === "DONE"
+                    ? new Date().toISOString()
+                    : (reminder.completedAt ?? null),
+        });
+
+        return toReminder(await requireOwnedReminder(reminder.id, auth.uid));
+    },
+);
+
+export const completeReminder = onCall<ReminderIdRequest, Promise<Reminder>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const reminder = await requireOwnedReminder(
+            readRequiredString(request.data.reminderId, "Reminder ID"),
+            auth.uid,
+        );
+        await dcUpdateReminder({
+            id: reminder.id,
+            accountId: reminder.accountId ?? null,
+            name: reminder.name,
+            status: "DONE",
+            dueAt: reminder.dueAt,
+            completedAt: new Date().toISOString(),
+        });
+        return toReminder(await requireOwnedReminder(reminder.id, auth.uid));
+    },
+);
+
+export const cancelReminder = onCall<ReminderIdRequest, Promise<Reminder>>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const reminder = await requireOwnedReminder(
+            readRequiredString(request.data.reminderId, "Reminder ID"),
+            auth.uid,
+        );
+        await dcUpdateReminder({
+            id: reminder.id,
+            accountId: reminder.accountId ?? null,
+            name: reminder.name,
+            status: "CANCELLED",
+            dueAt: reminder.dueAt,
+            completedAt: reminder.completedAt ?? null,
+        });
+        return toReminder(await requireOwnedReminder(reminder.id, auth.uid));
+    },
+);
 
 export const deleteProject = onCall<ProjectIdRequest, Promise<{ ok: true }>>(
     async (request) => {
@@ -686,6 +1319,121 @@ export const exportProjectCsv = onCall<
     };
 });
 
+interface ProjectUpdateFields {
+    name?: string;
+    accountId?: string | null;
+    address?: string | null;
+    salesStatus?: SalesStatus;
+}
+
+async function updateOwnedProject(
+    projectId: string,
+    ownerId: string,
+    updates: ProjectUpdateFields,
+) {
+    const project = await requireOwnedProject(projectId, ownerId);
+    const nextAccountId = hasField(updates, "accountId")
+        ? (updates.accountId ?? null)
+        : (project.accountId ?? null);
+
+    if (nextAccountId) {
+        await requireOwnedAccount(nextAccountId, ownerId);
+    }
+
+    const nextSalesStatus = hasField(updates, "salesStatus")
+        ? (updates.salesStatus ?? toSalesStatus(project.salesStatus))
+        : toSalesStatus(project.salesStatus);
+
+    await dcUpdateProject({
+        id: projectId,
+        name: updates.name ?? project.name,
+        accountId: nextAccountId,
+        address: hasField(updates, "address")
+            ? (updates.address ?? null)
+            : (project.address ?? null),
+        salesStatus: nextSalesStatus,
+    });
+
+    const updatedProject = await requireOwnedProject(projectId, ownerId);
+
+    if (
+        hasField(updates, "salesStatus") &&
+        nextSalesStatus === "QUOTE_SUBMITTED"
+    ) {
+        await upsertAutoQuoteReminder(updatedProject, ownerId);
+    } else if (
+        hasField(updates, "salesStatus") &&
+        (nextSalesStatus === "WON" || nextSalesStatus === "LOST")
+    ) {
+        await cancelOpenProjectReminder(projectId, ownerId);
+    }
+
+    return toDetail(await requireOwnedProject(projectId, ownerId));
+}
+
+async function upsertAutoQuoteReminder(
+    project: ProjectWithPages,
+    ownerId: string,
+) {
+    const settings = await getUserSettingsOrDefault(ownerId);
+    if (!settings.quoteFollowUpEnabled) {
+        return;
+    }
+
+    const dueAt = addDays(new Date(), settings.quoteFollowUpDays).toISOString();
+    const name = `${quoteFollowUpReminderPrefix}${project.name}`;
+    const existing = await findOpenProjectReminder(project.id, ownerId);
+
+    if (existing && existing.ownerId === ownerId) {
+        await dcUpdateReminder({
+            id: existing.id,
+            accountId: project.accountId ?? null,
+            name,
+            status: "OPEN",
+            dueAt,
+            completedAt: existing.completedAt ?? null,
+        });
+        return;
+    }
+
+    await dcCreateReminder({
+        id: randomUUID(),
+        ownerId,
+        projectId: project.id,
+        accountId: project.accountId ?? null,
+        name,
+        status: "OPEN",
+        dueAt,
+    });
+}
+
+async function cancelOpenProjectReminder(projectId: string, ownerId: string) {
+    const reminder = await findOpenProjectReminder(projectId, ownerId);
+    if (!reminder) {
+        return;
+    }
+
+    await dcUpdateReminder({
+        id: reminder.id,
+        accountId: reminder.accountId ?? null,
+        name: reminder.name,
+        status: "CANCELLED",
+        dueAt: reminder.dueAt,
+        completedAt: reminder.completedAt ?? null,
+    });
+}
+
+async function findOpenProjectReminder(projectId: string, ownerId: string) {
+    const response = await dcListProjectReminders({ projectId });
+    return (
+        response.data.reminders.find(
+            (reminder) =>
+                reminder.ownerId === ownerId &&
+                toReminderStatus(reminder.status) === "OPEN",
+        ) ?? null
+    );
+}
+
 async function requireOwnedProject(projectId: string, ownerId: string) {
     // TODO: Add a lightweight ownership helper backed by getProjectById for
     // callsites that do not need floorplan pages.
@@ -696,6 +1444,64 @@ async function requireOwnedProject(projectId: string, ownerId: string) {
     }
 
     return project;
+}
+
+async function requireOwnedAccount(accountId: string, ownerId: string) {
+    const response = await getAccountById({ id: accountId });
+    const account = response.data.account;
+    if (!account || account.ownerId !== ownerId) {
+        throw new HttpsError("not-found", "Account was not found.");
+    }
+
+    return account;
+}
+
+async function requireOwnedAccountContact(
+    accountId: string,
+    contactId: string,
+    ownerId: string,
+) {
+    await requireOwnedAccount(accountId, ownerId);
+    const response = await getAccountContactById({ accountId, contactId });
+    const contact = response.data.accountContact;
+    if (!contact) {
+        throw new HttpsError("not-found", "Contact was not found.");
+    }
+
+    return contact;
+}
+
+async function requireOwnedReminder(reminderId: string, ownerId: string) {
+    const response = await getReminderById({ id: reminderId });
+    const reminder = response.data.reminder;
+    if (!reminder || reminder.ownerId !== ownerId) {
+        throw new HttpsError("not-found", "Reminder was not found.");
+    }
+
+    return reminder;
+}
+
+async function getUserSettingsOrDefault(
+    ownerId: string,
+): Promise<UserSettings> {
+    const settings = (await getUserSettings({ ownerId })).data.userSettings;
+    if (!settings) {
+        return {
+            ownerId,
+            quoteFollowUpEnabled: defaultQuoteFollowUpEnabled,
+            quoteFollowUpDays: defaultQuoteFollowUpDays,
+            createdAt: null,
+            updatedAt: null,
+        };
+    }
+
+    return {
+        ownerId: settings.ownerId,
+        quoteFollowUpEnabled: settings.quoteFollowUpEnabled,
+        quoteFollowUpDays: settings.quoteFollowUpDays,
+        createdAt: settings.createdAt,
+        updatedAt: settings.updatedAt,
+    };
 }
 
 async function requireFloorplanPage(projectId: string, pageId: string) {
@@ -713,10 +1519,13 @@ function toSummary(
 ): ProjectSummary {
     return {
         id: project.id,
+        accountId: project.accountId ?? null,
         name: project.name,
+        address: project.address ?? null,
         originalFileName: project.originalFileName,
         uploadType: toUploadType(project.uploadType),
         status: toProjectStatus(project.status),
+        salesStatus: toSalesStatus(project.salesStatus),
         processingError: project.processingError ?? null,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
@@ -729,6 +1538,58 @@ function toDetail(project: ProjectWithPages): ProjectDetail {
         ...toSummary(project),
         ownerId: project.ownerId,
         pages: project.pages.map(toPage),
+    };
+}
+
+function toAccountSummary(
+    account: AccountListRow | AccountWithContacts,
+): AccountSummary {
+    return {
+        id: account.id,
+        ownerId: account.ownerId,
+        companyName: account.companyName,
+        businessNumber: account.businessNumber ?? null,
+        phoneNumber: account.phoneNumber ?? null,
+        primaryContactId: account.primaryContactId ?? null,
+        createdAt: account.createdAt,
+        updatedAt: account.updatedAt,
+    };
+}
+
+function toAccountDetail(account: AccountWithContacts): AccountDetail {
+    return {
+        ...toAccountSummary(account),
+        contacts: account.contacts.map(toAccountContact),
+    };
+}
+
+function toAccountContact(
+    contact: AccountContactRow | AccountContactListRow,
+): AccountContact {
+    return {
+        id: contact.id,
+        accountId: contact.accountId,
+        name: contact.name,
+        email: contact.email ?? null,
+        phoneNumber: contact.phoneNumber ?? null,
+        role: contact.role ?? null,
+        createdAt: contact.createdAt,
+        updatedAt: contact.updatedAt,
+    };
+}
+
+function toReminder(reminder: ReminderRow | ProjectReminderRow): Reminder {
+    return {
+        id: reminder.id,
+        ownerId: reminder.ownerId,
+        projectId: reminder.projectId,
+        accountId: reminder.accountId ?? null,
+        name: reminder.name,
+        status: toReminderStatus(reminder.status),
+        dueAt: reminder.dueAt,
+        completedAt: reminder.completedAt ?? null,
+        createdAt: reminder.createdAt,
+        updatedAt: reminder.updatedAt,
     };
 }
 
@@ -766,6 +1627,71 @@ function toProjectStatus(value: string): ProjectStatus {
     }
 
     return "DRAFT";
+}
+
+function readSalesStatus(value: unknown): SalesStatus {
+    if (typeof value !== "string") {
+        throw new HttpsError(
+            "invalid-argument",
+            "Sales status must be a string.",
+        );
+    }
+
+    const status = toSalesStatus(value);
+    if (status !== value) {
+        throw new HttpsError(
+            "invalid-argument",
+            "Sales status must be QUOTING, QUOTE_SUBMITTED, WON, or LOST.",
+        );
+    }
+
+    return status;
+}
+
+function toSalesStatus(value: string): SalesStatus {
+    if (
+        value === "QUOTING" ||
+        value === "QUOTE_SUBMITTED" ||
+        value === "WON" ||
+        value === "LOST"
+    ) {
+        return value;
+    }
+
+    return "QUOTING";
+}
+
+function readReminderStatus(value: unknown): ReminderStatus {
+    if (typeof value !== "string") {
+        throw new HttpsError(
+            "invalid-argument",
+            "Reminder status must be a string.",
+        );
+    }
+
+    const status = toReminderStatus(value);
+    if (status !== value) {
+        throw new HttpsError(
+            "invalid-argument",
+            "Reminder status must be OPEN, DONE, or CANCELLED.",
+        );
+    }
+
+    return status;
+}
+
+function toReminderStatus(value: string): ReminderStatus {
+    if (value === "OPEN" || value === "DONE" || value === "CANCELLED") {
+        return value;
+    }
+
+    return "OPEN";
+}
+
+function addDays(date: Date, days: number) {
+    const result = new Date(date);
+    result.setUTCDate(result.getUTCDate() + days);
+    return result;
 }
 
 function readPageNumbers(value: unknown, project: ProjectWithPages) {

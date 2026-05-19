@@ -5,11 +5,14 @@ query ListProjectsByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
     ) {
         id
         ownerId
+        accountId
         name
+        address
         originalFileName
         uploadType
         originalPath
         status
+        salesStatus
         processingError
         pageCount
         createdAt
@@ -21,11 +24,14 @@ query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id
         ownerId
+        accountId
         name
+        address
         originalFileName
         uploadType
         originalPath
         status
+        salesStatus
         processingError
         pageCount
         createdAt
@@ -56,11 +62,14 @@ query GetProjectById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id
         ownerId
+        accountId
         name
+        address
         originalFileName
         uploadType
         originalPath
         status
+        salesStatus
         processingError
         pageCount
         createdAt
@@ -88,6 +97,145 @@ query GetFloorplanPageById($projectId: UUID!, $pageId: UUID!)
         referenceLengthMm
         processingStrategy
         processingMetadataJson
+        createdAt
+        updatedAt
+    }
+}
+
+query ListAccountsByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
+    accounts(
+        where: { ownerId: { eq: $ownerId } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
+        id
+        ownerId
+        companyName
+        businessNumber
+        phoneNumber
+        primaryContactId
+        createdAt
+        updatedAt
+    }
+}
+
+query GetAccountById($id: UUID!) @auth(level: NO_ACCESS) {
+    account(id: $id) {
+        id
+        ownerId
+        companyName
+        businessNumber
+        phoneNumber
+        primaryContactId
+        createdAt
+        updatedAt
+        contacts: accountContacts_on_account(orderBy: [{ createdAt: ASC }]) {
+            id
+            accountId
+            name
+            email
+            phoneNumber
+            role
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+query ListAccountContactsByAccountId($accountId: UUID!)
+@auth(level: NO_ACCESS) {
+    accountContacts(
+        where: { accountId: { eq: $accountId } }
+        orderBy: [{ createdAt: ASC }]
+    ) {
+        id
+        accountId
+        name
+        email
+        phoneNumber
+        role
+        createdAt
+        updatedAt
+    }
+}
+
+query GetAccountContactById($accountId: UUID!, $contactId: UUID!)
+@auth(level: NO_ACCESS) {
+    accountContact(
+        first: {
+            where: { id: { eq: $contactId }, accountId: { eq: $accountId } }
+        }
+    ) {
+        id
+        accountId
+        name
+        email
+        phoneNumber
+        role
+        createdAt
+        updatedAt
+    }
+}
+
+query GetUserSettings($ownerId: String!) @auth(level: NO_ACCESS) {
+    userSettings(key: { ownerId: $ownerId }) {
+        ownerId
+        quoteFollowUpEnabled
+        quoteFollowUpDays
+        createdAt
+        updatedAt
+    }
+}
+
+query ListDueReminders($ownerId: String!) @auth(level: NO_ACCESS) {
+    reminders(
+        where: {
+            ownerId: { eq: $ownerId }
+            status: { eq: "OPEN" }
+            dueAt: { le_expr: "request.time" }
+        }
+        orderBy: [{ dueAt: ASC }]
+    ) {
+        id
+        ownerId
+        projectId
+        accountId
+        name
+        status
+        dueAt
+        completedAt
+        createdAt
+        updatedAt
+    }
+}
+
+query ListProjectReminders($projectId: UUID!) @auth(level: NO_ACCESS) {
+    reminders(
+        where: { projectId: { eq: $projectId } }
+        orderBy: [{ dueAt: ASC }]
+    ) {
+        id
+        ownerId
+        projectId
+        accountId
+        name
+        status
+        dueAt
+        completedAt
+        createdAt
+        updatedAt
+    }
+}
+
+query GetReminderById($id: UUID!) @auth(level: NO_ACCESS) {
+    reminder(id: $id) {
+        id
+        ownerId
+        projectId
+        accountId
+        name
+        status
+        dueAt
+        completedAt
         createdAt
         updatedAt
     }

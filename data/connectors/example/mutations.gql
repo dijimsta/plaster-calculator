@@ -1,24 +1,49 @@
 mutation CreateProjectFromUpload(
     $id: UUID!
     $ownerId: String!
+    $accountId: UUID
     $name: String!
+    $address: String
     $originalFileName: String!
     $uploadType: String!
     $originalPath: String!
     $status: String!
+    $salesStatus: String = "QUOTING"
     $pageCount: Int!
 ) @auth(level: NO_ACCESS) {
     project_insert(
         data: {
             id: $id
             ownerId: $ownerId
+            accountId: $accountId
             name: $name
+            address: $address
             originalFileName: $originalFileName
             uploadType: $uploadType
             originalPath: $originalPath
             status: $status
+            salesStatus: $salesStatus
             pageCount: $pageCount
             createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateProject(
+    $id: UUID!
+    $name: String
+    $accountId: UUID
+    $address: String
+    $salesStatus: String
+) @auth(level: NO_ACCESS) {
+    project_update(
+        id: $id
+        data: {
+            name: $name
+            accountId: $accountId
+            address: $address
+            salesStatus: $salesStatus
             updatedAt_expr: "request.time"
         }
     )
@@ -49,6 +74,158 @@ mutation DeleteFloorplanPages($projectId: UUID!) @auth(level: NO_ACCESS) {
 
 mutation DeleteProject($id: UUID!) @auth(level: NO_ACCESS) {
     project_delete(id: $id)
+}
+
+mutation CreateAccount(
+    $id: UUID!
+    $ownerId: String!
+    $companyName: String!
+    $businessNumber: String
+    $phoneNumber: String
+) @auth(level: NO_ACCESS) {
+    account_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            companyName: $companyName
+            businessNumber: $businessNumber
+            phoneNumber: $phoneNumber
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateAccount(
+    $id: UUID!
+    $companyName: String
+    $businessNumber: String
+    $phoneNumber: String
+    $primaryContactId: UUID
+) @auth(level: NO_ACCESS) {
+    account_update(
+        id: $id
+        data: {
+            companyName: $companyName
+            businessNumber: $businessNumber
+            phoneNumber: $phoneNumber
+            primaryContactId: $primaryContactId
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation DeleteAccountContacts($accountId: UUID!) @auth(level: NO_ACCESS) {
+    accountContact_deleteMany(where: { accountId: { eq: $accountId } })
+}
+
+mutation DeleteAccount($id: UUID!) @auth(level: NO_ACCESS) {
+    account_delete(id: $id)
+}
+
+mutation CreateAccountContact(
+    $id: UUID!
+    $accountId: UUID!
+    $name: String!
+    $email: String
+    $phoneNumber: String
+    $role: String
+) @auth(level: NO_ACCESS) {
+    accountContact_insert(
+        data: {
+            id: $id
+            accountId: $accountId
+            name: $name
+            email: $email
+            phoneNumber: $phoneNumber
+            role: $role
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateAccountContact(
+    $id: UUID!
+    $name: String
+    $email: String
+    $phoneNumber: String
+    $role: String
+) @auth(level: NO_ACCESS) {
+    accountContact_update(
+        id: $id
+        data: {
+            name: $name
+            email: $email
+            phoneNumber: $phoneNumber
+            role: $role
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation DeleteAccountContact($id: UUID!) @auth(level: NO_ACCESS) {
+    accountContact_delete(id: $id)
+}
+
+mutation UpsertUserSettings(
+    $ownerId: String!
+    $quoteFollowUpEnabled: Boolean!
+    $quoteFollowUpDays: Int!
+) @auth(level: NO_ACCESS) {
+    userSettings_upsert(
+        data: {
+            ownerId: $ownerId
+            quoteFollowUpEnabled: $quoteFollowUpEnabled
+            quoteFollowUpDays: $quoteFollowUpDays
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateReminder(
+    $id: UUID!
+    $ownerId: String!
+    $projectId: UUID!
+    $accountId: UUID
+    $name: String!
+    $status: String!
+    $dueAt: Timestamp!
+) @auth(level: NO_ACCESS) {
+    reminder_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            projectId: $projectId
+            accountId: $accountId
+            name: $name
+            status: $status
+            dueAt: $dueAt
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateReminder(
+    $id: UUID!
+    $accountId: UUID
+    $name: String
+    $status: String
+    $dueAt: Timestamp
+    $completedAt: Timestamp
+) @auth(level: NO_ACCESS) {
+    reminder_update(
+        id: $id
+        data: {
+            accountId: $accountId
+            name: $name
+            status: $status
+            dueAt: $dueAt
+            completedAt: $completedAt
+            updatedAt_expr: "request.time"
+        }
+    )
 }
 
 mutation CreateFloorplanPage(
