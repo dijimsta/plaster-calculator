@@ -1,0 +1,22 @@
+{
+    "name": "@libraries/plaster-calculator-node-core",
+    "type": "module",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Contains core services, utilities, and interfaces for Node.js platforms, including Firebase Admin SDK interactions.",
+    "main": "./out/index.js",
+    "exports": "./out/index.js",
+    "scripts": {
+        "build": "tsc --build tsconfig.build.json"
+    },
+    "peerDependencies": {
+        "firebase-admin": "^13.10.0"
+    },
+    "dependencies": {
+        "@libraries/plaster-calculator-common": "workspace:*"
+    },
+    "devDependencies": {
+        "firebase-admin": "^13.10.0",
+        "typescript": "^6.0.3"
+    }
+}

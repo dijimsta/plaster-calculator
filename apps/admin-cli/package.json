@@ -8,6 +8,7 @@
         "build": "tsc --build tsconfig.build.json"
     },
     "dependencies": {
+        "@libraries/plaster-calculator-node-core": "workspace:*",
         "firebase-admin": "^13.10.0",
         "ink": "^7.0.3",
         "react": "^19.2.6",
