@@ -8,7 +8,7 @@
     "include": ["src"],
     "references": [
         {
-            "path": "../../libraries/plaster-calculator-node-core/tsconfig.build.json"
+            "path": "../plaster-calculator-common/tsconfig.build.json"
         }
     ]
 }
