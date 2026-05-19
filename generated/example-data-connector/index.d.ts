@@ -92,7 +92,6 @@ export interface CreateReminderVariables {
   name: string;
   status: string;
   dueAt: TimestampString;
-  autoCreated: boolean;
 }
 
 export interface DeleteAccountContactData {
@@ -212,26 +211,6 @@ export interface GetFloorplanPageByIdVariables {
   pageId: UUIDString;
 }
 
-export interface GetOpenAutoQuoteReminderData {
-  reminder?: {
-    id: UUIDString;
-    ownerId: string;
-    projectId: UUIDString;
-    accountId?: UUIDString | null;
-    name: string;
-    status: string;
-    dueAt: TimestampString;
-    completedAt?: TimestampString | null;
-    autoCreated: boolean;
-    createdAt: TimestampString;
-    updatedAt: TimestampString;
-  } & Reminder_Key;
-}
-
-export interface GetOpenAutoQuoteReminderVariables {
-  projectId: UUIDString;
-}
-
 export interface GetProjectByIdData {
   project?: {
     id: UUIDString;
@@ -307,7 +286,6 @@ export interface GetReminderByIdData {
     status: string;
     dueAt: TimestampString;
     completedAt?: TimestampString | null;
-    autoCreated: boolean;
     createdAt: TimestampString;
     updatedAt: TimestampString;
   } & Reminder_Key;
@@ -329,6 +307,23 @@ export interface GetUserSettingsData {
 
 export interface GetUserSettingsVariables {
   ownerId: string;
+}
+
+export interface ListAccountContactsByAccountIdData {
+  accountContacts: ({
+    id: UUIDString;
+    accountId: UUIDString;
+    name: string;
+    email?: string | null;
+    phoneNumber?: string | null;
+    role?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & AccountContact_Key)[];
+}
+
+export interface ListAccountContactsByAccountIdVariables {
+  accountId: UUIDString;
 }
 
 export interface ListAccountsByOwnerData {
@@ -358,13 +353,8 @@ export interface ListDueRemindersData {
     status: string;
     dueAt: TimestampString;
     completedAt?: TimestampString | null;
-    autoCreated: boolean;
     createdAt: TimestampString;
     updatedAt: TimestampString;
-    project: {
-      id: UUIDString;
-      name: string;
-    } & Project_Key;
   } & Reminder_Key)[];
 }
 
@@ -382,7 +372,6 @@ export interface ListProjectRemindersData {
     status: string;
     dueAt: TimestampString;
     completedAt?: TimestampString | null;
-    autoCreated: boolean;
     createdAt: TimestampString;
     updatedAt: TimestampString;
   } & Reminder_Key)[];
@@ -656,6 +645,11 @@ export function getAccountById(dc: DataConnect, vars: GetAccountByIdVariables, o
 /** Generated Node Admin SDK operation action function for the 'GetAccountById' Query. Allow users to pass in custom DataConnect instances. */
 export function getAccountById(vars: GetAccountByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountByIdData>>;
 
+/** Generated Node Admin SDK operation action function for the 'ListAccountContactsByAccountId' Query. Allow users to execute without passing in DataConnect. */
+export function listAccountContactsByAccountId(dc: DataConnect, vars: ListAccountContactsByAccountIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListAccountContactsByAccountIdData>>;
+/** Generated Node Admin SDK operation action function for the 'ListAccountContactsByAccountId' Query. Allow users to pass in custom DataConnect instances. */
+export function listAccountContactsByAccountId(vars: ListAccountContactsByAccountIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListAccountContactsByAccountIdData>>;
+
 /** Generated Node Admin SDK operation action function for the 'GetAccountContactById' Query. Allow users to execute without passing in DataConnect. */
 export function getAccountContactById(dc: DataConnect, vars: GetAccountContactByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountContactByIdData>>;
 /** Generated Node Admin SDK operation action function for the 'GetAccountContactById' Query. Allow users to pass in custom DataConnect instances. */
@@ -680,9 +674,4 @@ export function listProjectReminders(vars: ListProjectRemindersVariables, option
 export function getReminderById(dc: DataConnect, vars: GetReminderByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetReminderByIdData>>;
 /** Generated Node Admin SDK operation action function for the 'GetReminderById' Query. Allow users to pass in custom DataConnect instances. */
 export function getReminderById(vars: GetReminderByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetReminderByIdData>>;
-
-/** Generated Node Admin SDK operation action function for the 'GetOpenAutoQuoteReminder' Query. Allow users to execute without passing in DataConnect. */
-export function getOpenAutoQuoteReminder(dc: DataConnect, vars: GetOpenAutoQuoteReminderVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetOpenAutoQuoteReminderData>>;
-/** Generated Node Admin SDK operation action function for the 'GetOpenAutoQuoteReminder' Query. Allow users to pass in custom DataConnect instances. */
-export function getOpenAutoQuoteReminder(vars: GetOpenAutoQuoteReminderVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetOpenAutoQuoteReminderData>>;
 

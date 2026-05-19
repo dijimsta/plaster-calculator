@@ -69,7 +69,6 @@ type Reminder
     status: String!
     dueAt: Timestamp!
     completedAt: Timestamp
-    autoCreated: Boolean! @default(value: false)
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }

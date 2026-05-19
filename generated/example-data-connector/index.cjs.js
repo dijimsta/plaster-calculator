@@ -182,6 +182,13 @@ function getAccountById(dcOrVarsOrOptions, varsOrOptions, options) {
 }
 exports.getAccountById = getAccountById;
 
+function listAccountContactsByAccountId(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListAccountContactsByAccountId', inputVars, inputOpts);
+}
+exports.listAccountContactsByAccountId = listAccountContactsByAccountId;
+
 function getAccountContactById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
@@ -216,11 +223,4 @@ function getReminderById(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeQuery('GetReminderById', inputVars, inputOpts);
 }
 exports.getReminderById = getReminderById;
-
-function getOpenAutoQuoteReminder(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetOpenAutoQuoteReminder', inputVars, inputOpts);
-}
-exports.getOpenAutoQuoteReminder = getOpenAutoQuoteReminder;
 

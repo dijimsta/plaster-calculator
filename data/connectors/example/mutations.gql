@@ -191,7 +191,6 @@ mutation CreateReminder(
     $name: String!
     $status: String!
     $dueAt: Timestamp!
-    $autoCreated: Boolean!
 ) @auth(level: NO_ACCESS) {
     reminder_insert(
         data: {
@@ -202,7 +201,6 @@ mutation CreateReminder(
             name: $name
             status: $status
             dueAt: $dueAt
-            autoCreated: $autoCreated
             createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
         }

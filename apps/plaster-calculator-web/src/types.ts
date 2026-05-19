@@ -77,13 +77,8 @@ export type Reminder = {
     status: "OPEN" | "DONE" | "CANCELLED";
     dueAt: string;
     completedAt: string | null;
-    autoCreated: boolean;
     createdAt: string;
     updatedAt: string;
-    project?: {
-        id: string;
-        name: string;
-    };
 };
 
 export type ProcessingStrategyInfo = {

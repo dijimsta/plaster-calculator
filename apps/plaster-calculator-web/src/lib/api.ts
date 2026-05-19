@@ -4,6 +4,7 @@ import { ref, uploadBytes } from "firebase/storage";
 import { auth, functions, storage } from "../firebase/firebase.utils.js";
 
 import type {
+    AccountContact,
     AccountDetail,
     AccountSummary,
     FloorplanPage,
@@ -130,6 +131,10 @@ const getAccountCallable = httpsCallable<{ accountId: string }, AccountDetail>(
     functions,
     "getAccount",
 );
+const listAccountContactsByAccountIdCallable = httpsCallable<
+    { accountId: string },
+    { contacts: AccountContact[] }
+>(functions, "listAccountContactsByAccountId");
 const createAccountCallable = httpsCallable<AccountPayload, AccountDetail>(
     functions,
     "createAccount",
@@ -315,6 +320,11 @@ export async function listAccounts() {
 export async function getAccount(accountId: string) {
     const result = await getAccountCallable({ accountId });
     return result.data;
+}
+
+export async function listAccountContactsByAccountId(accountId: string) {
+    const result = await listAccountContactsByAccountIdCallable({ accountId });
+    return result.data.contacts;
 }
 
 export async function createAccount(

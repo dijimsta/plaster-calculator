@@ -28,7 +28,6 @@ import {
     updateFloorplanPage as dcUpdateFloorplanPage,
     getFloorplanPageById,
     type GetFloorplanPageByIdData,
-    getOpenAutoQuoteReminder,
     getProjectById,
     type GetProjectByIdData,
     getProjectDetailsById,
@@ -38,10 +37,11 @@ import {
     getUserSettings,
     listProjectsByOwner,
     type ListProjectsByOwnerData,
+    listAccountContactsByAccountId as dcListAccountContactsByAccountId,
+    type ListAccountContactsByAccountIdData,
     listAccountsByOwner,
     type ListAccountsByOwnerData,
     listDueReminders as dcListDueReminders,
-    type ListDueRemindersData,
     listProjectReminders as dcListProjectReminders,
     type ListProjectRemindersData,
     touchProject,
@@ -93,8 +93,9 @@ type AccountWithContacts = NonNullable<GetAccountByIdData["account"]>;
 type AccountContactRow = NonNullable<
     GetAccountContactByIdData["accountContact"]
 >;
+type AccountContactListRow =
+    ListAccountContactsByAccountIdData["accountContacts"][number];
 type ReminderRow = NonNullable<GetReminderByIdData["reminder"]>;
-type DueReminderRow = ListDueRemindersData["reminders"][number];
 type ProjectReminderRow = ListProjectRemindersData["reminders"][number];
 
 type UploadType = "PDF" | "IMAGE";
@@ -185,13 +186,8 @@ interface Reminder {
     status: ReminderStatus;
     dueAt: string;
     completedAt: string | null;
-    autoCreated: boolean;
     createdAt: string;
     updatedAt: string;
-    project?: {
-        id: string;
-        name: string;
-    };
 }
 
 interface ProcessingStrategyInfo {
@@ -719,6 +715,17 @@ export const getAccount = onCall<AccountIdRequest, Promise<AccountDetail>>(
     },
 );
 
+export const listAccountContactsByAccountId = onCall<
+    AccountIdRequest,
+    Promise<{ contacts: AccountContact[] }>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const accountId = readRequiredString(request.data.accountId, "Account ID");
+    await requireOwnedAccount(accountId, auth.uid);
+    const response = await dcListAccountContactsByAccountId({ accountId });
+    return { contacts: response.data.accountContacts.map(toAccountContact) };
+});
+
 export const createAccount = onCall<
     CreateAccountRequest,
     Promise<AccountDetail>
@@ -938,7 +945,7 @@ export const listDueReminders = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const response = await dcListDueReminders({ ownerId: auth.uid });
-    return { reminders: response.data.reminders.map(toDueReminder) };
+    return { reminders: response.data.reminders.map(toReminder) };
 });
 
 export const listProjectReminders = onCall<
@@ -979,7 +986,6 @@ export const createReminder = onCall<CreateReminderRequest, Promise<Reminder>>(
             name: readRequiredString(request.data.name, "Reminder name"),
             status: "OPEN",
             dueAt: readDueAt(request.data.dueAt, "Due date"),
-            autoCreated: false,
         });
 
         return toReminder(await requireOwnedReminder(reminderId, auth.uid));
@@ -1359,7 +1365,7 @@ async function updateOwnedProject(
         hasField(updates, "salesStatus") &&
         (nextSalesStatus === "WON" || nextSalesStatus === "LOST")
     ) {
-        await cancelOpenAutoQuoteReminder(projectId, ownerId);
+        await cancelOpenProjectReminder(projectId, ownerId);
     }
 
     return toDetail(await requireOwnedProject(projectId, ownerId));
@@ -1376,8 +1382,7 @@ async function upsertAutoQuoteReminder(
 
     const dueAt = addDays(new Date(), settings.quoteFollowUpDays).toISOString();
     const name = `${quoteFollowUpReminderPrefix}${project.name}`;
-    const existing = (await getOpenAutoQuoteReminder({ projectId: project.id }))
-        .data.reminder;
+    const existing = await findOpenProjectReminder(project.id, ownerId);
 
     if (existing && existing.ownerId === ownerId) {
         await dcUpdateReminder({
@@ -1399,14 +1404,12 @@ async function upsertAutoQuoteReminder(
         name,
         status: "OPEN",
         dueAt,
-        autoCreated: true,
     });
 }
 
-async function cancelOpenAutoQuoteReminder(projectId: string, ownerId: string) {
-    const reminder = (await getOpenAutoQuoteReminder({ projectId })).data
-        .reminder;
-    if (!reminder || reminder.ownerId !== ownerId) {
+async function cancelOpenProjectReminder(projectId: string, ownerId: string) {
+    const reminder = await findOpenProjectReminder(projectId, ownerId);
+    if (!reminder) {
         return;
     }
 
@@ -1418,6 +1421,17 @@ async function cancelOpenAutoQuoteReminder(projectId: string, ownerId: string) {
         dueAt: reminder.dueAt,
         completedAt: reminder.completedAt ?? null,
     });
+}
+
+async function findOpenProjectReminder(projectId: string, ownerId: string) {
+    const response = await dcListProjectReminders({ projectId });
+    return (
+        response.data.reminders.find(
+            (reminder) =>
+                reminder.ownerId === ownerId &&
+                toReminderStatus(reminder.status) === "OPEN",
+        ) ?? null
+    );
 }
 
 async function requireOwnedProject(projectId: string, ownerId: string) {
@@ -1549,7 +1563,9 @@ function toAccountDetail(account: AccountWithContacts): AccountDetail {
     };
 }
 
-function toAccountContact(contact: AccountContactRow): AccountContact {
+function toAccountContact(
+    contact: AccountContactRow | AccountContactListRow,
+): AccountContact {
     return {
         id: contact.id,
         accountId: contact.accountId,
@@ -1572,19 +1588,8 @@ function toReminder(reminder: ReminderRow | ProjectReminderRow): Reminder {
         status: toReminderStatus(reminder.status),
         dueAt: reminder.dueAt,
         completedAt: reminder.completedAt ?? null,
-        autoCreated: reminder.autoCreated,
         createdAt: reminder.createdAt,
         updatedAt: reminder.updatedAt,
-    };
-}
-
-function toDueReminder(reminder: DueReminderRow): Reminder {
-    return {
-        ...toReminder(reminder),
-        project: {
-            id: reminder.project.id,
-            name: reminder.project.name,
-        },
     };
 }
 

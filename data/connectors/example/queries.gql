@@ -141,6 +141,23 @@ query GetAccountById($id: UUID!) @auth(level: NO_ACCESS) {
     }
 }
 
+query ListAccountContactsByAccountId($accountId: UUID!)
+@auth(level: NO_ACCESS) {
+    accountContacts(
+        where: { accountId: { eq: $accountId } }
+        orderBy: [{ createdAt: ASC }]
+    ) {
+        id
+        accountId
+        name
+        email
+        phoneNumber
+        role
+        createdAt
+        updatedAt
+    }
+}
+
 query GetAccountContactById($accountId: UUID!, $contactId: UUID!)
 @auth(level: NO_ACCESS) {
     accountContact(
@@ -186,13 +203,8 @@ query ListDueReminders($ownerId: String!) @auth(level: NO_ACCESS) {
         status
         dueAt
         completedAt
-        autoCreated
         createdAt
         updatedAt
-        project {
-            id
-            name
-        }
     }
 }
 
@@ -209,7 +221,6 @@ query ListProjectReminders($projectId: UUID!) @auth(level: NO_ACCESS) {
         status
         dueAt
         completedAt
-        autoCreated
         createdAt
         updatedAt
     }
@@ -225,32 +236,6 @@ query GetReminderById($id: UUID!) @auth(level: NO_ACCESS) {
         status
         dueAt
         completedAt
-        autoCreated
-        createdAt
-        updatedAt
-    }
-}
-
-query GetOpenAutoQuoteReminder($projectId: UUID!) @auth(level: NO_ACCESS) {
-    reminder(
-        first: {
-            where: {
-                projectId: { eq: $projectId }
-                status: { eq: "OPEN" }
-                autoCreated: { eq: true }
-            }
-            orderBy: [{ createdAt: DESC }]
-        }
-    ) {
-        id
-        ownerId
-        projectId
-        accountId
-        name
-        status
-        dueAt
-        completedAt
-        autoCreated
         createdAt
         updatedAt
     }
