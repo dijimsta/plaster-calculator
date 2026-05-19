@@ -2,7 +2,16 @@
 
 ## Workflow
 
-Verify changes before committing. If you cannot verify them yourself, ask the user to do it before the commit is made.
+After every code change, run the following checks in order before committing:
+
+```bash
+yarn build
+yarn lint
+yarn format
+```
+
+Run lint before format — lint may reorder or rewrite code that format would then need to fix. All three must pass
+with no errors before the commit is made. If you cannot run them yourself, ask the user to do it first.
 
 ## Configuration Guardrails
 
