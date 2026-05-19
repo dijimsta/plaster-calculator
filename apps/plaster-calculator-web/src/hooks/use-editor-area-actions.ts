@@ -1,16 +1,17 @@
 import {
+    createManualArea,
+    pointsRemovedByStraighten,
+    splitAreaPart,
+    viewportCenterInImage,
+} from "./use-editor-area-actions.utils.js";
+import {
     edgeOverridesAfterInsert,
     edgeOverridesAfterRemoveMany,
     rakedAfterPointRemoval,
-    splitEdgeOverrides,
 } from "../lib/editor/edge-overrides.js";
-import {
-    clamp,
-    pathLengthBetween,
-    pointAt,
-} from "../lib/editor/overlay-geometry.js";
+import { clamp, pointAt } from "../lib/editor/overlay-geometry.js";
 
-import type { AreaPolygon, Point } from "../types.js";
+import type { Point } from "../types.js";
 import type {
     EditorActionsOptions,
     UpdateArea,
@@ -72,7 +73,13 @@ export function useEditorAreaActions(options: AreaActionsOptions) {
     } = options;
 
     function addRectangle() {
-        const center = viewportCenterInImage();
+        const center = viewportCenterInImage({
+            element: canvasWrapRef.current,
+            imageHeight,
+            imageWidth,
+            viewport,
+            zoom,
+        });
         const width = 220;
         const height = 160;
         const x = clamp(
@@ -274,69 +281,6 @@ export function useEditorAreaActions(options: AreaActionsOptions) {
         setSelectedAreaId(null);
         setSelectedAreaIds([]);
         setSelectedEdge(null);
-    }
-
-    function viewportCenterInImage(): Point {
-        const element = canvasWrapRef.current;
-        const scrollLeft = element?.scrollLeft ?? 0;
-        const scrollTop = element?.scrollTop ?? 0;
-        return [
-            clamp((scrollLeft + viewport.width / 2) / zoom, 0, imageWidth),
-            clamp((scrollTop + viewport.height / 2) / zoom, 0, imageHeight),
-        ];
-    }
-
-    function createManualArea(label: string, points: Point[]): AreaPolygon {
-        return {
-            id: crypto.randomUUID(),
-            label,
-            points,
-            wallPlasterType: "Recessed Edge",
-            ceilingPlasterType: "Recessed Edge",
-            isOutdoor: false,
-            source: "manual",
-            deleted: false,
-        };
-    }
-
-    function splitAreaPart(
-        area: AreaPolygon,
-        points: Point[],
-        start: number,
-        end: number,
-        suffix: "A" | "B",
-    ): AreaPolygon {
-        return {
-            ...area,
-            id: crypto.randomUUID(),
-            label: `${area.label} ${suffix}`,
-            points,
-            edgeOverrides: splitEdgeOverrides(
-                area,
-                start,
-                end,
-                suffix === "A" ? "first" : "second",
-            ),
-            source: "manual",
-        };
-    }
-
-    function pointsRemovedByStraighten(
-        area: AreaPolygon,
-        a: number,
-        b: number,
-    ): Set<number> {
-        const forwardLength = pathLengthBetween(area.points, a, b, 1);
-        const backwardLength = pathLengthBetween(area.points, b, a, 1);
-        const removeForward = forwardLength <= backwardLength;
-        const removed = new Set<number>();
-        if (removeForward) {
-            for (let i = a + 1; i < b; i += 1) removed.add(i);
-        } else {
-            for (let i = b + 1; i < area.points.length; i += 1) removed.add(i);
-            for (let i = 0; i < a; i += 1) removed.add(i);
-        }
-        return removed;
     }
 
     function selectOnlyArea(areaId: string) {

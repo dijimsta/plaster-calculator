@@ -4,6 +4,74 @@ import importPlugin from "eslint-plugin-import";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
+const typescriptFiles = ["**/*.ts"];
+const tsxFiles = ["**/*.tsx"];
+
+const typescriptLanguageOptions = {
+    globals: {
+        ...globals.node,
+        ...globals.browser,
+    },
+};
+
+const javascriptLanguageOptions = {
+    globals: {
+        ...globals.node,
+        ...globals.browser,
+    },
+};
+
+const importSettings = {
+    "import/parsers": {
+        "@typescript-eslint/parser": [".ts", ".tsx"],
+    },
+    "import/resolver": {
+        node: {
+            extensions: [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx"],
+        },
+        typescript: {
+            alwaysTryTypes: true,
+            noWarnOnMultipleProjects: true,
+            project: [
+                "./tsconfig.base.json",
+                "./apps/*/tsconfig.json",
+                "./functions/*/tsconfig.json",
+                "./libraries/*/tsconfig.json",
+            ],
+        },
+    },
+};
+
+const importPlugins = {
+    import: fixupPluginRules(importPlugin),
+};
+
+const maxLinesOptions = {
+    skipBlankLines: true,
+    skipComments: true,
+};
+
+const sharedTypescriptRules = {
+    complexity: ["error", 80],
+    "import/order": [
+        "error",
+        {
+            alphabetize: {
+                caseInsensitive: true,
+                order: "asc",
+            },
+            groups: [
+                "builtin",
+                "external",
+                "internal",
+                ["parent", "sibling", "index"],
+                "type",
+            ],
+            "newlines-between": "always",
+        },
+    ],
+};
+
 export default tseslint.config(
     {
         ignores: [
@@ -25,58 +93,35 @@ export default tseslint.config(
     js.configs.recommended,
     ...tseslint.configs.recommended,
     {
-        languageOptions: {
-            globals: {
-                ...globals.node,
-                ...globals.browser,
-            },
-        },
-        plugins: {
-            import: fixupPluginRules(importPlugin),
-        },
-        settings: {
-            "import/parsers": {
-                "@typescript-eslint/parser": [".ts", ".tsx"],
-            },
-            "import/resolver": {
-                node: {
-                    extensions: [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx"],
-                },
-                typescript: {
-                    alwaysTryTypes: true,
-                    noWarnOnMultipleProjects: true,
-                    project: [
-                        "./tsconfig.base.json",
-                        "./apps/*/tsconfig.json",
-                        "./functions/*/tsconfig.json",
-                        "./libraries/*/tsconfig.json",
-                    ],
-                },
-            },
-        },
+        files: typescriptFiles,
+        languageOptions: typescriptLanguageOptions,
+        plugins: importPlugins,
+        settings: importSettings,
         rules: {
-            complexity: ["error", 80],
-            "import/order": [
-                "error",
-                {
-                    alphabetize: {
-                        caseInsensitive: true,
-                        order: "asc",
-                    },
-                    groups: [
-                        "builtin",
-                        "external",
-                        "internal",
-                        ["parent", "sibling", "index"],
-                        "type",
-                    ],
-                    "newlines-between": "always",
+            ...sharedTypescriptRules,
+            "max-lines": ["warn", { ...maxLinesOptions, max: 300 }],
+        },
+    },
+    {
+        files: tsxFiles,
+        languageOptions: {
+            ...typescriptLanguageOptions,
+            parserOptions: {
+                ecmaFeatures: {
+                    jsx: true,
                 },
-            ],
+            },
+        },
+        plugins: importPlugins,
+        settings: importSettings,
+        rules: {
+            ...sharedTypescriptRules,
+            "max-lines": ["warn", { ...maxLinesOptions, max: 450 }],
         },
     },
     {
         files: ["**/*.{js,mjs,cjs}"],
         ...tseslint.configs.disableTypeChecked,
+        languageOptions: javascriptLanguageOptions,
     },
 );
