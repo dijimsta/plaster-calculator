@@ -5,9 +5,9 @@
 After every code change, run the following checks in order before committing:
 
 ```bash
-yarn build
-yarn lint
-yarn format
+pnpm build
+pnpm lint
+pnpm format
 ```
 
 Run lint before format — lint may reorder or rewrite code that format would then need to fix. All three must pass

@@ -34,5 +34,5 @@ Do not commit service account JSON files.
 Start the interactive CLI:
 
 ```bash
-yarn admin-cli
+pnpm exec admin-cli
 ```

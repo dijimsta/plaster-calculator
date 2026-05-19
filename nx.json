@@ -7,5 +7,6 @@
             "cache": true
         }
     },
-    "neverConnectToCloud": true
+    "neverConnectToCloud": true,
+    "analytics": false
 }

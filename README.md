@@ -27,7 +27,7 @@ From the repo root:
 firebase emulators:start
 ```
 
-This will start the Auth and Tasks emulators alongside the App Hosting emulator, which runs the Next.js dev server (`yarn dev`) on port 5050. The Emulator UI is available at http://localhost:4000.
+This will start the Auth and Tasks emulators alongside the App Hosting emulator, which runs the Next.js dev server (`pnpm dev`) on port 5050. The Emulator UI is available at http://localhost:4000.
 
 ## Firebase Storage CORS
 

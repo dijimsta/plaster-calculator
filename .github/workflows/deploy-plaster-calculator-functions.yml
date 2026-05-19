@@ -22,18 +22,22 @@ jobs:
         steps:
             - uses: actions/checkout@v6
 
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.24.0
+
             - uses: actions/setup-node@v6
               with:
                   node-version: 24
-                  cache: yarn
+                  cache: pnpm
 
             - name: Install dependencies
-              run: yarn install --immutable
+              run: pnpm install --frozen-lockfile
 
             - name: Build functions
-              run: yarn build
+              run: pnpm build
 
             - name: Deploy functions
-              run: yarn firebase deploy --only functions:plaster-calculator-functions --project plaster-calculator --token "$FIREBASE_TOKEN"
+              run: pnpm exec firebase deploy --only functions:plaster-calculator-functions --project plaster-calculator --token "$FIREBASE_TOKEN"
               env:
                   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
