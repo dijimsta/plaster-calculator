@@ -4,10 +4,14 @@ import { ref, uploadBytes } from "firebase/storage";
 import { auth, functions, storage } from "../firebase/firebase.utils.js";
 
 import type {
+    AccountDetail,
+    AccountSummary,
     FloorplanPage,
     ProcessingStrategyInfo,
     ProjectDetail,
     ProjectSummary,
+    Reminder,
+    UserSettings,
 } from "../types.js";
 
 const LONG_RUNNING_CALLABLE_TIMEOUT_MS = 60 * 60 * 1000;
@@ -21,12 +25,50 @@ type UploadResponse = {
 
 type CreateProjectFromUploadRequest = {
     projectId: string;
+    accountId?: string | null;
     name: string;
+    address?: string | null;
     originalFileName: string;
     contentType: string;
     size: number;
     storagePath: string;
     pageCount?: number;
+};
+
+type UpdateProjectRequest = {
+    projectId: string;
+    name?: string;
+    accountId?: string | null;
+    address?: string | null;
+    salesStatus?: "QUOTING" | "QUOTE_SUBMITTED" | "WON" | "LOST";
+};
+
+type AccountPayload = {
+    companyName?: string;
+    businessNumber?: string | null;
+    phoneNumber?: string | null;
+};
+
+type AccountContactPayload = {
+    name?: string;
+    email?: string | null;
+    phoneNumber?: string | null;
+    role?: string | null;
+};
+
+type ReminderPayload = {
+    projectId: string;
+    accountId?: string | null;
+    name: string;
+    dueAt: string;
+};
+
+type UpdateReminderPayload = {
+    reminderId: string;
+    accountId?: string | null;
+    name?: string;
+    dueAt?: string;
+    status?: "OPEN" | "DONE" | "CANCELLED";
 };
 
 type ProcessProjectRequest = {
@@ -72,10 +114,82 @@ const renameProjectCallable = httpsCallable<
     { projectId: string; name: string },
     ProjectDetail
 >(functions, "renameProject");
+const updateProjectCallable = httpsCallable<
+    UpdateProjectRequest,
+    ProjectDetail
+>(functions, "updateProject");
 const deleteProjectCallable = httpsCallable<
     { projectId: string },
     { ok: true }
 >(functions, "deleteProject");
+const listAccountsCallable = httpsCallable<
+    unknown,
+    { accounts: AccountSummary[] }
+>(functions, "listAccounts");
+const getAccountCallable = httpsCallable<{ accountId: string }, AccountDetail>(
+    functions,
+    "getAccount",
+);
+const createAccountCallable = httpsCallable<AccountPayload, AccountDetail>(
+    functions,
+    "createAccount",
+);
+const updateAccountCallable = httpsCallable<
+    AccountPayload & { accountId: string; primaryContactId?: string | null },
+    AccountDetail
+>(functions, "updateAccount");
+const deleteAccountCallable = httpsCallable<
+    { accountId: string },
+    { ok: true }
+>(functions, "deleteAccount");
+const createAccountContactCallable = httpsCallable<
+    AccountContactPayload & { accountId: string },
+    AccountDetail
+>(functions, "createAccountContact");
+const updateAccountContactCallable = httpsCallable<
+    AccountContactPayload & { accountId: string; contactId: string },
+    AccountDetail
+>(functions, "updateAccountContact");
+const deleteAccountContactCallable = httpsCallable<
+    { accountId: string; contactId: string },
+    AccountDetail
+>(functions, "deleteAccountContact");
+const setPrimaryAccountContactCallable = httpsCallable<
+    { accountId: string; contactId: string },
+    AccountDetail
+>(functions, "setPrimaryAccountContact");
+const getSettingsCallable = httpsCallable<unknown, UserSettings>(
+    functions,
+    "getSettings",
+);
+const updateSettingsCallable = httpsCallable<
+    Partial<Pick<UserSettings, "quoteFollowUpEnabled" | "quoteFollowUpDays">>,
+    UserSettings
+>(functions, "updateSettings");
+const listDueRemindersCallable = httpsCallable<
+    unknown,
+    { reminders: Reminder[] }
+>(functions, "listDueReminders");
+const listProjectRemindersCallable = httpsCallable<
+    { projectId: string },
+    { reminders: Reminder[] }
+>(functions, "listProjectReminders");
+const createReminderCallable = httpsCallable<ReminderPayload, Reminder>(
+    functions,
+    "createReminder",
+);
+const updateReminderCallable = httpsCallable<UpdateReminderPayload, Reminder>(
+    functions,
+    "updateReminder",
+);
+const completeReminderCallable = httpsCallable<
+    { reminderId: string },
+    Reminder
+>(functions, "completeReminder");
+const cancelReminderCallable = httpsCallable<{ reminderId: string }, Reminder>(
+    functions,
+    "cancelReminder",
+);
 const listProcessingStrategiesCallable = httpsCallable<
     unknown,
     { strategies: ProcessingStrategyInfo[] }
@@ -116,6 +230,7 @@ export async function uploadProject(
     name: string,
     file: File,
     pageCount?: number,
+    options: { accountId?: string | null; address?: string | null } = {},
 ) {
     const uid = auth.currentUser?.uid;
     if (!uid) {
@@ -130,7 +245,9 @@ export async function uploadProject(
 
     const result = await createProjectFromUploadCallable({
         projectId,
+        accountId: options.accountId ?? null,
         name,
+        address: options.address ?? null,
         originalFileName: file.name,
         contentType: file.type || "application/octet-stream",
         size: file.size,
@@ -181,8 +298,129 @@ export async function renameProject(projectId: string, name: string) {
     return result.data;
 }
 
+export async function updateProject(payload: UpdateProjectRequest) {
+    const result = await updateProjectCallable(payload);
+    return result.data;
+}
+
 export async function deleteProject(projectId: string) {
     await deleteProjectCallable({ projectId });
+}
+
+export async function listAccounts() {
+    const result = await listAccountsCallable();
+    return result.data.accounts;
+}
+
+export async function getAccount(accountId: string) {
+    const result = await getAccountCallable({ accountId });
+    return result.data;
+}
+
+export async function createAccount(
+    payload: AccountPayload & { companyName: string },
+) {
+    const result = await createAccountCallable(payload);
+    return result.data;
+}
+
+export async function updateAccount(
+    accountId: string,
+    payload: AccountPayload & { primaryContactId?: string | null },
+) {
+    const result = await updateAccountCallable({ accountId, ...payload });
+    return result.data;
+}
+
+export async function deleteAccount(accountId: string) {
+    await deleteAccountCallable({ accountId });
+}
+
+export async function createAccountContact(
+    accountId: string,
+    payload: AccountContactPayload & { name: string },
+) {
+    const result = await createAccountContactCallable({
+        accountId,
+        ...payload,
+    });
+    return result.data;
+}
+
+export async function updateAccountContact(
+    accountId: string,
+    contactId: string,
+    payload: AccountContactPayload,
+) {
+    const result = await updateAccountContactCallable({
+        accountId,
+        contactId,
+        ...payload,
+    });
+    return result.data;
+}
+
+export async function deleteAccountContact(
+    accountId: string,
+    contactId: string,
+) {
+    const result = await deleteAccountContactCallable({ accountId, contactId });
+    return result.data;
+}
+
+export async function setPrimaryAccountContact(
+    accountId: string,
+    contactId: string,
+) {
+    const result = await setPrimaryAccountContactCallable({
+        accountId,
+        contactId,
+    });
+    return result.data;
+}
+
+export async function getSettings() {
+    const result = await getSettingsCallable();
+    return result.data;
+}
+
+export async function updateSettings(
+    payload: Partial<
+        Pick<UserSettings, "quoteFollowUpEnabled" | "quoteFollowUpDays">
+    >,
+) {
+    const result = await updateSettingsCallable(payload);
+    return result.data;
+}
+
+export async function listDueReminders() {
+    const result = await listDueRemindersCallable();
+    return result.data.reminders;
+}
+
+export async function listProjectReminders(projectId: string) {
+    const result = await listProjectRemindersCallable({ projectId });
+    return result.data.reminders;
+}
+
+export async function createReminder(payload: ReminderPayload) {
+    const result = await createReminderCallable(payload);
+    return result.data;
+}
+
+export async function updateReminder(payload: UpdateReminderPayload) {
+    const result = await updateReminderCallable(payload);
+    return result.data;
+}
+
+export async function completeReminder(reminderId: string) {
+    const result = await completeReminderCallable({ reminderId });
+    return result.data;
+}
+
+export async function cancelReminder(reminderId: string) {
+    const result = await cancelReminderCallable({ reminderId });
+    return result.data;
 }
 
 export async function listProcessingStrategies() {

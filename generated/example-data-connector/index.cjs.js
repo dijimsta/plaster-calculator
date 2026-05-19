@@ -7,40 +7,19 @@ const connectorConfig = {
 };
 exports.connectorConfig = connectorConfig;
 
-function listProjectsByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListProjectsByOwner', inputVars, inputOpts);
-}
-exports.listProjectsByOwner = listProjectsByOwner;
-
-function getProjectDetailsById(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetProjectDetailsById', inputVars, inputOpts);
-}
-exports.getProjectDetailsById = getProjectDetailsById;
-
-function getProjectById(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetProjectById', inputVars, inputOpts);
-}
-exports.getProjectById = getProjectById;
-
-function getFloorplanPageById(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetFloorplanPageById', inputVars, inputOpts);
-}
-exports.getFloorplanPageById = getFloorplanPageById;
-
 function createProjectFromUpload(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
   return dcInstance.executeMutation('CreateProjectFromUpload', inputVars, inputOpts);
 }
 exports.createProjectFromUpload = createProjectFromUpload;
+
+function updateProject(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateProject', inputVars, inputOpts);
+}
+exports.updateProject = updateProject;
 
 function renameProject(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
@@ -70,6 +49,76 @@ function deleteProject(dcOrVarsOrOptions, varsOrOptions, options) {
 }
 exports.deleteProject = deleteProject;
 
+function createAccount(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateAccount', inputVars, inputOpts);
+}
+exports.createAccount = createAccount;
+
+function updateAccount(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateAccount', inputVars, inputOpts);
+}
+exports.updateAccount = updateAccount;
+
+function deleteAccountContacts(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteAccountContacts', inputVars, inputOpts);
+}
+exports.deleteAccountContacts = deleteAccountContacts;
+
+function deleteAccount(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteAccount', inputVars, inputOpts);
+}
+exports.deleteAccount = deleteAccount;
+
+function createAccountContact(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateAccountContact', inputVars, inputOpts);
+}
+exports.createAccountContact = createAccountContact;
+
+function updateAccountContact(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateAccountContact', inputVars, inputOpts);
+}
+exports.updateAccountContact = updateAccountContact;
+
+function deleteAccountContact(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteAccountContact', inputVars, inputOpts);
+}
+exports.deleteAccountContact = deleteAccountContact;
+
+function upsertUserSettings(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpsertUserSettings', inputVars, inputOpts);
+}
+exports.upsertUserSettings = upsertUserSettings;
+
+function createReminder(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateReminder', inputVars, inputOpts);
+}
+exports.createReminder = createReminder;
+
+function updateReminder(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateReminder', inputVars, inputOpts);
+}
+exports.updateReminder = updateReminder;
+
 function createFloorplanPage(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
@@ -90,4 +139,88 @@ function updateFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeMutation('UpdateFloorplanPages', inputVars, inputOpts);
 }
 exports.updateFloorplanPages = updateFloorplanPages;
+
+function listProjectsByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListProjectsByOwner', inputVars, inputOpts);
+}
+exports.listProjectsByOwner = listProjectsByOwner;
+
+function getProjectDetailsById(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetProjectDetailsById', inputVars, inputOpts);
+}
+exports.getProjectDetailsById = getProjectDetailsById;
+
+function getProjectById(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetProjectById', inputVars, inputOpts);
+}
+exports.getProjectById = getProjectById;
+
+function getFloorplanPageById(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetFloorplanPageById', inputVars, inputOpts);
+}
+exports.getFloorplanPageById = getFloorplanPageById;
+
+function listAccountsByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListAccountsByOwner', inputVars, inputOpts);
+}
+exports.listAccountsByOwner = listAccountsByOwner;
+
+function getAccountById(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetAccountById', inputVars, inputOpts);
+}
+exports.getAccountById = getAccountById;
+
+function getAccountContactById(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetAccountContactById', inputVars, inputOpts);
+}
+exports.getAccountContactById = getAccountContactById;
+
+function getUserSettings(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetUserSettings', inputVars, inputOpts);
+}
+exports.getUserSettings = getUserSettings;
+
+function listDueReminders(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListDueReminders', inputVars, inputOpts);
+}
+exports.listDueReminders = listDueReminders;
+
+function listProjectReminders(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListProjectReminders', inputVars, inputOpts);
+}
+exports.listProjectReminders = listProjectReminders;
+
+function getReminderById(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetReminderById', inputVars, inputOpts);
+}
+exports.getReminderById = getReminderById;
+
+function getOpenAutoQuoteReminder(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetOpenAutoQuoteReminder', inputVars, inputOpts);
+}
+exports.getOpenAutoQuoteReminder = getOpenAutoQuoteReminder;
 
