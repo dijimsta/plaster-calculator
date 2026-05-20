@@ -5,7 +5,9 @@ import {
     deleteFloorplanPages as dcDeleteFloorplanPages,
     deleteProject as dcDeleteProject,
     getProjectById,
+    listProjectsByAccount as dcListProjectsByAccount,
     listProjectsByOwner,
+    listProjectsByOwnerAndSalesStatus,
     updateProject as dcUpdateProject,
 } from "@generated/example-data-connector";
 import { getStorage } from "firebase-admin/storage";
@@ -15,6 +17,12 @@ import { requireAuth } from "./auth.js";
 import { buildProjectCsv, csvFileNamePart } from "./csv-export.js";
 import { toDetail, toSummary } from "./mappers.js";
 import { requireOwnedAccount, requireOwnedProject } from "./ownership.js";
+import {
+    type ProjectUpdateFields,
+    nextNullableProjectField,
+    nextSalesStatusFor,
+} from "./project-fields.js";
+import { inferUploadType } from "./project-upload.js";
 import {
     upsertAutoQuoteReminder,
     cancelOpenProjectReminder,
@@ -31,12 +39,13 @@ import {
     readRequiredNumber,
     readRequiredString,
     readSalesStatus,
-    toSalesStatus,
 } from "./validation.js";
 
 import type {
+    AccountIdRequest,
     CreateProjectFromUploadRequest,
     ExportProjectCsvResponse,
+    ListProjectsRequest,
     ProjectDetail,
     ProjectIdRequest,
     ProjectSummary,
@@ -44,15 +53,34 @@ import type {
     SalesStatus,
     UpdateProjectRequest,
     UploadResponse,
-    UploadType,
 } from "./types.js";
 
 export const listProjects = onCall<
-    unknown,
+    ListProjectsRequest,
     Promise<{ projects: ProjectSummary[] }>
 >(async (request) => {
     const auth = requireAuth(request);
-    const response = await listProjectsByOwner({ ownerId: auth.uid });
+    const data = request.data ?? {};
+    const salesStatus = hasField(data, "salesStatus")
+        ? readSalesStatus(data.salesStatus)
+        : null;
+    const response = salesStatus
+        ? await listProjectsByOwnerAndSalesStatus({
+              ownerId: auth.uid,
+              salesStatus,
+          })
+        : await listProjectsByOwner({ ownerId: auth.uid });
+    return { projects: response.data.projects.map(toSummary) };
+});
+
+export const listProjectsByAccount = onCall<
+    AccountIdRequest,
+    Promise<{ projects: ProjectSummary[] }>
+>(async (request) => {
+    const auth = requireAuth(request);
+    const accountId = readRequiredString(request.data.accountId, "Account ID");
+    await requireOwnedAccount(accountId, auth.uid);
+    const response = await dcListProjectsByAccount({ accountId });
     return { projects: response.data.projects.map(toSummary) };
 });
 
@@ -236,13 +264,6 @@ export const exportProjectCsv = onCall<
     };
 });
 
-interface ProjectUpdateFields {
-    name?: string;
-    accountId?: string | null;
-    address?: string | null;
-    salesStatus?: SalesStatus;
-}
-
 async function updateOwnedProject(
     projectId: string,
     ownerId: string,
@@ -281,22 +302,6 @@ async function updateOwnedProject(
     return toDetail(await requireOwnedProject(projectId, ownerId));
 }
 
-function nextNullableProjectField(
-    updates: ProjectUpdateFields,
-    field: "accountId" | "address",
-    current: string | null | undefined,
-) {
-    return hasField(updates, field)
-        ? (updates[field] ?? null)
-        : (current ?? null);
-}
-
-function nextSalesStatusFor(updates: ProjectUpdateFields, current: string) {
-    return hasField(updates, "salesStatus")
-        ? (updates.salesStatus ?? toSalesStatus(current))
-        : toSalesStatus(current);
-}
-
 async function syncQuoteReminderForStatusUpdate(
     updates: ProjectUpdateFields,
     salesStatus: SalesStatus,
@@ -316,12 +321,4 @@ async function syncQuoteReminderForStatusUpdate(
     if (salesStatus === "WON" || salesStatus === "LOST") {
         await cancelOpenProjectReminder(projectId, ownerId);
     }
-}
-
-function inferUploadType(fileName: string, contentType: string): UploadType {
-    const lowerName = fileName.toLowerCase();
-    const lowerType = contentType.toLowerCase();
-    return lowerName.endsWith(".pdf") || lowerType.includes("pdf")
-        ? "PDF"
-        : "IMAGE";
 }

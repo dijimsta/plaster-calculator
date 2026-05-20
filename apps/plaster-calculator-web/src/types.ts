@@ -1,3 +1,5 @@
+export type SalesStatus = "QUOTING" | "QUOTE_SUBMITTED" | "WON" | "LOST";
+
 export type ProjectSummary = {
     id: string;
     accountId: string | null;
@@ -6,7 +8,7 @@ export type ProjectSummary = {
     originalFileName: string;
     uploadType: "PDF" | "IMAGE";
     status: string;
-    salesStatus: "QUOTING" | "QUOTE_SUBMITTED" | "WON" | "LOST";
+    salesStatus: SalesStatus;
     processingError?: string | null;
     createdAt: string;
     updatedAt: string;

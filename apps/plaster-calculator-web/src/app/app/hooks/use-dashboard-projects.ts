@@ -7,9 +7,15 @@ import {
     renameProject,
 } from "../../../lib/api.js";
 
-import type { ProjectSummary } from "../../../types.js";
+import type { ProjectSummary, SalesStatus } from "../../../types.js";
+
+type ActiveProjectSalesStatus = Extract<
+    SalesStatus,
+    "QUOTING" | "QUOTE_SUBMITTED"
+>;
 
 interface DashboardProjectsState {
+    readonly activeSalesStatus: ActiveProjectSalesStatus;
     readonly filtered: ProjectSummary[];
     readonly processingProjectId: string | null;
     readonly projectsLoading: boolean;
@@ -26,6 +32,7 @@ interface DashboardProjectsState {
     readonly setMessage: (message: string) => void;
     readonly setProcessingProjectId: (projectId: string | null) => void;
     readonly setQuery: (query: string) => void;
+    readonly setActiveSalesStatus: (status: ActiveProjectSalesStatus) => void;
     readonly setRenameValue: (value: string) => void;
     readonly setRenamingId: (projectId: string | null) => void;
     readonly setToast: (toast: string) => void;
@@ -36,6 +43,8 @@ interface DashboardProjectsState {
 
 export function useDashboardProjects(): DashboardProjectsState {
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
+    const [activeSalesStatus, setActiveSalesStatus] =
+        useState<ActiveProjectSalesStatus>("QUOTING");
     const [query, setQuery] = useState("");
     const [projectsLoading, setProjectsLoading] = useState(true);
     const [message, setMessage] = useState("");
@@ -52,8 +61,8 @@ export function useDashboardProjects(): DashboardProjectsState {
     const [renameValue, setRenameValue] = useState("");
 
     useEffect(() => {
-        refresh();
-    }, []);
+        void refresh();
+    }, [activeSalesStatus]);
 
     useEffect(() => {
         if (!processingProjectId) return;
@@ -91,7 +100,7 @@ export function useDashboardProjects(): DashboardProjectsState {
     async function refresh() {
         setProjectsLoading(true);
         try {
-            setProjects(await listProjects());
+            setProjects(await listProjects({ salesStatus: activeSalesStatus }));
         } catch (error) {
             setMessage(
                 error instanceof Error
@@ -137,16 +146,16 @@ export function useDashboardProjects(): DashboardProjectsState {
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
-        return q
-            ? projects.filter(
-                  (project) =>
-                      project.name.toLowerCase().includes(q) ||
-                      project.originalFileName.toLowerCase().includes(q),
-              )
-            : projects;
+        if (!q) return projects;
+        return projects.filter(
+            (project) =>
+                project.name.toLowerCase().includes(q) ||
+                project.originalFileName.toLowerCase().includes(q),
+        );
     }, [projects, query]);
 
     return {
+        activeSalesStatus,
         filtered,
         busyMessage,
         message,
@@ -162,6 +171,7 @@ export function useDashboardProjects(): DashboardProjectsState {
         saveRename,
         setMessage,
         setProcessingProjectId,
+        setActiveSalesStatus,
         setQuery,
         setRenameValue,
         setRenamingId,

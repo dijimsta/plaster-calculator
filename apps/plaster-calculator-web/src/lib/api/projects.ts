@@ -7,6 +7,7 @@ import type {
     FloorplanPage,
     ProjectDetail,
     ProjectSummary,
+    SalesStatus,
 } from "../../types.js";
 
 const LONG_RUNNING_CALLABLE_TIMEOUT_MS = 60 * 60 * 1000;
@@ -35,7 +36,11 @@ type UpdateProjectRequest = {
     name?: string;
     accountId?: string | null;
     address?: string | null;
-    salesStatus?: "QUOTING" | "QUOTE_SUBMITTED" | "WON" | "LOST";
+    salesStatus?: SalesStatus;
+};
+
+type ListProjectsRequest = {
+    salesStatus?: SalesStatus;
 };
 
 type ProcessProjectRequest = {
@@ -62,9 +67,13 @@ type ExportCsvResponse = {
 };
 
 const listProjectsCallable = httpsCallable<
-    unknown,
+    ListProjectsRequest,
     { projects: ProjectSummary[] }
 >(functions, "listProjects");
+const listProjectsByAccountCallable = httpsCallable<
+    { accountId: string },
+    { projects: ProjectSummary[] }
+>(functions, "listProjectsByAccount");
 const createProjectFromUploadCallable = httpsCallable<
     CreateProjectFromUploadRequest,
     UploadResponse
@@ -116,8 +125,13 @@ const exportProjectCsvCallable = httpsCallable<
     ExportCsvResponse
 >(functions, "exportProjectCsv");
 
-export async function listProjects() {
-    const result = await listProjectsCallable();
+export async function listProjects(options: ListProjectsRequest = {}) {
+    const result = await listProjectsCallable(options);
+    return result.data.projects;
+}
+
+export async function listProjectsByAccount(accountId: string) {
+    const result = await listProjectsByAccountCallable({ accountId });
     return result.data.projects;
 }
 

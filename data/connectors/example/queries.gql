@@ -20,6 +20,53 @@ query ListProjectsByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
     }
 }
 
+query ListProjectsByOwnerAndSalesStatus(
+    $ownerId: String!
+    $salesStatus: String!
+) @auth(level: NO_ACCESS) {
+    projects(
+        where: { ownerId: { eq: $ownerId }, salesStatus: { eq: $salesStatus } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
+        id
+        ownerId
+        accountId
+        name
+        address
+        originalFileName
+        uploadType
+        originalPath
+        status
+        salesStatus
+        processingError
+        pageCount
+        createdAt
+        updatedAt
+    }
+}
+
+query ListProjectsByAccount($accountId: UUID!) @auth(level: NO_ACCESS) {
+    projects(
+        where: { accountId: { eq: $accountId } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
+        id
+        ownerId
+        accountId
+        name
+        address
+        originalFileName
+        uploadType
+        originalPath
+        status
+        salesStatus
+        processingError
+        pageCount
+        createdAt
+        updatedAt
+    }
+}
+
 query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id

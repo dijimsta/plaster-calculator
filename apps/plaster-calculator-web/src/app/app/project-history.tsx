@@ -1,6 +1,7 @@
 import { LoaderCircle, Pencil, RefreshCcw, Search, Trash2 } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
+import { salesStatusLabel } from "../../lib/sales-status.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type { ProjectHistoryProps } from "./dashboard.types.js";
@@ -8,6 +9,7 @@ import type { ProjectHistoryProps } from "./dashboard.types.js";
 const Link = LinkModule.default;
 
 export function ProjectHistory({
+    activeSalesStatus,
     filtered,
     projectsLoading,
     query,
@@ -16,6 +18,7 @@ export function ProjectHistory({
     refresh,
     removeProject,
     saveRename,
+    setActiveSalesStatus,
     setQuery,
     setRenamingId,
     setRenameValue,
@@ -23,8 +26,29 @@ export function ProjectHistory({
     return (
         <section className={cx(ui.panel, ui.stack, "self-start")}>
             <div className={ui.editorToolbar}>
-                <h2>Project History</h2>
+                <h2>Active Projects</h2>
                 <div className={cx(ui.buttonRow, "items-end")}>
+                    <div className={cx(ui.field, "min-w-[190px]")}>
+                        <label htmlFor="sales-status-filter">Status</label>
+                        <select
+                            id="sales-status-filter"
+                            className={ui.input}
+                            value={activeSalesStatus}
+                            onChange={(event) =>
+                                setActiveSalesStatus(
+                                    event.target
+                                        .value as typeof activeSalesStatus,
+                                )
+                            }
+                        >
+                            <option value="QUOTING">
+                                {salesStatusLabel("QUOTING")}
+                            </option>
+                            <option value="QUOTE_SUBMITTED">
+                                {salesStatusLabel("QUOTE_SUBMITTED")}
+                            </option>
+                        </select>
+                    </div>
                     <div className={cx(ui.field, "min-w-[260px]")}>
                         <label htmlFor="search">Search</label>
                         <div className="relative">
@@ -96,6 +120,8 @@ export function ProjectHistory({
                                     >
                                         {project.originalFileName} /{" "}
                                         {project.uploadType} / {project.status}{" "}
+                                        /{" "}
+                                        {salesStatusLabel(project.salesStatus)}{" "}
                                         / {project.pageCount}{" "}
                                         {project.pageCount === 1
                                             ? "page"
@@ -150,7 +176,10 @@ export function ProjectHistory({
                             </div>
                         ))}
                         {filtered.length === 0 && (
-                            <p className={ui.muted}>No projects yet.</p>
+                            <p className={ui.muted}>
+                                No {salesStatusLabel(activeSalesStatus)}{" "}
+                                projects.
+                            </p>
                         )}
                     </>
                 )}

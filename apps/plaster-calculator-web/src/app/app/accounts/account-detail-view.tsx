@@ -3,7 +3,7 @@
 import { ArrowLeft, LoaderCircle, RefreshCcw, X } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 import { useRouter } from "next/navigation.js";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import { AccountDetailsPanel } from "./account-details-panel.js";
 import { AccountProjectsPanel } from "./account-projects-panel.js";
@@ -25,7 +25,7 @@ import {
     deleteAccount,
     deleteAccountContact,
     getAccount,
-    listProjects,
+    listProjectsByAccount,
     updateAccount,
     updateAccountContact,
 } from "../../../lib/api.js";
@@ -69,10 +69,7 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
         return () => window.clearTimeout(timeout);
     }, [toast]);
 
-    const accountProjects = useMemo(
-        () => projects.filter((project) => project.accountId === accountId),
-        [projects, accountId],
-    );
+    const accountProjects = projects;
     const hasAccountChanges =
         account && draft ? isAccountDetailDraftChanged(account, draft) : false;
 
@@ -82,7 +79,7 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
         try {
             const [nextAccount, nextProjects] = await Promise.all([
                 getAccount(accountId),
-                listProjects(),
+                listProjectsByAccount(accountId),
             ]);
             setAccount(nextAccount);
             setDraft(toAccountDetailDraft(nextAccount));

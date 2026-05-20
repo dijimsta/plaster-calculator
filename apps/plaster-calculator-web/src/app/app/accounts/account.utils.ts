@@ -7,7 +7,6 @@ import type {
     AccountContact,
     AccountDetail,
     AccountSummary,
-    ProjectSummary,
 } from "../../../types.js";
 
 export function optionalValue(value: string): string | null {
@@ -27,17 +26,6 @@ export function filterAccounts(
             account.phoneNumber ?? "",
         ].some((value) => value.toLowerCase().includes(q)),
     );
-}
-
-export function countProjectsByAccount(
-    projects: readonly ProjectSummary[],
-): Map<string, number> {
-    const counts = new Map<string, number>();
-    for (const project of projects) {
-        if (!project.accountId) continue;
-        counts.set(project.accountId, (counts.get(project.accountId) ?? 0) + 1);
-    }
-    return counts;
 }
 
 export function toAccountDraft(account: AccountSummary): AccountDraft {
