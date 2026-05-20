@@ -116,7 +116,7 @@ export default tseslint.config(
         settings: importSettings,
         rules: {
             ...sharedTypescriptRules,
-            "max-lines": ["warn", { ...maxLinesOptions, max: 450 }],
+            "max-lines": ["warn", { ...maxLinesOptions, max: 300 }],
         },
     },
     {
