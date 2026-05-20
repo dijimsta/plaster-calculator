@@ -4,22 +4,19 @@ import {
     deleteProject,
     getProjectStatus,
     listProjects,
-    listProcessingStrategies,
     renameProject,
 } from "../../../lib/api.js";
 
-import type { ProcessingStrategyInfo, ProjectSummary } from "../../../types.js";
+import type { ProjectSummary } from "../../../types.js";
 
 interface DashboardProjectsState {
     readonly filtered: ProjectSummary[];
     readonly processingProjectId: string | null;
-    readonly processingStrategies: ProcessingStrategyInfo[];
     readonly projectsLoading: boolean;
     readonly message: string;
     readonly query: string;
     readonly renameValue: string;
     readonly renamingId: string | null;
-    readonly selectedStrategyKey: string;
     readonly toast: string;
     readonly toastProject: { id: string; name: string } | null;
     readonly refresh: () => Promise<void>;
@@ -30,7 +27,6 @@ interface DashboardProjectsState {
     readonly setQuery: (query: string) => void;
     readonly setRenameValue: (value: string) => void;
     readonly setRenamingId: (projectId: string | null) => void;
-    readonly setSelectedStrategyKey: (key: string) => void;
     readonly setToast: (toast: string) => void;
     readonly setToastProject: (
         project: { id: string; name: string } | null,
@@ -50,16 +46,11 @@ export function useDashboardProjects(): DashboardProjectsState {
     const [processingProjectId, setProcessingProjectId] = useState<
         string | null
     >(null);
-    const [processingStrategies, setProcessingStrategies] = useState<
-        ProcessingStrategyInfo[]
-    >([]);
-    const [selectedStrategyKey, setSelectedStrategyKey] = useState("");
     const [renamingId, setRenamingId] = useState<string | null>(null);
     const [renameValue, setRenameValue] = useState("");
 
     useEffect(() => {
         refresh();
-        loadProcessingStrategies();
     }, []);
 
     useEffect(() => {
@@ -140,27 +131,6 @@ export function useDashboardProjects(): DashboardProjectsState {
         }
     }
 
-    async function loadProcessingStrategies() {
-        try {
-            const strategies = await listProcessingStrategies();
-            setProcessingStrategies(strategies);
-            setSelectedStrategyKey(
-                (current) =>
-                    current ||
-                    strategies.find((strategy) => strategy.defaultStrategy)
-                        ?.key ||
-                    strategies[0]?.key ||
-                    "",
-            );
-        } catch (error) {
-            setMessage(
-                error instanceof Error
-                    ? error.message
-                    : "Unable to load processing strategies",
-            );
-        }
-    }
-
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
         return q
@@ -176,12 +146,10 @@ export function useDashboardProjects(): DashboardProjectsState {
         filtered,
         message,
         processingProjectId,
-        processingStrategies,
         projectsLoading,
         query,
         renameValue,
         renamingId,
-        selectedStrategyKey,
         toast,
         toastProject,
         refresh,
@@ -192,7 +160,6 @@ export function useDashboardProjects(): DashboardProjectsState {
         setQuery,
         setRenameValue,
         setRenamingId,
-        setSelectedStrategyKey,
         setToast,
         setToastProject,
     };

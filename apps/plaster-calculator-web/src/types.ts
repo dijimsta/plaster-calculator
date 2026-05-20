@@ -81,13 +81,6 @@ export type Reminder = {
     updatedAt: string;
 };
 
-export type ProcessingStrategyInfo = {
-    key: string;
-    label: string;
-    description: string;
-    defaultStrategy: boolean;
-};
-
 export type Point = [number, number];
 
 export type EdgeOverride = {

@@ -1,5 +1,5 @@
 import type { PdfPagePreview } from "../../lib/pdf.js";
-import type { ProcessingStrategyInfo, ProjectSummary } from "../../types.js";
+import type { ProjectSummary } from "../../types.js";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 
 export interface PageUploadProgress {
@@ -8,14 +8,7 @@ export interface PageUploadProgress {
     readonly label: string;
 }
 
-export interface StrategySelectProps {
-    readonly id: string;
-    readonly processingStrategies: ProcessingStrategyInfo[];
-    readonly selectedStrategyKey: string;
-    readonly setSelectedStrategyKey: (key: string) => void;
-}
-
-export interface NewProjectFormProps extends Omit<StrategySelectProps, "id"> {
+export interface NewProjectFormProps {
     readonly dragActive: boolean;
     readonly file: File | null;
     readonly loading: boolean;
@@ -42,7 +35,7 @@ export interface ProjectHistoryProps {
     readonly setRenameValue: (value: string) => void;
 }
 
-export interface PdfPageModalProps extends StrategySelectProps {
+export interface PdfPageModalProps {
     readonly loading: boolean;
     readonly pageUploadProgress: PageUploadProgress | null;
     readonly pdfPages: PdfPagePreview[];

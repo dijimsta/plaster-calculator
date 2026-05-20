@@ -5,7 +5,6 @@ import { auth, functions, storage } from "../../firebase/firebase.utils.js";
 
 import type {
     FloorplanPage,
-    ProcessingStrategyInfo,
     ProjectDetail,
     ProjectSummary,
 } from "../../types.js";
@@ -90,10 +89,6 @@ const deleteProjectCallable = httpsCallable<
     { projectId: string },
     { ok: true }
 >(functions, "deleteProject");
-const listProcessingStrategiesCallable = httpsCallable<
-    unknown,
-    { strategies: ProcessingStrategyInfo[] }
->(functions, "listProcessingStrategies");
 const processProjectCallable = httpsCallable<
     ProcessProjectRequest,
     ProjectDetail
@@ -196,11 +191,6 @@ export async function updateProject(payload: UpdateProjectRequest) {
 
 export async function deleteProject(projectId: string) {
     await deleteProjectCallable({ projectId });
-}
-
-export async function listProcessingStrategies() {
-    const result = await listProcessingStrategiesCallable();
-    return result.data.strategies;
 }
 
 export async function processProject(

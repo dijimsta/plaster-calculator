@@ -12,7 +12,6 @@ export default function HomePage() {
     const projects = useDashboardProjects();
     const upload = useDashboardUpload({
         refresh: projects.refresh,
-        selectedStrategyKey: projects.selectedStrategyKey,
         setMessage: projects.setMessage,
         setProcessingProjectId: projects.setProcessingProjectId,
         setToast: projects.setToast,
@@ -36,13 +35,10 @@ export default function HomePage() {
                     loading={upload.loading}
                     message={projects.message}
                     name={upload.name}
-                    processingStrategies={projects.processingStrategies}
-                    selectedStrategyKey={projects.selectedStrategyKey}
                     handleDrop={upload.handleDrop}
                     handleFileSelection={upload.handleFileSelection}
                     setDragActive={upload.setDragActive}
                     setName={upload.setName}
-                    setSelectedStrategyKey={projects.setSelectedStrategyKey}
                     submit={upload.submit}
                 />
                 <ProjectHistory
@@ -62,16 +58,12 @@ export default function HomePage() {
 
             {upload.draftProjectId && (
                 <PdfPageModal
-                    id="pdf-processing-strategy"
                     loading={upload.loading}
                     pageUploadProgress={upload.pageUploadProgress}
                     pdfPages={upload.pdfPages}
-                    processingStrategies={projects.processingStrategies}
                     selectedPages={upload.selectedPages}
-                    selectedStrategyKey={projects.selectedStrategyKey}
                     closePdfModal={upload.closePdfModal}
                     processSelectedPdfPages={upload.processSelectedPdfPages}
-                    setSelectedStrategyKey={projects.setSelectedStrategyKey}
                     togglePage={upload.togglePage}
                 />
             )}
