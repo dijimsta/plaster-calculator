@@ -29,6 +29,17 @@ firebase emulators:start
 
 This will start the Auth and Tasks emulators alongside the App Hosting emulator, which runs the Next.js dev server (`pnpm dev`) on port 5050. The Emulator UI is available at http://localhost:4000.
 
+### App Check on localhost
+
+The web app uses Firebase App Check with reCAPTCHA v3. For local development, do not add `localhost` as an allowed reCAPTCHA domain. Instead, use Firebase's App Check debug provider flow:
+
+1. Make sure the web app is running with `NEXT_PUBLIC_ENVIRONMENT=development`. The local `apps/plaster-calculator-web/.env.development` file sets this for the Next.js dev server.
+2. Open the app in the browser and check the developer console for the App Check debug token logged by Firebase.
+3. In Firebase Console, open **Build > App Check**, select the web app, then add the debug token under **Manage debug tokens**.
+4. Refresh the local app. App Check token requests from this local browser should now succeed.
+
+Debug tokens are development credentials. Keep them out of committed source, and remove old tokens from Firebase Console when they are no longer needed. See Firebase's App Check debug provider guide for the full flow: https://firebase.google.com/docs/app-check/web/debug-provider?authuser=0#localhost.
+
 ## Firebase Storage CORS
 
 The production Firebase Storage bucket needs a CORS policy so the web app can load uploaded images directly from `firebasestorage.googleapis.com`. The allowed origins live in [`storage.cors.json`](./storage.cors.json).
