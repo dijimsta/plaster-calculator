@@ -120,12 +120,6 @@ export function updateFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) 
   return dcInstance.executeMutation('UpdateFloorplanPages', inputVars, inputOpts);
 }
 
-export function listProjectsByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListProjectsByOwner', inputVars, inputOpts);
-}
-
 export function listProjectsByOwnerAndSalesStatus(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

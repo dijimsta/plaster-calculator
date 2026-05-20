@@ -10,11 +10,9 @@ import type {
     ListProjectsByAccountData,
     ListProjectsByOwnerAndSalesStatusData,
     ListProjectRemindersData,
-    ListProjectsByOwnerData,
 } from "@generated/example-data-connector";
 
 export type ProjectListRow =
-    | ListProjectsByOwnerData["projects"][number]
     | ListProjectsByOwnerAndSalesStatusData["projects"][number]
     | ListProjectsByAccountData["projects"][number];
 export type ProjectWithPages = NonNullable<

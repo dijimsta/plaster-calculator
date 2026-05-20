@@ -40,7 +40,7 @@ type UpdateProjectRequest = {
 };
 
 type ListProjectsRequest = {
-    salesStatus?: SalesStatus;
+    salesStatus: SalesStatus;
 };
 
 type ProcessProjectRequest = {
@@ -125,7 +125,7 @@ const exportProjectCsvCallable = httpsCallable<
     ExportCsvResponse
 >(functions, "exportProjectCsv");
 
-export async function listProjects(options: ListProjectsRequest = {}) {
+export async function listProjects(options: ListProjectsRequest) {
     const result = await listProjectsCallable(options);
     return result.data.projects;
 }

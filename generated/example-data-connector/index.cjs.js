@@ -140,13 +140,6 @@ function updateFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) {
 }
 exports.updateFloorplanPages = updateFloorplanPages;
 
-function listProjectsByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListProjectsByOwner', inputVars, inputOpts);
-}
-exports.listProjectsByOwner = listProjectsByOwner;
-
 function listProjectsByOwnerAndSalesStatus(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

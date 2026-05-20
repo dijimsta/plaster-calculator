@@ -1,4 +1,4 @@
-query ListProjectsByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
+query ListProjectsByOwner($ownerId: String!) @auth(level: NO_ACCESS) @retired {
     projects(
         where: { ownerId: { eq: $ownerId } }
         orderBy: [{ updatedAt: DESC }]
