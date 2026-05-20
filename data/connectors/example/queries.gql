@@ -1,3 +1,25 @@
+query ListProjectsByOwner($ownerId: String!) @auth(level: NO_ACCESS) @retired {
+    projects(
+        where: { ownerId: { eq: $ownerId } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
+        id
+        ownerId
+        accountId
+        name
+        address
+        originalFileName
+        uploadType
+        originalPath
+        status
+        salesStatus
+        processingError
+        pageCount
+        createdAt
+        updatedAt
+    }
+}
+
 query ListProjectsByOwnerAndSalesStatus(
     $ownerId: String!
     $salesStatus: String!
