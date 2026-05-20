@@ -29,6 +29,7 @@ export function ProjectEditor({
     project,
     page,
     onSaved,
+    projectAccountPanel,
     onDraftChange,
     validationIssues = [],
 }: ProjectEditorProps) {
@@ -326,6 +327,7 @@ export function ProjectEditor({
                 selectedEdgeOverride={selectedEdgeOverride}
                 selectedPointIndexes={selectedPointIndexes}
                 metrics={metrics}
+                projectAccountPanel={projectAccountPanel}
                 areaIssue={areaIssue}
                 applyHeightToAllPages={applyHeightToAllPages}
                 applyScale={applyScale}

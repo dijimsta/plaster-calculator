@@ -10,6 +10,7 @@ import {
     getProject,
     renameProject,
     savePageOverlay,
+    updateProject,
 } from "../../../../lib/api.js";
 import { cx, ui } from "../../../../lib/styles.js";
 import {
@@ -19,6 +20,7 @@ import {
     validatePageForExport,
     type ValidationIssue,
 } from "../../../../lib/validation.js";
+import { ProjectAccountPanel } from "../project-account-panel.js";
 
 import type { ProjectDetail } from "../../../../types.js";
 
@@ -53,6 +55,8 @@ export default function ProjectPage({
     const [switchingPage, setSwitchingPage] = useState(false);
     const [renaming, setRenaming] = useState(false);
     const [renameValue, setRenameValue] = useState("");
+    const [accountId, setAccountId] = useState<string | null>(null);
+    const [savingAccount, setSavingAccount] = useState(false);
 
     useEffect(() => {
         load();
@@ -78,6 +82,7 @@ export default function ProjectPage({
             const detail = await getProject(projectId);
             setProject(detail);
             setRenameValue(detail.name);
+            setAccountId(detail.accountId);
             setSelectedPageId((current) =>
                 current && detail.pages.some((page) => page.id === current)
                     ? current
@@ -107,6 +112,27 @@ export default function ProjectPage({
             setError(
                 err instanceof Error ? err.message : "Unable to rename project",
             );
+        }
+    }
+
+    async function saveAccount(): Promise<void> {
+        if (!project || !accountId) return;
+        setSavingAccount(true);
+        try {
+            const updated = await updateProject({
+                projectId: project.id,
+                accountId,
+            });
+            setProject(updated);
+            setError("");
+            setToast("Account linked to project.");
+        } catch (err) {
+            setError(
+                err instanceof Error ? err.message : "Unable to link account",
+            );
+            throw err;
+        } finally {
+            setSavingAccount(false);
         }
     }
 
@@ -319,6 +345,15 @@ export default function ProjectPage({
                     project={project}
                     page={selectedPage}
                     onSaved={load}
+                    projectAccountPanel={
+                        <ProjectAccountPanel
+                            accountId={project.accountId}
+                            draftAccountId={accountId}
+                            isSaving={savingAccount}
+                            saveAccount={saveAccount}
+                            setDraftAccountId={setAccountId}
+                        />
+                    }
                     onDraftChange={updateDraft}
                     validationIssues={validationIssues.filter(
                         (issue) => issue.pageId === selectedPage.id,

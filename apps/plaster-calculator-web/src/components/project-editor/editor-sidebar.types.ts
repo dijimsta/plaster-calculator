@@ -36,6 +36,7 @@ export interface EditorSidebarProps {
     readonly selectedEdgeOverride: EdgeOverride | undefined | null;
     readonly selectedPointIndexes: number[];
     readonly metrics: SelectionMetrics | null;
+    readonly projectAccountPanel?: ReactNode;
     readonly areaIssue: (
         areaId: string,
         field: ValidationIssue["field"],

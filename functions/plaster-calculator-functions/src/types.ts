@@ -184,6 +184,7 @@ export interface CreateAccountContactRequest extends AccountIdRequest {
     email?: unknown;
     phoneNumber?: unknown;
     role?: unknown;
+    makePrimary?: unknown;
 }
 
 export interface UpdateAccountContactRequest extends ContactIdRequest {

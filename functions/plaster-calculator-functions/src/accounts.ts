@@ -158,8 +158,9 @@ export const createAccountContact = onCall<
     const auth = requireAuth(request);
     const accountId = readRequiredString(request.data.accountId, "Account ID");
     const account = await requireOwnedAccount(accountId, auth.uid);
+    const contactId = randomUUID();
     await dcCreateAccountContact({
-        id: randomUUID(),
+        id: contactId,
         accountId,
         name: readRequiredString(request.data.name, "Contact name"),
         email: readOptionalNullableString(request.data.email, "Email"),
@@ -174,7 +175,10 @@ export const createAccountContact = onCall<
         companyName: account.companyName,
         businessNumber: account.businessNumber ?? null,
         phoneNumber: account.phoneNumber ?? null,
-        primaryContactId: account.primaryContactId ?? null,
+        primaryContactId:
+            request.data.makePrimary === true
+                ? contactId
+                : (account.primaryContactId ?? null),
     });
     return toAccountDetail(await requireOwnedAccount(accountId, auth.uid));
 });

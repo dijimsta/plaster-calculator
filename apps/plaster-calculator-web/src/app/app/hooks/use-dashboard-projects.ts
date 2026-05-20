@@ -14,6 +14,7 @@ interface DashboardProjectsState {
     readonly processingProjectId: string | null;
     readonly projectsLoading: boolean;
     readonly message: string;
+    readonly busyMessage: string;
     readonly query: string;
     readonly renameValue: string;
     readonly renamingId: string | null;
@@ -38,6 +39,7 @@ export function useDashboardProjects(): DashboardProjectsState {
     const [query, setQuery] = useState("");
     const [projectsLoading, setProjectsLoading] = useState(true);
     const [message, setMessage] = useState("");
+    const [busyMessage, setBusyMessage] = useState("");
     const [toast, setToast] = useState("");
     const [toastProject, setToastProject] = useState<{
         id: string;
@@ -106,7 +108,7 @@ export function useDashboardProjects(): DashboardProjectsState {
             `Delete "${project.name}" and all stored files for this project?`,
         );
         if (!confirmed) return;
-        setMessage("Deleting project...");
+        setBusyMessage("Deleting project...");
         try {
             await deleteProject(project.id);
             await refresh();
@@ -115,6 +117,8 @@ export function useDashboardProjects(): DashboardProjectsState {
             setMessage(
                 error instanceof Error ? error.message : "Delete failed",
             );
+        } finally {
+            setBusyMessage("");
         }
     }
 
@@ -144,6 +148,7 @@ export function useDashboardProjects(): DashboardProjectsState {
 
     return {
         filtered,
+        busyMessage,
         message,
         processingProjectId,
         projectsLoading,

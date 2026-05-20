@@ -3,11 +3,13 @@ import type {
     ValidationIssue,
 } from "../../lib/validation.js";
 import type { Overlay, ProjectDetail, FloorplanPage } from "../../types.js";
+import type { ReactNode } from "react";
 
 export interface ProjectEditorProps {
     readonly project: ProjectDetail;
     readonly page: FloorplanPage;
     readonly onSaved: () => void;
+    readonly projectAccountPanel?: ReactNode;
     readonly onDraftChange?: (
         pageId: string,
         draft: PageValidationInput,

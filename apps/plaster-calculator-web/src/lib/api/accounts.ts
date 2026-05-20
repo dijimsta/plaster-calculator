@@ -19,6 +19,7 @@ type AccountContactPayload = {
     email?: string | null;
     phoneNumber?: string | null;
     role?: string | null;
+    makePrimary?: boolean;
 };
 
 const listAccountsCallable = httpsCallable<
