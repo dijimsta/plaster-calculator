@@ -56,110 +56,174 @@ export function CeilingControls({
                 </select>
             </div>
             {mode === "flat" && (
-                <div className={ui.field}>
-                    <label>Room height override mm</label>
-                    <input
-                        className={cx(
-                            ui.input,
-                            roomHeightError && ui.inputInvalid,
-                        )}
-                        type="number"
-                        placeholder={
-                            ceilingHeightMm == null
-                                ? "Page height not set"
-                                : String(ceilingHeightMm)
-                        }
-                        value={area.ceilingHeightMm ?? ""}
-                        onChange={(event) =>
-                            setSelectedAreaHeight(event.target.value)
-                        }
-                    />
-                    <ValidationMessage message={roomHeightError} />
-                </div>
+                <FlatCeilingHeightField
+                    ceilingHeightMm={ceilingHeightMm}
+                    error={roomHeightError}
+                    value={area.ceilingHeightMm}
+                    setSelectedAreaHeight={setSelectedAreaHeight}
+                />
             )}
             {mode === "raked" && (
-                <>
-                    <div className={ui.buttonRow}>
-                        <button
-                            className={cx(
-                                ui.button,
-                                ui.buttonDefault,
-                                lowEdgeError && ui.buttonInvalid,
-                            )}
-                            onClick={() => setRakedEdge("low")}
-                            disabled={
-                                !selectedEdge || selectedEdge.areaId !== area.id
-                            }
-                        >
-                            Set selected low edge
-                        </button>
-                        <button
-                            className={cx(
-                                ui.button,
-                                ui.buttonDefault,
-                                highEdgeError && ui.buttonInvalid,
-                            )}
-                            onClick={() => setRakedEdge("high")}
-                            disabled={
-                                !selectedEdge || selectedEdge.areaId !== area.id
-                            }
-                        >
-                            Set selected high edge
-                        </button>
-                    </div>
-                    {(lowEdgeError || highEdgeError) && (
-                        <span className={ui.fieldError}>
-                            {lowEdgeError || highEdgeError}
-                        </span>
-                    )}
-                    <div className={ui.metric}>
-                        Low edge:{" "}
-                        {raked && raked.lowEdgeIndex >= 0
-                            ? raked.lowEdgeIndex + 1
-                            : "-"}{" "}
-                        | High edge:{" "}
-                        {raked && raked.highEdgeIndex >= 0
-                            ? raked.highEdgeIndex + 1
-                            : "-"}
-                    </div>
-                    <div className={ui.field}>
-                        <label>Low height mm</label>
-                        <input
-                            className={cx(
-                                ui.input,
-                                lowHeightError && ui.inputInvalid,
-                            )}
-                            type="number"
-                            value={raked?.lowHeightMm ?? ""}
-                            onChange={(event) =>
-                                setRakedHeight(
-                                    "lowHeightMm",
-                                    event.target.value,
-                                )
-                            }
-                        />
-                        <ValidationMessage message={lowHeightError} />
-                    </div>
-                    <div className={ui.field}>
-                        <label>High height mm</label>
-                        <input
-                            className={cx(
-                                ui.input,
-                                highHeightError && ui.inputInvalid,
-                            )}
-                            type="number"
-                            value={raked?.highHeightMm ?? ""}
-                            onChange={(event) =>
-                                setRakedHeight(
-                                    "highHeightMm",
-                                    event.target.value,
-                                )
-                            }
-                        />
-                        <ValidationMessage message={highHeightError} />
-                    </div>
-                </>
+                <RakedCeilingFields
+                    areaId={area.id}
+                    raked={raked}
+                    selectedEdge={selectedEdge}
+                    lowEdgeError={lowEdgeError}
+                    highEdgeError={highEdgeError}
+                    lowHeightError={lowHeightError}
+                    highHeightError={highHeightError}
+                    setRakedEdge={setRakedEdge}
+                    setRakedHeight={setRakedHeight}
+                />
             )}
         </>
     );
+}
+
+interface FlatCeilingHeightFieldProps {
+    readonly ceilingHeightMm: number | null;
+    readonly error: string;
+    readonly value: number | null | undefined;
+    readonly setSelectedAreaHeight: (value: string) => void;
+}
+
+function FlatCeilingHeightField({
+    ceilingHeightMm,
+    error,
+    value,
+    setSelectedAreaHeight,
+}: FlatCeilingHeightFieldProps) {
+    const placeholder =
+        ceilingHeightMm == null
+            ? "Page height not set"
+            : String(ceilingHeightMm);
+
+    return (
+        <div className={ui.field}>
+            <label>Room height override mm</label>
+            <input
+                className={cx(ui.input, error && ui.inputInvalid)}
+                type="number"
+                placeholder={placeholder}
+                value={value ?? ""}
+                onChange={(event) => setSelectedAreaHeight(event.target.value)}
+            />
+            <ValidationMessage message={error} />
+        </div>
+    );
+}
+
+interface RakedCeilingFieldsProps {
+    readonly areaId: string;
+    readonly raked: AreaPolygon["rakedCeiling"];
+    readonly selectedEdge: SelectedEdge | null;
+    readonly lowEdgeError: string;
+    readonly highEdgeError: string;
+    readonly lowHeightError: string;
+    readonly highHeightError: string;
+    readonly setRakedEdge: (role: "low" | "high") => void;
+    readonly setRakedHeight: (
+        field: "lowHeightMm" | "highHeightMm",
+        value: string,
+    ) => void;
+}
+
+function RakedCeilingFields({
+    areaId,
+    raked,
+    selectedEdge,
+    lowEdgeError,
+    highEdgeError,
+    lowHeightError,
+    highHeightError,
+    setRakedEdge,
+    setRakedHeight,
+}: RakedCeilingFieldsProps) {
+    const edgeError = lowEdgeError || highEdgeError;
+    const edgeSelectionDisabled =
+        !selectedEdge || selectedEdge.areaId !== areaId;
+
+    return (
+        <>
+            <div className={ui.buttonRow}>
+                <button
+                    className={cx(
+                        ui.button,
+                        ui.buttonDefault,
+                        lowEdgeError && ui.buttonInvalid,
+                    )}
+                    onClick={() => setRakedEdge("low")}
+                    disabled={edgeSelectionDisabled}
+                >
+                    Set selected low edge
+                </button>
+                <button
+                    className={cx(
+                        ui.button,
+                        ui.buttonDefault,
+                        highEdgeError && ui.buttonInvalid,
+                    )}
+                    onClick={() => setRakedEdge("high")}
+                    disabled={edgeSelectionDisabled}
+                >
+                    Set selected high edge
+                </button>
+            </div>
+            {edgeError && <span className={ui.fieldError}>{edgeError}</span>}
+            <div className={ui.metric}>
+                Low edge: {edgeLabel(raked?.lowEdgeIndex)} | High edge:{" "}
+                {edgeLabel(raked?.highEdgeIndex)}
+            </div>
+            <RakedHeightField
+                label="Low height mm"
+                field="lowHeightMm"
+                error={lowHeightError}
+                value={raked?.lowHeightMm}
+                setRakedHeight={setRakedHeight}
+            />
+            <RakedHeightField
+                label="High height mm"
+                field="highHeightMm"
+                error={highHeightError}
+                value={raked?.highHeightMm}
+                setRakedHeight={setRakedHeight}
+            />
+        </>
+    );
+}
+
+interface RakedHeightFieldProps {
+    readonly label: string;
+    readonly field: "lowHeightMm" | "highHeightMm";
+    readonly error: string;
+    readonly value: number | null | undefined;
+    readonly setRakedHeight: (
+        field: "lowHeightMm" | "highHeightMm",
+        value: string,
+    ) => void;
+}
+
+function RakedHeightField({
+    label,
+    field,
+    error,
+    value,
+    setRakedHeight,
+}: RakedHeightFieldProps) {
+    return (
+        <div className={ui.field}>
+            <label>{label}</label>
+            <input
+                className={cx(ui.input, error && ui.inputInvalid)}
+                type="number"
+                value={value ?? ""}
+                onChange={(event) => setRakedHeight(field, event.target.value)}
+            />
+            <ValidationMessage message={error} />
+        </div>
+    );
+}
+
+function edgeLabel(edgeIndex: number | undefined) {
+    return edgeIndex != null && edgeIndex >= 0 ? edgeIndex + 1 : "-";
 }
