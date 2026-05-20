@@ -2,9 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { EditorCanvas } from "./editor-canvas.js";
-import { EditorSidebar } from "./editor-sidebar.js";
-import { EditorToolbar } from "./editor-toolbar.js";
+import { ProjectEditorView } from "./project-editor-view.js";
 import { useEditorActions } from "../../hooks/use-editor-actions.js";
 import { useEditorDerivedState } from "../../hooks/use-editor-derived-state.js";
 import { useEditorHistory } from "../../hooks/use-editor-history.js";
@@ -15,7 +13,6 @@ import { useEditorPersistence } from "../../hooks/use-editor-persistence.js";
 import { useEditorSelection } from "../../hooks/use-editor-selection.js";
 import { useEditorValidation } from "../../hooks/use-editor-validation.js";
 import { useEditorViewport } from "../../hooks/use-editor-viewport.js";
-import { ui } from "../../lib/styles.js";
 
 import type {
     OverlayMode,
@@ -33,39 +30,11 @@ export function ProjectEditor({
     onDraftChange,
     validationIssues = [],
 }: ProjectEditorProps) {
-    const { image, imageError } = useEditorImage(page.imageUrl);
+    const imageState = useEditorImage(page.imageUrl);
     const [dirty, setDirty] = useState(false);
-    const {
-        selectedAreaId,
-        selectedAreaIds,
-        selectedEdge,
-        selectedPoint,
-        selectedPointIndexes,
-        clearSelection,
-        hasSelection,
-        selectArea,
-        selectEdge,
-        selectPoint,
-        setSelectedAreaId,
-        setSelectedAreaIds,
-        setSelectedEdge,
-        setSelectedPoint,
-        setSelectedPointIndexes,
-    } = useEditorSelection();
+    const selection = useEditorSelection();
     const [overlayMode, setOverlayMode] = useState<OverlayMode>("both");
-    const {
-        ceilingHeightMm,
-        overlay,
-        overlayRef,
-        referenceLengthMm,
-        referencePoints,
-        scaleMmPerPx,
-        setCeilingHeightMm,
-        setOverlay,
-        setReferenceLengthMm,
-        setReferencePoints,
-        setScaleMmPerPx,
-    } = useEditorOverlay({
+    const overlayState = useEditorOverlay({
         onDraftChange,
         page,
         setDirty,
@@ -87,111 +56,60 @@ export function ProjectEditor({
         moved: boolean;
     } | null>(null);
     const viewport = useEditorViewport(canvasWrapRef);
-    const {
-        imageHeight,
-        imageWidth,
-        metrics,
-        selectedArea,
-        selectedAreas,
-        selectedEdgeArea,
-        selectedEdgeOverride,
-        stageHeight,
-        stageWidth,
-        summary,
-        visibleAreas,
-    } = useEditorDerivedState({
-        image,
-        overlay,
-        scaleMmPerPx,
-        selectedAreaId,
-        selectedAreaIds,
-        selectedEdge,
+    const derivedState = useEditorDerivedState({
+        image: imageState.image,
+        overlay: overlayState.overlay,
+        scaleMmPerPx: overlayState.scaleMmPerPx,
+        selectedAreaId: selection.selectedAreaId,
+        selectedAreaIds: selection.selectedAreaIds,
+        selectedEdge: selection.selectedEdge,
         zoom,
     });
-    const {
-        autoSaving,
-        saving,
-        status,
-        applyHeightToAllPages,
-        applyScaleToAllPages,
-        save,
-        setStatus,
-    } = useEditorPersistence({
-        ceilingHeightMm,
+    const persistence = useEditorPersistence({
+        ceilingHeightMm: overlayState.ceilingHeightMm,
         dirty,
         onSaved,
-        overlay,
+        overlay: overlayState.overlay,
         pageId: page.id,
         projectId: project.id,
-        referenceLengthMm,
-        referencePoints,
-        scaleMmPerPx,
+        referenceLengthMm: overlayState.referenceLengthMm,
+        referencePoints: overlayState.referencePoints,
+        scaleMmPerPx: overlayState.scaleMmPerPx,
         setDirty,
     });
-    const {
-        future,
-        history,
-        commit,
-        commitFromSnapshot,
-        redo,
-        resetHistory,
-        undo,
-    } = useEditorHistory({
-        overlay,
+    const historyState = useEditorHistory({
+        overlay: overlayState.overlay,
         setDirty,
-        setOverlay,
-        setStatus,
+        setOverlay: overlayState.setOverlay,
+        setStatus: persistence.setStatus,
     });
+
     useEffect(() => {
-        resetHistory();
-        setSelectedAreaId(null);
-        setSelectedAreaIds([]);
-        setSelectedEdge(null);
-        setSelectedPoint(null);
-        setSelectedPointIndexes([]);
+        historyState.resetHistory();
+        selection.setSelectedAreaId(null);
+        selection.setSelectedAreaIds([]);
+        selection.setSelectedEdge(null);
+        selection.setSelectedPoint(null);
+        selection.setSelectedPointIndexes([]);
         setSnapGuide(null);
         setDraftPointer(null);
     }, [page.id]);
 
-    const {
-        addPoint,
-        addRectangle,
-        applyScale,
-        cancelFreeShape,
-        changeZoom,
-        clearSelectedEdgeOverride,
-        commonMaterialValue,
-        deleteSelection,
-        finishFreeShape,
-        resetView,
-        setCeilingMode,
-        setMaterial,
-        setRakedEdge,
-        setRakedHeight,
-        setSelectedAreaHeight,
-        setSelectedEdgeMaterial,
-        setSelectedEdgeNoPlaster,
-        splitArea,
-        startFreeShape,
-        startReferenceMode,
-        straightenSelectedPoints,
-        toggleOutdoor,
-        updateArea,
-    } = useEditorActions({
+    const actions = useEditorActions({
         canvasWrapRef,
-        ceilingHeightMm,
-        commit,
-        imageHeight,
-        imageWidth,
-        overlay,
-        referenceLengthMm,
-        referencePoints,
-        selectedArea,
-        selectedAreaIds,
-        selectedAreas,
-        selectedEdge,
-        selectedPoint,
-        selectedPointIndexes,
+        ceilingHeightMm: overlayState.ceilingHeightMm,
+        commit: historyState.commit,
+        imageHeight: derivedState.imageHeight,
+        imageWidth: derivedState.imageWidth,
+        overlay: overlayState.overlay,
+        referenceLengthMm: overlayState.referenceLengthMm,
+        referencePoints: overlayState.referencePoints,
+        selectedArea: derivedState.selectedArea,
+        selectedAreaIds: selection.selectedAreaIds,
+        selectedAreas: derivedState.selectedAreas,
+        selectedEdge: selection.selectedEdge,
+        selectedPoint: selection.selectedPoint,
+        selectedPointIndexes: selection.selectedPointIndexes,
         viewport,
         zoom,
         setAddMenuOpen,
@@ -200,157 +118,69 @@ export function ProjectEditor({
         setDraftPoints,
         setIsDrawingFreeShape,
         setIsSettingReference,
-        setReferenceLengthMm,
-        setReferencePoints,
-        setScaleMmPerPx,
-        setSelectedAreaId,
-        setSelectedAreaIds,
-        setSelectedEdge,
-        setSelectedPoint,
-        setSelectedPointIndexes,
+        setReferenceLengthMm: overlayState.setReferenceLengthMm,
+        setReferencePoints: overlayState.setReferencePoints,
+        setScaleMmPerPx: overlayState.setScaleMmPerPx,
+        setSelectedAreaId: selection.setSelectedAreaId,
+        setSelectedAreaIds: selection.setSelectedAreaIds,
+        setSelectedEdge: selection.setSelectedEdge,
+        setSelectedPoint: selection.setSelectedPoint,
+        setSelectedPointIndexes: selection.setSelectedPointIndexes,
         setSnapGuide,
-        setStatus,
+        setStatus: persistence.setStatus,
         setZoom,
     });
-
-    const {
-        areaIssue,
-        fieldError,
-        hasPageHeightIssue,
-        pageIssue,
-        renderCeilingControls,
-    } = useEditorValidation({
-        ceilingHeightMm,
-        selectedEdge,
-        setCeilingMode,
-        setRakedEdge,
-        setRakedHeight,
-        setSelectedAreaHeight,
+    const validation = useEditorValidation({
+        ceilingHeightMm: overlayState.ceilingHeightMm,
+        selectedEdge: selection.selectedEdge,
+        setCeilingMode: actions.setCeilingMode,
+        setRakedEdge: actions.setRakedEdge,
+        setRakedHeight: actions.setRakedHeight,
+        setSelectedAreaHeight: actions.setSelectedAreaHeight,
         validationIssues,
     });
 
     useEditorKeyboardShortcuts({
         isDrawingFreeShape,
-        onCancelFreeShape: cancelFreeShape,
-        onClearSelection: clearSelection,
-        onDeleteSelection: deleteSelection,
-        onRedo: redo,
-        onUndo: undo,
-        hasSelection,
+        onCancelFreeShape: actions.cancelFreeShape,
+        onClearSelection: selection.clearSelection,
+        onDeleteSelection: actions.deleteSelection,
+        onRedo: historyState.redo,
+        onUndo: historyState.undo,
+        hasSelection: selection.hasSelection,
     });
 
     return (
-        <section className={ui.editorShell}>
-            <div className={ui.panel}>
-                <EditorToolbar
-                    addMenuOpen={addMenuOpen}
-                    autoSaving={autoSaving}
-                    dirty={dirty}
-                    futureCount={future.length}
-                    historyCount={history.length}
-                    overlayMode={overlayMode}
-                    saving={saving}
-                    selectedArea={selectedArea}
-                    selectedPointCount={selectedPointIndexes.length}
-                    zoom={zoom}
-                    onAddPoint={addPoint}
-                    onAddRectangle={addRectangle}
-                    onChangeZoom={changeZoom}
-                    onClearSelection={clearSelection}
-                    onDeleteSelection={deleteSelection}
-                    onRedo={redo}
-                    onResetView={resetView}
-                    onSave={() => void save()}
-                    onSetAddMenuOpen={setAddMenuOpen}
-                    onSetOverlayMode={setOverlayMode}
-                    onSplitArea={splitArea}
-                    onStartFreeShape={startFreeShape}
-                    onStraightenSelectedPoints={straightenSelectedPoints}
-                    onUndo={undo}
-                    hasSelection={hasSelection}
-                />
-                <EditorCanvas
-                    canvasWrapRef={canvasWrapRef}
-                    commitFromSnapshot={commitFromSnapshot}
-                    draftPointer={draftPointer}
-                    draftPoints={draftPoints}
-                    image={image}
-                    imageError={imageError}
-                    imageHeight={imageHeight}
-                    imageWidth={imageWidth}
-                    isDrawingFreeShape={isDrawingFreeShape}
-                    isSettingReference={isSettingReference}
-                    overlayMode={overlayMode}
-                    overlayRef={overlayRef}
-                    referencePoints={referencePoints}
-                    scrollDragRef={scrollDragRef}
-                    selectedArea={selectedArea}
-                    selectedAreaIds={selectedAreaIds}
-                    selectedEdge={selectedEdge}
-                    selectedPoint={selectedPoint}
-                    selectedPointIndexes={selectedPointIndexes}
-                    snapGuide={snapGuide}
-                    stageHeight={stageHeight}
-                    stageRef={stageRef}
-                    stageWidth={stageWidth}
-                    visibleAreas={visibleAreas}
-                    zoom={zoom}
-                    finishFreeShape={finishFreeShape}
-                    selectArea={selectArea}
-                    selectEdge={selectEdge}
-                    selectPoint={selectPoint}
-                    setDirty={setDirty}
-                    setDraftPointer={setDraftPointer}
-                    setDraftPoints={setDraftPoints}
-                    setIsSettingReference={setIsSettingReference}
-                    setOverlay={setOverlay}
-                    setReferencePoints={setReferencePoints}
-                    setSnapGuide={setSnapGuide}
-                />
-            </div>
-
-            <EditorSidebar
-                page={page}
-                status={status}
-                dirty={dirty}
-                ceilingHeightMm={ceilingHeightMm}
-                scaleMmPerPx={scaleMmPerPx}
-                referencePoints={referencePoints}
-                referenceLengthMm={referenceLengthMm}
-                isSettingReference={isSettingReference}
-                summary={summary}
-                visibleAreas={visibleAreas}
-                selectedAreaIds={selectedAreaIds}
-                selectedArea={selectedArea}
-                selectedEdgeArea={selectedEdgeArea}
-                selectedEdge={selectedEdge}
-                selectedEdgeOverride={selectedEdgeOverride}
-                selectedPointIndexes={selectedPointIndexes}
-                metrics={metrics}
-                projectAccountPanel={projectAccountPanel}
-                areaIssue={areaIssue}
-                applyHeightToAllPages={applyHeightToAllPages}
-                applyScale={applyScale}
-                applyScaleToAllPages={applyScaleToAllPages}
-                clearSelectedEdgeOverride={clearSelectedEdgeOverride}
-                commonMaterialValue={commonMaterialValue}
-                fieldError={fieldError}
-                hasPageHeightIssue={hasPageHeightIssue}
-                pageIssue={pageIssue}
-                renderCeilingControls={renderCeilingControls}
-                selectArea={selectArea}
-                setCeilingHeightMm={setCeilingHeightMm}
-                setDirty={setDirty}
-                setIsSettingReference={setIsSettingReference}
-                setMaterial={setMaterial}
-                setReferenceLengthMm={setReferenceLengthMm}
-                setReferencePoints={setReferencePoints}
-                setSelectedEdgeMaterial={setSelectedEdgeMaterial}
-                setSelectedEdgeNoPlaster={setSelectedEdgeNoPlaster}
-                startReferenceMode={startReferenceMode}
-                toggleOutdoor={toggleOutdoor}
-                updateArea={updateArea}
-            />
-        </section>
+        <ProjectEditorView
+            actions={actions}
+            addMenuOpen={addMenuOpen}
+            canvasWrapRef={canvasWrapRef}
+            dirty={dirty}
+            draftPointer={draftPointer}
+            draftPoints={draftPoints}
+            historyState={historyState}
+            imageState={imageState}
+            isDrawingFreeShape={isDrawingFreeShape}
+            isSettingReference={isSettingReference}
+            overlayMode={overlayMode}
+            overlayState={overlayState}
+            page={page}
+            persistence={persistence}
+            projectAccountPanel={projectAccountPanel}
+            scrollDragRef={scrollDragRef}
+            selection={selection}
+            snapGuide={snapGuide}
+            stageRef={stageRef}
+            validation={validation}
+            derivedState={derivedState}
+            setAddMenuOpen={setAddMenuOpen}
+            setDirty={setDirty}
+            setDraftPointer={setDraftPointer}
+            setDraftPoints={setDraftPoints}
+            setIsSettingReference={setIsSettingReference}
+            setOverlayMode={setOverlayMode}
+            setSnapGuide={setSnapGuide}
+            zoom={zoom}
+        />
     );
 }
