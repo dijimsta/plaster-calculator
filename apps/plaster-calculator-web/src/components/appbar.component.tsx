@@ -10,7 +10,10 @@ import { activeTheme, cx, ui } from "../lib/styles.js";
 
 const Link = LinkModule.default;
 
-const navItems = [{ href: "/app", label: "Home" }] as const;
+const navItems = [
+    { href: "/app", label: "Home" },
+    { href: "/app/accounts", label: "Accounts" },
+] as const;
 
 export default function AppBar() {
     const pathname = usePathname();
@@ -50,7 +53,8 @@ export default function AppBar() {
                             key={item.href}
                             className={cx(
                                 ui.navLink,
-                                pathname === item.href && ui.navLinkActive,
+                                isActivePath(pathname, item.href) &&
+                                    ui.navLinkActive,
                             )}
                             href={item.href}
                         >
@@ -76,4 +80,9 @@ export default function AppBar() {
             </nav>
         </header>
     );
+}
+
+function isActivePath(pathname: string, href: string): boolean {
+    if (href === "/app") return pathname === href;
+    return pathname === href || pathname.startsWith(`${href}/`);
 }

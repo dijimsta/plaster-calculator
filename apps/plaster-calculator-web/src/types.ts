@@ -34,6 +34,13 @@ export type ProjectDetail = ProjectSummary & {
     pages: FloorplanPage[];
 };
 
+export type AccountContactPayload = {
+    name?: string;
+    email?: string | null;
+    phoneNumber?: string | null;
+    role?: string | null;
+};
+
 export type AccountContact = {
     id: string;
     accountId: string;

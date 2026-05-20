@@ -25,6 +25,7 @@ export function EditorSidebar({
     selectedEdgeOverride,
     selectedPointIndexes,
     metrics,
+    projectAccountPanel,
     areaIssue,
     applyHeightToAllPages,
     applyScale,
@@ -50,6 +51,7 @@ export function EditorSidebar({
 }: EditorSidebarProps) {
     return (
         <aside className={ui.inspector}>
+            {projectAccountPanel}
             <PageSettingsPanel
                 ceilingHeightMm={ceilingHeightMm}
                 dirty={dirty}

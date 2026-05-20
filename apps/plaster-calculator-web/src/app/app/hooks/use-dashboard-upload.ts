@@ -36,6 +36,7 @@ export function useDashboardUpload({
     setToastProject,
 }: DashboardUploadOptions) {
     const [name, setName] = useState("");
+    const [accountId, setAccountId] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -67,6 +68,7 @@ export function useDashboardUpload({
                 name || file.name,
                 file,
                 preparedPdf?.numPages,
+                { accountId },
             );
             if (upload.uploadType === "PDF") {
                 if (!preparedPdf || preparedPages.length === 0) {
@@ -200,6 +202,7 @@ export function useDashboardUpload({
     }
 
     return {
+        accountId,
         draftProjectId,
         dragActive,
         file,
@@ -212,6 +215,7 @@ export function useDashboardUpload({
         handleDrop,
         handleFileSelection,
         processSelectedPdfPages,
+        setAccountId,
         setDragActive,
         setName,
         submit,

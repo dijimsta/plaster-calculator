@@ -6,6 +6,7 @@ import { useDashboardUpload } from "./hooks/use-dashboard-upload.js";
 import { NewProjectForm } from "./new-project-form.js";
 import { PdfPageModal } from "./pdf-page-modal.js";
 import { ProjectHistory } from "./project-history.js";
+import { BusyOverlay } from "../../components/busy-overlay.js";
 import { ui } from "../../lib/styles.js";
 
 export default function HomePage() {
@@ -20,6 +21,9 @@ export default function HomePage() {
 
     return (
         <main className={ui.shell}>
+            {projects.busyMessage && (
+                <BusyOverlay message={projects.busyMessage} />
+            )}
             <DashboardToast
                 toast={projects.toast}
                 toastProject={projects.toastProject}
@@ -30,6 +34,7 @@ export default function HomePage() {
 
             <section className={ui.layoutGrid}>
                 <NewProjectForm
+                    accountId={upload.accountId}
                     dragActive={upload.dragActive}
                     file={upload.file}
                     loading={upload.loading}
@@ -37,6 +42,7 @@ export default function HomePage() {
                     name={upload.name}
                     handleDrop={upload.handleDrop}
                     handleFileSelection={upload.handleFileSelection}
+                    setAccountId={upload.setAccountId}
                     setDragActive={upload.setDragActive}
                     setName={upload.setName}
                     submit={upload.submit}
