@@ -3,9 +3,10 @@
     "type": "module",
     "version": "0.1.0",
     "private": true,
-    "bin": "./out/main.js",
+    "bin": "./bin/admin-cli.js",
     "scripts": {
-        "build": "tsc --build tsconfig.build.json"
+        "build": "tsc --build tsconfig.build.json",
+        "prepare": "pnpm build"
     },
     "dependencies": {
         "@libraries/plaster-calculator-node-core": "workspace:*",
