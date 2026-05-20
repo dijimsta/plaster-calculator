@@ -1,5 +1,5 @@
 import type { PdfPagePreview } from "../../lib/pdf.js";
-import type { ProjectSummary } from "../../types.js";
+import type { ProjectSummary, SalesStatus } from "../../types.js";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 
 export interface PageUploadProgress {
@@ -24,6 +24,10 @@ export interface NewProjectFormProps {
 }
 
 export interface ProjectHistoryProps {
+    readonly activeSalesStatus: Extract<
+        SalesStatus,
+        "QUOTING" | "QUOTE_SUBMITTED"
+    >;
     readonly filtered: ProjectSummary[];
     readonly projectsLoading: boolean;
     readonly query: string;
@@ -33,6 +37,9 @@ export interface ProjectHistoryProps {
     readonly removeProject: (project: ProjectSummary) => void;
     readonly saveRename: (projectId: string) => void;
     readonly setQuery: (query: string) => void;
+    readonly setActiveSalesStatus: (
+        status: Extract<SalesStatus, "QUOTING" | "QUOTE_SUBMITTED">,
+    ) => void;
     readonly setRenamingId: (projectId: string | null) => void;
     readonly setRenameValue: (value: string) => void;
 }

@@ -7,11 +7,16 @@ import type {
     GetReminderByIdData,
     ListAccountContactsByAccountIdData,
     ListAccountsByOwnerData,
+    ListProjectsByAccountData,
+    ListProjectsByOwnerAndSalesStatusData,
     ListProjectRemindersData,
     ListProjectsByOwnerData,
 } from "@generated/example-data-connector";
 
-export type ProjectListRow = ListProjectsByOwnerData["projects"][number];
+export type ProjectListRow =
+    | ListProjectsByOwnerData["projects"][number]
+    | ListProjectsByOwnerAndSalesStatusData["projects"][number]
+    | ListProjectsByAccountData["projects"][number];
 export type ProjectWithPages = NonNullable<
     GetProjectDetailsByIdData["project"]
 >;
@@ -145,6 +150,10 @@ export interface CreateProjectFromUploadRequest {
 
 export interface ProjectIdRequest {
     projectId?: unknown;
+}
+
+export interface ListProjectsRequest {
+    salesStatus?: unknown;
 }
 
 export interface RenameProjectRequest extends ProjectIdRequest {

@@ -126,6 +126,18 @@ export function listProjectsByOwner(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeQuery('ListProjectsByOwner', inputVars, inputOpts);
 }
 
+export function listProjectsByOwnerAndSalesStatus(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListProjectsByOwnerAndSalesStatus', inputVars, inputOpts);
+}
+
+export function listProjectsByAccount(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListProjectsByAccount', inputVars, inputOpts);
+}
+
 export function getProjectDetailsById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

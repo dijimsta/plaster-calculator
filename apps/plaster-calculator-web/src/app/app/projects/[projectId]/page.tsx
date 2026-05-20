@@ -1,9 +1,14 @@
 "use client";
 
-import { X } from "lucide-react";
-import { default as DynamicModule } from "next/dynamic.js";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
+import { ProjectHeader } from "./project-page-header.js";
+import {
+    ProjectOutcomeModal,
+    ProjectSalesStatusControl,
+} from "./project-sales-status-control.js";
+import { ProjectStatusContent } from "./project-status-content.js";
+import { ProjectToast } from "./project-toast.js";
 import {
     exportProjectCsv,
     getProject,
@@ -11,7 +16,8 @@ import {
     savePageOverlay,
     updateProject,
 } from "../../../../lib/api.js";
-import { cx, ui } from "../../../../lib/styles.js";
+import { salesStatusLabel } from "../../../../lib/sales-status.js";
+import { ui } from "../../../../lib/styles.js";
 import {
     type PageValidationInput,
     parseOverlay,
@@ -19,22 +25,9 @@ import {
     validatePageForExport,
     type ValidationIssue,
 } from "../../../../lib/validation.js";
-import { ProjectAccountPanel } from "../project-account-panel.js";
-import { ProjectHeader } from "./project-page-header.js";
-import { ProjectPageTabs } from "./project-page-tabs.js";
 
-import type { ProjectDetail } from "../../../../types.js";
+import type { ProjectDetail, SalesStatus } from "../../../../types.js";
 
-const dynamic = DynamicModule.default;
-const ProjectEditor = dynamic(
-    () =>
-        import("../../../../components/project-editor/index.js").then(
-            (module) => module.ProjectEditor,
-        ),
-    {
-        ssr: false,
-    },
-);
 export default function ProjectPage({
     params,
 }: {
@@ -56,6 +49,8 @@ export default function ProjectPage({
     const [renameValue, setRenameValue] = useState("");
     const [accountId, setAccountId] = useState<string | null>(null);
     const [savingAccount, setSavingAccount] = useState(false);
+    const [savingSalesStatus, setSavingSalesStatus] = useState(false);
+    const [showOutcomeModal, setShowOutcomeModal] = useState(false);
 
     useEffect(() => {
         load();
@@ -133,6 +128,46 @@ export default function ProjectPage({
         } finally {
             setSavingAccount(false);
         }
+    }
+
+    async function changeSalesStatus(status: SalesStatus): Promise<void> {
+        if (!project || project.salesStatus === status) return;
+        const confirmed = window.confirm(
+            `Change status to ${salesStatusLabel(status)}?`,
+        );
+        if (!confirmed) return;
+        await saveSalesStatus(status);
+    }
+
+    async function saveSalesStatus(status: SalesStatus): Promise<void> {
+        if (!project) return;
+        setSavingSalesStatus(true);
+        try {
+            const updated = await updateProject({
+                projectId: project.id,
+                salesStatus: status,
+            });
+            setProject(updated);
+            setAccountId(updated.accountId);
+            setError("");
+            setToast(`Status changed to ${salesStatusLabel(status)}.`);
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Unable to update project status",
+            );
+        } finally {
+            setSavingSalesStatus(false);
+        }
+    }
+
+    async function selectOutcome(
+        status: Extract<SalesStatus, "WON" | "LOST">,
+    ): Promise<void> {
+        setShowOutcomeModal(false);
+        if (!project || project.salesStatus === status) return;
+        await saveSalesStatus(status);
     }
 
     const updateDraft = useCallback(
@@ -229,23 +264,7 @@ export default function ProjectPage({
 
     return (
         <main className={ui.shell}>
-            {toast && (
-                <div className={ui.toast}>
-                    <span>{toast}</span>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
-                        onClick={() => setToast("")}
-                        title="Dismiss message"
-                        type="button"
-                    >
-                        <X size={16} />
-                    </button>
-                </div>
-            )}
+            <ProjectToast toast={toast} setToast={setToast} />
             <ProjectHeader
                 project={project}
                 renaming={renaming}
@@ -258,36 +277,36 @@ export default function ProjectPage({
             />
 
             {error && <p className={ui.error}>{error}</p>}
-            <ProjectPageTabs
-                project={project}
-                selectedPageId={selectedPageId}
-                selectPage={selectPage}
-                switchingPage={switchingPage}
-            />
-            {project && selectedPage && (
-                <ProjectEditor
-                    project={project}
-                    page={selectedPage}
-                    onSaved={load}
-                    projectAccountPanel={
-                        <ProjectAccountPanel
-                            accountId={project.accountId}
-                            draftAccountId={accountId}
-                            isSaving={savingAccount}
-                            saveAccount={saveAccount}
-                            setDraftAccountId={setAccountId}
-                        />
-                    }
-                    onDraftChange={updateDraft}
-                    validationIssues={validationIssues.filter(
-                        (issue) => issue.pageId === selectedPage.id,
-                    )}
+            {project && (
+                <ProjectSalesStatusControl
+                    currentStatus={project.salesStatus}
+                    disabled={savingSalesStatus}
+                    onRequestOutcome={() => setShowOutcomeModal(true)}
+                    onStatusChange={changeSalesStatus}
                 />
             )}
-            {project && project.pages.length === 0 && (
-                <section className={ui.panel}>
-                    This project has not been processed yet.
-                </section>
+            {project && (
+                <ProjectStatusContent
+                    accountId={accountId}
+                    project={project}
+                    saveAccount={saveAccount}
+                    savingAccount={savingAccount}
+                    selectedPage={selectedPage}
+                    selectedPageId={selectedPageId}
+                    selectPage={selectPage}
+                    setAccountId={setAccountId}
+                    switchingPage={switchingPage}
+                    load={load}
+                    updateDraft={updateDraft}
+                    validationIssues={validationIssues}
+                />
+            )}
+            {showOutcomeModal && (
+                <ProjectOutcomeModal
+                    disabled={savingSalesStatus}
+                    onClose={() => setShowOutcomeModal(false)}
+                    onSelect={(status) => void selectOutcome(status)}
+                />
             )}
         </main>
     );

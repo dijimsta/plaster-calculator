@@ -4,11 +4,11 @@ import { LoaderCircle, RefreshCcw, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { AccountRow } from "./account-row.js";
-import { countProjectsByAccount, filterAccounts } from "./account.utils.js";
-import { listAccounts, listProjects } from "../../../lib/api.js";
+import { filterAccounts } from "./account.utils.js";
+import { listAccounts } from "../../../lib/api.js";
 import { cx, ui } from "../../../lib/styles.js";
 
-import type { AccountSummary, ProjectSummary } from "../../../types.js";
+import type { AccountSummary } from "../../../types.js";
 
 interface AccountListPanelProps {
     readonly refreshKey: number;
@@ -16,7 +16,6 @@ interface AccountListPanelProps {
 
 export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
     const [accounts, setAccounts] = useState<AccountSummary[]>([]);
-    const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [query, setQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [message, setMessage] = useState("");
@@ -29,21 +28,12 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
         () => filterAccounts(accounts, query),
         [accounts, query],
     );
-    const projectCounts = useMemo(
-        () => countProjectsByAccount(projects),
-        [projects],
-    );
-
     async function refresh(): Promise<void> {
         setIsLoading(true);
         setMessage("");
         try {
-            const [nextAccounts, nextProjects] = await Promise.all([
-                listAccounts(),
-                listProjects(),
-            ]);
+            const nextAccounts = await listAccounts();
             setAccounts(nextAccounts);
-            setProjects(nextProjects);
         } catch (error) {
             setMessage(
                 error instanceof Error
@@ -80,11 +70,7 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
             ) : (
                 <div className={ui.projectList}>
                     {filtered.map((account) => (
-                        <AccountRow
-                            key={account.id}
-                            account={account}
-                            projectCount={projectCounts.get(account.id) ?? 0}
-                        />
+                        <AccountRow key={account.id} account={account} />
                     ))}
                     {filtered.length === 0 && (
                         <p className={ui.muted}>No accounts found.</p>

@@ -48,6 +48,7 @@ export default function HomePage() {
                     submit={upload.submit}
                 />
                 <ProjectHistory
+                    activeSalesStatus={projects.activeSalesStatus}
                     filtered={projects.filtered}
                     projectsLoading={projects.projectsLoading}
                     query={projects.query}
@@ -56,6 +57,7 @@ export default function HomePage() {
                     refresh={projects.refresh}
                     removeProject={projects.removeProject}
                     saveRename={projects.saveRename}
+                    setActiveSalesStatus={projects.setActiveSalesStatus}
                     setQuery={projects.setQuery}
                     setRenamingId={projects.setRenamingId}
                     setRenameValue={projects.setRenameValue}

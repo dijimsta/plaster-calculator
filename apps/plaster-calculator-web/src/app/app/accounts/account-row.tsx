@@ -10,10 +10,9 @@ const Link = LinkModule.default;
 
 interface AccountRowProps {
     readonly account: AccountSummary;
-    readonly projectCount: number;
 }
 
-export function AccountRow({ account, projectCount }: AccountRowProps) {
+export function AccountRow({ account }: AccountRowProps) {
     return (
         <div className={ui.projectItem}>
             <div className="grid min-w-0 gap-2">
@@ -25,9 +24,7 @@ export function AccountRow({ account, projectCount }: AccountRowProps) {
                         {account.primaryContactId
                             ? "Primary contact set"
                             : "No primary contact"}{" "}
-                        / {projectCount}{" "}
-                        {projectCount === 1 ? "project" : "projects"} /{" "}
-                        {new Date(account.updatedAt).toLocaleString()}
+                        / {new Date(account.updatedAt).toLocaleString()}
                     </span>
                 </Link>
             </div>

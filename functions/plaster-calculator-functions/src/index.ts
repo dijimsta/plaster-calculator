@@ -25,6 +25,7 @@ export {
     getProject,
     getProjectStatus,
     listProjects,
+    listProjectsByAccount,
     renameProject,
     updateProject,
 } from "./projects.js";
