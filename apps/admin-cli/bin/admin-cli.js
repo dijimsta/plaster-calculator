@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-await import('../out/main.js');
+await import("../out/main.js");
