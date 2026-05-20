@@ -210,21 +210,7 @@ export function buildOverlayFromAnalyzerResult(
 export function analyzerItemToOverlayArea(
     item: AnalyzerPolygon,
 ): OverlayArea | null {
-    if (!Array.isArray(item.polygon) || item.polygon.length < 3) {
-        return null;
-    }
-
-    const points: [number, number][] = [];
-    for (const pt of item.polygon) {
-        if (
-            Array.isArray(pt) &&
-            pt.length >= 2 &&
-            typeof pt[0] === "number" &&
-            typeof pt[1] === "number"
-        ) {
-            points.push([pt[0], pt[1]]);
-        }
-    }
+    const points = analyzerPolygonPoints(item);
     if (points.length < 3) {
         return null;
     }
@@ -250,6 +236,37 @@ export function analyzerItemToOverlayArea(
         sourceRoomType: roomType,
     };
 
+    applyAnalyzerSourceFields(area, item);
+    return area;
+}
+
+function analyzerPolygonPoints(item: AnalyzerPolygon): [number, number][] {
+    if (!Array.isArray(item.polygon) || item.polygon.length < 3) {
+        return [];
+    }
+
+    const points: [number, number][] = [];
+    for (const pt of item.polygon) {
+        if (isAnalyzerPoint(pt)) {
+            points.push([pt[0], pt[1]]);
+        }
+    }
+    return points;
+}
+
+function isAnalyzerPoint(point: number[]): point is [number, number] {
+    return (
+        Array.isArray(point) &&
+        point.length >= 2 &&
+        typeof point[0] === "number" &&
+        typeof point[1] === "number"
+    );
+}
+
+function applyAnalyzerSourceFields(
+    area: OverlayArea,
+    item: AnalyzerPolygon,
+): void {
     if (typeof item.area_px === "number") {
         area.sourceAreaPx = item.area_px;
     }
@@ -261,8 +278,6 @@ export function analyzerItemToOverlayArea(
     if (typeof item.is_hole === "boolean") {
         area.sourceIsHole = item.is_hole;
     }
-
-    return area;
 }
 
 export function defaultPlasterTypeForRoom(roomType: string | null): string {

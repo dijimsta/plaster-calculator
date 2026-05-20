@@ -22,6 +22,8 @@ Do not loosen, disable, or override TypeScript, ESLint, formatting, or styling c
 Fix the underlying code instead. Only change these configurations when the user explicitly asks for a configuration
 change, or when the change is the direct purpose of the task.
 
+When using code complexity ESLint rules, prefer the modified variants where appropriate so patterns like `switch` statements can reduce measured complexity.
+
 ## Jira
 
 Jira tickets are optional.
