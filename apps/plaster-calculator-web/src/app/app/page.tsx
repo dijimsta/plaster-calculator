@@ -1,15 +1,12 @@
 "use client";
 
-import { RefreshCcw } from "lucide-react";
-
 import { DashboardToast } from "./dashboard-toast.js";
 import { useDashboardProjects } from "./hooks/use-dashboard-projects.js";
 import { useDashboardUpload } from "./hooks/use-dashboard-upload.js";
 import { NewProjectForm } from "./new-project-form.js";
 import { PdfPageModal } from "./pdf-page-modal.js";
 import { ProjectHistory } from "./project-history.js";
-import ThemeSettingsButton from "../../components/ThemeSettingsButton.js";
-import { cx, ui } from "../../lib/styles.js";
+import { ui } from "../../lib/styles.js";
 
 export default function HomePage() {
     const projects = useDashboardProjects();
@@ -31,25 +28,6 @@ export default function HomePage() {
                 setToast={projects.setToast}
                 setToastProject={projects.setToastProject}
             />
-
-            <header className={ui.topbar}>
-                <div className="grid gap-1">
-                    <h1 className="m-0 text-2xl leading-tight">
-                        Plaster Calculator
-                    </h1>
-                    <span className={ui.muted}>Your quoting workspace</span>
-                </div>
-                <div className={ui.buttonRow}>
-                    <ThemeSettingsButton />
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
-                        onClick={projects.refresh}
-                        title="Refresh projects"
-                    >
-                        <RefreshCcw size={18} /> Refresh
-                    </button>
-                </div>
-            </header>
 
             <section className={ui.layoutGrid}>
                 <NewProjectForm
@@ -73,6 +51,7 @@ export default function HomePage() {
                     query={projects.query}
                     renameValue={projects.renameValue}
                     renamingId={projects.renamingId}
+                    refresh={projects.refresh}
                     removeProject={projects.removeProject}
                     saveRename={projects.saveRename}
                     setQuery={projects.setQuery}

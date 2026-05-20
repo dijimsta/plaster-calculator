@@ -1,4 +1,4 @@
-import { LoaderCircle, Pencil, Search, Trash2 } from "lucide-react";
+import { LoaderCircle, Pencil, RefreshCcw, Search, Trash2 } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
 import { cx, ui } from "../../lib/styles.js";
@@ -13,6 +13,7 @@ export function ProjectHistory({
     query,
     renameValue,
     renamingId,
+    refresh,
     removeProject,
     saveRename,
     setQuery,
@@ -23,20 +24,31 @@ export function ProjectHistory({
         <section className={cx(ui.panel, ui.stack, "self-start")}>
             <div className={ui.editorToolbar}>
                 <h2>Project History</h2>
-                <div className={cx(ui.field, "min-w-[260px]")}>
-                    <label htmlFor="search">Search</label>
-                    <div className="relative">
-                        <Search
-                            size={16}
-                            className="absolute left-[11px] top-[13px] text-slate-500 dark:text-slate-400"
-                        />
-                        <input
-                            id="search"
-                            className={cx(ui.input, "pl-[34px]")}
-                            value={query}
-                            onChange={(event) => setQuery(event.target.value)}
-                        />
+                <div className={cx(ui.buttonRow, "items-end")}>
+                    <div className={cx(ui.field, "min-w-[260px]")}>
+                        <label htmlFor="search">Search</label>
+                        <div className="relative">
+                            <Search
+                                size={16}
+                                className="absolute left-[11px] top-[13px] text-slate-500 dark:text-slate-400"
+                            />
+                            <input
+                                id="search"
+                                className={cx(ui.input, "pl-[34px]")}
+                                value={query}
+                                onChange={(event) =>
+                                    setQuery(event.target.value)
+                                }
+                            />
+                        </div>
                     </div>
+                    <button
+                        className={cx(ui.button, ui.buttonDefault)}
+                        onClick={() => void refresh()}
+                        title="Refresh project history"
+                    >
+                        <RefreshCcw size={18} /> Refresh
+                    </button>
                 </div>
             </div>
             <div className={ui.projectList}>

@@ -5,7 +5,6 @@ import { default as DynamicModule } from "next/dynamic.js";
 import { default as LinkModule } from "next/link.js";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
-import ThemeSettingsButton from "../../../../components/ThemeSettingsButton.js";
 import {
     exportProjectCsv,
     getProject,
@@ -285,7 +284,6 @@ export default function ProjectPage({
                     </span>
                 </div>
                 <div className={ui.buttonRow}>
-                    <ThemeSettingsButton />
                     <button
                         className={cx(ui.button, ui.buttonDefault)}
                         onClick={load}

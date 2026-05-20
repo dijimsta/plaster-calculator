@@ -183,6 +183,12 @@ function createUi(theme: Theme) {
         modalBackdrop:
             "fixed inset-0 z-30 flex items-center justify-center bg-slate-950/60 p-6",
         muted: cx("text-sm", theme.muted),
+        navLink: cx(
+            "rounded-lg px-3 py-2 text-sm font-semibold no-underline outline-none transition-colors",
+            theme.muted,
+            theme.focus,
+        ),
+        navLinkActive: cx(theme.controlBg, theme.text, "shadow-sm"),
         panel: cx(
             "rounded-lg border p-[18px] shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",
             theme.panelBg,
