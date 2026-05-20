@@ -49,24 +49,18 @@ export function useEditorDerivedState({
         () => overlay.areas.filter((area) => !area.deleted),
         [overlay.areas],
     );
-    const selectedArea =
-        visibleAreas.find((area) => area.id === selectedAreaId) ?? null;
+    const selectedArea = areaById(visibleAreas, selectedAreaId);
     const selectedAreas = useMemo(
         () => visibleAreas.filter((area) => selectedAreaIds.includes(area.id)),
         [selectedAreaIds, visibleAreas],
     );
-    const selectedEdgeArea =
-        visibleAreas.find((area) => area.id === selectedEdge?.areaId) ?? null;
-    const selectedEdgeOverride =
-        selectedEdgeArea && selectedEdge
-            ? (selectedEdgeArea.edgeOverrides?.[
-                  String(selectedEdge.edgeIndex)
-              ] ?? null)
-            : null;
-    const imageWidth =
-        image?.naturalWidth ?? overlay.imageSizePx?.width ?? 1200;
-    const imageHeight =
-        image?.naturalHeight ?? overlay.imageSizePx?.height ?? 900;
+    const selectedEdgeArea = areaById(visibleAreas, selectedEdge?.areaId);
+    const selectedEdgeOverride = edgeOverrideFor(
+        selectedEdgeArea,
+        selectedEdge,
+    );
+    const imageWidth = imageDimension(image, overlay, "width", 1200);
+    const imageHeight = imageDimension(image, overlay, "height", 900);
     const stageWidth = imageWidth * zoom;
     const stageHeight = imageHeight * zoom;
 
@@ -125,4 +119,30 @@ export function useEditorDerivedState({
         metrics,
         summary,
     };
+}
+
+function areaById(areas: AreaPolygon[], areaId: string | null | undefined) {
+    return areas.find((area) => area.id === areaId) ?? null;
+}
+
+function edgeOverrideFor(
+    area: AreaPolygon | null,
+    selectedEdge: SelectedEdge | null,
+) {
+    if (!area || !selectedEdge) {
+        return null;
+    }
+
+    return area.edgeOverrides?.[String(selectedEdge.edgeIndex)] ?? null;
+}
+
+function imageDimension(
+    image: HTMLImageElement | null,
+    overlay: Overlay,
+    dimension: "height" | "width",
+    fallback: number,
+) {
+    const imageValue =
+        dimension === "width" ? image?.naturalWidth : image?.naturalHeight;
+    return imageValue ?? overlay.imageSizePx?.[dimension] ?? fallback;
 }

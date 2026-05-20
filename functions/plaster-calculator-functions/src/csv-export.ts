@@ -1,9 +1,14 @@
 import type { ProjectWithPages } from "./types.js";
 
 export function buildProjectCsv(project: ProjectWithPages) {
+    const rows = collectExportRows(project);
+    const { wallColumns, ceilingColumns } = collectExportColumns(rows);
+    const csvRows = buildCsvRows(rows, wallColumns, ceilingColumns);
+    return csvRows.map((row) => row.map(csvCell).join(",")).join("\n") + "\n";
+}
+
+function collectExportRows(project: ProjectWithPages) {
     const rows: ExportRow[] = [];
-    const wallColumns = new Set<string>();
-    const ceilingColumns = new Set<string>();
 
     for (const page of project.pages) {
         if (!page.overlayJson || page.scaleMmPerPx == null) {
@@ -35,32 +40,46 @@ export function buildProjectCsv(project: ProjectWithPages) {
                 ]),
             };
 
-            row.wallValues.forEach((_, key) => wallColumns.add(key));
-            row.ceilingValues.forEach((_, key) => ceilingColumns.add(key));
             rows.push(row);
         }
     }
 
-    const sortedWallColumns = Array.from(wallColumns).sort();
-    const sortedCeilingColumns = Array.from(ceilingColumns).sort();
+    return rows;
+}
+
+function collectExportColumns(rows: ExportRow[]) {
+    const wallColumnSet = new Set<string>();
+    const ceilingColumnSet = new Set<string>();
+
+    for (const row of rows) {
+        row.wallValues.forEach((_, key) => wallColumnSet.add(key));
+        row.ceilingValues.forEach((_, key) => ceilingColumnSet.add(key));
+    }
+
+    return {
+        wallColumns: Array.from(wallColumnSet).sort(),
+        ceilingColumns: Array.from(ceilingColumnSet).sort(),
+    };
+}
+
+function buildCsvRows(
+    rows: ExportRow[],
+    wallColumns: string[],
+    ceilingColumns: string[],
+) {
     const totals = new Map<string, number>();
     const csvRows = [
-        [
-            "Area Label",
-            "Page Number",
-            ...sortedWallColumns,
-            ...sortedCeilingColumns,
-        ],
+        ["Area Label", "Page Number", ...wallColumns, ...ceilingColumns],
     ];
 
     for (const row of rows) {
         const cells = [row.label, String(row.pageNumber)];
-        for (const column of sortedWallColumns) {
+        for (const column of wallColumns) {
             const value = row.wallValues.get(column) ?? 0;
             addTotal(totals, column, value);
             cells.push(formatNumber(value));
         }
-        for (const column of sortedCeilingColumns) {
+        for (const column of ceilingColumns) {
             const value = row.ceilingValues.get(column) ?? 0;
             addTotal(totals, column, value);
             cells.push(formatNumber(value));
@@ -71,15 +90,13 @@ export function buildProjectCsv(project: ProjectWithPages) {
     csvRows.push([
         "Total",
         "",
-        ...sortedWallColumns.map((column) =>
-            formatNumber(totals.get(column) ?? 0),
-        ),
-        ...sortedCeilingColumns.map((column) =>
+        ...wallColumns.map((column) => formatNumber(totals.get(column) ?? 0)),
+        ...ceilingColumns.map((column) =>
             formatNumber(totals.get(column) ?? 0),
         ),
     ]);
 
-    return csvRows.map((row) => row.map(csvCell).join(",")).join("\n") + "\n";
+    return csvRows;
 }
 
 interface ExportRow {
