@@ -17,6 +17,7 @@ import {
 
 import type {
     FloorplanPage,
+    FloorplanPageRow,
     ProjectDetail,
     UpdateFloorplanPageRequest,
     UpdateFloorplanPagesRequest,
@@ -101,22 +102,13 @@ export const updateFloorplanPages = onCall<
     }
 
     for (const page of project.pages) {
-        const nextScaleMmPerPx: number | null = hasScale
-            ? (readNullableNumber(data.scaleMmPerPx, "Scale") ??
-              page.scaleMmPerPx ??
-              null)
-            : (page.scaleMmPerPx ?? null);
-        const nextCeilingHeightMm: number | null = hasCeilingHeight
-            ? (readNullableNumber(data.ceilingHeightMm, "Ceiling height") ??
-              page.ceilingHeightMm ??
-              null)
-            : (page.ceilingHeightMm ?? null);
+        const nextValues = nextBatchPageValues(data, page);
 
         await dcUpdateFloorplanPage({
             id: page.id,
             overlayJson: page.overlayJson ?? null,
-            scaleMmPerPx: nextScaleMmPerPx,
-            ceilingHeightMm: nextCeilingHeightMm,
+            scaleMmPerPx: nextValues.scaleMmPerPx,
+            ceilingHeightMm: nextValues.ceilingHeightMm,
             referencePointsJson: page.referencePointsJson ?? null,
             referenceLengthMm: page.referenceLengthMm ?? null,
         });
@@ -125,3 +117,36 @@ export const updateFloorplanPages = onCall<
     await touchProject({ id: projectId });
     return toDetail(await requireOwnedProject(projectId, auth.uid));
 });
+
+function nextBatchPageValues(
+    data: UpdateFloorplanPagesRequest,
+    page: FloorplanPageRow,
+) {
+    return {
+        scaleMmPerPx: nextNullableNumber(
+            data,
+            "scaleMmPerPx",
+            "Scale",
+            page.scaleMmPerPx,
+        ),
+        ceilingHeightMm: nextNullableNumber(
+            data,
+            "ceilingHeightMm",
+            "Ceiling height",
+            page.ceilingHeightMm,
+        ),
+    };
+}
+
+function nextNullableNumber(
+    data: UpdateFloorplanPagesRequest,
+    field: "ceilingHeightMm" | "scaleMmPerPx",
+    label: string,
+    current: number | null | undefined,
+) {
+    if (!hasField(data, field)) {
+        return current ?? null;
+    }
+
+    return readNullableNumber(data[field], label) ?? current ?? null;
+}

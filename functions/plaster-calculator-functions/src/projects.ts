@@ -249,43 +249,73 @@ async function updateOwnedProject(
     updates: ProjectUpdateFields,
 ) {
     const project = await requireOwnedProject(projectId, ownerId);
-    const nextAccountId = hasField(updates, "accountId")
-        ? (updates.accountId ?? null)
-        : (project.accountId ?? null);
+    const nextAccountId = nextNullableProjectField(
+        updates,
+        "accountId",
+        project.accountId,
+    );
 
     if (nextAccountId) {
         await requireOwnedAccount(nextAccountId, ownerId);
     }
 
-    const nextSalesStatus = hasField(updates, "salesStatus")
-        ? (updates.salesStatus ?? toSalesStatus(project.salesStatus))
-        : toSalesStatus(project.salesStatus);
+    const nextSalesStatus = nextSalesStatusFor(updates, project.salesStatus);
 
     await dcUpdateProject({
         id: projectId,
         name: updates.name ?? project.name,
         accountId: nextAccountId,
-        address: hasField(updates, "address")
-            ? (updates.address ?? null)
-            : (project.address ?? null),
+        address: nextNullableProjectField(updates, "address", project.address),
         salesStatus: nextSalesStatus,
     });
 
     const updatedProject = await requireOwnedProject(projectId, ownerId);
-
-    if (
-        hasField(updates, "salesStatus") &&
-        nextSalesStatus === "QUOTE_SUBMITTED"
-    ) {
-        await upsertAutoQuoteReminder(updatedProject, ownerId);
-    } else if (
-        hasField(updates, "salesStatus") &&
-        (nextSalesStatus === "WON" || nextSalesStatus === "LOST")
-    ) {
-        await cancelOpenProjectReminder(projectId, ownerId);
-    }
+    await syncQuoteReminderForStatusUpdate(
+        updates,
+        nextSalesStatus,
+        updatedProject,
+        projectId,
+        ownerId,
+    );
 
     return toDetail(await requireOwnedProject(projectId, ownerId));
+}
+
+function nextNullableProjectField(
+    updates: ProjectUpdateFields,
+    field: "accountId" | "address",
+    current: string | null | undefined,
+) {
+    return hasField(updates, field)
+        ? (updates[field] ?? null)
+        : (current ?? null);
+}
+
+function nextSalesStatusFor(updates: ProjectUpdateFields, current: string) {
+    return hasField(updates, "salesStatus")
+        ? (updates.salesStatus ?? toSalesStatus(current))
+        : toSalesStatus(current);
+}
+
+async function syncQuoteReminderForStatusUpdate(
+    updates: ProjectUpdateFields,
+    salesStatus: SalesStatus,
+    project: Awaited<ReturnType<typeof requireOwnedProject>>,
+    projectId: string,
+    ownerId: string,
+) {
+    if (!hasField(updates, "salesStatus")) {
+        return;
+    }
+
+    if (salesStatus === "QUOTE_SUBMITTED") {
+        await upsertAutoQuoteReminder(project, ownerId);
+        return;
+    }
+
+    if (salesStatus === "WON" || salesStatus === "LOST") {
+        await cancelOpenProjectReminder(projectId, ownerId);
+    }
 }
 
 function inferUploadType(fileName: string, contentType: string): UploadType {

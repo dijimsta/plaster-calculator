@@ -36,6 +36,17 @@ const ProjectEditor = dynamic(
 );
 const Link = LinkModule.default;
 
+interface ProjectHeaderProps {
+    readonly project: ProjectDetail | null;
+    readonly renaming: boolean;
+    readonly renameValue: string;
+    readonly load: () => void;
+    readonly saveRename: () => Promise<void>;
+    readonly setRenaming: (renaming: boolean) => void;
+    readonly setRenameValue: (value: string) => void;
+    readonly validateAndExport: () => Promise<void>;
+}
+
 export default function ProjectPage({
     params,
 }: {
@@ -247,99 +258,24 @@ export default function ProjectPage({
                     </button>
                 </div>
             )}
-            <header className={ui.topbar}>
-                <div className={ui.buttonRow}>
-                    <Link
-                        className={cx(ui.button, ui.buttonDefault)}
-                        href="/app"
-                    >
-                        <ArrowLeft size={18} /> Projects
-                    </Link>
-                    {project && (
-                        <button
-                            className={cx(ui.button, ui.buttonDefault)}
-                            onClick={() => void validateAndExport()}
-                        >
-                            <Download size={18} /> CSV
-                        </button>
-                    )}
-                </div>
-                <div className="grid gap-1 text-right">
-                    {renaming ? (
-                        <div className={ui.buttonRow}>
-                            <input
-                                className={ui.input}
-                                value={renameValue}
-                                onChange={(event) =>
-                                    setRenameValue(event.target.value)
-                                }
-                                onKeyDown={(event) => {
-                                    if (event.key === "Enter")
-                                        void saveRename();
-                                }}
-                            />
-                            <button
-                                className={cx(ui.button, ui.buttonPrimary)}
-                                onClick={saveRename}
-                            >
-                                Save
-                            </button>
-                        </div>
-                    ) : (
-                        <div className={cx(ui.buttonRow, "justify-end")}>
-                            <h1 className="m-0 text-2xl leading-tight">
-                                {project?.name ?? "Project"}
-                            </h1>
-                            {project && (
-                                <button
-                                    className={cx(
-                                        ui.button,
-                                        ui.buttonDefault,
-                                        ui.buttonIcon,
-                                    )}
-                                    onClick={() => setRenaming(true)}
-                                    title="Rename project"
-                                >
-                                    <Pencil size={18} />
-                                </button>
-                            )}
-                        </div>
-                    )}
-                    <span className={ui.muted}>
-                        {project?.originalFileName ?? "Loading..."}
-                    </span>
-                </div>
-                <div className={ui.buttonRow}>
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
-                        onClick={load}
-                    >
-                        <RefreshCcw size={18} /> Refresh
-                    </button>
-                </div>
-            </header>
+            <ProjectHeader
+                project={project}
+                renaming={renaming}
+                renameValue={renameValue}
+                load={load}
+                saveRename={saveRename}
+                setRenaming={setRenaming}
+                setRenameValue={setRenameValue}
+                validateAndExport={validateAndExport}
+            />
 
             {error && <p className={ui.error}>{error}</p>}
-            {project && project.pages.length > 1 && (
-                <div className={cx(ui.topbar, "justify-start")}>
-                    <div className={ui.segmented}>
-                        {project.pages.map((page) => (
-                            <button
-                                key={page.id}
-                                className={cx(
-                                    ui.segmentedButton,
-                                    page.id === selectedPageId &&
-                                        ui.segmentedButtonActive,
-                                )}
-                                onClick={() => void selectPage(page.id)}
-                                disabled={switchingPage}
-                            >
-                                Page {page.pageNumber}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
+            <ProjectPageTabs
+                project={project}
+                selectedPageId={selectedPageId}
+                selectPage={selectPage}
+                switchingPage={switchingPage}
+            />
             {project && selectedPage && (
                 <ProjectEditor
                     project={project}
@@ -366,5 +302,140 @@ export default function ProjectPage({
                 </section>
             )}
         </main>
+    );
+}
+
+function ProjectHeader({
+    project,
+    renaming,
+    renameValue,
+    load,
+    saveRename,
+    setRenaming,
+    setRenameValue,
+    validateAndExport,
+}: ProjectHeaderProps) {
+    return (
+        <header className={ui.topbar}>
+            <div className={ui.buttonRow}>
+                <Link className={cx(ui.button, ui.buttonDefault)} href="/app">
+                    <ArrowLeft size={18} /> Projects
+                </Link>
+                {project && (
+                    <button
+                        className={cx(ui.button, ui.buttonDefault)}
+                        onClick={() => void validateAndExport()}
+                    >
+                        <Download size={18} /> CSV
+                    </button>
+                )}
+            </div>
+            <div className="grid gap-1 text-right">
+                {renaming ? (
+                    <ProjectRenameForm
+                        renameValue={renameValue}
+                        saveRename={saveRename}
+                        setRenameValue={setRenameValue}
+                    />
+                ) : (
+                    <ProjectTitle project={project} setRenaming={setRenaming} />
+                )}
+                <span className={ui.muted}>
+                    {project?.originalFileName ?? "Loading..."}
+                </span>
+            </div>
+            <div className={ui.buttonRow}>
+                <button
+                    className={cx(ui.button, ui.buttonDefault)}
+                    onClick={load}
+                >
+                    <RefreshCcw size={18} /> Refresh
+                </button>
+            </div>
+        </header>
+    );
+}
+
+function ProjectRenameForm({
+    renameValue,
+    saveRename,
+    setRenameValue,
+}: Pick<ProjectHeaderProps, "renameValue" | "saveRename" | "setRenameValue">) {
+    return (
+        <div className={ui.buttonRow}>
+            <input
+                className={ui.input}
+                value={renameValue}
+                onChange={(event) => setRenameValue(event.target.value)}
+                onKeyDown={(event) => {
+                    if (event.key === "Enter") void saveRename();
+                }}
+            />
+            <button
+                className={cx(ui.button, ui.buttonPrimary)}
+                onClick={() => void saveRename()}
+            >
+                Save
+            </button>
+        </div>
+    );
+}
+
+function ProjectTitle({
+    project,
+    setRenaming,
+}: Pick<ProjectHeaderProps, "project" | "setRenaming">) {
+    return (
+        <div className={cx(ui.buttonRow, "justify-end")}>
+            <h1 className="m-0 text-2xl leading-tight">
+                {project?.name ?? "Project"}
+            </h1>
+            {project && (
+                <button
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+                    onClick={() => setRenaming(true)}
+                    title="Rename project"
+                >
+                    <Pencil size={18} />
+                </button>
+            )}
+        </div>
+    );
+}
+
+function ProjectPageTabs({
+    project,
+    selectedPageId,
+    selectPage,
+    switchingPage,
+}: {
+    readonly project: ProjectDetail | null;
+    readonly selectedPageId: string | null;
+    readonly selectPage: (pageId: string) => Promise<void>;
+    readonly switchingPage: boolean;
+}) {
+    if (!project || project.pages.length <= 1) {
+        return null;
+    }
+
+    return (
+        <div className={cx(ui.topbar, "justify-start")}>
+            <div className={ui.segmented}>
+                {project.pages.map((page) => (
+                    <button
+                        key={page.id}
+                        className={cx(
+                            ui.segmentedButton,
+                            page.id === selectedPageId &&
+                                ui.segmentedButtonActive,
+                        )}
+                        onClick={() => void selectPage(page.id)}
+                        disabled={switchingPage}
+                    >
+                        Page {page.pageNumber}
+                    </button>
+                ))}
+            </div>
+        </div>
     );
 }

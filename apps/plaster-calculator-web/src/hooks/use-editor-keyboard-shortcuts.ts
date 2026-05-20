@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 
+type KeyboardShortcutAction = "cancel" | "clear" | "delete" | "redo" | "undo";
+
 interface EditorKeyboardShortcutsOptions {
     readonly isDrawingFreeShape: boolean;
     readonly onCancelFreeShape: () => void;
@@ -21,43 +23,28 @@ export function useEditorKeyboardShortcuts({
 }: EditorKeyboardShortcutsOptions): void {
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
-            const target = event.target as HTMLElement | null;
-            if (
-                target &&
-                ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)
-            )
-                return;
-            if (
-                (event.ctrlKey || event.metaKey) &&
-                event.key.toLowerCase() === "z"
-            ) {
-                event.preventDefault();
-                onUndo();
+            if (isFormTarget(event.target)) {
                 return;
             }
-            if (
-                (event.ctrlKey || event.metaKey) &&
-                (event.key.toLowerCase() === "y" ||
-                    (event.shiftKey && event.key.toLowerCase() === "z"))
-            ) {
-                event.preventDefault();
-                onRedo();
+
+            const action = shortcutActionFor(
+                event,
+                isDrawingFreeShape,
+                hasSelection(),
+            );
+            if (!action) {
                 return;
             }
-            if (event.key === "Delete" || event.key === "Backspace") {
-                event.preventDefault();
-                onDeleteSelection();
-                return;
-            }
-            if (event.key === "Escape" && isDrawingFreeShape) {
-                event.preventDefault();
-                onCancelFreeShape();
-                return;
-            }
-            if (event.key === "Escape" && hasSelection()) {
-                event.preventDefault();
-                onClearSelection();
-            }
+
+            event.preventDefault();
+            const actions: Record<KeyboardShortcutAction, () => void> = {
+                cancel: onCancelFreeShape,
+                clear: onClearSelection,
+                delete: onDeleteSelection,
+                redo: onRedo,
+                undo: onUndo,
+            };
+            actions[action]();
         }
 
         window.addEventListener("keydown", onKeyDown);
@@ -71,4 +58,55 @@ export function useEditorKeyboardShortcuts({
         onUndo,
         hasSelection,
     ]);
+}
+
+function isFormTarget(target: EventTarget | null): boolean {
+    return (
+        target instanceof HTMLElement &&
+        ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)
+    );
+}
+
+function shortcutActionFor(
+    event: KeyboardEvent,
+    isDrawingFreeShape: boolean,
+    hasSelection: boolean,
+): KeyboardShortcutAction | null {
+    const key = event.key.toLowerCase();
+    if (isUndoShortcut(event, key)) {
+        return "undo";
+    }
+    if (isRedoShortcut(event, key)) {
+        return "redo";
+    }
+    if (key === "delete" || key === "backspace") {
+        return "delete";
+    }
+    if (key === "escape") {
+        return escapeActionFor(isDrawingFreeShape, hasSelection);
+    }
+
+    return null;
+}
+
+function isUndoShortcut(event: KeyboardEvent, key: string): boolean {
+    return (event.ctrlKey || event.metaKey) && key === "z" && !event.shiftKey;
+}
+
+function isRedoShortcut(event: KeyboardEvent, key: string): boolean {
+    return (
+        (event.ctrlKey || event.metaKey) &&
+        (key === "y" || (event.shiftKey && key === "z"))
+    );
+}
+
+function escapeActionFor(
+    isDrawingFreeShape: boolean,
+    hasSelection: boolean,
+): KeyboardShortcutAction | null {
+    if (isDrawingFreeShape) {
+        return "cancel";
+    }
+
+    return hasSelection ? "clear" : null;
 }
