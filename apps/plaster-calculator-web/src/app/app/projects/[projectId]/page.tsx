@@ -4,6 +4,8 @@ import { X } from "lucide-react";
 import { default as DynamicModule } from "next/dynamic.js";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
+import { ProjectHeader } from "./project-page-header.js";
+import { ProjectPageTabs } from "./project-page-tabs.js";
 import {
     exportProjectCsv,
     getProject,
@@ -20,8 +22,6 @@ import {
     type ValidationIssue,
 } from "../../../../lib/validation.js";
 import { ProjectAccountPanel } from "../project-account-panel.js";
-import { ProjectHeader } from "./project-page-header.js";
-import { ProjectPageTabs } from "./project-page-tabs.js";
 
 import type { ProjectDetail } from "../../../../types.js";
 
