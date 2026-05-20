@@ -1,15 +1,19 @@
 "use client";
 
 import { signOut } from "firebase/auth";
+import { User } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
-import { useRouter } from "next/navigation.js";
+import { usePathname, useRouter } from "next/navigation.js";
 
 import { auth } from "../firebase/firebase.utils.js";
 import { activeTheme, cx, ui } from "../lib/styles.js";
 
 const Link = LinkModule.default;
 
+const navItems = [{ href: "/app", label: "Home" }] as const;
+
 export default function AppBar() {
+    const pathname = usePathname();
     const router = useRouter();
 
     async function handleLogout() {
@@ -20,21 +24,49 @@ export default function AppBar() {
     return (
         <header
             className={cx(
-                "flex h-16 items-center justify-between border-b px-4",
+                "flex min-h-16 flex-wrap items-center justify-between gap-3 border-b px-4 py-2",
                 activeTheme.appBg,
                 activeTheme.line,
             )}
         >
-            <Link
-                className={cx(
-                    "text-xl font-semibold no-underline",
-                    activeTheme.text,
-                )}
-                href="/app"
-            >
-                Plaster Calculator
-            </Link>
+            <div className="flex min-w-0 flex-wrap items-center gap-5">
+                <Link
+                    className={cx(
+                        "grid gap-0.5 no-underline",
+                        activeTheme.text,
+                    )}
+                    href="/app"
+                >
+                    <span className="text-xl font-semibold leading-tight">
+                        Plaster Calculator
+                    </span>
+                    <span className={cx("text-xs", activeTheme.muted)}>
+                        Your quoting workspace
+                    </span>
+                </Link>
+                <nav className="flex items-center gap-1">
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.href}
+                            className={cx(
+                                ui.navLink,
+                                pathname === item.href && ui.navLinkActive,
+                            )}
+                            href={item.href}
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
+                </nav>
+            </div>
             <nav className="flex items-center gap-3">
+                <Link
+                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+                    href="/app/user"
+                    title="User profile"
+                >
+                    <User size={18} />
+                </Link>
                 <button
                     className={cx(ui.button, ui.buttonDefault)}
                     onClick={handleLogout}

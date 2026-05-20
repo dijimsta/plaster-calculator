@@ -34,6 +34,7 @@ export interface ProjectHistoryProps {
     readonly query: string;
     readonly renameValue: string;
     readonly renamingId: string | null;
+    readonly refresh: () => Promise<void>;
     readonly removeProject: (project: ProjectSummary) => void;
     readonly saveRename: (projectId: string) => void;
     readonly setQuery: (query: string) => void;
