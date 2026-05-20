@@ -22,7 +22,7 @@ from firebase_functions import https_fn, options
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 
-options.set_global_options(region="us-west1", max_instances=5)
+options.set_global_options(region="us-west1", max_instances=5, enforce_app_check=True)
 
 INFERENCE_MEMORY = options.MemoryOption.GB_4
 OCR_MEMORY = options.MemoryOption.GB_16
@@ -144,7 +144,9 @@ def health(req: https_fn.Request) -> https_fn.Response:
     )
 
 
-@https_fn.on_request(memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU)
+@https_fn.on_request(
+    memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
+)
 def analyse(req: https_fn.Request) -> https_fn.Response:
     from cubicasa_core import run_inference
 
@@ -161,7 +163,9 @@ def analyse(req: https_fn.Request) -> https_fn.Response:
     return https_fn.Response(json.dumps(result), mimetype="application/json")
 
 
-@https_fn.on_request(memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU)
+@https_fn.on_request(
+    memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
+)
 def xixi_process(req: https_fn.Request) -> https_fn.Response:
     from cubicasa_api.xixi import ROOM_TYPE_MIN_FRACTION, run_xixi_process
 
@@ -350,7 +354,9 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
     )
 
 
-@https_fn.on_request(memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU)
+@https_fn.on_request(
+    memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
+)
 def debug_segmentation(req: https_fn.Request) -> https_fn.Response:
     from cubicasa_core import render_segmentation_map
 
@@ -370,7 +376,9 @@ def debug_segmentation(req: https_fn.Request) -> https_fn.Response:
     return https_fn.Response(buf.getvalue(), mimetype="image/png")
 
 
-@https_fn.on_request(memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU)
+@https_fn.on_request(
+    memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
+)
 def debug_get_polygons(req: https_fn.Request) -> https_fn.Response:
     from cubicasa_core import run_get_polygons
 
