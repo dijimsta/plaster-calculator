@@ -8,6 +8,9 @@ import {
     updateAuthUserScopes,
 } from "./firebase-admin.js";
 
+type InkInputHandler = Parameters<typeof useInput>[0];
+type InkInputKey = Parameters<InkInputHandler>[1];
+
 type UsersState =
     | { status: "loading" }
     | { status: "loaded"; users: AuthUserSummary[] }
@@ -171,15 +174,10 @@ function UserSearchScreen({
         setSelectedIndex(0);
     }, [query]);
 
-    useInput((input, key) => {
-        if (input === "q") {
-            onExit();
-            return;
-        }
-
+    function handleNavigationKey(key: InkInputKey) {
         if (key.escape) {
             onBack();
-            return;
+            return true;
         }
 
         if (key.upArrow) {
@@ -188,7 +186,7 @@ function UserSearchScreen({
                     ? Math.max(0, filteredUsers.length - 1)
                     : current - 1,
             );
-            return;
+            return true;
         }
 
         if (key.downArrow) {
@@ -197,7 +195,7 @@ function UserSearchScreen({
                     ? 0
                     : (current + 1) % filteredUsers.length,
             );
-            return;
+            return true;
         }
 
         if (key.return) {
@@ -207,9 +205,13 @@ function UserSearchScreen({
                 onSelect(selectedUser);
             }
 
-            return;
+            return true;
         }
 
+        return false;
+    }
+
+    function handleQueryInput(input: string, key: InkInputKey) {
         if (key.backspace || key.delete) {
             setQuery((current) => current.slice(0, -1));
             return;
@@ -223,6 +225,19 @@ function UserSearchScreen({
         if (input && !key.ctrl && !key.meta) {
             setQuery((current) => `${current}${input}`);
         }
+    }
+
+    useInput((input, key) => {
+        if (input === "q") {
+            onExit();
+            return;
+        }
+
+        if (handleNavigationKey(key)) {
+            return;
+        }
+
+        handleQueryInput(input, key);
     });
 
     return (
@@ -306,68 +321,84 @@ function UserDetailScreen({
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
 
-    useInput((input, key) => {
-        if (saving) {
-            return;
-        }
-
+    function handleDetailNavigation(input: string, key: InkInputKey) {
         if (input === "q") {
             onExit();
-            return;
+            return true;
         }
 
         if (input === "b" || key.escape || key.backspace) {
             onBack();
-            return;
+            return true;
         }
 
         if (key.upArrow) {
             setSelectedIndex((current) =>
                 current === 0 ? editableScopes.length - 1 : current - 1,
             );
-            return;
+            return true;
         }
 
         if (key.downArrow) {
             setSelectedIndex(
                 (current) => (current + 1) % editableScopes.length,
             );
+            return true;
+        }
+
+        return false;
+    }
+
+    function toggleSelectedScope() {
+        const selectedScope = editableScopes[selectedIndex];
+
+        if (selectedScope) {
+            setScopes((current) => ({
+                ...current,
+                [selectedScope.key]: !current[selectedScope.key],
+            }));
+        }
+
+        setMessage("Unsaved changes.");
+    }
+
+    function saveScopes() {
+        setSaving(true);
+        setMessage("Saving scopes...");
+
+        updateAuthUserScopes(user.uid, scopes)
+            .then((updatedUser) => {
+                setMessage(
+                    "Saved. New tokens are required for changes to take effect.",
+                );
+                onUserUpdated(updatedUser);
+            })
+            .catch((error: unknown) => {
+                setMessage(
+                    error instanceof Error ? error.message : String(error),
+                );
+            })
+            .finally(() => {
+                setSaving(false);
+            });
+    }
+
+    useInput((input, key) => {
+        if (saving) {
+            return;
+        }
+
+        if (handleDetailNavigation(input, key)) {
             return;
         }
 
         if (input === " " || key.return) {
-            const selectedScope = editableScopes[selectedIndex];
-
-            if (selectedScope) {
-                setScopes((current) => ({
-                    ...current,
-                    [selectedScope.key]: !current[selectedScope.key],
-                }));
-            }
-
-            setMessage("Unsaved changes.");
+            toggleSelectedScope();
             return;
         }
 
         if (input === "s") {
-            setSaving(true);
-            setMessage("Saving scopes...");
-
-            updateAuthUserScopes(user.uid, scopes)
-                .then((updatedUser) => {
-                    setMessage(
-                        "Saved. New tokens are required for changes to take effect.",
-                    );
-                    onUserUpdated(updatedUser);
-                })
-                .catch((error: unknown) => {
-                    setMessage(
-                        error instanceof Error ? error.message : String(error),
-                    );
-                })
-                .finally(() => {
-                    setSaving(false);
-                });
+            saveScopes();
         }
     });
 

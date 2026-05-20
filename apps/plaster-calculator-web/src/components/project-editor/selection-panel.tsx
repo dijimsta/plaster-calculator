@@ -60,45 +60,95 @@ export function SelectionPanel({
     return (
         <section className={cx(ui.panel, ui.stack)}>
             <h3>Selection</h3>
-            {!selectedArea && !selectedEdgeArea && (
-                <p className={ui.muted}>
-                    Select an area to edit labels and board types.
-                </p>
-            )}
-            {selectedEdgeArea && selectedEdge && (
-                <SelectedEdgeControls
-                    clearSelectedEdgeOverride={clearSelectedEdgeOverride}
-                    renderCeilingControls={renderCeilingControls}
-                    selectedArea={selectedArea}
-                    selectedAreaIds={selectedAreaIds}
-                    selectedEdge={selectedEdge}
-                    selectedEdgeArea={selectedEdgeArea}
-                    selectedEdgeOverride={selectedEdgeOverride}
-                    setSelectedEdgeMaterial={setSelectedEdgeMaterial}
-                    setSelectedEdgeNoPlaster={setSelectedEdgeNoPlaster}
-                />
-            )}
-            {!selectedEdge && selectedArea && selectedAreaIds.length > 1 && (
-                <MultiAreaControls
-                    commonMaterialValue={commonMaterialValue}
-                    selectedAreaIds={selectedAreaIds}
-                    setMaterial={setMaterial}
-                />
-            )}
-            {!selectedEdge && selectedArea && selectedAreaIds.length <= 1 && (
-                <SingleAreaControls
-                    areaIssue={areaIssue}
-                    fieldError={fieldError}
-                    metrics={metrics}
-                    renderCeilingControls={renderCeilingControls}
-                    selectedArea={selectedArea}
-                    selectedPointIndexes={selectedPointIndexes}
-                    setMaterial={setMaterial}
-                    toggleOutdoor={toggleOutdoor}
-                    updateArea={updateArea}
-                />
-            )}
+            <SelectionPanelContent
+                areaIssue={areaIssue}
+                clearSelectedEdgeOverride={clearSelectedEdgeOverride}
+                commonMaterialValue={commonMaterialValue}
+                fieldError={fieldError}
+                metrics={metrics}
+                renderCeilingControls={renderCeilingControls}
+                selectedArea={selectedArea}
+                selectedAreaIds={selectedAreaIds}
+                selectedEdge={selectedEdge}
+                selectedEdgeArea={selectedEdgeArea}
+                selectedEdgeOverride={selectedEdgeOverride}
+                selectedPointIndexes={selectedPointIndexes}
+                setMaterial={setMaterial}
+                setSelectedEdgeMaterial={setSelectedEdgeMaterial}
+                setSelectedEdgeNoPlaster={setSelectedEdgeNoPlaster}
+                toggleOutdoor={toggleOutdoor}
+                updateArea={updateArea}
+            />
         </section>
+    );
+}
+
+function SelectionPanelContent({
+    areaIssue,
+    clearSelectedEdgeOverride,
+    commonMaterialValue,
+    fieldError,
+    metrics,
+    renderCeilingControls,
+    selectedArea,
+    selectedAreaIds,
+    selectedEdge,
+    selectedEdgeArea,
+    selectedEdgeOverride,
+    selectedPointIndexes,
+    setMaterial,
+    setSelectedEdgeMaterial,
+    setSelectedEdgeNoPlaster,
+    toggleOutdoor,
+    updateArea,
+}: SelectionPanelProps) {
+    if (!selectedArea && !selectedEdgeArea) {
+        return (
+            <p className={ui.muted}>
+                Select an area to edit labels and board types.
+            </p>
+        );
+    }
+
+    if (selectedEdgeArea && selectedEdge) {
+        return (
+            <SelectedEdgeControls
+                clearSelectedEdgeOverride={clearSelectedEdgeOverride}
+                renderCeilingControls={renderCeilingControls}
+                selectedArea={selectedArea}
+                selectedAreaIds={selectedAreaIds}
+                selectedEdge={selectedEdge}
+                selectedEdgeArea={selectedEdgeArea}
+                selectedEdgeOverride={selectedEdgeOverride}
+                setSelectedEdgeMaterial={setSelectedEdgeMaterial}
+                setSelectedEdgeNoPlaster={setSelectedEdgeNoPlaster}
+            />
+        );
+    }
+
+    if (selectedArea && selectedAreaIds.length > 1) {
+        return (
+            <MultiAreaControls
+                commonMaterialValue={commonMaterialValue}
+                selectedAreaIds={selectedAreaIds}
+                setMaterial={setMaterial}
+            />
+        );
+    }
+
+    if (!selectedArea) return null;
+    return (
+        <SingleAreaControls
+            areaIssue={areaIssue}
+            fieldError={fieldError}
+            metrics={metrics}
+            renderCeilingControls={renderCeilingControls}
+            selectedArea={selectedArea}
+            selectedPointIndexes={selectedPointIndexes}
+            setMaterial={setMaterial}
+            toggleOutdoor={toggleOutdoor}
+            updateArea={updateArea}
+        />
     );
 }
 
@@ -112,32 +162,23 @@ function SelectedEdgeControls({
     selectedEdgeOverride,
     setSelectedEdgeMaterial,
     setSelectedEdgeNoPlaster,
-}: Pick<
-    SelectionPanelProps,
-    | "clearSelectedEdgeOverride"
-    | "renderCeilingControls"
-    | "selectedArea"
-    | "selectedAreaIds"
-    | "selectedEdge"
-    | "selectedEdgeArea"
-    | "selectedEdgeOverride"
-    | "setSelectedEdgeMaterial"
-    | "setSelectedEdgeNoPlaster"
->) {
-    if (!selectedEdgeArea || !selectedEdge) return null;
+}: SelectedEdgeControlsProps) {
     return (
         <>
             <div className={ui.metric}>
                 Edge {selectedEdge.edgeIndex + 1} selected in{" "}
                 {selectedEdgeArea.label}
             </div>
-            {selectedAreaIds.length === 1 &&
-                selectedArea?.id === selectedEdgeArea.id &&
-                renderCeilingControls(selectedArea)}
+            <SelectedEdgeCeilingControls
+                renderCeilingControls={renderCeilingControls}
+                selectedArea={selectedArea}
+                selectedAreaIds={selectedAreaIds}
+                selectedEdgeArea={selectedEdgeArea}
+            />
             <label className={cx(ui.button, ui.buttonDefault, "justify-start")}>
                 <input
                     type="checkbox"
-                    checked={!!selectedEdgeOverride?.noPlaster}
+                    checked={isNoPlaster(selectedEdgeOverride)}
                     onChange={(event) =>
                         setSelectedEdgeNoPlaster(event.target.checked)
                     }
@@ -148,17 +189,17 @@ function SelectedEdgeControls({
                 <label>Wall board</label>
                 <select
                     className={ui.input}
-                    value={
-                        selectedEdgeOverride?.wallPlasterType ??
-                        selectedEdgeArea.wallPlasterType
-                    }
+                    value={selectedEdgeWallType(
+                        selectedEdgeOverride,
+                        selectedEdgeArea,
+                    )}
                     onChange={(event) =>
                         setSelectedEdgeMaterial(event.target.value)
                     }
-                    disabled={
-                        !!selectedEdgeOverride?.noPlaster ||
-                        !!selectedEdgeArea.isOutdoor
-                    }
+                    disabled={isEdgeWallTypeDisabled(
+                        selectedEdgeOverride,
+                        selectedEdgeArea,
+                    )}
                 >
                     {BOARD_TYPES.map((type) => (
                         <option key={type}>{type}</option>
@@ -174,6 +215,60 @@ function SelectedEdgeControls({
             </button>
         </>
     );
+}
+
+type SelectedEdgeControlsProps = Pick<
+    SelectionPanelProps,
+    | "clearSelectedEdgeOverride"
+    | "renderCeilingControls"
+    | "selectedArea"
+    | "selectedAreaIds"
+    | "selectedEdgeOverride"
+    | "setSelectedEdgeMaterial"
+    | "setSelectedEdgeNoPlaster"
+> & {
+    selectedEdge: SelectedEdge;
+    selectedEdgeArea: AreaPolygon;
+};
+
+function SelectedEdgeCeilingControls({
+    renderCeilingControls,
+    selectedArea,
+    selectedAreaIds,
+    selectedEdgeArea,
+}: Pick<
+    SelectionPanelProps,
+    "renderCeilingControls" | "selectedArea" | "selectedAreaIds"
+> & {
+    selectedEdgeArea: AreaPolygon;
+}) {
+    if (!selectedArea || selectedAreaIds.length !== 1) {
+        return null;
+    }
+
+    if (selectedArea.id !== selectedEdgeArea.id) {
+        return null;
+    }
+
+    return renderCeilingControls(selectedArea);
+}
+
+function isNoPlaster(edgeOverride: EdgeOverride | undefined | null) {
+    return Boolean(edgeOverride?.noPlaster);
+}
+
+function selectedEdgeWallType(
+    edgeOverride: EdgeOverride | undefined | null,
+    selectedEdgeArea: AreaPolygon,
+) {
+    return edgeOverride?.wallPlasterType ?? selectedEdgeArea.wallPlasterType;
+}
+
+function isEdgeWallTypeDisabled(
+    edgeOverride: EdgeOverride | undefined | null,
+    selectedEdgeArea: AreaPolygon,
+) {
+    return isNoPlaster(edgeOverride) || Boolean(selectedEdgeArea.isOutdoor);
 }
 
 function MultiAreaControls({

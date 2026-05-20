@@ -62,57 +62,76 @@ export function validatePageForExport(
         return issues;
     }
 
-    areas.forEach((area) => {
-        if (!area.label?.trim())
-            addAreaIssue(
-                issues,
-                page,
-                area,
-                "areaLabel",
-                "Area label is required",
-            );
-        if (!area.points || area.points.length < 3)
-            addAreaIssue(
-                issues,
-                page,
-                area,
-                "polygon",
-                "Polygon needs at least 3 points",
-            );
-        if (!area.ceilingPlasterType?.trim())
-            addAreaIssue(
-                issues,
-                page,
-                area,
-                "ceilingPlasterType",
-                "Ceiling board is required",
-            );
-        if (!area.isOutdoor && !area.wallPlasterType?.trim())
-            addAreaIssue(
-                issues,
-                page,
-                area,
-                "wallPlasterType",
-                "Wall board is required",
-            );
-
-        if ((area.ceilingMode ?? "flat") === "raked") {
-            validateRakedCeiling(issues, page, area);
-        } else if (
-            !positiveNumber(area.ceilingHeightMm) &&
-            !positiveNumber(page.ceilingHeightMm)
-        ) {
-            addAreaIssue(
-                issues,
-                page,
-                area,
-                "ceilingHeightMm",
-                "Ceiling height is required",
-            );
-        }
-    });
+    areas.forEach((area) => validateAreaForExport(issues, page, area));
 
     return issues;
+}
+
+function validateAreaForExport(
+    issues: ValidationIssue[],
+    page: PageValidationInput,
+    area: AreaPolygon,
+) {
+    validateAreaBasics(issues, page, area);
+    validateAreaCeiling(issues, page, area);
+}
+
+function validateAreaBasics(
+    issues: ValidationIssue[],
+    page: PageValidationInput,
+    area: AreaPolygon,
+) {
+    if (!area.label?.trim()) {
+        addAreaIssue(issues, page, area, "areaLabel", "Area label is required");
+    }
+    if (!area.points || area.points.length < 3) {
+        addAreaIssue(
+            issues,
+            page,
+            area,
+            "polygon",
+            "Polygon needs at least 3 points",
+        );
+    }
+    if (!area.ceilingPlasterType?.trim()) {
+        addAreaIssue(
+            issues,
+            page,
+            area,
+            "ceilingPlasterType",
+            "Ceiling board is required",
+        );
+    }
+    if (!area.isOutdoor && !area.wallPlasterType?.trim()) {
+        addAreaIssue(
+            issues,
+            page,
+            area,
+            "wallPlasterType",
+            "Wall board is required",
+        );
+    }
+}
+
+function validateAreaCeiling(
+    issues: ValidationIssue[],
+    page: PageValidationInput,
+    area: AreaPolygon,
+) {
+    if ((area.ceilingMode ?? "flat") === "raked") {
+        validateRakedCeiling(issues, page, area);
+        return;
+    }
+
+    if (positiveNumber(area.ceilingHeightMm)) return;
+    if (positiveNumber(page.ceilingHeightMm)) return;
+    addAreaIssue(
+        issues,
+        page,
+        area,
+        "ceilingHeightMm",
+        "Ceiling height is required",
+    );
 }
 
 function validateRakedCeiling(
@@ -122,7 +141,8 @@ function validateRakedCeiling(
 ) {
     const raked = area.rakedCeiling;
     const pointCount = area.points?.length ?? 0;
-    if (!raked || !validEdgeIndex(raked.lowEdgeIndex, pointCount)) {
+    const edgeValidation = rakedEdgeValidation(raked, pointCount);
+    if (!edgeValidation.lowEdgeValid) {
         addAreaIssue(
             issues,
             page,
@@ -131,7 +151,7 @@ function validateRakedCeiling(
             "Lower edge is required",
         );
     }
-    if (!raked || !validEdgeIndex(raked.highEdgeIndex, pointCount)) {
+    if (!edgeValidation.highEdgeValid) {
         addAreaIssue(
             issues,
             page,
@@ -140,11 +160,7 @@ function validateRakedCeiling(
             "Higher edge is required",
         );
     }
-    if (
-        raked &&
-        validEdgeIndex(raked.lowEdgeIndex, pointCount) &&
-        raked.lowEdgeIndex === raked.highEdgeIndex
-    ) {
+    if (edgeValidation.sameEdge) {
         addAreaIssue(
             issues,
             page,
@@ -153,7 +169,7 @@ function validateRakedCeiling(
             "Higher edge must be different",
         );
     }
-    if (!positiveNumber(raked?.lowHeightMm)) {
+    if (!positiveNumber(rakedLowHeight(raked))) {
         addAreaIssue(
             issues,
             page,
@@ -162,7 +178,7 @@ function validateRakedCeiling(
             "Lower height is required",
         );
     }
-    if (!positiveNumber(raked?.highHeightMm)) {
+    if (!positiveNumber(rakedHighHeight(raked))) {
         addAreaIssue(
             issues,
             page,
@@ -171,6 +187,30 @@ function validateRakedCeiling(
             "Higher height is required",
         );
     }
+}
+
+function rakedEdgeValidation(
+    raked: AreaPolygon["rakedCeiling"],
+    pointCount: number,
+) {
+    const lowEdgeValid = validEdgeIndex(raked?.lowEdgeIndex, pointCount);
+    const highEdgeValid = validEdgeIndex(raked?.highEdgeIndex, pointCount);
+    return {
+        highEdgeValid,
+        lowEdgeValid,
+        sameEdge:
+            lowEdgeValid &&
+            highEdgeValid &&
+            raked?.lowEdgeIndex === raked?.highEdgeIndex,
+    };
+}
+
+function rakedLowHeight(raked: AreaPolygon["rakedCeiling"]) {
+    return raked?.lowHeightMm;
+}
+
+function rakedHighHeight(raked: AreaPolygon["rakedCeiling"]) {
+    return raked?.highHeightMm;
 }
 
 function addAreaIssue(

@@ -18,6 +18,11 @@ import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 const OCR_FLOOD_FILL_SMOOTHED_STRATEGY_KEY = "ocr-flood-fill-smoothed";
 
+interface PreparedPdfUpload {
+    pdfDocument: PDFDocumentProxy | null;
+    pages: PdfPagePreview[];
+}
+
 interface DashboardUploadOptions {
     readonly refresh: () => Promise<void>;
     readonly setMessage: (message: string) => void;
@@ -54,57 +59,74 @@ export function useDashboardUpload({
         if (!file) return;
         setLoading(true);
         setMessage("Uploading floorplan...");
-        let preparedPdf: PDFDocumentProxy | null = null;
-        let preparedPages: PdfPagePreview[] = [];
+        let preparedPdf = emptyPreparedPdfUpload();
         try {
-            if (isPdfFile(file)) {
-                setMessage("Preparing PDF preview...");
-                preparedPdf = await loadPdfDocument(file);
-                preparedPages = await renderPdfThumbnails(preparedPdf);
-                setMessage("Uploading original PDF...");
-            }
-
+            preparedPdf = await preparePdfUpload(file);
             const upload = await uploadProject(
                 name || file.name,
                 file,
-                preparedPdf?.numPages,
+                preparedPdf.pdfDocument?.numPages,
                 { accountId },
             );
             if (upload.uploadType === "PDF") {
-                if (!preparedPdf || preparedPages.length === 0) {
-                    throw new Error("Unable to prepare PDF pages.");
-                }
-                cleanupPdfModal();
-                setDraftProjectId(upload.projectId);
-                setPdfDocument(preparedPdf);
-                setPdfPages(preparedPages);
-                setSelectedPages([]);
-                preparedPdf = null;
-                preparedPages = [];
-                setMessage("");
+                openPdfPageSelection(upload.projectId, preparedPdf);
+                preparedPdf = emptyPreparedPdfUpload();
             } else {
-                setMessage("Processing image in the background...");
-                setProcessingProjectId(upload.projectId);
-                setToast("Project is processing.");
-                const project = await processProject(
-                    upload.projectId,
-                    [1],
-                    OCR_FLOOD_FILL_SMOOTHED_STRATEGY_KEY,
-                );
-                setProcessingProjectId(null);
-                setToast(`${project.name} finished processing.`);
-                setToastProject({ id: project.id, name: project.name });
+                await processUploadedImage(upload.projectId);
             }
             await refresh();
         } catch (error) {
-            preparedPdf?.destroy();
-            revokePdfPreviews(preparedPages);
+            cleanupPreparedPdfUpload(preparedPdf);
             setMessage(
                 error instanceof Error ? error.message : "Upload failed",
             );
         } finally {
             setLoading(false);
         }
+    }
+
+    async function preparePdfUpload(
+        uploadFile: File,
+    ): Promise<PreparedPdfUpload> {
+        if (!isPdfFile(uploadFile)) {
+            return emptyPreparedPdfUpload();
+        }
+
+        setMessage("Preparing PDF preview...");
+        const nextPdfDocument = await loadPdfDocument(uploadFile);
+        const pages = await renderPdfThumbnails(nextPdfDocument);
+        setMessage("Uploading original PDF...");
+        return { pdfDocument: nextPdfDocument, pages };
+    }
+
+    function openPdfPageSelection(
+        projectId: string,
+        preparedPdf: PreparedPdfUpload,
+    ) {
+        if (!preparedPdf.pdfDocument || preparedPdf.pages.length === 0) {
+            throw new Error("Unable to prepare PDF pages.");
+        }
+
+        cleanupPdfModal();
+        setDraftProjectId(projectId);
+        setPdfDocument(preparedPdf.pdfDocument);
+        setPdfPages(preparedPdf.pages);
+        setSelectedPages([]);
+        setMessage("");
+    }
+
+    async function processUploadedImage(projectId: string) {
+        setMessage("Processing image in the background...");
+        setProcessingProjectId(projectId);
+        setToast("Project is processing.");
+        const project = await processProject(
+            projectId,
+            [1],
+            OCR_FLOOD_FILL_SMOOTHED_STRATEGY_KEY,
+        );
+        setProcessingProjectId(null);
+        setToast(`${project.name} finished processing.`);
+        setToastProject({ id: project.id, name: project.name });
     }
 
     async function processSelectedPdfPages() {
@@ -221,6 +243,15 @@ export function useDashboardUpload({
         submit,
         togglePage,
     };
+}
+
+function emptyPreparedPdfUpload(): PreparedPdfUpload {
+    return { pdfDocument: null, pages: [] };
+}
+
+function cleanupPreparedPdfUpload(preparedPdf: PreparedPdfUpload) {
+    preparedPdf.pdfDocument?.destroy();
+    revokePdfPreviews(preparedPdf.pages);
 }
 
 function isPdfFile(candidate: File) {
