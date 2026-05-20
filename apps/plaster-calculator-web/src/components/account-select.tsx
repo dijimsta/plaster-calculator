@@ -17,6 +17,13 @@ interface AccountSelectProps {
     readonly selectedAccountLabel?: string | null;
 }
 
+interface AccountSelectMenuProps {
+    readonly error: string;
+    readonly filtered: readonly AccountSummary[];
+    readonly isLoading: boolean;
+    readonly onSelect: (account: AccountSummary) => void;
+}
+
 export function AccountSelect({
     selectedAccountId,
     onChange,
@@ -79,13 +86,12 @@ export function AccountSelect({
                     id="account-select"
                     className={cx(ui.input, "pl-[34px] pr-11")}
                     disabled={disabled}
-                    value={
-                        isOpen
-                            ? query
-                            : (selectedAccount?.companyName ??
-                              selectedAccountLabel ??
-                              query)
-                    }
+                    value={accountInputValue(
+                        isOpen,
+                        query,
+                        selectedAccount,
+                        selectedAccountLabel,
+                    )}
                     onBlur={() => {
                         window.setTimeout(() => setIsOpen(false), 120);
                     }}
@@ -128,46 +134,77 @@ export function AccountSelect({
                 <div
                     className={cx(ui.popoverMenu, "left-0 right-0 top-[74px]")}
                 >
-                    {isLoading && (
-                        <div
-                            className={cx(ui.muted, "flex items-center gap-2")}
-                        >
-                            <LoaderCircle className="animate-spin" size={16} />
-                            Loading accounts...
-                        </div>
-                    )}
-                    {error && <p className={ui.error}>{error}</p>}
-                    {!isLoading &&
-                        !error &&
-                        filtered.map((account) => (
-                            <button
-                                key={account.id}
-                                className={cx(
-                                    ui.button,
-                                    ui.buttonDefault,
-                                    "justify-start text-left",
-                                )}
-                                onMouseDown={(event) => event.preventDefault()}
-                                onClick={() => selectAccount(account)}
-                                type="button"
-                            >
-                                <span className="grid gap-0.5">
-                                    <strong>{account.companyName}</strong>
-                                    <span className={ui.muted}>
-                                        {account.businessNumber ||
-                                            account.phoneNumber ||
-                                            "No account details"}
-                                    </span>
-                                </span>
-                            </button>
-                        ))}
-                    {!isLoading && !error && filtered.length === 0 && (
-                        <p className={ui.muted}>No matching accounts.</p>
-                    )}
+                    <AccountSelectMenu
+                        error={error}
+                        filtered={filtered}
+                        isLoading={isLoading}
+                        onSelect={selectAccount}
+                    />
                 </div>
             )}
         </div>
     );
+}
+
+function AccountSelectMenu({
+    error,
+    filtered,
+    isLoading,
+    onSelect,
+}: AccountSelectMenuProps) {
+    if (isLoading) {
+        return (
+            <div className={cx(ui.muted, "flex items-center gap-2")}>
+                <LoaderCircle className="animate-spin" size={16} />
+                Loading accounts...
+            </div>
+        );
+    }
+
+    if (error) {
+        return <p className={ui.error}>{error}</p>;
+    }
+
+    if (filtered.length === 0) {
+        return <p className={ui.muted}>No matching accounts.</p>;
+    }
+
+    return (
+        <>
+            {filtered.map((account) => (
+                <button
+                    key={account.id}
+                    className={cx(
+                        ui.button,
+                        ui.buttonDefault,
+                        "justify-start text-left",
+                    )}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => onSelect(account)}
+                    type="button"
+                >
+                    <span className="grid gap-0.5">
+                        <strong>{account.companyName}</strong>
+                        <span className={ui.muted}>
+                            {account.businessNumber ||
+                                account.phoneNumber ||
+                                "No account details"}
+                        </span>
+                    </span>
+                </button>
+            ))}
+        </>
+    );
+}
+
+function accountInputValue(
+    isOpen: boolean,
+    query: string,
+    selectedAccount: AccountSummary | undefined,
+    selectedAccountLabel: string | null,
+): string {
+    if (isOpen) return query;
+    return selectedAccount?.companyName ?? selectedAccountLabel ?? query;
 }
 
 function filterAccounts(
