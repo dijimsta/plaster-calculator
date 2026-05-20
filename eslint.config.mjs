@@ -52,7 +52,7 @@ const maxLinesOptions = {
 };
 
 const sharedTypescriptRules = {
-    complexity: ["error", 80],
+    complexity: ["error", { max: 27, variant: "modified" }],
     "import/order": [
         "error",
         {
