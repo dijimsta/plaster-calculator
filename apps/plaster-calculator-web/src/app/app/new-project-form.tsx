@@ -1,6 +1,5 @@
 import { Upload } from "lucide-react";
 
-import { ProcessingStrategySelect } from "./processing-strategy-select.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type {
@@ -14,13 +13,10 @@ export function NewProjectForm({
     loading,
     message,
     name,
-    processingStrategies,
-    selectedStrategyKey,
     handleDrop,
     handleFileSelection,
     setDragActive,
     setName,
-    setSelectedStrategyKey,
     submit,
 }: NewProjectFormProps) {
     return (
@@ -75,12 +71,6 @@ export function NewProjectForm({
                     </span>
                 </label>
             </div>
-            <ProcessingStrategySelect
-                id="processing-strategy"
-                processingStrategies={processingStrategies}
-                selectedStrategyKey={selectedStrategyKey}
-                setSelectedStrategyKey={setSelectedStrategyKey}
-            />
             <button
                 className={cx(ui.button, ui.buttonPrimary)}
                 disabled={!file || loading}

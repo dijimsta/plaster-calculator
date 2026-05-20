@@ -16,9 +16,10 @@ import {
 import type { PageUploadProgress } from "../dashboard.types.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 
+const OCR_FLOOD_FILL_SMOOTHED_STRATEGY_KEY = "ocr-flood-fill-smoothed";
+
 interface DashboardUploadOptions {
     readonly refresh: () => Promise<void>;
-    readonly selectedStrategyKey: string;
     readonly setMessage: (message: string) => void;
     readonly setProcessingProjectId: (projectId: string | null) => void;
     readonly setToast: (toast: string) => void;
@@ -29,7 +30,6 @@ interface DashboardUploadOptions {
 
 export function useDashboardUpload({
     refresh,
-    selectedStrategyKey,
     setMessage,
     setProcessingProjectId,
     setToast,
@@ -87,7 +87,7 @@ export function useDashboardUpload({
                 const project = await processProject(
                     upload.projectId,
                     [1],
-                    selectedStrategyKey || undefined,
+                    OCR_FLOOD_FILL_SMOOTHED_STRATEGY_KEY,
                 );
                 setProcessingProjectId(null);
                 setToast(`${project.name} finished processing.`);
@@ -147,7 +147,7 @@ export function useDashboardUpload({
             const project = await processProject(
                 processingProjectId,
                 selectedPages,
-                selectedStrategyKey || undefined,
+                OCR_FLOOD_FILL_SMOOTHED_STRATEGY_KEY,
                 pageImagePaths,
             );
             setProcessingProjectId(null);

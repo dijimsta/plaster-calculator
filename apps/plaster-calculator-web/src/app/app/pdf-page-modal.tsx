@@ -1,21 +1,16 @@
 import { FileUp, X } from "lucide-react";
 
-import { ProcessingStrategySelect } from "./processing-strategy-select.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type { PdfPageModalProps } from "./dashboard.types.js";
 
 export function PdfPageModal({
-    id,
     loading,
     pageUploadProgress,
     pdfPages,
-    processingStrategies,
     selectedPages,
-    selectedStrategyKey,
     closePdfModal,
     processSelectedPdfPages,
-    setSelectedStrategyKey,
     togglePage,
 }: PdfPageModalProps) {
     return (
@@ -38,12 +33,6 @@ export function PdfPageModal({
                         <X size={18} />
                     </button>
                 </header>
-                <ProcessingStrategySelect
-                    id={id}
-                    processingStrategies={processingStrategies}
-                    selectedStrategyKey={selectedStrategyKey}
-                    setSelectedStrategyKey={setSelectedStrategyKey}
-                />
                 {pageUploadProgress && (
                     <div className={ui.pdfProgress}>
                         <div className={ui.pdfProgressLabel}>
