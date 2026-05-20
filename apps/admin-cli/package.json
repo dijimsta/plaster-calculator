@@ -5,7 +5,7 @@
     "private": true,
     "bin": "./bin/admin-cli.js",
     "scripts": {
-        "build": "tsc --build tsconfig.build.json",
+        "build": "tsc --build tsconfig.build.json --verbose",
         "prepare": "pnpm build"
     },
     "dependencies": {

@@ -9,7 +9,7 @@
         "libraries/*"
     ],
     "scripts": {
-        "build": "tsc --build tsconfig.build.json",
+        "build": "tsc --build tsconfig.build.json --verbose",
         "deploy:dataconnect": "firebase deploy --only dataconnect",
         "deploy:functions": "firebase deploy --only functions",
         "deploy:storage": "firebase deploy --only storage",
