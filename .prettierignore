@@ -6,5 +6,8 @@ generated
 node_modules
 public
 
+*.pth
+*.pkl
+
 # Ignore dependency locks
 pnpm-lock.yaml
