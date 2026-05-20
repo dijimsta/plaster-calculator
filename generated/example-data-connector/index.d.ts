@@ -428,29 +428,6 @@ export interface ListProjectsByOwnerAndSalesStatusVariables {
   salesStatus: string;
 }
 
-export interface ListProjectsByOwnerData {
-  projects: ({
-    id: UUIDString;
-    ownerId: string;
-    accountId?: UUIDString | null;
-    name: string;
-    address?: string | null;
-    originalFileName: string;
-    uploadType: string;
-    originalPath: string;
-    status: string;
-    salesStatus: string;
-    processingError?: string | null;
-    pageCount: number;
-    createdAt: TimestampString;
-    updatedAt: TimestampString;
-  } & Project_Key)[];
-}
-
-export interface ListProjectsByOwnerVariables {
-  ownerId: string;
-}
-
 export interface Project_Key {
   id: UUIDString;
   __typename?: 'Project_Key';
@@ -661,11 +638,6 @@ export function updateFloorplanPage(vars: UpdateFloorplanPageVariables, options?
 export function updateFloorplanPages(dc: DataConnect, vars: UpdateFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPagesData>>;
 /** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPages' Mutation. Allow users to pass in custom DataConnect instances. */
 export function updateFloorplanPages(vars: UpdateFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPagesData>>;
-
-/** Generated Node Admin SDK operation action function for the 'ListProjectsByOwner' Query. Allow users to execute without passing in DataConnect. */
-export function listProjectsByOwner(dc: DataConnect, vars: ListProjectsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerData>>;
-/** Generated Node Admin SDK operation action function for the 'ListProjectsByOwner' Query. Allow users to pass in custom DataConnect instances. */
-export function listProjectsByOwner(vars: ListProjectsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerData>>;
 
 /** Generated Node Admin SDK operation action function for the 'ListProjectsByOwnerAndSalesStatus' Query. Allow users to execute without passing in DataConnect. */
 export function listProjectsByOwnerAndSalesStatus(dc: DataConnect, vars: ListProjectsByOwnerAndSalesStatusVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerAndSalesStatusData>>;

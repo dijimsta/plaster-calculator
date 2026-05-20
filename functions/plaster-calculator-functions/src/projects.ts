@@ -6,7 +6,6 @@ import {
     deleteProject as dcDeleteProject,
     getProjectById,
     listProjectsByAccount as dcListProjectsByAccount,
-    listProjectsByOwner,
     listProjectsByOwnerAndSalesStatus,
     updateProject as dcUpdateProject,
 } from "@generated/example-data-connector";
@@ -61,15 +60,11 @@ export const listProjects = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const data = request.data ?? {};
-    const salesStatus = hasField(data, "salesStatus")
-        ? readSalesStatus(data.salesStatus)
-        : null;
-    const response = salesStatus
-        ? await listProjectsByOwnerAndSalesStatus({
-              ownerId: auth.uid,
-              salesStatus,
-          })
-        : await listProjectsByOwner({ ownerId: auth.uid });
+    const salesStatus = readSalesStatus(data.salesStatus);
+    const response = await listProjectsByOwnerAndSalesStatus({
+        ownerId: auth.uid,
+        salesStatus,
+    });
     return { projects: response.data.projects.map(toSummary) };
 });
 

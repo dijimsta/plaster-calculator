@@ -1,6 +1,5 @@
 type Project
     @table
-    @index(fields: ["ownerId", "updatedAt"], order: [ASC, DESC])
     @index(
         fields: ["ownerId", "salesStatus", "updatedAt"]
         order: [ASC, ASC, DESC]
