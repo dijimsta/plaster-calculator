@@ -3,3 +3,13 @@ packages:
     - functions/*
     - generated/*
     - libraries/*
+
+ignoredBuiltDependencies:
+    - "@firebase/util"
+    - "@parcel/watcher"
+    - esbuild
+    - nx
+    - protobufjs
+    - re2
+    - sharp
+    - unrs-resolver

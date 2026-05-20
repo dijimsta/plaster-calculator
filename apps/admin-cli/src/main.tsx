@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { initializeApp } from "firebase-admin/app";
 import { render } from "ink";
 
