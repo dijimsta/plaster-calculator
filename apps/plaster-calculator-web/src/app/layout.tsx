@@ -1,5 +1,7 @@
 import { type PropsWithChildren } from "react";
+
 import "./globals.css";
+import { AppCheckProvider } from "../firebase/app-check.provider.ts";
 
 export const metadata = {
     title: "Plaster Calculator",
@@ -9,10 +11,15 @@ export const metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
     return (
-        <html lang="en">
-            <body className="font-sans antialiased" suppressHydrationWarning>
-                {children}
-            </body>
-        </html>
+        <AppCheckProvider>
+            <html lang="en">
+                <body
+                    className="font-sans antialiased"
+                    suppressHydrationWarning
+                >
+                    {children}
+                </body>
+            </html>
+        </AppCheckProvider>
     );
 }
