@@ -55,23 +55,37 @@ export function EditorCanvas({
     function onStageClick() {
         if (scrollDragRef.current?.moved) return;
         if (isDrawingFreeShape) {
-            const pointer = imagePointer();
-            if (!pointer) return;
-            const snapped = snapDraftPoint(pointer);
-            if (
-                draftPoints.length >= 3 &&
-                draftPoints[0] &&
-                pointDistance(pointer, draftPoints[0]) <= 14 / zoom
-            ) {
-                finishFreeShape(draftPoints);
-            } else {
-                setDraftPoints((points) => [...points, snapped.point]);
-                setDraftPointer(null);
-                setSnapGuide(null);
-            }
+            handleFreeShapeClick();
             return;
         }
         if (!isSettingReference) return;
+        handleReferenceClick();
+    }
+
+    function handleFreeShapeClick() {
+        const pointer = imagePointer();
+        if (!pointer) return;
+        const snapped = snapDraftPoint(pointer);
+        if (isClosingFreeShape(pointer)) {
+            finishFreeShape(draftPoints);
+            return;
+        }
+
+        setDraftPoints((points) => [...points, snapped.point]);
+        setDraftPointer(null);
+        setSnapGuide(null);
+    }
+
+    function isClosingFreeShape(pointer: Point) {
+        const firstPoint = draftPoints[0];
+        return (
+            draftPoints.length >= 3 &&
+            firstPoint != null &&
+            pointDistance(pointer, firstPoint) <= 14 / zoom
+        );
+    }
+
+    function handleReferenceClick() {
         const pointer = imagePointer();
         if (!pointer) return;
         if (referencePoints.length === 0) {

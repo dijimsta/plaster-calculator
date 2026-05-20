@@ -1,3 +1,5 @@
+import { wallBreakdown } from "./csv-wall-breakdown.js";
+
 import type { ProjectWithPages } from "./types.js";
 
 export function buildProjectCsv(project: ProjectWithPages) {
@@ -185,81 +187,6 @@ export function edgeMidpointDistance(
     const secondX = (secondA[0] + secondB[0]) / 2;
     const secondY = (secondA[1] + secondB[1]) / 2;
     return Math.hypot(secondX - firstX, secondY - firstY);
-}
-
-export function wallBreakdown(
-    area: JsonRecord,
-    scaleMmPerPx: number,
-    pageHeightMm: number | null,
-) {
-    const totals = new Map<string, number>();
-    if (area["isOutdoor"]) {
-        return totals;
-    }
-
-    const points = readPoints(area["points"]);
-    if (points.length < 2) {
-        return totals;
-    }
-
-    const overrides: JsonRecord = isRecord(area["edgeOverrides"])
-        ? area["edgeOverrides"]
-        : {};
-
-    for (let index = 0; index < points.length; index += 1) {
-        const rawOverride = overrides[String(index)];
-        const override: JsonRecord | null = isRecord(rawOverride)
-            ? rawOverride
-            : null;
-        if (override && Boolean(override["noPlaster"])) {
-            continue;
-        }
-
-        const wallType =
-            override && typeof override["wallPlasterType"] === "string"
-                ? override["wallPlasterType"]
-                : readString(area["wallPlasterType"], "Recessed Edge");
-        const height = wallHeightForEdge(area, pageHeightMm, index);
-        const column = `${wallType} @ ${heightLabel(height)} in m`;
-        const a = points[index];
-        const b = points[(index + 1) % points.length];
-        if (!a || !b) {
-            continue;
-        }
-
-        const lengthM =
-            (Math.hypot(b[0] - a[0], b[1] - a[1]) * scaleMmPerPx) / 1000;
-        totals.set(column, (totals.get(column) ?? 0) + lengthM);
-    }
-
-    return totals;
-}
-
-export function wallHeightForEdge(
-    area: JsonRecord,
-    pageHeightMm: number | null,
-    edgeIndex: number,
-) {
-    if (
-        readString(area["ceilingMode"], "flat") === "raked" &&
-        isRecord(area["rakedCeiling"])
-    ) {
-        const raked = area["rakedCeiling"];
-        const low = readNumberOrNull(raked["lowHeightMm"]);
-        const high = readNumberOrNull(raked["highHeightMm"]);
-        if (low != null && high != null) {
-            return edgeIndex === readInteger(raked["lowEdgeIndex"], -1)
-                ? low
-                : high;
-        }
-    }
-
-    const areaHeight = readNumberOrNull(area["ceilingHeightMm"]);
-    if (areaHeight != null) {
-        return areaHeight;
-    }
-
-    return pageHeightMm ?? 0;
 }
 
 export function parseJsonObject(value: string): JsonRecord {

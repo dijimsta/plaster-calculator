@@ -50,32 +50,15 @@ export const updateFloorplanPage = onCall<
         projectId,
         readRequiredString(request.data.pageId, "Page ID"),
     );
-    const data = request.data;
-    const overlayJson = hasField(data, "overlay")
-        ? JSON.stringify(data.overlay ?? { areas: [] })
-        : page.overlayJson;
-    const scaleMmPerPx = hasField(data, "scaleMmPerPx")
-        ? readNullableNumber(data.scaleMmPerPx, "Scale")
-        : (page.scaleMmPerPx ?? null);
-    const ceilingHeightMm = hasField(data, "ceilingHeightMm")
-        ? readNullableNumber(data.ceilingHeightMm, "Ceiling height")
-        : (page.ceilingHeightMm ?? null);
-    const referencePointsJson = hasField(data, "referencePoints")
-        ? data.referencePoints == null
-            ? null
-            : JSON.stringify(data.referencePoints)
-        : (page.referencePointsJson ?? null);
-    const referenceLengthMm = hasField(data, "referenceLengthMm")
-        ? readNullableNumber(data.referenceLengthMm, "Reference length")
-        : (page.referenceLengthMm ?? null);
+    const nextValues = nextFloorplanPageValues(request.data, page);
 
     await dcUpdateFloorplanPage({
         id: page.id,
-        overlayJson: overlayJson ?? null,
-        scaleMmPerPx,
-        ceilingHeightMm,
-        referencePointsJson,
-        referenceLengthMm,
+        overlayJson: nextValues.overlayJson,
+        scaleMmPerPx: nextValues.scaleMmPerPx,
+        ceilingHeightMm: nextValues.ceilingHeightMm,
+        referencePointsJson: nextValues.referencePointsJson,
+        referenceLengthMm: nextValues.referenceLengthMm,
     });
     await touchProject({ id: projectId });
 
@@ -118,6 +101,58 @@ export const updateFloorplanPages = onCall<
     return toDetail(await requireOwnedProject(projectId, auth.uid));
 });
 
+function nextFloorplanPageValues(
+    data: UpdateFloorplanPageRequest,
+    page: FloorplanPageRow,
+) {
+    return {
+        ceilingHeightMm: nextNullableNumber(
+            data,
+            "ceilingHeightMm",
+            "Ceiling height",
+            page.ceilingHeightMm,
+        ),
+        overlayJson: nextOverlayJson(data, page),
+        referenceLengthMm: nextNullableNumber(
+            data,
+            "referenceLengthMm",
+            "Reference length",
+            page.referenceLengthMm,
+        ),
+        referencePointsJson: nextReferencePointsJson(data, page),
+        scaleMmPerPx: nextNullableNumber(
+            data,
+            "scaleMmPerPx",
+            "Scale",
+            page.scaleMmPerPx,
+        ),
+    };
+}
+
+function nextOverlayJson(
+    data: UpdateFloorplanPageRequest,
+    page: FloorplanPageRow,
+) {
+    if (!hasField(data, "overlay")) {
+        return page.overlayJson ?? null;
+    }
+
+    return JSON.stringify(data.overlay ?? { areas: [] });
+}
+
+function nextReferencePointsJson(
+    data: UpdateFloorplanPageRequest,
+    page: FloorplanPageRow,
+) {
+    if (!hasField(data, "referencePoints")) {
+        return page.referencePointsJson ?? null;
+    }
+
+    return data.referencePoints == null
+        ? null
+        : JSON.stringify(data.referencePoints);
+}
+
 function nextBatchPageValues(
     data: UpdateFloorplanPagesRequest,
     page: FloorplanPageRow,
@@ -139,8 +174,8 @@ function nextBatchPageValues(
 }
 
 function nextNullableNumber(
-    data: UpdateFloorplanPagesRequest,
-    field: "ceilingHeightMm" | "scaleMmPerPx",
+    data: Partial<Record<NullableNumberField, unknown>>,
+    field: NullableNumberField,
     label: string,
     current: number | null | undefined,
 ) {
@@ -150,3 +185,8 @@ function nextNullableNumber(
 
     return readNullableNumber(data[field], label) ?? current ?? null;
 }
+
+type NullableNumberField =
+    | "ceilingHeightMm"
+    | "referenceLengthMm"
+    | "scaleMmPerPx";

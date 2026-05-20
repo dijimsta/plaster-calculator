@@ -48,6 +48,11 @@ interface EditorToolbarProps {
 }
 
 const OVERLAY_MODES: OverlayMode[] = ["walls", "ceilings", "both"];
+const OVERLAY_MODE_LABELS: Record<OverlayMode, string> = {
+    both: "Both",
+    ceilings: "Ceilings",
+    walls: "Walls",
+};
 
 export function EditorToolbar({
     addMenuOpen,
@@ -103,35 +108,12 @@ export function EditorToolbar({
                 >
                     <MousePointer2 size={18} />
                 </button>
-                <div className="relative">
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
-                        onClick={() => onSetAddMenuOpen(!addMenuOpen)}
-                        title="Add area"
-                    >
-                        <Plus size={18} />
-                    </button>
-                    {addMenuOpen && (
-                        <div className={ui.popoverMenu}>
-                            <button
-                                className={cx(ui.button, ui.buttonDefault)}
-                                onClick={onAddRectangle}
-                            >
-                                <Square size={16} /> Rectangle
-                            </button>
-                            <button
-                                className={cx(ui.button, ui.buttonDefault)}
-                                onClick={onStartFreeShape}
-                            >
-                                <MousePointer2 size={16} /> Free shape
-                            </button>
-                        </div>
-                    )}
-                </div>
+                <AddAreaControls
+                    addMenuOpen={addMenuOpen}
+                    onAddRectangle={onAddRectangle}
+                    onSetAddMenuOpen={onSetAddMenuOpen}
+                    onStartFreeShape={onStartFreeShape}
+                />
                 <button
                     className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={onAddPoint}
@@ -156,18 +138,11 @@ export function EditorToolbar({
                 >
                     <Scissors size={18} />
                 </button>
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
-                    onClick={onDeleteSelection}
-                    disabled={!selectedArea}
-                    title={
-                        selectedPointCount > 0
-                            ? "Delete selected points"
-                            : "Delete selected area"
-                    }
-                >
-                    <Trash2 size={18} />
-                </button>
+                <DeleteSelectionButton
+                    selectedArea={selectedArea}
+                    selectedPointCount={selectedPointCount}
+                    onDeleteSelection={onDeleteSelection}
+                />
             </div>
             <div className={ui.buttonRow}>
                 <button
@@ -191,38 +166,136 @@ export function EditorToolbar({
                 >
                     <Plus size={18} />
                 </button>
-                <div className={ui.segmented}>
-                    {OVERLAY_MODES.map((mode) => (
-                        <button
-                            key={mode}
-                            className={cx(
-                                ui.segmentedButton,
-                                overlayMode === mode &&
-                                    ui.segmentedButtonActive,
-                            )}
-                            onClick={() => onSetOverlayMode(mode)}
-                        >
-                            {mode === "walls"
-                                ? "Walls"
-                                : mode === "ceilings"
-                                  ? "Ceilings"
-                                  : "Both"}
-                        </button>
-                    ))}
-                </div>
-                <button
-                    className={cx(ui.button, ui.buttonPrimary)}
-                    onClick={onSave}
-                    disabled={saving || autoSaving || !dirty}
-                >
-                    {saving || autoSaving ? (
-                        <Loader2 className="animate-spin" size={18} />
-                    ) : (
-                        <Save size={18} />
-                    )}
-                    {autoSaving ? "Auto Saving" : saving ? "Saving" : "Save"}
-                </button>
+                <OverlayModeSelector
+                    overlayMode={overlayMode}
+                    onSetOverlayMode={onSetOverlayMode}
+                />
+                <SaveButton
+                    autoSaving={autoSaving}
+                    dirty={dirty}
+                    saving={saving}
+                    onSave={onSave}
+                />
             </div>
         </div>
     );
+}
+
+function AddAreaControls({
+    addMenuOpen,
+    onAddRectangle,
+    onSetAddMenuOpen,
+    onStartFreeShape,
+}: Pick<
+    EditorToolbarProps,
+    "addMenuOpen" | "onAddRectangle" | "onSetAddMenuOpen" | "onStartFreeShape"
+>) {
+    return (
+        <div className="relative">
+            <button
+                className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+                onClick={() => onSetAddMenuOpen(!addMenuOpen)}
+                title="Add area"
+            >
+                <Plus size={18} />
+            </button>
+            {addMenuOpen && (
+                <div className={ui.popoverMenu}>
+                    <button
+                        className={cx(ui.button, ui.buttonDefault)}
+                        onClick={onAddRectangle}
+                    >
+                        <Square size={16} /> Rectangle
+                    </button>
+                    <button
+                        className={cx(ui.button, ui.buttonDefault)}
+                        onClick={onStartFreeShape}
+                    >
+                        <MousePointer2 size={16} /> Free shape
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function DeleteSelectionButton({
+    selectedArea,
+    selectedPointCount,
+    onDeleteSelection,
+}: Pick<
+    EditorToolbarProps,
+    "onDeleteSelection" | "selectedArea" | "selectedPointCount"
+>) {
+    const title =
+        selectedPointCount > 0
+            ? "Delete selected points"
+            : "Delete selected area";
+
+    return (
+        <button
+            className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+            onClick={onDeleteSelection}
+            disabled={!selectedArea}
+            title={title}
+        >
+            <Trash2 size={18} />
+        </button>
+    );
+}
+
+function OverlayModeSelector({
+    overlayMode,
+    onSetOverlayMode,
+}: Pick<EditorToolbarProps, "overlayMode" | "onSetOverlayMode">) {
+    return (
+        <div className={ui.segmented}>
+            {OVERLAY_MODES.map((mode) => (
+                <button
+                    key={mode}
+                    className={cx(
+                        ui.segmentedButton,
+                        overlayMode === mode && ui.segmentedButtonActive,
+                    )}
+                    onClick={() => onSetOverlayMode(mode)}
+                >
+                    {OVERLAY_MODE_LABELS[mode]}
+                </button>
+            ))}
+        </div>
+    );
+}
+
+function SaveButton({
+    autoSaving,
+    dirty,
+    saving,
+    onSave,
+}: Pick<EditorToolbarProps, "autoSaving" | "dirty" | "onSave" | "saving">) {
+    return (
+        <button
+            className={cx(ui.button, ui.buttonPrimary)}
+            onClick={onSave}
+            disabled={saving || autoSaving || !dirty}
+        >
+            <SaveButtonIcon autoSaving={autoSaving} saving={saving} />
+            {saveButtonLabel(autoSaving, saving)}
+        </button>
+    );
+}
+
+function SaveButtonIcon({
+    autoSaving,
+    saving,
+}: Pick<EditorToolbarProps, "autoSaving" | "saving">) {
+    return saving || autoSaving ? (
+        <Loader2 className="animate-spin" size={18} />
+    ) : (
+        <Save size={18} />
+    );
+}
+
+function saveButtonLabel(autoSaving: boolean, saving: boolean) {
+    if (autoSaving) return "Auto Saving";
+    return saving ? "Saving" : "Save";
 }
