@@ -249,6 +249,30 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
     )
 
 
+@https_fn.on_request(memory=OCR_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=OCR_CPU)
+def ocr_read_text(req: https_fn.Request) -> https_fn.Response:
+    from api.request import HttpStatusError, read_image_bytes
+    from api.response import error_response
+    from ocr.service import OcrService
+
+    try:
+        import io as _io
+
+        from PIL import Image
+
+        image_bytes, _ = read_image_bytes(req)
+        image = Image.open(_io.BytesIO(image_bytes))
+        results = OcrService().read_text(image)
+    except HttpStatusError as exc:
+        return error_response(exc.status, exc.message)
+    except (RuntimeError, ValueError, OSError) as exc:
+        return error_response(422, str(exc))
+    except Exception:
+        logger.exception("OCR read-text endpoint failed")
+        return error_response(500, "OCR read-text endpoint failed")
+    return https_fn.Response(json.dumps({"texts": results}), mimetype="application/json")
+
+
 @https_fn.on_request(
     memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
 )
