@@ -1,19 +1,19 @@
 {
-    "name": "@apps/admin-cli",
+    "name": "@apps/dev-cli",
     "version": "0.1.0",
     "private": true,
     "type": "module",
-    "bin": "./bin/admin-cli.js",
+    "bin": "./bin/dev-cli.js",
     "scripts": {
         "build": "tsc --build tsconfig.build.json",
         "prepare": "pnpm build"
     },
     "dependencies": {
-        "@libraries/plaster-calculator-node-core": "workspace:*",
-        "firebase-admin": "^13.10.0",
-        "ink": "^7.0.3",
-        "react": "^19.2.6",
-        "react-router": "^7.15.1"
+        "@nestjs/cli": "^11.0.21",
+        "@nestjs/common": "^11.1.22",
+        "@nestjs/core": "^11.1.22",
+        "esbuild": "^0.28.0",
+        "nest-commander": "^3.20.1"
     },
     "devDependencies": {
         "@types/node": "^25.8.0",

@@ -1,19 +1,19 @@
 {
     "name": "@libraries/plaster-calculator-common",
-    "type": "module",
     "version": "0.1.0",
     "private": true,
     "description": "Contains decorators, interfaces, and utility classes for both Node.js and web platforms.",
-    "main": "./out/index.js",
+    "type": "module",
     "exports": "./out/index.js",
+    "main": "./out/index.js",
     "scripts": {
-        "build": "tsc --build tsconfig.build.json --verbose"
-    },
-    "peerDependencies": {
-        "zod": "^4.4.3"
+        "build": "tsc --build tsconfig.build.json"
     },
     "devDependencies": {
         "typescript": "^6.0.3",
+        "zod": "^4.4.3"
+    },
+    "peerDependencies": {
         "zod": "^4.4.3"
     }
 }

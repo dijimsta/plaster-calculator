@@ -1,7 +1,7 @@
 {
     "name": "@inivi/plaster-calculator",
-    "type": "module",
     "private": true,
+    "type": "module",
     "workspaces": [
         "apps/*",
         "functions/*",
@@ -9,7 +9,7 @@
         "libraries/*"
     ],
     "scripts": {
-        "build": "tsc --build tsconfig.build.json --verbose",
+        "build": "tsc --build tsconfig.build.json",
         "deploy:dataconnect": "firebase deploy --only dataconnect",
         "deploy:functions:floorplan-analyzer": "firebase deploy --only functions:floorplan-analyzer",
         "deploy:storage": "firebase deploy --only storage",
@@ -32,8 +32,9 @@
         "globals": "^17.6.0",
         "nx": "22.7.2",
         "prettier": "^3.8.3",
+        "prettier-plugin-packagejson": "^3.0.2",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.59.3"
+        "typescript-eslint": "^8.59.4"
     },
-    "packageManager": "pnpm@10.24.0"
+    "packageManager": "pnpm@11.1.3"
 }
