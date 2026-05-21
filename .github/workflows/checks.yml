@@ -41,11 +41,16 @@ jobs:
                   node-version: 24
                   cache: pnpm
 
+            - uses: astral-sh/setup-uv@v5
+
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Check formatting
+            - name: Check formatting (TypeScript)
               run: pnpm format:check
+
+            - name: Check formatting (Python)
+              run: uv run ruff format --check functions/floorplan-analyzer/
 
     lint:
         runs-on: ubuntu-latest
@@ -61,11 +66,16 @@ jobs:
                   node-version: 24
                   cache: pnpm
 
+            - uses: astral-sh/setup-uv@v5
+
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Lint
+            - name: Lint (TypeScript)
               run: pnpm lint:check
+
+            - name: Lint (Python)
+              run: uv run ruff check functions/floorplan-analyzer/
 
     dataconnect-dry-run:
         runs-on: ubuntu-latest

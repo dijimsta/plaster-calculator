@@ -5,11 +5,11 @@ import math
 
 import cv2
 import numpy as np
+from inference.service import InferenceService
 from PIL import Image, ImageDraw
+from segmentation.service import SegmentationService
 
 from analysis.schemas import XixiParams
-from inference.service import InferenceService
-from segmentation.service import SegmentationService
 
 WALL_CLASS = 2
 RAILING_CLASS = 8
@@ -33,7 +33,9 @@ ROOM_CLASSES = [
 
 
 class XixiStrategy:
-    def __init__(self, inference: InferenceService, segmentation: SegmentationService) -> None:
+    def __init__(
+        self, inference: InferenceService, segmentation: SegmentationService
+    ) -> None:
         self.inference = inference
         self.segmentation = segmentation
 
@@ -43,7 +45,9 @@ class XixiStrategy:
         seg = self.segmentation.split(output, prepared)
 
         room_map = np.argmax(seg.rooms, axis=0).astype(np.uint8)
-        walls = _extract_walls(room_map, image.size, params.min_area, params.room_type_min_fraction)
+        walls = _extract_walls(
+            room_map, image.size, params.min_area, params.room_type_min_fraction
+        )
         floorplan_png = _render_floorplan(image, room_map, walls)
 
         width, height = image.size
@@ -64,10 +68,14 @@ def _extract_walls(
     min_area: int,
     room_type_min_fraction: float = ROOM_TYPE_MIN_FRACTION,
 ) -> list[dict]:
-    room_map_orig = cv2.resize(room_map.astype(np.uint8), original_size, interpolation=cv2.INTER_NEAREST)
+    room_map_orig = cv2.resize(
+        room_map.astype(np.uint8), original_size, interpolation=cv2.INTER_NEAREST
+    )
     wall_mask = np.isin(room_map, BOUNDARY_CLASSES).astype(np.uint8) * 255
     wall_mask = cv2.resize(wall_mask, original_size, interpolation=cv2.INTER_NEAREST)
-    contours, hierarchy = cv2.findContours(wall_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(
+        wall_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE
+    )
 
     walls = []
     for i, contour in enumerate(contours):
@@ -83,12 +91,18 @@ def _extract_walls(
         polygon = _smooth_ortho(polygon)
 
         has_parent = bool(hierarchy is not None and hierarchy[0][i][3] >= 0)
-        room_type = _get_room_type(contour, room_map_orig, room_type_min_fraction) if has_parent else None
+        room_type = (
+            _get_room_type(contour, room_map_orig, room_type_min_fraction)
+            if has_parent
+            else None
+        )
         approx_len = float(max(w, h))
         walls.append(
             {
                 "id": len(walls),
-                "polygon": [[round(float(px), 1), round(float(py), 1)] for px, py in polygon],
+                "polygon": [
+                    [round(float(px), 1), round(float(py), 1)] for px, py in polygon
+                ],
                 "bbox": [int(x), int(y), int(w), int(h)],
                 "area_px": float(area),
                 "perimeter_px": float(perimeter),
@@ -139,7 +153,9 @@ def _get_room_type(
     return ROOM_CLASSES[dominant] if dominant < len(ROOM_CLASSES) else "Unknown"
 
 
-def _smooth_ortho(polygon: list[list[float]], tolerance: float = 8.0) -> list[list[float]]:
+def _smooth_ortho(
+    polygon: list[list[float]], tolerance: float = 8.0
+) -> list[list[float]]:
     if len(polygon) < 3:
         return polygon
 
@@ -169,17 +185,27 @@ def _smooth_ortho(polygon: list[list[float]], tolerance: float = 8.0) -> list[li
     for point in result[1:]:
         if math.hypot(point[0] - deduped[-1][0], point[1] - deduped[-1][1]) >= 3.0:
             deduped.append(point)
-    if len(deduped) > 1 and math.hypot(deduped[0][0] - deduped[-1][0], deduped[0][1] - deduped[-1][1]) < 3.0:
+    if (
+        len(deduped) > 1
+        and math.hypot(deduped[0][0] - deduped[-1][0], deduped[0][1] - deduped[-1][1])
+        < 3.0
+    ):
         deduped = deduped[:-1]
 
     return np.array(deduped).tolist() if len(deduped) >= 3 else polygon
 
 
-def _render_floorplan(image: Image.Image, room_map: np.ndarray, walls: list[dict]) -> bytes:
+def _render_floorplan(
+    image: Image.Image, room_map: np.ndarray, walls: list[dict]
+) -> bytes:
     original_w, original_h = image.size
-    seg_image = _render_segmentation(room_map).resize((original_w, original_h), Image.NEAREST)
+    seg_image = _render_segmentation(room_map).resize(
+        (original_w, original_h), Image.NEAREST
+    )
 
-    overlay_base = Image.blend(image.convert("RGB"), seg_image.convert("RGB"), alpha=0.25)
+    overlay_base = Image.blend(
+        image.convert("RGB"), seg_image.convert("RGB"), alpha=0.25
+    )
     overlay = overlay_base.convert("RGBA")
     draw = ImageDraw.Draw(overlay)
     for wall in walls:

@@ -1,14 +1,32 @@
 import numpy as np
 
 _ROOM_LABELS = [
-    "Background", "Outdoor", "Wall", "Kitchen", "Living Room",
-    "Bed Room", "Bath", "Entry/Corridor", "Railing", "Storage",
-    "Garage", "Undefined",
+    "Background",
+    "Outdoor",
+    "Wall",
+    "Kitchen",
+    "Living Room",
+    "Bed Room",
+    "Bath",
+    "Entry/Corridor",
+    "Railing",
+    "Storage",
+    "Garage",
+    "Undefined",
 ]
 
 _ICON_LABELS = [
-    "No Icon", "Window", "Door", "Closet", "Electrical Appliance",
-    "Toilet", "Sink", "Sauna Bench", "Fire Place", "Bathtub", "Chimney",
+    "No Icon",
+    "Window",
+    "Door",
+    "Closet",
+    "Electrical Appliance",
+    "Toilet",
+    "Sink",
+    "Sauna Bench",
+    "Fire Place",
+    "Bathtub",
+    "Chimney",
 ]
 
 
@@ -21,7 +39,9 @@ def _geom_to_coord_lists(geom) -> list[list[list[float]]]:
 
 def _ring_coords(polygon) -> list[list[float]]:
     x, y = polygon.exterior.coords.xy
-    return [[round(float(xi), 2), round(float(yi), 2)] for xi, yi in zip(x, y)]
+    return [
+        [round(float(xi), 2), round(float(yi), 2)] for xi, yi in zip(x, y, strict=False)
+    ]
 
 
 def build_result(
@@ -33,7 +53,7 @@ def build_result(
     walls = []
     icons = []
 
-    for polygon, t in zip(polygons, types):
+    for polygon, t in zip(polygons, types, strict=False):
         coords = [[round(float(x), 2), round(float(y), 2)] for x, y in polygon]
         if t["type"] == "wall":
             walls.append({"polygon": coords})
@@ -43,7 +63,7 @@ def build_result(
             icons.append({"label": label, "polygon": coords})
 
     rooms = []
-    for geom, t in zip(room_polygons, room_types):
+    for geom, t in zip(room_polygons, room_types, strict=False):
         cls = int(t["class"])
         label = _ROOM_LABELS[cls] if cls < len(_ROOM_LABELS) else str(cls)
         for coords in _geom_to_coord_lists(geom):

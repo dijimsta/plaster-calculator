@@ -4,14 +4,15 @@ Splits the network's tensor output into heatmaps + room/icon segmentations,
 runs the floortrans polygon extractor, and maps polygon coordinates back to
 the original image's coordinate space using the strategy's `PreparedImage`.
 """
+
 from __future__ import annotations
 
 import cv2
 import numpy as np
 import torch
 from floortrans.post_prosessing import get_polygons, split_prediction
-
 from inference.preprocess import PreparedImage
+
 from segmentation.result import _ROOM_LABELS, build_result
 
 # Room class indices to skip when extracting room polygons from the segmap
@@ -48,7 +49,9 @@ def build_result_in_original_space(
 ) -> dict:
     """Build the user-facing result dict with coordinates in the original
     image's pixel space."""
-    return _remap_result(build_result(polygons, types, room_polygons, room_types), prepared)
+    return _remap_result(
+        build_result(polygons, types, room_polygons, room_types), prepared
+    )
 
 
 def walls_from_segmap(
@@ -70,9 +73,13 @@ def walls_from_segmap(
         approx = cv2.approxPolyDP(cnt, epsilon, True)
         polygon_xy = approx.reshape(-1, 2).astype(np.float32)
         polygon_orig = prepared.to_original_xy(polygon_xy)
-        result.append({
-            "polygon": [[round(float(x), 2), round(float(y), 2)] for x, y in polygon_orig],
-        })
+        result.append(
+            {
+                "polygon": [
+                    [round(float(x), 2), round(float(y), 2)] for x, y in polygon_orig
+                ],
+            }
+        )
 
     return result
 
@@ -90,7 +97,7 @@ def rooms_from_mask(
 
     result = []
     for lbl in range(1, n_labels):
-        component = (label_map == lbl)
+        component = label_map == lbl
         if component.sum() < min_area_px:
             continue
 
@@ -107,10 +114,14 @@ def rooms_from_mask(
         approx = cv2.approxPolyDP(cnt, epsilon, True)
         polygon_xy = approx.reshape(-1, 2).astype(np.float32)
         polygon_orig = prepared.to_original_xy(polygon_xy)
-        result.append({
-            "label": label,
-            "polygon": [[round(float(x), 2), round(float(y), 2)] for x, y in polygon_orig],
-        })
+        result.append(
+            {
+                "label": label,
+                "polygon": [
+                    [round(float(x), 2), round(float(y), 2)] for x, y in polygon_orig
+                ],
+            }
+        )
 
     return result
 
@@ -138,10 +149,15 @@ def rooms_from_segmap(
             approx = cv2.approxPolyDP(cnt, epsilon, True)
             polygon_xy = approx.reshape(-1, 2).astype(np.float32)
             polygon_orig = prepared.to_original_xy(polygon_xy)
-            result.append({
-                "label": label,
-                "polygon": [[round(float(x), 2), round(float(y), 2)] for x, y in polygon_orig],
-            })
+            result.append(
+                {
+                    "label": label,
+                    "polygon": [
+                        [round(float(x), 2), round(float(y), 2)]
+                        for x, y in polygon_orig
+                    ],
+                }
+            )
 
     return result
 

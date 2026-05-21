@@ -1,4 +1,5 @@
 """Render a result dict onto its source image as a translucent overlay."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -37,13 +38,24 @@ _ICON_COLOURS: dict[str, tuple[int, int, int]] = {
 }
 
 _FALLBACK_PALETTE = [
-    (255, 200, 100), (100, 200, 255), (200, 255, 100), (255, 100, 200),
-    (100, 255, 200), (255, 150, 50), (50, 150, 255), (200, 100, 255),
-    (100, 255, 150), (255, 255, 100), (100, 200, 200), (200, 200, 200),
+    (255, 200, 100),
+    (100, 200, 255),
+    (200, 255, 100),
+    (255, 100, 200),
+    (100, 255, 200),
+    (255, 150, 50),
+    (50, 150, 255),
+    (200, 100, 255),
+    (100, 255, 150),
+    (255, 255, 100),
+    (100, 200, 200),
+    (200, 200, 200),
 ]
 
 
-def _label_colour(table: dict[str, tuple[int, int, int]], label: str, idx: int) -> tuple[int, int, int]:
+def _label_colour(
+    table: dict[str, tuple[int, int, int]], label: str, idx: int
+) -> tuple[int, int, int]:
     if label in table:
         return table[label]
     return _FALLBACK_PALETTE[idx % len(_FALLBACK_PALETTE)]
@@ -85,7 +97,9 @@ def render_overlay(
 
     if title:
         try:
-            font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", 36)
+            font = ImageFont.truetype(
+                "/System/Library/Fonts/Supplemental/Arial.ttf", 36
+            )
         except OSError:
             font = ImageFont.load_default()
         draw.rectangle([0, 0, image.size[0], 60], fill=(0, 0, 0, 180))
@@ -98,16 +112,26 @@ def render_overlay(
 _ROOM_COLOUR_LUT: list[tuple[int, int, int]] = [
     _ROOM_COLOURS.get(label, (200, 200, 200))
     for label in [
-        "Background", "Outdoor", "Wall", "Kitchen", "Living Room",
-        "Bed Room", "Bath", "Entry/Corridor", "Railing", "Storage",
-        "Garage", "Undefined",
+        "Background",
+        "Outdoor",
+        "Wall",
+        "Kitchen",
+        "Living Room",
+        "Bed Room",
+        "Bath",
+        "Entry/Corridor",
+        "Railing",
+        "Storage",
+        "Garage",
+        "Undefined",
     ]
 ]
 
 
 def render_segmentation_map(image_bytes: bytes, model: nn.Module) -> Image.Image:
-    """Return a colour-coded room segmentation map in the original image's pixel space."""
+    """Return a colour-coded room segmentation map in the original image's pixel space."""  # noqa: E501
     from segmentation.postprocess import split_outputs
+
     from inference.preprocess import load_pil, prepare
 
     image = load_pil(image_bytes)

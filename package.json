@@ -11,7 +11,7 @@
     "scripts": {
         "build": "tsc --build tsconfig.build.json --verbose",
         "deploy:dataconnect": "firebase deploy --only dataconnect",
-        "deploy:functions": "firebase deploy --only functions",
+        "deploy:functions:floorplan-analyzer": "firebase deploy --only functions:floorplan-analyzer",
         "deploy:storage": "firebase deploy --only storage",
         "emulators:start": "firebase emulators:start --import=./tmp/data/emulators --export-on-exit",
         "format": "prettier --write .",

@@ -2,3 +2,19 @@
 members = [
     "functions/floorplan-analyzer"
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.13",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+exclude = ["functions/floorplan-analyzer/floortrans/"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "W"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["floorplan_analyzer"]

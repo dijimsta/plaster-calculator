@@ -5,14 +5,14 @@ import math
 
 import cv2
 import numpy as np
+from inference.service import InferenceService
+from ocr.schemas import OcrSeed
+from ocr.service import OcrService
 from PIL import Image, ImageDraw, ImageFont
+from segmentation.service import SegmentationService
 
 from analysis.schemas import OcrFloodFillSmoothedParams
 from analysis.strategies.xixi import ROOM_TYPE_MIN_FRACTION, _get_room_type
-from inference.service import InferenceService
-from ocr.service import OcrService
-from ocr.schemas import OcrSeed
-from segmentation.service import SegmentationService
 
 WALL_CLASS = 2
 RAILING_CLASS = 8
@@ -35,17 +35,23 @@ class OcrFloodFillSmoothedStrategy:
         self.segmentation = segmentation
         self.ocr = ocr
 
-    def run(self, image_bytes: bytes, params: OcrFloodFillSmoothedParams) -> tuple[dict, bytes]:
+    def run(
+        self, image_bytes: bytes, params: OcrFloodFillSmoothedParams
+    ) -> tuple[dict, bytes]:
         image = self.inference.load_image(image_bytes)
         original_w, original_h = image.size
         output, prepared = self.inference.prepare_and_run(image)
         seg = self.segmentation.split(output, prepared)
 
         room_map_full = np.argmax(seg.rooms, axis=0).astype(np.uint8)
-        room_map_orig = cv2.resize(room_map_full, (original_w, original_h), interpolation=cv2.INTER_NEAREST)
+        room_map_orig = cv2.resize(
+            room_map_full, (original_w, original_h), interpolation=cv2.INTER_NEAREST
+        )
 
         wall_mask = np.isin(room_map_full, BOUNDARY_CLASSES).astype(np.uint8)
-        wall_mask = cv2.resize(wall_mask, (original_w, original_h), interpolation=cv2.INTER_NEAREST)
+        wall_mask = cv2.resize(
+            wall_mask, (original_w, original_h), interpolation=cv2.INTER_NEAREST
+        )
         wall_mask_closed = _close_wall_mask(wall_mask, params.wall_kernel_size)
         seeds = self.ocr.find_seeds(image)
         rooms_result = _rooms_from_seeds(
@@ -72,7 +78,11 @@ class OcrFloodFillSmoothedStrategy:
             "unknown_room_min_area": params.unknown_room_min_area,
             "ocr_seed_count": len(seeds),
             "room_count": len(rooms_result),
-            "unknown_room_count": sum(1 for room in rooms_result if room.get("source") == "closed_region_fallback"),
+            "unknown_room_count": sum(
+                1
+                for room in rooms_result
+                if room.get("source") == "closed_region_fallback"
+            ),
             "rooms": rooms_result,
         }
         return result, _render_floorplan(image, rooms_result, seeds, wall_mask_closed)
@@ -168,7 +178,9 @@ def _rooms_from_seeds(
             if len(polygon) < 3:
                 continue
             x, y, w, h = cv2.boundingRect(contour)
-            room_type = _room_type_for_contour(seed, contour, room_map_orig, ocr_service)
+            room_type = _room_type_for_contour(
+                seed, contour, room_map_orig, ocr_service
+            )
             room = {
                 "id": len(rooms),
                 "label": seed["label"],
@@ -178,8 +190,7 @@ def _rooms_from_seeds(
                 "ocr_confidence": seed["confidence"],
                 "seed": [cx, cy],
                 "polygon": [
-                    [round(float(px), 1), round(float(py), 1)]
-                    for px, py in polygon
+                    [round(float(px), 1), round(float(py), 1)] for px, py in polygon
                 ],
                 "bbox": [int(x), int(y), int(w), int(h)],
                 "area_px": contour_area,
@@ -210,7 +221,9 @@ def _rooms_from_seeds(
     return rooms
 
 
-def _find_duplicate_region(region: np.ndarray, accepted_regions: list[dict]) -> dict | None:
+def _find_duplicate_region(
+    region: np.ndarray, accepted_regions: list[dict]
+) -> dict | None:
     area = int(region.sum())
     if area <= 0:
         return None
@@ -254,7 +267,9 @@ def _unknown_rooms_from_closed_regions(
     min_point_distance_px: float,
 ) -> list[dict]:
     fillable = (wall_mask_closed == 0).astype(np.uint8)
-    label_count, labels, stats, centroids = cv2.connectedComponentsWithStats(fillable, connectivity=8)
+    label_count, labels, stats, centroids = cv2.connectedComponentsWithStats(
+        fillable, connectivity=8
+    )
     rooms = []
 
     for label_idx in range(1, label_count):
@@ -307,8 +322,7 @@ def _unknown_rooms_from_closed_regions(
                     "ocr_confidence": None,
                     "seed": [int(round(cx)), int(round(cy))],
                     "polygon": [
-                        [round(float(px), 1), round(float(py), 1)]
-                        for px, py in polygon
+                        [round(float(px), 1), round(float(py), 1)] for px, py in polygon
                     ],
                     "bbox": [int(x), int(y), int(w), int(h)],
                     "area_px": contour_area,
@@ -375,9 +389,16 @@ def _smooth_ortho(
 
     deduped = [result[0]]
     for point in result[1:]:
-        if math.hypot(point[0] - deduped[-1][0], point[1] - deduped[-1][1]) >= min_point_distance:
+        if (
+            math.hypot(point[0] - deduped[-1][0], point[1] - deduped[-1][1])
+            >= min_point_distance
+        ):
             deduped.append(point)
-    if len(deduped) > 1 and math.hypot(deduped[0][0] - deduped[-1][0], deduped[0][1] - deduped[-1][1]) < min_point_distance:
+    if (
+        len(deduped) > 1
+        and math.hypot(deduped[0][0] - deduped[-1][0], deduped[0][1] - deduped[-1][1])
+        < min_point_distance
+    ):
         deduped = deduped[:-1]
 
     return np.array(deduped).tolist() if len(deduped) >= 3 else polygon

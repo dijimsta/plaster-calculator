@@ -6,17 +6,18 @@ sees the building footprint cleanly but small icons are missed; at large
 scales icon detection improves but dimension lines and text get classified as
 walls. Averaging the logits suppresses both kinds of error.
 """
+
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
     split_outputs,
 )
+
 from inference.preprocess import detect_drawing_bbox, load_pil, prepare
 from inference.strategies.base import InferenceStrategy
 

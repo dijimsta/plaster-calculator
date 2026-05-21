@@ -30,7 +30,9 @@ def read_int_query(
     try:
         value = int(raw)
     except ValueError as exc:
-        raise HttpStatusError(422, f"Query parameter '{name}' must be an integer.") from exc
+        raise HttpStatusError(
+            422, f"Query parameter '{name}' must be an integer."
+        ) from exc
     if minimum is not None and value < minimum:
         raise HttpStatusError(422, f"Query parameter '{name}' must be >= {minimum}.")
     return value
@@ -50,7 +52,9 @@ def read_float_query(
     try:
         value = float(raw)
     except ValueError as exc:
-        raise HttpStatusError(422, f"Query parameter '{name}' must be a number.") from exc
+        raise HttpStatusError(
+            422, f"Query parameter '{name}' must be a number."
+        ) from exc
     if minimum is not None and value < minimum:
         raise HttpStatusError(422, f"Query parameter '{name}' must be >= {minimum}.")
     if maximum is not None and value > maximum:

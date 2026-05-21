@@ -5,11 +5,11 @@ all non-wall, non-background pixels are found and labelled by majority class.
 This produces room polygons that are genuinely enclosed by the wall lines rather
 than traced around per-class pixel blobs.
 """
+
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
-
 from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
@@ -17,6 +17,7 @@ from segmentation.postprocess import (
     split_outputs,
     walls_from_segmap,
 )
+
 from inference.preprocess import load_pil, prepare
 from inference.strategies.base import InferenceStrategy
 

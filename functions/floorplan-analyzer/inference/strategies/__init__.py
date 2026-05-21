@@ -3,6 +3,7 @@ shape `{rooms, walls, icons}` with polygon coordinates in the original image
 pixel space, but they vary in how they preprocess and post-process the model
 outputs to trade off accuracy for compute.
 """
+
 from __future__ import annotations
 
 from inference.strategies.autocrop import (
@@ -38,7 +39,9 @@ _STRATEGY_CLASSES: list[type[InferenceStrategy]] = [
     MaskRoomsStrategy,
 ]
 
-_REGISTRY: dict[str, type[InferenceStrategy]] = {cls.name: cls for cls in _STRATEGY_CLASSES}
+_REGISTRY: dict[str, type[InferenceStrategy]] = {
+    cls.name: cls for cls in _STRATEGY_CLASSES
+}
 
 
 def list_strategies() -> list[str]:
@@ -47,9 +50,7 @@ def list_strategies() -> list[str]:
 
 def get_strategy(name: str) -> InferenceStrategy:
     if name not in _REGISTRY:
-        raise KeyError(
-            f"unknown strategy {name!r}; available: {', '.join(_REGISTRY)}"
-        )
+        raise KeyError(f"unknown strategy {name!r}; available: {', '.join(_REGISTRY)}")
     return _REGISTRY[name]()
 
 

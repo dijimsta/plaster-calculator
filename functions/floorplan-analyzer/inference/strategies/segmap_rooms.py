@@ -5,11 +5,11 @@ room and wall boundaries are derived from the argmax of the room classification
 channels. This produces polygons that align exactly with the dark wall lines
 visible in the segmentation colour map. Icons still come from the heatmap path.
 """
+
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
-
 from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
@@ -17,6 +17,7 @@ from segmentation.postprocess import (
     split_outputs,
     walls_from_segmap,
 )
+
 from inference.preprocess import load_pil, prepare
 from inference.strategies.base import InferenceStrategy
 

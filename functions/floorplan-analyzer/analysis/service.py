@@ -12,8 +12,12 @@ class AnalysisService:
     def __init__(self, strategies: dict[str, Strategy]) -> None:
         self.strategies = strategies
 
-    def run(self, strategy_key: str, image_bytes: bytes, params: AnalysisParams) -> tuple[AnalysisResult, bytes]:
+    def run(
+        self, strategy_key: str, image_bytes: bytes, params: AnalysisParams
+    ) -> tuple[AnalysisResult, bytes]:
         strategy = self.strategies.get(strategy_key)
         if strategy is None:
-            raise ValueError(f"Unknown strategy: {strategy_key!r}. Available: {', '.join(self.strategies)}")
+            raise ValueError(
+                f"Unknown strategy: {strategy_key!r}. Available: {', '.join(self.strategies)}"  # noqa: E501
+            )
         return strategy.run(image_bytes, params)

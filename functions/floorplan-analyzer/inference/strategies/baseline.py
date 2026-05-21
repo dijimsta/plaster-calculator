@@ -5,16 +5,17 @@ normalises to [-1, 1] with mean=0.5/std=0.5 and runs the model directly. This
 is what `run_inference` did before the strategy refactor and is preserved here
 as the default for backwards compatibility.
 """
+
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
-
 from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
     split_outputs,
 )
+
 from inference.preprocess import load_pil, prepare
 from inference.strategies.base import InferenceStrategy
 

@@ -5,9 +5,10 @@ import torch.nn as nn
 from PIL import Image
 
 from inference.model import load_model as _load_model
-from inference.preprocess import PreparedImage, load_pil, prepare
-from inference.pipeline import run_inference as _run_inference, run_get_polygons as _run_get_polygons
 from inference.overlay import render_segmentation_map as _render_segmentation_map
+from inference.pipeline import run_get_polygons as _run_get_polygons
+from inference.pipeline import run_inference as _run_inference
+from inference.preprocess import PreparedImage, load_pil, prepare
 from inference.strategies import InferenceStrategy
 
 
@@ -25,7 +26,9 @@ class InferenceService:
         strategy: str | InferenceStrategy | None = None,
         threshold: float = 0.5,
     ) -> dict:
-        return _run_inference(image_bytes, self.model, threshold=threshold, strategy=strategy)
+        return _run_inference(
+            image_bytes, self.model, threshold=threshold, strategy=strategy
+        )
 
     def run_get_polygons(self, image_bytes: bytes, threshold: float = 0.5) -> dict:
         return _run_get_polygons(image_bytes, self.model, threshold=threshold)

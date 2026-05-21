@@ -4,12 +4,13 @@
 a `{rooms, walls, icons}` dict in the *original* image's pixel space. The
 default strategy preserves the previous pre-strategy behaviour.
 """
+
 from __future__ import annotations
 
-import torch.nn as nn
 import torch
-
+import torch.nn as nn
 from segmentation.postprocess import polygons_from_predictions, split_outputs
+
 from inference.preprocess import load_pil, prepare
 from inference.strategies import (
     BaselineStrategy,
@@ -63,14 +64,14 @@ def run_get_polygons(
                 **_json_type(t),
                 "polygon": _polygon_to_coords(polygon),
             }
-            for polygon, t in zip(polygons, types)
+            for polygon, t in zip(polygons, types, strict=False)
         ],
         "room_polygons": [
             {
                 **_json_type(t),
                 "polygon": coords,
             }
-            for geom, t in zip(room_polygons, room_types)
+            for geom, t in zip(room_polygons, room_types, strict=False)
             for coords in _geometry_to_coord_lists(geom)
         ],
     }
@@ -95,4 +96,6 @@ def _geometry_to_coord_lists(geom) -> list[list[list[float]]]:
 
 def _polygon_ring_to_coords(polygon) -> list[list[float]]:
     x, y = polygon.exterior.coords.xy
-    return [[round(float(xi), 2), round(float(yi), 2)] for xi, yi in zip(x, y)]
+    return [
+        [round(float(xi), 2), round(float(yi), 2)] for xi, yi in zip(x, y, strict=False)
+    ]

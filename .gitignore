@@ -4,6 +4,7 @@
 .next/
 .nx/cache
 .nx/workspace-data
+.ruff_cache/
 .venv/
 
 __pycache__/
