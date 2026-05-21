@@ -11,7 +11,7 @@ export function isOwnedUploadPath(
     projectId: string,
 ) {
     return storagePath.startsWith(
-        `uploads/${uid}/projects/${projectId}/uploads/`,
+        `uploads/${uid}/projects/${storageProjectId(projectId)}/uploads/`,
     );
 }
 
@@ -23,13 +23,29 @@ export function isOwnedPageSourcePath(
 ) {
     return (
         storagePath ===
-        `uploads/${uid}/projects/${projectId}/pages/${pageNumber}/source.png`
+        `uploads/${uid}/projects/${storageProjectId(projectId)}/pages/${pageNumber}/source.png`
     );
+}
+
+export function storageProjectId(projectId: string): string {
+    const compactUuid = projectId.replace(/-/g, "");
+    if (!/^[0-9a-fA-F]{32}$/.test(compactUuid)) {
+        return projectId;
+    }
+
+    return [
+        compactUuid.slice(0, 8),
+        compactUuid.slice(8, 12),
+        compactUuid.slice(12, 16),
+        compactUuid.slice(16, 20),
+        compactUuid.slice(20),
+    ].join("-");
 }
 
 export async function deleteOwnedProjectStorage(
     project: ProjectWithPages,
     uid: string,
+    projectId: string,
 ) {
     const bucket = getStorage().bucket();
     const paths = [
@@ -50,7 +66,7 @@ export async function deleteOwnedProjectStorage(
 
     await bucket.deleteFiles({
         force: true,
-        prefix: `uploads/${uid}/projects/${project.id}/`,
+        prefix: `uploads/${uid}/projects/${storageProjectId(projectId)}/`,
     });
 }
 
