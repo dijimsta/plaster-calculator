@@ -5,7 +5,11 @@ import {
     buildOverlayFromAnalyzerResult,
     callFloorplanAnalyzer,
 } from "./analyzer.js";
-import { fetchStorageImage, uploadStorageBuffer } from "./storage.js";
+import {
+    fetchStorageImage,
+    storageProjectId,
+    uploadStorageBuffer,
+} from "./storage.js";
 
 import type { ProcessingStrategy, ProjectWithPages } from "./types.js";
 
@@ -99,6 +103,7 @@ async function analysePage(
     imageBytes: Buffer,
     strategy: ProcessingStrategy,
 ): Promise<void> {
+    const resultStorageProjectId = storageProjectId(projectId);
     const { result, floorplanPng } = await callFloorplanAnalyzer(
         strategy.endpoint,
         imageBytes,
@@ -112,14 +117,14 @@ async function analysePage(
         result,
     );
 
-    const floorplanPath = `uploads/${uid}/projects/${projectId}/pages/${pageNumber}/floorplan.png`;
+    const floorplanPath = `uploads/${uid}/projects/${resultStorageProjectId}/pages/${pageNumber}/floorplan.png`;
     const floorplanUrl = await uploadStorageBuffer(
         floorplanPath,
         floorplanPng,
         "image/png",
     );
 
-    const jsonPath = `uploads/${uid}/projects/${projectId}/pages/${pageNumber}/result.json`;
+    const jsonPath = `uploads/${uid}/projects/${resultStorageProjectId}/pages/${pageNumber}/result.json`;
     const jsonUrl = await uploadStorageBuffer(
         jsonPath,
         Buffer.from(JSON.stringify(result), "utf-8"),

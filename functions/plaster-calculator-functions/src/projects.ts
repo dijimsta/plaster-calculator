@@ -234,7 +234,7 @@ export const deleteProject = onCall<ProjectIdRequest, Promise<{ ok: true }>>(
         );
         const project = await requireOwnedProject(projectId, auth.uid);
 
-        await deleteOwnedProjectStorage(project, auth.uid);
+        await deleteOwnedProjectStorage(project, auth.uid, projectId);
         await dcDeleteFloorplanPages({ projectId });
         await dcDeleteProject({ id: projectId });
 
