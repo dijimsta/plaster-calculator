@@ -5,12 +5,11 @@ import math
 
 import cv2
 import numpy as np
-import torch
-import torch.nn as nn
 from PIL import Image, ImageDraw
 
-from cubicasa_core.postprocess import split_outputs
-from cubicasa_core.preprocess import load_pil, prepare
+from analysis.schemas import XixiParams
+from inference.service import InferenceService
+from segmentation.service import SegmentationService
 
 WALL_CLASS = 2
 UNDEFINED_ROOM_CLASS = 11
@@ -31,35 +30,30 @@ ROOM_CLASSES = [
 ]
 
 
-def run_xixi_process(
-    image_bytes: bytes,
-    model: nn.Module,
-    *,
-    source_file: str,
-    min_area: int,
-    room_type_min_fraction: float = ROOM_TYPE_MIN_FRACTION,
-) -> tuple[dict, bytes]:
-    image = load_pil(image_bytes)
-    prepared = prepare(image)
+class XixiStrategy:
+    def __init__(self, inference: InferenceService, segmentation: SegmentationService) -> None:
+        self.inference = inference
+        self.segmentation = segmentation
 
-    with torch.no_grad():
-        output = model(prepared.tensor)
+    def run(self, image_bytes: bytes, params: XixiParams) -> tuple[dict, bytes]:
+        image = self.inference.load_image(image_bytes)
+        output, prepared = self.inference.prepare_and_run(image)
+        seg = self.segmentation.split(output, prepared)
 
-    _heatmaps, rooms, _icons = split_outputs(output, prepared.infer_shape)
-    room_map = np.argmax(rooms, axis=0).astype(np.uint8)
-    walls = _extract_walls(room_map, image.size, min_area, room_type_min_fraction)
-    floorplan_png = _render_floorplan(image, room_map, walls)
+        room_map = np.argmax(seg.rooms, axis=0).astype(np.uint8)
+        walls = _extract_walls(room_map, image.size, params.min_area, params.room_type_min_fraction)
+        floorplan_png = _render_floorplan(image, room_map, walls)
 
-    width, height = image.size
-    result = {
-        "source_file": source_file,
-        "image_size_px": {"width": width, "height": height},
-        "scale_m_per_px": None,
-        "strategy": "segmap-contours",
-        "wall_count": len(walls),
-        "walls": walls,
-    }
-    return result, floorplan_png
+        width, height = image.size
+        result = {
+            "source_file": params.source_file,
+            "image_size_px": {"width": width, "height": height},
+            "scale_m_per_px": None,
+            "strategy": "segmap-contours",
+            "wall_count": len(walls),
+            "walls": walls,
+        }
+        return result, floorplan_png
 
 
 def _extract_walls(

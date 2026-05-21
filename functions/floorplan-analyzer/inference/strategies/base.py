@@ -10,7 +10,7 @@ class InferenceStrategy(ABC):
     """Run the model on an image and return room/wall/icon polygons.
 
     Subclasses register themselves via the registry in
-    `cubicasa_core.strategies.__init__`.
+    `inference.strategies.__init__`.
 
     Polygon coordinates returned by `run` are always in the *original* image's
     pixel space, regardless of any internal cropping or rescaling — so result

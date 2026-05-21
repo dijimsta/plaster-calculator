@@ -12,13 +12,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from cubicasa_core.postprocess import (
+from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
     split_outputs,
 )
-from cubicasa_core.preprocess import detect_drawing_bbox, load_pil, prepare
-from cubicasa_core.strategies.base import InferenceStrategy
+from inference.preprocess import detect_drawing_bbox, load_pil, prepare
+from inference.strategies.base import InferenceStrategy
 
 
 class _MultiscaleBase(InferenceStrategy):

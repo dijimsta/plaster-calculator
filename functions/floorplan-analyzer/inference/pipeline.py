@@ -9,9 +9,9 @@ from __future__ import annotations
 import torch.nn as nn
 import torch
 
-from cubicasa_core.postprocess import polygons_from_predictions, split_outputs
-from cubicasa_core.preprocess import load_pil, prepare
-from cubicasa_core.strategies import (
+from segmentation.postprocess import polygons_from_predictions, split_outputs
+from inference.preprocess import load_pil, prepare
+from inference.strategies import (
     BaselineStrategy,
     InferenceStrategy,
     get_strategy,
@@ -41,7 +41,7 @@ def run_get_polygons(
     """Run the baseline pipeline and return raw `floortrans.get_polygons` output.
 
     The returned polygons are in inference-image coordinates, before
-    `cubicasa_core` remaps them back to the original image or attaches labels.
+    remapping them back to the original image or attaching labels.
     """
     image = load_pil(image_bytes)
     prepared = prepare(image)

@@ -5,24 +5,24 @@ outputs to trade off accuracy for compute.
 """
 from __future__ import annotations
 
-from cubicasa_core.strategies.autocrop import (
+from inference.strategies.autocrop import (
     AutocropFitLong1024Strategy,
     AutocropStrategy,
 )
-from cubicasa_core.strategies.base import InferenceStrategy
-from cubicasa_core.strategies.baseline import BaselineStrategy
-from cubicasa_core.strategies.fit_scale import (
+from inference.strategies.base import InferenceStrategy
+from inference.strategies.baseline import BaselineStrategy
+from inference.strategies.fit_scale import (
     FitLong1024Strategy,
     FitLong1536Strategy,
     FitShort512Strategy,
 )
-from cubicasa_core.strategies.hflip_tta import (
+from inference.strategies.hflip_tta import (
     AutocropHFlipTTA1024Strategy,
     HFlipTTAStrategy,
 )
-from cubicasa_core.strategies.mask_rooms import MaskRoomsStrategy
-from cubicasa_core.strategies.multiscale import AutocropMultiscaleTTAStrategy
-from cubicasa_core.strategies.segmap_rooms import SegmapRoomsStrategy
+from inference.strategies.mask_rooms import MaskRoomsStrategy
+from inference.strategies.multiscale import AutocropMultiscaleTTAStrategy
+from inference.strategies.segmap_rooms import SegmapRoomsStrategy
 
 _STRATEGY_CLASSES: list[type[InferenceStrategy]] = [
     BaselineStrategy,

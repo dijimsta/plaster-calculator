@@ -94,7 +94,7 @@ def render_overlay(
     image.save(out_path)
 
 
-# Class index → colour, matching the order in cubicasa_core.result._ROOM_LABELS
+# Class index → colour, matching the order in segmentation.result._ROOM_LABELS
 _ROOM_COLOUR_LUT: list[tuple[int, int, int]] = [
     _ROOM_COLOURS.get(label, (200, 200, 200))
     for label in [
@@ -106,13 +106,9 @@ _ROOM_COLOUR_LUT: list[tuple[int, int, int]] = [
 
 
 def render_segmentation_map(image_bytes: bytes, model: nn.Module) -> Image.Image:
-    """Return a colour-coded room segmentation map in the original image's pixel space.
-
-    Uses baseline preprocessing (no crop, no resize beyond round-32 padding).
-    The returned image is the same size as the source image.
-    """
-    from cubicasa_core.postprocess import split_outputs
-    from cubicasa_core.preprocess import load_pil, prepare
+    """Return a colour-coded room segmentation map in the original image's pixel space."""
+    from segmentation.postprocess import split_outputs
+    from inference.preprocess import load_pil, prepare
 
     image = load_pil(image_bytes)
     prepared = prepare(image)
@@ -122,11 +118,11 @@ def render_segmentation_map(image_bytes: bytes, model: nn.Module) -> Image.Image
 
     _heatmaps, rooms, _icons = split_outputs(output, prepared.infer_shape)
 
-    room_map = np.argmax(rooms, axis=0).astype(np.int32)  # (H, W)
+    room_map = np.argmax(rooms, axis=0).astype(np.int32)
 
     lut = np.array(_ROOM_COLOUR_LUT, dtype=np.uint8)
     room_map_clipped = np.clip(room_map, 0, len(lut) - 1)
-    seg_rgb = lut[room_map_clipped]  # (H, W, 3)
+    seg_rgb = lut[room_map_clipped]
 
     seg_img = Image.fromarray(seg_rgb)
 

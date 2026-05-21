@@ -2,18 +2,17 @@ from __future__ import annotations
 
 import io
 import math
-import re
-from functools import lru_cache
 
 import cv2
 import numpy as np
-import torch
-import torch.nn as nn
 from PIL import Image, ImageDraw, ImageFont
 
-from cubicasa_core.postprocess import split_outputs
-from cubicasa_core.preprocess import load_pil, prepare
-from cubicasa_api.xixi import ROOM_TYPE_MIN_FRACTION, _get_room_type
+from analysis.schemas import OcrFloodFillSmoothedParams
+from analysis.strategies.xixi import ROOM_TYPE_MIN_FRACTION, _get_room_type
+from inference.service import InferenceService
+from ocr.service import OcrService
+from ocr.schemas import OcrSeed
+from segmentation.service import SegmentationService
 
 WALL_CLASS = 2
 DEFAULT_WALL_KERNEL_SIZE = 15
@@ -22,240 +21,59 @@ DEFAULT_ORTHO_TOLERANCE_DEGREES = 8.0
 DEFAULT_MIN_POINT_DISTANCE_PX = 3.0
 DEFAULT_UNKNOWN_ROOM_MIN_AREA = 1000
 
-OCR_KEYWORDS = (    
-    # Living / open areas
-    "living",
-    "lounge",
-    "family",
-    "dining",
-    "meals",
-    "rumpus",
-    "retreat",
-    "theatre",
-    "media",
-    "activity",
-    "games",
-    "open plan",
 
-    # Kitchen / food / utility
-    "kitchen",
-    "ktch",
-    "pantry",
-    "wip",
-    "w.i.p",
-    "walk in pantry",
-    "butler",
-    "butlers",
-    "butler's",
-    "scullery",
+class OcrFloodFillSmoothedStrategy:
+    def __init__(
+        self,
+        inference: InferenceService,
+        segmentation: SegmentationService,
+        ocr: OcrService,
+    ) -> None:
+        self.inference = inference
+        self.segmentation = segmentation
+        self.ocr = ocr
 
-    # Bedrooms
-    "bed",
-    "bedroom",
-    "master",
-    "guest",
-    "robe",
-    "wir",
-    "w.i.r",
-    "walk in robe",
+    def run(self, image_bytes: bytes, params: OcrFloodFillSmoothedParams) -> tuple[dict, bytes]:
+        image = self.inference.load_image(image_bytes)
+        original_w, original_h = image.size
+        output, prepared = self.inference.prepare_and_run(image)
+        seg = self.segmentation.split(output, prepared)
 
-    # Wet areas
-    "bath",
-    "bathroom",
-    "ens",
-    "ensuite",
-    "powder",
-    "pdr",
-    "wc",
-    "toilet",
-    "laundry",
-    "ldry",
-    "l'dry",
-    "linen",
+        room_map_full = np.argmax(seg.rooms, axis=0).astype(np.uint8)
+        room_map_orig = cv2.resize(room_map_full, (original_w, original_h), interpolation=cv2.INTER_NEAREST)
 
-    # Entry / circulation
-    "entry",
-    "foyer",
-    "hall",
-    "hallway",
-    "corridor",
-    "passage",
-    "mud",
-    "mudroom",
+        wall_mask = (room_map_full == WALL_CLASS).astype(np.uint8)
+        wall_mask = cv2.resize(wall_mask, (original_w, original_h), interpolation=cv2.INTER_NEAREST)
+        wall_mask_closed = _close_wall_mask(wall_mask, params.wall_kernel_size)
+        seeds = self.ocr.find_seeds(image)
+        rooms_result = _rooms_from_seeds(
+            wall_mask_closed,
+            seeds,
+            room_map_orig=room_map_orig,
+            min_area=params.min_area,
+            simplify_epsilon_ratio=params.simplify_epsilon_ratio,
+            ortho_tolerance_degrees=params.ortho_tolerance_degrees,
+            min_point_distance_px=params.min_point_distance_px,
+            unknown_room_min_area=params.unknown_room_min_area,
+            ocr_service=self.ocr,
+        )
 
-    # Work / storage
-    "study",
-    "office",
-    "desk",
-    "nook",
-    "store",
-    "storage",
-    "linen",
-    "cupboard",
-    "w.i.l",
-    "wil",
-
-    # Garage / exterior covered spaces
-    "garage",
-    "carport",
-    "alfresco",
-    "verandah",
-    "veranda",
-    "porch",
-    "patio",
-    "deck",
-    "terrace",
-    "balcony",
-
-    # Other common labels
-    "prayer",
-    "gym",
-)
-
-OCR_ROOM_TYPE_BY_KEYWORD = {
-    # Living / open areas
-    "living": "Living Room",
-    "lounge": "Living Room",
-    "family": "Living Room",
-    "dining": "Living Room",
-    "meals": "Living Room",
-    "rumpus": "Living Room",
-    "retreat": "Living Room",
-    "theatre": "Living Room",
-    "media": "Living Room",
-    "activity": "Living Room",
-    "games": "Living Room",
-    "open plan": "Living Room",
-    "study": "Living Room",
-    "office": "Living Room",
-    "desk": "Living Room",
-    "nook": "Living Room",
-    "prayer": "Living Room",
-    "gym": "Living Room",
-
-    # Kitchen / food / utility
-    "kitchen": "Kitchen",
-    "ktch": "Kitchen",
-    "scullery": "Kitchen",
-
-    # Bedrooms
-    "bed": "Bed Room",
-    "bedroom": "Bed Room",
-    "master": "Bed Room",
-    "guest": "Bed Room",
-
-    # Wet areas
-    "bath": "Bath",
-    "bathroom": "Bath",
-    "ens": "Bath",
-    "ensuite": "Bath",
-    "powder": "Toilet",
-    "pdr": "Toilet",
-    "wc": "Toilet",
-    "toilet": "Toilet",
-
-    # Laundry
-    "laundry": "Laundry",
-    "ldry": "Laundry",
-    "l'dry": "Laundry",
-
-    # Entry / circulation
-    "entry": "Entry",
-    "foyer": "Entry",
-    "hall": "Entry",
-    "hallway": "Entry",
-    "corridor": "Entry",
-    "passage": "Entry",
-    "mud": "Entry",
-    "mudroom": "Entry",
-
-    # Work / storage
-    "pantry": "Storage",
-    "wip": "Storage",
-    "w.i.p": "Storage",
-    "walk in pantry": "Storage",
-    "butler": "Storage",
-    "butlers": "Storage",
-    "butler's": "Storage",
-    "robe": "Storage",
-    "wir": "Storage",
-    "w.i.r": "Storage",
-    "walk in robe": "Storage",
-    "store": "Storage",
-    "storage": "Storage",
-    "linen": "Storage",
-    "cupboard": "Storage",
-    "w.i.l": "Storage",
-    "wil": "Storage",
-
-    # Garage / exterior covered spaces
-    "garage": "Garage",
-    "carport": "Garage",
-    "alfresco": "Outdoor",
-    "verandah": "Outdoor",
-    "veranda": "Outdoor",
-    "porch": "Outdoor",
-    "patio": "Outdoor",
-    "deck": "Outdoor",
-    "terrace": "Outdoor",
-    "balcony": "Outdoor",
-}
-
-
-def run_ocr_flood_fill_smoothed_process(
-    image_bytes: bytes,
-    model: nn.Module,
-    *,
-    source_file: str,
-    min_area: int,
-    wall_kernel_size: int = DEFAULT_WALL_KERNEL_SIZE,
-    simplify_epsilon_ratio: float = DEFAULT_SIMPLIFY_EPSILON_RATIO,
-    ortho_tolerance_degrees: float = DEFAULT_ORTHO_TOLERANCE_DEGREES,
-    min_point_distance_px: float = DEFAULT_MIN_POINT_DISTANCE_PX,
-    unknown_room_min_area: int = DEFAULT_UNKNOWN_ROOM_MIN_AREA,
-) -> tuple[dict, bytes]:
-    image = load_pil(image_bytes)
-    original_w, original_h = image.size
-    prepared = prepare(image)
-
-    with torch.no_grad():
-        output = model(prepared.tensor)
-
-    _heatmaps, rooms, _icons = split_outputs(output, prepared.infer_shape)
-    room_map_full = np.argmax(rooms, axis=0).astype(np.uint8)
-    room_map_orig = cv2.resize(room_map_full, (original_w, original_h), interpolation=cv2.INTER_NEAREST)
-
-    wall_mask = (room_map_full == WALL_CLASS).astype(np.uint8)
-    wall_mask = cv2.resize(wall_mask, (original_w, original_h), interpolation=cv2.INTER_NEAREST)
-    wall_mask_closed = _close_wall_mask(wall_mask, wall_kernel_size)
-    seeds = _find_ocr_seeds(image)
-    rooms_result = _rooms_from_seeds(
-        wall_mask_closed,
-        seeds,
-        room_map_orig=room_map_orig,
-        min_area=min_area,
-        simplify_epsilon_ratio=simplify_epsilon_ratio,
-        ortho_tolerance_degrees=ortho_tolerance_degrees,
-        min_point_distance_px=min_point_distance_px,
-        unknown_room_min_area=unknown_room_min_area,
-    )
-
-    result = {
-        "source_file": source_file,
-        "image_size_px": {"width": original_w, "height": original_h},
-        "scale_m_per_px": None,
-        "strategy": "ocr-flood-fill-smoothed",
-        "wall_kernel_size": wall_kernel_size,
-        "simplify_epsilon_ratio": simplify_epsilon_ratio,
-        "ortho_tolerance_degrees": ortho_tolerance_degrees,
-        "min_point_distance_px": min_point_distance_px,
-        "unknown_room_min_area": unknown_room_min_area,
-        "ocr_seed_count": len(seeds),
-        "room_count": len(rooms_result),
-        "unknown_room_count": sum(1 for room in rooms_result if room.get("source") == "closed_region_fallback"),
-        "rooms": rooms_result,
-    }
-    return result, _render_floorplan(image, rooms_result, seeds, wall_mask_closed)
+        result = {
+            "source_file": params.source_file,
+            "image_size_px": {"width": original_w, "height": original_h},
+            "scale_m_per_px": None,
+            "strategy": "ocr-flood-fill-smoothed",
+            "wall_kernel_size": params.wall_kernel_size,
+            "simplify_epsilon_ratio": params.simplify_epsilon_ratio,
+            "ortho_tolerance_degrees": params.ortho_tolerance_degrees,
+            "min_point_distance_px": params.min_point_distance_px,
+            "unknown_room_min_area": params.unknown_room_min_area,
+            "ocr_seed_count": len(seeds),
+            "room_count": len(rooms_result),
+            "unknown_room_count": sum(1 for room in rooms_result if room.get("source") == "closed_region_fallback"),
+            "rooms": rooms_result,
+        }
+        return result, _render_floorplan(image, rooms_result, seeds, wall_mask_closed)
 
 
 def _close_wall_mask(wall_mask: np.ndarray, kernel_size: int) -> np.ndarray:
@@ -264,74 +82,13 @@ def _close_wall_mask(wall_mask: np.ndarray, kernel_size: int) -> np.ndarray:
     return cv2.morphologyEx(wall_mask, cv2.MORPH_CLOSE, kernel)
 
 
-@lru_cache(maxsize=1)
-def _ocr_reader():
-    try:
-        import easyocr
-    except ImportError as exc:
-        raise RuntimeError(
-            "easyocr is required for the OCR flood-fill smoothed strategy"
-        ) from exc
-    return easyocr.Reader(["en"], gpu=False, verbose=False)
-
-
-def _find_ocr_seeds(image: Image.Image) -> list[dict]:
-    image_rgb = np.asarray(image.convert("RGB"))
-    results = _ocr_reader().readtext(image_rgb)
-    seeds = []
-    for bbox, text, confidence in results:
-        matched = _matched_keyword(text)
-        if matched is None:
-            continue
-        cx = int(np.mean([point[0] for point in bbox]))
-        cy = int(np.mean([point[1] for point in bbox]))
-        seeds.append(
-            {
-                "x": cx,
-                "y": cy,
-                "text": text,
-                "label": _label_from_text(text),
-                "matched_keyword": matched,
-                "confidence": float(confidence),
-            }
-        )
-    return seeds
-
-
-def _matched_keyword(text: str) -> str | None:
-    lower = text.lower()
-    return next((keyword for keyword in OCR_KEYWORDS if keyword in lower), None)
-
-
-def _label_from_text(text: str) -> str:
-    cleaned = re.sub(r"\s+", " ", text.strip())
-    if not cleaned:
-        return "Room"
-    replacements = {
-        "ens": "Ensuite",
-        "wir": "WIR",
-        "wip": "WIP",
-        "l'dry": "Laundry",
-        "ldry": "Laundry",
-    }
-    key = cleaned.lower().replace(" ", "")
-    if key in replacements:
-        return replacements[key]
-    return cleaned.title()
-
-
-def _room_type_from_keyword(keyword: str | None) -> str | None:
-    if keyword is None:
-        return None
-    return OCR_ROOM_TYPE_BY_KEYWORD.get(keyword)
-
-
 def _room_type_for_contour(
-    seed: dict,
+    seed: OcrSeed,
     contour: np.ndarray,
     room_map_orig: np.ndarray | None,
+    ocr_service: OcrService,
 ) -> str | None:
-    return _room_type_from_keyword(seed.get("matched_keyword")) or (
+    return ocr_service.room_type_from_keyword(seed.get("matched_keyword")) or (
         _get_room_type(contour, room_map_orig, ROOM_TYPE_MIN_FRACTION)
         if room_map_orig is not None
         else None
@@ -340,7 +97,7 @@ def _room_type_for_contour(
 
 def _rooms_from_seeds(
     wall_mask_closed: np.ndarray,
-    seeds: list[dict],
+    seeds: list[OcrSeed],
     *,
     room_map_orig: np.ndarray | None = None,
     min_area: int,
@@ -348,6 +105,7 @@ def _rooms_from_seeds(
     ortho_tolerance_degrees: float,
     min_point_distance_px: float,
     unknown_room_min_area: int,
+    ocr_service: OcrService,
 ) -> list[dict]:
     height, width = wall_mask_closed.shape[:2]
     rooms = []
@@ -408,7 +166,7 @@ def _rooms_from_seeds(
             if len(polygon) < 3:
                 continue
             x, y, w, h = cv2.boundingRect(contour)
-            room_type = _room_type_for_contour(seed, contour, room_map_orig)
+            room_type = _room_type_for_contour(seed, contour, room_map_orig, ocr_service)
             room = {
                 "id": len(rooms),
                 "label": seed["label"],
@@ -465,7 +223,7 @@ def _find_duplicate_region(region: np.ndarray, accepted_regions: list[dict]) -> 
     return None
 
 
-def _seed_summary(seed: dict, cx: int, cy: int) -> dict:
+def _seed_summary(seed: OcrSeed, cx: int, cy: int) -> dict:
     return {
         "text": seed["text"],
         "label": seed["label"],
@@ -475,7 +233,7 @@ def _seed_summary(seed: dict, cx: int, cy: int) -> dict:
     }
 
 
-def _add_duplicate_seed(room: dict, seed: dict, cx: int, cy: int) -> None:
+def _add_duplicate_seed(room: dict, seed: OcrSeed, cx: int, cy: int) -> None:
     summary = _seed_summary(seed, cx, cy)
     room.setdefault("duplicate_ocr_seeds", []).append(summary)
     labels = room.setdefault("merged_labels", [room.get("label")])
@@ -635,11 +393,10 @@ def _touches_border(region: np.ndarray) -> bool:
 def _render_floorplan(
     image: Image.Image,
     rooms: list[dict],
-    seeds: list[dict],
+    seeds: list[OcrSeed],
     wall_mask_closed: np.ndarray,
 ) -> bytes:
     overlay = image.convert("RGBA")
-    draw = ImageDraw.Draw(overlay, "RGBA")
 
     wall_img = Image.fromarray((wall_mask_closed * 255).astype(np.uint8), mode="L")
     wall_overlay = Image.new("RGBA", image.size, (0, 0, 0, 0))

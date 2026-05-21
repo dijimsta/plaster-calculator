@@ -10,15 +10,15 @@ from __future__ import annotations
 import torch
 import torch.nn as nn
 
-from cubicasa_core.postprocess import (
+from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
     rooms_from_segmap,
     split_outputs,
     walls_from_segmap,
 )
-from cubicasa_core.preprocess import load_pil, prepare
-from cubicasa_core.strategies.base import InferenceStrategy
+from inference.preprocess import load_pil, prepare
+from inference.strategies.base import InferenceStrategy
 
 
 class SegmapRoomsStrategy(InferenceStrategy):
@@ -36,10 +36,8 @@ class SegmapRoomsStrategy(InferenceStrategy):
             output = model(prepared.tensor)
         predictions = split_outputs(output, prepared.infer_shape)
         _heatmaps, rooms_array, _icons = predictions
-        # get_polygons mutates rooms_array in place — copy before heatmap call
         rooms_array = rooms_array.copy()
 
-        # Icons via heatmap path only
         polygons, types, _, _ = polygons_from_predictions(predictions, threshold)
         icons_result = build_result_in_original_space(polygons, types, [], [], prepared)
 
