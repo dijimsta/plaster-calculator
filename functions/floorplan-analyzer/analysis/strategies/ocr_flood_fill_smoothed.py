@@ -15,6 +15,8 @@ from ocr.schemas import OcrSeed
 from segmentation.service import SegmentationService
 
 WALL_CLASS = 2
+RAILING_CLASS = 8
+BOUNDARY_CLASSES = (WALL_CLASS, RAILING_CLASS)
 DEFAULT_WALL_KERNEL_SIZE = 15
 DEFAULT_SIMPLIFY_EPSILON_RATIO = 0.005
 DEFAULT_ORTHO_TOLERANCE_DEGREES = 8.0
@@ -42,7 +44,7 @@ class OcrFloodFillSmoothedStrategy:
         room_map_full = np.argmax(seg.rooms, axis=0).astype(np.uint8)
         room_map_orig = cv2.resize(room_map_full, (original_w, original_h), interpolation=cv2.INTER_NEAREST)
 
-        wall_mask = (room_map_full == WALL_CLASS).astype(np.uint8)
+        wall_mask = np.isin(room_map_full, BOUNDARY_CLASSES).astype(np.uint8)
         wall_mask = cv2.resize(wall_mask, (original_w, original_h), interpolation=cv2.INTER_NEAREST)
         wall_mask_closed = _close_wall_mask(wall_mask, params.wall_kernel_size)
         seeds = self.ocr.find_seeds(image)
