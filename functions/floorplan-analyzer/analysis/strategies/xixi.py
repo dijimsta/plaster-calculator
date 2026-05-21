@@ -12,6 +12,8 @@ from inference.service import InferenceService
 from segmentation.service import SegmentationService
 
 WALL_CLASS = 2
+RAILING_CLASS = 8
+BOUNDARY_CLASSES = (WALL_CLASS, RAILING_CLASS)
 UNDEFINED_ROOM_CLASS = 11
 ROOM_TYPE_MIN_FRACTION = 0.30
 ROOM_CLASSES = [
@@ -63,7 +65,7 @@ def _extract_walls(
     room_type_min_fraction: float = ROOM_TYPE_MIN_FRACTION,
 ) -> list[dict]:
     room_map_orig = cv2.resize(room_map.astype(np.uint8), original_size, interpolation=cv2.INTER_NEAREST)
-    wall_mask = (room_map == WALL_CLASS).astype(np.uint8) * 255
+    wall_mask = np.isin(room_map, BOUNDARY_CLASSES).astype(np.uint8) * 255
     wall_mask = cv2.resize(wall_mask, original_size, interpolation=cv2.INTER_NEAREST)
     contours, hierarchy = cv2.findContours(wall_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -116,7 +118,9 @@ def _get_room_type(
     if interior_pixels.size == 0:
         return None
 
-    meaningful_pixels = interior_pixels[(interior_pixels != 0) & (interior_pixels != WALL_CLASS)]
+    meaningful_pixels = interior_pixels[
+        (interior_pixels != 0) & ~np.isin(interior_pixels, BOUNDARY_CLASSES)
+    ]
     if meaningful_pixels.size == 0:
         return None
 
