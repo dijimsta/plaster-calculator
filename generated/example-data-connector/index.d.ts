@@ -80,6 +80,63 @@ export interface CreateProjectFromUploadVariables {
   pageCount: number;
 }
 
+export interface CreateQuantitySourceData {
+  quantitySource_insert: QuantitySource_Key;
+}
+
+export interface CreateQuantitySourceVariables {
+  id: UUIDString;
+  measurementSource: string;
+  measurementPlasterType?: string | null;
+}
+
+export interface CreateQuoteData {
+  quote_insert: Quote_Key;
+}
+
+export interface CreateQuoteItemData {
+  quoteItem_insert: QuoteItem_Key;
+}
+
+export interface CreateQuoteItemTemplateData {
+  quoteItemTemplate_insert: QuoteItemTemplate_Key;
+}
+
+export interface CreateQuoteItemTemplateVariables {
+  id: UUIDString;
+  ownerId?: string | null;
+  scope: string;
+  systemKey?: string | null;
+  name: string;
+  hasKeywords: boolean;
+  keywords: string[];
+  quantitySourceId?: UUIDString | null;
+  sortOrder: number;
+}
+
+export interface CreateQuoteItemVariables {
+  id: UUIDString;
+  ownerId: string;
+  quoteId: UUIDString;
+  sourceTemplateId?: UUIDString | null;
+  displayOrder: number;
+  name: string;
+  quantity: number;
+  quantitySourceId?: UUIDString | null;
+  unitPriceCents: number;
+  materialUnitPriceCents: number;
+  labourUnitPriceCents: number;
+  matchedKeywords: string[];
+}
+
+export interface CreateQuoteVariables {
+  id: UUIDString;
+  ownerId: string;
+  projectId: UUIDString;
+  supplierId?: UUIDString | null;
+  status: string;
+}
+
 export interface CreateReminderData {
   reminder_insert: Reminder_Key;
 }
@@ -92,6 +149,16 @@ export interface CreateReminderVariables {
   name: string;
   status: string;
   dueAt: TimestampString;
+}
+
+export interface CreateSupplierData {
+  supplier_insert: Supplier_Key;
+}
+
+export interface CreateSupplierVariables {
+  id: UUIDString;
+  ownerId: string;
+  name: string;
 }
 
 export interface DeleteAccountContactData {
@@ -131,6 +198,39 @@ export interface DeleteProjectData {
 }
 
 export interface DeleteProjectVariables {
+  id: UUIDString;
+}
+
+export interface DeleteQuoteItemTemplateData {
+  quoteItemTemplate_delete?: QuoteItemTemplate_Key | null;
+}
+
+export interface DeleteQuoteItemTemplateVariables {
+  id: UUIDString;
+}
+
+export interface DeleteQuoteItemsData {
+  quoteItem_deleteMany: number;
+}
+
+export interface DeleteQuoteItemsVariables {
+  quoteId: UUIDString;
+}
+
+export interface DeleteSupplierData {
+  supplier_delete?: Supplier_Key | null;
+}
+
+export interface DeleteSupplierQuoteItemPriceData {
+  supplierQuoteItemPrice_delete?: SupplierQuoteItemPrice_Key | null;
+}
+
+export interface DeleteSupplierQuoteItemPriceVariables {
+  supplierId: UUIDString;
+  templateId: UUIDString;
+}
+
+export interface DeleteSupplierVariables {
   id: UUIDString;
 }
 
@@ -433,6 +533,32 @@ export interface Project_Key {
   __typename?: 'Project_Key';
 }
 
+export interface QuantitySource_Key {
+  id: UUIDString;
+  __typename?: 'QuantitySource_Key';
+}
+
+export interface QuoteItemTemplateConfig_Key {
+  ownerId: string;
+  templateId: UUIDString;
+  __typename?: 'QuoteItemTemplateConfig_Key';
+}
+
+export interface QuoteItemTemplate_Key {
+  id: UUIDString;
+  __typename?: 'QuoteItemTemplate_Key';
+}
+
+export interface QuoteItem_Key {
+  id: UUIDString;
+  __typename?: 'QuoteItem_Key';
+}
+
+export interface Quote_Key {
+  id: UUIDString;
+  __typename?: 'Quote_Key';
+}
+
 export interface Reminder_Key {
   id: UUIDString;
   __typename?: 'Reminder_Key';
@@ -445,6 +571,17 @@ export interface RenameProjectData {
 export interface RenameProjectVariables {
   id: UUIDString;
   name: string;
+}
+
+export interface SupplierQuoteItemPrice_Key {
+  supplierId: UUIDString;
+  templateId: UUIDString;
+  __typename?: 'SupplierQuoteItemPrice_Key';
+}
+
+export interface Supplier_Key {
+  id: UUIDString;
+  __typename?: 'Supplier_Key';
 }
 
 export interface TouchProjectData {
@@ -516,6 +653,45 @@ export interface UpdateProjectVariables {
   salesStatus?: string | null;
 }
 
+export interface UpdateQuoteData {
+  quote_update?: Quote_Key | null;
+}
+
+export interface UpdateQuoteItemData {
+  quoteItem_update?: QuoteItem_Key | null;
+}
+
+export interface UpdateQuoteItemTemplateData {
+  quoteItemTemplate_update?: QuoteItemTemplate_Key | null;
+}
+
+export interface UpdateQuoteItemTemplateVariables {
+  id: UUIDString;
+  name?: string | null;
+  hasKeywords?: boolean | null;
+  keywords?: string[] | null;
+  quantitySourceId?: UUIDString | null;
+  sortOrder?: number | null;
+}
+
+export interface UpdateQuoteItemVariables {
+  id: UUIDString;
+  displayOrder?: number | null;
+  name?: string | null;
+  quantity?: number | null;
+  quantitySourceId?: UUIDString | null;
+  unitPriceCents?: number | null;
+  materialUnitPriceCents?: number | null;
+  labourUnitPriceCents?: number | null;
+  matchedKeywords?: string[] | null;
+}
+
+export interface UpdateQuoteVariables {
+  id: UUIDString;
+  supplierId?: UUIDString | null;
+  status?: string | null;
+}
+
 export interface UpdateReminderData {
   reminder_update?: Reminder_Key | null;
 }
@@ -527,6 +703,39 @@ export interface UpdateReminderVariables {
   status?: string | null;
   dueAt?: TimestampString | null;
   completedAt?: TimestampString | null;
+}
+
+export interface UpdateSupplierData {
+  supplier_update?: Supplier_Key | null;
+}
+
+export interface UpdateSupplierVariables {
+  id: UUIDString;
+  name?: string | null;
+}
+
+export interface UpsertQuoteItemTemplateConfigData {
+  quoteItemTemplateConfig_upsert: QuoteItemTemplateConfig_Key;
+}
+
+export interface UpsertQuoteItemTemplateConfigVariables {
+  ownerId: string;
+  templateId: UUIDString;
+  enabled: boolean;
+  unitPriceCents: number;
+  materialUnitPriceCents: number;
+  labourUnitPriceCents: number;
+}
+
+export interface UpsertSupplierQuoteItemPriceData {
+  supplierQuoteItemPrice_upsert: SupplierQuoteItemPrice_Key;
+}
+
+export interface UpsertSupplierQuoteItemPriceVariables {
+  ownerId: string;
+  supplierId: UUIDString;
+  templateId: UUIDString;
+  materialUnitPriceCents: number;
 }
 
 export interface UpsertUserSettingsData {
@@ -638,6 +847,81 @@ export function updateFloorplanPage(vars: UpdateFloorplanPageVariables, options?
 export function updateFloorplanPages(dc: DataConnect, vars: UpdateFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPagesData>>;
 /** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPages' Mutation. Allow users to pass in custom DataConnect instances. */
 export function updateFloorplanPages(vars: UpdateFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPagesData>>;
+
+/** Generated Node Admin SDK operation action function for the 'CreateQuantitySource' Mutation. Allow users to execute without passing in DataConnect. */
+export function createQuantitySource(dc: DataConnect, vars: CreateQuantitySourceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuantitySourceData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateQuantitySource' Mutation. Allow users to pass in custom DataConnect instances. */
+export function createQuantitySource(vars: CreateQuantitySourceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuantitySourceData>>;
+
+/** Generated Node Admin SDK operation action function for the 'CreateQuoteItemTemplate' Mutation. Allow users to execute without passing in DataConnect. */
+export function createQuoteItemTemplate(dc: DataConnect, vars: CreateQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteItemTemplateData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateQuoteItemTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
+export function createQuoteItemTemplate(vars: CreateQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteItemTemplateData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpdateQuoteItemTemplate' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateQuoteItemTemplate(dc: DataConnect, vars: UpdateQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteItemTemplateData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateQuoteItemTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateQuoteItemTemplate(vars: UpdateQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteItemTemplateData>>;
+
+/** Generated Node Admin SDK operation action function for the 'DeleteQuoteItemTemplate' Mutation. Allow users to execute without passing in DataConnect. */
+export function deleteQuoteItemTemplate(dc: DataConnect, vars: DeleteQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuoteItemTemplateData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteQuoteItemTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
+export function deleteQuoteItemTemplate(vars: DeleteQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuoteItemTemplateData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpsertQuoteItemTemplateConfig' Mutation. Allow users to execute without passing in DataConnect. */
+export function upsertQuoteItemTemplateConfig(dc: DataConnect, vars: UpsertQuoteItemTemplateConfigVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertQuoteItemTemplateConfigData>>;
+/** Generated Node Admin SDK operation action function for the 'UpsertQuoteItemTemplateConfig' Mutation. Allow users to pass in custom DataConnect instances. */
+export function upsertQuoteItemTemplateConfig(vars: UpsertQuoteItemTemplateConfigVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertQuoteItemTemplateConfigData>>;
+
+/** Generated Node Admin SDK operation action function for the 'CreateSupplier' Mutation. Allow users to execute without passing in DataConnect. */
+export function createSupplier(dc: DataConnect, vars: CreateSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateSupplierData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateSupplier' Mutation. Allow users to pass in custom DataConnect instances. */
+export function createSupplier(vars: CreateSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateSupplierData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpdateSupplier' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateSupplier(dc: DataConnect, vars: UpdateSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateSupplierData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateSupplier' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateSupplier(vars: UpdateSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateSupplierData>>;
+
+/** Generated Node Admin SDK operation action function for the 'DeleteSupplier' Mutation. Allow users to execute without passing in DataConnect. */
+export function deleteSupplier(dc: DataConnect, vars: DeleteSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteSupplierData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteSupplier' Mutation. Allow users to pass in custom DataConnect instances. */
+export function deleteSupplier(vars: DeleteSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteSupplierData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpsertSupplierQuoteItemPrice' Mutation. Allow users to execute without passing in DataConnect. */
+export function upsertSupplierQuoteItemPrice(dc: DataConnect, vars: UpsertSupplierQuoteItemPriceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertSupplierQuoteItemPriceData>>;
+/** Generated Node Admin SDK operation action function for the 'UpsertSupplierQuoteItemPrice' Mutation. Allow users to pass in custom DataConnect instances. */
+export function upsertSupplierQuoteItemPrice(vars: UpsertSupplierQuoteItemPriceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertSupplierQuoteItemPriceData>>;
+
+/** Generated Node Admin SDK operation action function for the 'DeleteSupplierQuoteItemPrice' Mutation. Allow users to execute without passing in DataConnect. */
+export function deleteSupplierQuoteItemPrice(dc: DataConnect, vars: DeleteSupplierQuoteItemPriceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteSupplierQuoteItemPriceData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteSupplierQuoteItemPrice' Mutation. Allow users to pass in custom DataConnect instances. */
+export function deleteSupplierQuoteItemPrice(vars: DeleteSupplierQuoteItemPriceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteSupplierQuoteItemPriceData>>;
+
+/** Generated Node Admin SDK operation action function for the 'CreateQuote' Mutation. Allow users to execute without passing in DataConnect. */
+export function createQuote(dc: DataConnect, vars: CreateQuoteVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateQuote' Mutation. Allow users to pass in custom DataConnect instances. */
+export function createQuote(vars: CreateQuoteVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpdateQuote' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateQuote(dc: DataConnect, vars: UpdateQuoteVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateQuote' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateQuote(vars: UpdateQuoteVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteData>>;
+
+/** Generated Node Admin SDK operation action function for the 'DeleteQuoteItems' Mutation. Allow users to execute without passing in DataConnect. */
+export function deleteQuoteItems(dc: DataConnect, vars: DeleteQuoteItemsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuoteItemsData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteQuoteItems' Mutation. Allow users to pass in custom DataConnect instances. */
+export function deleteQuoteItems(vars: DeleteQuoteItemsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuoteItemsData>>;
+
+/** Generated Node Admin SDK operation action function for the 'CreateQuoteItem' Mutation. Allow users to execute without passing in DataConnect. */
+export function createQuoteItem(dc: DataConnect, vars: CreateQuoteItemVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteItemData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateQuoteItem' Mutation. Allow users to pass in custom DataConnect instances. */
+export function createQuoteItem(vars: CreateQuoteItemVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteItemData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpdateQuoteItem' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateQuoteItem(dc: DataConnect, vars: UpdateQuoteItemVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteItemData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateQuoteItem' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateQuoteItem(vars: UpdateQuoteItemVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteItemData>>;
 
 /** Generated Node Admin SDK operation action function for the 'ListProjectsByOwnerAndSalesStatus' Query. Allow users to execute without passing in DataConnect. */
 export function listProjectsByOwnerAndSalesStatus(dc: DataConnect, vars: ListProjectsByOwnerAndSalesStatusVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByOwnerAndSalesStatusData>>;

@@ -140,6 +140,111 @@ function updateFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) {
 }
 exports.updateFloorplanPages = updateFloorplanPages;
 
+function createQuantitySource(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateQuantitySource', inputVars, inputOpts);
+}
+exports.createQuantitySource = createQuantitySource;
+
+function createQuoteItemTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateQuoteItemTemplate', inputVars, inputOpts);
+}
+exports.createQuoteItemTemplate = createQuoteItemTemplate;
+
+function updateQuoteItemTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateQuoteItemTemplate', inputVars, inputOpts);
+}
+exports.updateQuoteItemTemplate = updateQuoteItemTemplate;
+
+function deleteQuoteItemTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteQuoteItemTemplate', inputVars, inputOpts);
+}
+exports.deleteQuoteItemTemplate = deleteQuoteItemTemplate;
+
+function upsertQuoteItemTemplateConfig(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpsertQuoteItemTemplateConfig', inputVars, inputOpts);
+}
+exports.upsertQuoteItemTemplateConfig = upsertQuoteItemTemplateConfig;
+
+function createSupplier(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateSupplier', inputVars, inputOpts);
+}
+exports.createSupplier = createSupplier;
+
+function updateSupplier(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateSupplier', inputVars, inputOpts);
+}
+exports.updateSupplier = updateSupplier;
+
+function deleteSupplier(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteSupplier', inputVars, inputOpts);
+}
+exports.deleteSupplier = deleteSupplier;
+
+function upsertSupplierQuoteItemPrice(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpsertSupplierQuoteItemPrice', inputVars, inputOpts);
+}
+exports.upsertSupplierQuoteItemPrice = upsertSupplierQuoteItemPrice;
+
+function deleteSupplierQuoteItemPrice(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteSupplierQuoteItemPrice', inputVars, inputOpts);
+}
+exports.deleteSupplierQuoteItemPrice = deleteSupplierQuoteItemPrice;
+
+function createQuote(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateQuote', inputVars, inputOpts);
+}
+exports.createQuote = createQuote;
+
+function updateQuote(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateQuote', inputVars, inputOpts);
+}
+exports.updateQuote = updateQuote;
+
+function deleteQuoteItems(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteQuoteItems', inputVars, inputOpts);
+}
+exports.deleteQuoteItems = deleteQuoteItems;
+
+function createQuoteItem(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateQuoteItem', inputVars, inputOpts);
+}
+exports.createQuoteItem = createQuoteItem;
+
+function updateQuoteItem(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateQuoteItem', inputVars, inputOpts);
+}
+exports.updateQuoteItem = updateQuoteItem;
+
 function listProjectsByOwnerAndSalesStatus(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

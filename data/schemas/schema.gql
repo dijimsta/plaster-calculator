@@ -99,3 +99,92 @@ type FloorplanPage
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
+
+type QuantitySource @table {
+    id: UUID! @default(expr: "uuidV4()")
+    measurementSource: String!
+    measurementPlasterType: String
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type QuoteItemTemplate @table {
+    id: UUID! @default(expr: "uuidV4()")
+    ownerId: String
+    scope: String!
+    systemKey: String @unique
+    name: String!
+    hasKeywords: Boolean! @default(value: false)
+    keywords: [String!]!
+    quantitySource: QuantitySource
+        @ref(fields: "quantitySourceId", references: "id")
+    quantitySourceId: UUID
+    sortOrder: Int! @default(value: 0)
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type QuoteItemTemplateConfig @table(key: ["ownerId", "templateId"]) {
+    ownerId: String!
+    template: QuoteItemTemplate! @ref(fields: "templateId", references: "id")
+    templateId: UUID!
+    enabled: Boolean! @default(value: true)
+    unitPriceCents: Int!
+    materialUnitPriceCents: Int!
+    labourUnitPriceCents: Int!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Supplier @table {
+    id: UUID! @default(expr: "uuidV4()")
+    ownerId: String!
+    name: String!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Quote @table {
+    id: UUID! @default(expr: "uuidV4()")
+    ownerId: String!
+    project: Project! @unique @ref(fields: "projectId", references: "id")
+    projectId: UUID!
+    supplier: Supplier @ref(fields: "supplierId", references: "id")
+    supplierId: UUID
+    status: String!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type QuoteItem @table {
+    id: UUID! @default(expr: "uuidV4()")
+    ownerId: String!
+    quote: Quote! @ref(fields: "quoteId", references: "id")
+    quoteId: UUID!
+    sourceTemplate: QuoteItemTemplate
+        @ref(fields: "sourceTemplateId", references: "id")
+    sourceTemplateId: UUID
+    displayOrder: Int!
+    name: String!
+    quantity: Float!
+    quantitySource: QuantitySource
+        @ref(fields: "quantitySourceId", references: "id")
+    quantitySourceId: UUID
+    unitPriceCents: Int!
+    materialUnitPriceCents: Int!
+    labourUnitPriceCents: Int!
+    matchedKeywords: [String!]!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type SupplierQuoteItemPrice @table(key: ["supplierId", "templateId"]) {
+    ownerId: String!
+    supplier: Supplier! @ref(fields: "supplierId", references: "id")
+    supplierId: UUID!
+    template: QuoteItemTemplate! @ref(fields: "templateId", references: "id")
+    templateId: UUID!
+    materialUnitPriceCents: Int!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
