@@ -5,8 +5,6 @@ import json
 import logging
 import os
 import time
-import zipfile
-from functools import lru_cache
 
 _MODULE_IMPORT_START = time.perf_counter()
 
@@ -15,9 +13,8 @@ os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
 
 from firebase_functions import https_fn, options
 
-# Heavy ML imports (torch, easyocr, cubicasa_*) are deferred into each
-# handler so the Firebase Functions emulator can discover the function
-# manifest within its 10s import budget.
+# Heavy ML imports are deferred into each handler so the Firebase Functions
+# emulator can discover the function manifest within its 10s import budget.
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
@@ -50,116 +47,30 @@ _log_info(
 )
 
 
-@lru_cache(maxsize=1)
-def _model():
-    from cubicasa_core import load_model
-
-    return load_model()
-
-
-def _read_image_bytes(request: https_fn.Request) -> tuple[bytes, str]:
-    upload = request.files.get("image") if request.files else None
-    if upload is None:
-        raise _http_error(400, "Missing 'image' file in multipart form data.")
-    return upload.read(), upload.filename or ""
-
-
-def _http_error(status: int, message: str) -> https_fn.HttpsError:
-    return _HttpStatusError(status, message)
-
-
-class _HttpStatusError(Exception):
-    def __init__(self, status: int, message: str) -> None:
-        super().__init__(message)
-        self.status = status
-        self.message = message
-
-
-def _error_response(status: int, message: str) -> https_fn.Response:
-    return https_fn.Response(
-        json.dumps({"detail": message}),
-        status=status,
-        mimetype="application/json",
-    )
-
-
-def _read_int_query(
-    request: https_fn.Request,
-    name: str,
-    default: int,
-    *,
-    minimum: int | None = None,
-) -> int:
-    raw = request.args.get(name)
-    if raw is None:
-        return default
-    try:
-        value = int(raw)
-    except ValueError as exc:
-        raise _http_error(422, f"Query parameter '{name}' must be an integer.") from exc
-    if minimum is not None and value < minimum:
-        raise _http_error(422, f"Query parameter '{name}' must be >= {minimum}.")
-    return value
-
-
-def _read_float_query(
-    request: https_fn.Request,
-    name: str,
-    default: float,
-    *,
-    minimum: float | None = None,
-    maximum: float | None = None,
-) -> float:
-    raw = request.args.get(name)
-    if raw is None:
-        return default
-    try:
-        value = float(raw)
-    except ValueError as exc:
-        raise _http_error(422, f"Query parameter '{name}' must be a number.") from exc
-    if minimum is not None and value < minimum:
-        raise _http_error(422, f"Query parameter '{name}' must be >= {minimum}.")
-    if maximum is not None and value > maximum:
-        raise _http_error(422, f"Query parameter '{name}' must be <= {maximum}.")
-    return value
-
-
-def _zip_response(filename: str, members: dict[str, bytes | str]) -> https_fn.Response:
-    buf = io.BytesIO()
-    with zipfile.ZipFile(buf, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
-        for name, payload in members.items():
-            archive.writestr(name, payload)
-    return https_fn.Response(
-        buf.getvalue(),
-        mimetype="application/zip",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
-    )
-
 
 @https_fn.on_request(memory=options.MemoryOption.MB_256, timeout_sec=60, cpu=1)
 def health(req: https_fn.Request) -> https_fn.Response:
-    return https_fn.Response(
-        json.dumps({"status": "ok"}),
-        mimetype="application/json",
-    )
+    return https_fn.Response(json.dumps({"status": "ok"}), mimetype="application/json")
 
 
 @https_fn.on_request(
     memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
 )
 def analyse(req: https_fn.Request) -> https_fn.Response:
-    from cubicasa_core import run_inference
+    from api.request import HttpStatusError, read_image_bytes
+    from api.response import error_response
+    from inference.service import InferenceService, load_model
 
     try:
-        image_bytes, _ = _read_image_bytes(req)
-        result = run_inference(image_bytes, _model())
-    except _HttpStatusError as exc:
-        return _error_response(exc.status, exc.message)
+        image_bytes, _ = read_image_bytes(req)
+        result = InferenceService(load_model()).run(image_bytes)
+    except HttpStatusError as exc:
+        return error_response(exc.status, exc.message)
     except (ValueError, OSError) as exc:
-        return _error_response(422, str(exc))
+        return error_response(422, str(exc))
     except Exception:
         logger.exception("Inference failed")
-        return _error_response(500, "Inference failed")
+        return error_response(500, "Inference failed")
     return https_fn.Response(json.dumps(result), mimetype="application/json")
 
 
@@ -167,66 +78,58 @@ def analyse(req: https_fn.Request) -> https_fn.Response:
     memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
 )
 def xixi_process(req: https_fn.Request) -> https_fn.Response:
-    from cubicasa_api.xixi import ROOM_TYPE_MIN_FRACTION, run_xixi_process
+    from api.request import HttpStatusError, read_float_query, read_int_query, read_image_bytes
+    from api.response import error_response, zip_response
+    from analysis.strategies.xixi import ROOM_TYPE_MIN_FRACTION
 
     try:
-        image_bytes, filename = _read_image_bytes(req)
-        min_area = _read_int_query(req, "min_area", 800, minimum=0)
-        room_type_min_fraction = _read_float_query(
-            req,
-            "room_type_min_fraction",
-            ROOM_TYPE_MIN_FRACTION,
-            minimum=0.0,
-            maximum=1.0,
+        image_bytes, filename = read_image_bytes(req)
+        min_area = read_int_query(req, "min_area", 800, minimum=0)
+        room_type_min_fraction = read_float_query(
+            req, "room_type_min_fraction", ROOM_TYPE_MIN_FRACTION, minimum=0.0, maximum=1.0
         )
-        result, floorplan_png = run_xixi_process(
-            image_bytes,
-            _model(),
-            source_file=filename,
-            min_area=min_area,
-            room_type_min_fraction=room_type_min_fraction,
-        )
-    except _HttpStatusError as exc:
-        return _error_response(exc.status, exc.message)
+        from analysis.schemas import XixiParams
+        from analysis.strategies.xixi import XixiStrategy
+        from inference.service import InferenceService, load_model
+        from segmentation.service import SegmentationService
+
+        strategy = XixiStrategy(InferenceService(load_model()), SegmentationService())
+        result, floorplan_png = strategy.run(image_bytes, XixiParams(filename, min_area, room_type_min_fraction))
+    except HttpStatusError as exc:
+        return error_response(exc.status, exc.message)
     except (ValueError, OSError) as exc:
-        return _error_response(422, str(exc))
+        return error_response(422, str(exc))
     except Exception:
         logger.exception("Xixi process endpoint failed")
-        return _error_response(500, "Xixi process endpoint failed")
-
-    return _zip_response(
-        "xixi-process.zip",
-        {"walls.json": json.dumps(result), "floorplan.png": floorplan_png},
-    )
+        return error_response(500, "Xixi process endpoint failed")
+    return zip_response("xixi-process.zip", {"walls.json": json.dumps(result), "floorplan.png": floorplan_png})
 
 
 @https_fn.on_request(memory=OCR_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=OCR_CPU)
 def ocr_flood_fill(req: https_fn.Request) -> https_fn.Response:
-    from cubicasa_api.ocr_flood_fill import run_ocr_flood_fill_process
+    from api.request import HttpStatusError, read_int_query, read_image_bytes
+    from api.response import error_response, zip_response
 
     try:
-        image_bytes, filename = _read_image_bytes(req)
-        min_area = _read_int_query(req, "min_area", 0, minimum=0)
-        wall_kernel_size = _read_int_query(req, "wall_kernel_size", 15, minimum=1)
-        result, floorplan_png = run_ocr_flood_fill_process(
-            image_bytes,
-            _model(),
-            source_file=filename,
-            min_area=min_area,
-            wall_kernel_size=wall_kernel_size,
-        )
-    except _HttpStatusError as exc:
-        return _error_response(exc.status, exc.message)
+        image_bytes, filename = read_image_bytes(req)
+        min_area = read_int_query(req, "min_area", 0, minimum=0)
+        wall_kernel_size = read_int_query(req, "wall_kernel_size", 15, minimum=1)
+        from analysis.schemas import OcrFloodFillParams
+        from analysis.strategies.ocr_flood_fill import OcrFloodFillStrategy
+        from inference.service import InferenceService, load_model
+        from ocr.service import OcrService
+        from segmentation.service import SegmentationService
+
+        strategy = OcrFloodFillStrategy(InferenceService(load_model()), SegmentationService(), OcrService())
+        result, floorplan_png = strategy.run(image_bytes, OcrFloodFillParams(filename, min_area, wall_kernel_size))
+    except HttpStatusError as exc:
+        return error_response(exc.status, exc.message)
     except (RuntimeError, ValueError, OSError) as exc:
-        return _error_response(422, str(exc))
+        return error_response(422, str(exc))
     except Exception:
         logger.exception("OCR flood-fill endpoint failed")
-        return _error_response(500, "OCR flood-fill endpoint failed")
-
-    return _zip_response(
-        "ocr-flood-fill.zip",
-        {"rooms.json": json.dumps(result), "floorplan.png": floorplan_png},
-    )
+        return error_response(500, "OCR flood-fill endpoint failed")
+    return zip_response("ocr-flood-fill.zip", {"rooms.json": json.dumps(result), "floorplan.png": floorplan_png})
 
 
 @https_fn.on_request(memory=OCR_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=OCR_CPU)
@@ -240,9 +143,12 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
         query=dict(req.args),
     )
 
+    from api.request import HttpStatusError, read_float_query, read_int_query, read_image_bytes
+    from api.response import error_response, zip_response
+
     try:
         read_started_at = time.perf_counter()
-        image_bytes, filename = _read_image_bytes(req)
+        image_bytes, filename = read_image_bytes(req)
         _log_info(
             "ocr_flood_fill_smoothed image read",
             elapsed_ms=_elapsed_ms(started_at),
@@ -251,23 +157,21 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
             read_ms=_elapsed_ms(read_started_at),
         )
 
-        min_area = _read_int_query(req, "min_area", 0, minimum=0)
-        wall_kernel_size = _read_int_query(req, "wall_kernel_size", 15, minimum=1)
-        simplify_epsilon_ratio = _read_float_query(
-            req, "simplify_epsilon_ratio", 0.005, minimum=0.0
-        )
-        ortho_tolerance_degrees = _read_float_query(
-            req, "ortho_tolerance_degrees", 8.0, minimum=0.0, maximum=45.0
-        )
-        min_point_distance_px = _read_float_query(
-            req, "min_point_distance_px", 3.0, minimum=0.0
-        )
+        min_area = read_int_query(req, "min_area", 0, minimum=0)
+        wall_kernel_size = read_int_query(req, "wall_kernel_size", 15, minimum=1)
+        simplify_epsilon_ratio = read_float_query(req, "simplify_epsilon_ratio", 0.005, minimum=0.0)
+        ortho_tolerance_degrees = read_float_query(req, "ortho_tolerance_degrees", 8.0, minimum=0.0, maximum=45.0)
+        min_point_distance_px = read_float_query(req, "min_point_distance_px", 3.0, minimum=0.0)
 
         import_started_at = time.perf_counter()
-        from cubicasa_api.ocr_flood_fill_smoothed import (
+        from analysis.schemas import OcrFloodFillSmoothedParams
+        from analysis.strategies.ocr_flood_fill_smoothed import (
             DEFAULT_UNKNOWN_ROOM_MIN_AREA,
-            run_ocr_flood_fill_smoothed_process,
+            OcrFloodFillSmoothedStrategy,
         )
+        from inference.service import InferenceService, load_model
+        from ocr.service import OcrService
+        from segmentation.service import SegmentationService
 
         _log_info(
             "ocr_flood_fill_smoothed imports loaded",
@@ -275,9 +179,7 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
             import_ms=_elapsed_ms(import_started_at),
         )
 
-        unknown_room_min_area = _read_int_query(
-            req, "unknown_room_min_area", DEFAULT_UNKNOWN_ROOM_MIN_AREA, minimum=0
-        )
+        unknown_room_min_area = read_int_query(req, "unknown_room_min_area", DEFAULT_UNKNOWN_ROOM_MIN_AREA, minimum=0)
         _log_info(
             "ocr_flood_fill_smoothed parameters parsed",
             elapsed_ms=_elapsed_ms(started_at),
@@ -290,18 +192,16 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
         )
 
         model_started_at = time.perf_counter()
-        model = _model()
+        model = load_model()
         _log_info(
             "ocr_flood_fill_smoothed model loaded",
             elapsed_ms=_elapsed_ms(started_at),
             model_ms=_elapsed_ms(model_started_at),
-            model_cached=_model.cache_info().hits > 0,
         )
 
         process_started_at = time.perf_counter()
-        result, floorplan_png = run_ocr_flood_fill_smoothed_process(
-            image_bytes,
-            model,
+        strategy = OcrFloodFillSmoothedStrategy(InferenceService(model), SegmentationService(), OcrService())
+        params = OcrFloodFillSmoothedParams(
             source_file=filename,
             min_area=min_area,
             wall_kernel_size=wall_kernel_size,
@@ -310,6 +210,7 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
             min_point_distance_px=min_point_distance_px,
             unknown_room_min_area=unknown_room_min_area,
         )
+        result, floorplan_png = strategy.run(image_bytes, params)
         _log_info(
             "ocr_flood_fill_smoothed processing completed",
             elapsed_ms=_elapsed_ms(started_at),
@@ -319,14 +220,14 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
             unknown_room_count=result.get("unknown_room_count"),
             floorplan_png_bytes=len(floorplan_png),
         )
-    except _HttpStatusError as exc:
+    except HttpStatusError as exc:
         _log_info(
             "ocr_flood_fill_smoothed request rejected",
             elapsed_ms=_elapsed_ms(started_at),
             status=exc.status,
             detail=exc.message,
         )
-        return _error_response(exc.status, exc.message)
+        return error_response(exc.status, exc.message)
     except (RuntimeError, ValueError, OSError) as exc:
         logger.exception("OCR flood-fill smoothed endpoint validation failed")
         _log_info(
@@ -335,20 +236,14 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
             error_type=type(exc).__name__,
             detail=str(exc),
         )
-        return _error_response(422, str(exc))
+        return error_response(422, str(exc))
     except Exception:
         logger.exception("OCR flood-fill smoothed endpoint failed")
-        _log_info(
-            "ocr_flood_fill_smoothed failed",
-            elapsed_ms=_elapsed_ms(started_at),
-        )
-        return _error_response(500, "OCR flood-fill smoothed endpoint failed")
+        _log_info("ocr_flood_fill_smoothed failed", elapsed_ms=_elapsed_ms(started_at))
+        return error_response(500, "OCR flood-fill smoothed endpoint failed")
 
-    _log_info(
-        "ocr_flood_fill_smoothed response ready",
-        elapsed_ms=_elapsed_ms(started_at),
-    )
-    return _zip_response(
+    _log_info("ocr_flood_fill_smoothed response ready", elapsed_ms=_elapsed_ms(started_at))
+    return zip_response(
         "ocr-flood-fill-smoothed.zip",
         {"rooms.json": json.dumps(result), "floorplan.png": floorplan_png},
     )
@@ -358,18 +253,20 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
     memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
 )
 def debug_segmentation(req: https_fn.Request) -> https_fn.Response:
-    from cubicasa_core import render_segmentation_map
+    from api.request import HttpStatusError, read_image_bytes
+    from api.response import error_response
+    from inference.service import InferenceService, load_model
 
     try:
-        image_bytes, _ = _read_image_bytes(req)
-        seg_img = render_segmentation_map(image_bytes, _model())
-    except _HttpStatusError as exc:
-        return _error_response(exc.status, exc.message)
+        image_bytes, _ = read_image_bytes(req)
+        seg_img = InferenceService(load_model()).render_segmentation_map(image_bytes)
+    except HttpStatusError as exc:
+        return error_response(exc.status, exc.message)
     except (ValueError, OSError) as exc:
-        return _error_response(422, str(exc))
+        return error_response(422, str(exc))
     except Exception:
         logger.exception("Segmentation render failed")
-        return _error_response(500, "Segmentation render failed")
+        return error_response(500, "Segmentation render failed")
 
     buf = io.BytesIO()
     seg_img.save(buf, format="PNG")
@@ -380,17 +277,19 @@ def debug_segmentation(req: https_fn.Request) -> https_fn.Response:
     memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
 )
 def debug_get_polygons(req: https_fn.Request) -> https_fn.Response:
-    from cubicasa_core import run_get_polygons
+    from api.request import HttpStatusError, read_float_query, read_image_bytes
+    from api.response import error_response
+    from inference.service import InferenceService, load_model
 
     try:
-        image_bytes, _ = _read_image_bytes(req)
-        threshold = _read_float_query(req, "threshold", 0.5, minimum=0.0, maximum=1.0)
-        result = run_get_polygons(image_bytes, _model(), threshold=threshold)
-    except _HttpStatusError as exc:
-        return _error_response(exc.status, exc.message)
+        image_bytes, _ = read_image_bytes(req)
+        threshold = read_float_query(req, "threshold", 0.5, minimum=0.0, maximum=1.0)
+        result = InferenceService(load_model()).run_get_polygons(image_bytes, threshold=threshold)
+    except HttpStatusError as exc:
+        return error_response(exc.status, exc.message)
     except (ValueError, OSError) as exc:
-        return _error_response(422, str(exc))
+        return error_response(422, str(exc))
     except Exception:
         logger.exception("get_polygons debug endpoint failed")
-        return _error_response(500, "get_polygons debug endpoint failed")
+        return error_response(500, "get_polygons debug endpoint failed")
     return https_fn.Response(json.dumps(result), mimetype="application/json")

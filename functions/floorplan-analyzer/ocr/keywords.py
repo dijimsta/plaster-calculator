@@ -1,0 +1,178 @@
+OCR_KEYWORDS = (
+    # Living / open areas
+    "living",
+    "lounge",
+    "family",
+    "dining",
+    "meals",
+    "rumpus",
+    "retreat",
+    "theatre",
+    "media",
+    "activity",
+    "games",
+    "open plan",
+
+    # Kitchen / food / utility
+    "kitchen",
+    "ktch",
+    "pantry",
+    "wip",
+    "w.i.p",
+    "walk in pantry",
+    "butler",
+    "butlers",
+    "butler's",
+    "scullery",
+
+    # Bedrooms
+    "bed",
+    "bedroom",
+    "master",
+    "guest",
+    "robe",
+    "wir",
+    "w.i.r",
+    "walk in robe",
+
+    # Wet areas
+    "bath",
+    "bathroom",
+    "ens",
+    "ensuite",
+    "powder",
+    "pdr",
+    "wc",
+    "toilet",
+    "laundry",
+    "ldry",
+    "l'dry",
+    "linen",
+
+    # Entry / circulation
+    "entry",
+    "foyer",
+    "hall",
+    "hallway",
+    "corridor",
+    "passage",
+    "mud",
+    "mudroom",
+
+    # Work / storage
+    "study",
+    "office",
+    "desk",
+    "nook",
+    "store",
+    "storage",
+    "linen",
+    "cupboard",
+    "w.i.l",
+    "wil",
+
+    # Garage / exterior covered spaces
+    "garage",
+    "carport",
+    "alfresco",
+    "verandah",
+    "veranda",
+    "porch",
+    "patio",
+    "deck",
+    "terrace",
+    "balcony",
+
+    # Other common labels
+    "prayer",
+    "gym",
+)
+
+OCR_ROOM_TYPE_BY_KEYWORD: dict[str, str] = {
+    # Living / open areas
+    "living": "Living Room",
+    "lounge": "Living Room",
+    "family": "Living Room",
+    "dining": "Living Room",
+    "meals": "Living Room",
+    "rumpus": "Living Room",
+    "retreat": "Living Room",
+    "theatre": "Living Room",
+    "media": "Living Room",
+    "activity": "Living Room",
+    "games": "Living Room",
+    "open plan": "Living Room",
+    "study": "Living Room",
+    "office": "Living Room",
+    "desk": "Living Room",
+    "nook": "Living Room",
+    "prayer": "Living Room",
+    "gym": "Living Room",
+
+    # Kitchen / food / utility
+    "kitchen": "Kitchen",
+    "ktch": "Kitchen",
+    "scullery": "Kitchen",
+
+    # Bedrooms
+    "bed": "Bed Room",
+    "bedroom": "Bed Room",
+    "master": "Bed Room",
+    "guest": "Bed Room",
+
+    # Wet areas
+    "bath": "Bath",
+    "bathroom": "Bath",
+    "ens": "Bath",
+    "ensuite": "Bath",
+    "powder": "Toilet",
+    "pdr": "Toilet",
+    "wc": "Toilet",
+    "toilet": "Toilet",
+
+    # Laundry
+    "laundry": "Laundry",
+    "ldry": "Laundry",
+    "l'dry": "Laundry",
+
+    # Entry / circulation
+    "entry": "Entry",
+    "foyer": "Entry",
+    "hall": "Entry",
+    "hallway": "Entry",
+    "corridor": "Entry",
+    "passage": "Entry",
+    "mud": "Entry",
+    "mudroom": "Entry",
+
+    # Work / storage
+    "pantry": "Storage",
+    "wip": "Storage",
+    "w.i.p": "Storage",
+    "walk in pantry": "Storage",
+    "butler": "Storage",
+    "butlers": "Storage",
+    "butler's": "Storage",
+    "robe": "Storage",
+    "wir": "Storage",
+    "w.i.r": "Storage",
+    "walk in robe": "Storage",
+    "store": "Storage",
+    "storage": "Storage",
+    "linen": "Storage",
+    "cupboard": "Storage",
+    "w.i.l": "Storage",
+    "wil": "Storage",
+
+    # Garage / exterior covered spaces
+    "garage": "Garage",
+    "carport": "Garage",
+    "alfresco": "Outdoor",
+    "verandah": "Outdoor",
+    "veranda": "Outdoor",
+    "porch": "Outdoor",
+    "patio": "Outdoor",
+    "deck": "Outdoor",
+    "terrace": "Outdoor",
+    "balcony": "Outdoor",
+}

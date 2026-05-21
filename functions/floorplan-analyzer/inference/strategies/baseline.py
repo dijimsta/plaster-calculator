@@ -2,21 +2,21 @@
 
 Resizes the image so each side is rounded up to the nearest multiple of 32,
 normalises to [-1, 1] with mean=0.5/std=0.5 and runs the model directly. This
-is what `cubicasa_core.run_inference` did before the strategy refactor and is
-preserved here as the default for backwards compatibility.
+is what `run_inference` did before the strategy refactor and is preserved here
+as the default for backwards compatibility.
 """
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
 
-from cubicasa_core.postprocess import (
+from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
     split_outputs,
 )
-from cubicasa_core.preprocess import load_pil, prepare
-from cubicasa_core.strategies.base import InferenceStrategy
+from inference.preprocess import load_pil, prepare
+from inference.strategies.base import InferenceStrategy
 
 
 class BaselineStrategy(InferenceStrategy):

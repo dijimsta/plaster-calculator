@@ -40,6 +40,18 @@ The web app uses Firebase App Check with reCAPTCHA v3. For local development, do
 
 Debug tokens are development credentials. Keep them out of committed source, and remove old tokens from Firebase Console when they are no longer needed. See Firebase's App Check debug provider guide for the full flow: https://firebase.google.com/docs/app-check/web/debug-provider?authuser=0#localhost.
 
+## floorplan-analyzer local setup
+
+### macOS SSL fix (python.org installer only)
+
+If you installed Python from [python.org](https://www.python.org/downloads/) and see an `ssl.SSLCertVerificationError` when hitting the `ocr_flood_fill_smoothed` function locally, the python.org installer ships without SSL certificates wired up. Fix it once by running:
+
+```bash
+open "/Applications/Python 3.13/Install Certificates.command"
+```
+
+This creates a symlink to the `certifi` bundle so Python can verify HTTPS connections. Devs on Homebrew or pyenv are not affected.
+
 ## Firebase Storage CORS
 
 The production Firebase Storage bucket needs a CORS policy so the web app can load uploaded images directly from `firebasestorage.googleapis.com`. The allowed origins live in [`storage.cors.json`](./storage.cors.json).

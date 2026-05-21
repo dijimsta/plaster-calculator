@@ -11,8 +11,8 @@ import numpy as np
 import torch
 from floortrans.post_prosessing import get_polygons, split_prediction
 
-from cubicasa_core.preprocess import PreparedImage
-from cubicasa_core.result import _ROOM_LABELS, build_result
+from inference.preprocess import PreparedImage
+from segmentation.result import _ROOM_LABELS, build_result
 
 # Room class indices to skip when extracting room polygons from the segmap
 _SEGMAP_SKIP_CLASSES = {
@@ -56,12 +56,7 @@ def walls_from_segmap(
     prepared: PreparedImage,
     min_perimeter_px: int = 20,
 ) -> list[dict]:
-    """Extract wall polygons directly from the wall class in the room segmentation.
-
-    Traces contours of wall-class (index 2) pixels and returns polygons mapped
-    to original image space. Filters by perimeter rather than area because wall
-    regions are thin lines (1-3px wide) whose enclosed area is near-zero.
-    """
+    """Extract wall polygons directly from the wall class in the room segmentation."""
     room_map = np.argmax(rooms, axis=0).astype(np.uint8)
     mask = (room_map == 2).astype(np.uint8) * 255  # Wall class
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -87,12 +82,7 @@ def rooms_from_mask(
     prepared: PreparedImage,
     min_area_px: int = 500,
 ) -> list[dict]:
-    """Extract room polygons by treating wall pixels as boundaries.
-
-    Finds connected components of all non-wall, non-background, non-outdoor
-    pixels so that wall regions act as true separators between rooms. Each
-    component is labelled by the majority class of its pixels.
-    """
+    """Extract room polygons by treating wall pixels as boundaries."""
     room_map = np.argmax(rooms, axis=0).astype(np.int32)
 
     valid = (~np.isin(room_map, list(_SEGMAP_SKIP_CLASSES))).astype(np.uint8)
@@ -130,13 +120,8 @@ def rooms_from_segmap(
     prepared: PreparedImage,
     min_area_px: int = 500,
 ) -> list[dict]:
-    """Extract room polygons directly from the argmax of the room segmentation.
-
-    Finds connected regions for each room class (skipping Background, Outdoor,
-    Wall) and returns their contour polygons mapped to original image space.
-    Coordinates are in the original image's pixel space.
-    """
-    room_map = np.argmax(rooms, axis=0).astype(np.uint8)  # (H, W)
+    """Extract room polygons directly from the argmax of the room segmentation."""
+    room_map = np.argmax(rooms, axis=0).astype(np.uint8)
 
     result = []
     for cls_idx, label in enumerate(_ROOM_LABELS):

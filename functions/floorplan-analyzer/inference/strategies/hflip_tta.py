@@ -22,13 +22,13 @@ from __future__ import annotations
 import torch
 import torch.nn as nn
 
-from cubicasa_core.postprocess import (
+from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
     split_outputs,
 )
-from cubicasa_core.preprocess import detect_drawing_bbox, load_pil, prepare
-from cubicasa_core.strategies.base import InferenceStrategy
+from inference.preprocess import detect_drawing_bbox, load_pil, prepare
+from inference.strategies.base import InferenceStrategy
 
 
 def _hflip_channel_permutation(n: int = 21) -> list[int]:
@@ -62,8 +62,6 @@ class _HFlipTTABase(InferenceStrategy):
             out_orig = model(prepared.tensor)
             out_flip = model(torch.flip(prepared.tensor, dims=(-1,)))
 
-        # Bring the flipped pass back into the original orientation:
-        # spatially un-flip the W axis, then permute heatmap channels.
         out_flip_unflipped = torch.flip(out_flip, dims=(-1,))
         heat_orig, room_orig, icon_orig = torch.split(out_orig, [21, 12, 11], dim=1)
         heat_flip, room_flip, icon_flip = torch.split(
@@ -72,7 +70,6 @@ class _HFlipTTABase(InferenceStrategy):
         perm = _hflip_channel_permutation(21)
         heat_flip_perm = heat_flip[:, perm, :, :]
 
-        # Average raw logits (rooms/icons get softmax later in split_prediction).
         heat_avg = (heat_orig + heat_flip_perm) / 2.0
         room_avg = (room_orig + room_flip) / 2.0
         icon_avg = (icon_orig + icon_flip) / 2.0
