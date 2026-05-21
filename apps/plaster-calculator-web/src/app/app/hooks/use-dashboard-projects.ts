@@ -93,7 +93,7 @@ export function useDashboardProjects(): DashboardProjectsState {
                         : "Unable to poll processing status",
                 );
             }
-        }, 3000);
+        }, 10_000);
         return () => window.clearInterval(timer);
     }, [processingProjectId]);
 
