@@ -10,9 +10,8 @@ pnpm lint
 pnpm format
 ```
 
-`pnpm lint` runs ESLint and ruff. `pnpm format` runs Prettier and ruff format. Run lint before format — lint
-may reorder or rewrite code that format would then need to fix. All three must pass with no errors before the
-commit is made. If you cannot run them yourself, ask the user to do it first.
+Run lint before format — lint may reorder or rewrite code that format would then need to fix. All three must pass
+with no errors before the commit is made. If you cannot run them yourself, ask the user to do it first.
 
 These checks must also be run before opening a pull request. If any check modifies files (e.g. prettier rewrites),
 stage and commit those changes before creating the PR.

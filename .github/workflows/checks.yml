@@ -47,7 +47,7 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Check formatting (TypeScript)
-              run: pnpm format:ts:check
+              run: pnpm format:check
 
             - name: Check formatting (Python)
               run: uv run ruff format --check functions/floorplan-analyzer/
@@ -72,7 +72,7 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Lint (TypeScript)
-              run: pnpm lint:ts:check
+              run: pnpm lint:check
 
             - name: Lint (Python)
               run: uv run ruff check functions/floorplan-analyzer/
