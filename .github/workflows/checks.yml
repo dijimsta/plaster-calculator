@@ -27,7 +27,7 @@ jobs:
             - name: Build
               run: pnpm build
 
-    format-ts:
+    format:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -41,23 +41,18 @@ jobs:
                   node-version: 24
                   cache: pnpm
 
+            - uses: astral-sh/setup-uv@v5
+
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Check formatting
+            - name: Check formatting (TypeScript)
               run: pnpm format:ts:check
 
-    format-python:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-
-            - uses: astral-sh/setup-uv@v5
-
-            - name: Check formatting
+            - name: Check formatting (Python)
               run: uv run ruff format --check functions/floorplan-analyzer/
 
-    lint-ts:
+    lint:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -71,20 +66,15 @@ jobs:
                   node-version: 24
                   cache: pnpm
 
+            - uses: astral-sh/setup-uv@v5
+
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Lint
+            - name: Lint (TypeScript)
               run: pnpm lint:ts:check
 
-    lint-python:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-
-            - uses: astral-sh/setup-uv@v5
-
-            - name: Lint
+            - name: Lint (Python)
               run: uv run ruff check functions/floorplan-analyzer/
 
     dataconnect-dry-run:
