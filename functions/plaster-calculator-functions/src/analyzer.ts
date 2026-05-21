@@ -217,7 +217,6 @@ export function analyzerItemToOverlayArea(
 
     const roomType = item.room_type ?? null;
     const isOutdoor = roomType === "Outdoor";
-    const defaultPlasterType = defaultPlasterTypeForRoom(roomType);
     const candidateLabel =
         (typeof item.label === "string" && item.label.trim()) ||
         (roomType ? roomType : "") ||
@@ -227,8 +226,8 @@ export function analyzerItemToOverlayArea(
         id: randomUUID(),
         label: candidateLabel,
         points,
-        wallPlasterType: defaultPlasterType,
-        ceilingPlasterType: defaultPlasterType,
+        wallPlasterType: defaultWallPlasterTypeForRoom(roomType),
+        ceilingPlasterType: defaultCeilingPlasterTypeForRoom(roomType),
         ceilingMode: "flat",
         isOutdoor,
         source: "detected",
@@ -280,6 +279,12 @@ function applyAnalyzerSourceFields(
     }
 }
 
-export function defaultPlasterTypeForRoom(roomType: string | null): string {
+export function defaultWallPlasterTypeForRoom(roomType: string | null): string {
     return roomType === "Bath" ? "Water Resistant" : "Recessed Edge";
+}
+
+export function defaultCeilingPlasterTypeForRoom(
+    roomType: string | null,
+): string {
+    return roomType === "Outdoor" ? "Water Resistant" : "Recessed Edge";
 }
