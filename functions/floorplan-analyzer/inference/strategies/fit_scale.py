@@ -6,16 +6,17 @@ on a side, so the network sees floor-plan elements at a much smaller relative
 scale than during training. Down-scaling to a familiar resolution often reduces
 false detections in dimension lines and title-block text.
 """
+
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
-
 from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
     split_outputs,
 )
+
 from inference.preprocess import load_pil, prepare
 from inference.strategies.base import InferenceStrategy
 

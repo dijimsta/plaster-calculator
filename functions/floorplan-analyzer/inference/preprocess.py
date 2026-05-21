@@ -5,6 +5,7 @@ spatial size, but its internal max-pooling stack requires both height and width
 to be multiples of 32. Strategies build their preprocessing on top of these
 primitives.
 """
+
 from __future__ import annotations
 
 import io
@@ -34,10 +35,10 @@ class PreparedImage:
     `to_original_xy`.
     """
 
-    tensor: torch.Tensor                # (1, 3, H, W) in [-1, 1]
-    infer_shape: tuple[int, int]        # (H, W) of the inference tensor
+    tensor: torch.Tensor  # (1, 3, H, W) in [-1, 1]
+    infer_shape: tuple[int, int]  # (H, W) of the inference tensor
     crop_xyxy: tuple[int, int, int, int]  # (x0, y0, x1, y1) in original image coords
-    original_size: tuple[int, int]      # (W, H) of the original image
+    original_size: tuple[int, int]  # (W, H) of the original image
 
     def to_original_xy(self, polygon_xy: np.ndarray) -> np.ndarray:
         """Map (N, 2) polygon coords from inference space back to the original
@@ -81,7 +82,9 @@ def fit_long_edge(image: Image.Image, target: int) -> Image.Image:
     if long_edge == target:
         return image
     scale = target / long_edge
-    return image.resize((max(1, int(round(w * scale))), max(1, int(round(h * scale)))), Image.LANCZOS)
+    return image.resize(
+        (max(1, int(round(w * scale))), max(1, int(round(h * scale)))), Image.LANCZOS
+    )
 
 
 def fit_short_edge(image: Image.Image, target: int) -> Image.Image:
@@ -91,7 +94,9 @@ def fit_short_edge(image: Image.Image, target: int) -> Image.Image:
     if short_edge == target:
         return image
     scale = target / short_edge
-    return image.resize((max(1, int(round(w * scale))), max(1, int(round(h * scale)))), Image.LANCZOS)
+    return image.resize(
+        (max(1, int(round(w * scale))), max(1, int(round(h * scale)))), Image.LANCZOS
+    )
 
 
 def detect_drawing_bbox(
@@ -126,7 +131,9 @@ def detect_drawing_bbox(
     density = cv2.boxFilter(ink, ddepth=cv2.CV_32F, ksize=(win, win))
     dense = (density > density_threshold).astype(np.uint8) * 255
 
-    n_labels, _labels, stats, _ = cv2.connectedComponentsWithStats(dense, connectivity=8)
+    n_labels, _labels, stats, _ = cv2.connectedComponentsWithStats(
+        dense, connectivity=8
+    )
     if n_labels <= 1:
         return 0, 0, w, h
     areas = stats[1:, cv2.CC_STAT_AREA]

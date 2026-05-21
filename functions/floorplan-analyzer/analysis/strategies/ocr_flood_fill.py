@@ -4,13 +4,13 @@ import io
 
 import cv2
 import numpy as np
+from inference.service import InferenceService
+from ocr.schemas import OcrSeed
+from ocr.service import OcrService
 from PIL import Image, ImageDraw, ImageFont
+from segmentation.service import SegmentationService
 
 from analysis.schemas import OcrFloodFillParams
-from inference.service import InferenceService
-from ocr.service import OcrService
-from ocr.schemas import OcrSeed
-from segmentation.service import SegmentationService
 
 WALL_CLASS = 2
 DEFAULT_WALL_KERNEL_SIZE = 15
@@ -37,7 +37,9 @@ class OcrFloodFillStrategy:
         wall_mask = (room_map_full == WALL_CLASS).astype(np.uint8)
         wall_mask_closed = _close_wall_mask(wall_mask, params.wall_kernel_size)
         seeds = self.ocr.find_seeds(image)
-        rooms_result = _rooms_from_seeds(wall_mask_closed, seeds, min_area=params.min_area)
+        rooms_result = _rooms_from_seeds(
+            wall_mask_closed, seeds, min_area=params.min_area
+        )
 
         result = {
             "source_file": params.source_file,
@@ -117,8 +119,7 @@ def _rooms_from_seeds(
                     "ocr_confidence": seed["confidence"],
                     "seed": [cx, cy],
                     "polygon": [
-                        [round(float(px), 1), round(float(py), 1)]
-                        for px, py in polygon
+                        [round(float(px), 1), round(float(py), 1)] for px, py in polygon
                     ],
                     "bbox": [int(x), int(y), int(w), int(h)],
                     "area_px": contour_area,

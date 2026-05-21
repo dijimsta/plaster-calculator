@@ -12,7 +12,6 @@ OCR_KEYWORDS = (
     "activity",
     "games",
     "open plan",
-
     # Kitchen / food / utility
     "kitchen",
     "ktch",
@@ -24,7 +23,6 @@ OCR_KEYWORDS = (
     "butlers",
     "butler's",
     "scullery",
-
     # Bedrooms
     "bed",
     "bedroom",
@@ -34,7 +32,6 @@ OCR_KEYWORDS = (
     "wir",
     "w.i.r",
     "walk in robe",
-
     # Wet areas
     "bath",
     "bathroom",
@@ -48,7 +45,6 @@ OCR_KEYWORDS = (
     "ldry",
     "l'dry",
     "linen",
-
     # Entry / circulation
     "entry",
     "foyer",
@@ -58,7 +54,6 @@ OCR_KEYWORDS = (
     "passage",
     "mud",
     "mudroom",
-
     # Work / storage
     "study",
     "office",
@@ -70,7 +65,6 @@ OCR_KEYWORDS = (
     "cupboard",
     "w.i.l",
     "wil",
-
     # Garage / exterior covered spaces
     "garage",
     "carport",
@@ -82,7 +76,6 @@ OCR_KEYWORDS = (
     "deck",
     "terrace",
     "balcony",
-
     # Other common labels
     "prayer",
     "gym",
@@ -108,18 +101,15 @@ OCR_ROOM_TYPE_BY_KEYWORD: dict[str, str] = {
     "nook": "Living Room",
     "prayer": "Living Room",
     "gym": "Living Room",
-
     # Kitchen / food / utility
     "kitchen": "Kitchen",
     "ktch": "Kitchen",
     "scullery": "Kitchen",
-
     # Bedrooms
     "bed": "Bed Room",
     "bedroom": "Bed Room",
     "master": "Bed Room",
     "guest": "Bed Room",
-
     # Wet areas
     "bath": "Bath",
     "bathroom": "Bath",
@@ -129,12 +119,10 @@ OCR_ROOM_TYPE_BY_KEYWORD: dict[str, str] = {
     "pdr": "Toilet",
     "wc": "Toilet",
     "toilet": "Toilet",
-
     # Laundry
     "laundry": "Laundry",
     "ldry": "Laundry",
     "l'dry": "Laundry",
-
     # Entry / circulation
     "entry": "Entry",
     "foyer": "Entry",
@@ -144,7 +132,6 @@ OCR_ROOM_TYPE_BY_KEYWORD: dict[str, str] = {
     "passage": "Entry",
     "mud": "Entry",
     "mudroom": "Entry",
-
     # Work / storage
     "pantry": "Storage",
     "wip": "Storage",
@@ -163,7 +150,6 @@ OCR_ROOM_TYPE_BY_KEYWORD: dict[str, str] = {
     "cupboard": "Storage",
     "w.i.l": "Storage",
     "wil": "Storage",
-
     # Garage / exterior covered spaces
     "garage": "Garage",
     "carport": "Garage",

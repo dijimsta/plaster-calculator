@@ -10,16 +10,17 @@ morphological closing), bounds it, and crops to that region before running
 inference. Polygons are produced in original-image coordinates so the overlay
 naturally lines up with the input.
 """
+
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
-
 from segmentation.postprocess import (
     build_result_in_original_space,
     polygons_from_predictions,
     split_outputs,
 )
+
 from inference.preprocess import detect_drawing_bbox, load_pil, prepare
 from inference.strategies.base import InferenceStrategy
 

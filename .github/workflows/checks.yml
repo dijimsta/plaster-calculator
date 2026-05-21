@@ -27,7 +27,7 @@ jobs:
             - name: Build
               run: pnpm build
 
-    format:
+    format-ts:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -45,9 +45,19 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Check formatting
-              run: pnpm format:check
+              run: pnpm format:ts:check
 
-    lint:
+    format-python:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: astral-sh/setup-uv@v5
+
+            - name: Check formatting
+              run: uv run ruff format --check functions/floorplan-analyzer/
+
+    lint-ts:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -65,7 +75,17 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Lint
-              run: pnpm lint:check
+              run: pnpm lint:ts:check
+
+    lint-python:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: astral-sh/setup-uv@v5
+
+            - name: Lint
+              run: uv run ruff check functions/floorplan-analyzer/
 
     dataconnect-dry-run:
         runs-on: ubuntu-latest

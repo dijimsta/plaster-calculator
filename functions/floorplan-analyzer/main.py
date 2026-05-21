@@ -11,7 +11,7 @@ _MODULE_IMPORT_START = time.perf_counter()
 os.environ.setdefault("EASYOCR_MODULE_PATH", "/tmp/easyocr")
 os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
 
-from firebase_functions import https_fn, options
+from firebase_functions import https_fn, options  # noqa: E402
 
 # Heavy ML imports are deferred into each handler so the Firebase Functions
 # emulator can discover the function manifest within its 10s import budget.
@@ -47,7 +47,6 @@ _log_info(
 )
 
 
-
 @https_fn.on_request(memory=options.MemoryOption.MB_256, timeout_sec=60, cpu=1)
 def health(req: https_fn.Request) -> https_fn.Response:
     return https_fn.Response(json.dumps({"status": "ok"}), mimetype="application/json")
@@ -78,15 +77,24 @@ def analyse(req: https_fn.Request) -> https_fn.Response:
     memory=INFERENCE_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=INFERENCE_CPU
 )
 def xixi_process(req: https_fn.Request) -> https_fn.Response:
-    from api.request import HttpStatusError, read_float_query, read_int_query, read_image_bytes
-    from api.response import error_response, zip_response
     from analysis.strategies.xixi import ROOM_TYPE_MIN_FRACTION
+    from api.request import (
+        HttpStatusError,
+        read_float_query,
+        read_image_bytes,
+        read_int_query,
+    )
+    from api.response import error_response, zip_response
 
     try:
         image_bytes, filename = read_image_bytes(req)
         min_area = read_int_query(req, "min_area", 800, minimum=0)
         room_type_min_fraction = read_float_query(
-            req, "room_type_min_fraction", ROOM_TYPE_MIN_FRACTION, minimum=0.0, maximum=1.0
+            req,
+            "room_type_min_fraction",
+            ROOM_TYPE_MIN_FRACTION,
+            minimum=0.0,
+            maximum=1.0,
         )
         from analysis.schemas import XixiParams
         from analysis.strategies.xixi import XixiStrategy
@@ -94,7 +102,9 @@ def xixi_process(req: https_fn.Request) -> https_fn.Response:
         from segmentation.service import SegmentationService
 
         strategy = XixiStrategy(InferenceService(load_model()), SegmentationService())
-        result, floorplan_png = strategy.run(image_bytes, XixiParams(filename, min_area, room_type_min_fraction))
+        result, floorplan_png = strategy.run(
+            image_bytes, XixiParams(filename, min_area, room_type_min_fraction)
+        )
     except HttpStatusError as exc:
         return error_response(exc.status, exc.message)
     except (ValueError, OSError) as exc:
@@ -102,12 +112,15 @@ def xixi_process(req: https_fn.Request) -> https_fn.Response:
     except Exception:
         logger.exception("Xixi process endpoint failed")
         return error_response(500, "Xixi process endpoint failed")
-    return zip_response("xixi-process.zip", {"walls.json": json.dumps(result), "floorplan.png": floorplan_png})
+    return zip_response(
+        "xixi-process.zip",
+        {"walls.json": json.dumps(result), "floorplan.png": floorplan_png},
+    )
 
 
 @https_fn.on_request(memory=OCR_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=OCR_CPU)
 def ocr_flood_fill(req: https_fn.Request) -> https_fn.Response:
-    from api.request import HttpStatusError, read_int_query, read_image_bytes
+    from api.request import HttpStatusError, read_image_bytes, read_int_query
     from api.response import error_response, zip_response
 
     try:
@@ -120,8 +133,12 @@ def ocr_flood_fill(req: https_fn.Request) -> https_fn.Response:
         from ocr.service import OcrService
         from segmentation.service import SegmentationService
 
-        strategy = OcrFloodFillStrategy(InferenceService(load_model()), SegmentationService(), OcrService())
-        result, floorplan_png = strategy.run(image_bytes, OcrFloodFillParams(filename, min_area, wall_kernel_size))
+        strategy = OcrFloodFillStrategy(
+            InferenceService(load_model()), SegmentationService(), OcrService()
+        )
+        result, floorplan_png = strategy.run(
+            image_bytes, OcrFloodFillParams(filename, min_area, wall_kernel_size)
+        )
     except HttpStatusError as exc:
         return error_response(exc.status, exc.message)
     except (RuntimeError, ValueError, OSError) as exc:
@@ -129,7 +146,10 @@ def ocr_flood_fill(req: https_fn.Request) -> https_fn.Response:
     except Exception:
         logger.exception("OCR flood-fill endpoint failed")
         return error_response(500, "OCR flood-fill endpoint failed")
-    return zip_response("ocr-flood-fill.zip", {"rooms.json": json.dumps(result), "floorplan.png": floorplan_png})
+    return zip_response(
+        "ocr-flood-fill.zip",
+        {"rooms.json": json.dumps(result), "floorplan.png": floorplan_png},
+    )
 
 
 @https_fn.on_request(memory=OCR_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=OCR_CPU)
@@ -143,7 +163,12 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
         query=dict(req.args),
     )
 
-    from api.request import HttpStatusError, read_float_query, read_int_query, read_image_bytes
+    from api.request import (
+        HttpStatusError,
+        read_float_query,
+        read_image_bytes,
+        read_int_query,
+    )
     from api.response import error_response, zip_response
 
     try:
@@ -159,9 +184,15 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
 
         min_area = read_int_query(req, "min_area", 0, minimum=0)
         wall_kernel_size = read_int_query(req, "wall_kernel_size", 15, minimum=1)
-        simplify_epsilon_ratio = read_float_query(req, "simplify_epsilon_ratio", 0.005, minimum=0.0)
-        ortho_tolerance_degrees = read_float_query(req, "ortho_tolerance_degrees", 8.0, minimum=0.0, maximum=45.0)
-        min_point_distance_px = read_float_query(req, "min_point_distance_px", 3.0, minimum=0.0)
+        simplify_epsilon_ratio = read_float_query(
+            req, "simplify_epsilon_ratio", 0.005, minimum=0.0
+        )
+        ortho_tolerance_degrees = read_float_query(
+            req, "ortho_tolerance_degrees", 8.0, minimum=0.0, maximum=45.0
+        )
+        min_point_distance_px = read_float_query(
+            req, "min_point_distance_px", 3.0, minimum=0.0
+        )
 
         import_started_at = time.perf_counter()
         from analysis.schemas import OcrFloodFillSmoothedParams
@@ -179,7 +210,9 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
             import_ms=_elapsed_ms(import_started_at),
         )
 
-        unknown_room_min_area = read_int_query(req, "unknown_room_min_area", DEFAULT_UNKNOWN_ROOM_MIN_AREA, minimum=0)
+        unknown_room_min_area = read_int_query(
+            req, "unknown_room_min_area", DEFAULT_UNKNOWN_ROOM_MIN_AREA, minimum=0
+        )
         _log_info(
             "ocr_flood_fill_smoothed parameters parsed",
             elapsed_ms=_elapsed_ms(started_at),
@@ -200,7 +233,9 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
         )
 
         process_started_at = time.perf_counter()
-        strategy = OcrFloodFillSmoothedStrategy(InferenceService(model), SegmentationService(), OcrService())
+        strategy = OcrFloodFillSmoothedStrategy(
+            InferenceService(model), SegmentationService(), OcrService()
+        )
         params = OcrFloodFillSmoothedParams(
             source_file=filename,
             min_area=min_area,
@@ -242,7 +277,9 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
         _log_info("ocr_flood_fill_smoothed failed", elapsed_ms=_elapsed_ms(started_at))
         return error_response(500, "OCR flood-fill smoothed endpoint failed")
 
-    _log_info("ocr_flood_fill_smoothed response ready", elapsed_ms=_elapsed_ms(started_at))
+    _log_info(
+        "ocr_flood_fill_smoothed response ready", elapsed_ms=_elapsed_ms(started_at)
+    )
     return zip_response(
         "ocr-flood-fill-smoothed.zip",
         {"rooms.json": json.dumps(result), "floorplan.png": floorplan_png},
@@ -270,7 +307,9 @@ def ocr_read_text(req: https_fn.Request) -> https_fn.Response:
     except Exception:
         logger.exception("OCR read-text endpoint failed")
         return error_response(500, "OCR read-text endpoint failed")
-    return https_fn.Response(json.dumps({"texts": results}), mimetype="application/json")
+    return https_fn.Response(
+        json.dumps({"texts": results}), mimetype="application/json"
+    )
 
 
 @https_fn.on_request(
@@ -308,7 +347,9 @@ def debug_get_polygons(req: https_fn.Request) -> https_fn.Response:
     try:
         image_bytes, _ = read_image_bytes(req)
         threshold = read_float_query(req, "threshold", 0.5, minimum=0.0, maximum=1.0)
-        result = InferenceService(load_model()).run_get_polygons(image_bytes, threshold=threshold)
+        result = InferenceService(load_model()).run_get_polygons(
+            image_bytes, threshold=threshold
+        )
     except HttpStatusError as exc:
         return error_response(exc.status, exc.message)
     except (ValueError, OSError) as exc:
