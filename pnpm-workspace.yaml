@@ -3,13 +3,29 @@ packages:
     - functions/*
     - generated/*
     - libraries/*
-
-ignoredBuiltDependencies:
-    - "@firebase/util"
-    - "@parcel/watcher"
-    - esbuild
-    - nx
-    - protobufjs
-    - re2
-    - sharp
-    - unrs-resolver
+allowBuilds:
+    "@firebase/util": false
+    "@nestjs/core": false
+    "@parcel/watcher": false
+    es5-ext: false
+    esbuild: false
+    nx: false
+    protobufjs: false
+    re2: false
+    sharp: false
+    unrs-resolver: false
+minimumReleaseAge: 7200
+minimumReleaseAgeExclude:
+    - "@nestjs/common@11.1.22"
+    - "@nestjs/core@11.1.22"
+    - "@typescript-eslint/eslint-plugin@8.59.4"
+    - "@typescript-eslint/parser@8.59.4"
+    - "@typescript-eslint/project-service@8.59.4"
+    - "@typescript-eslint/scope-manager@8.59.4"
+    - "@typescript-eslint/tsconfig-utils@8.59.4"
+    - "@typescript-eslint/type-utils@8.59.4"
+    - "@typescript-eslint/types@8.59.4"
+    - "@typescript-eslint/typescript-estree@8.59.4"
+    - "@typescript-eslint/utils@8.59.4"
+    - "@typescript-eslint/visitor-keys@8.59.4"
+    - typescript-eslint@8.59.4

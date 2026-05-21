@@ -1,14 +1,11 @@
 {
     "name": "@inivi/plaster-calculator-functions",
-    "type": "module",
     "private": true,
-    "main": "./out/index.js",
+    "type": "module",
     "exports": "./out/index.js",
-    "engines": {
-        "node": "24"
-    },
+    "main": "./out/index.js",
     "scripts": {
-        "build": "tsc --build tsconfig.build.json --verbose",
+        "build": "tsc --build tsconfig.build.json",
         "bundle": "node bundle.mjs",
         "deploy": "firebase deploy --only functions",
         "logs": "firebase functions:log"
@@ -25,5 +22,8 @@
         "firebase-functions-test": "^3.5.0",
         "jest": "^30.4.2",
         "typescript": "^6.0.3"
+    },
+    "engines": {
+        "node": "24"
     }
 }
