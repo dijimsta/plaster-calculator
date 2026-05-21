@@ -6,7 +6,7 @@
     "main": "./out/index.js",
     "scripts": {
         "build": "tsc --build tsconfig.build.json",
-        "bundle": "node bundle.mjs",
+        "bundle": "dev-cli bundle",
         "deploy": "firebase deploy --only functions",
         "logs": "firebase functions:log"
     },
@@ -18,7 +18,7 @@
         "jszip": "^3.10.1"
     },
     "devDependencies": {
-        "esbuild": "^0.28.0",
+        "@apps/dev-cli": "workspace:*",
         "firebase-functions-test": "^3.5.0",
         "jest": "^30.4.2",
         "typescript": "^6.0.3"
