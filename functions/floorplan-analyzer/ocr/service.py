@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image
 
 from ocr.keywords import OCR_KEYWORDS, OCR_ROOM_TYPE_BY_KEYWORD
-from ocr.schemas import OcrSeed
+from ocr.schemas import DetectedText, OcrSeed
 
 
 @lru_cache(maxsize=1)
@@ -20,24 +20,34 @@ def _ocr_reader():
 
 
 class OcrService:
-    def find_seeds(self, image: Image.Image) -> list[OcrSeed]:
+    def read_text(self, image: Image.Image) -> list[DetectedText]:
         image_rgb = np.asarray(image.convert("RGB"))
         results = _ocr_reader().readtext(image_rgb)
+        return [
+            DetectedText(
+                text=text,
+                confidence=float(confidence),
+                bbox=[[int(p[0]), int(p[1])] for p in bbox],
+            )
+            for bbox, text, confidence in results
+        ]
+
+    def find_seeds(self, image: Image.Image) -> list[OcrSeed]:
         seeds: list[OcrSeed] = []
-        for bbox, text, confidence in results:
-            matched = self._match_keyword(text)
+        for detected in self.read_text(image):
+            matched = self._match_keyword(detected["text"])
             if matched is None:
                 continue
-            cx = int(np.mean([point[0] for point in bbox]))
-            cy = int(np.mean([point[1] for point in bbox]))
+            cx = int(np.mean([p[0] for p in detected["bbox"]]))
+            cy = int(np.mean([p[1] for p in detected["bbox"]]))
             seeds.append(
                 OcrSeed(
                     x=cx,
                     y=cy,
-                    text=text,
-                    label=self._label_from_text(text),
+                    text=detected["text"],
+                    label=self._label_from_text(detected["text"]),
                     matched_keyword=matched,
-                    confidence=float(confidence),
+                    confidence=detected["confidence"],
                 )
             )
         return seeds
