@@ -1,10 +1,8 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "module": "preserve",
-        "moduleResolution": "bundler",
         "jsx": "react-jsx",
-        "plugins": [{ "name": "typescript-plugin-css-modules" }]
+        "allowImportingTsExtensions": true
     },
-    "exclude": ["dist", "node_modules"]
+    "exclude": ["out", "node_modules"]
 }

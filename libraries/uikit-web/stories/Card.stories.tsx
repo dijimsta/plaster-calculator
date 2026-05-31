@@ -1,5 +1,5 @@
-import { Button } from "../src/Button/Button";
-import { Card } from "../src/Card/Card";
+import { Button } from "../src/button/button.component.tsx";
+import { Card } from "../src/card/card.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

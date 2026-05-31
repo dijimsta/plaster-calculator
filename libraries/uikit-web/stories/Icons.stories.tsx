@@ -1,5 +1,5 @@
-import { GitHubIcon } from "../src/icons/GitHubIcon";
-import { GoogleIcon } from "../src/icons/GoogleIcon";
+import { GitHubIcon } from "../src/icons/github-icon.component.tsx";
+import { GoogleIcon } from "../src/icons/google-icon.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
