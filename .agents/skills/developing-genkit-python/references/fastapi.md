@@ -28,7 +28,7 @@ const res = await fetch("/flow/chat", {
     method: "POST",
     headers: {
         "Content-Type": "application/json",
-        Accept: "text/event-stream",
+        "Accept": "text/event-stream",
     },
     body: JSON.stringify({ data: { topic: "quantum computing" } }),
 });

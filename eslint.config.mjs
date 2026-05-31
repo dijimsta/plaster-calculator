@@ -52,15 +52,16 @@ const maxLinesOptions = {
 };
 
 const sharedTypescriptRules = {
-    complexity: ["error", { max: 10, variant: "modified" }],
+    "@typescript-eslint/no-namespace": "off",
+    "complexity": ["error", { max: 10, variant: "modified" }],
     "import/order": [
         "error",
         {
-            alphabetize: {
+            "alphabetize": {
                 caseInsensitive: true,
                 order: "asc",
             },
-            groups: [
+            "groups": [
                 "builtin",
                 "external",
                 "internal",
