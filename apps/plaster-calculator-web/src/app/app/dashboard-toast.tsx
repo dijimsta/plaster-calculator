@@ -1,7 +1,8 @@
+import { Button } from "@libraries/uikit-web";
 import { CheckCircle2, X } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
-import { cx, ui } from "../../lib/styles.js";
+import { ui } from "../../lib/styles.js";
 
 import type { ToastState } from "./dashboard.types.js";
 
@@ -34,15 +35,15 @@ export function DashboardToast({
                 )}
             </span>
             {!processingProjectId && (
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+                <Button
+                    variant="ghost"
                     onClick={() => {
                         setToast("");
                         setToastProject(null);
                     }}
                 >
                     <X size={16} />
-                </button>
+                </Button>
             )}
         </div>
     );

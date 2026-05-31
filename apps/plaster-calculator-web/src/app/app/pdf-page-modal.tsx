@@ -22,17 +22,13 @@ export function PdfPageModal({
                         <h2>Select PDF Pages</h2>
                         <p className={ui.muted}>Tick the pages to process.</p>
                     </div>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                    <Button
+                        variant="ghost"
                         disabled={loading}
                         onClick={closePdfModal}
                     >
                         <X size={18} />
-                    </button>
+                    </Button>
                 </header>
                 {pageUploadProgress && (
                     <div className={ui.pdfProgress}>

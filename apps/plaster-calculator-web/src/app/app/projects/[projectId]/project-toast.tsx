@@ -1,6 +1,7 @@
+import { Button } from "@libraries/uikit-web";
 import { X } from "lucide-react";
 
-import { cx, ui } from "../../../../lib/styles.js";
+import { ui } from "../../../../lib/styles.js";
 
 interface ProjectToastProps {
     readonly toast: string;
@@ -13,14 +14,14 @@ export function ProjectToast({ toast, setToast }: ProjectToastProps) {
     return (
         <div className={ui.toast}>
             <span>{toast}</span>
-            <button
-                className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+            <Button
+                variant="ghost"
                 onClick={() => setToast("")}
                 title="Dismiss message"
                 type="button"
             >
                 <X size={16} />
-            </button>
+            </Button>
         </div>
     );
 }
