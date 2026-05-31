@@ -1,7 +1,7 @@
-export { Button } from "./Button";
+export { Button } from "./button.component.tsx";
 export type {
     ButtonIconPosition,
     ButtonProps,
     ButtonSize,
-    ButtonVariant,
-} from "./Button";
+} from "./button.component.tsx";
+export type { ButtonVariant } from "./button.variants.ts";
