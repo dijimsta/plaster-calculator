@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { type FormEvent } from "react";
 
 import { ContactFormFields } from "./contact-form-fields.js";
-import { cx, ui } from "../../../lib/styles.js";
+import { ui } from "../../../lib/styles.js";
 
 import type { ContactDraft } from "./account.types.js";
 
@@ -27,18 +27,14 @@ export function NewContactModal({
             <form className={ui.modal} onSubmit={save}>
                 <div className={ui.editorToolbar}>
                     <h2>New Contact</h2>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                    <Button
+                        variant="ghost"
                         onClick={close}
                         title="Close new contact"
                         type="button"
                     >
                         <X size={18} />
-                    </button>
+                    </Button>
                 </div>
                 <ContactFormFields
                     draft={contactDraft}

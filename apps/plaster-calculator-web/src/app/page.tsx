@@ -1,6 +1,12 @@
 "use client";
 
-import { Button, ButtonLink, Card } from "@libraries/uikit-web";
+import {
+    Button,
+    ButtonLink,
+    Card,
+    Divider,
+    GoogleIcon,
+} from "@libraries/uikit-web";
 import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
@@ -181,9 +187,7 @@ export default function LoginPage() {
                             </Button>
                         </form>
 
-                        <div className="my-1 flex items-center gap-3 text-sm text-slate-500 before:h-px before:flex-1 before:bg-slate-200 before:content-[''] after:h-px after:flex-1 after:bg-slate-200 after:content-[''] dark:text-slate-400 dark:before:bg-slate-800 dark:after:bg-slate-800">
-                            or
-                        </div>
+                        <Divider>or</Divider>
 
                         <Button
                             type="button"
@@ -191,10 +195,8 @@ export default function LoginPage() {
                             disabled={loading}
                             variant="secondary"
                             className="w-full py-3.5"
+                            icon={<GoogleIcon />}
                         >
-                            <span className="text-lg font-bold leading-none">
-                                G
-                            </span>
                             Continue with Google
                         </Button>
 
