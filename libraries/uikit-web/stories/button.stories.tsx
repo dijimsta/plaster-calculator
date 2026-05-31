@@ -9,7 +9,7 @@ const meta: Meta<typeof Button> = {
     argTypes: {
         variant: {
             control: "select",
-            options: ["primary", "secondary", "soft"],
+            options: ["primary", "secondary", "soft", "ghost"],
         },
         iconPosition: {
             control: "select",
@@ -39,6 +39,13 @@ export const Secondary: Story = {
 export const Soft: Story = {
     args: {
         variant: "soft",
+        children: "Button",
+    },
+};
+
+export const Ghost: Story = {
+    args: {
+        variant: "ghost",
         children: "Button",
     },
 };
