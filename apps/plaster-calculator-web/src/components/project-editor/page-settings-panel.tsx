@@ -1,3 +1,5 @@
+import { Button } from "@libraries/uikit-web";
+
 import { cx, ui } from "../../lib/styles.js";
 
 import type { FloorplanPage } from "../../types.js";
@@ -54,12 +56,9 @@ export function PageSettingsPanel({
                 {hasPageHeightIssue() &&
                     fieldError("Ceiling height is required")}
             </div>
-            <button
-                className={cx(ui.button, ui.buttonDefault)}
-                onClick={applyHeightToAllPages}
-            >
+            <Button variant="secondary" onClick={applyHeightToAllPages}>
                 Apply height to all pages
-            </button>
+            </Button>
         </section>
     );
 }

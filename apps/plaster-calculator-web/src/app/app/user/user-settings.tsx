@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { useEffect, useState } from "react";
 
 import { getSettings, updateSettings } from "../../../lib/api.js";
@@ -106,13 +107,13 @@ export function UserSettingsPanel() {
                 </div>
             )}
             <div className={ui.buttonRow}>
-                <button
-                    className={cx(ui.button, ui.buttonPrimary)}
+                <Button
+                    variant="primary"
                     disabled={loading || saving || !settings}
                     onClick={() => void saveSettings()}
                 >
                     {saving ? "Saving..." : "Save reminder settings"}
-                </button>
+                </Button>
             </div>
         </section>
     );

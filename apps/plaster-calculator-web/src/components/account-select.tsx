@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { LoaderCircle, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -172,13 +173,10 @@ function AccountSelectMenu({
     return (
         <>
             {filtered.map((account) => (
-                <button
+                <Button
                     key={account.id}
-                    className={cx(
-                        ui.button,
-                        ui.buttonDefault,
-                        "justify-start text-left",
-                    )}
+                    variant="secondary"
+                    className="w-full justify-start text-left"
                     onMouseDown={(event) => event.preventDefault()}
                     onClick={() => onSelect(account)}
                     type="button"
@@ -191,7 +189,7 @@ function AccountSelectMenu({
                                 "No account details"}
                         </span>
                     </span>
-                </button>
+                </Button>
             ))}
         </>
     );

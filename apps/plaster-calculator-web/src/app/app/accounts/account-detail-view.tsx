@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { ArrowLeft, LoaderCircle, RefreshCcw, X } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 import { useRouter } from "next/navigation.js";
@@ -295,13 +296,9 @@ function AccountDetailHeader({
                     {account?.companyName ?? "Account"}
                 </h1>
             </div>
-            <button
-                className={cx(ui.button, ui.buttonDefault)}
-                onClick={refresh}
-                type="button"
-            >
+            <Button variant="secondary" onClick={refresh} type="button">
                 <RefreshCcw size={18} /> Refresh
-            </button>
+            </Button>
         </header>
     );
 }

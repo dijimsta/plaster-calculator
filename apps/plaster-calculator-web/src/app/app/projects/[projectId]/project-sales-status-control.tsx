@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { ChevronRight } from "lucide-react";
 
 import { salesStatusLabel } from "../../../../lib/sales-status.js";
@@ -114,30 +115,30 @@ export function ProjectOutcomeModal({
                     Choose the final sales outcome for this project.
                 </p>
                 <div className={ui.buttonRow}>
-                    <button
-                        className={cx(ui.button, ui.buttonPrimary)}
+                    <Button
+                        variant="primary"
                         disabled={disabled}
                         onClick={() => onSelect("WON")}
                         type="button"
                     >
                         Won
-                    </button>
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
+                    </Button>
+                    <Button
+                        variant="secondary"
                         disabled={disabled}
                         onClick={() => onSelect("LOST")}
                         type="button"
                     >
                         Lost
-                    </button>
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
+                    </Button>
+                    <Button
+                        variant="secondary"
                         disabled={disabled}
                         onClick={onClose}
                         type="button"
                     >
                         Cancel
-                    </button>
+                    </Button>
                 </div>
             </section>
         </div>

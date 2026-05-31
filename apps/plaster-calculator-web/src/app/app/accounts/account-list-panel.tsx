@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { LoaderCircle, RefreshCcw, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -51,14 +52,14 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
                 <h2>Account List</h2>
                 <div className={cx(ui.buttonRow, "items-end")}>
                     <SearchField query={query} setQuery={setQuery} />
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
+                    <Button
+                        variant="secondary"
                         onClick={() => void refresh()}
                         title="Refresh account list"
                         type="button"
                     >
                         <RefreshCcw size={18} /> Refresh
-                    </button>
+                    </Button>
                 </div>
             </div>
             {message && <p className={ui.muted}>{message}</p>}

@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { X } from "lucide-react";
 import { type FormEvent } from "react";
 
@@ -45,16 +46,10 @@ export function NewContactModal({
                     showPrimaryCheckbox
                 />
                 <div className={ui.buttonRow}>
-                    <button className={cx(ui.button, ui.buttonPrimary)}>
-                        Add contact
-                    </button>
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
-                        onClick={close}
-                        type="button"
-                    >
+                    <Button variant="primary">Add contact</Button>
+                    <Button variant="secondary" onClick={close} type="button">
                         Cancel
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

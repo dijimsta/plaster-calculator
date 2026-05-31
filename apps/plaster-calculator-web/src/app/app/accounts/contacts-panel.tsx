@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { Plus } from "lucide-react";
 
 import { ContactRow } from "./contact-row.js";
@@ -33,13 +34,13 @@ export function ContactsPanel({
         <section className={cx(ui.panel, ui.stack)}>
             <div className={ui.editorToolbar}>
                 <h2>Contacts</h2>
-                <button
-                    className={cx(ui.button, ui.buttonDefault)}
+                <Button
+                    variant="secondary"
                     onClick={openNewContact}
                     type="button"
                 >
                     <Plus size={18} /> Add contact
-                </button>
+                </Button>
             </div>
             {account.contacts.map((contact) => (
                 <ContactRow

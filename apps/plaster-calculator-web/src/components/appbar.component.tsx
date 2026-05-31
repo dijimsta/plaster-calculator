@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { signOut } from "firebase/auth";
 import { User } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
@@ -71,12 +72,9 @@ export default function AppBar() {
                 >
                     <User size={18} />
                 </Link>
-                <button
-                    className={cx(ui.button, ui.buttonDefault)}
-                    onClick={handleLogout}
-                >
+                <Button variant="secondary" onClick={handleLogout}>
                     Logout
-                </button>
+                </Button>
             </nav>
         </header>
     );

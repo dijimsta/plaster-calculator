@@ -1,3 +1,4 @@
+import { Button } from "@libraries/uikit-web";
 import {
     AlignHorizontalJustifyCenter,
     CopyPlus,
@@ -152,13 +153,13 @@ export function EditorToolbar({
                 >
                     <Minus size={18} />
                 </button>
-                <button
-                    className={cx(ui.button, ui.buttonDefault)}
+                <Button
+                    variant="secondary"
                     onClick={onResetView}
                     title="Reset zoom"
                 >
                     <ZoomIn size={18} /> {Math.round(zoom * 100)}%
-                </button>
+                </Button>
                 <button
                     className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                     onClick={() => onChangeZoom(zoom + 0.15)}
@@ -201,18 +202,12 @@ function AddAreaControls({
             </button>
             {addMenuOpen && (
                 <div className={ui.popoverMenu}>
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
-                        onClick={onAddRectangle}
-                    >
+                    <Button variant="secondary" onClick={onAddRectangle}>
                         <Square size={16} /> Rectangle
-                    </button>
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
-                        onClick={onStartFreeShape}
-                    >
+                    </Button>
+                    <Button variant="secondary" onClick={onStartFreeShape}>
                         <MousePointer2 size={16} /> Free shape
-                    </button>
+                    </Button>
                 </div>
             )}
         </div>
@@ -273,14 +268,14 @@ function SaveButton({
     onSave,
 }: Pick<EditorToolbarProps, "autoSaving" | "dirty" | "onSave" | "saving">) {
     return (
-        <button
-            className={cx(ui.button, ui.buttonPrimary)}
+        <Button
+            variant="primary"
             onClick={onSave}
             disabled={saving || autoSaving || !dirty}
         >
             <SaveButtonIcon autoSaving={autoSaving} saving={saving} />
             {saveButtonLabel(autoSaving, saving)}
-        </button>
+        </Button>
     );
 }
 

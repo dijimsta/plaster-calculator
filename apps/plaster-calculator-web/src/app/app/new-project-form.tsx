@@ -1,3 +1,4 @@
+import { Button } from "@libraries/uikit-web";
 import { Upload } from "lucide-react";
 
 import { AccountSelect } from "../../components/account-select.js";
@@ -81,12 +82,9 @@ export function NewProjectForm({
                     </span>
                 </label>
             </div>
-            <button
-                className={cx(ui.button, ui.buttonPrimary)}
-                disabled={!file || loading}
-            >
+            <Button variant="primary" disabled={!file || loading}>
                 <Upload size={18} /> Upload
-            </button>
+            </Button>
             {message && (
                 <p
                     className={

@@ -1,3 +1,4 @@
+import { Button } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
 
 import { cx, ui } from "../../lib/styles.js";
@@ -25,12 +26,9 @@ export function SummaryPanel({
                         {pageIssue("reference") ||
                             "Summary is not available because reference is not yet set."}
                     </p>
-                    <button
-                        className={cx(ui.button, ui.buttonPrimary)}
-                        onClick={startReferenceMode}
-                    >
+                    <Button variant="primary" onClick={startReferenceMode}>
                         <MousePointer2 size={18} /> Set reference
-                    </button>
+                    </Button>
                 </div>
             )}
             {summary && (

@@ -1,3 +1,4 @@
+import { Button } from "@libraries/uikit-web";
 import { ArrowLeft, Download, Pencil, RefreshCcw } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
@@ -35,12 +36,12 @@ export function ProjectHeader({
                     <ArrowLeft size={18} /> Projects
                 </Link>
                 {project && (
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
+                    <Button
+                        variant="secondary"
                         onClick={() => void validateAndExport()}
                     >
                         <Download size={18} /> CSV
-                    </button>
+                    </Button>
                 )}
             </div>
             <div className="grid gap-1 text-right">
@@ -58,12 +59,9 @@ export function ProjectHeader({
                 </span>
             </div>
             <div className={ui.buttonRow}>
-                <button
-                    className={cx(ui.button, ui.buttonDefault)}
-                    onClick={load}
-                >
+                <Button variant="secondary" onClick={load}>
                     <RefreshCcw size={18} /> Refresh
-                </button>
+                </Button>
             </div>
         </header>
     );
@@ -84,12 +82,9 @@ function ProjectRenameForm({
                     if (event.key === "Enter") void saveRename();
                 }}
             />
-            <button
-                className={cx(ui.button, ui.buttonPrimary)}
-                onClick={() => void saveRename()}
-            >
+            <Button variant="primary" onClick={() => void saveRename()}>
                 Save
-            </button>
+            </Button>
         </div>
     );
 }

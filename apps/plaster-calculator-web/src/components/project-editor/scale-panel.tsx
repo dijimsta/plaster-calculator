@@ -1,3 +1,4 @@
+import { Button } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
 
 import { cx, ui } from "../../lib/styles.js";
@@ -41,13 +42,8 @@ export function ScalePanel({
         <section className={cx(ui.panel, ui.stack)}>
             <h3>Scale</h3>
             <div className={ui.buttonRow}>
-                <button
-                    className={cx(
-                        ui.button,
-                        isSettingReference
-                            ? ui.buttonPrimary
-                            : ui.buttonDefault,
-                    )}
+                <Button
+                    variant={isSettingReference ? "primary" : "secondary"}
                     onClick={
                         isSettingReference
                             ? () => setIsSettingReference(false)
@@ -56,16 +52,16 @@ export function ScalePanel({
                 >
                     <MousePointer2 size={18} />{" "}
                     {isSettingReference ? "Cancel reference" : "Set reference"}
-                </button>
-                <button
-                    className={cx(ui.button, ui.buttonDefault)}
+                </Button>
+                <Button
+                    variant="secondary"
                     onClick={() => {
                         setReferencePoints([]);
                         setIsSettingReference(false);
                     }}
                 >
                     Reset
-                </button>
+                </Button>
             </div>
             <p className={ui.muted}>
                 {isSettingReference
@@ -88,20 +84,20 @@ export function ScalePanel({
                 />
                 {fieldError(pageIssue("reference"))}
             </div>
-            <button
-                className={cx(ui.button, ui.buttonPrimary)}
+            <Button
+                variant="primary"
                 onClick={applyScale}
                 disabled={referencePoints.length !== 2}
             >
                 Apply scale
-            </button>
-            <button
-                className={cx(ui.button, ui.buttonDefault)}
+            </Button>
+            <Button
+                variant="secondary"
                 onClick={applyScaleToAllPages}
                 disabled={!scaleMmPerPx}
             >
                 Apply scale to all pages
-            </button>
+            </Button>
             <div className={ui.metric}>
                 Scale:{" "}
                 {scaleMmPerPx ? `${scaleMmPerPx.toFixed(3)} mm/px` : "not set"}
