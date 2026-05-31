@@ -5,7 +5,9 @@
             "Bash(pnpm add *)",
             "Bash(pnpm build *)",
             "Bash(pnpm lint *)",
-            "Bash(pnpm format *)"
+            "Bash(pnpm format *)",
+            "Bash(pnpm install *)",
+            "Bash(pnpm --filter @apps/admin-cli build)"
         ]
     }
 }
