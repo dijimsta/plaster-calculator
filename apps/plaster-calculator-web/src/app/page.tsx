@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, ButtonLink } from "@libraries/uikit-web";
+import { Button, ButtonLink, Card } from "@libraries/uikit-web";
 import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
@@ -29,10 +29,7 @@ const brandClass =
 const logoClass = "mb-4 text-5xl font-bold leading-none max-[768px]:text-4xl";
 const taglineClass =
     "m-0 text-xl leading-relaxed text-slate-600 dark:text-slate-300 max-[768px]:text-lg";
-const cardClass = cx(
-    "w-full max-w-md shrink-0 max-[768px]:max-w-none",
-    ui.panel,
-);
+const cardWrapperClass = "w-full max-w-md shrink-0 max-[768px]:max-w-none";
 const formClass = "flex flex-col gap-3";
 const inputClass = cx(ui.input, "py-3.5");
 
@@ -103,21 +100,26 @@ export default function LoginPage() {
                         </p>
                     </div>
 
-                    <div className={cardClass}>
-                        <p className="mb-4 mt-0 text-base">
-                            Welcome back,{" "}
-                            <strong>
-                                {currentUser.displayName ?? currentUser.email}
-                            </strong>
-                            !
-                        </p>
-                        <ButtonLink
-                            href="/app"
-                            variant="primary"
-                            className="w-full py-3.5 font-bold"
-                        >
-                            Go to App
-                        </ButtonLink>
+                    <div className={cardWrapperClass}>
+                        <Card>
+                            <p className="mb-4 mt-0 text-base">
+                                Welcome back,{" "}
+                                <strong>
+                                    {currentUser.displayName ??
+                                        currentUser.email}
+                                </strong>
+                                !
+                            </p>
+                            <Card.ButtonGroup>
+                                <ButtonLink
+                                    href="/app"
+                                    variant="primary"
+                                    className="w-full py-3.5 font-bold"
+                                >
+                                    Go to App
+                                </ButtonLink>
+                            </Card.ButtonGroup>
+                        </Card>
                     </div>
                 </div>
             </div>
@@ -135,77 +137,82 @@ export default function LoginPage() {
                     </p>
                 </div>
 
-                <div className={cardClass}>
-                    {error && (
-                        <p className="rounded-md border border-red-300 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
-                            {error}
-                        </p>
-                    )}
+                <div className={cardWrapperClass}>
+                    <Card>
+                        {error && (
+                            <p className="rounded-md border border-red-300 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+                                {error}
+                            </p>
+                        )}
 
-                    <form className={formClass} onSubmit={handleEmailSubmit}>
-                        <input
-                            type="email"
-                            required
-                            autoComplete="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className={inputClass}
-                            placeholder="Email address"
-                        />
-                        <input
-                            type="password"
-                            required
-                            autoComplete={
-                                isRegistering
-                                    ? "new-password"
-                                    : "current-password"
-                            }
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className={inputClass}
-                            placeholder="Password"
-                        />
-                        <Button
-                            type="submit"
-                            disabled={loading}
-                            variant="primary"
-                            className="w-full py-3.5 font-bold"
+                        <form
+                            className={formClass}
+                            onSubmit={handleEmailSubmit}
                         >
-                            {loading ? "Please wait…" : "Log in"}
-                        </Button>
-                    </form>
+                            <input
+                                type="email"
+                                required
+                                autoComplete="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className={inputClass}
+                                placeholder="Email address"
+                            />
+                            <input
+                                type="password"
+                                required
+                                autoComplete={
+                                    isRegistering
+                                        ? "new-password"
+                                        : "current-password"
+                                }
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className={inputClass}
+                                placeholder="Password"
+                            />
+                            <Button
+                                type="submit"
+                                disabled={loading}
+                                variant="primary"
+                                className="w-full py-3.5 font-bold"
+                            >
+                                {loading ? "Please wait…" : "Log in"}
+                            </Button>
+                        </form>
 
-                    <div className="my-1 flex items-center gap-3 text-sm text-slate-500 before:h-px before:flex-1 before:bg-slate-200 before:content-[''] after:h-px after:flex-1 after:bg-slate-200 after:content-[''] dark:text-slate-400 dark:before:bg-slate-800 dark:after:bg-slate-800">
-                        or
-                    </div>
+                        <div className="my-1 flex items-center gap-3 text-sm text-slate-500 before:h-px before:flex-1 before:bg-slate-200 before:content-[''] after:h-px after:flex-1 after:bg-slate-200 after:content-[''] dark:text-slate-400 dark:before:bg-slate-800 dark:after:bg-slate-800">
+                            or
+                        </div>
 
-                    <Button
-                        type="button"
-                        onClick={handleGoogleSignIn}
-                        disabled={loading}
-                        variant="secondary"
-                        className="w-full py-3.5"
-                    >
-                        <span className="text-lg font-bold leading-none">
-                            G
-                        </span>
-                        Continue with Google
-                    </Button>
-
-                    <div className="mt-4 border-t border-slate-200 pt-4 text-center dark:border-slate-800">
                         <Button
                             type="button"
-                            variant="ghost"
-                            onClick={() => {
-                                setIsRegistering((v) => !v);
-                                setError(null);
-                            }}
+                            onClick={handleGoogleSignIn}
+                            disabled={loading}
+                            variant="secondary"
+                            className="w-full py-3.5"
                         >
-                            {isRegistering
-                                ? "Back to log in"
-                                : "Create new account"}
+                            <span className="text-lg font-bold leading-none">
+                                G
+                            </span>
+                            Continue with Google
                         </Button>
-                    </div>
+
+                        <Card.Footer>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={() => {
+                                    setIsRegistering((v) => !v);
+                                    setError(null);
+                                }}
+                            >
+                                {isRegistering
+                                    ? "Back to log in"
+                                    : "Create new account"}
+                            </Button>
+                        </Card.Footer>
+                    </Card>
                 </div>
             </div>
         </div>
