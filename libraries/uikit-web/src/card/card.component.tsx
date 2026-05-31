@@ -4,7 +4,15 @@ import type { PropsWithChildren, ReactElement } from "react";
 
 export function Card({ children }: PropsWithChildren): ReactElement {
     return (
-        <div className={clsx("bg-white", "rounded-2xl", "p-8", "shadow-2xl")}>
+        <div
+            className={clsx(
+                "bg-white",
+                "dark:bg-slate-900",
+                "rounded-2xl",
+                "p-8",
+                "shadow-2xl",
+            )}
+        >
             {children}
         </div>
     );
