@@ -2,6 +2,7 @@ import { type Metadata } from "next";
 import { type PropsWithChildren } from "react";
 
 import "./globals.css";
+import { ThemeInitializer } from "../components/theme-initializer.js";
 import { AppCheckProvider } from "../firebase/app-check.provider.ts";
 
 export const metadata: Metadata = {
@@ -44,15 +45,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
     return (
-        <AppCheckProvider>
-            <html lang="en">
-                <body
-                    className="font-sans antialiased"
-                    suppressHydrationWarning
-                >
+        <html lang="en">
+            <body>
+                <AppCheckProvider>
+                    <ThemeInitializer />
                     {children}
-                </body>
-            </html>
-        </AppCheckProvider>
+                </AppCheckProvider>
+            </body>
+        </html>
     );
 }

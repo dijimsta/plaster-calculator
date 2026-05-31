@@ -1,4 +1,18 @@
 @import "tailwindcss";
 @source "../../node_modules/@libraries/uikit-web";
 
+body {
+    font-family: var(--font-family-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+*,
+*::before,
+*::after {
+    transition-property: background-color, border-color, color;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
+}
