@@ -11,6 +11,9 @@
         },
         {
             "path": "./functions/plaster-calculator-functions/tsconfig.build.json"
+        },
+        {
+            "path": "./libraries/uikit-web/tsconfig.build.json"
         }
     ],
     "files": []

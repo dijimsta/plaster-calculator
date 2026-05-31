@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, ButtonLink } from "@libraries/uikit-web";
 import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
@@ -8,14 +9,12 @@ import {
     signInWithPopup,
     type User,
 } from "firebase/auth";
-import { default as LinkModule } from "next/link.js";
 import { useRouter } from "next/navigation.js";
 import { useEffect, useState } from "react";
 
 import { auth } from "../firebase/firebase.utils.js";
 import { activeTheme, cx, ui } from "../lib/styles.js";
 
-const Link = LinkModule.default;
 const googleProvider = new GoogleAuthProvider();
 
 const pageClass = cx(
@@ -36,18 +35,6 @@ const cardClass = cx(
 );
 const formClass = "flex flex-col gap-3";
 const inputClass = cx(ui.input, "py-3.5");
-const submitButtonClass = cx(
-    ui.button,
-    ui.buttonPrimary,
-    "w-full py-3.5 font-bold no-underline",
-);
-const googleButtonClass = cx(
-    ui.button,
-    ui.buttonDefault,
-    "w-full py-3.5 font-semibold",
-);
-const registerLinkClass =
-    "cursor-pointer border-0 bg-transparent p-0 font-semibold text-slate-900 underline-offset-2 hover:underline dark:text-slate-100";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -124,9 +111,13 @@ export default function LoginPage() {
                             </strong>
                             !
                         </p>
-                        <Link href="/app" className={submitButtonClass}>
+                        <ButtonLink
+                            href="/app"
+                            variant="primary"
+                            className="w-full py-3.5 font-bold"
+                        >
                             Go to App
-                        </Link>
+                        </ButtonLink>
                     </div>
                 </div>
             </div>
@@ -174,35 +165,37 @@ export default function LoginPage() {
                             className={inputClass}
                             placeholder="Password"
                         />
-                        <button
+                        <Button
                             type="submit"
                             disabled={loading}
-                            className={submitButtonClass}
+                            variant="primary"
+                            className="w-full py-3.5 font-bold"
                         >
                             {loading ? "Please wait…" : "Log in"}
-                        </button>
+                        </Button>
                     </form>
 
                     <div className="my-1 flex items-center gap-3 text-sm text-slate-500 before:h-px before:flex-1 before:bg-slate-200 before:content-[''] after:h-px after:flex-1 after:bg-slate-200 after:content-[''] dark:text-slate-400 dark:before:bg-slate-800 dark:after:bg-slate-800">
                         or
                     </div>
 
-                    <button
+                    <Button
                         type="button"
                         onClick={handleGoogleSignIn}
                         disabled={loading}
-                        className={googleButtonClass}
+                        variant="secondary"
+                        className="w-full py-3.5"
                     >
                         <span className="text-lg font-bold leading-none">
                             G
                         </span>
                         Continue with Google
-                    </button>
+                    </Button>
 
                     <div className="mt-4 border-t border-slate-200 pt-4 text-center dark:border-slate-800">
-                        <button
+                        <Button
                             type="button"
-                            className={registerLinkClass}
+                            variant="ghost"
                             onClick={() => {
                                 setIsRegistering((v) => !v);
                                 setError(null);
@@ -211,7 +204,7 @@ export default function LoginPage() {
                             {isRegistering
                                 ? "Back to log in"
                                 : "Create new account"}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

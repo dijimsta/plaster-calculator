@@ -9,3 +9,5 @@ export { Card } from "./card/index.ts";
 export { Divider } from "./divider/index.ts";
 export { FullViewportHeightContainer } from "./full-viewport-height-container/index.ts";
 export { GitHubIcon, GoogleIcon } from "./icons/index.ts";
+export { ButtonLink } from "./link/index.ts";
+export type { ButtonLinkProps } from "./link/index.ts";

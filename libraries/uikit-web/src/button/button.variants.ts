@@ -6,4 +6,5 @@ export const variants = Object.freeze({
     secondary:
         "bg-white text-gray-900 font-semibold ring-1 ring-inset ring-gray-200 shadow-xs enabled:hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-600",
     soft: "bg-indigo-50 text-indigo-600 enabled:hover:bg-indigo-100",
+    ghost: "bg-transparent text-slate-900 dark:text-slate-100 font-semibold hover:underline underline-offset-2",
 });

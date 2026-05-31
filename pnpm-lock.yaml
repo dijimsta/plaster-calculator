@@ -109,6 +109,9 @@ importers:
 
   apps/plaster-calculator-web:
     dependencies:
+      '@libraries/uikit-web':
+        specifier: workspace:*
+        version: link:../../libraries/uikit-web
       firebase:
         specifier: ^12.13.0
         version: 12.13.0

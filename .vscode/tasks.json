@@ -2,14 +2,14 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "type": "shell",
-            "command": "pnpm exec nx run-many -t build",
-            "label": "build",
+            "label": "tsc: build",
+            "type": "typescript",
+            "tsconfig": "tsconfig.build.json",
+            "problemMatcher": ["$tsc"],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "problemMatcher": ["$tsc"]
+            }
         }
     ]
 }

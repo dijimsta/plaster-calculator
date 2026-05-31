@@ -9,6 +9,7 @@
         "start": "next start"
     },
     "dependencies": {
+        "@libraries/uikit-web": "workspace:*",
         "firebase": "^12.13.0",
         "konva": "^9.3.22",
         "lucide-react": "^0.468.0",
