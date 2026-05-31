@@ -1,6 +1,6 @@
 "use client";
 
-import { ui } from "../../../lib/styles.js";
+import { Input, Label, SelectMenu } from "@libraries/uikit-web";
 
 import type { AccountDetailFieldsProps } from "./account.types.js";
 
@@ -11,62 +11,52 @@ export function AccountDetailFields({
 }: AccountDetailFieldsProps) {
     return (
         <>
-            <div className={ui.field}>
-                <label htmlFor="company-name">Company name</label>
-                <input
+            <div className="grid gap-1.5">
+                <Label htmlFor="company-name">Company name</Label>
+                <Input
                     id="company-name"
-                    className={ui.input}
                     value={draft.companyName}
-                    onChange={(event) =>
-                        setDraft({ ...draft, companyName: event.target.value })
+                    onChange={(e) =>
+                        setDraft({ ...draft, companyName: e.target.value })
                     }
                 />
             </div>
-            <div className={ui.field}>
-                <label htmlFor="business-number">ACN/ABN</label>
-                <input
+            <div className="grid gap-1.5">
+                <Label htmlFor="business-number">ACN/ABN</Label>
+                <Input
                     id="business-number"
-                    className={ui.input}
                     value={draft.businessNumber}
-                    onChange={(event) =>
-                        setDraft({
-                            ...draft,
-                            businessNumber: event.target.value,
-                        })
+                    onChange={(e) =>
+                        setDraft({ ...draft, businessNumber: e.target.value })
                     }
                 />
             </div>
-            <div className={ui.field}>
-                <label htmlFor="phone-number">Phone number</label>
-                <input
+            <div className="grid gap-1.5">
+                <Label htmlFor="phone-number">Phone number</Label>
+                <Input
                     id="phone-number"
-                    className={ui.input}
                     value={draft.phoneNumber}
-                    onChange={(event) =>
-                        setDraft({ ...draft, phoneNumber: event.target.value })
+                    onChange={(e) =>
+                        setDraft({ ...draft, phoneNumber: e.target.value })
                     }
                 />
             </div>
-            <div className={ui.field}>
-                <label htmlFor="primary-contact">Primary contact</label>
-                <select
+            <div className="grid gap-1.5">
+                <Label htmlFor="primary-contact">Primary contact</Label>
+                <SelectMenu
                     id="primary-contact"
-                    className={ui.input}
                     value={draft.primaryContactId}
-                    onChange={(event) =>
-                        setDraft({
-                            ...draft,
-                            primaryContactId: event.target.value,
-                        })
+                    options={[
+                        { value: "", label: "No primary contact" },
+                        ...contacts.map((c) => ({
+                            value: c.id,
+                            label: c.name,
+                        })),
+                    ]}
+                    onChange={(e) =>
+                        setDraft({ ...draft, primaryContactId: e.target.value })
                     }
-                >
-                    <option value="">No primary contact</option>
-                    {contacts.map((contact) => (
-                        <option key={contact.id} value={contact.id}>
-                            {contact.name}
-                        </option>
-                    ))}
-                </select>
+                />
             </div>
         </>
     );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
+import { Button, Input, Label } from "@libraries/uikit-web";
 import { LoaderCircle, RefreshCcw, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -51,7 +51,20 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
             <div className={ui.editorToolbar}>
                 <h2>Account List</h2>
                 <div className={cx(ui.buttonRow, "items-end")}>
-                    <SearchField query={query} setQuery={setQuery} />
+                    <div className="grid gap-1.5 min-w-[260px]">
+                        <Label htmlFor="account-search">Search</Label>
+                        <Input
+                            id="account-search"
+                            leadingIcon={
+                                <Search
+                                    size={16}
+                                    className="text-gray-400 dark:text-gray-500"
+                                />
+                            }
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                    </div>
                     <Button
                         variant="secondary"
                         onClick={() => void refresh()}
@@ -79,31 +92,5 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
                 </div>
             )}
         </section>
-    );
-}
-
-function SearchField({
-    query,
-    setQuery,
-}: {
-    readonly query: string;
-    readonly setQuery: (query: string) => void;
-}) {
-    return (
-        <div className={cx(ui.field, "min-w-[260px]")}>
-            <label htmlFor="account-search">Search</label>
-            <div className="relative">
-                <Search
-                    size={16}
-                    className="absolute left-[11px] top-[13px] text-slate-500 dark:text-slate-400"
-                />
-                <input
-                    id="account-search"
-                    className={cx(ui.input, "pl-[34px]")}
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                />
-            </div>
-        </div>
     );
 }

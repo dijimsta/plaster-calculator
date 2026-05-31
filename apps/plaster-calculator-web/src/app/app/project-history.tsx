@@ -1,4 +1,4 @@
-import { Button } from "@libraries/uikit-web";
+import { Button, Input, Label, SelectMenu } from "@libraries/uikit-web";
 import { LoaderCircle, Pencil, RefreshCcw, Search, Trash2 } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
@@ -29,43 +29,41 @@ export function ProjectHistory({
             <div className={ui.editorToolbar}>
                 <h2>Active Projects</h2>
                 <div className={cx(ui.buttonRow, "items-end")}>
-                    <div className={cx(ui.field, "min-w-[190px]")}>
-                        <label htmlFor="sales-status-filter">Status</label>
-                        <select
+                    <div className="grid gap-1.5 min-w-[190px]">
+                        <Label htmlFor="sales-status-filter">Status</Label>
+                        <SelectMenu
                             id="sales-status-filter"
-                            className={ui.input}
+                            options={[
+                                {
+                                    value: "QUOTING",
+                                    label: salesStatusLabel("QUOTING"),
+                                },
+                                {
+                                    value: "QUOTE_SUBMITTED",
+                                    label: salesStatusLabel("QUOTE_SUBMITTED"),
+                                },
+                            ]}
                             value={activeSalesStatus}
-                            onChange={(event) =>
+                            onChange={(e) =>
                                 setActiveSalesStatus(
-                                    event.target
-                                        .value as typeof activeSalesStatus,
+                                    e.target.value as typeof activeSalesStatus,
                                 )
                             }
-                        >
-                            <option value="QUOTING">
-                                {salesStatusLabel("QUOTING")}
-                            </option>
-                            <option value="QUOTE_SUBMITTED">
-                                {salesStatusLabel("QUOTE_SUBMITTED")}
-                            </option>
-                        </select>
+                        />
                     </div>
-                    <div className={cx(ui.field, "min-w-[260px]")}>
-                        <label htmlFor="search">Search</label>
-                        <div className="relative">
-                            <Search
-                                size={16}
-                                className="absolute left-[11px] top-[13px] text-slate-500 dark:text-slate-400"
-                            />
-                            <input
-                                id="search"
-                                className={cx(ui.input, "pl-[34px]")}
-                                value={query}
-                                onChange={(event) =>
-                                    setQuery(event.target.value)
-                                }
-                            />
-                        </div>
+                    <div className="grid gap-1.5 min-w-[260px]">
+                        <Label htmlFor="search">Search</Label>
+                        <Input
+                            id="search"
+                            leadingIcon={
+                                <Search
+                                    size={16}
+                                    className="text-gray-400 dark:text-gray-500"
+                                />
+                            }
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
                     </div>
                     <Button
                         variant="secondary"
