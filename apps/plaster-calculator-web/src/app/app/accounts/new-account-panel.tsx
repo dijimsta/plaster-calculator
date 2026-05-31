@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { Plus } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
@@ -45,9 +46,9 @@ export function NewAccountPanel({ onCreated }: NewAccountPanelProps) {
         <form className={cx(ui.panel, ui.stack)} onSubmit={createNewAccount}>
             <h2>New Account</h2>
             <AccountDraftFields draft={draft} setDraft={setDraft} />
-            <button className={cx(ui.button, ui.buttonPrimary)}>
+            <Button variant="primary">
                 <Plus size={18} /> Create account
-            </button>
+            </Button>
             {message && <p className={ui.muted}>{message}</p>}
         </form>
     );

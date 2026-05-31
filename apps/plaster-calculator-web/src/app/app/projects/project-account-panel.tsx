@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -91,8 +92,8 @@ export function ProjectAccountPanel({
                         selectedAccountLabel={account?.companyName ?? null}
                     />
                     <div className={ui.buttonRow}>
-                        <button
-                            className={cx(ui.button, ui.buttonPrimary)}
+                        <Button
+                            variant="primary"
                             disabled={
                                 !draftAccountId ||
                                 draftAccountId === accountId ||
@@ -102,16 +103,16 @@ export function ProjectAccountPanel({
                             type="button"
                         >
                             Save account
-                        </button>
+                        </Button>
                         {accountId && (
-                            <button
-                                className={cx(ui.button, ui.buttonDefault)}
+                            <Button
+                                variant="secondary"
                                 disabled={isSaving}
                                 onClick={cancelEdit}
                                 type="button"
                             >
                                 Cancel
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </>

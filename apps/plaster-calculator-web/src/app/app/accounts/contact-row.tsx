@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { Mail, Pencil, Trash2, X } from "lucide-react";
 
 import { toContactDraft } from "./account.utils.js";
@@ -128,13 +129,13 @@ function EditContactActions({
 }) {
     return (
         <>
-            <button
-                className={cx(ui.button, ui.buttonPrimary)}
+            <Button
+                variant="primary"
                 onClick={() => void saveContact(contactId)}
                 type="button"
             >
                 Save
-            </button>
+            </Button>
             <button
                 className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
                 onClick={() => setEditContactId(null)}

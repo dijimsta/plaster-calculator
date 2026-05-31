@@ -1,3 +1,5 @@
+import { Button } from "@libraries/uikit-web";
+
 import { BOARD_TYPES } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
 
@@ -71,13 +73,13 @@ export function SelectedEdgeControls({
                     ))}
                 </select>
             </div>
-            <button
-                className={cx(ui.button, ui.buttonDefault)}
+            <Button
+                variant="secondary"
                 onClick={clearSelectedEdgeOverride}
                 disabled={!selectedEdgeOverride}
             >
                 Clear override
-            </button>
+            </Button>
         </>
     );
 }

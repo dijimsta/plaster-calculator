@@ -1,3 +1,4 @@
+import { Button } from "@libraries/uikit-web";
 import { FileUp, X } from "lucide-react";
 
 import { cx, ui } from "../../lib/styles.js";
@@ -70,15 +71,15 @@ export function PdfPageModal({
                     ))}
                 </div>
                 <footer className={cx(ui.buttonRow, "justify-end")}>
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
+                    <Button
+                        variant="secondary"
                         disabled={loading}
                         onClick={closePdfModal}
                     >
                         Cancel
-                    </button>
-                    <button
-                        className={cx(ui.button, ui.buttonPrimary)}
+                    </Button>
+                    <Button
+                        variant="primary"
                         disabled={loading || selectedPages.length === 0}
                         onClick={processSelectedPdfPages}
                     >
@@ -86,7 +87,7 @@ export function PdfPageModal({
                         {selectedPages.length === 0
                             ? "Select pages to continue"
                             : `Process selected ${selectedPages.length} ${selectedPages.length === 1 ? "page" : "pages"}`}
-                    </button>
+                    </Button>
                 </footer>
             </section>
         </div>

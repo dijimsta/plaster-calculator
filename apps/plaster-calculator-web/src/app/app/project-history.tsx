@@ -1,3 +1,4 @@
+import { Button } from "@libraries/uikit-web";
 import { LoaderCircle, Pencil, RefreshCcw, Search, Trash2 } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
@@ -66,13 +67,13 @@ export function ProjectHistory({
                             />
                         </div>
                     </div>
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
+                    <Button
+                        variant="secondary"
                         onClick={() => void refresh()}
                         title="Refresh project history"
                     >
                         <RefreshCcw size={18} /> Refresh
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div className={ui.projectList}>
@@ -134,17 +135,14 @@ export function ProjectHistory({
                                 </Link>
                                 <div className={ui.projectActions}>
                                     {renamingId === project.id ? (
-                                        <button
-                                            className={cx(
-                                                ui.button,
-                                                ui.buttonDefault,
-                                            )}
+                                        <Button
+                                            variant="secondary"
                                             onClick={() =>
                                                 saveRename(project.id)
                                             }
                                         >
                                             Save
-                                        </button>
+                                        </Button>
                                     ) : (
                                         <button
                                             className={cx(
