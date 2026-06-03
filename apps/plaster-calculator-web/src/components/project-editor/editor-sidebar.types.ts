@@ -1,3 +1,4 @@
+import type { MaterialField } from "../../hooks/use-editor-material-actions.js";
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type { ValidationIssue } from "../../lib/validation.js";
 import type {
@@ -45,9 +46,7 @@ export interface EditorSidebarProps {
     readonly applyScale: () => void;
     readonly applyScaleToAllPages: () => void;
     readonly clearSelectedEdgeOverride: () => void;
-    readonly commonMaterialValue: (
-        field: "wallPlasterType" | "ceilingPlasterType",
-    ) => string;
+    readonly commonMaterialValue: (field: MaterialField) => string;
     readonly fieldError: (message: string) => ReactNode;
     readonly hasPageHeightIssue: () => boolean;
     readonly pageIssue: (field: ValidationIssue["field"]) => string;
@@ -56,13 +55,13 @@ export interface EditorSidebarProps {
     readonly setCeilingHeightMm: (value: number | null) => void;
     readonly setDirty: (dirty: boolean) => void;
     readonly setIsSettingReference: (value: boolean) => void;
-    readonly setMaterial: (
-        field: "wallPlasterType" | "ceilingPlasterType",
-        value: string,
-    ) => void;
+    readonly setMaterial: (field: MaterialField, value: string) => void;
     readonly setReferenceLengthMm: (value: string) => void;
     readonly setReferencePoints: (points: Point[]) => void;
-    readonly setSelectedEdgeMaterial: (value: string) => void;
+    readonly setSelectedEdgeMaterial: (
+        field: "wallBoardProfile" | "wallBoardType",
+        value: string,
+    ) => void;
     readonly setSelectedEdgeNoPlaster: (noPlaster: boolean) => void;
     readonly startReferenceMode: () => void;
     readonly toggleOutdoor: () => void;

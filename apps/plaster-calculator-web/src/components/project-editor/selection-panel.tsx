@@ -1,8 +1,14 @@
-import { BoardControls, BoardSelect } from "./selection-board-controls.js";
+import { BoardControls, MaterialSelect } from "./selection-board-controls.js";
 import { SelectedEdgeControls } from "./selection-edge-controls.js";
+import {
+    CEILING_BOARD_TYPES,
+    WALL_BOARD_PROFILES,
+    WALL_BOARD_TYPES,
+} from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type { SelectionMetrics } from "./editor-sidebar.types.js";
+import type { MaterialField } from "../../hooks/use-editor-material-actions.js";
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type { ValidationIssue } from "../../lib/validation.js";
 import type { AreaPolygon, EdgeOverride } from "../../types.js";
@@ -14,9 +20,7 @@ interface SelectionPanelProps {
         field: ValidationIssue["field"],
     ) => string;
     readonly clearSelectedEdgeOverride: () => void;
-    readonly commonMaterialValue: (
-        field: "wallPlasterType" | "ceilingPlasterType",
-    ) => string;
+    readonly commonMaterialValue: (field: MaterialField) => string;
     readonly fieldError: (message: string) => ReactNode;
     readonly metrics: SelectionMetrics | null;
     readonly renderCeilingControls: (area: AreaPolygon) => ReactNode;
@@ -26,11 +30,11 @@ interface SelectionPanelProps {
     readonly selectedEdgeArea: AreaPolygon | null;
     readonly selectedEdgeOverride: EdgeOverride | undefined | null;
     readonly selectedPointIndexes: number[];
-    readonly setMaterial: (
-        field: "wallPlasterType" | "ceilingPlasterType",
+    readonly setMaterial: (field: MaterialField, value: string) => void;
+    readonly setSelectedEdgeMaterial: (
+        field: "wallBoardProfile" | "wallBoardType",
         value: string,
     ) => void;
-    readonly setSelectedEdgeMaterial: (value: string) => void;
     readonly setSelectedEdgeNoPlaster: (noPlaster: boolean) => void;
     readonly toggleOutdoor: () => void;
     readonly updateArea: (
@@ -167,14 +171,23 @@ function MultiAreaControls({
                 {selectedAreaIds.length} areas selected. Material changes apply
                 to all selected areas.
             </div>
-            <BoardSelect
-                label="Wall board"
+            <MaterialSelect
+                label="Wall profile"
+                options={WALL_BOARD_PROFILES}
                 showMixedOption
-                value={commonMaterialValue("wallPlasterType")}
-                onChange={(value) => setMaterial("wallPlasterType", value)}
+                value={commonMaterialValue("wallBoardProfile")}
+                onChange={(value) => setMaterial("wallBoardProfile", value)}
             />
-            <BoardSelect
+            <MaterialSelect
+                label="Wall board"
+                options={WALL_BOARD_TYPES}
+                showMixedOption
+                value={commonMaterialValue("wallBoardType")}
+                onChange={(value) => setMaterial("wallBoardType", value)}
+            />
+            <MaterialSelect
                 label="Ceiling board"
+                options={CEILING_BOARD_TYPES}
                 showMixedOption
                 value={commonMaterialValue("ceilingPlasterType")}
                 onChange={(value) => setMaterial("ceilingPlasterType", value)}

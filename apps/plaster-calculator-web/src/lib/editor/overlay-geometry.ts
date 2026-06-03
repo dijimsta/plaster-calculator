@@ -1,4 +1,6 @@
-import type { AreaPolygon, Point } from "../../types.js";
+import { wallMaterialLabel } from "./board-materials.js";
+
+import type { AreaPolygon, EdgeOverride, Point } from "../../types.js";
 
 export function pointDistance(a: Point, b: Point): number {
     return Math.hypot(b[0] - a[0], b[1] - a[1]);
@@ -41,7 +43,7 @@ export function wallLengthByType(
     area.points.forEach((point, index) => {
         const override = area.edgeOverrides?.[String(index)];
         if (override?.noPlaster) return;
-        const type = override?.wallPlasterType ?? area.wallPlasterType;
+        const type = effectiveWallMaterialLabel(area, override);
         const next = pointAt(area.points, (index + 1) % area.points.length);
         totals.set(type, (totals.get(type) ?? 0) + pointDistance(point, next));
     });
@@ -49,6 +51,17 @@ export function wallLengthByType(
         type,
         lengthPx,
     }));
+}
+
+function effectiveWallMaterialLabel(
+    area: AreaPolygon,
+    override: EdgeOverride | undefined,
+) {
+    return wallMaterialLabel({
+        wallBoardProfile: override?.wallBoardProfile ?? area.wallBoardProfile,
+        wallBoardType: override?.wallBoardType ?? area.wallBoardType,
+        wallPlasterType: override?.wallPlasterType ?? area.wallPlasterType,
+    });
 }
 
 export function polygonArea(points: Point[]): number {

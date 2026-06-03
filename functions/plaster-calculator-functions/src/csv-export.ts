@@ -1,16 +1,18 @@
+import { normalizeCeilingBoardType } from "./board-materials.js";
 import { wallBreakdown } from "./csv-wall-breakdown.js";
 
 import type { ProjectWithPages } from "./types.js";
 
 export function buildProjectCsv(project: ProjectWithPages) {
-    const rows = collectExportRows(project);
-    const { wallColumns, ceilingColumns } = collectExportColumns(rows);
-    const csvRows = buildCsvRows(rows, wallColumns, ceilingColumns);
+    const matrix = collectExportMatrix(project);
+    const csvRows = buildCsvRows(matrix);
     return csvRows.map((row) => row.map(csvCell).join(",")).join("\n") + "\n";
 }
 
-function collectExportRows(project: ProjectWithPages) {
-    const rows: ExportRow[] = [];
+function collectExportMatrix(project: ProjectWithPages): ExportMatrix {
+    const pageNumbers = sortedPageNumbers(project);
+    const wallValues = new Map<string, PageValues>();
+    const ceilingValues = new Map<string, PageValues>();
 
     for (const page of project.pages) {
         if (!page.overlayJson || page.scaleMmPerPx == null) {
@@ -25,103 +27,107 @@ function collectExportRows(project: ProjectWithPages) {
                 continue;
             }
 
-            const row: ExportRow = {
-                label:
-                    typeof area["label"] === "string" ? area["label"] : "Area",
-                pageNumber: page.pageNumber,
-                wallValues: wallBreakdown(
+            addPageValues(
+                wallValues,
+                page.pageNumber,
+                wallBreakdown(
                     area,
                     page.scaleMmPerPx,
                     page.ceilingHeightMm ?? null,
                 ),
-                ceilingValues: new Map([
-                    [
-                        ceilingColumn(area),
-                        ceilingAreaM2(area, page.scaleMmPerPx),
-                    ],
-                ]),
-            };
-
-            rows.push(row);
+            );
+            addPageValue(
+                ceilingValues,
+                ceilingColumn(area),
+                page.pageNumber,
+                ceilingAreaM2(area, page.scaleMmPerPx),
+            );
         }
     }
 
-    return rows;
+    return { ceilingValues, pageNumbers, wallValues };
 }
 
-function collectExportColumns(rows: ExportRow[]) {
-    const wallColumnSet = new Set<string>();
-    const ceilingColumnSet = new Set<string>();
-
-    for (const row of rows) {
-        row.wallValues.forEach((_, key) => wallColumnSet.add(key));
-        row.ceilingValues.forEach((_, key) => ceilingColumnSet.add(key));
-    }
-
-    return {
-        wallColumns: Array.from(wallColumnSet).sort(),
-        ceilingColumns: Array.from(ceilingColumnSet).sort(),
-    };
+function sortedPageNumbers(project: ProjectWithPages) {
+    return project.pages
+        .map((page) => page.pageNumber)
+        .sort((left, right) => left - right);
 }
 
-function buildCsvRows(
-    rows: ExportRow[],
-    wallColumns: string[],
-    ceilingColumns: string[],
-) {
-    const totals = new Map<string, number>();
-    const csvRows = [
-        ["Area Label", "Page Number", ...wallColumns, ...ceilingColumns],
+function buildCsvRows(matrix: ExportMatrix) {
+    const pageHeaders = matrix.pageNumbers.map(
+        (pageNumber) => `Page ${pageNumber}`,
+    );
+    return [
+        ["Plaster Type", ...pageHeaders, "Total"],
+        sectionRow("Walls", matrix.pageNumbers.length),
+        ...materialRows(matrix.wallValues, matrix.pageNumbers),
+        sectionRow("Ceiling", matrix.pageNumbers.length),
+        ...materialRows(matrix.ceilingValues, matrix.pageNumbers),
     ];
-
-    for (const row of rows) {
-        const cells = [row.label, String(row.pageNumber)];
-        for (const column of wallColumns) {
-            const value = row.wallValues.get(column) ?? 0;
-            addTotal(totals, column, value);
-            cells.push(formatNumber(value));
-        }
-        for (const column of ceilingColumns) {
-            const value = row.ceilingValues.get(column) ?? 0;
-            addTotal(totals, column, value);
-            cells.push(formatNumber(value));
-        }
-        csvRows.push(cells);
-    }
-
-    csvRows.push([
-        "Total",
-        "",
-        ...wallColumns.map((column) => formatNumber(totals.get(column) ?? 0)),
-        ...ceilingColumns.map((column) =>
-            formatNumber(totals.get(column) ?? 0),
-        ),
-    ]);
-
-    return csvRows;
 }
 
-interface ExportRow {
-    label: string;
-    pageNumber: number;
-    wallValues: Map<string, number>;
-    ceilingValues: Map<string, number>;
+function sectionRow(label: string, pageCount: number) {
+    return [label, ...Array.from({ length: pageCount + 1 }, () => "")];
+}
+
+function materialRows(valuesByType: MaterialValues, pageNumbers: number[]) {
+    return Array.from(valuesByType.entries())
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([type, values]) => materialRow(type, values, pageNumbers));
+}
+
+function materialRow(type: string, values: PageValues, pageNumbers: number[]) {
+    const pageValues = pageNumbers.map(
+        (pageNumber) => values.get(pageNumber) ?? 0,
+    );
+    const total = pageValues.reduce((sum, value) => sum + value, 0);
+    return [
+        type,
+        ...pageValues.map((value) => formatNumber(value)),
+        formatNumber(total),
+    ];
+}
+
+function addPageValues(
+    target: MaterialValues,
+    pageNumber: number,
+    values: Map<string, number>,
+) {
+    values.forEach((value, type) =>
+        addPageValue(target, type, pageNumber, value),
+    );
+}
+
+function addPageValue(
+    target: MaterialValues,
+    type: string,
+    pageNumber: number,
+    value: number,
+) {
+    const values = target.get(type) ?? new Map<number, number>();
+    values.set(pageNumber, (values.get(pageNumber) ?? 0) + value);
+    target.set(type, values);
 }
 
 type JsonRecord = Record<string, unknown>;
 type Point = [number, number];
+type PageValues = Map<number, number>;
+type MaterialValues = Map<string, PageValues>;
 
-export function addTotal(
-    totals: Map<string, number>,
-    column: string,
-    value: number,
-) {
-    totals.set(column, (totals.get(column) ?? 0) + value);
+interface ExportMatrix {
+    pageNumbers: number[];
+    wallValues: MaterialValues;
+    ceilingValues: MaterialValues;
 }
 
 export function ceilingColumn(area: JsonRecord) {
-    const ceilingType = readString(area["ceilingPlasterType"], "Recessed Edge");
-    return `Ceiling (${ceilingType}) in m2`;
+    const ceilingType = normalizeCeilingBoardType(area["ceilingPlasterType"]);
+    return `Ceiling (${ceilingTypeLabel(ceilingType)})`;
+}
+
+function ceilingTypeLabel(ceilingType: string) {
+    return ceilingType === "Water Resistant" ? "WR" : "RE";
 }
 
 export function ceilingAreaM2(area: JsonRecord, scaleMmPerPx: number) {

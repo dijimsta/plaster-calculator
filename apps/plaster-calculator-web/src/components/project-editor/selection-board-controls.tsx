@@ -1,6 +1,14 @@
-import { BOARD_TYPES } from "../../lib/editor/board-materials.js";
+import {
+    CEILING_BOARD_TYPES,
+    normalizeCeilingBoardType,
+    normalizeWallBoardProfile,
+    normalizeWallBoardType,
+    WALL_BOARD_PROFILES,
+    WALL_BOARD_TYPES,
+} from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
 
+import type { MaterialField } from "../../hooks/use-editor-material-actions.js";
 import type { ValidationIssue } from "../../lib/validation.js";
 import type { AreaPolygon } from "../../types.js";
 import type { ReactNode } from "react";
@@ -12,10 +20,7 @@ interface BoardControlsProps {
     ) => string;
     readonly fieldError: (message: string) => ReactNode;
     readonly selectedArea: AreaPolygon;
-    readonly setMaterial: (
-        field: "wallPlasterType" | "ceilingPlasterType",
-        value: string,
-    ) => void;
+    readonly setMaterial: (field: MaterialField, value: string) => void;
 }
 
 export function BoardControls({
@@ -27,18 +32,41 @@ export function BoardControls({
     return (
         <>
             {!selectedArea.isOutdoor && (
-                <BoardSelect
-                    error={areaIssue(selectedArea.id, "wallPlasterType")}
-                    label="Wall board"
-                    value={selectedArea.wallPlasterType}
-                    onChange={(value) => setMaterial("wallPlasterType", value)}
-                    fieldError={fieldError}
-                />
+                <>
+                    <MaterialSelect
+                        error={areaIssue(selectedArea.id, "wallBoardProfile")}
+                        label="Wall profile"
+                        options={WALL_BOARD_PROFILES}
+                        value={normalizeWallBoardProfile(
+                            selectedArea.wallBoardProfile,
+                        )}
+                        onChange={(value) =>
+                            setMaterial("wallBoardProfile", value)
+                        }
+                        fieldError={fieldError}
+                    />
+                    <MaterialSelect
+                        error={areaIssue(selectedArea.id, "wallBoardType")}
+                        label="Wall board"
+                        options={WALL_BOARD_TYPES}
+                        value={normalizeWallBoardType(
+                            selectedArea.wallBoardType,
+                            selectedArea.wallPlasterType,
+                        )}
+                        onChange={(value) =>
+                            setMaterial("wallBoardType", value)
+                        }
+                        fieldError={fieldError}
+                    />
+                </>
             )}
-            <BoardSelect
+            <MaterialSelect
                 error={areaIssue(selectedArea.id, "ceilingPlasterType")}
                 label="Ceiling board"
-                value={selectedArea.ceilingPlasterType}
+                options={CEILING_BOARD_TYPES}
+                value={normalizeCeilingBoardType(
+                    selectedArea.ceilingPlasterType,
+                )}
                 onChange={(value) => setMaterial("ceilingPlasterType", value)}
                 fieldError={fieldError}
             />
@@ -46,10 +74,11 @@ export function BoardControls({
     );
 }
 
-export function BoardSelect({
+export function MaterialSelect({
     error = "",
     fieldError,
     label,
+    options,
     showMixedOption = false,
     value,
     onChange,
@@ -57,6 +86,7 @@ export function BoardSelect({
     readonly error?: string;
     readonly fieldError?: (message: string) => ReactNode;
     readonly label: string;
+    readonly options: readonly string[];
     readonly showMixedOption?: boolean;
     readonly value: string;
     readonly onChange: (value: string) => void;
@@ -74,7 +104,7 @@ export function BoardSelect({
                         Mixed
                     </option>
                 )}
-                {BOARD_TYPES.map((type) => (
+                {options.map((type) => (
                     <option key={type}>{type}</option>
                 ))}
             </select>

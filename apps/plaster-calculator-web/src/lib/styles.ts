@@ -18,6 +18,58 @@ export const themes = {
         dangerRing: "ring-2 ring-red-200 dark:ring-red-950",
         editor: {
             boardColors: {
+                "10mm Plasterboard": {
+                    edge: "#334155",
+                    fill: "rgb(51 65 85 / 0.18)",
+                },
+                "13mm Plasterboard": {
+                    edge: "#52525b",
+                    fill: "rgb(82 82 91 / 0.18)",
+                },
+                "9mm Villaboard": {
+                    edge: "#0284c7",
+                    fill: "rgb(2 132 199 / 0.18)",
+                },
+                "6mm Villaboard": {
+                    edge: "#0891b2",
+                    fill: "rgb(8 145 178 / 0.18)",
+                },
+                "10mm Acoustic (Soundchek)": {
+                    edge: "#c2410c",
+                    fill: "rgb(194 65 12 / 0.18)",
+                },
+                "13mm Acoustic (Soundchek)": {
+                    edge: "#b45309",
+                    fill: "rgb(180 83 9 / 0.18)",
+                },
+                "10mm Water Resistant": {
+                    edge: "#2563eb",
+                    fill: "rgb(37 99 235 / 0.18)",
+                },
+                "13mm Water Resistant": {
+                    edge: "#4f46e5",
+                    fill: "rgb(79 70 229 / 0.18)",
+                },
+                "13mm Fire Resistant - dry area": {
+                    edge: "#dc2626",
+                    fill: "rgb(220 38 38 / 0.18)",
+                },
+                "16mm Fire Resistant - dry area": {
+                    edge: "#be123c",
+                    fill: "rgb(190 18 60 / 0.18)",
+                },
+                "13mm Fire Resistant - wet area": {
+                    edge: "#a21caf",
+                    fill: "rgb(162 28 175 / 0.18)",
+                },
+                "16mm Fire Resistant - wet area": {
+                    edge: "#7e22ce",
+                    fill: "rgb(126 34 206 / 0.18)",
+                },
+                "6.5mm Flexible board": {
+                    edge: "#059669",
+                    fill: "rgb(5 150 105 / 0.18)",
+                },
                 "Recessed Edge": {
                     edge: "#334155",
                     fill: "rgb(51 65 85 / 0.18)",
@@ -70,6 +122,58 @@ export const themes = {
         dangerRing: "ring-2 ring-red-200 dark:ring-red-950",
         editor: {
             boardColors: {
+                "10mm Plasterboard": {
+                    edge: "#3f3f46",
+                    fill: "rgb(63 63 70 / 0.18)",
+                },
+                "13mm Plasterboard": {
+                    edge: "#52525b",
+                    fill: "rgb(82 82 91 / 0.18)",
+                },
+                "9mm Villaboard": {
+                    edge: "#0284c7",
+                    fill: "rgb(2 132 199 / 0.18)",
+                },
+                "6mm Villaboard": {
+                    edge: "#0891b2",
+                    fill: "rgb(8 145 178 / 0.18)",
+                },
+                "10mm Acoustic (Soundchek)": {
+                    edge: "#c2410c",
+                    fill: "rgb(194 65 12 / 0.18)",
+                },
+                "13mm Acoustic (Soundchek)": {
+                    edge: "#b45309",
+                    fill: "rgb(180 83 9 / 0.18)",
+                },
+                "10mm Water Resistant": {
+                    edge: "#2563eb",
+                    fill: "rgb(37 99 235 / 0.18)",
+                },
+                "13mm Water Resistant": {
+                    edge: "#4f46e5",
+                    fill: "rgb(79 70 229 / 0.18)",
+                },
+                "13mm Fire Resistant - dry area": {
+                    edge: "#dc2626",
+                    fill: "rgb(220 38 38 / 0.18)",
+                },
+                "16mm Fire Resistant - dry area": {
+                    edge: "#be123c",
+                    fill: "rgb(190 18 60 / 0.18)",
+                },
+                "13mm Fire Resistant - wet area": {
+                    edge: "#a21caf",
+                    fill: "rgb(162 28 175 / 0.18)",
+                },
+                "16mm Fire Resistant - wet area": {
+                    edge: "#7e22ce",
+                    fill: "rgb(126 34 206 / 0.18)",
+                },
+                "6.5mm Flexible board": {
+                    edge: "#059669",
+                    fill: "rgb(5 150 105 / 0.18)",
+                },
                 "Recessed Edge": {
                     edge: "#3f3f46",
                     fill: "rgb(63 63 70 / 0.18)",

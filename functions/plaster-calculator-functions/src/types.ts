@@ -289,7 +289,8 @@ export interface OverlayArea {
     id: string;
     label: string;
     points: [number, number][];
-    wallPlasterType: string;
+    wallBoardProfile: string;
+    wallBoardType: string;
     ceilingPlasterType: string;
     ceilingMode: "flat";
     isOutdoor: boolean;

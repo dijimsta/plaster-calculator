@@ -1,7 +1,10 @@
 import { useRef, type RefObject } from "react";
 import { Line } from "react-konva";
 
-import { colorFor } from "../../lib/editor/board-materials.js";
+import {
+    colorFor,
+    normalizeCeilingBoardType,
+} from "../../lib/editor/board-materials.js";
 import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
 
 import type { DragState, OverlayMode } from "./project-editor.types.js";
@@ -52,7 +55,11 @@ export function CanvasAreaFills({
                         fill={
                             overlayMode === "walls"
                                 ? "transparent"
-                                : colorFor(area.ceilingPlasterType).fill
+                                : colorFor(
+                                      normalizeCeilingBoardType(
+                                          area.ceilingPlasterType,
+                                      ),
+                                  ).fill
                         }
                         stroke="transparent"
                         opacity={active ? 1 : 0.86}

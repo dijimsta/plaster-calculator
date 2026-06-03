@@ -1,6 +1,9 @@
 import { Line } from "react-konva";
 
-import { colorFor } from "../../lib/editor/board-materials.js";
+import {
+    colorFor,
+    normalizeWallBoardType,
+} from "../../lib/editor/board-materials.js";
 import { pointAt } from "../../lib/editor/overlay-geometry.js";
 import { activeTheme } from "../../lib/styles.js";
 
@@ -55,7 +58,10 @@ export function CanvasWallEdges({
                     const edgeColor = getEdgeColor(
                         rakedEdgeRole,
                         noPlaster,
-                        override?.wallPlasterType ?? area.wallPlasterType,
+                        normalizeWallBoardType(
+                            override?.wallBoardType ?? area.wallBoardType,
+                            override?.wallPlasterType ?? area.wallPlasterType,
+                        ),
                     );
                     return (
                         <Line

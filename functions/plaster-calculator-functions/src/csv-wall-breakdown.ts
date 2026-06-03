@@ -1,3 +1,5 @@
+import { wallMaterialLabel } from "./board-materials.js";
+
 type JsonRecord = Record<string, unknown>;
 type Point = [number, number];
 
@@ -33,7 +35,7 @@ export function wallBreakdown(
         }
 
         const height = wallHeightForEdge(area, pageHeightMm, index);
-        const column = `${line.wallType} @ ${heightLabel(height)} in m`;
+        const column = `${line.wallType} @ ${heightLabel(height)}`;
         totals.set(column, (totals.get(column) ?? 0) + line.lengthM);
     }
 
@@ -70,11 +72,7 @@ function edgeOverride(overrides: JsonRecord, index: number) {
 }
 
 function edgeWallType(area: JsonRecord, override: JsonRecord | null) {
-    if (typeof override?.["wallPlasterType"] === "string") {
-        return override["wallPlasterType"];
-    }
-
-    return readString(area["wallPlasterType"], "Recessed Edge");
+    return wallMaterialLabel(area, override ?? undefined);
 }
 
 function edgeLengthM(a: Point, b: Point, scaleMmPerPx: number) {

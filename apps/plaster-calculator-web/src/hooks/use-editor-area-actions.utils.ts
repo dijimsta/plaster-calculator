@@ -1,3 +1,8 @@
+import {
+    DEFAULT_CEILING_BOARD_TYPE,
+    DEFAULT_WALL_BOARD_PROFILE,
+    DEFAULT_WALL_BOARD_TYPE,
+} from "../lib/editor/board-materials.js";
 import { splitEdgeOverrides } from "../lib/editor/edge-overrides.js";
 import { pathLengthBetween } from "../lib/editor/overlay-geometry.js";
 
@@ -16,8 +21,9 @@ export function createManualArea(label: string, points: Point[]): AreaPolygon {
         id: crypto.randomUUID(),
         label,
         points,
-        wallPlasterType: "Recessed Edge",
-        ceilingPlasterType: "Recessed Edge",
+        wallBoardProfile: DEFAULT_WALL_BOARD_PROFILE,
+        wallBoardType: DEFAULT_WALL_BOARD_TYPE,
+        ceilingPlasterType: DEFAULT_CEILING_BOARD_TYPE,
         isOutdoor: false,
         source: "manual",
         deleted: false,

@@ -1,6 +1,17 @@
+import {
+    normalizeCeilingBoardType,
+    normalizeWallBoardProfile,
+    normalizeWallBoardType,
+} from "../lib/editor/board-materials.js";
+
 import type { AreaPolygon, EdgeOverride, Overlay } from "../types.js";
 import type { UpdateArea } from "./use-editor-actions.types.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
+
+export type MaterialField =
+    | "wallBoardProfile"
+    | "wallBoardType"
+    | "ceilingPlasterType";
 
 interface MaterialActionsOptions {
     readonly commit: (next: Overlay) => void;
@@ -21,10 +32,7 @@ export function useEditorMaterialActions({
     selectedEdge,
     updateArea,
 }: MaterialActionsOptions) {
-    function setMaterial(
-        field: "wallPlasterType" | "ceilingPlasterType",
-        value: string,
-    ) {
+    function setMaterial(field: MaterialField, value: string) {
         const targetIds =
             selectedAreaIds.length > 0
                 ? selectedAreaIds
@@ -36,7 +44,8 @@ export function useEditorMaterialActions({
             ...overlay,
             areas: overlay.areas.map((area) => {
                 if (!targetIds.includes(area.id)) return area;
-                if (field === "wallPlasterType" && area.isOutdoor) return area;
+                if (field !== "ceilingPlasterType" && area.isOutdoor)
+                    return area;
                 return { ...area, [field]: value };
             }),
         });
@@ -56,20 +65,21 @@ export function useEditorMaterialActions({
         });
     }
 
-    function commonMaterialValue(
-        field: "wallPlasterType" | "ceilingPlasterType",
-    ) {
-        const values = selectedAreas.map((area) => area[field]);
+    function commonMaterialValue(field: MaterialField) {
+        const values = selectedAreas.map((area) => materialValue(area, field));
         if (values.length === 0) return "";
         return values.every((value) => value === values[0])
             ? (values[0] ?? "")
             : "";
     }
 
-    function setSelectedEdgeMaterial(value: string) {
+    function setSelectedEdgeMaterial(
+        field: "wallBoardProfile" | "wallBoardType",
+        value: string,
+    ) {
         updateSelectedEdgeOverride((override) => ({
             ...override,
-            wallPlasterType: value,
+            [field]: value,
             noPlaster: false,
         }));
     }
@@ -79,7 +89,9 @@ export function useEditorMaterialActions({
     }
 
     function clearSelectedEdgeOverride() {
-        updateSelectedEdgeOverride(() => null);
+        updateSelectedEdgeOverride((override) =>
+            override.noPlaster ? { noPlaster: true } : null,
+        );
     }
 
     return {
@@ -101,7 +113,10 @@ export function useEditorMaterialActions({
             const nextOverride = updater(nextOverrides[key] ?? {});
             if (
                 nextOverride &&
-                (nextOverride.wallPlasterType || nextOverride.noPlaster)
+                (nextOverride.wallBoardProfile ||
+                    nextOverride.wallBoardType ||
+                    nextOverride.wallPlasterType ||
+                    nextOverride.noPlaster)
             ) {
                 nextOverrides[key] = nextOverride;
             } else {
@@ -115,4 +130,15 @@ export function useEditorMaterialActions({
             };
         });
     }
+}
+
+function materialValue(area: AreaPolygon, field: MaterialField) {
+    if (field === "ceilingPlasterType") {
+        return normalizeCeilingBoardType(area.ceilingPlasterType);
+    }
+    if (field === "wallBoardProfile") {
+        return normalizeWallBoardProfile(area.wallBoardProfile);
+    }
+
+    return normalizeWallBoardType(area.wallBoardType, area.wallPlasterType);
 }
