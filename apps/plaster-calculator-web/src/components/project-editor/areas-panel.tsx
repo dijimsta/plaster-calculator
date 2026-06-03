@@ -1,6 +1,7 @@
 import {
     BOARD_SWATCH_CLASSES,
-    BOARD_TYPES,
+    normalizeWallBoardType,
+    WALL_BOARD_TYPES,
 } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
 
@@ -17,28 +18,32 @@ export function AreasPanel({
     visibleAreas,
     selectArea,
 }: AreasPanelProps) {
+    const legendBoardTypes = wallBoardTypesInUse(visibleAreas);
+
     return (
         <section className={cx(ui.panel, ui.stack)}>
             <h3>Areas</h3>
-            <div className={ui.buttonRow}>
-                {BOARD_TYPES.map((type) => (
-                    <span
-                        className={cx(
-                            ui.muted,
-                            "inline-flex items-center gap-1.5",
-                        )}
-                        key={type}
-                    >
+            {legendBoardTypes.length > 0 && (
+                <div className={ui.buttonRow}>
+                    {legendBoardTypes.map((type) => (
                         <span
                             className={cx(
-                                "inline-block h-3 w-3 rounded",
-                                BOARD_SWATCH_CLASSES[type],
+                                ui.muted,
+                                "inline-flex items-center gap-1.5",
                             )}
-                        />
-                        {type}
-                    </span>
-                ))}
-            </div>
+                            key={type}
+                        >
+                            <span
+                                className={cx(
+                                    "inline-block h-3 w-3 rounded",
+                                    BOARD_SWATCH_CLASSES[type],
+                                )}
+                            />
+                            {type}
+                        </span>
+                    ))}
+                </div>
+            )}
             <div className={ui.areaList}>
                 {visibleAreas.map((area) => (
                     <button
@@ -58,4 +63,25 @@ export function AreasPanel({
             </div>
         </section>
     );
+}
+
+function wallBoardTypesInUse(areas: AreaPolygon[]) {
+    const usedTypes = new Set<string>();
+    areas.forEach((area) => {
+        if (area.isOutdoor) return;
+        usedTypes.add(
+            normalizeWallBoardType(area.wallBoardType, area.wallPlasterType),
+        );
+        Object.values(area.edgeOverrides ?? {}).forEach((override) => {
+            if (override.noPlaster) return;
+            usedTypes.add(
+                normalizeWallBoardType(
+                    override.wallBoardType ?? area.wallBoardType,
+                    override.wallPlasterType ?? area.wallPlasterType,
+                ),
+            );
+        });
+    });
+
+    return WALL_BOARD_TYPES.filter((type) => usedTypes.has(type));
 }

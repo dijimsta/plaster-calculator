@@ -5,6 +5,10 @@ import * as logger from "firebase-functions/logger";
 import { GoogleAuth } from "google-auth-library";
 import JSZip from "jszip";
 
+import {
+    DEFAULT_WALL_BOARD_PROFILE,
+    DEFAULT_WALL_BOARD_TYPE,
+} from "./board-materials.js";
 import { isEmulator, projectId } from "./environment.js";
 import {
     LONG_RUNNING_TIMEOUT_SECONDS,
@@ -226,7 +230,8 @@ export function analyzerItemToOverlayArea(
         id: randomUUID(),
         label: candidateLabel,
         points,
-        wallPlasterType: defaultWallPlasterTypeForRoom(roomType),
+        wallBoardProfile: DEFAULT_WALL_BOARD_PROFILE,
+        wallBoardType: defaultWallBoardTypeForRoom(roomType),
         ceilingPlasterType: defaultCeilingPlasterTypeForRoom(roomType),
         ceilingMode: "flat",
         isOutdoor,
@@ -279,12 +284,14 @@ function applyAnalyzerSourceFields(
     }
 }
 
-export function defaultWallPlasterTypeForRoom(roomType: string | null): string {
-    return roomType === "Bath" ? "Water Resistant" : "Recessed Edge";
+export function defaultWallBoardTypeForRoom(roomType: string | null): string {
+    return roomType === "Bath" ? "9mm Villaboard" : DEFAULT_WALL_BOARD_TYPE;
 }
 
 export function defaultCeilingPlasterTypeForRoom(
     roomType: string | null,
 ): string {
-    return roomType === "Outdoor" ? "Water Resistant" : "Recessed Edge";
+    return roomType === "Bath" || roomType === "Outdoor"
+        ? "Water Resistant"
+        : "Recessed Edge";
 }

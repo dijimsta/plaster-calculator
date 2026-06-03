@@ -1,6 +1,12 @@
 import { Button } from "@libraries/uikit-web";
 
-import { BOARD_TYPES } from "../../lib/editor/board-materials.js";
+import { MaterialSelect } from "./selection-board-controls.js";
+import {
+    normalizeWallBoardProfile,
+    normalizeWallBoardType,
+    WALL_BOARD_PROFILES,
+    WALL_BOARD_TYPES,
+} from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
@@ -15,7 +21,10 @@ interface SelectedEdgeControlsProps {
     readonly selectedEdge: SelectedEdge;
     readonly selectedEdgeArea: AreaPolygon;
     readonly selectedEdgeOverride: EdgeOverride | undefined | null;
-    readonly setSelectedEdgeMaterial: (value: string) => void;
+    readonly setSelectedEdgeMaterial: (
+        field: "wallBoardProfile" | "wallBoardType",
+        value: string,
+    ) => void;
     readonly setSelectedEdgeNoPlaster: (noPlaster: boolean) => void;
 }
 
@@ -52,27 +61,42 @@ export function SelectedEdgeControls({
                 />
                 No plaster
             </label>
-            <div className={ui.field}>
-                <label>Wall board</label>
-                <select
-                    className={ui.input}
+            <fieldset
+                className={cx(
+                    "contents",
+                    isEdgeWallTypeDisabled(
+                        selectedEdgeOverride,
+                        selectedEdgeArea,
+                    ) && "opacity-60",
+                )}
+                disabled={isEdgeWallTypeDisabled(
+                    selectedEdgeOverride,
+                    selectedEdgeArea,
+                )}
+            >
+                <MaterialSelect
+                    label="Wall profile"
+                    options={WALL_BOARD_PROFILES}
+                    value={selectedEdgeWallProfile(
+                        selectedEdgeOverride,
+                        selectedEdgeArea,
+                    )}
+                    onChange={(value) =>
+                        setSelectedEdgeMaterial("wallBoardProfile", value)
+                    }
+                />
+                <MaterialSelect
+                    label="Wall board"
+                    options={WALL_BOARD_TYPES}
                     value={selectedEdgeWallType(
                         selectedEdgeOverride,
                         selectedEdgeArea,
                     )}
-                    onChange={(event) =>
-                        setSelectedEdgeMaterial(event.target.value)
+                    onChange={(value) =>
+                        setSelectedEdgeMaterial("wallBoardType", value)
                     }
-                    disabled={isEdgeWallTypeDisabled(
-                        selectedEdgeOverride,
-                        selectedEdgeArea,
-                    )}
-                >
-                    {BOARD_TYPES.map((type) => (
-                        <option key={type}>{type}</option>
-                    ))}
-                </select>
-            </div>
+                />
+            </fieldset>
             <Button
                 variant="secondary"
                 onClick={clearSelectedEdgeOverride}
@@ -114,7 +138,19 @@ function selectedEdgeWallType(
     edgeOverride: EdgeOverride | undefined | null,
     selectedEdgeArea: AreaPolygon,
 ) {
-    return edgeOverride?.wallPlasterType ?? selectedEdgeArea.wallPlasterType;
+    return normalizeWallBoardType(
+        edgeOverride?.wallBoardType ?? selectedEdgeArea.wallBoardType,
+        edgeOverride?.wallPlasterType ?? selectedEdgeArea.wallPlasterType,
+    );
+}
+
+function selectedEdgeWallProfile(
+    edgeOverride: EdgeOverride | undefined | null,
+    selectedEdgeArea: AreaPolygon,
+) {
+    return normalizeWallBoardProfile(
+        edgeOverride?.wallBoardProfile ?? selectedEdgeArea.wallBoardProfile,
+    );
 }
 
 function isEdgeWallTypeDisabled(

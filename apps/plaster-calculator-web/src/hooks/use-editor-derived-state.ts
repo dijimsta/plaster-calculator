@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { normalizeCeilingBoardType } from "../lib/editor/board-materials.js";
 import {
     ceilingAreaM2ForArea,
     wallLengthByType,
@@ -90,10 +91,12 @@ export function useEditorDerivedState({
                 );
             });
             const ceilingAreaM2 = ceilingAreaM2ForArea(area, scaleMmPerPx);
-            ceilingTotals.set(
+            const ceilingType = normalizeCeilingBoardType(
                 area.ceilingPlasterType,
-                (ceilingTotals.get(area.ceilingPlasterType) ?? 0) +
-                    ceilingAreaM2,
+            );
+            ceilingTotals.set(
+                ceilingType,
+                (ceilingTotals.get(ceilingType) ?? 0) + ceilingAreaM2,
             );
         });
         return {

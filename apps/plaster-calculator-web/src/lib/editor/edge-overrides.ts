@@ -5,7 +5,11 @@ export function cleanOverrides(
 ): Record<string, EdgeOverride> | undefined {
     const cleaned = Object.fromEntries(
         Object.entries(overrides).filter(
-            ([, override]) => override.noPlaster || override.wallPlasterType,
+            ([, override]) =>
+                override.noPlaster ||
+                override.wallBoardProfile ||
+                override.wallBoardType ||
+                override.wallPlasterType,
         ),
     ) as Record<string, EdgeOverride>;
     return Object.keys(cleaned).length ? cleaned : undefined;

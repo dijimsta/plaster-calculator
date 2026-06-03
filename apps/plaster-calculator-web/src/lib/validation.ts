@@ -1,3 +1,8 @@
+import {
+    normalizeCeilingBoardType,
+    normalizeWallBoardProfile,
+    normalizeWallBoardType,
+} from "./editor/board-materials.js";
 import { parseOverlay } from "./editor/overlay-serialization.js";
 
 import type { AreaPolygon, FloorplanPage } from "../types.js";
@@ -27,6 +32,8 @@ export type ValidationIssue = {
         | "areas"
         | "areaLabel"
         | "polygon"
+        | "wallBoardProfile"
+        | "wallBoardType"
         | "wallPlasterType"
         | "ceilingPlasterType"
         | "ceilingHeightMm"
@@ -93,7 +100,7 @@ function validateAreaBasics(
             "Polygon needs at least 3 points",
         );
     }
-    if (!area.ceilingPlasterType?.trim()) {
+    if (!normalizeCeilingBoardType(area.ceilingPlasterType).trim()) {
         addAreaIssue(
             issues,
             page,
@@ -102,12 +109,27 @@ function validateAreaBasics(
             "Ceiling board is required",
         );
     }
-    if (!area.isOutdoor && !area.wallPlasterType?.trim()) {
+    if (
+        !area.isOutdoor &&
+        !normalizeWallBoardProfile(area.wallBoardProfile).trim()
+    ) {
         addAreaIssue(
             issues,
             page,
             area,
-            "wallPlasterType",
+            "wallBoardProfile",
+            "Wall profile is required",
+        );
+    }
+    if (
+        !area.isOutdoor &&
+        !normalizeWallBoardType(area.wallBoardType, area.wallPlasterType).trim()
+    ) {
+        addAreaIssue(
+            issues,
+            page,
+            area,
+            "wallBoardType",
             "Wall board is required",
         );
     }

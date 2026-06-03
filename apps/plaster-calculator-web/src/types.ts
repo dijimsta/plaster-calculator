@@ -93,6 +93,8 @@ export type Reminder = {
 export type Point = [number, number];
 
 export type EdgeOverride = {
+    wallBoardProfile?: string;
+    wallBoardType?: string;
     wallPlasterType?: string;
     noPlaster?: boolean;
 };
@@ -108,7 +110,9 @@ export type AreaPolygon = {
     id: string;
     label: string;
     points: Point[];
-    wallPlasterType: string;
+    wallBoardProfile?: string;
+    wallBoardType?: string;
+    wallPlasterType?: string;
     ceilingPlasterType: string;
     edgeOverrides?: Record<string, EdgeOverride>;
     ceilingHeightMm?: number | null;
