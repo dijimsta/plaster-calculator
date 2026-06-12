@@ -8,7 +8,8 @@ import type { ReactNode } from "react";
 export interface ProjectEditorProps {
     readonly project: ProjectDetail;
     readonly page: FloorplanPage;
-    readonly onSaved: () => void;
+    readonly onSaved: () => void | Promise<void>;
+    readonly onAnalyzingChange?: (analyzing: boolean) => void;
     readonly projectAccountPanel?: ReactNode;
     readonly onDraftChange?: (
         pageId: string,

@@ -56,6 +56,7 @@ export interface FloorplanPage {
     id: string;
     pageNumber: number;
     status: ProjectStatus;
+    processingError: string | null;
     imageUrl: string;
     previewUrl: string;
     overlay: string | null;
@@ -227,6 +228,18 @@ export interface ProcessProjectRequest extends ProjectIdRequest {
     pageNumbers?: unknown;
     strategyKey?: unknown;
     pageImagePaths?: unknown;
+}
+
+export interface InitializeFloorplanPagesRequest extends ProjectIdRequest {
+    pageImagePaths?: unknown;
+}
+
+export interface AnalyzeFloorplanPageRequest extends ProjectIdRequest {
+    pageId?: unknown;
+    scaleMmPerPx?: unknown;
+    ceilingHeightMm?: unknown;
+    referencePoints?: unknown;
+    referenceLengthMm?: unknown;
 }
 
 export interface UpdateFloorplanPageRequest extends ProjectIdRequest {

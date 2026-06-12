@@ -88,6 +88,7 @@ query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
             projectId
             pageNumber
             status
+            processingError
             sourceImagePath
             previewImagePath
             rawJsonPath
@@ -133,6 +134,7 @@ query GetFloorplanPageById($projectId: UUID!, $pageId: UUID!)
         projectId
         pageNumber
         status
+        processingError
         sourceImagePath
         previewImagePath
         rawJsonPath

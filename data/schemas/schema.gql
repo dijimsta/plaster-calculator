@@ -85,6 +85,7 @@ type FloorplanPage
     projectId: UUID!
     pageNumber: Int!
     status: String!
+    processingError: String
     sourceImagePath: String
     previewImagePath: String
     rawJsonPath: String

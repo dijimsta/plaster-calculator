@@ -1,4 +1,4 @@
-import { storagePathToUrl } from "./storage.js";
+import { ensureFileDownloadUrl, storagePathToUrl } from "./storage.js";
 import { toReminderStatus, toSalesStatus } from "./validation.js";
 
 import type {
@@ -48,6 +48,39 @@ export function toDetail(project: ProjectWithPages): ProjectDetail {
         ownerId: project.ownerId,
         pages: project.pages.map(toPage),
     };
+}
+
+export async function toDetailWithDownloadUrls(
+    project: ProjectWithPages,
+): Promise<ProjectDetail> {
+    const detail = toDetail(project);
+    return {
+        ...detail,
+        pages: await Promise.all(
+            project.pages.map(async (page) => {
+                const mapped = toPage(page);
+                const imageUrl = await pagePathToDownloadUrl(
+                    page.sourceImagePath,
+                );
+                const previewUrl = await pagePathToDownloadUrl(
+                    page.previewImagePath,
+                );
+                return {
+                    ...mapped,
+                    imageUrl,
+                    previewUrl: previewUrl || imageUrl,
+                };
+            }),
+        ),
+    };
+}
+
+async function pagePathToDownloadUrl(
+    path: string | null | undefined,
+): Promise<string> {
+    if (!path) return "";
+    if (path.startsWith("data:") || path.startsWith("http")) return path;
+    return ensureFileDownloadUrl(path);
 }
 
 export function toAccountSummary(
@@ -110,6 +143,7 @@ export function toPage(page: FloorplanPageRow): FloorplanPage {
         id: page.id,
         pageNumber: page.pageNumber,
         status: toProjectStatus(page.status),
+        processingError: page.processingError ?? null,
         imageUrl,
         previewUrl: storagePathToUrl(page.previewImagePath) || imageUrl,
         overlay: page.overlayJson ?? null,

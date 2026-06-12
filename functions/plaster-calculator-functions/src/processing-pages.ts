@@ -13,6 +13,15 @@ import {
 
 import type { ProcessingStrategy, ProjectWithPages } from "./types.js";
 
+export interface AnalyzedPageData {
+    readonly overlayJson: string;
+    readonly previewImagePath: string;
+    readonly processingMetadataJson: string;
+    readonly processingStrategy: string;
+    readonly rawFloorplanPath: string;
+    readonly rawJsonPath: string;
+}
+
 export async function analyseProjectPages(
     uid: string,
     project: ProjectWithPages,
@@ -103,6 +112,50 @@ async function analysePage(
     imageBytes: Buffer,
     strategy: ProcessingStrategy,
 ): Promise<void> {
+    const analyzed = await analyzePageImage({
+        uid,
+        projectId,
+        pageNumber,
+        originalFileName,
+        imageBytes,
+        strategy,
+    });
+
+    await dcCreateFloorplanPage({
+        projectId,
+        pageNumber,
+        status: "READY",
+        processingError: null,
+        sourceImagePath: originalUrl,
+        previewImagePath: analyzed.previewImagePath,
+        rawJsonPath: analyzed.rawJsonPath,
+        rawFloorplanPath: analyzed.rawFloorplanPath,
+        overlayJson: analyzed.overlayJson,
+        scaleMmPerPx: null,
+        ceilingHeightMm: null,
+        referencePointsJson: null,
+        referenceLengthMm: null,
+        processingStrategy: analyzed.processingStrategy,
+        processingMetadataJson: analyzed.processingMetadataJson,
+    });
+}
+
+export async function analyzePageImage(options: {
+    readonly uid: string;
+    readonly projectId: string;
+    readonly pageNumber: number;
+    readonly originalFileName: string;
+    readonly imageBytes: Buffer;
+    readonly strategy: ProcessingStrategy;
+}): Promise<AnalyzedPageData> {
+    const {
+        uid,
+        projectId,
+        pageNumber,
+        originalFileName,
+        imageBytes,
+        strategy,
+    } = options;
     const resultStorageProjectId = storageProjectId(projectId);
     const { result, floorplanPng } = await callFloorplanAnalyzer(
         strategy.endpoint,
@@ -131,17 +184,11 @@ async function analysePage(
         "application/json",
     );
 
-    await dcCreateFloorplanPage({
-        projectId,
-        pageNumber,
-        status: "READY",
-        sourceImagePath: originalUrl,
-        previewImagePath: floorplanUrl,
+    return {
         overlayJson: JSON.stringify(overlay),
-        scaleMmPerPx: null,
-        ceilingHeightMm: null,
-        referencePointsJson: null,
-        referenceLengthMm: null,
+        previewImagePath: floorplanPath,
+        rawFloorplanPath: floorplanPath,
+        rawJsonPath: jsonPath,
         processingStrategy: strategy.key,
         processingMetadataJson: JSON.stringify({
             strategy: strategy.key,
@@ -153,7 +200,7 @@ async function analysePage(
             jsonUrl,
             floorplanUrl,
         }),
-    });
+    };
 }
 
 async function fetchOriginalImage(originalUrl: string): Promise<Buffer> {

@@ -217,6 +217,13 @@ function createFloorplanPage(dcOrVarsOrOptions, varsOrOptions, options) {
 }
 exports.createFloorplanPage = createFloorplanPage;
 
+function updateFloorplanPageAnalysis(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateFloorplanPageAnalysis', inputVars, inputOpts);
+}
+exports.updateFloorplanPageAnalysis = updateFloorplanPageAnalysis;
+
 function updateFloorplanPage(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

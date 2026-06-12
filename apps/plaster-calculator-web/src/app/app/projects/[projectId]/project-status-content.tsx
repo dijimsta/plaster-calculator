@@ -25,6 +25,7 @@ const ProjectEditor = dynamic(
 
 interface ProjectStatusContentProps {
     readonly accountId: string | null;
+    readonly analyzingPage: boolean;
     readonly load: () => Promise<void>;
     readonly project: ProjectDetail;
     readonly saveAccount: () => Promise<void>;
@@ -33,6 +34,7 @@ interface ProjectStatusContentProps {
     readonly selectedPageId: string | null;
     readonly selectPage: (pageId: string) => Promise<void>;
     readonly setAccountId: (accountId: string | null) => void;
+    readonly setAnalyzingPage: (analyzing: boolean) => void;
     readonly switchingPage: boolean;
     readonly updateDraft: (pageId: string, draft: PageValidationInput) => void;
     readonly validationIssues: ValidationIssue[];
@@ -40,6 +42,7 @@ interface ProjectStatusContentProps {
 
 export function ProjectStatusContent({
     accountId,
+    analyzingPage,
     load,
     project,
     saveAccount,
@@ -48,6 +51,7 @@ export function ProjectStatusContent({
     selectedPageId,
     selectPage,
     setAccountId,
+    setAnalyzingPage,
     switchingPage,
     updateDraft,
     validationIssues,
@@ -97,13 +101,18 @@ export function ProjectStatusContent({
                 project={project}
                 selectedPageId={selectedPageId}
                 selectPage={selectPage}
-                switchingPage={switchingPage}
+                switchingPage={
+                    switchingPage ||
+                    analyzingPage ||
+                    project.pages.some((page) => page.status === "PROCESSING")
+                }
             />
             {selectedPage && (
                 <ProjectEditor
                     project={project}
                     page={selectedPage}
                     onSaved={load}
+                    onAnalyzingChange={setAnalyzingPage}
                     projectAccountPanel={
                         <ProjectAccountPanel
                             accountId={project.accountId}
@@ -119,9 +128,14 @@ export function ProjectStatusContent({
                     )}
                 />
             )}
+            {selectedPage?.processingError && (
+                <p className={ui.error} role="alert">
+                    Analysis failed: {selectedPage.processingError}
+                </p>
+            )}
             {project.pages.length === 0 && (
                 <section className={ui.panel}>
-                    This project has not been processed yet.
+                    Select PDF pages to begin annotation.
                 </section>
             )}
         </>

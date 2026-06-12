@@ -1,7 +1,8 @@
+import { useRouter } from "next/navigation.js";
 import { useState, type DragEvent, type FormEvent } from "react";
 
 import {
-    processProject,
+    initializeFloorplanPages,
     uploadPdfPageSource,
     uploadProject,
 } from "../../../lib/api.js";
@@ -15,8 +16,6 @@ import {
 
 import type { PageUploadProgress } from "../dashboard.types.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
-
-const OCR_FLOOD_FILL_SMOOTHED_STRATEGY_KEY = "ocr-flood-fill-smoothed";
 
 interface PreparedPdfUpload {
     pdfDocument: PDFDocumentProxy | null;
@@ -36,10 +35,10 @@ interface DashboardUploadOptions {
 export function useDashboardUpload({
     refresh,
     setMessage,
-    setProcessingProjectId,
     setToast,
     setToastProject,
 }: DashboardUploadOptions) {
+    const router = useRouter();
     const [name, setName] = useState("");
     const [accountId, setAccountId] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
@@ -72,7 +71,12 @@ export function useDashboardUpload({
                 openPdfPageSelection(upload.projectId, preparedPdf);
                 preparedPdf = emptyPreparedPdfUpload();
             } else {
-                await processUploadedImage(upload.projectId);
+                setMessage("");
+                setToast("Project created and ready for annotation.");
+                setToastProject({
+                    id: upload.projectId,
+                    name: name || file.name,
+                });
             }
             await refresh();
         } catch (error) {
@@ -115,20 +119,6 @@ export function useDashboardUpload({
         setMessage("");
     }
 
-    async function processUploadedImage(projectId: string) {
-        setMessage("Processing image in the background...");
-        setProcessingProjectId(projectId);
-        setToast("Project is processing.");
-        const project = await processProject(
-            projectId,
-            [1],
-            OCR_FLOOD_FILL_SMOOTHED_STRATEGY_KEY,
-        );
-        setProcessingProjectId(null);
-        setToast(`${project.name} finished processing.`);
-        setToastProject({ id: project.id, name: project.name });
-    }
-
     async function processSelectedPdfPages() {
         if (!draftProjectId || !pdfDocument || selectedPages.length === 0) {
             return;
@@ -163,21 +153,11 @@ export function useDashboardUpload({
                     label: `Uploaded page ${pageNumber}.`,
                 });
             }
-            setMessage("Processing PDF pages in the background...");
-            const processingProjectId = draftProjectId;
+            setMessage("Creating editable PDF pages...");
+            const projectId = draftProjectId;
             cleanupPdfModal();
-            setProcessingProjectId(processingProjectId);
-            setToast("Project is processing.");
-            const project = await processProject(
-                processingProjectId,
-                selectedPages,
-                OCR_FLOOD_FILL_SMOOTHED_STRATEGY_KEY,
-                pageImagePaths,
-            );
-            setProcessingProjectId(null);
-            setToast(`${project.name} finished processing.`);
-            setToastProject({ id: project.id, name: project.name });
-            await refresh();
+            await initializeFloorplanPages(projectId, pageImagePaths);
+            router.push(`/app/projects/${projectId}`);
         } catch (error) {
             setMessage(
                 error instanceof Error ? error.message : "Processing failed",

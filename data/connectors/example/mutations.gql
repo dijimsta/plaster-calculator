@@ -232,8 +232,11 @@ mutation CreateFloorplanPage(
     $projectId: UUID!
     $pageNumber: Int!
     $status: String!
+    $processingError: String
     $sourceImagePath: String
     $previewImagePath: String
+    $rawJsonPath: String
+    $rawFloorplanPath: String
     $overlayJson: String
     $scaleMmPerPx: Float
     $ceilingHeightMm: Float
@@ -247,8 +250,11 @@ mutation CreateFloorplanPage(
             projectId: $projectId
             pageNumber: $pageNumber
             status: $status
+            processingError: $processingError
             sourceImagePath: $sourceImagePath
             previewImagePath: $previewImagePath
+            rawJsonPath: $rawJsonPath
+            rawFloorplanPath: $rawFloorplanPath
             overlayJson: $overlayJson
             scaleMmPerPx: $scaleMmPerPx
             ceilingHeightMm: $ceilingHeightMm
@@ -257,6 +263,43 @@ mutation CreateFloorplanPage(
             processingStrategy: $processingStrategy
             processingMetadataJson: $processingMetadataJson
             createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateFloorplanPageAnalysis(
+    $id: UUID!
+    $status: String!
+    $processingError: String
+    $sourceImagePath: String
+    $previewImagePath: String
+    $rawJsonPath: String
+    $rawFloorplanPath: String
+    $overlayJson: String
+    $scaleMmPerPx: Float
+    $ceilingHeightMm: Float
+    $referencePointsJson: String
+    $referenceLengthMm: Float
+    $processingStrategy: String
+    $processingMetadataJson: String
+) @auth(level: NO_ACCESS) {
+    floorplanPage_update(
+        id: $id
+        data: {
+            status: $status
+            processingError: $processingError
+            sourceImagePath: $sourceImagePath
+            previewImagePath: $previewImagePath
+            rawJsonPath: $rawJsonPath
+            rawFloorplanPath: $rawFloorplanPath
+            overlayJson: $overlayJson
+            scaleMmPerPx: $scaleMmPerPx
+            ceilingHeightMm: $ceilingHeightMm
+            referencePointsJson: $referencePointsJson
+            referenceLengthMm: $referenceLengthMm
+            processingStrategy: $processingStrategy
+            processingMetadataJson: $processingMetadataJson
             updatedAt_expr: "request.time"
         }
     )

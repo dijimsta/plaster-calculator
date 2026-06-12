@@ -4,6 +4,7 @@ type KeyboardShortcutAction = "cancel" | "clear" | "delete" | "redo" | "undo";
 
 interface EditorKeyboardShortcutsOptions {
     readonly isDrawingFreeShape: boolean;
+    readonly disabled: boolean;
     readonly onCancelFreeShape: () => void;
     readonly onClearSelection: () => void;
     readonly onDeleteSelection: () => void;
@@ -14,6 +15,7 @@ interface EditorKeyboardShortcutsOptions {
 
 export function useEditorKeyboardShortcuts({
     isDrawingFreeShape,
+    disabled,
     onCancelFreeShape,
     onClearSelection,
     onDeleteSelection,
@@ -23,6 +25,7 @@ export function useEditorKeyboardShortcuts({
 }: EditorKeyboardShortcutsOptions): void {
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
+            if (disabled) return;
             if (isFormTarget(event.target)) {
                 return;
             }
@@ -57,6 +60,7 @@ export function useEditorKeyboardShortcuts({
         onRedo,
         onUndo,
         hasSelection,
+        disabled,
     ]);
 }
 
