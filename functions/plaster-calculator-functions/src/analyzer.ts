@@ -10,6 +10,7 @@ import {
     DEFAULT_WALL_BOARD_TYPE,
 } from "./board-materials.js";
 import { isEmulator, projectId } from "./environment.js";
+import { applySinkWallOverrides } from "./sink-wall-overrides.js";
 import {
     LONG_RUNNING_TIMEOUT_SECONDS,
     FLOORPLAN_ANALYZER_REGION,
@@ -198,6 +199,7 @@ export function buildOverlayFromAnalyzerResult(
     const areas = items
         .map((item) => analyzerItemToOverlayArea(item))
         .filter((area): area is OverlayArea => area !== null);
+    applySinkWallOverrides(areas, result.icons ?? []);
     return {
         sourceFile,
         ...(result.image_size_px ? { imageSizePx: result.image_size_px } : {}),

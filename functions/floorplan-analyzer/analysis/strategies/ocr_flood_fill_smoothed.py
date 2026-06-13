@@ -17,6 +17,8 @@ from analysis.strategies.xixi import ROOM_TYPE_MIN_FRACTION, _get_room_type
 WALL_CLASS = 2
 RAILING_CLASS = 8
 BOUNDARY_CLASSES = (WALL_CLASS, RAILING_CLASS)
+SINK_CLASS = 6
+MIN_SINK_AREA_PX = 10
 DEFAULT_WALL_KERNEL_SIZE = 15
 DEFAULT_SIMPLIFY_EPSILON_RATIO = 0.005
 DEFAULT_ORTHO_TOLERANCE_DEGREES = 8.0
@@ -65,6 +67,7 @@ class OcrFloodFillSmoothedStrategy:
             unknown_room_min_area=params.unknown_room_min_area,
             ocr_service=self.ocr,
         )
+        icons_result = _sink_icons(seg.icons, prepared)
 
         result = {
             "source_file": params.source_file,
@@ -84,8 +87,36 @@ class OcrFloodFillSmoothedStrategy:
                 if room.get("source") == "closed_region_fallback"
             ),
             "rooms": rooms_result,
+            "icons": icons_result,
         }
         return result, _render_floorplan(image, rooms_result, seeds, wall_mask_closed)
+
+
+def _sink_icons(icons: np.ndarray, prepared) -> list[dict]:
+    icon_map = np.argmax(icons, axis=0).astype(np.uint8)
+    sink_mask = (icon_map == SINK_CLASS).astype(np.uint8)
+    contours, _ = cv2.findContours(
+        sink_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+    result = []
+    for contour in contours:
+        if cv2.contourArea(contour) < MIN_SINK_AREA_PX:
+            continue
+        x, y, w, h = cv2.boundingRect(contour)
+        polygon = np.array(
+            [[x, y], [x + w, y], [x + w, y + h], [x, y + h]],
+            dtype=np.float32,
+        )
+        mapped = prepared.to_original_xy(polygon)
+        result.append(
+            {
+                "label": "Sink",
+                "polygon": [
+                    [round(float(px), 2), round(float(py), 2)] for px, py in mapped
+                ],
+            }
+        )
+    return result
 
 
 def _close_wall_mask(wall_mask: np.ndarray, kernel_size: int) -> np.ndarray:
