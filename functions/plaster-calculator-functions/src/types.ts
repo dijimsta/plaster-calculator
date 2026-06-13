@@ -292,10 +292,18 @@ export interface AnalyzerResult {
     image_size_px?: { width: number; height: number };
     rooms?: AnalyzerPolygon[];
     walls?: AnalyzerPolygon[];
+    icons?: AnalyzerPolygon[];
     strategy?: string;
     ocr_seed_count?: number;
     room_count?: number;
     wall_count?: number;
+}
+
+export interface EdgeOverride {
+    wallBoardProfile?: string;
+    wallBoardType?: string;
+    wallPlasterType?: string;
+    noPlaster?: boolean;
 }
 
 export interface OverlayArea {
@@ -306,6 +314,7 @@ export interface OverlayArea {
     wallBoardType: string;
     ceilingPlasterType: string;
     ceilingMode: "flat";
+    edgeOverrides?: Record<string, EdgeOverride>;
     isOutdoor: boolean;
     source: "detected";
     deleted: false;
