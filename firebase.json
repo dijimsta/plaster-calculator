@@ -29,14 +29,6 @@
             "predeploy": [
                 "node ./scripts/predeploy-floorplan-analyzer-functions.mjs"
             ]
-        },
-        {
-            "source": "functions/plaster-calculator-nest",
-            "codebase": "plaster-calculator-nest",
-            "runtime": "nodejs24",
-            "predeploy": [
-                "pnpm --filter @functions/plaster-calculator-nest bundle"
-            ]
         }
     ],
     "storage": {
