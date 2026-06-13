@@ -13,7 +13,8 @@ export class BundleService {
         const path = resolve(directory, "package.json");
         const text = await readFile(path, "utf-8");
         const json = JSON.parse(text);
-        const { dependencies = {} } = PackageJsonSchema.parse(json);
+        const { dependencies = {}, devDependencies = {} } =
+            PackageJsonSchema.parse(json);
 
         const [workspaceDependencies, external] = Object.entries(
             dependencies,
@@ -53,9 +54,14 @@ export class BundleService {
         json.main = "./dist/index.js";
         json.exports = "./dist/index.js";
 
-        // Remove workspace dependencies from package.json
+        // Workspace packages are bundled and cannot be resolved by Cloud Build's npm install.
         workspaceDependencies.forEach((dependency) => {
             delete json.dependencies[dependency];
+        });
+        Object.entries(devDependencies).forEach(([dependency, version]) => {
+            if (version.startsWith(WORKSPACE_PREFIX)) {
+                delete json.devDependencies[dependency];
+            }
         });
 
         // Write the modified package.json
