@@ -21,6 +21,7 @@ import type { Point } from "../../types.js";
 
 interface ProjectEditorViewProps {
     readonly actions: ReturnType<typeof useEditorActions>;
+    readonly analyzing: boolean;
     readonly addMenuOpen: boolean;
     readonly canvasWrapRef: EditorCanvasProps["canvasWrapRef"];
     readonly dirty: boolean;
@@ -49,10 +50,12 @@ interface ProjectEditorViewProps {
     readonly setOverlayMode: (mode: OverlayMode) => void;
     readonly setSnapGuide: (guide: SnapGuide) => void;
     readonly zoom: number;
+    readonly onAnalyze: () => void;
 }
 
 export function ProjectEditorView({
     actions,
+    analyzing,
     addMenuOpen,
     canvasWrapRef,
     dirty,
@@ -81,6 +84,7 @@ export function ProjectEditorView({
     setOverlayMode,
     setSnapGuide,
     zoom,
+    onAnalyze,
 }: ProjectEditorViewProps) {
     return (
         <section className={ui.editorShell}>
@@ -88,6 +92,7 @@ export function ProjectEditorView({
                 <EditorToolbar
                     addMenuOpen={addMenuOpen}
                     autoSaving={persistence.autoSaving}
+                    analyzing={analyzing}
                     dirty={dirty}
                     futureCount={historyState.future.length}
                     historyCount={historyState.history.length}
@@ -97,6 +102,7 @@ export function ProjectEditorView({
                     selectedPointCount={selection.selectedPointIndexes.length}
                     zoom={zoom}
                     onAddPoint={actions.addPoint}
+                    onAnalyze={onAnalyze}
                     onAddRectangle={actions.addRectangle}
                     onChangeZoom={actions.changeZoom}
                     onClearSelection={selection.clearSelection}
@@ -114,88 +120,99 @@ export function ProjectEditorView({
                     onUndo={historyState.undo}
                     hasSelection={selection.hasSelection}
                 />
-                <EditorCanvas
-                    canvasWrapRef={canvasWrapRef}
-                    commitFromSnapshot={historyState.commitFromSnapshot}
-                    draftPointer={draftPointer}
-                    draftPoints={draftPoints}
-                    image={imageState.image}
-                    imageError={imageState.imageError}
-                    imageHeight={derivedState.imageHeight}
-                    imageWidth={derivedState.imageWidth}
-                    isDrawingFreeShape={isDrawingFreeShape}
-                    isSettingReference={isSettingReference}
-                    overlayMode={overlayMode}
-                    overlayRef={overlayState.overlayRef}
-                    referencePoints={overlayState.referencePoints}
-                    scrollDragRef={scrollDragRef}
-                    selectedArea={derivedState.selectedArea}
-                    selectedAreaIds={selection.selectedAreaIds}
-                    selectedEdge={selection.selectedEdge}
-                    selectedPoint={selection.selectedPoint}
-                    selectedPointIndexes={selection.selectedPointIndexes}
-                    snapGuide={snapGuide}
-                    stageHeight={derivedState.stageHeight}
-                    stageRef={stageRef}
-                    stageWidth={derivedState.stageWidth}
-                    visibleAreas={derivedState.visibleAreas}
-                    zoom={zoom}
-                    finishFreeShape={actions.finishFreeShape}
-                    selectArea={selection.selectArea}
-                    selectEdge={selection.selectEdge}
-                    selectPoint={selection.selectPoint}
-                    setDirty={setDirty}
-                    setDraftPointer={setDraftPointer}
-                    setDraftPoints={setDraftPoints}
-                    setIsSettingReference={setIsSettingReference}
-                    setOverlay={overlayState.setOverlay}
-                    setReferencePoints={overlayState.setReferencePoints}
-                    setSnapGuide={setSnapGuide}
-                />
+                {analyzing && (
+                    <p className={ui.muted} role="status">
+                        Analysis is running. Editing is temporarily disabled.
+                    </p>
+                )}
+                <div inert={analyzing}>
+                    <EditorCanvas
+                        canvasWrapRef={canvasWrapRef}
+                        commitFromSnapshot={historyState.commitFromSnapshot}
+                        draftPointer={draftPointer}
+                        draftPoints={draftPoints}
+                        image={imageState.image}
+                        imageError={imageState.imageError}
+                        imageHeight={derivedState.imageHeight}
+                        imageWidth={derivedState.imageWidth}
+                        isDrawingFreeShape={isDrawingFreeShape}
+                        isSettingReference={isSettingReference}
+                        overlayMode={overlayMode}
+                        overlayRef={overlayState.overlayRef}
+                        referencePoints={overlayState.referencePoints}
+                        scrollDragRef={scrollDragRef}
+                        selectedArea={derivedState.selectedArea}
+                        selectedAreaIds={selection.selectedAreaIds}
+                        selectedEdge={selection.selectedEdge}
+                        selectedPoint={selection.selectedPoint}
+                        selectedPointIndexes={selection.selectedPointIndexes}
+                        snapGuide={snapGuide}
+                        stageHeight={derivedState.stageHeight}
+                        stageRef={stageRef}
+                        stageWidth={derivedState.stageWidth}
+                        visibleAreas={derivedState.visibleAreas}
+                        zoom={zoom}
+                        finishFreeShape={actions.finishFreeShape}
+                        selectArea={selection.selectArea}
+                        selectEdge={selection.selectEdge}
+                        selectPoint={selection.selectPoint}
+                        setDirty={setDirty}
+                        setDraftPointer={setDraftPointer}
+                        setDraftPoints={setDraftPoints}
+                        setIsSettingReference={setIsSettingReference}
+                        setOverlay={overlayState.setOverlay}
+                        setReferencePoints={overlayState.setReferencePoints}
+                        setSnapGuide={setSnapGuide}
+                    />
+                </div>
             </div>
 
-            <EditorSidebar
-                page={page}
-                status={persistence.status}
-                dirty={dirty}
-                ceilingHeightMm={overlayState.ceilingHeightMm}
-                scaleMmPerPx={overlayState.scaleMmPerPx}
-                referencePoints={overlayState.referencePoints}
-                referenceLengthMm={overlayState.referenceLengthMm}
-                isSettingReference={isSettingReference}
-                summary={derivedState.summary}
-                visibleAreas={derivedState.visibleAreas}
-                selectedAreaIds={selection.selectedAreaIds}
-                selectedArea={derivedState.selectedArea}
-                selectedEdgeArea={derivedState.selectedEdgeArea}
-                selectedEdge={selection.selectedEdge}
-                selectedEdgeOverride={derivedState.selectedEdgeOverride}
-                selectedPointIndexes={selection.selectedPointIndexes}
-                metrics={derivedState.metrics}
-                projectAccountPanel={projectAccountPanel}
-                areaIssue={validation.areaIssue}
-                applyHeightToAllPages={persistence.applyHeightToAllPages}
-                applyScale={actions.applyScale}
-                applyScaleToAllPages={persistence.applyScaleToAllPages}
-                clearSelectedEdgeOverride={actions.clearSelectedEdgeOverride}
-                commonMaterialValue={actions.commonMaterialValue}
-                fieldError={validation.fieldError}
-                hasPageHeightIssue={validation.hasPageHeightIssue}
-                pageIssue={validation.pageIssue}
-                renderCeilingControls={validation.renderCeilingControls}
-                selectArea={selection.selectArea}
-                setCeilingHeightMm={overlayState.setCeilingHeightMm}
-                setDirty={setDirty}
-                setIsSettingReference={setIsSettingReference}
-                setMaterial={actions.setMaterial}
-                setReferenceLengthMm={overlayState.setReferenceLengthMm}
-                setReferencePoints={overlayState.setReferencePoints}
-                setSelectedEdgeMaterial={actions.setSelectedEdgeMaterial}
-                setSelectedEdgeNoPlaster={actions.setSelectedEdgeNoPlaster}
-                startReferenceMode={actions.startReferenceMode}
-                toggleOutdoor={actions.toggleOutdoor}
-                updateArea={actions.updateArea}
-            />
+            <div inert={analyzing}>
+                <EditorSidebar
+                    page={page}
+                    status={persistence.status}
+                    dirty={dirty}
+                    ceilingHeightMm={overlayState.ceilingHeightMm}
+                    scaleMmPerPx={overlayState.scaleMmPerPx}
+                    referencePoints={overlayState.referencePoints}
+                    referenceLengthMm={overlayState.referenceLengthMm}
+                    isSettingReference={isSettingReference}
+                    summary={derivedState.summary}
+                    visibleAreas={derivedState.visibleAreas}
+                    selectedAreaIds={selection.selectedAreaIds}
+                    selectedArea={derivedState.selectedArea}
+                    selectedEdgeArea={derivedState.selectedEdgeArea}
+                    selectedEdge={selection.selectedEdge}
+                    selectedEdgeOverride={derivedState.selectedEdgeOverride}
+                    selectedPointIndexes={selection.selectedPointIndexes}
+                    metrics={derivedState.metrics}
+                    projectAccountPanel={projectAccountPanel}
+                    areaIssue={validation.areaIssue}
+                    applyHeightToAllPages={persistence.applyHeightToAllPages}
+                    applyScale={actions.applyScale}
+                    applyScaleToAllPages={persistence.applyScaleToAllPages}
+                    clearSelectedEdgeOverride={
+                        actions.clearSelectedEdgeOverride
+                    }
+                    commonMaterialValue={actions.commonMaterialValue}
+                    fieldError={validation.fieldError}
+                    hasPageHeightIssue={validation.hasPageHeightIssue}
+                    pageIssue={validation.pageIssue}
+                    renderCeilingControls={validation.renderCeilingControls}
+                    selectArea={selection.selectArea}
+                    setCeilingHeightMm={overlayState.setCeilingHeightMm}
+                    setDirty={setDirty}
+                    setIsSettingReference={setIsSettingReference}
+                    setMaterial={actions.setMaterial}
+                    setReferenceLengthMm={overlayState.setReferenceLengthMm}
+                    setReferencePoints={overlayState.setReferencePoints}
+                    setSelectedEdgeMaterial={actions.setSelectedEdgeMaterial}
+                    setSelectedEdgeNoPlaster={actions.setSelectedEdgeNoPlaster}
+                    startReferenceMode={actions.startReferenceMode}
+                    toggleOutdoor={actions.toggleOutdoor}
+                    updateArea={actions.updateArea}
+                />
+            </div>
         </section>
     );
 }

@@ -39,6 +39,10 @@ def _log_info(message: str, **fields: object) -> None:
     print(line, flush=True)
 
 
+def _is_health_probe(req: https_fn.Request) -> bool:
+    return req.method == "GET" and req.path == "/__/health"
+
+
 _log_info(
     "floorplan-analyzer module imported",
     elapsed_ms=_elapsed_ms(_MODULE_IMPORT_START),
@@ -154,6 +158,11 @@ def ocr_flood_fill(req: https_fn.Request) -> https_fn.Response:
 
 @https_fn.on_request(memory=OCR_MEMORY, timeout_sec=INFERENCE_TIMEOUT, cpu=OCR_CPU)
 def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
+    if _is_health_probe(req):
+        return https_fn.Response(
+            json.dumps({"status": "ok"}), mimetype="application/json"
+        )
+
     started_at = time.perf_counter()
     _log_info(
         "ocr_flood_fill_smoothed request started",

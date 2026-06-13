@@ -7,6 +7,7 @@ import {
     Minus,
     Plus,
     Redo2,
+    ScanLine,
     Save,
     Scissors,
     Square,
@@ -24,6 +25,7 @@ interface EditorToolbarProps {
     readonly addMenuOpen: boolean;
     readonly autoSaving: boolean;
     readonly dirty: boolean;
+    readonly analyzing: boolean;
     readonly futureCount: number;
     readonly historyCount: number;
     readonly overlayMode: OverlayMode;
@@ -32,6 +34,7 @@ interface EditorToolbarProps {
     readonly selectedPointCount: number;
     readonly zoom: number;
     readonly onAddPoint: () => void;
+    readonly onAnalyze: () => void;
     readonly onAddRectangle: () => void;
     readonly onChangeZoom: (zoom: number) => void;
     readonly onClearSelection: () => void;
@@ -59,6 +62,7 @@ export function EditorToolbar({
     addMenuOpen,
     autoSaving,
     dirty,
+    analyzing,
     futureCount,
     historyCount,
     overlayMode,
@@ -67,6 +71,7 @@ export function EditorToolbar({
     selectedPointCount,
     zoom,
     onAddPoint,
+    onAnalyze,
     onAddRectangle,
     onChangeZoom,
     onClearSelection,
@@ -84,100 +89,146 @@ export function EditorToolbar({
 }: EditorToolbarProps) {
     return (
         <div className={ui.editorToolbar}>
-            <div className={ui.buttonRow}>
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
-                    onClick={onUndo}
-                    disabled={historyCount === 0}
-                    title="Undo"
-                >
-                    <Undo2 size={18} />
-                </button>
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
-                    onClick={onRedo}
-                    disabled={futureCount === 0}
-                    title="Redo"
-                >
-                    <Redo2 size={18} />
-                </button>
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
-                    onClick={onClearSelection}
-                    disabled={!hasSelection()}
-                    title="Deselect all"
-                >
-                    <MousePointer2 size={18} />
-                </button>
-                <AddAreaControls
-                    addMenuOpen={addMenuOpen}
-                    onAddRectangle={onAddRectangle}
-                    onSetAddMenuOpen={onSetAddMenuOpen}
-                    onStartFreeShape={onStartFreeShape}
-                />
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
-                    onClick={onAddPoint}
-                    disabled={!selectedArea}
-                    title="Add point"
-                >
-                    <CopyPlus size={18} />
-                </button>
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
-                    onClick={onStraightenSelectedPoints}
-                    disabled={!selectedArea || selectedPointCount !== 2}
-                    title="Straighten between selected points"
-                >
-                    <AlignHorizontalJustifyCenter size={18} />
-                </button>
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
-                    onClick={onSplitArea}
-                    disabled={!selectedArea || selectedPointCount !== 2}
-                    title="Split selected polygon"
-                >
-                    <Scissors size={18} />
-                </button>
-                <DeleteSelectionButton
-                    selectedArea={selectedArea}
-                    selectedPointCount={selectedPointCount}
-                    onDeleteSelection={onDeleteSelection}
-                />
-            </div>
-            <div className={ui.buttonRow}>
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
-                    onClick={() => onChangeZoom(zoom - 0.15)}
-                    title="Zoom out"
-                >
-                    <Minus size={18} />
-                </button>
-                <Button
-                    variant="secondary"
-                    onClick={onResetView}
-                    title="Reset zoom"
-                >
-                    <ZoomIn size={18} /> {Math.round(zoom * 100)}%
-                </Button>
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
-                    onClick={() => onChangeZoom(zoom + 0.15)}
-                    title="Zoom in"
-                >
-                    <Plus size={18} />
-                </button>
-                <OverlayModeSelector
-                    overlayMode={overlayMode}
-                    onSetOverlayMode={onSetOverlayMode}
-                />
-                <SaveButton
-                    autoSaving={autoSaving}
-                    dirty={dirty}
-                    saving={saving}
-                    onSave={onSave}
-                />
-            </div>
+            <fieldset className="contents" disabled={analyzing}>
+                <div className={ui.buttonRow}>
+                    <button
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
+                        onClick={onUndo}
+                        disabled={historyCount === 0}
+                        title="Undo"
+                    >
+                        <Undo2 size={18} />
+                    </button>
+                    <button
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
+                        onClick={onRedo}
+                        disabled={futureCount === 0}
+                        title="Redo"
+                    >
+                        <Redo2 size={18} />
+                    </button>
+                    <button
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
+                        onClick={onClearSelection}
+                        disabled={!hasSelection()}
+                        title="Deselect all"
+                    >
+                        <MousePointer2 size={18} />
+                    </button>
+                    <AddAreaControls
+                        addMenuOpen={addMenuOpen}
+                        onAddRectangle={onAddRectangle}
+                        onSetAddMenuOpen={onSetAddMenuOpen}
+                        onStartFreeShape={onStartFreeShape}
+                    />
+                    <button
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
+                        onClick={onAddPoint}
+                        disabled={!selectedArea}
+                        title="Add point"
+                    >
+                        <CopyPlus size={18} />
+                    </button>
+                    <button
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
+                        onClick={onStraightenSelectedPoints}
+                        disabled={!selectedArea || selectedPointCount !== 2}
+                        title="Straighten between selected points"
+                    >
+                        <AlignHorizontalJustifyCenter size={18} />
+                    </button>
+                    <button
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
+                        onClick={onSplitArea}
+                        disabled={!selectedArea || selectedPointCount !== 2}
+                        title="Split selected polygon"
+                    >
+                        <Scissors size={18} />
+                    </button>
+                    <DeleteSelectionButton
+                        selectedArea={selectedArea}
+                        selectedPointCount={selectedPointCount}
+                        onDeleteSelection={onDeleteSelection}
+                    />
+                </div>
+                <div className={ui.buttonRow}>
+                    <button
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
+                        onClick={() => onChangeZoom(zoom - 0.15)}
+                        title="Zoom out"
+                    >
+                        <Minus size={18} />
+                    </button>
+                    <Button
+                        variant="secondary"
+                        onClick={onResetView}
+                        title="Reset zoom"
+                    >
+                        <ZoomIn size={18} /> {Math.round(zoom * 100)}%
+                    </Button>
+                    <button
+                        className={cx(
+                            ui.button,
+                            ui.buttonDefault,
+                            ui.buttonIcon,
+                        )}
+                        onClick={() => onChangeZoom(zoom + 0.15)}
+                        title="Zoom in"
+                    >
+                        <Plus size={18} />
+                    </button>
+                    <OverlayModeSelector
+                        overlayMode={overlayMode}
+                        onSetOverlayMode={onSetOverlayMode}
+                    />
+                    <SaveButton
+                        autoSaving={autoSaving}
+                        dirty={dirty}
+                        saving={saving}
+                        onSave={onSave}
+                    />
+                </div>
+            </fieldset>
+            <Button
+                variant="secondary"
+                onClick={onAnalyze}
+                disabled={analyzing}
+            >
+                {analyzing ? (
+                    <Loader2 className="animate-spin" size={18} />
+                ) : (
+                    <ScanLine size={18} />
+                )}
+                {analyzing ? "Analyzing..." : "Analyze"}
+            </Button>
         </div>
     );
 }

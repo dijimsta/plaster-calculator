@@ -51,8 +51,11 @@ export interface CreateFloorplanPageVariables {
   projectId: UUIDString;
   pageNumber: number;
   status: string;
+  processingError?: string | null;
   sourceImagePath?: string | null;
   previewImagePath?: string | null;
+  rawJsonPath?: string | null;
+  rawFloorplanPath?: string | null;
   overlayJson?: string | null;
   scaleMmPerPx?: number | null;
   ceilingHeightMm?: number | null;
@@ -290,6 +293,7 @@ export interface GetFloorplanPageByIdData {
     projectId: UUIDString;
     pageNumber: number;
     status: string;
+    processingError?: string | null;
     sourceImagePath?: string | null;
     previewImagePath?: string | null;
     rawJsonPath?: string | null;
@@ -355,6 +359,7 @@ export interface GetProjectDetailsByIdData {
       projectId: UUIDString;
       pageNumber: number;
       status: string;
+      processingError?: string | null;
       sourceImagePath?: string | null;
       previewImagePath?: string | null;
       rawJsonPath?: string | null;
@@ -616,6 +621,27 @@ export interface UpdateAccountVariables {
   businessNumber?: string | null;
   phoneNumber?: string | null;
   primaryContactId?: UUIDString | null;
+}
+
+export interface UpdateFloorplanPageAnalysisData {
+  floorplanPage_update?: FloorplanPage_Key | null;
+}
+
+export interface UpdateFloorplanPageAnalysisVariables {
+  id: UUIDString;
+  status: string;
+  processingError?: string | null;
+  sourceImagePath?: string | null;
+  previewImagePath?: string | null;
+  rawJsonPath?: string | null;
+  rawFloorplanPath?: string | null;
+  overlayJson?: string | null;
+  scaleMmPerPx?: number | null;
+  ceilingHeightMm?: number | null;
+  referencePointsJson?: string | null;
+  referenceLengthMm?: number | null;
+  processingStrategy?: string | null;
+  processingMetadataJson?: string | null;
 }
 
 export interface UpdateFloorplanPageData {
@@ -902,6 +928,11 @@ export function updateReminder(vars: UpdateReminderVariables, options?: Operatio
 export function createFloorplanPage(dc: DataConnect, vars: CreateFloorplanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateFloorplanPageData>>;
 /** Generated Node Admin SDK operation action function for the 'CreateFloorplanPage' Mutation. Allow users to pass in custom DataConnect instances. */
 export function createFloorplanPage(vars: CreateFloorplanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateFloorplanPageData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPageAnalysis' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateFloorplanPageAnalysis(dc: DataConnect, vars: UpdateFloorplanPageAnalysisVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPageAnalysisData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPageAnalysis' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateFloorplanPageAnalysis(vars: UpdateFloorplanPageAnalysisVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPageAnalysisData>>;
 
 /** Generated Node Admin SDK operation action function for the 'UpdateFloorplanPage' Mutation. Allow users to execute without passing in DataConnect. */
 export function updateFloorplanPage(dc: DataConnect, vars: UpdateFloorplanPageVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateFloorplanPageData>>;

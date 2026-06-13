@@ -13,6 +13,7 @@ import { useEditorPersistence } from "../../hooks/use-editor-persistence.js";
 import { useEditorSelection } from "../../hooks/use-editor-selection.js";
 import { useEditorValidation } from "../../hooks/use-editor-validation.js";
 import { useEditorViewport } from "../../hooks/use-editor-viewport.js";
+import { analyzeFloorplanPage } from "../../lib/api.js";
 
 import type {
     OverlayMode,
@@ -26,11 +27,14 @@ export function ProjectEditor({
     project,
     page,
     onSaved,
+    onAnalyzingChange,
     projectAccountPanel,
     onDraftChange,
     validationIssues = [],
 }: ProjectEditorProps) {
     const imageState = useEditorImage(page.imageUrl);
+    const [analysisRequested, setAnalysisRequested] = useState(false);
+    const analyzing = analysisRequested || page.status === "PROCESSING";
     const [dirty, setDirty] = useState(false);
     const selection = useEditorSelection();
     const [overlayMode, setOverlayMode] = useState<OverlayMode>("both");
@@ -68,6 +72,7 @@ export function ProjectEditor({
     const persistence = useEditorPersistence({
         ceilingHeightMm: overlayState.ceilingHeightMm,
         dirty,
+        disabled: analyzing,
         onSaved,
         overlay: overlayState.overlay,
         pageId: page.id,
@@ -93,7 +98,7 @@ export function ProjectEditor({
         selection.setSelectedPointIndexes([]);
         setSnapGuide(null);
         setDraftPointer(null);
-    }, [page.id]);
+    }, [page.id, page.updatedAt]);
 
     const actions = useEditorActions({
         canvasWrapRef,
@@ -141,6 +146,7 @@ export function ProjectEditor({
     });
 
     useEditorKeyboardShortcuts({
+        disabled: analyzing,
         isDrawingFreeShape,
         onCancelFreeShape: actions.cancelFreeShape,
         onClearSelection: selection.clearSelection,
@@ -150,9 +156,52 @@ export function ProjectEditor({
         hasSelection: selection.hasSelection,
     });
 
+    async function analyze(): Promise<void> {
+        const hasPolygons = overlayState.overlay.areas.some(
+            (area) => !area.deleted,
+        );
+        if (
+            hasPolygons &&
+            !window.confirm(
+                "Analyze this page? Existing polygons will be replaced.",
+            )
+        ) {
+            return;
+        }
+
+        setAnalysisRequested(true);
+        onAnalyzingChange?.(true);
+        persistence.setStatus("Analyzing floorplan...");
+        try {
+            await analyzeFloorplanPage({
+                projectId: project.id,
+                pageId: page.id,
+                scaleMmPerPx: overlayState.scaleMmPerPx,
+                ceilingHeightMm: overlayState.ceilingHeightMm,
+                referencePoints:
+                    overlayState.referencePoints.length === 2
+                        ? JSON.stringify(overlayState.referencePoints)
+                        : null,
+                referenceLengthMm: overlayState.referenceLengthMm
+                    ? Number(overlayState.referenceLengthMm)
+                    : null,
+            });
+            persistence.setStatus("Analysis complete");
+            await onSaved();
+        } catch (error) {
+            persistence.setStatus(
+                error instanceof Error ? error.message : "Analysis failed",
+            );
+        } finally {
+            setAnalysisRequested(false);
+            onAnalyzingChange?.(false);
+        }
+    }
+
     return (
         <ProjectEditorView
             actions={actions}
+            analyzing={analyzing}
             addMenuOpen={addMenuOpen}
             canvasWrapRef={canvasWrapRef}
             dirty={dirty}
@@ -181,6 +230,7 @@ export function ProjectEditor({
             setOverlayMode={setOverlayMode}
             setSnapGuide={setSnapGuide}
             zoom={zoom}
+            onAnalyze={() => void analyze()}
         />
     );
 }

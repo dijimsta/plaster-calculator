@@ -50,6 +50,15 @@ type ProcessProjectRequest = {
     pageImagePaths?: Record<number, string>;
 };
 
+interface AnalyzeFloorplanPageRequest {
+    readonly projectId: string;
+    readonly pageId: string;
+    readonly scaleMmPerPx: number | null;
+    readonly ceilingHeightMm: number | null;
+    readonly referencePoints: string | null;
+    readonly referenceLengthMm: number | null;
+}
+
 type SavePageOverlayRequest = {
     projectId: string;
     pageId: string;
@@ -102,6 +111,16 @@ const processProjectCallable = httpsCallable<
     ProcessProjectRequest,
     ProjectDetail
 >(functions, "processProject", {
+    timeout: LONG_RUNNING_CALLABLE_TIMEOUT_MS,
+});
+const initializeFloorplanPagesCallable = httpsCallable<
+    { projectId: string; pageImagePaths: Record<number, string> },
+    ProjectDetail
+>(functions, "initializeFloorplanPages");
+const analyzeFloorplanPageCallable = httpsCallable<
+    AnalyzeFloorplanPageRequest,
+    ProjectDetail
+>(functions, "analyzeFloorplanPage", {
     timeout: LONG_RUNNING_CALLABLE_TIMEOUT_MS,
 });
 const getFloorplanPageCallable = httpsCallable<
@@ -219,6 +238,24 @@ export async function processProject(
         strategyKey,
         pageImagePaths,
     });
+    return result.data;
+}
+
+export async function initializeFloorplanPages(
+    projectId: string,
+    pageImagePaths: Record<number, string>,
+): Promise<ProjectDetail> {
+    const result = await initializeFloorplanPagesCallable({
+        projectId,
+        pageImagePaths,
+    });
+    return result.data;
+}
+
+export async function analyzeFloorplanPage(
+    request: AnalyzeFloorplanPageRequest,
+): Promise<ProjectDetail> {
+    const result = await analyzeFloorplanPageCallable(request);
     return result.data;
 }
 

@@ -8,6 +8,7 @@ interface EditorAutosaveOptions {
     readonly dirty: boolean;
     readonly overlay: Overlay;
     readonly saving: boolean;
+    readonly disabled: boolean;
     readonly scaleMmPerPx: number | null;
     readonly save: (refresh?: boolean, automatic?: boolean) => Promise<void>;
 }
@@ -18,12 +19,15 @@ export function useEditorAutosave({
     dirty,
     overlay,
     saving,
+    disabled,
     scaleMmPerPx,
     save,
 }: EditorAutosaveOptions): void {
     useEffect(() => {
         const timer = window.setInterval(() => {
-            if (dirty && !saving && !autoSaving) void save(false, true);
+            if (!disabled && dirty && !saving && !autoSaving) {
+                void save(false, true);
+            }
         }, 15000);
         return () => window.clearInterval(timer);
     }, [
@@ -34,5 +38,6 @@ export function useEditorAutosave({
         saving,
         autoSaving,
         save,
+        disabled,
     ]);
 }

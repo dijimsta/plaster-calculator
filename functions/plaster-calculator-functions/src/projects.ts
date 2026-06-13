@@ -1,6 +1,7 @@
 import "./bootstrap.js";
 
 import {
+    createFloorplanPage as dcCreateFloorplanPage,
     createProjectFromUpload as dcCreateProjectFromUpload,
     deleteFloorplanPages as dcDeleteFloorplanPages,
     deleteProject as dcDeleteProject,
@@ -14,7 +15,7 @@ import { HttpsError, onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
 import { buildProjectCsv, csvFileNamePart } from "./csv-export.js";
-import { toDetail, toSummary } from "./mappers.js";
+import { toDetail, toDetailWithDownloadUrls, toSummary } from "./mappers.js";
 import { requireOwnedAccount, requireOwnedProject } from "./ownership.js";
 import {
     type ProjectUpdateFields,
@@ -135,16 +136,37 @@ export const createProjectFromUpload = onCall<
         originalFileName,
         uploadType,
         originalPath: originalUrl,
-        status: "DRAFT",
+        status: uploadType === "IMAGE" ? "READY" : "DRAFT",
         salesStatus: "QUOTING",
         pageCount,
     });
+
+    if (uploadType === "IMAGE") {
+        await dcCreateFloorplanPage({
+            projectId,
+            pageNumber: 1,
+            status: "READY",
+            processingError: null,
+            sourceImagePath: originalUrl,
+            previewImagePath: originalUrl,
+            overlayJson: JSON.stringify({
+                sourceFile: originalFileName,
+                areas: [],
+            }),
+            scaleMmPerPx: null,
+            ceilingHeightMm: null,
+            referencePointsJson: null,
+            referenceLengthMm: null,
+            processingStrategy: null,
+            processingMetadataJson: null,
+        });
+    }
 
     return {
         projectId,
         uploadType,
         pageCount,
-        status: "DRAFT",
+        status: uploadType === "IMAGE" ? "READY" : "DRAFT",
     };
 });
 
@@ -155,7 +177,7 @@ export const getProject = onCall<ProjectIdRequest, Promise<ProjectDetail>>(
             readRequiredString(request.data.projectId, "Project ID"),
             auth.uid,
         );
-        return toDetail(project);
+        return toDetailWithDownloadUrls(project);
     },
 );
 

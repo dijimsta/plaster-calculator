@@ -91,7 +91,6 @@ export async function fetchFloorplanAnalyzerWithRetry(
     headers: Record<string, string>,
 ): Promise<Response> {
     const maxAttempts = isEmulator() ? 2 : 1;
-    let lastError: unknown;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
         try {
@@ -116,24 +115,19 @@ export async function fetchFloorplanAnalyzerWithRetry(
                 text,
             });
         } catch (error) {
-            lastError = error;
-            if (attempt === maxAttempts) {
-                throw error;
-            }
-
-            logger.warn("floorplan-analyzer request errored; retrying", {
+            logger.error("floorplan-analyzer request errored", {
                 endpoint,
                 attempt,
-                message: error instanceof Error ? error.message : String(error),
+                errorMessage:
+                    error instanceof Error ? error.message : String(error),
             });
+            throw error;
         }
 
         await sleep(3_000);
     }
 
-    throw lastError instanceof Error
-        ? lastError
-        : new Error("floorplan-analyzer request failed.");
+    throw new Error("floorplan-analyzer request failed.");
 }
 
 export function buildAnalyzerForm(

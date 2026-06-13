@@ -12,6 +12,7 @@ import type { Overlay, Point } from "../types.js";
 interface EditorPersistenceOptions {
     readonly ceilingHeightMm: number | null;
     readonly dirty: boolean;
+    readonly disabled: boolean;
     readonly onSaved: () => void;
     readonly overlay: Overlay;
     readonly pageId: string;
@@ -35,6 +36,7 @@ interface EditorPersistence {
 export function useEditorPersistence({
     ceilingHeightMm,
     dirty,
+    disabled,
     onSaved,
     overlay,
     pageId,
@@ -134,6 +136,7 @@ export function useEditorPersistence({
         dirty,
         overlay,
         saving,
+        disabled,
         scaleMmPerPx,
         save,
     });

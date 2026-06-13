@@ -19,6 +19,7 @@ export type FloorplanPage = {
     id: string;
     pageNumber: number;
     status: string;
+    processingError: string | null;
     imageUrl: string;
     previewUrl: string;
     overlay: string | null;

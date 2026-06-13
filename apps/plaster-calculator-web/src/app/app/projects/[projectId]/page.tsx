@@ -51,27 +51,9 @@ export default function ProjectPage({
     const [savingAccount, setSavingAccount] = useState(false);
     const [savingSalesStatus, setSavingSalesStatus] = useState(false);
     const [showOutcomeModal, setShowOutcomeModal] = useState(false);
+    const [analyzingPage, setAnalyzingPage] = useState(false);
 
-    useEffect(() => {
-        load();
-    }, [projectId]);
-
-    useEffect(() => {
-        if (!project || validationIssues.length === 0) return;
-        const issues = project.pages.flatMap((page) =>
-            validatePageForExport(pageDrafts[page.id] ?? page),
-        );
-        setValidationIssues(issues);
-        if (issues.length === 0) setToast("");
-    }, [pageDrafts]);
-
-    useEffect(() => {
-        if (!toast) return;
-        const timeout = window.setTimeout(() => setToast(""), 6000);
-        return () => window.clearTimeout(timeout);
-    }, [toast]);
-
-    async function load() {
+    const load = useCallback(async (): Promise<void> => {
         try {
             const detail = await getProject(projectId);
             setProject(detail);
@@ -89,7 +71,35 @@ export default function ProjectPage({
                 err instanceof Error ? err.message : "Unable to load project",
             );
         }
-    }
+    }, [projectId]);
+
+    useEffect(() => {
+        void load();
+    }, [load]);
+
+    const hasProcessingPage =
+        project?.pages.some((page) => page.status === "PROCESSING") ?? false;
+
+    useEffect(() => {
+        if (!hasProcessingPage) return;
+        const timer = window.setInterval(() => void load(), 2000);
+        return () => window.clearInterval(timer);
+    }, [hasProcessingPage, load]);
+
+    useEffect(() => {
+        if (!project || validationIssues.length === 0) return;
+        const issues = project.pages.flatMap((page) =>
+            validatePageForExport(pageDrafts[page.id] ?? page),
+        );
+        setValidationIssues(issues);
+        if (issues.length === 0) setToast("");
+    }, [pageDrafts]);
+
+    useEffect(() => {
+        if (!toast) return;
+        const timeout = window.setTimeout(() => setToast(""), 6000);
+        return () => window.clearTimeout(timeout);
+    }, [toast]);
 
     const selectedPage = useMemo(
         () => project?.pages.find((page) => page.id === selectedPageId) ?? null,
@@ -296,6 +306,8 @@ export default function ProjectPage({
                     selectPage={selectPage}
                     setAccountId={setAccountId}
                     switchingPage={switchingPage}
+                    analyzingPage={analyzingPage}
+                    setAnalyzingPage={setAnalyzingPage}
                     load={load}
                     updateDraft={updateDraft}
                     validationIssues={validationIssues}

@@ -20,7 +20,7 @@ export function PdfPageModal({
                 <header className={ui.editorToolbar}>
                     <div>
                         <h2>Select PDF Pages</h2>
-                        <p className={ui.muted}>Tick the pages to process.</p>
+                        <p className={ui.muted}>Tick the pages to annotate.</p>
                     </div>
                     <Button
                         variant="ghost"
@@ -82,7 +82,7 @@ export function PdfPageModal({
                         <FileUp size={18} />{" "}
                         {selectedPages.length === 0
                             ? "Select pages to continue"
-                            : `Process selected ${selectedPages.length} ${selectedPages.length === 1 ? "page" : "pages"}`}
+                            : `Annotate ${selectedPages.length} selected ${selectedPages.length === 1 ? "page" : "pages"}`}
                     </Button>
                 </footer>
             </section>

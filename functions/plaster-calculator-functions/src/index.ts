@@ -14,10 +14,12 @@ export {
 } from "./accounts.js";
 export {
     getFloorplanPage,
+    initializeFloorplanPages,
     updateFloorplanPage,
     updateFloorplanPages,
 } from "./floorplan-pages.js";
 export { listProcessingStrategies, processProject } from "./processing.js";
+export { analyzeFloorplanPage } from "./page-analysis.js";
 export {
     createProjectFromUpload,
     deleteProject,
