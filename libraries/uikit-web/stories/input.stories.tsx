@@ -6,7 +6,7 @@ import { Label } from "../src/label/label.component.tsx";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Input> = {
-    title: "Components/Input",
+    title: "Forms/Input",
     component: Input,
     tags: ["autodocs"],
     parameters: {

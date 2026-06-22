@@ -4,7 +4,7 @@ import { FullViewportHeightContainer } from "../src/full-viewport-height-contain
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof FullViewportHeightContainer> = {
-    title: "Components/FullViewportHeightContainer",
+    title: "Layout/FullViewportHeightContainer",
     component: FullViewportHeightContainer,
     tags: ["autodocs"],
     parameters: {

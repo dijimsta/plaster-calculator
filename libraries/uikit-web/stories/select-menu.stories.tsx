@@ -12,7 +12,7 @@ const locations = [
 ];
 
 const meta: Meta<typeof SelectMenu> = {
-    title: "Components/SelectMenu",
+    title: "Forms/SelectMenu",
     component: SelectMenu,
     tags: ["autodocs"],
     parameters: {

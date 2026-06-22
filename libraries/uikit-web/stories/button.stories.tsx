@@ -3,7 +3,7 @@ import { Button } from "../src/button/button.component.tsx";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Button> = {
-    title: "Components/Button",
+    title: "Elements/Button",
     component: Button,
     tags: ["autodocs"],
     parameters: {
