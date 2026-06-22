@@ -1,3 +1,5 @@
+export { Badge } from "./badge/index.ts";
+export type { BadgeColor, BadgeProps, BadgeVariant } from "./badge/index.ts";
 export { Button } from "./button/index.ts";
 export type {
     ButtonIconPosition,
