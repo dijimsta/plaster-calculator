@@ -2,12 +2,13 @@ import clsx from "clsx";
 
 import {
     colors,
+    dotColors,
     removeButtonColors,
     removeButtonIconColors,
     type BadgeColor,
 } from "./badge.colors.ts";
 import { DEFAULT_COLOR, DEFAULT_VARIANT } from "./badge.constants.ts";
-import { removeButtonStyles } from "./badge.styles.ts";
+import { dotStyles, removeButtonStyles } from "./badge.styles.ts";
 import { variants, type BadgeVariant } from "./badge.variants.ts";
 
 import type { HTMLAttributes, ReactElement } from "react";
@@ -36,11 +37,24 @@ export function Badge({
             )}
             {...props}
         >
+            {variant === "with-dot" && <BadgeDot color={color} />}
             {children}
             {onRemove !== undefined && (
                 <BadgeRemoveButton color={color} onClick={onRemove} />
             )}
         </span>
+    );
+}
+
+type BadgeDotProps = {
+    readonly color: BadgeColor;
+};
+
+function BadgeDot({ color }: BadgeDotProps): ReactElement {
+    return (
+        <svg viewBox="0 0 6 6" aria-hidden="true" className={clsx(dotStyles, dotColors[color])}>
+            <circle r="3" cx="3" cy="3" />
+        </svg>
     );
 }
 

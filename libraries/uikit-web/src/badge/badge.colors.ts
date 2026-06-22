@@ -12,6 +12,17 @@ export const colors = Object.freeze({
     pink: "bg-pink-50 text-pink-700 inset-ring inset-ring-pink-700/10",
 });
 
+export const dotColors = Object.freeze({
+    gray: "fill-gray-400",
+    red: "fill-red-500",
+    yellow: "fill-yellow-500",
+    green: "fill-green-500",
+    blue: "fill-blue-500",
+    indigo: "fill-indigo-500",
+    purple: "fill-purple-500",
+    pink: "fill-pink-500",
+});
+
 export const removeButtonColors = Object.freeze({
     gray: "hover:bg-gray-500/20",
     red: "hover:bg-red-600/20",
