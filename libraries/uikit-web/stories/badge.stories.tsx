@@ -67,6 +67,21 @@ export const Pink: Story = {
     args: { color: "pink", children: "Badge" },
 };
 
+export const WithRemove: Story = {
+    render: () => (
+        <div className="flex flex-wrap gap-x-6 gap-y-4">
+            <Badge color="gray" onRemove={() => {}}>Badge</Badge>
+            <Badge color="red" onRemove={() => {}}>Badge</Badge>
+            <Badge color="yellow" onRemove={() => {}}>Badge</Badge>
+            <Badge color="green" onRemove={() => {}}>Badge</Badge>
+            <Badge color="blue" onRemove={() => {}}>Badge</Badge>
+            <Badge color="indigo" onRemove={() => {}}>Badge</Badge>
+            <Badge color="purple" onRemove={() => {}}>Badge</Badge>
+            <Badge color="pink" onRemove={() => {}}>Badge</Badge>
+        </div>
+    ),
+};
+
 export const AllVariants: Story = {
     render: () => (
         <div className="flex flex-wrap gap-x-6 gap-y-4">
