@@ -4,9 +4,17 @@ import { Card } from "../src/card/card.component.tsx";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Card> = {
-    title: "Components/Card",
+    title: "Layout/Card",
     component: Card,
     tags: ["autodocs"],
+    parameters: {
+        docs: {
+            description: {
+                component:
+                    "Surface container with optional title, button group, and footer slots. Intended for centered auth and confirmation flows.",
+            },
+        },
+    },
 };
 
 export default meta;

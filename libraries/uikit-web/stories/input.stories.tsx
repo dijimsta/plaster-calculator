@@ -6,9 +6,17 @@ import { Label } from "../src/label/label.component.tsx";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Input> = {
-    title: "Components/Input",
+    title: "Forms/Input",
     component: Input,
     tags: ["autodocs"],
+    parameters: {
+        docs: {
+            description: {
+                component:
+                    "Text input field. Supports an optional leading icon and pairs with the Label component for accessible form layouts.",
+            },
+        },
+    },
     decorators: [
         (Story) => (
             <div className="p-8 max-w-xs">

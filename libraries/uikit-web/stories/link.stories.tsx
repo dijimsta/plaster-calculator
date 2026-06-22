@@ -3,9 +3,17 @@ import { ButtonLink } from "../src/link/link.component.tsx";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof ButtonLink> = {
-    title: "Components/ButtonLink",
+    title: "Elements/ButtonLink",
     component: ButtonLink,
     tags: ["autodocs"],
+    parameters: {
+        docs: {
+            description: {
+                component:
+                    "Anchor element styled as a Button. Use when navigation (href) is needed instead of an action (onClick).",
+            },
+        },
+    },
     argTypes: {
         variant: {
             control: "select",
