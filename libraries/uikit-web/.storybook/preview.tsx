@@ -5,7 +5,7 @@ import type { Preview } from "@storybook/react";
 const preview: Preview = {
     decorators: [
         (Story) => (
-            <div className="min-h-screen bg-gray-100 p-8">
+            <div className="bg-gray-100 p-4">
                 <Story />
             </div>
         ),

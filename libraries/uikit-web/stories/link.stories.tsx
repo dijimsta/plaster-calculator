@@ -6,6 +6,14 @@ const meta: Meta<typeof ButtonLink> = {
     title: "Components/ButtonLink",
     component: ButtonLink,
     tags: ["autodocs"],
+    parameters: {
+        docs: {
+            description: {
+                component:
+                    "Anchor element styled as a Button. Use when navigation (href) is needed instead of an action (onClick).",
+            },
+        },
+    },
     argTypes: {
         variant: {
             control: "select",

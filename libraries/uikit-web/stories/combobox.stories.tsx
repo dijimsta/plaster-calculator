@@ -20,6 +20,14 @@ const meta: Meta<typeof Combobox> = {
     title: "Components/Combobox",
     component: Combobox,
     tags: ["autodocs"],
+    parameters: {
+        docs: {
+            description: {
+                component:
+                    "Searchable single-select dropdown. Filters a static option list as the user types. Requires controlled value and onChange.",
+            },
+        },
+    },
     decorators: [
         (Story) => (
             <div className="p-8 max-w-xs">

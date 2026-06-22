@@ -9,6 +9,12 @@ const meta: Meta<typeof FullViewportHeightContainer> = {
     tags: ["autodocs"],
     parameters: {
         layout: "fullscreen",
+        docs: {
+            description: {
+                component:
+                    "Full-viewport wrapper that vertically and horizontally centres its children. Used as the root layout for standalone pages like login.",
+            },
+        },
     },
 };
 

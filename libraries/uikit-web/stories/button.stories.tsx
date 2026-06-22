@@ -6,6 +6,14 @@ const meta: Meta<typeof Button> = {
     title: "Components/Button",
     component: Button,
     tags: ["autodocs"],
+    parameters: {
+        docs: {
+            description: {
+                component:
+                    "Clickable action element. Supports four visual variants and an optional icon on either side.",
+            },
+        },
+    },
     argTypes: {
         variant: {
             control: "select",

@@ -7,6 +7,14 @@ const meta: Meta<typeof GitHubIcon> = {
     title: "Components/Icons",
     component: GitHubIcon,
     tags: ["autodocs"],
+    parameters: {
+        docs: {
+            description: {
+                component:
+                    "Brand icons used alongside auth provider buttons. Each icon is an inline SVG component with no external dependencies.",
+            },
+        },
+    },
 };
 
 export default meta;

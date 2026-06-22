@@ -6,6 +6,14 @@ const meta: Meta<typeof Divider> = {
     title: "Components/Divider",
     component: Divider,
     tags: ["autodocs"],
+    parameters: {
+        docs: {
+            description: {
+                component:
+                    "Horizontal rule with an optional centred text label. Commonly used to separate primary and alternative sign-in options.",
+            },
+        },
+    },
 };
 
 export default meta;

@@ -15,6 +15,14 @@ const meta: Meta<typeof SelectMenu> = {
     title: "Components/SelectMenu",
     component: SelectMenu,
     tags: ["autodocs"],
+    parameters: {
+        docs: {
+            description: {
+                component:
+                    "Native select element with consistent styling. Use for short, known option lists where search is not needed. Requires controlled value and onChange.",
+            },
+        },
+    },
     decorators: [
         (Story) => (
             <div className="p-8 max-w-xs">
