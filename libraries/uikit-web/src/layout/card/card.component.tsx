@@ -1,62 +1,55 @@
 import clsx from "clsx";
 
-import type { PropsWithChildren, ReactElement } from "react";
+import { styles } from "./card.styles.ts";
 
-export function Card({ children }: PropsWithChildren): ReactElement {
+import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
+
+export type CardProps = HTMLAttributes<HTMLDivElement>;
+
+export function Card({
+    className,
+    children,
+    ...props
+}: PropsWithChildren<CardProps>): ReactElement {
     return (
-        <div
-            className={clsx(
-                "bg-white",
-                "dark:bg-slate-900",
-                "rounded-2xl",
-                "p-8",
-                "shadow-2xl",
-            )}
-        >
+        <div className={clsx(styles.root, className)} {...props}>
             {children}
         </div>
     );
 }
 
 export namespace Card {
-    export function Title({ children }: PropsWithChildren): ReactElement {
+    export function Title({
+        className,
+        children,
+        ...props
+    }: PropsWithChildren<HTMLAttributes<HTMLHeadingElement>>): ReactElement {
         return (
-            <h1
-                className={clsx(
-                    "text-[15px]",
-                    "font-semibold",
-                    "text-gray-900",
-                    "text-center",
-                    "mb-6",
-                )}
-            >
+            <h2 className={clsx(styles.title, className)} {...props}>
                 {children}
-            </h1>
+            </h2>
         );
     }
 
-    export function ButtonGroup({ children }: PropsWithChildren): ReactElement {
+    export function ButtonGroup({
+        className,
+        children,
+        ...props
+    }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>): ReactElement {
         return (
-            <div className={clsx("flex", "flex-col", "gap-2.5")}>
+            <div className={clsx(styles.buttonGroup, className)} {...props}>
                 {children}
             </div>
         );
     }
 
-    export function Footer({ children }: PropsWithChildren): ReactElement {
+    export function Footer({
+        className,
+        children,
+        ...props
+    }: PropsWithChildren<HTMLAttributes<HTMLParagraphElement>>): ReactElement {
         return (
-            <p
-                className={clsx(
-                    "mt-6",
-                    "text-center",
-                    "text-xs",
-                    "text-gray-500",
-                    "leading-relaxed",
-                    "[&_a]:underline",
-                    "[&_a]:text-current",
-                    "[&_a:hover]:text-gray-600",
-                )}
-            >
+            <p className={clsx(styles.footer, className)} {...props}>
                 {children}
             </p>
         );
