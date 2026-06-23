@@ -30,7 +30,10 @@ const meta: Meta<typeof Badge> = {
         },
         variant: {
             control: "select",
-            options: ["default", "with-dot"],
+            options: ["flat", "flat-with-border", "pill", "pill-with-border"],
+        },
+        dot: {
+            control: "boolean",
         },
     },
 };
@@ -42,7 +45,7 @@ type Story = StoryObj<typeof Badge>;
 export const Default: Story = {
     args: {
         color: "gray",
-        variant: "default",
+        variant: "flat-with-border",
         children: "Badge",
     },
 };
@@ -50,14 +53,74 @@ export const Default: Story = {
 export const WithDot: Story = {
     render: () => (
         <div className="flex flex-wrap gap-x-6 gap-y-4">
-            <Badge color="gray" variant="with-dot">Badge</Badge>
-            <Badge color="red" variant="with-dot">Badge</Badge>
-            <Badge color="yellow" variant="with-dot">Badge</Badge>
-            <Badge color="green" variant="with-dot">Badge</Badge>
-            <Badge color="blue" variant="with-dot">Badge</Badge>
-            <Badge color="indigo" variant="with-dot">Badge</Badge>
-            <Badge color="purple" variant="with-dot">Badge</Badge>
-            <Badge color="pink" variant="with-dot">Badge</Badge>
+            <Badge color="gray" dot>Badge</Badge>
+            <Badge color="red" dot>Badge</Badge>
+            <Badge color="yellow" dot>Badge</Badge>
+            <Badge color="green" dot>Badge</Badge>
+            <Badge color="blue" dot>Badge</Badge>
+            <Badge color="indigo" dot>Badge</Badge>
+            <Badge color="purple" dot>Badge</Badge>
+            <Badge color="pink" dot>Badge</Badge>
+        </div>
+    ),
+};
+
+export const Flat: Story = {
+    render: () => (
+        <div className="flex flex-wrap gap-x-6 gap-y-4">
+            <Badge color="gray" variant="flat">Badge</Badge>
+            <Badge color="red" variant="flat">Badge</Badge>
+            <Badge color="yellow" variant="flat">Badge</Badge>
+            <Badge color="green" variant="flat">Badge</Badge>
+            <Badge color="blue" variant="flat">Badge</Badge>
+            <Badge color="indigo" variant="flat">Badge</Badge>
+            <Badge color="purple" variant="flat">Badge</Badge>
+            <Badge color="pink" variant="flat">Badge</Badge>
+        </div>
+    ),
+};
+
+export const FlatWithBorder: Story = {
+    render: () => (
+        <div className="flex flex-wrap gap-x-6 gap-y-4">
+            <Badge color="gray" variant="flat-with-border">Badge</Badge>
+            <Badge color="red" variant="flat-with-border">Badge</Badge>
+            <Badge color="yellow" variant="flat-with-border">Badge</Badge>
+            <Badge color="green" variant="flat-with-border">Badge</Badge>
+            <Badge color="blue" variant="flat-with-border">Badge</Badge>
+            <Badge color="indigo" variant="flat-with-border">Badge</Badge>
+            <Badge color="purple" variant="flat-with-border">Badge</Badge>
+            <Badge color="pink" variant="flat-with-border">Badge</Badge>
+        </div>
+    ),
+};
+
+export const Pill: Story = {
+    render: () => (
+        <div className="flex flex-wrap gap-x-6 gap-y-4">
+            <Badge color="gray" variant="pill">Badge</Badge>
+            <Badge color="red" variant="pill">Badge</Badge>
+            <Badge color="yellow" variant="pill">Badge</Badge>
+            <Badge color="green" variant="pill">Badge</Badge>
+            <Badge color="blue" variant="pill">Badge</Badge>
+            <Badge color="indigo" variant="pill">Badge</Badge>
+            <Badge color="purple" variant="pill">Badge</Badge>
+            <Badge color="pink" variant="pill">Badge</Badge>
+        </div>
+    ),
+};
+
+export const PillWithBorder: Story = {
+    render: () => (
+        <div className="flex flex-wrap gap-x-6 gap-y-4">
+            <Badge color="gray" variant="pill-with-border">Badge</Badge>
+            <Badge color="red" variant="pill-with-border">Badge</Badge>
+            <Badge color="yellow" variant="pill-with-border">Badge</Badge>
+            <Badge color="green" variant="pill-with-border">Badge</Badge>
+            <Badge color="blue" variant="pill-with-border">Badge</Badge>
+            <Badge color="indigo" variant="pill-with-border">Badge</Badge>
+            <Badge color="purple" variant="pill-with-border">Badge</Badge>
+            <Badge color="pink" variant="pill-with-border">Badge</Badge>
         </div>
     ),
 };

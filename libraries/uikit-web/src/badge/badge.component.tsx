@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import {
+    borderColors,
     colors,
     dotColors,
     removeButtonColors,
@@ -16,12 +17,14 @@ import type { HTMLAttributes, ReactElement } from "react";
 export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
     readonly color?: BadgeColor;
     readonly variant?: BadgeVariant;
+    readonly dot?: boolean;
     readonly onRemove?: () => void;
 };
 
 export function Badge({
     color = DEFAULT_COLOR,
     variant = DEFAULT_VARIANT,
+    dot,
     onRemove,
     className,
     children,
@@ -32,16 +35,16 @@ export function Badge({
             className={clsx(
                 variants[variant],
                 colors[color],
-                onRemove !== undefined && "gap-x-0.5",
+                (variant === "flat-with-border" ||
+                    variant === "pill-with-border") &&
+                    borderColors[color],
                 className,
             )}
             {...props}
         >
-            {variant === "with-dot" && <BadgeDot color={color} />}
+            {dot && <BadgeDot color={color} />}
             {children}
-            {onRemove !== undefined && (
-                <BadgeRemoveButton color={color} onClick={onRemove} />
-            )}
+            {onRemove && <BadgeRemoveButton color={color} onClick={onRemove} />}
         </span>
     );
 }
@@ -52,7 +55,11 @@ type BadgeDotProps = {
 
 function BadgeDot({ color }: BadgeDotProps): ReactElement {
     return (
-        <svg viewBox="0 0 6 6" aria-hidden="true" className={clsx(dotStyles, dotColors[color])}>
+        <svg
+            viewBox="0 0 6 6"
+            aria-hidden="true"
+            className={clsx(dotStyles, dotColors[color])}
+        >
             <circle r="3" cx="3" cy="3" />
         </svg>
     );

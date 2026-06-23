@@ -2,8 +2,12 @@ export type BadgeVariant =
     typeof variants extends Record<infer K, string> ? K : never;
 
 export const variants = Object.freeze({
-    "default":
+    "flat":
         "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium",
-    "with-dot":
-        "inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium",
+    "flat-with-border":
+        "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium",
+    "pill":
+        "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
+    "pill-with-border":
+        "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
 });
