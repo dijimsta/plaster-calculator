@@ -226,6 +226,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      lucide-react:
+        specifier: ^1.20.0
+        version: 1.20.0(react@19.2.6)
     devDependencies:
       '@storybook/addon-essentials':
         specifier: ^8.6.18
@@ -248,9 +251,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.4.2(@types/node@25.8.0)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.62.0)(terser@5.47.1)(yaml@2.9.0))
-      lucide-react:
-        specifier: ^0.468.0
-        version: 0.468.0(react@19.2.6)
       react:
         specifier: ^19.2.6
         version: 19.2.6
@@ -5360,6 +5360,11 @@ packages:
     resolution: {integrity: sha512-6koYRhnM2N0GGZIdXzSeiNwguv1gt/FAjZOiPl76roBi3xKEXa4WmfpxgQwTTL4KipXjefrnf3oV4IsYhi4JFA==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0-rc
+
+  lucide-react@1.20.0:
+    resolution: {integrity: sha512-jhXLeC/7m0/tjL1nzMdKk6x256zWA6AtbhTVreHOiKPoeX2d6MK4FbyIQPpVq0E6iPWBisyy1TW+pEge/uMEuQ==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   magic-string@0.27.0:
     resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
@@ -13000,6 +13005,10 @@ snapshots:
   lsofi@2.0.0: {}
 
   lucide-react@0.468.0(react@19.2.6):
+    dependencies:
+      react: 19.2.6
+
+  lucide-react@1.20.0(react@19.2.6):
     dependencies:
       react: 19.2.6
 
