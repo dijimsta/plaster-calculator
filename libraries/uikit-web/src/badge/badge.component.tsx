@@ -1,23 +1,19 @@
 import clsx from "clsx";
 
 import {
-    borderColors,
-    colors,
-    dotColors,
-    removeButtonColors,
-    removeButtonIconColors,
-    type BadgeColor,
-} from "./badge.colors.ts";
-import {
     DEFAULT_COLOR,
     DEFAULT_SIZE,
     DEFAULT_VARIANT,
-} from "./badge.constants.ts";
-import {
+    borderColors,
+    colors,
+    dotColors,
     dotStyles,
+    removeButtonColors,
+    removeButtonIconColors,
     removeButtonStyles,
     sizes,
     variants,
+    type BadgeColor,
     type BadgeSize,
     type BadgeVariant,
 } from "./badge.styles.ts";
@@ -25,10 +21,15 @@ import {
 import type { HTMLAttributes, ReactElement } from "react";
 
 export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
+    /** Color scheme applied to the badge. */
     readonly color?: BadgeColor;
+    /** Shape and border style of the badge. */
     readonly variant?: BadgeVariant;
+    /** Controls padding and font size. */
     readonly size?: BadgeSize;
+    /** When true, renders a colored dot before the label. */
     readonly dot?: boolean;
+    /** When provided, renders a remove button and calls this handler on click. */
     readonly onRemove?: () => void;
 };
 

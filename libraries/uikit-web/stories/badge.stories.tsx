@@ -10,7 +10,7 @@ const meta: Meta<typeof Badge> = {
         docs: {
             description: {
                 component:
-                    "Small label for status, category, or metadata. Supports eight color colors.",
+                    "Small label for status, category, or metadata. Supports eight colors.",
             },
         },
     },
