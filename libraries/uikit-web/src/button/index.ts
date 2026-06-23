@@ -4,4 +4,4 @@ export type {
     ButtonProps,
     ButtonSize,
 } from "./button.component.tsx";
-export type { ButtonVariant } from "./button.variants.ts";
+export type { ButtonVariant } from "./button.styles.ts";
