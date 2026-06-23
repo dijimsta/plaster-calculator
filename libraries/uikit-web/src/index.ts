@@ -1,5 +1,5 @@
 export { Alert } from "./alert/index.ts";
-export type { AlertIntent, AlertProps } from "./alert/index.ts";
+export type { AlertIntent, AlertProps, AlertVariant } from "./alert/index.ts";
 export { Badge } from "./badge/index.ts";
 export type {
     BadgeColor,

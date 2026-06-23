@@ -3,23 +3,31 @@ import { CircleAlert, CircleCheck, Info, TriangleAlert } from "lucide-react";
 
 import {
     DEFAULT_INTENT,
+    DEFAULT_VARIANT,
+    accentBorderColors,
     bodyColors,
     containerColors,
     iconColors,
+    ringColors,
     styles,
     titleColors,
     type AlertIntent,
+    type AlertVariant,
 } from "./alert.styles.ts";
 
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 
 export type AlertProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
     readonly intent?: AlertIntent;
+    readonly variant?: AlertVariant;
+    readonly accent?: boolean;
     readonly title?: ReactNode;
 };
 
 export function Alert({
     intent = DEFAULT_INTENT,
+    variant = DEFAULT_VARIANT,
+    accent = false,
     title,
     children,
     className,
@@ -27,11 +35,7 @@ export function Alert({
 }: AlertProps): ReactElement {
     return (
         <div
-            className={clsx(
-                styles.container,
-                containerColors[intent],
-                className,
-            )}
+            className={containerClass(intent, variant, accent, className)}
             {...props}
         >
             <div className={styles.inner}>
@@ -52,6 +56,25 @@ export function Alert({
                 </div>
             </div>
         </div>
+    );
+}
+
+function containerClass(
+    intent: AlertIntent,
+    variant: AlertVariant,
+    accent: boolean,
+    className?: string,
+): string {
+    const isLight = variant === "light-with-border";
+    const hasBorder =
+        variant === "flat-with-border" || variant === "light-with-border";
+    return clsx(
+        accent ? styles.accentContainer : styles.container,
+        !isLight && containerColors[intent],
+        isLight && "bg-white",
+        hasBorder && ringColors[intent],
+        accent && accentBorderColors[intent],
+        className,
     );
 }
 
