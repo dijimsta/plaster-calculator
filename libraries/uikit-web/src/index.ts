@@ -19,9 +19,16 @@ export type {
     ButtonVariant,
 } from "./elements/button/index.ts";
 export { Card } from "./layout/card/index.ts";
+export type { CardProps } from "./layout/card/index.ts";
 export { Combobox } from "./forms/combobox/index.ts";
 export type { ComboboxOption, ComboboxProps } from "./forms/combobox/index.ts";
 export { Divider } from "./layout/divider/index.ts";
+export { GridList } from "./layout/grid-list/index.ts";
+export type {
+    GridListColumnCount,
+    GridListGap,
+    GridListProps,
+} from "./layout/grid-list/index.ts";
 export { Label } from "./forms/label/index.ts";
 export type { LabelProps } from "./forms/label/index.ts";
 export { FullViewportHeightContainer } from "./layout/full-viewport-height-container/index.ts";

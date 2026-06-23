@@ -11,7 +11,7 @@ const meta: Meta<typeof Card> = {
         docs: {
             description: {
                 component:
-                    "Surface container with optional title, button group, and footer slots. Intended for centered auth and confirmation flows.",
+                    "Application UI surface container with optional title, button group, and footer slots.",
             },
         },
     },
@@ -24,15 +24,31 @@ type Story = StoryObj<typeof Card>;
 export const Default: Story = {
     render: () => (
         <Card>
-            <Card.Title>Log in to Famsimile</Card.Title>
-            <Card.ButtonGroup>
-                <Button variant="secondary">Continue with Google</Button>
-                <Button variant="secondary">Continue with GitHub</Button>
-            </Card.ButtonGroup>
+            <Card.Title>Project summary</Card.Title>
+            <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                Review plaster scope, estimated labour, and material allowances
+                before sending the quote.
+            </p>
             <Card.Footer>
-                By continuing, you agree to our <a href="#">Terms of Service</a>{" "}
-                and <a href="#">Privacy Policy</a>.
+                Last updated <time dateTime="2026-06-23">23 June 2026</time>.
             </Card.Footer>
+        </Card>
+    ),
+};
+
+export const WithActions: Story = {
+    render: () => (
+        <Card>
+            <Card.Title>Invite team members</Card.Title>
+            <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                Add estimators and site supervisors who need access to this
+                project.
+            </p>
+            <Card.ButtonGroup>
+                <Button>Add member</Button>
+                <Button variant="secondary">Copy invite link</Button>
+            </Card.ButtonGroup>
+            <Card.Footer>Invitations expire after seven days.</Card.Footer>
         </Card>
     ),
 };
@@ -40,7 +56,7 @@ export const Default: Story = {
 export const TitleOnly: Story = {
     render: () => (
         <Card>
-            <Card.Title>Card Title</Card.Title>
+            <Card.Title>Card title</Card.Title>
         </Card>
     ),
 };
