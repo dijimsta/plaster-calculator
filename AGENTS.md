@@ -16,6 +16,12 @@ with no errors before the commit is made. If you cannot run them yourself, ask t
 These checks must also be run before opening a pull request. If any check modifies files (e.g. prettier rewrites),
 stage and commit those changes before creating the PR.
 
+## Branching
+
+Never commit directly to `main`. All work must be done on a feature branch and merged via a pull request.
+
+Branch names should be descriptive and follow the conventions in the Jira section below when a ticket exists.
+
 ## Configuration Guardrails
 
 Do not loosen, disable, or override TypeScript, ESLint, formatting, or styling configuration to make errors disappear.
