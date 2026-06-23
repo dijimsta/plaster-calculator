@@ -1,5 +1,5 @@
-import { Alert } from "../src/alert/alert.component.tsx";
-import { DEFAULT_INTENT } from "../src/alert/alert.styles.ts";
+import { Alert } from "../../src/feedback/alert/alert.component.tsx";
+import { DEFAULT_INTENT } from "../../src/feedback/alert/alert.styles.ts";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

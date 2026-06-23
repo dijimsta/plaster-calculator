@@ -1,4 +1,4 @@
-import { ButtonLink } from "../src/link/link.component.tsx";
+import { ButtonLink } from "../../src/elements/link/link.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

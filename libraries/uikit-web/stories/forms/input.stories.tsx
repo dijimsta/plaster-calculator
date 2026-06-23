@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 
-import { Input } from "../src/input/input.component.tsx";
-import { Label } from "../src/label/label.component.tsx";
+import { Input } from "../../src/forms/input/input.component.tsx";
+import { Label } from "../../src/forms/label/label.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
