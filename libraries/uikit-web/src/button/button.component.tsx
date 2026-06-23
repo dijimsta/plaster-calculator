@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import { variants, type ButtonVariant } from "./button.variants.ts";
+import { variants, type ButtonVariant } from "./button.styles.ts";
 
 import type { ButtonHTMLAttributes, ReactElement } from "react";
 
