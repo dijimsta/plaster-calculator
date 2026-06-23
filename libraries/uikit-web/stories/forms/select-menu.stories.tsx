@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { Label } from "../src/label/label.component.tsx";
-import { SelectMenu } from "../src/select-menu/select-menu.component.tsx";
+import { Label } from "../../src/forms/label/label.component.tsx";
+import { SelectMenu } from "../../src/forms/select-menu/select-menu.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { Combobox } from "../src/combobox/combobox.component.tsx";
-import { Label } from "../src/label/label.component.tsx";
+import { Combobox } from "../../src/forms/combobox/combobox.component.tsx";
+import { Label } from "../../src/forms/label/label.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

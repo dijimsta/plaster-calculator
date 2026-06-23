@@ -1,4 +1,4 @@
-import { Divider } from "../src/divider/divider.component.tsx";
+import { Divider } from "../../src/layout/divider/divider.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

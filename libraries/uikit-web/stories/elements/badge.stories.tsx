@@ -1,4 +1,4 @@
-import { Badge } from "../src/badge/badge.component.tsx";
+import { Badge } from "../../src/elements/badge/badge.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

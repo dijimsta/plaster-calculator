@@ -1,5 +1,5 @@
-import { Card } from "../src/card/card.component.tsx";
-import { FullViewportHeightContainer } from "../src/full-viewport-height-container/full-viewport-height-container.component.tsx";
+import { Card } from "../../src/layout/card/card.component.tsx";
+import { FullViewportHeightContainer } from "../../src/layout/full-viewport-height-container/full-viewport-height-container.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
