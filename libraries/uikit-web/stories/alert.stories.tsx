@@ -54,6 +54,14 @@ export const BodyOnly: Story = {
     },
 };
 
+export const Dismissible: Story = {
+    args: {
+        intent: "success",
+        title: "Successfully uploaded",
+        onDismiss: () => {},
+    },
+};
+
 export const Accent: Story = {
     args: {
         intent: "warn",

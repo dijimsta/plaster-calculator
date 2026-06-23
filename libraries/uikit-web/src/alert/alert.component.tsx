@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { CircleAlert, CircleCheck, Info, TriangleAlert } from "lucide-react";
+import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
 
 import {
     DEFAULT_INTENT,
@@ -7,6 +7,7 @@ import {
     accentBorderColors,
     bodyColors,
     containerColors,
+    dismissButtonColors,
     iconColors,
     ringColors,
     styles,
@@ -22,6 +23,7 @@ export type AlertProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
     readonly variant?: AlertVariant;
     readonly accent?: boolean;
     readonly title?: ReactNode;
+    readonly onDismiss?: () => void;
 };
 
 export function Alert({
@@ -30,6 +32,7 @@ export function Alert({
     accent = false,
     title,
     children,
+    onDismiss,
     className,
     ...props
 }: AlertProps): ReactElement {
@@ -54,6 +57,9 @@ export function Alert({
                         </div>
                     )}
                 </div>
+                {onDismiss !== undefined && (
+                    <AlertDismissButton intent={intent} onClick={onDismiss} />
+                )}
             </div>
         </div>
     );
@@ -95,4 +101,32 @@ function AlertIcon({ intent }: AlertIconProps): ReactElement {
         case "warn":
             return <TriangleAlert aria-hidden="true" className={className} />;
     }
+}
+
+type AlertDismissButtonProps = {
+    readonly intent: AlertIntent;
+    readonly onClick: () => void;
+};
+
+function AlertDismissButton({
+    intent,
+    onClick,
+}: AlertDismissButtonProps): ReactElement {
+    return (
+        <div className={styles.dismissWrapper}>
+            <div className={styles.dismissInner}>
+                <button
+                    type="button"
+                    className={clsx(
+                        styles.dismissButton,
+                        dismissButtonColors[intent],
+                    )}
+                    onClick={onClick}
+                >
+                    <span className={styles.dismissButtonSrLabel}>Dismiss</span>
+                    <X aria-hidden="true" className={styles.icon} />
+                </button>
+            </div>
+        </div>
+    );
 }

@@ -10,9 +10,14 @@ export const styles = Object.freeze({
     inner: "flex",
     iconWrapper: "shrink-0",
     contentWrapper: "ml-3",
-    title: "text-sm font-medium mb-2",
+    title: "text-sm font-medium [&:not(:last-child)]:mb-2",
     body: "text-sm",
     icon: "size-5",
+    dismissWrapper: "ml-auto pl-3",
+    dismissInner: "-mx-1.5 -my-1.5",
+    dismissButton:
+        "inline-flex rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2",
+    dismissButtonSrLabel: "sr-only",
 });
 
 export type AlertIntent =
@@ -56,6 +61,16 @@ export const bodyColors = Object.freeze({
     warn: "text-yellow-700",
     error: "text-red-700",
     success: "text-green-700",
+});
+
+export const dismissButtonColors = Object.freeze({
+    neutral:
+        "text-gray-500 hover:bg-gray-100 focus:ring-gray-600 focus:ring-offset-gray-50",
+    info: "text-blue-500 hover:bg-blue-100 focus:ring-blue-600 focus:ring-offset-blue-50",
+    warn: "text-yellow-500 hover:bg-yellow-100 focus:ring-yellow-600 focus:ring-offset-yellow-50",
+    error: "text-red-500 hover:bg-red-100 focus:ring-red-600 focus:ring-offset-red-50",
+    success:
+        "text-green-500 hover:bg-green-100 focus:ring-green-600 focus:ring-offset-green-50",
 });
 
 export const ringColors = Object.freeze({
