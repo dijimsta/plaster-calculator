@@ -8,15 +8,26 @@ import {
     removeButtonIconColors,
     type BadgeColor,
 } from "./badge.colors.ts";
-import { DEFAULT_COLOR, DEFAULT_VARIANT } from "./badge.constants.ts";
-import { dotStyles, removeButtonStyles } from "./badge.styles.ts";
-import { variants, type BadgeVariant } from "./badge.variants.ts";
+import {
+    DEFAULT_COLOR,
+    DEFAULT_SIZE,
+    DEFAULT_VARIANT,
+} from "./badge.constants.ts";
+import {
+    dotStyles,
+    removeButtonStyles,
+    sizes,
+    variants,
+    type BadgeSize,
+    type BadgeVariant,
+} from "./badge.styles.ts";
 
 import type { HTMLAttributes, ReactElement } from "react";
 
 export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
     readonly color?: BadgeColor;
     readonly variant?: BadgeVariant;
+    readonly size?: BadgeSize;
     readonly dot?: boolean;
     readonly onRemove?: () => void;
 };
@@ -24,6 +35,7 @@ export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
 export function Badge({
     color = DEFAULT_COLOR,
     variant = DEFAULT_VARIANT,
+    size = DEFAULT_SIZE,
     dot,
     onRemove,
     className,
@@ -34,6 +46,7 @@ export function Badge({
         <span
             className={clsx(
                 variants[variant],
+                sizes[size],
                 colors[color],
                 (variant === "flat-with-border" ||
                     variant === "pill-with-border") &&
