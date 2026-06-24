@@ -40,5 +40,7 @@ export type {
     SelectMenuOption,
     SelectMenuProps,
 } from "./forms/select-menu/index.ts";
+export { StackedList } from "./layout/stacked-list/index.ts";
+export type { StackedListProps } from "./layout/stacked-list/index.ts";
 export { ButtonLink } from "./elements/link/index.ts";
 export type { ButtonLinkProps } from "./elements/link/index.ts";
