@@ -1,4 +1,7 @@
+import { Badge } from "../../src/elements/badge/badge.component.tsx";
 import { Button } from "../../src/elements/button/button.component.tsx";
+import { Label } from "../../src/forms/label/label.component.tsx";
+import { SelectMenu } from "../../src/forms/select-menu/select-menu.component.tsx";
 import { Card } from "../../src/layout/card/card.component.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -57,6 +60,39 @@ export const TitleOnly: Story = {
     render: () => (
         <Card>
             <Card.Title>Card title</Card.Title>
+        </Card>
+    ),
+};
+
+export const WithHeader: Story = {
+    render: () => (
+        <Card>
+            <Card.Header>
+                <Card.Title>Scope questionnaire</Card.Title>
+                <Button variant="secondary">Edit</Button>
+            </Card.Header>
+            <Card.Footer>Last updated 1 July 2026.</Card.Footer>
+        </Card>
+    ),
+};
+
+export const WithHeaderAndBody: Story = {
+    render: () => (
+        <Card>
+            <Card.Header>
+                <Badge color="green">Confirmed</Badge>
+                <Button variant="secondary">Confirm</Button>
+            </Card.Header>
+            <Card.Body>
+                <Label>What type of cornice is specified?</Label>
+                <SelectMenu
+                    options={[
+                        { value: "cove", label: "Cove" },
+                        { value: "square", label: "Square set" },
+                        { value: "other", label: "Other" },
+                    ]}
+                />
+            </Card.Body>
         </Card>
     ),
 };
