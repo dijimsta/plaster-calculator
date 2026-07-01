@@ -1,5 +1,4 @@
-import { Card } from "../../src/layout/card/card.component.tsx";
-import { GridList } from "../../src/layout/grid-list/grid-list.component.tsx";
+import { Card, GridList } from "../../src/index.ts";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

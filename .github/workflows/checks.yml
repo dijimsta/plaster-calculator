@@ -100,7 +100,13 @@ jobs:
                   credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
             - name: Dry run Data Connect deploy
+              id: dataconnect_dry_run
+              continue-on-error: true
               run: pnpm exec firebase deploy --only dataconnect --project plaster-calculator --dry-run
+
+            - name: Warn about Data Connect dry run failure
+              if: steps.dataconnect_dry_run.outcome == 'failure'
+              run: echo "::warning title=Data Connect dry run failed::The advisory Data Connect deployment check failed. See the preceding step logs for details."
 
     storage-dry-run:
         runs-on: ubuntu-latest
@@ -120,6 +126,12 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Dry run Storage deploy
+              id: storage_dry_run
+              continue-on-error: true
               run: pnpm exec firebase deploy --only storage --project plaster-calculator --dry-run --token "$FIREBASE_TOKEN"
               env:
                   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+            - name: Warn about Storage dry run failure
+              if: steps.storage_dry_run.outcome == 'failure'
+              run: echo "::warning title=Storage dry run failed::The advisory Storage deployment check failed. See the preceding step logs for details."
