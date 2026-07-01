@@ -16,6 +16,7 @@
     },
     "devDependencies": {
         "@storybook/addon-essentials": "^8.6.18",
+        "@storybook/addon-viewport": "^8.6.18",
         "@storybook/react": "^8.6.18",
         "@storybook/react-vite": "^8.6.18",
         "@tailwindcss/vite": "^4.3.0",

@@ -35,6 +35,13 @@ When using code complexity ESLint rules, prefer the modified variants where appr
 Prefer an explicit `else` branch when both an `if` branch and its alternative return. This makes the two mutually
 exclusive paths visible in the control-flow structure instead of expressing the alternative as an unguarded return.
 
+## UI Component Boundaries
+
+Stories should demonstrate the same component composition expected in application code. Do not use ad hoc styling in
+a story to stand in for a reusable UI primitive. When an implementation or story needs a component that UIKit does not
+provide, stop and tell the user what is missing. Discuss the component's responsibility and API before creating it or
+substituting another pattern.
+
 ## Jira
 
 Jira tickets are optional.
