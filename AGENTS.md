@@ -30,6 +30,11 @@ change, or when the change is the direct purpose of the task.
 
 When using code complexity ESLint rules, prefer the modified variants where appropriate so patterns like `switch` statements can reduce measured complexity.
 
+## Code Style
+
+Prefer an explicit `else` branch when both an `if` branch and its alternative return. This makes the two mutually
+exclusive paths visible in the control-flow structure instead of expressing the alternative as an unguarded return.
+
 ## Jira
 
 Jira tickets are optional.
