@@ -1,7 +1,6 @@
 import { ChevronRight } from "lucide-react";
 
-import { Badge } from "../../src/elements/badge/badge.component.tsx";
-import { StackedList } from "../../src/layout/stacked-list/stacked-list.component.tsx";
+import { Badge, StackedList } from "../../src/index.ts";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

@@ -40,6 +40,13 @@ All Tailwind class strings used by a component should live in that component's `
 
 No custom CSS files. Tailwind is loaded via `import "tailwindcss/index.css"` in `.storybook/preview.tsx`.
 
+## Stories as Consumers
+
+Treat stories as real consumers of the library. Import components from the public `src/index.ts` barrel and avoid
+Tailwind utility classes in story markup. If a story needs reusable presentation that the public API cannot express,
+add or extend a library component instead of styling the example directly. Keep story code focused on composition,
+content, and component props.
+
 ## Module Imports
 
 Import using the actual source extension (`.ts` or `.tsx`). `allowImportingTsExtensions` is enabled and `rewriteRelativeImportExtensions` rewrites them to `.js` in the emitted output:
