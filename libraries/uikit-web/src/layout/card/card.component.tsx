@@ -19,6 +19,30 @@ export function Card({
 }
 
 export namespace Card {
+    export function Header({
+        className,
+        children,
+        ...props
+    }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>): ReactElement {
+        return (
+            <div className={clsx(styles.header, className)} {...props}>
+                {children}
+            </div>
+        );
+    }
+
+    export function Body({
+        className,
+        children,
+        ...props
+    }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>): ReactElement {
+        return (
+            <div className={clsx(styles.body, className)} {...props}>
+                {children}
+            </div>
+        );
+    }
+
     export function Title({
         className,
         children,

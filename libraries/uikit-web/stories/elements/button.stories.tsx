@@ -17,7 +17,7 @@ const meta: Meta<typeof Button> = {
     argTypes: {
         variant: {
             control: "select",
-            options: ["primary", "secondary", "soft", "ghost"],
+            options: ["primary", "secondary", "soft", "ghost", "link"],
         },
         iconPosition: {
             control: "select",
@@ -55,6 +55,13 @@ export const Ghost: Story = {
     args: {
         variant: "ghost",
         children: "Button",
+    },
+};
+
+export const Link: Story = {
+    args: {
+        variant: "link",
+        children: "Page 3, north wall",
     },
 };
 
