@@ -63,3 +63,9 @@ export { Breadcrumb } from "./navigation/breadcrumb/index.ts";
 export type { BreadcrumbProps } from "./navigation/breadcrumb/index.ts";
 export { Tabs } from "./navigation/tabs/index.ts";
 export type { TabsProps, TabsVariant } from "./navigation/tabs/index.ts";
+export { VerticalNavigation } from "./navigation/vertical-navigation/index.ts";
+export type {
+    VerticalNavigationItemProps,
+    VerticalNavigationProps,
+    VerticalNavigationSectionProps,
+} from "./navigation/vertical-navigation/index.ts";
