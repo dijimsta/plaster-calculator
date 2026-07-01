@@ -44,3 +44,5 @@ export { StackedList } from "./layout/stacked-list/index.ts";
 export type { StackedListProps } from "./layout/stacked-list/index.ts";
 export { ButtonLink } from "./elements/link/index.ts";
 export type { ButtonLinkProps } from "./elements/link/index.ts";
+export { Breadcrumb } from "./navigation/breadcrumb/index.ts";
+export type { BreadcrumbProps } from "./navigation/breadcrumb/index.ts";
