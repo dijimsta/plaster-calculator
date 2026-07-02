@@ -1,10 +1,11 @@
 {
-    "name": "@inivi/plaster-calculator-web",
+    "name": "@apps/plaster-calculator-web",
     "version": "0.1.0",
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "next build",
+        "build": "pnpm compile && next build",
+        "compile": "tsc --build tsconfig.json",
         "dev": "next dev",
         "start": "next start"
     },

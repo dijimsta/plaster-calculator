@@ -1,5 +1,5 @@
 {
-    "name": "@inivi/plaster-calculator-functions",
+    "name": "@functions/plaster-calculator-functions",
     "private": true,
     "type": "module",
     "exports": "./out/index.js",

@@ -1,6 +1,6 @@
 {
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
-    "defaultProject": "@inivi/plaster-calculator-web",
+    "defaultProject": "@apps/plaster-calculator-web",
     "targetDefaults": {
         "build": {
             "dependsOn": ["^build"],
