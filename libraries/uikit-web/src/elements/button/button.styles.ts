@@ -1,6 +1,8 @@
 export const base =
     "inline-flex items-center justify-center gap-2 border-0 text-sm font-medium leading-5 cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed";
 
+export const growStyle = "flex-1";
+
 export type ButtonVariant =
     typeof variants extends Record<infer K, string> ? K : never;
 
