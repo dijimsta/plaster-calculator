@@ -240,13 +240,21 @@ function createUi(theme: Theme) {
         buttonInvalid: cx(theme.dangerBorder, theme.dangerRing),
         buttonRow: "flex flex-wrap gap-2",
         canvasWrap: cx(
-            "h-[calc(100vh-150px)] min-h-[560px] overflow-auto rounded-lg border p-3.5 max-[980px]:h-[70vh]",
+            "flex-1 min-h-[560px] overflow-auto rounded-lg border p-3.5 max-[980px]:h-[70vh]",
             theme.canvasBg,
             theme.line,
         ),
+        editorCanvasContainer: "flex flex-col flex-1 min-h-0",
+        editorContentBody: "flex flex-col flex-1 min-h-0 gap-4",
+        editorLeftPanel: cx(
+            "flex flex-col min-h-0 rounded-lg border p-[18px] shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",
+            theme.panelBg,
+            theme.line,
+        ),
+        editorPageRoot: "flex h-full flex-col",
         editorShell: cx(
             contentWidth,
-            "grid grid-cols-[minmax(0,1fr)_320px] gap-3.5 max-[980px]:grid-cols-1",
+            "grid grid-cols-[minmax(0,1fr)_320px] gap-3.5 flex-1 min-h-0 max-[980px]:grid-cols-1",
         ),
         editorToolbar: "mb-3 flex flex-wrap items-center justify-between gap-2",
         error: cx("text-sm", theme.danger),
@@ -272,8 +280,7 @@ function createUi(theme: Theme) {
             theme.focus,
         ),
         inputInvalid: cx(theme.dangerBorder, theme.dangerRing),
-        inspector:
-            "grid max-h-[calc(100vh-92px)] content-start gap-3.5 overflow-auto",
+        inspector: "h-full",
         label: cx("text-[13px] font-bold", theme.fieldText),
         layoutGrid: cx(
             contentWidth,
