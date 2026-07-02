@@ -4,11 +4,11 @@ import { Breadcrumb, Button, PageHeading, Tabs } from "@libraries/uikit-web";
 import { Home, Plus } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
-import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
+import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
 
 const Link = LinkModule.default;
 
-export default function QuestionnairesPage() {
+export default function QuestionnaireTemplatesPage() {
     return (
         <PageHeading>
             <PageHeading.Breadcrumbs>
@@ -16,28 +16,31 @@ export default function QuestionnairesPage() {
                     <RoutedBreadcrumbItem href="/app">
                         <Home size={16} aria-label="Home" />
                     </RoutedBreadcrumbItem>
-                    <Breadcrumb.Item current>Questionnaires</Breadcrumb.Item>
+                    <RoutedBreadcrumbItem href="/app/questionnaires">
+                        Questionnaires
+                    </RoutedBreadcrumbItem>
+                    <Breadcrumb.Item current>Templates</Breadcrumb.Item>
                 </Breadcrumb>
             </PageHeading.Breadcrumbs>
             <PageHeading.Content>
                 <PageHeading.Title>Questionnaires</PageHeading.Title>
                 <PageHeading.Description>
-                    Every project&apos;s scope questionnaire in one place. Open
-                    one to auto-fill, confirm answers and chase the builder for
-                    what&apos;s missing.
+                    The question sets the AI fills in when you auto-fill a
+                    project. Use the built-in standards or duplicate a template
+                    to make your own.
                 </PageHeading.Description>
             </PageHeading.Content>
             <PageHeading.Actions>
                 <Button icon={<Plus size={18} />} onClick={() => undefined}>
-                    New project
+                    New Template
                 </Button>
             </PageHeading.Actions>
             <PageHeading.Navigation>
                 <Tabs>
-                    <Tabs.Item current>
+                    <Tabs.Item>
                         <Link href="/app/questionnaires">Projects</Link>
                     </Tabs.Item>
-                    <Tabs.Item>
+                    <Tabs.Item current>
                         <Link href="/app/questionnaires/templates">
                             Templates
                         </Link>

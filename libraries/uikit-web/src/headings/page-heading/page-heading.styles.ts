@@ -8,4 +8,6 @@ export const styles = Object.freeze({
     metaItem:
         "flex items-center text-sm text-gray-500 dark:text-gray-400 [&_svg]:mr-1.5 [&_svg]:size-5 [&_svg]:shrink-0 [&_svg]:text-gray-400 dark:[&_svg]:text-gray-500",
     actions: "flex shrink-0 flex-wrap items-center gap-3",
+    navigation:
+        "-mx-6 -mb-6 min-w-0 sm:col-span-2 [&>nav>ul]:min-w-full [&>nav>ul]:px-6",
 });
