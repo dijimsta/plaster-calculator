@@ -12,7 +12,7 @@ const meta: Meta<typeof Box> = {
         docs: {
             description: {
                 component:
-                    "A flexbox layout primitive with constrained direction, alignment, and spacing props.",
+                    "A flexbox layout primitive with constrained direction, alignment, spacing, and padding props.",
             },
         },
     },
@@ -45,6 +45,15 @@ export const VerticalStack: Story = {
             <Badge>Draft</Badge>
             <Badge color="green">Active</Badge>
             <Badge color="red">Archived</Badge>
+        </Box>
+    ),
+};
+
+export const WithPadding: Story = {
+    render: () => (
+        <Box direction="column" gap="sm" padding="lg">
+            <Badge>Draft</Badge>
+            <Badge color="green">Active</Badge>
         </Box>
     ),
 };

@@ -3,5 +3,6 @@ export type {
     BoxAlign,
     BoxDirection,
     BoxGap,
+    BoxPadding,
     BoxProps,
 } from "./box.component.tsx";

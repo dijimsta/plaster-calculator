@@ -6,19 +6,22 @@ import {
     directions,
     gaps,
     growStyle,
+    paddings,
     type BoxAlign,
     type BoxDirection,
     type BoxGap,
+    type BoxPadding,
 } from "./box.styles.ts";
 
 import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
 
-export type { BoxAlign, BoxDirection, BoxGap };
+export type { BoxAlign, BoxDirection, BoxGap, BoxPadding };
 
 export type BoxProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
     readonly direction?: BoxDirection;
     readonly align?: BoxAlign;
     readonly gap?: BoxGap;
+    readonly padding?: BoxPadding;
     /** Shorthand for flex-1 + min-w-0. Use when this Box should grow to fill
      * its parent and its children may need to truncate. */
     readonly grow?: boolean;
@@ -28,6 +31,7 @@ export function Box({
     direction = "row",
     align,
     gap,
+    padding,
     grow = false,
     className,
     children,
@@ -40,6 +44,7 @@ export function Box({
                 directions[direction],
                 align !== undefined && aligns[align],
                 gap !== undefined && gaps[gap],
+                padding !== undefined && paddings[padding],
                 grow && growStyle,
                 className,
             )}

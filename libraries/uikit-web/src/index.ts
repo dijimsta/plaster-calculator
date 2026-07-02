@@ -24,6 +24,7 @@ export type {
     BoxAlign,
     BoxDirection,
     BoxGap,
+    BoxPadding,
     BoxProps,
 } from "./layout/box/index.ts";
 export { Button } from "./elements/button/index.ts";
