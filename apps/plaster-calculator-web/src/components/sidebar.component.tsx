@@ -79,10 +79,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
                             />
                             <Box grow>
                                 <ButtonLink href="/app/user" variant="ghost">
-                                    <Box
-                                        direction="column"
-                                        align="start"
-                                    >
+                                    <Box direction="column" align="start">
                                         <Text size="sm">{displayName}</Text>
                                         <Text size="xs" variant="muted">
                                             User
