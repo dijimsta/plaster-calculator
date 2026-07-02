@@ -1,5 +1,4 @@
 {
-    "name": "@inivi/plaster-calculator",
     "private": true,
     "type": "module",
     "workspaces": [

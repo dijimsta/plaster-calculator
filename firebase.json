@@ -19,7 +19,7 @@
             "codebase": "plaster-calculator-functions",
             "runtime": "nodejs24",
             "predeploy": [
-                "pnpm --filter @inivi/plaster-calculator-functions bundle"
+                "pnpm --filter @functions/plaster-calculator-functions bundle"
             ]
         },
         {
@@ -38,7 +38,7 @@
         "apphosting": {
             "port": 5050,
             "rootDirectory": ".",
-            "startCommand": "pnpm --filter @inivi/plaster-calculator-web dev"
+            "startCommand": "pnpm --filter @apps/plaster-calculator-web dev"
         },
         "auth": {
             "port": 9099

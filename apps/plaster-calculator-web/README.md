@@ -1,6 +1,6 @@
 # Plaster Calculator Web
 
-`@inivi/plaster-calculator-web` is the Next.js web application for Plaster Calculator. It provides authenticated
+`@apps/plaster-calculator-web` is the Next.js web application for Plaster Calculator. It provides authenticated
 project workflows, account management, questionnaire screens, PDF and floorplan editing, and Firebase-backed client
 integration.
 
@@ -20,7 +20,7 @@ app-owned style helpers. Extend UIKit when a reusable presentation capability is
 From the repository root:
 
 ```bash
-pnpm --filter @inivi/plaster-calculator-web dev
+pnpm --filter @apps/plaster-calculator-web dev
 ```
 
 The Firebase emulator suite starts this command automatically for App Hosting when running the repository emulator

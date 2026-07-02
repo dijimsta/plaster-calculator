@@ -1,6 +1,6 @@
 # Plaster Calculator Functions
 
-`@inivi/plaster-calculator-functions` is the Node.js 24 Firebase Functions backend for Plaster Calculator. It exposes
+`@functions/plaster-calculator-functions` is the Node.js 24 Firebase Functions backend for Plaster Calculator. It exposes
 callable operations for accounts, projects, floorplan processing, reminders, settings, and exports.
 
 ## Runtime
@@ -20,9 +20,9 @@ data operations.
 From the repository root:
 
 ```bash
-pnpm --filter @inivi/plaster-calculator-functions build
-pnpm --filter @inivi/plaster-calculator-functions bundle
-pnpm --filter @inivi/plaster-calculator-functions logs
+pnpm --filter @functions/plaster-calculator-functions build
+pnpm --filter @functions/plaster-calculator-functions bundle
+pnpm --filter @functions/plaster-calculator-functions logs
 ```
 
 The bundle command prepares the package for Firebase deployment and rewrites deployment-related package metadata. The
@@ -31,7 +31,7 @@ repository's Firebase configuration runs it as a predeploy step.
 Deploy through the repository Firebase workflow or, when intentionally targeting the configured project:
 
 ```bash
-pnpm --filter @inivi/plaster-calculator-functions deploy
+pnpm --filter @functions/plaster-calculator-functions deploy
 ```
 
 ## Verification

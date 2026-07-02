@@ -8,7 +8,7 @@ It is implemented with NestJS and `nest-commander`.
 The current `bundle` command prepares a TypeScript Firebase Functions package for deployment:
 
 ```bash
-pnpm --filter @inivi/plaster-calculator-functions bundle
+pnpm --filter @functions/plaster-calculator-functions bundle
 ```
 
 The command:
