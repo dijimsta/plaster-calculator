@@ -5,7 +5,7 @@ export function cx(
 }
 
 const contentWidth =
-    "mx-auto w-[min(1600px,calc(100vw-48px))] min-[1500px]:w-[min(1600px,80vw)]";
+    "mx-auto w-[min(1600px,calc(100%-48px))] min-[1500px]:w-[min(1600px,80%)]";
 
 export const themes = {
     slate: {
@@ -330,7 +330,7 @@ function createUi(theme: Theme) {
         ),
         segmentedButtonActive: cx("shadow-sm", theme.controlBg, theme.text),
         segmentedWide: "grid w-full grid-cols-3",
-        shell: cx("min-h-screen p-6", theme.appBg, theme.text),
+        shell: cx("min-h-screen p-4", theme.appBg, theme.text),
         stack: "grid gap-3.5",
         toast: cx(
             contentWidth,
