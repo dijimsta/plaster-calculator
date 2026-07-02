@@ -20,7 +20,7 @@
         "lint": "eslint . --fix",
         "lint:check": "eslint .",
         "start": "node ./scripts/predeploy-floorplan-analyzer-functions.mjs && pnpm build && pnpm emulators:start",
-        "storybook": "pnpm --filter @libraries/uikit-web storybook"
+        "storybook": "pnpm --filter @apps/storybook-web storybook"
     },
     "devDependencies": {
         "@apps/admin-cli": "workspace:*",

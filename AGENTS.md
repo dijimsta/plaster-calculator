@@ -30,31 +30,6 @@ change, or when the change is the direct purpose of the task.
 
 When using code complexity ESLint rules, prefer the modified variants where appropriate so patterns like `switch` statements can reduce measured complexity.
 
-## Code Style
-
-Prefer an explicit `else` branch when both an `if` branch and its alternative return. This makes the two mutually
-exclusive paths visible in the control-flow structure instead of expressing the alternative as an unguarded return.
-
-## UI Component Boundaries
-
-Do not introduce raw Tailwind classes, inline styles, or any ad hoc CSS in application or story code. All layout and
-presentation must be expressed through UIKit components or established app-level patterns from
-`apps/plaster-calculator-web/src/lib/styles.ts`. This applies everywhere — app pages, components, and stories alike.
-
-Do not add new presentation class names, style-map entries, or CSS to application code. The app is moving iteratively
-toward having no application-owned styles. Existing app-level styles may be migrated or removed, but must not be
-expanded. New or changed presentation must be implemented through UIKit component APIs.
-
-When an implementation needs a layout or UI element that UIKit does not provide, stop and tell the user what is
-missing. Describe the component's responsibility and proposed API before creating it or substituting another pattern.
-Do not approximate a missing component with raw utility classes as a temporary measure.
-
-## Framework Boundaries
-
-Keep shared libraries, including `libraries/uikit-web`, framework-agnostic. Do not add Next.js-specific directives such
-as `"use client"`, Next.js imports, or other application-framework dependencies to shared library code. When a
-framework boundary is required, declare it in the consuming app module instead.
-
 ## Jira
 
 Jira tickets are optional.

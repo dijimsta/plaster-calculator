@@ -1,77 +1,9 @@
 # uikit-web
 
-React component library built with Tailwind CSS v4. No CSS modules, no custom design tokens — use Tailwind's default utility classes directly.
+Inherits the [repository guidelines](../../AGENTS.md), [TypeScript guidelines](../../docs/typescript-guidelines.md), and
+[web UI guidelines](../../docs/web-ui-guidelines.md).
 
-## Build
-
-```bash
-tsc --build tsconfig.build.json
-```
-
-Output goes to `out/`. Storybook dev server runs via `storybook dev --port 6006`.
-
-## File & Folder Naming
-
-All names are lowercase kebab-case.
-
-- Component file: `{name}.component.tsx`
-- Style map file: `{name}.styles.ts`
-- Barrel: `index.ts`
-- Story: `{name}.stories.tsx`
-- Folder: `{name}/` (e.g. `button/`, `full-viewport-height-container/`)
-
-Example structure for a component:
-
-```text
-src/
-  button/
-    button.component.tsx   ← component + types
-    button.styles.ts       ← style and variant className maps
-    index.ts               ← re-exports
-  stories/
-    button.stories.tsx
-```
-
-## Styling
-
-Use `clsx` for all `className` values.
-
-All Tailwind class strings used by a component should live in that component's `{name}.styles.ts` file. Components should compose those exported style maps with `clsx(...)` and only pass through consumer-provided `className` values inline.
-
-No custom CSS files. Tailwind is loaded via `import "tailwindcss/index.css"` in `.storybook/preview.tsx`.
-
-## Stories as Consumers
-
-Treat stories as real consumers of the library. Import components from the public `src/index.ts` barrel and avoid
-Tailwind utility classes in story markup. If a story needs reusable presentation that the public API cannot express,
-add or extend a library component instead of styling the example directly. Keep story code focused on composition,
-content, and component props.
-
-## Module Imports
-
-Import using the actual source extension (`.ts` or `.tsx`). `allowImportingTsExtensions` is enabled and `rewriteRelativeImportExtensions` rewrites them to `.js` in the emitted output:
-
-```ts
-import { Button } from "./button.component.tsx";
-import type { ButtonVariant } from "./button.styles.ts";
-```
-
-This applies to source files, index barrels, and story files.
-
-## Types
-
-Component-specific types live in `{name}.component.tsx`. Variant union types live in `{name}.styles.ts` and are re-exported from `index.ts`.
-
-Use TypeScript namespaces for compound components when the nested API expresses the component relationship clearly,
-for example `SidebarLayout.Sidebar` and `SidebarLayout.Main`.
-
-```ts
-// button/index.ts
-export { Button } from "./button.component.tsx";
-export type {
-    ButtonIconPosition,
-    ButtonProps,
-    ButtonSize,
-} from "./button.component.tsx";
-export type { ButtonVariant } from "./button.styles.ts";
-```
+- Do not depend on Plaster Calculator domains, services, Firebase, Next.js, or app code.
+- Keep names kebab-case: `{name}.component.tsx`, `{name}.styles.ts`, and `index.ts` inside the component folder.
+- Keep component types with the component, style unions with the style map, and export public APIs through barrels.
+- Use TypeScript namespaces only when a compound API clearly expresses component ownership.

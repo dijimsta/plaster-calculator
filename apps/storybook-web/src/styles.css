@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@source "../node_modules/@libraries/uikit-web";
+@source "../node_modules/@libraries/plaster-calculator-ui";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));

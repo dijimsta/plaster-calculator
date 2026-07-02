@@ -1,0 +1,17 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "rootDir": "src",
+        "outDir": "out"
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../../libraries/uikit-web/tsconfig.build.json"
+        },
+        {
+            "path": "../../libraries/plaster-calculator-common/tsconfig.build.json"
+        }
+    ]
+}

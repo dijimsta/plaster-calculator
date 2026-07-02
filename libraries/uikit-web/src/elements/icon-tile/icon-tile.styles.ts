@@ -11,6 +11,7 @@ export type IconTileSize =
 
 export const tones = Object.freeze({
     dark: "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900",
+    indigo: "bg-indigo-600 text-white dark:bg-indigo-500",
     neutral:
         "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
 });
