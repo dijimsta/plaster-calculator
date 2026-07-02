@@ -110,4 +110,16 @@ export namespace PageHeading {
             </div>
         );
     }
+
+    export function Navigation({
+        className,
+        children,
+        ...props
+    }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>): ReactElement {
+        return (
+            <div className={clsx(styles.navigation, className)} {...props}>
+                {children}
+            </div>
+        );
+    }
 }

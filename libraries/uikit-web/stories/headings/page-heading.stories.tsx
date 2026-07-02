@@ -1,6 +1,6 @@
 import { CalendarDays, MapPin } from "lucide-react";
 
-import { Breadcrumb, Button, PageHeading } from "../../src/index.ts";
+import { Breadcrumb, Button, PageHeading, Tabs } from "../../src/index.ts";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -104,6 +104,32 @@ export const WithActionsAndBreadcrumbs: Story = {
                 <Button variant="secondary">Edit</Button>
                 <Button>Create estimate</Button>
             </PageHeading.Actions>
+        </PageHeading>
+    ),
+};
+
+export const WithNavigation: Story = {
+    render: () => (
+        <PageHeading>
+            <PageHeading.Content>
+                <PageHeading.Title>Questionnaires</PageHeading.Title>
+                <PageHeading.Description>
+                    Manage project questionnaires and reusable templates.
+                </PageHeading.Description>
+            </PageHeading.Content>
+            <PageHeading.Actions>
+                <Button>New template</Button>
+            </PageHeading.Actions>
+            <PageHeading.Navigation>
+                <Tabs>
+                    <Tabs.Item>
+                        <a href="#">Projects</a>
+                    </Tabs.Item>
+                    <Tabs.Item current>
+                        <a href="#">Templates</a>
+                    </Tabs.Item>
+                </Tabs>
+            </PageHeading.Navigation>
         </PageHeading>
     ),
 };
