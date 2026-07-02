@@ -1,10 +1,13 @@
 "use client";
 
 import {
+    Avatar,
+    Box,
     Button,
     ButtonLink,
     SidebarLayout,
     SidebarNavigation,
+    Text,
     VerticalNavigation,
 } from "@libraries/uikit-web";
 import { signOut } from "firebase/auth";
@@ -12,6 +15,8 @@ import * as Icons from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 import { usePathname, useRouter } from "next/navigation.js";
 
+import { useUserInitials } from "../auth/user-initials.hook.js";
+import { useUser } from "../auth/user.hook.js";
 import { auth } from "../firebase/firebase.utils.js";
 
 import type { PropsWithChildren } from "react";
@@ -26,11 +31,15 @@ const navItems = [
 export default function Sidebar({ children }: PropsWithChildren) {
     const pathname = usePathname();
     const router = useRouter();
+    const user = useUser();
+    const initials = useUserInitials();
 
     async function handleLogout() {
         await signOut(auth);
         router.replace("/");
     }
+
+    const displayName = user?.displayName ?? "User";
 
     return (
         <SidebarLayout>
@@ -62,17 +71,32 @@ export default function Sidebar({ children }: PropsWithChildren) {
                         </VerticalNavigation>
                     </SidebarNavigation.Body>
                     <SidebarNavigation.Footer>
-                        <ButtonLink href="/app/user">
-                            <Icons.User aria-hidden="true" />
-                            Profile
-                        </ButtonLink>
-                        <Button
-                            variant="secondary"
-                            icon={<Icons.LogOut aria-hidden="true" />}
-                            onClick={handleLogout}
-                        >
-                            Logout
-                        </Button>
+                        <Box direction="row" align="center">
+                            <Avatar
+                                initials={initials}
+                                shape="circular"
+                                size="sm"
+                            />
+                            <Box grow>
+                                <ButtonLink href="/app/user" variant="ghost">
+                                    <Box
+                                        direction="column"
+                                        align="start"
+                                    >
+                                        <Text size="sm">{displayName}</Text>
+                                        <Text size="xs" variant="muted">
+                                            User
+                                        </Text>
+                                    </Box>
+                                </ButtonLink>
+                            </Box>
+                            <Button
+                                variant="secondary"
+                                icon={<Icons.LogOut aria-hidden="true" />}
+                                aria-label="Log out"
+                                onClick={handleLogout}
+                            />
+                        </Box>
                     </SidebarNavigation.Footer>
                 </SidebarNavigation>
             </SidebarLayout.Sidebar>
