@@ -1,13 +1,12 @@
 import { type PropsWithChildren } from "react";
 
-import AppBar from "../../components/appbar.component.js";
 import { AuthGuard } from "../../components/auth.guard.js";
+import Sidebar from "../../components/sidebar.component.js";
 
 export default function AppLayout({ children }: PropsWithChildren) {
     return (
         <AuthGuard>
-            <AppBar />
-            {children}
+            <Sidebar>{children}</Sidebar>
         </AuthGuard>
     );
 }
