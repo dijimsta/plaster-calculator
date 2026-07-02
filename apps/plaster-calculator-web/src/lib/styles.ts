@@ -245,13 +245,11 @@ function createUi(theme: Theme) {
             theme.line,
         ),
         editorCanvasContainer: "flex flex-col flex-1 min-h-0",
-        editorContentBody: "flex flex-col flex-1 min-h-0 gap-4",
         editorLeftPanel: cx(
             "flex flex-col min-h-0 rounded-lg border p-[18px] shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",
             theme.panelBg,
             theme.line,
         ),
-        editorPageRoot: "flex h-full flex-col",
         editorShell: cx(
             contentWidth,
             "grid grid-cols-[minmax(0,1fr)_320px] gap-3.5 flex-1 min-h-0 max-[980px]:grid-cols-1",
