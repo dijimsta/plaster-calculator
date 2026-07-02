@@ -197,19 +197,19 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
 
     if (isLoading) {
         return (
-            <main className={ui.shell}>
+            <>
                 <Box direction="column" padding="md">
                     <div className={ui.projectListState}>
                         <LoaderCircle className="animate-spin" size={24} />
                         <span className={ui.muted}>Loading account...</span>
                     </div>
                 </Box>
-            </main>
+            </>
         );
     }
 
     return (
-        <main className={ui.shell}>
+        <>
             {busyMessage && <BusyOverlay message={busyMessage} />}
             <AccountDetailHeader
                 account={account}
@@ -276,7 +276,7 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
                     />
                 )}
             </Box>
-        </main>
+        </>
     );
 }
 

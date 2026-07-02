@@ -18,6 +18,16 @@ export const aligns = Object.freeze({
 export type BoxAlign =
     typeof aligns extends Record<infer K, string> ? K : never;
 
+export const justifies = Object.freeze({
+    start: "justify-start",
+    center: "justify-center",
+    end: "justify-end",
+    between: "justify-between",
+});
+
+export type BoxJustify =
+    typeof justifies extends Record<infer K, string> ? K : never;
+
 export const gaps = Object.freeze({
     xs: "gap-1",
     sm: "gap-2",
@@ -38,3 +48,4 @@ export type BoxPadding =
     typeof paddings extends Record<infer K, string> ? K : never;
 
 export const growStyle = "flex-1 min-w-0";
+export const wrapStyle = "flex-wrap";

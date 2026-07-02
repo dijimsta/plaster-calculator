@@ -15,3 +15,6 @@ export const variants = Object.freeze({
 
 export type TextVariant =
     typeof variants extends Record<infer K, string> ? K : never;
+
+export const truncateStyle =
+    "block overflow-hidden text-ellipsis whitespace-nowrap";

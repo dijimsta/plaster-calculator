@@ -11,7 +11,7 @@ export default function AccountsPage() {
     const [accountListRefreshKey, setAccountListRefreshKey] = useState(0);
 
     return (
-        <main className={ui.shell}>
+        <>
             <PageHeading>
                 <PageHeading.Content>
                     <PageHeading.Title>Accounts</PageHeading.Title>
@@ -31,6 +31,6 @@ export default function AccountsPage() {
                     <AccountListPanel refreshKey={accountListRefreshKey} />
                 </section>
             </Box>
-        </main>
+        </>
     );
 }
