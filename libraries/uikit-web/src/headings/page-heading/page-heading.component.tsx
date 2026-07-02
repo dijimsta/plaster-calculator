@@ -2,7 +2,12 @@ import clsx from "clsx";
 
 import { styles } from "./page-heading.styles.ts";
 
-import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
+import type {
+    HTMLAttributes,
+    LiHTMLAttributes,
+    PropsWithChildren,
+    ReactElement,
+} from "react";
 
 export type PageHeadingProps = PropsWithChildren<HTMLAttributes<HTMLElement>>;
 
@@ -65,6 +70,33 @@ export namespace PageHeading {
                 {children}
             </p>
         );
+    }
+
+    export function Meta({
+        className,
+        children,
+        role = "list",
+        ...props
+    }: PropsWithChildren<HTMLAttributes<HTMLUListElement>>): ReactElement {
+        return (
+            <ul role={role} className={clsx(styles.meta, className)} {...props}>
+                {children}
+            </ul>
+        );
+    }
+
+    export namespace Meta {
+        export function Item({
+            className,
+            children,
+            ...props
+        }: PropsWithChildren<LiHTMLAttributes<HTMLLIElement>>): ReactElement {
+            return (
+                <li className={clsx(styles.metaItem, className)} {...props}>
+                    {children}
+                </li>
+            );
+        }
     }
 
     export function Actions({

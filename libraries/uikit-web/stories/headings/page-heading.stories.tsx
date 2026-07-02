@@ -1,3 +1,5 @@
+import { CalendarDays, MapPin } from "lucide-react";
+
 import { Breadcrumb, Button, PageHeading } from "../../src/index.ts";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -50,6 +52,30 @@ export const WithActions: Story = {
     ),
 };
 
+export const WithMetaAndActions: Story = {
+    render: () => (
+        <PageHeading>
+            <PageHeading.Content>
+                <PageHeading.Title>Richmond apartment</PageHeading.Title>
+                <PageHeading.Meta aria-label="Project details">
+                    <PageHeading.Meta.Item>
+                        <MapPin aria-hidden="true" />
+                        Richmond, Victoria
+                    </PageHeading.Meta.Item>
+                    <PageHeading.Meta.Item>
+                        <CalendarDays aria-hidden="true" />
+                        <time dateTime="2026-07-02">Created 2 July 2026</time>
+                    </PageHeading.Meta.Item>
+                </PageHeading.Meta>
+            </PageHeading.Content>
+            <PageHeading.Actions>
+                <Button variant="secondary">Edit</Button>
+                <Button>Create estimate</Button>
+            </PageHeading.Actions>
+        </PageHeading>
+    ),
+};
+
 export const WithActionsAndBreadcrumbs: Story = {
     render: () => (
         <PageHeading>
@@ -63,9 +89,16 @@ export const WithActionsAndBreadcrumbs: Story = {
             </PageHeading.Breadcrumbs>
             <PageHeading.Content>
                 <PageHeading.Title>Richmond apartment</PageHeading.Title>
-                <PageHeading.Description>
-                    Review the project scope and prepare an estimate.
-                </PageHeading.Description>
+                <PageHeading.Meta aria-label="Project details">
+                    <PageHeading.Meta.Item>
+                        <MapPin aria-hidden="true" />
+                        Richmond, Victoria
+                    </PageHeading.Meta.Item>
+                    <PageHeading.Meta.Item>
+                        <CalendarDays aria-hidden="true" />
+                        <time dateTime="2026-07-02">Created 2 July 2026</time>
+                    </PageHeading.Meta.Item>
+                </PageHeading.Meta>
             </PageHeading.Content>
             <PageHeading.Actions>
                 <Button variant="secondary">Edit</Button>
