@@ -1,5 +1,5 @@
 import { Breadcrumb, Button, PageHeading } from "@libraries/uikit-web";
-import { RefreshCcw } from "lucide-react";
+import { Home, RefreshCcw } from "lucide-react";
 
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 
@@ -21,6 +21,9 @@ export function AccountDetailHeader({
         <PageHeading>
             <PageHeading.Breadcrumbs>
                 <Breadcrumb>
+                    <RoutedBreadcrumbItem href="/app">
+                        <Home size={16} aria-label="Home" />
+                    </RoutedBreadcrumbItem>
                     <RoutedBreadcrumbItem href="/app/accounts">
                         Accounts
                     </RoutedBreadcrumbItem>

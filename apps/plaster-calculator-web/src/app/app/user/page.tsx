@@ -1,9 +1,11 @@
 "use client";
 
-import { Box, PageHeading } from "@libraries/uikit-web";
+import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
+import { Home } from "lucide-react";
 
 import { UserSettingsPanel } from "./user-settings.js";
 import { useUser } from "../../../auth/user.hook.js";
+import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { ThemeSettingsControl } from "../../../components/theme-settings-control.js";
 import { activeTheme, cx, ui } from "../../../lib/styles.js";
 
@@ -15,6 +17,14 @@ export default function UserPage() {
     return (
         <>
             <PageHeading>
+                <PageHeading.Breadcrumbs>
+                    <Breadcrumb>
+                        <RoutedBreadcrumbItem href="/app">
+                            <Home size={16} aria-label="Home" />
+                        </RoutedBreadcrumbItem>
+                        <Breadcrumb.Item current>User</Breadcrumb.Item>
+                    </Breadcrumb>
+                </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
                     <PageHeading.Title>User</PageHeading.Title>
                     <PageHeading.Description>

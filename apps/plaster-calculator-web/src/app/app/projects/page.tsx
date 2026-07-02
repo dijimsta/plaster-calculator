@@ -3,94 +3,148 @@
 import {
     Badge,
     Box,
+    Breadcrumb,
     Button,
     Input,
-    Label,
     PageHeading,
-    SelectMenu,
     Table,
+    Tabs,
     Text,
 } from "@libraries/uikit-web";
-import { LoaderCircle, Pencil, RefreshCcw, Search, Trash2 } from "lucide-react";
+import {
+    Home,
+    LoaderCircle,
+    Pencil,
+    RefreshCcw,
+    Search,
+    Trash2,
+} from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
 import { BusyOverlay } from "../../../components/busy-overlay.js";
+import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { salesStatusLabel } from "../../../lib/sales-status.js";
-import { useDashboardProjects } from "../hooks/use-dashboard-projects.js";
+import {
+    useProjectsListing,
+    type StatusFilter,
+} from "../hooks/use-projects-listing.js";
 
 const Link = LinkModule.default;
 
 export default function ProjectsPage() {
     const {
-        activeSalesStatus,
-        busyMessage,
-        filtered,
-        projectsLoading,
+        statusFilter,
         query,
+        projectsLoading,
+        busyMessage,
+        totalCount,
+        quotingCount,
+        quoteSubmittedCount,
+        filtered,
+        resultCount,
         renameValue,
         renamingId,
         refresh,
         removeProject,
         saveRename,
-        setActiveSalesStatus,
+        setStatusFilter,
         setQuery,
+        clearFilters,
         setRenamingId,
         setRenameValue,
-    } = useDashboardProjects();
+    } = useProjectsListing();
+
+    const filtersActive = statusFilter !== "ALL" || query !== "";
+
+    const statusTabs: { value: StatusFilter; label: string; count: number }[] =
+        [
+            { value: "ALL", label: "All", count: totalCount },
+            {
+                value: "QUOTING",
+                label: salesStatusLabel("QUOTING"),
+                count: quotingCount,
+            },
+            {
+                value: "QUOTE_SUBMITTED",
+                label: salesStatusLabel("QUOTE_SUBMITTED"),
+                count: quoteSubmittedCount,
+            },
+        ];
 
     return (
         <>
             {busyMessage && <BusyOverlay message={busyMessage} />}
             <PageHeading>
+                <PageHeading.Breadcrumbs>
+                    <Breadcrumb>
+                        <RoutedBreadcrumbItem href="/app">
+                            <Home size={16} aria-label="Home" />
+                        </RoutedBreadcrumbItem>
+                        <Breadcrumb.Item current>Projects</Breadcrumb.Item>
+                    </Breadcrumb>
+                </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
                     <PageHeading.Title>Projects</PageHeading.Title>
+                    <PageHeading.Description>
+                        Every plan you&apos;re quoting for your builders. Open a
+                        project to review its floorplan, scope questionnaire and
+                        quote.
+                    </PageHeading.Description>
                 </PageHeading.Content>
             </PageHeading>
             <Box direction="column" gap="lg" padding="md">
-                <Box direction="row" align="end" gap="sm" wrap>
-                    <Box direction="column" gap="xs">
-                        <Label htmlFor="sales-status-filter">Status</Label>
-                        <SelectMenu
-                            id="sales-status-filter"
-                            options={[
-                                {
-                                    value: "QUOTING",
-                                    label: salesStatusLabel("QUOTING"),
-                                },
-                                {
-                                    value: "QUOTE_SUBMITTED",
-                                    label: salesStatusLabel("QUOTE_SUBMITTED"),
-                                },
-                            ]}
-                            value={activeSalesStatus}
-                            onChange={(e) =>
-                                setActiveSalesStatus(
-                                    e.target.value as typeof activeSalesStatus,
-                                )
-                            }
-                        />
-                    </Box>
-                    <Box direction="column" gap="xs">
-                        <Label htmlFor="search">Search</Label>
+                <Box direction="column" gap="md">
+                    <Box direction="row" align="center" gap="md" wrap>
+                        <Tabs
+                            variant="pills-on-gray"
+                            aria-label="Filter by status"
+                        >
+                            {statusTabs.map((tab) => (
+                                <Tabs.Item
+                                    key={tab.value}
+                                    current={statusFilter === tab.value}
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setStatusFilter(tab.value)
+                                        }
+                                    >
+                                        {tab.label}
+                                        <Badge size="xs" color="gray">
+                                            {tab.count}
+                                        </Badge>
+                                    </button>
+                                </Tabs.Item>
+                            ))}
+                        </Tabs>
                         <Input
-                            id="search"
                             leadingIcon={
                                 <Search
                                     size={16}
                                     className="text-gray-400 dark:text-gray-500"
                                 />
                             }
+                            placeholder="Search project, account or plan…"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                         />
+                        <Button
+                            variant="secondary"
+                            onClick={() => void refresh()}
+                            title="Refresh projects"
+                        >
+                            <RefreshCcw size={18} /> Refresh
+                        </Button>
+                        {filtersActive && (
+                            <Button variant="secondary" onClick={clearFilters}>
+                                Clear filters
+                            </Button>
+                        )}
                     </Box>
-                    <Button
-                        variant="secondary"
-                        onClick={() => void refresh()}
-                        title="Refresh projects"
-                    >
-                        <RefreshCcw size={18} /> Refresh
-                    </Button>
+                    <Text variant="muted">
+                        Showing {resultCount} of {totalCount} projects
+                    </Text>
                 </Box>
                 {projectsLoading ? (
                     <Box
@@ -104,9 +158,7 @@ export default function ProjectsPage() {
                         <Text variant="muted">Loading projects...</Text>
                     </Box>
                 ) : filtered.length === 0 ? (
-                    <Text variant="muted">
-                        No {salesStatusLabel(activeSalesStatus)} projects.
-                    </Text>
+                    <Text variant="muted">No projects match your filters.</Text>
                 ) : (
                     <Table bordered>
                         <Table.Head>
