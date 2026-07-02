@@ -27,4 +27,14 @@ export const gaps = Object.freeze({
 
 export type BoxGap = typeof gaps extends Record<infer K, string> ? K : never;
 
+export const paddings = Object.freeze({
+    none: "",
+    sm: "p-2",
+    md: "p-4",
+    lg: "p-6",
+});
+
+export type BoxPadding =
+    typeof paddings extends Record<infer K, string> ? K : never;
+
 export const growStyle = "flex-1 min-w-0";

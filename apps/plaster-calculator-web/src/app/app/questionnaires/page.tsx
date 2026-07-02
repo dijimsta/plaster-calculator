@@ -1,10 +1,20 @@
+"use client";
+
+import { PageHeading } from "@libraries/uikit-web";
+
 import { ui } from "../../../lib/styles.js";
 
 export default function QuestionnairesPage() {
     return (
         <main className={ui.shell}>
-            <h1>Questionnaires</h1>
-            <p className={ui.muted}>This page is under construction.</p>
+            <PageHeading>
+                <PageHeading.Content>
+                    <PageHeading.Title>Questionnaires</PageHeading.Title>
+                    <PageHeading.Description>
+                        This page is under construction.
+                    </PageHeading.Description>
+                </PageHeading.Content>
+            </PageHeading>
         </main>
     );
 }

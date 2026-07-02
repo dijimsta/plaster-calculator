@@ -1,5 +1,6 @@
 "use client";
 
+import { Box, PageHeading } from "@libraries/uikit-web";
 import { useState } from "react";
 
 import { AccountListPanel } from "./account-list-panel.js";
@@ -11,23 +12,25 @@ export default function AccountsPage() {
 
     return (
         <main className={ui.shell}>
-            <section className={cx(ui.topbar, "items-start")}>
-                <div>
-                    <h1 className="m-0 text-2xl leading-tight">Accounts</h1>
-                    <p className={ui.muted}>
+            <PageHeading>
+                <PageHeading.Content>
+                    <PageHeading.Title>Accounts</PageHeading.Title>
+                    <PageHeading.Description>
                         Manage customer accounts and contacts.
-                    </p>
-                </div>
-            </section>
+                    </PageHeading.Description>
+                </PageHeading.Content>
+            </PageHeading>
 
-            <section className={cx(ui.layoutGrid, "items-start")}>
-                <NewAccountPanel
-                    onCreated={() =>
-                        setAccountListRefreshKey((current) => current + 1)
-                    }
-                />
-                <AccountListPanel refreshKey={accountListRefreshKey} />
-            </section>
+            <Box direction="column" padding="md">
+                <section className={cx(ui.layoutGrid, "items-start")}>
+                    <NewAccountPanel
+                        onCreated={() =>
+                            setAccountListRefreshKey((current) => current + 1)
+                        }
+                    />
+                    <AccountListPanel refreshKey={accountListRefreshKey} />
+                </section>
+            </Box>
         </main>
     );
 }
