@@ -1,10 +1,12 @@
 "use client";
 
-import { Box, PageHeading } from "@libraries/uikit-web";
+import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
+import { Home } from "lucide-react";
 import { useState } from "react";
 
 import { AccountListPanel } from "./account-list-panel.js";
 import { NewAccountPanel } from "./new-account-panel.js";
+import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { cx, ui } from "../../../lib/styles.js";
 
 export default function AccountsPage() {
@@ -13,6 +15,14 @@ export default function AccountsPage() {
     return (
         <>
             <PageHeading>
+                <PageHeading.Breadcrumbs>
+                    <Breadcrumb>
+                        <RoutedBreadcrumbItem href="/app">
+                            <Home size={16} aria-label="Home" />
+                        </RoutedBreadcrumbItem>
+                        <Breadcrumb.Item current>Accounts</Breadcrumb.Item>
+                    </Breadcrumb>
+                </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
                     <PageHeading.Title>Accounts</PageHeading.Title>
                     <PageHeading.Description>

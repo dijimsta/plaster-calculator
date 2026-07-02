@@ -1,6 +1,7 @@
 "use client";
 
-import { Box, PageHeading } from "@libraries/uikit-web";
+import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
+import { Home } from "lucide-react";
 
 import { DashboardToast } from "./dashboard-toast.js";
 import { useDashboardProjects } from "./hooks/use-dashboard-projects.js";
@@ -27,6 +28,13 @@ export default function HomePage() {
                 <BusyOverlay message={projects.busyMessage} />
             )}
             <PageHeading>
+                <PageHeading.Breadcrumbs>
+                    <Breadcrumb>
+                        <Breadcrumb.Item current>
+                            <Home size={16} aria-label="Home" />
+                        </Breadcrumb.Item>
+                    </Breadcrumb>
+                </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
                     <PageHeading.Title>Home</PageHeading.Title>
                     <PageHeading.Description>

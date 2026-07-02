@@ -1,5 +1,5 @@
 import { Box, Breadcrumb, Button, PageHeading } from "@libraries/uikit-web";
-import { Download, File, Pencil, RefreshCcw } from "lucide-react";
+import { Download, File, Home, Pencil, RefreshCcw } from "lucide-react";
 
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
 import { ui } from "../../../../lib/styles.js";
@@ -31,6 +31,9 @@ export function ProjectHeader({
         <PageHeading>
             <PageHeading.Breadcrumbs>
                 <Breadcrumb>
+                    <RoutedBreadcrumbItem href="/app">
+                        <Home size={16} aria-label="Home" />
+                    </RoutedBreadcrumbItem>
                     <RoutedBreadcrumbItem href="/app/projects">
                         Projects
                     </RoutedBreadcrumbItem>
