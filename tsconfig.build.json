@@ -10,19 +10,10 @@
             "path": "./apps/plaster-calculator-web/tsconfig.json"
         },
         {
-            "path": "./functions/plaster-calculator-functions/tsconfig.build.json"
-        },
-        {
-            "path": "./libraries/uikit-web/tsconfig.build.json"
-        },
-        {
-            "path": "./libraries/plaster-calculator-common/tsconfig.build.json"
-        },
-        {
-            "path": "./libraries/plaster-calculator-ui/tsconfig.build.json"
-        },
-        {
             "path": "./apps/storybook-web/tsconfig.json"
+        },
+        {
+            "path": "./functions/plaster-calculator-functions/tsconfig.build.json"
         }
     ],
     "files": []

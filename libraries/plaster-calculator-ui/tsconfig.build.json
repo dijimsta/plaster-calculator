@@ -5,5 +5,13 @@
         "rootDir": "src",
         "outDir": "out"
     },
-    "include": ["src"]
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../../libraries/uikit-web/tsconfig.build.json"
+        },
+        {
+            "path": "../../libraries/plaster-calculator-common/tsconfig.build.json"
+        }
+    ]
 }
