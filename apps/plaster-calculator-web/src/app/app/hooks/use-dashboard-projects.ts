@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
     deleteProject,
     getProjectStatus,
+    listAccounts,
     listProjects,
     renameProject,
 } from "../../../lib/api.js";
@@ -43,6 +44,9 @@ interface DashboardProjectsState {
 
 export function useDashboardProjects(): DashboardProjectsState {
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
+    const [accountCompanyNames, setAccountCompanyNames] = useState<
+        ReadonlyMap<string, string>
+    >(new Map());
     const [activeSalesStatus, setActiveSalesStatus] =
         useState<ActiveProjectSalesStatus>("QUOTING");
     const [query, setQuery] = useState("");
@@ -63,6 +67,10 @@ export function useDashboardProjects(): DashboardProjectsState {
     useEffect(() => {
         void refresh();
     }, [activeSalesStatus]);
+
+    useEffect(() => {
+        void loadAccountCompanyNames();
+    }, []);
 
     useEffect(() => {
         if (!processingProjectId) return;
@@ -112,6 +120,26 @@ export function useDashboardProjects(): DashboardProjectsState {
         }
     }
 
+    async function loadAccountCompanyNames() {
+        try {
+            const accounts = await listAccounts();
+            setAccountCompanyNames(
+                new Map(
+                    accounts.map((account) => [
+                        account.id,
+                        account.companyName,
+                    ]),
+                ),
+            );
+        } catch (error) {
+            setMessage(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to load account names",
+            );
+        }
+    }
+
     async function removeProject(project: ProjectSummary) {
         const confirmed = window.confirm(
             `Delete "${project.name}" and all stored files for this project?`,
@@ -146,13 +174,19 @@ export function useDashboardProjects(): DashboardProjectsState {
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
-        if (!q) return projects;
-        return projects.filter(
+        const projectsWithAccountNames = projects.map((project) => ({
+            ...project,
+            accountCompanyName: project.accountId
+                ? (accountCompanyNames.get(project.accountId) ?? null)
+                : null,
+        }));
+        if (!q) return projectsWithAccountNames;
+        return projectsWithAccountNames.filter(
             (project) =>
                 project.name.toLowerCase().includes(q) ||
                 project.originalFileName.toLowerCase().includes(q),
         );
-    }, [projects, query]);
+    }, [accountCompanyNames, projects, query]);
 
     return {
         activeSalesStatus,

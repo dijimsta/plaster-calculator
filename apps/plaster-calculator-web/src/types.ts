@@ -3,6 +3,7 @@ export type SalesStatus = "QUOTING" | "QUOTE_SUBMITTED" | "WON" | "LOST";
 export type ProjectSummary = {
     id: string;
     accountId: string | null;
+    accountCompanyName?: string | null;
     name: string;
     address: string | null;
     originalFileName: string;
