@@ -274,7 +274,7 @@ export default function ProjectPage({
     }
 
     return (
-        <main className={ui.shell}>
+        <>
             <ProjectHeader
                 project={project}
                 renaming={renaming}
@@ -322,6 +322,6 @@ export default function ProjectPage({
                     />
                 )}
             </Box>
-        </main>
+        </>
     );
 }

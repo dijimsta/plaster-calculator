@@ -2,11 +2,9 @@
 
 import { PageHeading } from "@libraries/uikit-web";
 
-import { ui } from "../../../lib/styles.js";
-
 export default function QuestionnairesPage() {
     return (
-        <main className={ui.shell}>
+        <>
             <PageHeading>
                 <PageHeading.Content>
                     <PageHeading.Title>Questionnaires</PageHeading.Title>
@@ -15,6 +13,6 @@ export default function QuestionnairesPage() {
                     </PageHeading.Description>
                 </PageHeading.Content>
             </PageHeading>
-        </main>
+        </>
     );
 }

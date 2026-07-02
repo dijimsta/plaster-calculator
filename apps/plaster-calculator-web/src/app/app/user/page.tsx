@@ -13,7 +13,7 @@ export default function UserPage() {
     if (!user) return null;
 
     return (
-        <main className={ui.shell}>
+        <>
             <PageHeading>
                 <PageHeading.Content>
                     <PageHeading.Title>User</PageHeading.Title>
@@ -91,7 +91,7 @@ export default function UserPage() {
                     </div>
                 </section>
             </Box>
-        </main>
+        </>
     );
 }
 

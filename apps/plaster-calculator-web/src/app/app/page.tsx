@@ -22,7 +22,7 @@ export default function HomePage() {
     });
 
     return (
-        <main className={ui.shell}>
+        <>
             {projects.busyMessage && (
                 <BusyOverlay message={projects.busyMessage} />
             )}
@@ -85,6 +85,6 @@ export default function HomePage() {
                     />
                 )}
             </Box>
-        </main>
+        </>
     );
 }
