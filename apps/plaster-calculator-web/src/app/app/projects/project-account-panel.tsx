@@ -63,24 +63,7 @@ export function ProjectAccountPanel({
     }
 
     return (
-        <section className={cx(ui.panel, ui.stack)}>
-            <div className={ui.editorToolbar}>
-                <h3>Account</h3>
-                {accountId && !isEditing && (
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
-                        onClick={() => setIsEditing(true)}
-                        title="Edit project account"
-                        type="button"
-                    >
-                        <Pencil size={18} />
-                    </button>
-                )}
-            </div>
+        <div className={ui.stack}>
             {isEditing ? (
                 <>
                     <AccountSelect
@@ -117,9 +100,25 @@ export function ProjectAccountPanel({
                     </div>
                 </>
             ) : (
-                <AccountSummary account={account} error={error} />
+                <>
+                    <AccountSummary account={account} error={error} />
+                    {accountId && (
+                        <button
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
+                            onClick={() => setIsEditing(true)}
+                            title="Edit project account"
+                            type="button"
+                        >
+                            <Pencil size={18} />
+                        </button>
+                    )}
+                </>
             )}
-        </section>
+        </div>
     );
 }
 

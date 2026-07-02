@@ -1,146 +1,39 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
-import { ChevronRight } from "lucide-react";
+import { SelectMenu } from "@libraries/uikit-web";
 
-import { salesStatusLabel } from "../../../../lib/sales-status.js";
-import { cx, ui } from "../../../../lib/styles.js";
+import { salesStatusLabels } from "../../../../lib/sales-status.js";
 
 import type { SalesStatus } from "../../../../types.js";
+import type { SelectMenuOption } from "@libraries/uikit-web";
+
+const STATUS_OPTIONS: SelectMenuOption[] = [
+    { value: "QUOTING", label: salesStatusLabels.QUOTING },
+    { value: "QUOTE_SUBMITTED", label: salesStatusLabels.QUOTE_SUBMITTED },
+    { value: "WON", label: salesStatusLabels.WON },
+    { value: "LOST", label: salesStatusLabels.LOST },
+];
 
 interface ProjectSalesStatusControlProps {
     readonly currentStatus: SalesStatus;
     readonly disabled: boolean;
-    readonly onRequestOutcome: () => void;
     readonly onStatusChange: (status: SalesStatus) => Promise<void>;
 }
 
 export function ProjectSalesStatusControl({
     currentStatus,
     disabled,
-    onRequestOutcome,
     onStatusChange,
 }: ProjectSalesStatusControlProps) {
-    const outcomeLabel =
-        currentStatus === "WON" || currentStatus === "LOST"
-            ? salesStatusLabel(currentStatus)
-            : "Won/Lost";
-
     return (
-        <section className={cx(ui.topbar, "justify-start")}>
-            <div className={cx(ui.segmented, "items-center")}>
-                <StatusButton
-                    currentStatus={currentStatus}
-                    disabled={disabled}
-                    label={salesStatusLabel("QUOTING")}
-                    onClick={() => onStatusChange("QUOTING")}
-                    status="QUOTING"
-                />
-                <ChevronRight size={16} className={ui.muted} />
-                <StatusButton
-                    currentStatus={currentStatus}
-                    disabled={disabled}
-                    label={salesStatusLabel("QUOTE_SUBMITTED")}
-                    onClick={() => onStatusChange("QUOTE_SUBMITTED")}
-                    status="QUOTE_SUBMITTED"
-                />
-                <ChevronRight size={16} className={ui.muted} />
-                <button
-                    className={cx(
-                        ui.segmentedButton,
-                        (currentStatus === "WON" || currentStatus === "LOST") &&
-                            ui.segmentedButtonActive,
-                    )}
-                    disabled={disabled}
-                    onClick={onRequestOutcome}
-                    type="button"
-                >
-                    {outcomeLabel}
-                </button>
-            </div>
-        </section>
-    );
-}
-
-function StatusButton({
-    currentStatus,
-    disabled,
-    label,
-    onClick,
-    status,
-}: {
-    readonly currentStatus: SalesStatus;
-    readonly disabled: boolean;
-    readonly label: string;
-    readonly onClick: () => Promise<void>;
-    readonly status: SalesStatus;
-}) {
-    return (
-        <button
-            className={cx(
-                ui.segmentedButton,
-                currentStatus === status && ui.segmentedButtonActive,
-            )}
+        <SelectMenu
+            aria-label="Sales status"
             disabled={disabled}
-            onClick={() => void onClick()}
-            type="button"
-        >
-            {label}
-        </button>
-    );
-}
-
-interface ProjectOutcomeModalProps {
-    readonly disabled: boolean;
-    readonly onClose: () => void;
-    readonly onSelect: (status: Extract<SalesStatus, "WON" | "LOST">) => void;
-}
-
-export function ProjectOutcomeModal({
-    disabled,
-    onClose,
-    onSelect,
-}: ProjectOutcomeModalProps) {
-    return (
-        <div className={ui.modalBackdrop} role="presentation">
-            <section
-                aria-labelledby="project-outcome-title"
-                className={ui.modal}
-                role="dialog"
-            >
-                <div className={ui.editorToolbar}>
-                    <h2 id="project-outcome-title">Project outcome</h2>
-                </div>
-                <p className={ui.muted}>
-                    Choose the final sales outcome for this project.
-                </p>
-                <div className={ui.buttonRow}>
-                    <Button
-                        variant="primary"
-                        disabled={disabled}
-                        onClick={() => onSelect("WON")}
-                        type="button"
-                    >
-                        Won
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        disabled={disabled}
-                        onClick={() => onSelect("LOST")}
-                        type="button"
-                    >
-                        Lost
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        disabled={disabled}
-                        onClick={onClose}
-                        type="button"
-                    >
-                        Cancel
-                    </Button>
-                </div>
-            </section>
-        </div>
+            options={STATUS_OPTIONS}
+            value={currentStatus}
+            onChange={(event) => {
+                void onStatusChange(event.target.value as SalesStatus);
+            }}
+        />
     );
 }

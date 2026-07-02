@@ -1,7 +1,7 @@
 import { Button } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
 
-import { cx, ui } from "../../lib/styles.js";
+import { ui } from "../../lib/styles.js";
 
 import type { EditorSummary } from "./editor-sidebar.types.js";
 import type { ValidationIssue } from "../../lib/validation.js";
@@ -18,8 +18,7 @@ export function SummaryPanel({
     startReferenceMode,
 }: SummaryPanelProps) {
     return (
-        <section className={cx(ui.panel, ui.stack)}>
-            <h3>Summary</h3>
+        <div className={ui.stack}>
             {!summary && (
                 <div className={ui.validationCta}>
                     <p className={pageIssue("reference") ? ui.error : ui.muted}>
@@ -54,6 +53,6 @@ export function SummaryPanel({
                     </div>
                 </>
             )}
-        </section>
+        </div>
     );
 }

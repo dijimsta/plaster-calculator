@@ -63,8 +63,7 @@ export function SelectionPanel({
     updateArea,
 }: SelectionPanelProps) {
     return (
-        <section className={cx(ui.panel, ui.stack)}>
-            <h3>Selection</h3>
+        <div className={ui.stack}>
             <SelectionPanelContent
                 areaIssue={areaIssue}
                 clearSelectedEdgeOverride={clearSelectedEdgeOverride}
@@ -84,7 +83,7 @@ export function SelectionPanel({
                 toggleOutdoor={toggleOutdoor}
                 updateArea={updateArea}
             />
-        </section>
+        </div>
     );
 }
 

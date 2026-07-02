@@ -21,8 +21,7 @@ export function AreasPanel({
     const legendBoardTypes = wallBoardTypesInUse(visibleAreas);
 
     return (
-        <section className={cx(ui.panel, ui.stack)}>
-            <h3>Areas</h3>
+        <div className={ui.stack}>
             {legendBoardTypes.length > 0 && (
                 <div className={ui.buttonRow}>
                     {legendBoardTypes.map((type) => (
@@ -61,7 +60,7 @@ export function AreasPanel({
                     </button>
                 ))}
             </div>
-        </section>
+        </div>
     );
 }
 
