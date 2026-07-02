@@ -62,6 +62,9 @@ This applies to source files, index barrels, and story files.
 
 Component-specific types live in `{name}.component.tsx`. Variant union types live in `{name}.styles.ts` and are re-exported from `index.ts`.
 
+Use TypeScript namespaces for compound components when the nested API expresses the component relationship clearly,
+for example `SidebarLayout.Sidebar` and `SidebarLayout.Main`.
+
 ```ts
 // button/index.ts
 export { Button } from "./button.component.tsx";

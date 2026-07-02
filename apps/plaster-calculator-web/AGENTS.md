@@ -45,7 +45,6 @@ export default class Calculator { ... }
 - Use `import type { Foo }` when the symbol is only used as a type.
 - Use relative imports (`./`, `../`) within the same project. Avoid deep chains (`../../../`); restructure instead.
 - Never use `require()`. Always use ES6 `import`.
-- Never use TypeScript `namespace`. Use ES modules instead.
 
 ### Exports
 

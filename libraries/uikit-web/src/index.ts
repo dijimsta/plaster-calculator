@@ -20,6 +20,18 @@ export type {
 } from "./elements/button/index.ts";
 export { Card } from "./layout/card/index.ts";
 export type { CardProps } from "./layout/card/index.ts";
+export { Container } from "./layout/container/index.ts";
+export type {
+    ContainerPadding,
+    ContainerProps,
+    ContainerSize,
+} from "./layout/container/index.ts";
+export { SidebarLayout } from "./application-shells/sidebar-layout/index.ts";
+export type {
+    SidebarLayoutMainProps,
+    SidebarLayoutProps,
+    SidebarLayoutSidebarProps,
+} from "./application-shells/sidebar-layout/index.ts";
 export { Combobox } from "./forms/combobox/index.ts";
 export type { ComboboxOption, ComboboxProps } from "./forms/combobox/index.ts";
 export { Divider } from "./layout/divider/index.ts";
