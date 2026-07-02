@@ -1,12 +1,10 @@
-import { Button } from "@libraries/uikit-web";
-import { ArrowLeft, Download, Pencil, RefreshCcw } from "lucide-react";
-import { default as LinkModule } from "next/link.js";
+import { Box, Breadcrumb, Button, PageHeading } from "@libraries/uikit-web";
+import { Download, File, Pencil, RefreshCcw } from "lucide-react";
 
-import { cx, ui } from "../../../../lib/styles.js";
+import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
+import { ui } from "../../../../lib/styles.js";
 
 import type { ProjectDetail } from "../../../../types.js";
-
-const Link = LinkModule.default;
 
 export interface ProjectHeaderProps {
     readonly project: ProjectDetail | null;
@@ -30,21 +28,18 @@ export function ProjectHeader({
     validateAndExport,
 }: ProjectHeaderProps) {
     return (
-        <header className={ui.topbar}>
-            <div className={ui.buttonRow}>
-                <Link className={cx(ui.button, ui.buttonDefault)} href="/app">
-                    <ArrowLeft size={18} /> Projects
-                </Link>
-                {project && (
-                    <Button
-                        variant="secondary"
-                        onClick={() => void validateAndExport()}
-                    >
-                        <Download size={18} /> CSV
-                    </Button>
-                )}
-            </div>
-            <div className="grid gap-1 text-right">
+        <PageHeading>
+            <PageHeading.Breadcrumbs>
+                <Breadcrumb>
+                    <RoutedBreadcrumbItem href="/app/projects">
+                        Projects
+                    </RoutedBreadcrumbItem>
+                    <Breadcrumb.Item current>
+                        {project?.name ?? "Project"}
+                    </Breadcrumb.Item>
+                </Breadcrumb>
+            </PageHeading.Breadcrumbs>
+            <PageHeading.Content>
                 {renaming ? (
                     <ProjectRenameForm
                         renameValue={renameValue}
@@ -54,16 +49,32 @@ export function ProjectHeader({
                 ) : (
                     <ProjectTitle project={project} setRenaming={setRenaming} />
                 )}
-                <span className={ui.muted}>
-                    {project?.originalFileName ?? "Loading..."}
-                </span>
-            </div>
-            <div className={ui.buttonRow}>
-                <Button variant="secondary" onClick={load}>
-                    <RefreshCcw size={18} /> Refresh
+                <PageHeading.Meta aria-label="Project details">
+                    <PageHeading.Meta.Item>
+                        <File aria-hidden="true" />
+                        {project?.originalFileName ?? "Loading..."}
+                    </PageHeading.Meta.Item>
+                </PageHeading.Meta>
+            </PageHeading.Content>
+            <PageHeading.Actions>
+                {project && (
+                    <Button
+                        icon={<Download aria-hidden="true" />}
+                        variant="secondary"
+                        onClick={() => void validateAndExport()}
+                    >
+                        CSV
+                    </Button>
+                )}
+                <Button
+                    icon={<RefreshCcw aria-hidden="true" />}
+                    variant="secondary"
+                    onClick={load}
+                >
+                    Refresh
                 </Button>
-            </div>
-        </header>
+            </PageHeading.Actions>
+        </PageHeading>
     );
 }
 
@@ -73,7 +84,7 @@ function ProjectRenameForm({
     setRenameValue,
 }: Pick<ProjectHeaderProps, "renameValue" | "saveRename" | "setRenameValue">) {
     return (
-        <div className={ui.buttonRow}>
+        <Box align="center" gap="sm">
             <input
                 className={ui.input}
                 value={renameValue}
@@ -85,7 +96,7 @@ function ProjectRenameForm({
             <Button variant="primary" onClick={() => void saveRename()}>
                 Save
             </Button>
-        </div>
+        </Box>
     );
 }
 
@@ -94,19 +105,16 @@ function ProjectTitle({
     setRenaming,
 }: Pick<ProjectHeaderProps, "project" | "setRenaming">) {
     return (
-        <div className={cx(ui.buttonRow, "justify-end")}>
-            <h1 className="m-0 text-2xl leading-tight">
-                {project?.name ?? "Project"}
-            </h1>
+        <Box align="center" gap="sm">
+            <PageHeading.Title>{project?.name ?? "Project"}</PageHeading.Title>
             {project && (
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+                <Button
+                    aria-label="Rename project"
+                    icon={<Pencil aria-hidden="true" />}
                     onClick={() => setRenaming(true)}
-                    title="Rename project"
-                >
-                    <Pencil size={18} />
-                </button>
+                    variant="secondary"
+                />
             )}
-        </div>
+        </Box>
     );
 }

@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
-import { ArrowLeft, LoaderCircle, RefreshCcw, X } from "lucide-react";
-import { default as LinkModule } from "next/link.js";
+import { Box } from "@libraries/uikit-web";
+import { LoaderCircle, X } from "lucide-react";
 import { useRouter } from "next/navigation.js";
 import { useEffect, useState, type FormEvent } from "react";
 
+import { AccountDetailHeader } from "./account-detail-header.js";
 import { AccountDetailsPanel } from "./account-details-panel.js";
 import { AccountProjectsPanel } from "./account-projects-panel.js";
 import {
@@ -37,8 +37,6 @@ import type {
     AccountDetail,
     ProjectSummary,
 } from "../../../types.js";
-
-const Link = LinkModule.default;
 
 interface AccountDetailViewProps {
     readonly accountId: string;
@@ -200,10 +198,12 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
     if (isLoading) {
         return (
             <main className={ui.shell}>
-                <div className={ui.projectListState}>
-                    <LoaderCircle className="animate-spin" size={24} />
-                    <span className={ui.muted}>Loading account...</span>
-                </div>
+                <Box direction="column" padding="md">
+                    <div className={ui.projectListState}>
+                        <LoaderCircle className="animate-spin" size={24} />
+                        <span className={ui.muted}>Loading account...</span>
+                    </div>
+                </Box>
             </main>
         );
     }
@@ -211,95 +211,72 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
     return (
         <main className={ui.shell}>
             {busyMessage && <BusyOverlay message={busyMessage} />}
-            {toast && (
-                <div className={ui.toast}>
-                    <span>{toast}</span>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
-                        onClick={() => setToast("")}
-                        title="Dismiss message"
-                        type="button"
-                    >
-                        <X size={16} />
-                    </button>
-                </div>
-            )}
             <AccountDetailHeader
                 account={account}
                 refresh={() => void load()}
             />
-            {message && <p className={ui.muted}>{message}</p>}
-            {account && draft ? (
-                <section
-                    className={cx(
-                        "mx-auto grid w-[min(1600px,calc(100vw-48px))] grid-cols-[minmax(520px,0.48fr)_minmax(0,1fr)] items-start gap-[18px] min-[1500px]:w-[min(1600px,80vw)] max-[980px]:grid-cols-1",
-                    )}
-                >
-                    <AccountDetailsPanel
-                        account={account}
-                        draft={draft}
-                        hasAccountChanges={hasAccountChanges}
-                        removeAccount={removeAccount}
-                        saveAccount={saveAccount}
-                        setDraft={setDraft}
-                    />
-                    <div className="grid gap-[18px]">
-                        <ContactsPanel
-                            account={account}
-                            editContactDraft={editContactDraft}
-                            editContactId={editContactId}
-                            openNewContact={() => setIsContactModalOpen(true)}
-                            removeContact={removeContact}
-                            saveContact={saveContact}
-                            setEditContactDraft={setEditContactDraft}
-                            setEditContactId={setEditContactId}
-                        />
-                        <AccountProjectsPanel projects={accountProjects} />
+            <Box direction="column" gap="lg" padding="md">
+                {toast && (
+                    <div className={ui.toast}>
+                        <span>{toast}</span>
+                        <button
+                            className={cx(
+                                ui.button,
+                                ui.buttonDefault,
+                                ui.buttonIcon,
+                            )}
+                            onClick={() => setToast("")}
+                            title="Dismiss message"
+                            type="button"
+                        >
+                            <X size={16} />
+                        </button>
                     </div>
-                </section>
-            ) : (
-                <section className={ui.panel}>Account not found.</section>
-            )}
-            {isContactModalOpen && (
-                <NewContactModal
-                    close={closeContactModal}
-                    contactDraft={contactDraft}
-                    save={addContact}
-                    setContactDraft={setContactDraft}
-                />
-            )}
+                )}
+                {message && <p className={ui.muted}>{message}</p>}
+                {account && draft ? (
+                    <section
+                        className={cx(
+                            "mx-auto grid w-[min(1600px,calc(100vw-48px))] grid-cols-[minmax(520px,0.48fr)_minmax(0,1fr)] items-start gap-[18px] min-[1500px]:w-[min(1600px,80vw)] max-[980px]:grid-cols-1",
+                        )}
+                    >
+                        <AccountDetailsPanel
+                            account={account}
+                            draft={draft}
+                            hasAccountChanges={hasAccountChanges}
+                            removeAccount={removeAccount}
+                            saveAccount={saveAccount}
+                            setDraft={setDraft}
+                        />
+                        <div className="grid gap-[18px]">
+                            <ContactsPanel
+                                account={account}
+                                editContactDraft={editContactDraft}
+                                editContactId={editContactId}
+                                openNewContact={() =>
+                                    setIsContactModalOpen(true)
+                                }
+                                removeContact={removeContact}
+                                saveContact={saveContact}
+                                setEditContactDraft={setEditContactDraft}
+                                setEditContactId={setEditContactId}
+                            />
+                            <AccountProjectsPanel projects={accountProjects} />
+                        </div>
+                    </section>
+                ) : (
+                    <section className={ui.panel}>Account not found.</section>
+                )}
+                {isContactModalOpen && (
+                    <NewContactModal
+                        close={closeContactModal}
+                        contactDraft={contactDraft}
+                        save={addContact}
+                        setContactDraft={setContactDraft}
+                    />
+                )}
+            </Box>
         </main>
-    );
-}
-
-function AccountDetailHeader({
-    account,
-    refresh,
-}: {
-    readonly account: AccountDetail | null;
-    readonly refresh: () => void;
-}) {
-    return (
-        <header className={ui.topbar}>
-            <Link
-                className={cx(ui.button, ui.buttonDefault)}
-                href="/app/accounts"
-            >
-                <ArrowLeft size={18} /> Accounts
-            </Link>
-            <div className="grid gap-1 text-right">
-                <h1 className="m-0 text-2xl leading-tight">
-                    {account?.companyName ?? "Account"}
-                </h1>
-            </div>
-            <Button variant="secondary" onClick={refresh} type="button">
-                <RefreshCcw size={18} /> Refresh
-            </Button>
-        </header>
     );
 }
 

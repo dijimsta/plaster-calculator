@@ -1,5 +1,7 @@
 "use client";
 
+import { Box, PageHeading } from "@libraries/uikit-web";
+
 import { UserSettingsPanel } from "./user-settings.js";
 import { useUser } from "../../../auth/user.hook.js";
 import { ThemeSettingsControl } from "../../../components/theme-settings-control.js";
@@ -12,79 +14,83 @@ export default function UserPage() {
 
     return (
         <main className={ui.shell}>
-            <section className={cx(ui.topbar, "items-start")}>
-                <div>
-                    <h1 className="m-0 text-2xl leading-tight">User</h1>
-                    <p className={ui.muted}>Profile and settings</p>
-                </div>
-            </section>
-            <section className={cx(ui.layoutGrid, "items-start")}>
-                <div className={cx(ui.panel, ui.stack)}>
-                    <div className="flex items-center gap-3">
-                        {user.photoURL ? (
-                            <img
-                                alt=""
-                                className="h-14 w-14 rounded-full object-cover"
-                                src={user.photoURL}
-                            />
-                        ) : (
-                            <div
-                                className={cx(
-                                    "flex h-14 w-14 items-center justify-center rounded-full text-xl font-semibold",
-                                    activeTheme.softBg,
-                                )}
-                            >
-                                {getInitial(user.displayName, user.email)}
+            <PageHeading>
+                <PageHeading.Content>
+                    <PageHeading.Title>User</PageHeading.Title>
+                    <PageHeading.Description>
+                        Profile and settings
+                    </PageHeading.Description>
+                </PageHeading.Content>
+            </PageHeading>
+            <Box direction="column" padding="md">
+                <section className={cx(ui.layoutGrid, "items-start")}>
+                    <div className={cx(ui.panel, ui.stack)}>
+                        <div className="flex items-center gap-3">
+                            {user.photoURL ? (
+                                <img
+                                    alt=""
+                                    className="h-14 w-14 rounded-full object-cover"
+                                    src={user.photoURL}
+                                />
+                            ) : (
+                                <div
+                                    className={cx(
+                                        "flex h-14 w-14 items-center justify-center rounded-full text-xl font-semibold",
+                                        activeTheme.softBg,
+                                    )}
+                                >
+                                    {getInitial(user.displayName, user.email)}
+                                </div>
+                            )}
+                            <div>
+                                <h2>{user.displayName || "Signed in user"}</h2>
+                                <p className={ui.muted}>
+                                    {user.email || "No email address"}
+                                </p>
                             </div>
-                        )}
-                        <div>
-                            <h2>{user.displayName || "Signed in user"}</h2>
-                            <p className={ui.muted}>
-                                {user.email || "No email address"}
-                            </p>
+                        </div>
+                        <dl className="grid gap-3">
+                            <ProfileRow label="Name" value={user.displayName} />
+                            <ProfileRow label="Email" value={user.email} />
+                        </dl>
+                        <div className={ui.stack}>
+                            <h2>Connected logins</h2>
+                            {user.providerData.length > 0 ? (
+                                <div className={ui.projectList}>
+                                    {user.providerData.map((provider) => (
+                                        <div
+                                            className={ui.projectItem}
+                                            key={`${provider.providerId}-${provider.uid}`}
+                                        >
+                                            <strong>
+                                                {formatProviderId(
+                                                    provider.providerId,
+                                                )}
+                                            </strong>
+                                            <span className={ui.muted}>
+                                                {provider.email ||
+                                                    provider.phoneNumber ||
+                                                    provider.uid}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className={ui.muted}>
+                                    No connected social logins.
+                                </p>
+                            )}
                         </div>
                     </div>
-                    <dl className="grid gap-3">
-                        <ProfileRow label="Name" value={user.displayName} />
-                        <ProfileRow label="Email" value={user.email} />
-                    </dl>
                     <div className={ui.stack}>
-                        <h2>Connected logins</h2>
-                        {user.providerData.length > 0 ? (
-                            <div className={ui.projectList}>
-                                {user.providerData.map((provider) => (
-                                    <div
-                                        className={ui.projectItem}
-                                        key={`${provider.providerId}-${provider.uid}`}
-                                    >
-                                        <strong>
-                                            {formatProviderId(
-                                                provider.providerId,
-                                            )}
-                                        </strong>
-                                        <span className={ui.muted}>
-                                            {provider.email ||
-                                                provider.phoneNumber ||
-                                                provider.uid}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className={ui.muted}>
-                                No connected social logins.
-                            </p>
-                        )}
+                        <section className={cx(ui.panel, ui.stack)}>
+                            <h2>Appearance</h2>
+                            <ThemeSettingsControl />
+                        </section>
+                        <UserSettingsPanel />
                     </div>
-                </div>
-                <div className={ui.stack}>
-                    <section className={cx(ui.panel, ui.stack)}>
-                        <h2>Appearance</h2>
-                        <ThemeSettingsControl />
-                    </section>
-                    <UserSettingsPanel />
-                </div>
-            </section>
+                </section>
+            </Box>
         </main>
     );
 }

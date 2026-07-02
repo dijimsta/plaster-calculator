@@ -1,5 +1,6 @@
 "use client";
 
+import { Box } from "@libraries/uikit-web";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
 import { ProjectHeader } from "./project-page-header.js";
@@ -274,7 +275,6 @@ export default function ProjectPage({
 
     return (
         <main className={ui.shell}>
-            <ProjectToast toast={toast} setToast={setToast} />
             <ProjectHeader
                 project={project}
                 renaming={renaming}
@@ -285,41 +285,43 @@ export default function ProjectPage({
                 setRenameValue={setRenameValue}
                 validateAndExport={validateAndExport}
             />
-
-            {error && <p className={ui.error}>{error}</p>}
-            {project && (
-                <ProjectSalesStatusControl
-                    currentStatus={project.salesStatus}
-                    disabled={savingSalesStatus}
-                    onRequestOutcome={() => setShowOutcomeModal(true)}
-                    onStatusChange={changeSalesStatus}
-                />
-            )}
-            {project && (
-                <ProjectStatusContent
-                    accountId={accountId}
-                    project={project}
-                    saveAccount={saveAccount}
-                    savingAccount={savingAccount}
-                    selectedPage={selectedPage}
-                    selectedPageId={selectedPageId}
-                    selectPage={selectPage}
-                    setAccountId={setAccountId}
-                    switchingPage={switchingPage}
-                    analyzingPage={analyzingPage}
-                    setAnalyzingPage={setAnalyzingPage}
-                    load={load}
-                    updateDraft={updateDraft}
-                    validationIssues={validationIssues}
-                />
-            )}
-            {showOutcomeModal && (
-                <ProjectOutcomeModal
-                    disabled={savingSalesStatus}
-                    onClose={() => setShowOutcomeModal(false)}
-                    onSelect={(status) => void selectOutcome(status)}
-                />
-            )}
+            <Box direction="column" gap="lg" padding="md">
+                <ProjectToast toast={toast} setToast={setToast} />
+                {error && <p className={ui.error}>{error}</p>}
+                {project && (
+                    <ProjectSalesStatusControl
+                        currentStatus={project.salesStatus}
+                        disabled={savingSalesStatus}
+                        onRequestOutcome={() => setShowOutcomeModal(true)}
+                        onStatusChange={changeSalesStatus}
+                    />
+                )}
+                {project && (
+                    <ProjectStatusContent
+                        accountId={accountId}
+                        project={project}
+                        saveAccount={saveAccount}
+                        savingAccount={savingAccount}
+                        selectedPage={selectedPage}
+                        selectedPageId={selectedPageId}
+                        selectPage={selectPage}
+                        setAccountId={setAccountId}
+                        switchingPage={switchingPage}
+                        analyzingPage={analyzingPage}
+                        setAnalyzingPage={setAnalyzingPage}
+                        load={load}
+                        updateDraft={updateDraft}
+                        validationIssues={validationIssues}
+                    />
+                )}
+                {showOutcomeModal && (
+                    <ProjectOutcomeModal
+                        disabled={savingSalesStatus}
+                        onClose={() => setShowOutcomeModal(false)}
+                        onSelect={(status) => void selectOutcome(status)}
+                    />
+                )}
+            </Box>
         </main>
     );
 }
