@@ -4,9 +4,10 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "pnpm compile && next build",
+        "build": "next build",
         "compile": "tsc --build tsconfig.json",
         "dev": "next dev",
+        "prepare": "pnpm compile",
         "start": "next start"
     },
     "dependencies": {
