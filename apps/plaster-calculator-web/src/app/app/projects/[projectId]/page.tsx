@@ -1,6 +1,14 @@
 "use client";
 
-import { use, useCallback, useEffect, useMemo, useState } from "react";
+import { Box } from "@libraries/uikit-web";
+import {
+    Fragment,
+    use,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 
 import { ProjectHeader } from "./project-page-header.js";
 import { ProjectSalesStatusControl } from "./project-sales-status-control.js";
@@ -261,7 +269,7 @@ export default function ProjectPage({
     }
 
     return (
-        <div className={ui.editorPageRoot}>
+        <Fragment>
             <ProjectHeader
                 project={project}
                 renaming={renaming}
@@ -272,7 +280,7 @@ export default function ProjectPage({
                 setRenameValue={setRenameValue}
                 validateAndExport={validateAndExport}
             />
-            <div className={ui.editorContentBody}>
+            <Box padding="md">
                 <ProjectToast toast={toast} setToast={setToast} />
                 {error && <p className={ui.error}>{error}</p>}
                 {project && (
@@ -300,7 +308,7 @@ export default function ProjectPage({
                         validationIssues={validationIssues}
                     />
                 )}
-            </div>
-        </div>
+            </Box>
+        </Fragment>
     );
 }
