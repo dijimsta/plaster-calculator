@@ -5,6 +5,7 @@ import {
     Box,
     Button,
     ButtonLink,
+    IconTile,
     SidebarLayout,
     SidebarNavigation,
     Text,
@@ -25,6 +26,16 @@ const Link = LinkModule.default;
 
 const navItems = [
     { href: "/app" as const, label: "Home", Icon: Icons.Home },
+    {
+        href: "/app/projects" as const,
+        label: "Projects",
+        Icon: Icons.Building2,
+    },
+    {
+        href: "/app/questionnaires" as const,
+        label: "Questionnaires",
+        Icon: Icons.ClipboardList,
+    },
     { href: "/app/accounts" as const, label: "Accounts", Icon: Icons.Users },
 ];
 
@@ -47,12 +58,20 @@ export default function Sidebar({ children }: PropsWithChildren) {
                 <SidebarNavigation>
                     <SidebarNavigation.Header>
                         <Link href="/app">
-                            <strong>Plaster Calculator</strong>
+                            <Box direction="row" align="center" gap="sm">
+                                <IconTile size="sm" tone="dark">
+                                    <Icons.Layers
+                                        size={16}
+                                        aria-hidden="true"
+                                    />
+                                </IconTile>
+                                <Text size="sm">Plaster Calculator</Text>
+                            </Box>
                         </Link>
                     </SidebarNavigation.Header>
                     <SidebarNavigation.Body>
                         <VerticalNavigation aria-label="Application navigation">
-                            <VerticalNavigation.Section>
+                            <VerticalNavigation.Section title="Workspace">
                                 {navItems.map((item) => (
                                     <VerticalNavigation.Item
                                         key={item.href}
