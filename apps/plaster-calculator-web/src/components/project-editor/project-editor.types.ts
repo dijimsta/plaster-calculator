@@ -11,6 +11,7 @@ export interface ProjectEditorProps {
     readonly onSaved: () => void | Promise<void>;
     readonly onAnalyzingChange?: (analyzing: boolean) => void;
     readonly projectAccountPanel?: ReactNode;
+    readonly salesStatusPanel?: ReactNode;
     readonly onDraftChange?: (
         pageId: string,
         draft: PageValidationInput,

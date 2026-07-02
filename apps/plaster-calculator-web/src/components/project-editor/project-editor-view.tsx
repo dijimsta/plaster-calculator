@@ -36,6 +36,7 @@ interface ProjectEditorViewProps {
     readonly page: ProjectEditorProps["page"];
     readonly persistence: ReturnType<typeof useEditorPersistence>;
     readonly projectAccountPanel: ProjectEditorProps["projectAccountPanel"];
+    readonly salesStatusPanel: ProjectEditorProps["salesStatusPanel"];
     readonly scrollDragRef: EditorCanvasProps["scrollDragRef"];
     readonly selection: ReturnType<typeof useEditorSelection>;
     readonly snapGuide: SnapGuide;
@@ -70,6 +71,7 @@ export function ProjectEditorView({
     page,
     persistence,
     projectAccountPanel,
+    salesStatusPanel,
     scrollDragRef,
     selection,
     snapGuide,
@@ -88,7 +90,7 @@ export function ProjectEditorView({
 }: ProjectEditorViewProps) {
     return (
         <section className={ui.editorShell}>
-            <div className={ui.panel}>
+            <div className={ui.editorLeftPanel}>
                 <EditorToolbar
                     addMenuOpen={addMenuOpen}
                     autoSaving={persistence.autoSaving}
@@ -125,7 +127,7 @@ export function ProjectEditorView({
                         Analysis is running. Editing is temporarily disabled.
                     </p>
                 )}
-                <div inert={analyzing}>
+                <div inert={analyzing} className={ui.editorCanvasContainer}>
                     <EditorCanvas
                         canvasWrapRef={canvasWrapRef}
                         commitFromSnapshot={historyState.commitFromSnapshot}
@@ -187,6 +189,7 @@ export function ProjectEditorView({
                     selectedPointIndexes={selection.selectedPointIndexes}
                     metrics={derivedState.metrics}
                     projectAccountPanel={projectAccountPanel}
+                    salesStatusPanel={salesStatusPanel}
                     areaIssue={validation.areaIssue}
                     applyHeightToAllPages={persistence.applyHeightToAllPages}
                     applyScale={actions.applyScale}

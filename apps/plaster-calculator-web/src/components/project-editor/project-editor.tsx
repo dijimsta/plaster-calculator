@@ -29,6 +29,7 @@ export function ProjectEditor({
     onSaved,
     onAnalyzingChange,
     projectAccountPanel,
+    salesStatusPanel,
     onDraftChange,
     validationIssues = [],
 }: ProjectEditorProps) {
@@ -216,6 +217,7 @@ export function ProjectEditor({
             page={page}
             persistence={persistence}
             projectAccountPanel={projectAccountPanel}
+            salesStatusPanel={salesStatusPanel}
             scrollDragRef={scrollDragRef}
             selection={selection}
             snapGuide={snapGuide}

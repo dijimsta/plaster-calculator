@@ -2,13 +2,11 @@ import { Button } from "@libraries/uikit-web";
 
 import { cx, ui } from "../../lib/styles.js";
 
-import type { FloorplanPage } from "../../types.js";
 import type { ReactNode } from "react";
 
 interface PageSettingsPanelProps {
     readonly ceilingHeightMm: number | null;
     readonly dirty: boolean;
-    readonly page: FloorplanPage;
     readonly status: string;
     readonly applyHeightToAllPages: () => void;
     readonly fieldError: (message: string) => ReactNode;
@@ -20,7 +18,6 @@ interface PageSettingsPanelProps {
 export function PageSettingsPanel({
     ceilingHeightMm,
     dirty,
-    page,
     status,
     applyHeightToAllPages,
     fieldError,
@@ -29,8 +26,7 @@ export function PageSettingsPanel({
     setDirty,
 }: PageSettingsPanelProps) {
     return (
-        <section className={cx(ui.panel, ui.stack)}>
-            <h3>Page {page.pageNumber}</h3>
+        <div className={ui.stack}>
             <span className={ui.muted}>
                 {status || "Ready"}{" "}
                 {dirty ? "- autosaves every 15 seconds" : ""}
@@ -59,6 +55,6 @@ export function PageSettingsPanel({
             <Button variant="secondary" onClick={applyHeightToAllPages}>
                 Apply height to all pages
             </Button>
-        </section>
+        </div>
     );
 }

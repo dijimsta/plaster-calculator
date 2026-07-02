@@ -1,5 +1,6 @@
 "use client";
 
+import { InspectorPanel, InspectorSection } from "@libraries/uikit-web";
 import { default as DynamicModule } from "next/dynamic.js";
 
 import { cx, ui } from "../../../../lib/styles.js";
@@ -11,6 +12,7 @@ import type {
     ValidationIssue,
 } from "../../../../lib/validation.js";
 import type { ProjectDetail } from "../../../../types.js";
+import type { ReactNode } from "react";
 
 const dynamic = DynamicModule.default;
 const ProjectEditor = dynamic(
@@ -28,6 +30,7 @@ interface ProjectStatusContentProps {
     readonly analyzingPage: boolean;
     readonly load: () => Promise<void>;
     readonly project: ProjectDetail;
+    readonly salesStatusPanel: ReactNode;
     readonly saveAccount: () => Promise<void>;
     readonly savingAccount: boolean;
     readonly selectedPage: ProjectDetail["pages"][number] | null;
@@ -45,6 +48,7 @@ export function ProjectStatusContent({
     analyzingPage,
     load,
     project,
+    salesStatusPanel,
     saveAccount,
     savingAccount,
     selectedPage,
@@ -56,6 +60,27 @@ export function ProjectStatusContent({
     updateDraft,
     validationIssues,
 }: ProjectStatusContentProps) {
+    const accountPanel = (
+        <ProjectAccountPanel
+            accountId={project.accountId}
+            draftAccountId={accountId}
+            isSaving={savingAccount}
+            saveAccount={saveAccount}
+            setDraftAccountId={setAccountId}
+        />
+    );
+
+    const inspectorPanel = (
+        <InspectorPanel>
+            <InspectorSection title="Status" defaultOpen>
+                {salesStatusPanel}
+            </InspectorSection>
+            <InspectorSection title="Account" defaultOpen>
+                {accountPanel}
+            </InspectorSection>
+        </InspectorPanel>
+    );
+
     if (project.salesStatus === "QUOTE_SUBMITTED") {
         return (
             <section className={cx(ui.editorShell, "items-start")}>
@@ -66,32 +91,38 @@ export function ProjectStatusContent({
                         be configured here later.
                     </p>
                 </div>
-                <ProjectAccountPanel
-                    accountId={project.accountId}
-                    draftAccountId={accountId}
-                    isSaving={savingAccount}
-                    saveAccount={saveAccount}
-                    setDraftAccountId={setAccountId}
-                />
+                {inspectorPanel}
             </section>
         );
     }
 
     if (project.salesStatus === "WON") {
         return (
-            <ProjectPlaceholder title="Project won">
-                Won project workflow placeholder. The next steps for accepted
-                work will be added here later.
-            </ProjectPlaceholder>
+            <section className={cx(ui.editorShell, "items-start")}>
+                <div className={cx(ui.panel, ui.stack)}>
+                    <h2>Project won</h2>
+                    <p className={ui.muted}>
+                        Won project workflow placeholder. The next steps for
+                        accepted work will be added here later.
+                    </p>
+                </div>
+                {inspectorPanel}
+            </section>
         );
     }
 
     if (project.salesStatus === "LOST") {
         return (
-            <ProjectPlaceholder title="Project lost">
-                Lost project workflow placeholder. Loss reasons can be captured
-                here later.
-            </ProjectPlaceholder>
+            <section className={cx(ui.editorShell, "items-start")}>
+                <div className={cx(ui.panel, ui.stack)}>
+                    <h2>Project lost</h2>
+                    <p className={ui.muted}>
+                        Lost project workflow placeholder. Loss reasons can be
+                        captured here later.
+                    </p>
+                </div>
+                {inspectorPanel}
+            </section>
         );
     }
 
@@ -113,15 +144,8 @@ export function ProjectStatusContent({
                     page={selectedPage}
                     onSaved={load}
                     onAnalyzingChange={setAnalyzingPage}
-                    projectAccountPanel={
-                        <ProjectAccountPanel
-                            accountId={project.accountId}
-                            draftAccountId={accountId}
-                            isSaving={savingAccount}
-                            saveAccount={saveAccount}
-                            setDraftAccountId={setAccountId}
-                        />
-                    }
+                    projectAccountPanel={accountPanel}
+                    salesStatusPanel={salesStatusPanel}
                     onDraftChange={updateDraft}
                     validationIssues={validationIssues.filter(
                         (issue) => issue.pageId === selectedPage.id,
@@ -139,26 +163,5 @@ export function ProjectStatusContent({
                 </section>
             )}
         </>
-    );
-}
-
-function ProjectPlaceholder({
-    children,
-    title,
-}: {
-    readonly children: string;
-    readonly title: string;
-}) {
-    return (
-        <section
-            className={cx(
-                ui.panel,
-                ui.stack,
-                "mx-auto w-[min(960px,calc(100vw-48px))]",
-            )}
-        >
-            <h2>{title}</h2>
-            <p className={ui.muted}>{children}</p>
-        </section>
     );
 }

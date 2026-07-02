@@ -38,6 +38,7 @@ export interface EditorSidebarProps {
     readonly selectedPointIndexes: number[];
     readonly metrics: SelectionMetrics | null;
     readonly projectAccountPanel?: ReactNode;
+    readonly salesStatusPanel?: ReactNode;
     readonly areaIssue: (
         areaId: string,
         field: ValidationIssue["field"],

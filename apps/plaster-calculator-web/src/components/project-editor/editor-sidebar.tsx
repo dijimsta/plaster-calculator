@@ -1,3 +1,5 @@
+import { InspectorPanel, InspectorSection } from "@libraries/uikit-web";
+
 import { AreasPanel } from "./areas-panel.js";
 import { PageSettingsPanel } from "./page-settings-panel.js";
 import { ScalePanel } from "./scale-panel.js";
@@ -26,6 +28,7 @@ export function EditorSidebar({
     selectedPointIndexes,
     metrics,
     projectAccountPanel,
+    salesStatusPanel,
     areaIssue,
     applyHeightToAllPages,
     applyScale,
@@ -50,63 +53,79 @@ export function EditorSidebar({
     updateArea,
 }: EditorSidebarProps) {
     return (
-        <aside className={ui.inspector}>
-            {projectAccountPanel}
-            <PageSettingsPanel
-                ceilingHeightMm={ceilingHeightMm}
-                dirty={dirty}
-                page={page}
-                status={status}
-                applyHeightToAllPages={applyHeightToAllPages}
-                fieldError={fieldError}
-                hasPageHeightIssue={hasPageHeightIssue}
-                setCeilingHeightMm={setCeilingHeightMm}
-                setDirty={setDirty}
-            />
-            <ScalePanel
-                isSettingReference={isSettingReference}
-                referenceLengthMm={referenceLengthMm}
-                referencePoints={referencePoints}
-                scaleMmPerPx={scaleMmPerPx}
-                applyScale={applyScale}
-                applyScaleToAllPages={applyScaleToAllPages}
-                fieldError={fieldError}
-                pageIssue={pageIssue}
-                setDirty={setDirty}
-                setIsSettingReference={setIsSettingReference}
-                setReferenceLengthMm={setReferenceLengthMm}
-                setReferencePoints={setReferencePoints}
-                startReferenceMode={startReferenceMode}
-            />
-            <SummaryPanel
-                summary={summary}
-                pageIssue={pageIssue}
-                startReferenceMode={startReferenceMode}
-            />
-            <AreasPanel
-                selectedAreaIds={selectedAreaIds}
-                visibleAreas={visibleAreas}
-                selectArea={selectArea}
-            />
-            <SelectionPanel
-                areaIssue={areaIssue}
-                clearSelectedEdgeOverride={clearSelectedEdgeOverride}
-                commonMaterialValue={commonMaterialValue}
-                fieldError={fieldError}
-                metrics={metrics}
-                renderCeilingControls={renderCeilingControls}
-                selectedArea={selectedArea}
-                selectedAreaIds={selectedAreaIds}
-                selectedEdge={selectedEdge}
-                selectedEdgeArea={selectedEdgeArea}
-                selectedEdgeOverride={selectedEdgeOverride}
-                selectedPointIndexes={selectedPointIndexes}
-                setMaterial={setMaterial}
-                setSelectedEdgeMaterial={setSelectedEdgeMaterial}
-                setSelectedEdgeNoPlaster={setSelectedEdgeNoPlaster}
-                toggleOutdoor={toggleOutdoor}
-                updateArea={updateArea}
-            />
-        </aside>
+        <InspectorPanel className={ui.inspector}>
+            {salesStatusPanel && (
+                <InspectorSection title="Status" defaultOpen>
+                    {salesStatusPanel}
+                </InspectorSection>
+            )}
+            <InspectorSection title="Account" defaultOpen>
+                {projectAccountPanel}
+            </InspectorSection>
+            <InspectorSection title={`Page ${page.pageNumber}`} defaultOpen>
+                <PageSettingsPanel
+                    ceilingHeightMm={ceilingHeightMm}
+                    dirty={dirty}
+                    status={status}
+                    applyHeightToAllPages={applyHeightToAllPages}
+                    fieldError={fieldError}
+                    hasPageHeightIssue={hasPageHeightIssue}
+                    setCeilingHeightMm={setCeilingHeightMm}
+                    setDirty={setDirty}
+                />
+            </InspectorSection>
+            <InspectorSection title="Scale" defaultOpen>
+                <ScalePanel
+                    isSettingReference={isSettingReference}
+                    referenceLengthMm={referenceLengthMm}
+                    referencePoints={referencePoints}
+                    scaleMmPerPx={scaleMmPerPx}
+                    applyScale={applyScale}
+                    applyScaleToAllPages={applyScaleToAllPages}
+                    fieldError={fieldError}
+                    pageIssue={pageIssue}
+                    setDirty={setDirty}
+                    setIsSettingReference={setIsSettingReference}
+                    setReferenceLengthMm={setReferenceLengthMm}
+                    setReferencePoints={setReferencePoints}
+                    startReferenceMode={startReferenceMode}
+                />
+            </InspectorSection>
+            <InspectorSection title="Summary" defaultOpen>
+                <SummaryPanel
+                    summary={summary}
+                    pageIssue={pageIssue}
+                    startReferenceMode={startReferenceMode}
+                />
+            </InspectorSection>
+            <InspectorSection title="Areas" defaultOpen>
+                <AreasPanel
+                    selectedAreaIds={selectedAreaIds}
+                    visibleAreas={visibleAreas}
+                    selectArea={selectArea}
+                />
+            </InspectorSection>
+            <InspectorSection title="Selection" defaultOpen>
+                <SelectionPanel
+                    areaIssue={areaIssue}
+                    clearSelectedEdgeOverride={clearSelectedEdgeOverride}
+                    commonMaterialValue={commonMaterialValue}
+                    fieldError={fieldError}
+                    metrics={metrics}
+                    renderCeilingControls={renderCeilingControls}
+                    selectedArea={selectedArea}
+                    selectedAreaIds={selectedAreaIds}
+                    selectedEdge={selectedEdge}
+                    selectedEdgeArea={selectedEdgeArea}
+                    selectedEdgeOverride={selectedEdgeOverride}
+                    selectedPointIndexes={selectedPointIndexes}
+                    setMaterial={setMaterial}
+                    setSelectedEdgeMaterial={setSelectedEdgeMaterial}
+                    setSelectedEdgeNoPlaster={setSelectedEdgeNoPlaster}
+                    toggleOutdoor={toggleOutdoor}
+                    updateArea={updateArea}
+                />
+            </InspectorSection>
+        </InspectorPanel>
     );
 }

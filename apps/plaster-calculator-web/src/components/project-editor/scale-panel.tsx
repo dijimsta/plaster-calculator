@@ -39,8 +39,7 @@ export function ScalePanel({
     startReferenceMode,
 }: ScalePanelProps) {
     return (
-        <section className={cx(ui.panel, ui.stack)}>
-            <h3>Scale</h3>
+        <div className={ui.stack}>
             <div className={ui.buttonRow}>
                 <Button
                     variant={isSettingReference ? "primary" : "secondary"}
@@ -102,6 +101,6 @@ export function ScalePanel({
                 Scale:{" "}
                 {scaleMmPerPx ? `${scaleMmPerPx.toFixed(3)} mm/px` : "not set"}
             </div>
-        </section>
+        </div>
     );
 }
