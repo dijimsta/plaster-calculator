@@ -37,10 +37,13 @@ exclusive paths visible in the control-flow structure instead of expressing the 
 
 ## UI Component Boundaries
 
-Stories should demonstrate the same component composition expected in application code. Do not use ad hoc styling in
-a story to stand in for a reusable UI primitive. When an implementation or story needs a component that UIKit does not
-provide, stop and tell the user what is missing. Discuss the component's responsibility and API before creating it or
-substituting another pattern.
+Do not introduce raw Tailwind classes, inline styles, or any ad hoc CSS in application or story code. All layout and
+presentation must be expressed through UIKit components or established app-level patterns from
+`apps/plaster-calculator-web/src/lib/styles.ts`. This applies everywhere — app pages, components, and stories alike.
+
+When an implementation needs a layout or UI element that UIKit does not provide, stop and tell the user what is
+missing. Describe the component's responsibility and proposed API before creating it or substituting another pattern.
+Do not approximate a missing component with raw utility classes as a temporary measure.
 
 ## Jira
 

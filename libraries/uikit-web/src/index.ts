@@ -19,6 +19,13 @@ export type {
     BadgeSize,
     BadgeVariant,
 } from "./elements/badge/index.ts";
+export { Box } from "./layout/box/index.ts";
+export type {
+    BoxAlign,
+    BoxDirection,
+    BoxGap,
+    BoxProps,
+} from "./layout/box/index.ts";
 export { Button } from "./elements/button/index.ts";
 export type {
     ButtonIconPosition,
@@ -90,6 +97,12 @@ export type {
 } from "./navigation/sidebar-navigation/index.ts";
 export { Tabs } from "./navigation/tabs/index.ts";
 export type { TabsProps, TabsVariant } from "./navigation/tabs/index.ts";
+export { Text } from "./elements/text/index.ts";
+export type {
+    TextProps,
+    TextSize,
+    TextVariant,
+} from "./elements/text/index.ts";
 export { VerticalNavigation } from "./navigation/vertical-navigation/index.ts";
 export type {
     VerticalNavigationItemProps,
