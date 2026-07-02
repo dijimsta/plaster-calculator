@@ -1,4 +1,4 @@
-import { Button } from "../../src/elements/button/button.component.tsx";
+import { Button, GitHubIcon, GoogleIcon } from "../../src/index.ts";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -71,4 +71,32 @@ export const Disabled: Story = {
         children: "Button",
         disabled: true,
     },
+};
+
+export const WithLeadingIcon: Story = {
+    render: () => (
+        <Button variant="primary" icon={<GitHubIcon />} iconPosition="left">
+            Sign in with GitHub
+        </Button>
+    ),
+};
+
+export const WithTrailingIcon: Story = {
+    render: () => (
+        <Button variant="secondary" icon={<GoogleIcon />} iconPosition="right">
+            Sign in with Google
+        </Button>
+    ),
+};
+
+export const IconOnly: Story = {
+    render: () => (
+        <Button variant="ghost" icon={<GitHubIcon />} aria-label="GitHub" />
+    ),
+};
+
+export const IconOnlySecondary: Story = {
+    render: () => (
+        <Button variant="secondary" icon={<GitHubIcon />} aria-label="GitHub" />
+    ),
 };
