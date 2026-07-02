@@ -4,8 +4,9 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "pnpm compile && storybook build",
+        "build": "storybook build",
         "compile": "tsc --build tsconfig.json",
+        "prepare": "pnpm compile",
         "storybook": "storybook dev --port 6006"
     },
     "dependencies": {
