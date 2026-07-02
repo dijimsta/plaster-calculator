@@ -75,6 +75,12 @@ export { Label } from "./forms/label/index.ts";
 export type { LabelProps } from "./forms/label/index.ts";
 export { FullViewportHeightContainer } from "./layout/full-viewport-height-container/index.ts";
 export { GitHubIcon, GoogleIcon } from "./elements/icons/index.ts";
+export { IconTile } from "./elements/icon-tile/index.ts";
+export type {
+    IconTileProps,
+    IconTileSize,
+    IconTileTone,
+} from "./elements/icon-tile/index.ts";
 export { Input } from "./forms/input/index.ts";
 export type { InputProps } from "./forms/input/index.ts";
 export { SelectMenu } from "./forms/select-menu/index.ts";
