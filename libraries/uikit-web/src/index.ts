@@ -4,6 +4,14 @@ export type {
     AlertProps,
     AlertVariant,
 } from "./feedback/alert/index.ts";
+export { Avatar } from "./elements/avatar/index.ts";
+export type {
+    AvatarColor,
+    AvatarProps,
+    AvatarShape,
+    AvatarSize,
+    AvatarStatus,
+} from "./elements/avatar/index.ts";
 export { Badge } from "./elements/badge/index.ts";
 export type {
     BadgeColor,
