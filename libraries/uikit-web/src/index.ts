@@ -61,6 +61,8 @@ export type {
     GridListGap,
     GridListProps,
 } from "./lists/grid-list/index.ts";
+export { PageHeading } from "./headings/page-heading/index.ts";
+export type { PageHeadingProps } from "./headings/page-heading/index.ts";
 export {
     InspectorPanel,
     InspectorSection,
