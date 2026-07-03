@@ -3,7 +3,7 @@ import { Box, Label, Toggle } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Toggle> = {
-    title: "Forms/Toggle",
+    title: "UIKit/Forms/Toggle",
     component: Toggle,
     tags: ["autodocs"],
     parameters: {

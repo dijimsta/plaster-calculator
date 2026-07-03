@@ -3,7 +3,7 @@ import { QuestionnaireTemplateCard } from "@libraries/plaster-calculator-ui";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof QuestionnaireTemplateCard> = {
-    title: "Questionnaires/QuestionnaireTemplateCard",
+    title: "Plaster Calculator/Questionnaires/QuestionnaireTemplateCard",
     component: QuestionnaireTemplateCard,
     tags: ["autodocs"],
     parameters: {

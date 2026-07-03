@@ -4,7 +4,7 @@ import { Home } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Breadcrumb> = {
-    title: "Navigation/Breadcrumb",
+    title: "UIKit/Navigation/Breadcrumb",
     component: Breadcrumb,
     tags: ["autodocs"],
     parameters: {

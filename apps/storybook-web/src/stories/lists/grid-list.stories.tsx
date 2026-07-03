@@ -3,7 +3,7 @@ import { Card, GridList } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof GridList> = {
-    title: "Lists/GridList",
+    title: "UIKit/Lists/GridList",
     component: GridList,
     tags: ["autodocs"],
     parameters: {

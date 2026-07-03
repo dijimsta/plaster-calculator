@@ -3,7 +3,7 @@ import { GitHubIcon, GoogleIcon } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof GitHubIcon> = {
-    title: "Elements/Icons",
+    title: "UIKit/Elements/Icons",
     component: GitHubIcon,
     tags: ["autodocs"],
     parameters: {

@@ -4,7 +4,7 @@ import { Calculator, Home, Layers, Ruler } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof IconTile> = {
-    title: "Elements/IconTile",
+    title: "UIKit/Elements/IconTile",
     component: IconTile,
     tags: ["autodocs"],
     parameters: {

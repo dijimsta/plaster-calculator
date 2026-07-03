@@ -4,7 +4,7 @@ import { LogOut } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Box> = {
-    title: "Layout/Box",
+    title: "UIKit/Layout/Box",
     component: Box,
     tags: ["autodocs"],
     parameters: {

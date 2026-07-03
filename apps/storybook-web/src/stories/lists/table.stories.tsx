@@ -3,7 +3,7 @@ import { Badge, Table } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Table> = {
-    title: "Lists/Table",
+    title: "UIKit/Lists/Table",
     component: Table,
     tags: ["autodocs"],
     parameters: {

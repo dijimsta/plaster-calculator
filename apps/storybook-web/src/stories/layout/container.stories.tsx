@@ -3,7 +3,7 @@ import { Card, Container } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Container> = {
-    title: "Layout/Container",
+    title: "UIKit/Layout/Container",
     component: Container,
     tags: ["autodocs"],
     parameters: {

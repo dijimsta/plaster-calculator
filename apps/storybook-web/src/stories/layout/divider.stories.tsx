@@ -3,7 +3,7 @@ import { Divider } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Divider> = {
-    title: "Layout/Divider",
+    title: "UIKit/Layout/Divider",
     component: Divider,
     tags: ["autodocs"],
     parameters: {

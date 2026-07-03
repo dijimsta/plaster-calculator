@@ -3,7 +3,7 @@ import { DescriptionList } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof DescriptionList> = {
-    title: "Lists/Description List",
+    title: "UIKit/Lists/Description List",
     component: DescriptionList,
     tags: ["autodocs"],
     parameters: {

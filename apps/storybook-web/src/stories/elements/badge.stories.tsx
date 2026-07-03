@@ -3,7 +3,7 @@ import { Badge } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Badge> = {
-    title: "Elements/Badge",
+    title: "UIKit/Elements/Badge",
     component: Badge,
     tags: ["autodocs"],
     parameters: {

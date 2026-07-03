@@ -3,7 +3,7 @@ import { Box, Button, GitHubIcon, GoogleIcon } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Button> = {
-    title: "Elements/Button",
+    title: "UIKit/Elements/Button",
     component: Button,
     tags: ["autodocs"],
     parameters: {

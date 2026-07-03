@@ -8,7 +8,7 @@ import { House, User, Users } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof SidebarNavigation> = {
-    title: "Navigation/Sidebar Navigation",
+    title: "UIKit/Navigation/Sidebar Navigation",
     component: SidebarNavigation,
     tags: ["autodocs"],
     parameters: {

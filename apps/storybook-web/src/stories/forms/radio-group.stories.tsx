@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof RadioGroup> = {
-    title: "Forms/Radio Group",
+    title: "UIKit/Forms/Radio Group",
     component: RadioGroup,
     tags: ["autodocs"],
     parameters: {

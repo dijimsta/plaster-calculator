@@ -3,7 +3,7 @@ import { Badge, Button, Card, Label, SelectMenu } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Card> = {
-    title: "Layout/Card",
+    title: "UIKit/Layout/Card",
     component: Card,
     tags: ["autodocs"],
     parameters: {

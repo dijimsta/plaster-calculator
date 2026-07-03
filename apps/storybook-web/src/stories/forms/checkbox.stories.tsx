@@ -3,7 +3,7 @@ import { Box, Checkbox, Label } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Checkbox> = {
-    title: "Forms/Checkbox",
+    title: "UIKit/Forms/Checkbox",
     component: Checkbox,
     tags: ["autodocs"],
     parameters: {

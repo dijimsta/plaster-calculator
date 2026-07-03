@@ -3,7 +3,7 @@ import { Input, Label } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Label> = {
-    title: "Forms/Label",
+    title: "UIKit/Forms/Label",
     component: Label,
     tags: ["autodocs"],
     parameters: {

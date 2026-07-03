@@ -4,7 +4,7 @@ import { FolderKanban, House, Settings, Users } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof VerticalNavigation> = {
-    title: "Navigation/Vertical Navigation",
+    title: "UIKit/Navigation/Vertical Navigation",
     component: VerticalNavigation,
     tags: ["autodocs"],
     parameters: {

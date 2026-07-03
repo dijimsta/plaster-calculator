@@ -15,7 +15,7 @@ const people = [
 ];
 
 const meta: Meta<typeof Combobox> = {
-    title: "Forms/Combobox",
+    title: "UIKit/Forms/Combobox",
     component: Combobox,
     tags: ["autodocs"],
     parameters: {
