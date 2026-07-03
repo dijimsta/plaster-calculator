@@ -9,16 +9,16 @@
         "prepare": "pnpm build"
     },
     "dependencies": {
-        "@nestjs/cli": "^11.0.21",
-        "@nestjs/common": "^11.1.22",
-        "@nestjs/core": "^11.1.22",
-        "esbuild": "^0.28.0",
+        "@nestjs/cli": "^11.0.23",
+        "@nestjs/common": "^11.1.27",
+        "@nestjs/core": "^11.1.27",
+        "esbuild": "^0.28.1",
         "nest-commander": "^3.20.1",
         "zod": "^4.4.3"
     },
     "devDependencies": {
-        "@types/node": "^25.8.0",
-        "@types/react": "^19.2.14",
+        "@types/node": "^26.0.1",
+        "@types/react": "^19.2.17",
         "typescript": "^6.0.3"
     }
 }

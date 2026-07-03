@@ -186,7 +186,7 @@ export function useDashboardUpload({
     }
 
     function cleanupPdfModal() {
-        pdfDocument?.destroy();
+        void pdfDocument?.cleanup();
         revokePdfPreviews(pdfPages);
         setDraftProjectId(null);
         setPdfDocument(null);
@@ -230,7 +230,7 @@ function emptyPreparedPdfUpload(): PreparedPdfUpload {
 }
 
 function cleanupPreparedPdfUpload(preparedPdf: PreparedPdfUpload) {
-    preparedPdf.pdfDocument?.destroy();
+    void preparedPdf.pdfDocument?.cleanup();
     revokePdfPreviews(preparedPdf.pages);
 }
 

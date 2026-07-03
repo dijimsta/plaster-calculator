@@ -9,9 +9,7 @@ import type { UpdateArea } from "./use-editor-actions.types.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 
 export type MaterialField =
-    | "wallBoardProfile"
-    | "wallBoardType"
-    | "ceilingPlasterType";
+    "wallBoardProfile" | "wallBoardType" | "ceilingPlasterType";
 
 interface MaterialActionsOptions {
     readonly commit: (next: Overlay) => void;
