@@ -1,0 +1,17 @@
+type Reminder
+    @table
+    @index(fields: ["ownerId", "status", "dueAt"], order: [ASC, ASC, ASC])
+    @index(fields: ["projectId", "status", "dueAt"], order: [ASC, ASC, ASC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    ownerId: String!
+    project: Project! @ref(fields: "projectId", references: "id")
+    projectId: UUID!
+    account: Account @ref(fields: "accountId", references: "id")
+    accountId: UUID
+    name: String!
+    status: String!
+    dueAt: Timestamp!
+    completedAt: Timestamp
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}

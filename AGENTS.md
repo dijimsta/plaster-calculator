@@ -30,6 +30,13 @@ change, or when the change is the direct purpose of the task.
 
 When using code complexity ESLint rules, prefer the modified variants where appropriate so patterns like `switch` statements can reduce measured complexity.
 
+## Generated Directories
+
+The `generated/` directory (e.g. `generated/example-data-connector`) holds Firebase Data Connect SDK output.
+Do not add manual files there, including README.md or AGENTS.md — `firebase dataconnect:sdk:generate` fails with
+"unexpected file" if the output directory contains anything other than the `.ts`/`.js`/`.json` files it produces.
+Document generated code elsewhere (e.g. the connector's schema/source directory) instead.
+
 ## Jira
 
 Jira tickets are optional.

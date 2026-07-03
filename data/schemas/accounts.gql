@@ -1,0 +1,36 @@
+type Account
+    @table
+    @index(fields: ["ownerId", "updatedAt"], order: [ASC, DESC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    ownerId: String!
+    companyName: String!
+    businessNumber: String
+    phoneNumber: String
+    primaryContact: AccountContact
+        @ref(fields: "primaryContactId", references: "id")
+    primaryContactId: UUID
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type AccountContact
+    @table
+    @index(fields: ["accountId", "createdAt"], order: [ASC, ASC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    account: Account! @ref(fields: "accountId", references: "id")
+    accountId: UUID!
+    name: String!
+    email: String
+    phoneNumber: String
+    role: String
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type UserSettings @table(key: "ownerId") {
+    ownerId: String!
+    quoteFollowUpEnabled: Boolean! @default(value: true)
+    quoteFollowUpDays: Int! @default(value: 3)
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
