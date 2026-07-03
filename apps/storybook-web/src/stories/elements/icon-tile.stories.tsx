@@ -1,7 +1,7 @@
 import { Box, IconTile } from "@libraries/uikit-web";
 import { Calculator, Home, Layers, Ruler } from "lucide-react";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof IconTile> = {
     title: "UIKit/Elements/IconTile",

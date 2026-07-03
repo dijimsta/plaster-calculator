@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from "eslint-plugin-storybook";
+
 import { fixupPluginRules } from "@eslint/compat";
 import js from "@eslint/js";
 import importPlugin from "eslint-plugin-import";
@@ -126,4 +129,5 @@ export default tseslint.config(
         ...tseslint.configs.disableTypeChecked,
         languageOptions: javascriptLanguageOptions,
     },
+    storybook.configs["flat/recommended"],
 );

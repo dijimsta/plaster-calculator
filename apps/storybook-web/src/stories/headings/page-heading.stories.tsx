@@ -1,8 +1,8 @@
 import { Breadcrumb, Button, PageHeading, Tabs } from "@libraries/uikit-web";
-import { fn } from "@storybook/test";
 import { CalendarDays, MapPin } from "lucide-react";
+import { fn } from "storybook/test";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof PageHeading> = {
     title: "UIKit/Headings/Page Heading",

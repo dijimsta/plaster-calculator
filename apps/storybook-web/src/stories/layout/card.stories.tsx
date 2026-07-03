@@ -1,6 +1,6 @@
 import { Badge, Button, Card, Label, SelectMenu } from "@libraries/uikit-web";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof Card> = {
     title: "UIKit/Layout/Card",

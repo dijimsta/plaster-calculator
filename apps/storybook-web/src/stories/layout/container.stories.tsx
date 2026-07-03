@@ -1,6 +1,6 @@
 import { Card, Container } from "@libraries/uikit-web";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof Container> = {
     title: "UIKit/Layout/Container",
