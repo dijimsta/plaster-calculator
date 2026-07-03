@@ -1,4 +1,5 @@
 import { Box, Button, GitHubIcon, GoogleIcon } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -6,6 +7,9 @@ const meta: Meta<typeof Button> = {
     title: "UIKit/Elements/Button",
     component: Button,
     tags: ["autodocs"],
+    args: {
+        onClick: fn(),
+    },
     parameters: {
         docs: {
             description: {
@@ -74,38 +78,62 @@ export const Disabled: Story = {
 };
 
 export const WithLeadingIcon: Story = {
-    render: () => (
-        <Button variant="primary" icon={<GitHubIcon />} iconPosition="left">
+    render: (args) => (
+        <Button
+            {...args}
+            variant="primary"
+            icon={<GitHubIcon />}
+            iconPosition="left"
+        >
             Sign in with GitHub
         </Button>
     ),
 };
 
 export const WithTrailingIcon: Story = {
-    render: () => (
-        <Button variant="secondary" icon={<GoogleIcon />} iconPosition="right">
+    render: (args) => (
+        <Button
+            {...args}
+            variant="secondary"
+            icon={<GoogleIcon />}
+            iconPosition="right"
+        >
             Sign in with Google
         </Button>
     ),
 };
 
 export const IconOnly: Story = {
-    render: () => (
-        <Button variant="ghost" icon={<GitHubIcon />} aria-label="GitHub" />
+    render: (args) => (
+        <Button
+            {...args}
+            variant="ghost"
+            icon={<GitHubIcon />}
+            aria-label="GitHub"
+        />
     ),
 };
 
 export const IconOnlySecondary: Story = {
-    render: () => (
-        <Button variant="secondary" icon={<GitHubIcon />} aria-label="GitHub" />
+    render: (args) => (
+        <Button
+            {...args}
+            variant="secondary"
+            icon={<GitHubIcon />}
+            aria-label="GitHub"
+        />
     ),
 };
 
 export const Growing: Story = {
-    render: () => (
+    render: (args) => (
         <Box direction="row" gap="sm">
-            <Button grow>Growing button</Button>
-            <Button variant="secondary">Secondary action</Button>
+            <Button {...args} grow>
+                Growing button
+            </Button>
+            <Button {...args} variant="secondary">
+                Secondary action
+            </Button>
         </Box>
     ),
 };

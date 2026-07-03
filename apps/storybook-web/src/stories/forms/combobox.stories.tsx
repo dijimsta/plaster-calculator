@@ -1,4 +1,5 @@
 import { Combobox, Label } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -18,6 +19,9 @@ const meta: Meta<typeof Combobox> = {
     title: "UIKit/Forms/Combobox",
     component: Combobox,
     tags: ["autodocs"],
+    args: {
+        onChange: fn(),
+    },
     parameters: {
         docs: {
             description: {
@@ -40,7 +44,7 @@ export default meta;
 type Story = StoryObj<typeof Combobox>;
 
 function ControlledCombobox(
-    args: Omit<React.ComponentProps<typeof Combobox>, "value" | "onChange">,
+    args: Omit<React.ComponentProps<typeof Combobox>, "value">,
 ) {
     const [value, setValue] = useState<string | null>(null);
     return (
@@ -50,7 +54,10 @@ function ControlledCombobox(
                 {...args}
                 id="combobox-story"
                 value={value}
-                onChange={setValue}
+                onChange={(nextValue) => {
+                    setValue(nextValue);
+                    args.onChange?.(nextValue);
+                }}
             />
         </div>
     );

@@ -1,4 +1,5 @@
 import { Label, SelectMenu } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -13,6 +14,9 @@ const meta: Meta<typeof SelectMenu> = {
     title: "UIKit/Forms/SelectMenu",
     component: SelectMenu,
     tags: ["autodocs"],
+    args: {
+        onChange: fn(),
+    },
     parameters: {
         docs: {
             description: {
@@ -35,14 +39,17 @@ export default meta;
 type Story = StoryObj<typeof SelectMenu>;
 
 function ControlledSelectMenu(
-    args: Omit<React.ComponentProps<typeof SelectMenu>, "value" | "onChange">,
+    args: Omit<React.ComponentProps<typeof SelectMenu>, "value">,
 ) {
     const [value, setValue] = useState(args.options[0]?.value ?? "");
     return (
         <SelectMenu
             {...args}
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(event) => {
+                setValue(event.target.value);
+                args.onChange?.(event);
+            }}
         />
     );
 }

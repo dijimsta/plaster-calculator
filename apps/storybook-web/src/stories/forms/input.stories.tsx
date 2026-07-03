@@ -1,4 +1,5 @@
 import { Input, Label } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 import { Search } from "lucide-react";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -7,6 +8,9 @@ const meta: Meta<typeof Input> = {
     title: "UIKit/Forms/Input",
     component: Input,
     tags: ["autodocs"],
+    args: {
+        onChange: fn(),
+    },
     parameters: {
         docs: {
             description: {

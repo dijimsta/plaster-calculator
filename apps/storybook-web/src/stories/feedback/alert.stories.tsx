@@ -1,4 +1,5 @@
 import { Alert } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -57,7 +58,7 @@ export const Dismissible: Story = {
     args: {
         intent: "success",
         title: "Successfully uploaded",
-        onDismiss: () => {},
+        onDismiss: fn(),
     },
 };
 

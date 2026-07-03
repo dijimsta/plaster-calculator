@@ -1,4 +1,5 @@
 import { Box, Label, Toggle } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -6,6 +7,9 @@ const meta: Meta<typeof Toggle> = {
     title: "UIKit/Forms/Toggle",
     component: Toggle,
     tags: ["autodocs"],
+    args: {
+        onChange: fn(),
+    },
     parameters: {
         docs: {
             description: {
@@ -40,28 +44,39 @@ export const Checked: Story = {
 };
 
 export const WithLabel: Story = {
-    render: () => (
+    render: (args) => (
         <Box align="center" gap="sm">
-            <Toggle id="toggle-with-label" defaultChecked />
+            <Toggle {...args} id="toggle-with-label" defaultChecked />
             <Label htmlFor="toggle-with-label">Enable notifications</Label>
         </Box>
     ),
 };
 
 export const Sizes: Story = {
-    render: () => (
+    render: (args) => (
         <Box align="center" gap="md">
-            <Toggle size="sm" aria-label="Small toggle" defaultChecked />
-            <Toggle size="md" aria-label="Default toggle" defaultChecked />
+            <Toggle
+                {...args}
+                size="sm"
+                aria-label="Small toggle"
+                defaultChecked
+            />
+            <Toggle
+                {...args}
+                size="md"
+                aria-label="Default toggle"
+                defaultChecked
+            />
         </Box>
     ),
 };
 
 export const Disabled: Story = {
-    render: () => (
+    render: (args) => (
         <Box align="center" gap="md">
-            <Toggle aria-label="Disabled toggle" disabled />
+            <Toggle {...args} aria-label="Disabled toggle" disabled />
             <Toggle
+                {...args}
                 aria-label="Disabled checked toggle"
                 defaultChecked
                 disabled

@@ -1,4 +1,5 @@
 import { Breadcrumb, Button, PageHeading, Tabs } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 import { CalendarDays, MapPin } from "lucide-react";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -20,6 +21,15 @@ const meta: Meta<typeof PageHeading> = {
 export default meta;
 
 type Story = StoryObj<typeof PageHeading>;
+
+const onExport = fn().mockName("onExport");
+const onNewProject = fn().mockName("onNewProject");
+const onEdit = fn().mockName("onEdit");
+const onCreateEstimate = fn().mockName("onCreateEstimate");
+const onProjectsBreadcrumb = fn().mockName("onProjectsBreadcrumb");
+const onNewTemplate = fn().mockName("onNewTemplate");
+const onProjectsTab = fn().mockName("onProjectsTab");
+const onTemplatesTab = fn().mockName("onTemplatesTab");
 
 export const Default: Story = {
     render: () => (
@@ -44,8 +54,10 @@ export const WithActions: Story = {
                 </PageHeading.Description>
             </PageHeading.Content>
             <PageHeading.Actions>
-                <Button variant="secondary">Export</Button>
-                <Button>New project</Button>
+                <Button variant="secondary" onClick={onExport}>
+                    Export
+                </Button>
+                <Button onClick={onNewProject}>New project</Button>
             </PageHeading.Actions>
         </PageHeading>
     ),
@@ -68,8 +80,10 @@ export const WithMetaAndActions: Story = {
                 </PageHeading.Meta>
             </PageHeading.Content>
             <PageHeading.Actions>
-                <Button variant="secondary">Edit</Button>
-                <Button>Create estimate</Button>
+                <Button variant="secondary" onClick={onEdit}>
+                    Edit
+                </Button>
+                <Button onClick={onCreateEstimate}>Create estimate</Button>
             </PageHeading.Actions>
         </PageHeading>
     ),
@@ -80,7 +94,9 @@ export const WithActionsAndBreadcrumbs: Story = {
         <PageHeading>
             <PageHeading.Breadcrumbs>
                 <Breadcrumb>
-                    <Breadcrumb.Item href="#">Projects</Breadcrumb.Item>
+                    <Breadcrumb.Item href="#" onClick={onProjectsBreadcrumb}>
+                        Projects
+                    </Breadcrumb.Item>
                     <Breadcrumb.Item current>
                         Richmond apartment
                     </Breadcrumb.Item>
@@ -100,8 +116,10 @@ export const WithActionsAndBreadcrumbs: Story = {
                 </PageHeading.Meta>
             </PageHeading.Content>
             <PageHeading.Actions>
-                <Button variant="secondary">Edit</Button>
-                <Button>Create estimate</Button>
+                <Button variant="secondary" onClick={onEdit}>
+                    Edit
+                </Button>
+                <Button onClick={onCreateEstimate}>Create estimate</Button>
             </PageHeading.Actions>
         </PageHeading>
     ),
@@ -117,15 +135,19 @@ export const WithNavigation: Story = {
                 </PageHeading.Description>
             </PageHeading.Content>
             <PageHeading.Actions>
-                <Button>New template</Button>
+                <Button onClick={onNewTemplate}>New template</Button>
             </PageHeading.Actions>
             <PageHeading.Navigation>
                 <Tabs>
                     <Tabs.Item>
-                        <a href="#">Projects</a>
+                        <a href="#" onClick={onProjectsTab}>
+                            Projects
+                        </a>
                     </Tabs.Item>
                     <Tabs.Item current>
-                        <a href="#">Templates</a>
+                        <a href="#" onClick={onTemplatesTab}>
+                            Templates
+                        </a>
                     </Tabs.Item>
                 </Tabs>
             </PageHeading.Navigation>

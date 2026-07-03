@@ -1,4 +1,5 @@
 import { RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -6,6 +7,9 @@ const meta: Meta<typeof RadioGroup> = {
     title: "UIKit/Forms/Radio Group",
     component: RadioGroup,
     tags: ["autodocs"],
+    args: {
+        onChange: fn(),
+    },
     parameters: {
         docs: {
             description: {
@@ -28,8 +32,8 @@ export default meta;
 type Story = StoryObj<typeof RadioGroup>;
 
 export const Default: Story = {
-    render: () => (
-        <RadioGroup name="notification-method" legend="Notifications">
+    render: (args) => (
+        <RadioGroup {...args} name="notification-method" legend="Notifications">
             <RadioGroupOption value="email" label="Email" defaultChecked />
             <RadioGroupOption value="sms" label="SMS" />
             <RadioGroupOption value="push" label="Push notification" />
@@ -38,8 +42,9 @@ export const Default: Story = {
 };
 
 export const WithDescriptions: Story = {
-    render: () => (
+    render: (args) => (
         <RadioGroup
+            {...args}
             name="plan"
             legend="Select a plan"
             description="Choose the plan that best fits your team."
@@ -65,8 +70,14 @@ export const WithDescriptions: Story = {
 };
 
 export const Inline: Story = {
-    render: () => (
-        <RadioGroup name="memory" legend="Memory" variant="inline" size="sm">
+    render: (args) => (
+        <RadioGroup
+            {...args}
+            name="memory"
+            legend="Memory"
+            variant="inline"
+            size="sm"
+        >
             <RadioGroupOption value="4" label="4 GB" />
             <RadioGroupOption value="8" label="8 GB" defaultChecked />
             <RadioGroupOption value="16" label="16 GB" />
@@ -76,8 +87,9 @@ export const Inline: Story = {
 };
 
 export const Cards: Story = {
-    render: () => (
+    render: (args) => (
         <RadioGroup
+            {...args}
             name="hosting-plan"
             legend="Select a hosting plan"
             variant="cards"
@@ -104,8 +116,13 @@ export const Cards: Story = {
 };
 
 export const SmallCards: Story = {
-    render: () => (
-        <RadioGroup name="storage" legend="Storage" variant="small-cards">
+    render: (args) => (
+        <RadioGroup
+            {...args}
+            name="storage"
+            legend="Storage"
+            variant="small-cards"
+        >
             <RadioGroupOption value="128" label="128 GB" />
             <RadioGroupOption value="256" label="256 GB" defaultChecked />
             <RadioGroupOption value="512" label="512 GB" />
@@ -115,8 +132,13 @@ export const SmallCards: Story = {
 };
 
 export const List: Story = {
-    render: () => (
-        <RadioGroup name="environment" legend="Environment" variant="list">
+    render: (args) => (
+        <RadioGroup
+            {...args}
+            name="environment"
+            legend="Environment"
+            variant="list"
+        >
             <RadioGroupOption
                 value="development"
                 label="Development"
@@ -138,8 +160,9 @@ export const List: Story = {
 };
 
 export const ListWithRadioOnRight: Story = {
-    render: () => (
+    render: (args) => (
         <RadioGroup
+            {...args}
             name="delivery-window"
             legend="Delivery window"
             variant="list-right"
@@ -165,8 +188,13 @@ export const ListWithRadioOnRight: Story = {
 };
 
 export const TableStyle: Story = {
-    render: () => (
-        <RadioGroup name="team-plan" legend="Team plan" variant="table">
+    render: (args) => (
+        <RadioGroup
+            {...args}
+            name="team-plan"
+            legend="Team plan"
+            variant="table"
+        >
             <RadioGroupOption
                 value="basic"
                 label="Basic"
@@ -188,8 +216,8 @@ export const TableStyle: Story = {
 };
 
 export const Disabled: Story = {
-    render: () => (
-        <RadioGroup name="delivery" legend="Delivery method" disabled>
+    render: (args) => (
+        <RadioGroup {...args} name="delivery" legend="Delivery method" disabled>
             <RadioGroupOption
                 value="standard"
                 label="Standard"

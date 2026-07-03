@@ -1,4 +1,5 @@
 import { Box, Checkbox, Label } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -6,6 +7,9 @@ const meta: Meta<typeof Checkbox> = {
     title: "UIKit/Forms/Checkbox",
     component: Checkbox,
     tags: ["autodocs"],
+    args: {
+        onChange: fn(),
+    },
     parameters: {
         docs: {
             description: {
@@ -40,28 +44,39 @@ export const Checked: Story = {
 };
 
 export const WithLabel: Story = {
-    render: () => (
+    render: (args) => (
         <Box align="center" gap="sm">
-            <Checkbox id="checkbox-with-label" defaultChecked />
+            <Checkbox {...args} id="checkbox-with-label" defaultChecked />
             <Label htmlFor="checkbox-with-label">Receive product updates</Label>
         </Box>
     ),
 };
 
 export const Sizes: Story = {
-    render: () => (
+    render: (args) => (
         <Box align="center" gap="md">
-            <Checkbox size="sm" aria-label="Small checkbox" defaultChecked />
-            <Checkbox size="md" aria-label="Default checkbox" defaultChecked />
+            <Checkbox
+                {...args}
+                size="sm"
+                aria-label="Small checkbox"
+                defaultChecked
+            />
+            <Checkbox
+                {...args}
+                size="md"
+                aria-label="Default checkbox"
+                defaultChecked
+            />
         </Box>
     ),
 };
 
 export const Disabled: Story = {
-    render: () => (
+    render: (args) => (
         <Box align="center" gap="md">
-            <Checkbox aria-label="Disabled checkbox" disabled />
+            <Checkbox {...args} aria-label="Disabled checkbox" disabled />
             <Checkbox
+                {...args}
                 aria-label="Disabled checked checkbox"
                 defaultChecked
                 disabled
