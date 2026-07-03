@@ -10,7 +10,7 @@ const locations = [
 ];
 
 const meta: Meta<typeof SelectMenu> = {
-    title: "Forms/SelectMenu",
+    title: "UIKit/Forms/SelectMenu",
     component: SelectMenu,
     tags: ["autodocs"],
     parameters: {

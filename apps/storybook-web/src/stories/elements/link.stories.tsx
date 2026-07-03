@@ -3,7 +3,7 @@ import { ButtonLink } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof ButtonLink> = {
-    title: "Elements/ButtonLink",
+    title: "UIKit/Elements/ButtonLink",
     component: ButtonLink,
     tags: ["autodocs"],
     parameters: {

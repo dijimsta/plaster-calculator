@@ -4,7 +4,7 @@ import { CalendarDays, MapPin } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof PageHeading> = {
-    title: "Headings/Page Heading",
+    title: "UIKit/Headings/Page Heading",
     component: PageHeading,
     tags: ["autodocs"],
     parameters: {

@@ -3,7 +3,7 @@ import { Box, Text } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Text> = {
-    title: "Elements/Text",
+    title: "UIKit/Elements/Text",
     component: Text,
     tags: ["autodocs"],
     parameters: {

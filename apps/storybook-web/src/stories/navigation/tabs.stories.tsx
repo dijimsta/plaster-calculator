@@ -4,7 +4,7 @@ import { Clock, Folder, Users } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Tabs> = {
-    title: "Navigation/Tabs",
+    title: "UIKit/Navigation/Tabs",
     component: Tabs,
     tags: ["autodocs"],
     parameters: {

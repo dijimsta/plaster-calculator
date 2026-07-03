@@ -10,7 +10,7 @@ import { House, User, Users } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof SidebarLayout> = {
-    title: "Application Shells/Sidebar Layout",
+    title: "UIKit/Application Shells/Sidebar Layout",
     component: SidebarLayout,
     tags: ["autodocs"],
     parameters: {

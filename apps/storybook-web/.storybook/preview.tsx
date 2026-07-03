@@ -7,6 +7,11 @@ import type { Preview } from "@storybook/react";
 const preview: Preview = {
     decorators: [(Story) => <Story />],
     parameters: {
+        options: {
+            storySort: {
+                method: "alphabetical",
+            },
+        },
         controls: {
             matchers: {
                 color: /(background|color)$/i,

@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Input> = {
-    title: "Forms/Input",
+    title: "UIKit/Forms/Input",
     component: Input,
     tags: ["autodocs"],
     parameters: {

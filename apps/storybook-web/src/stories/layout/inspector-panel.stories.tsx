@@ -8,7 +8,7 @@ import { Ruler, SlidersHorizontal } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof InspectorPanel> = {
-    title: "Layout/Inspector Panel",
+    title: "UIKit/Layout/Inspector Panel",
     component: InspectorPanel,
     tags: ["autodocs"],
     parameters: {

@@ -3,7 +3,7 @@ import { Alert } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Alert> = {
-    title: "Feedback/Alert",
+    title: "UIKit/Feedback/Alert",
     component: Alert,
     tags: ["autodocs"],
     parameters: {

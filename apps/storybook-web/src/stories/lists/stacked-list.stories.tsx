@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof StackedList> = {
-    title: "Lists/StackedList",
+    title: "UIKit/Lists/StackedList",
     component: StackedList,
     tags: ["autodocs"],
     parameters: {

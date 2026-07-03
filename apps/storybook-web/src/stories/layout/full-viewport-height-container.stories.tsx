@@ -3,7 +3,7 @@ import { Card, FullViewportHeightContainer } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof FullViewportHeightContainer> = {
-    title: "Layout/FullViewportHeightContainer",
+    title: "UIKit/Layout/FullViewportHeightContainer",
     component: FullViewportHeightContainer,
     tags: ["autodocs"],
     parameters: {
