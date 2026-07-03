@@ -1,4 +1,5 @@
 import { Box, Label, Text, Textarea } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -6,6 +7,9 @@ const meta: Meta<typeof Textarea> = {
     title: "UIKit/Forms/Textarea",
     component: Textarea,
     tags: ["autodocs"],
+    args: {
+        onChange: fn(),
+    },
     parameters: {
         docs: {
             description: {

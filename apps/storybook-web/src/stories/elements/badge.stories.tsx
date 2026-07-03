@@ -1,4 +1,5 @@
 import { Badge } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -210,30 +211,33 @@ export const PillWithBorder: Story = {
 };
 
 export const WithRemove: Story = {
-    render: () => (
+    args: {
+        onRemove: fn(),
+    },
+    render: ({ onRemove }) => (
         <div className="flex flex-wrap gap-x-6 gap-y-4">
-            <Badge color="gray" onRemove={() => {}}>
+            <Badge color="gray" onRemove={onRemove}>
                 Badge
             </Badge>
-            <Badge color="red" onRemove={() => {}}>
+            <Badge color="red" onRemove={onRemove}>
                 Badge
             </Badge>
-            <Badge color="yellow" onRemove={() => {}}>
+            <Badge color="yellow" onRemove={onRemove}>
                 Badge
             </Badge>
-            <Badge color="green" onRemove={() => {}}>
+            <Badge color="green" onRemove={onRemove}>
                 Badge
             </Badge>
-            <Badge color="blue" onRemove={() => {}}>
+            <Badge color="blue" onRemove={onRemove}>
                 Badge
             </Badge>
-            <Badge color="indigo" onRemove={() => {}}>
+            <Badge color="indigo" onRemove={onRemove}>
                 Badge
             </Badge>
-            <Badge color="purple" onRemove={() => {}}>
+            <Badge color="purple" onRemove={onRemove}>
                 Badge
             </Badge>
-            <Badge color="pink" onRemove={() => {}}>
+            <Badge color="pink" onRemove={onRemove}>
                 Badge
             </Badge>
         </div>

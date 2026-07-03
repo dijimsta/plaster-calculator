@@ -1,4 +1,5 @@
 import { QuestionnaireTemplateCard } from "@libraries/plaster-calculator-ui";
+import { fn } from "@storybook/test";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -16,9 +17,9 @@ const meta: Meta<typeof QuestionnaireTemplateCard> = {
         },
     },
     args: {
-        onOpen: () => {},
-        onDuplicate: () => {},
-        onDelete: () => {},
+        onOpen: fn(),
+        onDuplicate: fn(),
+        onDelete: fn(),
     },
 };
 

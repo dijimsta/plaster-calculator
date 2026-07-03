@@ -1,13 +1,11 @@
-import { Badge, Box, Button, Card, IconTile, Text } from "@libraries/uikit-web";
+import { Box, Button, Card, IconTile, Text } from "@libraries/uikit-web";
 import {
     ClipboardCheck,
     ClipboardList,
     Copy,
     Eye,
-    Lock,
     Pencil,
     Rows3,
-    Star,
     Trash2,
 } from "lucide-react";
 
@@ -23,7 +21,6 @@ export interface QuestionnaireTemplateCardProps {
 
 interface TemplateHeaderProps {
     readonly template: QuestionnaireTemplateCardProps["template"];
-    readonly isBuiltIn: boolean;
 }
 
 interface TemplateActionsProps {
@@ -45,7 +42,7 @@ export function QuestionnaireTemplateCard({
     return (
         <Card>
             <Box direction="column" gap="lg">
-                <TemplateHeader template={template} isBuiltIn={isBuiltIn} />
+                <TemplateHeader template={template} />
                 <TemplateMetadata template={template} />
                 <TemplateActions
                     isBuiltIn={isBuiltIn}
@@ -62,13 +59,10 @@ export function QuestionnaireTemplateCard({
     );
 }
 
-function TemplateHeader({
-    template,
-    isBuiltIn,
-}: TemplateHeaderProps): ReactElement {
+function TemplateHeader({ template }: TemplateHeaderProps): ReactElement {
     return (
         <Box direction="row" align="start" gap="md">
-            <IconTile tone={isBuiltIn ? "dark" : "indigo"}>
+            <IconTile tone={template.origin === "standard" ? "dark" : "indigo"}>
                 <ClipboardList size={20} aria-hidden="true" />
             </IconTile>
             <Box direction="column" gap="xs" grow>
@@ -78,18 +72,6 @@ function TemplateHeader({
                             {template.name}
                         </Text>
                     </Box>
-                    {isBuiltIn && (
-                        <Badge color="gray" className="gap-1">
-                            <Lock size={12} aria-hidden="true" />
-                            Built-in
-                        </Badge>
-                    )}
-                    {template.isDefault && (
-                        <Badge color="indigo" className="gap-1">
-                            <Star size={12} aria-hidden="true" />
-                            Default
-                        </Badge>
-                    )}
                 </Box>
                 <Text size="sm" variant="muted">
                     {template.scope}
@@ -150,7 +132,7 @@ function BuiltInActions({
                 grow
                 onClick={onDuplicate}
             >
-                Duplicate to edit
+                Duplicate
             </Button>
             <Button
                 variant="secondary"

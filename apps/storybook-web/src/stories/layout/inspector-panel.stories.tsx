@@ -3,6 +3,7 @@ import {
     InspectorPanel,
     InspectorSection,
 } from "@libraries/uikit-web";
+import { fn } from "@storybook/test";
 import { Ruler, SlidersHorizontal } from "lucide-react";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -31,6 +32,9 @@ const properties = [
     { term: "Rotation", details: "0°" },
 ] as const;
 
+const onPropertiesToggle = fn().mockName("onPropertiesToggle");
+const onScaleToggle = fn().mockName("onScaleToggle");
+
 export const Default: Story = {
     render: () => (
         <InspectorPanel>
@@ -38,6 +42,7 @@ export const Default: Story = {
                 title="Properties"
                 icon={<SlidersHorizontal />}
                 defaultOpen
+                onToggle={onPropertiesToggle}
             >
                 <DescriptionList items={properties} />
             </InspectorSection>
@@ -46,6 +51,7 @@ export const Default: Story = {
                 icon={<Ruler />}
                 status={{ label: "Calibrated", tone: "ok" }}
                 defaultOpen
+                onToggle={onScaleToggle}
             >
                 <DescriptionList
                     items={[{ term: "Drawing scale", details: "1:100" }]}
