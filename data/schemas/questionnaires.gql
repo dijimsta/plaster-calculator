@@ -1,0 +1,71 @@
+type QuestionnaireTemplate
+    @table
+    @index(fields: ["accountId", "updatedAt"], order: [ASC, DESC])
+    @index(fields: ["accountId", "isDefault"], order: [ASC, ASC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    account: Account @ref(fields: "accountId", references: "id")
+    accountId: UUID
+    name: String!
+    scope: String!
+    origin: String! @default(value: "standard")
+    isDefault: Boolean! @default(value: false)
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type QuestionnaireTemplateSection
+    @table
+    @index(fields: ["templateId", "position"], order: [ASC, ASC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    template: QuestionnaireTemplate!
+        @ref(fields: "templateId", references: "id")
+    templateId: UUID!
+    name: String!
+    position: Int!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type QuestionnaireTemplateQuestion
+    @table
+    @index(fields: ["sectionId", "position"], order: [ASC, ASC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    section: QuestionnaireTemplateSection!
+        @ref(fields: "sectionId", references: "id")
+    sectionId: UUID!
+    label: String!
+    position: Int!
+    options: [String!]!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type ProjectQuestionnaire @table {
+    id: UUID! @default(expr: "uuidV4()")
+    project: Project! @unique @ref(fields: "projectId", references: "id")
+    projectId: UUID!
+    sourceTemplate: QuestionnaireTemplate
+        @ref(fields: "sourceTemplateId", references: "id")
+    sourceTemplateId: UUID @index
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type ProjectQuestionnaireAnswer
+    @table
+    @index(fields: ["projectQuestionnaireId", "position"], order: [ASC, ASC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    projectQuestionnaire: ProjectQuestionnaire!
+        @ref(fields: "projectQuestionnaireId", references: "id")
+    projectQuestionnaireId: UUID!
+    sectionName: String!
+    label: String!
+    position: Int!
+    options: [String!]!
+    answer: String
+    status: String! @default(value: "missing")
+    source: String
+    askBuilder: Boolean! @default(value: false)
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
