@@ -28,6 +28,7 @@
             "Bash(sed *",
             "Bash(uv run *)",
             "Bash(xargs *)"
-        ]
+        ],
+        "additionalDirectories": ["/tmp"]
     }
 }
