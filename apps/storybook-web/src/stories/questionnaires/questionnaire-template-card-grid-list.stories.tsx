@@ -2,14 +2,14 @@ import {
     QuestionnaireTemplateCardGridList,
     QuestionnairesServiceProvider,
 } from "@libraries/plaster-calculator-ui";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 import {
     questionnaireTemplates,
     questionnairesServiceStub,
 } from "../../stubs/questionnaires-service.stub.ts";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof QuestionnaireTemplateCardGridList> = {
     title: "Plaster Calculator/Questionnaires/QuestionnaireTemplateCardGridList",

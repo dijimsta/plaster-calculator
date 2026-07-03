@@ -3,7 +3,9 @@
     "compilerOptions": {
         "jsx": "react-jsx",
         "allowImportingTsExtensions": true,
-        "types": ["vite/client"]
+        "types": ["vite/client"],
+        // Storybook 10's deps ship .d.ts files with upstream bugs (e.g. @joshwooding/vite-plugin-react-docgen-typescript@0.7.0 resolving against Vite's deprecated CJS type stub); re-enable skipLibCheck for this project only.
+        "skipLibCheck": true
     },
     "include": [".storybook", "src", "vite.config.ts"],
     "exclude": ["node_modules", "storybook-static"],
