@@ -265,9 +265,7 @@ export const FLOORPLAN_ANALYZER_REGION = "us-west1";
 export const LONG_RUNNING_TIMEOUT_SECONDS = 60 * 60;
 
 export type FloorplanAnalyzerEndpoint =
-    | "ocr_flood_fill_smoothed"
-    | "ocr_flood_fill"
-    | "xixi_process";
+    "ocr_flood_fill_smoothed" | "ocr_flood_fill" | "xixi_process";
 
 export interface ProcessingStrategy extends ProcessingStrategyInfo {
     endpoint: FloorplanAnalyzerEndpoint;

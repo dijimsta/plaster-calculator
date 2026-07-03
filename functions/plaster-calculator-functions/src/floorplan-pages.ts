@@ -310,6 +310,4 @@ function nextNullableNumber(
 }
 
 type NullableNumberField =
-    | "ceilingHeightMm"
-    | "referenceLengthMm"
-    | "scaleMmPerPx";
+    "ceilingHeightMm" | "referenceLengthMm" | "scaleMmPerPx";

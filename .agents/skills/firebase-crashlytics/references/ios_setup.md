@@ -66,7 +66,7 @@ When using the `xcode-project-setup` skills, the above two steps will be done as
     }
     ```
 
-2.  Run your app on a device or simulator. If running in the iOS simulator, make sure that the Xcode debugger is disconnected, otherwise the crash will not make it to Crashlytics. The app should crash after a short delay.
+2. Run your app on a device or simulator. If running in the iOS simulator, make sure that the Xcode debugger is disconnected, otherwise the crash will not make it to Crashlytics. The app should crash after a short delay.
 
 3.  Restart the app. The Crashlytics SDK will send the crash report to Firebase on the next app launch.
 
