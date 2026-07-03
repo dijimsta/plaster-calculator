@@ -1,0 +1,47 @@
+type Project
+    @table
+    @index(
+        fields: ["ownerId", "salesStatus", "updatedAt"]
+        order: [ASC, ASC, DESC]
+    )
+    @index(fields: ["accountId", "updatedAt"], order: [ASC, DESC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    ownerId: String!
+    account: Account @ref(fields: "accountId", references: "id")
+    accountId: UUID
+    name: String!
+    address: String
+    originalFileName: String!
+    uploadType: String!
+    originalPath: String!
+    status: String!
+    salesStatus: String! @default(value: "QUOTING")
+    processingError: String
+    pageCount: Int!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type FloorplanPage
+    @table
+    @index(fields: ["projectId", "pageNumber"], order: [ASC, ASC]) {
+    id: UUID! @default(expr: "uuidV4()")
+    project: Project! @ref(fields: "projectId", references: "id")
+    projectId: UUID!
+    pageNumber: Int!
+    status: String!
+    processingError: String
+    sourceImagePath: String
+    previewImagePath: String
+    rawJsonPath: String
+    rawFloorplanPath: String
+    overlayJson: String
+    scaleMmPerPx: Float
+    ceilingHeightMm: Float
+    referencePointsJson: String
+    referenceLengthMm: Float
+    processingStrategy: String
+    processingMetadataJson: String
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
