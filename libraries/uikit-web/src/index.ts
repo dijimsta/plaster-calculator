@@ -114,6 +114,8 @@ export type {
     TextSize,
     TextVariant,
 } from "./elements/text/index.ts";
+export { Toggle } from "./forms/toggle/index.ts";
+export type { ToggleProps, ToggleSize } from "./forms/toggle/index.ts";
 export { VerticalNavigation } from "./navigation/vertical-navigation/index.ts";
 export type {
     VerticalNavigationItemProps,
