@@ -1,0 +1,8 @@
+query ListQuestionnaireTemplates @auth(level: NO_ACCESS) {
+    questionnaireTemplates(orderBy: [{ updatedAt: DESC }]) {
+        id
+        name
+        createdAt
+        updatedAt
+    }
+}

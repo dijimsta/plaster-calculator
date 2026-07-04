@@ -1,0 +1,5 @@
+connectorId: questionnaires
+generate:
+    adminNodeSdk:
+        - package: "@generated/questionnaires-data-connector"
+          outputDir: ../../../generated/questionnaires-data-connector

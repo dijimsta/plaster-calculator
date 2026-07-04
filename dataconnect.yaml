@@ -11,3 +11,4 @@ schemas:
                   schemaValidation: "STRICT"
 connectorDirs:
     - ./data/connectors/example
+    - ./data/connectors/questionnaires
