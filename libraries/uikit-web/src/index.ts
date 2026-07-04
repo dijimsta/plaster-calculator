@@ -53,6 +53,20 @@ export type {
 export { Combobox } from "./forms/combobox/index.ts";
 export type { ComboboxOption, ComboboxProps } from "./forms/combobox/index.ts";
 export { Divider } from "./layout/divider/index.ts";
+export {
+    FormLayout,
+    FormLayoutActions,
+    FormLayoutField,
+    FormLayoutSection,
+} from "./forms/form-layout/index.ts";
+export type {
+    FormLayoutActionsProps,
+    FormLayoutFieldProps,
+    FormLayoutFieldSpan,
+    FormLayoutProps,
+    FormLayoutSectionProps,
+    FormLayoutVariant,
+} from "./forms/form-layout/index.ts";
 export { DescriptionList } from "./lists/description-list/index.ts";
 export type {
     DescriptionListItem,
