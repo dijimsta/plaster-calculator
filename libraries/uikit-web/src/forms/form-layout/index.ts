@@ -7,6 +7,7 @@ export type {
 } from "./form-layout.component.tsx";
 export { FormLayoutField } from "./form-layout-field.component.tsx";
 export type {
+    FormLayoutFieldLabelPlacement,
     FormLayoutFieldProps,
     FormLayoutFieldSpan,
 } from "./form-layout-field.component.tsx";

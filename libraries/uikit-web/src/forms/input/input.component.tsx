@@ -3,74 +3,104 @@
 import clsx from "clsx";
 import { useId } from "react";
 
+import {
+    addon,
+    addonBorders,
+    iconContainer,
+    inputAppearance,
+    inputContainer,
+    inputControl,
+    inputControlPadding,
+    inputRootClassName,
+    pillIconContainer,
+    type InputShape,
+    type InputVariant,
+} from "./input.styles.ts";
+import { useInputGroup } from "../input-group/input-group.context.ts";
+
 import type { InputHTMLAttributes, ReactElement, ReactNode } from "react";
 
+export type { InputShape, InputVariant };
+
 export type InputProps = {
+    readonly leadingAddon?: ReactNode;
     readonly leadingIcon?: ReactNode;
+    readonly trailingAddon?: ReactNode;
+    readonly shape?: InputShape;
+    readonly variant?: InputVariant;
     readonly id?: string;
     readonly className?: string;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "id" | "className">;
 
 export function Input({
+    leadingAddon,
     leadingIcon,
-    id: externalId,
+    trailingAddon,
+    shape = "default",
+    variant = "default",
+    "id": externalId,
     className,
+    "aria-invalid": ariaInvalid,
+    disabled,
     ...props
 }: InputProps): ReactElement {
     const generatedId = useId();
     const id = externalId ?? generatedId;
+    const inputGroup = useInputGroup();
+    const isInvalid = ariaInvalid === true || ariaInvalid === "true";
+    const appearance = inputAppearance({
+        groupOrientation: inputGroup?.orientation,
+        invalid: isInvalid,
+        shape,
+        variant,
+    });
 
     return (
         <div
-            className={clsx(leadingIcon !== undefined && "relative", className)}
+            className={inputRootClassName({
+                className,
+                disabled: disabled === true,
+                groupStyle: appearance.groupStyle,
+                invalidStyle: appearance.invalidStyle,
+                shapeStyle: appearance.shapeStyle,
+                variantStyle: appearance.variantStyle,
+            })}
         >
-            {leadingIcon !== undefined && (
-                <div
-                    className={clsx(
-                        "pointer-events-none",
-                        "absolute",
-                        "inset-y-0",
-                        "left-0",
-                        "flex",
-                        "items-center",
-                        "pl-3",
-                    )}
-                >
-                    {leadingIcon}
-                </div>
+            {leadingAddon !== undefined && (
+                <span className={clsx(addon, addonBorders.leading)}>
+                    {leadingAddon}
+                </span>
             )}
-            <input
-                id={id}
-                className={clsx(
-                    "block",
-                    "w-full",
-                    "rounded-md",
-                    "bg-white",
-                    "py-2",
-                    leadingIcon !== undefined ? "pl-9" : "pl-3",
-                    "pr-3",
-                    "text-base",
-                    "text-gray-900",
-                    "outline-1",
-                    "-outline-offset-1",
-                    "outline-gray-300",
-                    "placeholder:text-gray-400",
-                    "focus:outline-2",
-                    "focus:-outline-offset-2",
-                    "focus:outline-indigo-600",
-                    "disabled:cursor-not-allowed",
-                    "disabled:bg-gray-100",
-                    "disabled:text-gray-400",
-                    "sm:text-sm/6",
-                    "dark:bg-white/5",
-                    "dark:text-white",
-                    "dark:outline-white/10",
-                    "dark:placeholder:text-gray-500",
-                    "dark:focus:outline-indigo-500",
-                    "dark:disabled:bg-white/10",
+            <span className={inputContainer}>
+                {leadingIcon !== undefined && (
+                    <span
+                        className={clsx(
+                            iconContainer,
+                            appearance.pill && pillIconContainer,
+                        )}
+                    >
+                        {leadingIcon}
+                    </span>
                 )}
-                {...props}
-            />
+                <input
+                    id={id}
+                    aria-invalid={ariaInvalid}
+                    disabled={disabled}
+                    className={clsx(
+                        inputControl,
+                        inputControlPadding(
+                            leadingIcon !== undefined,
+                            appearance.pill,
+                        ),
+                    )}
+                    {...props}
+                />
+            </span>
+            {trailingAddon !== undefined && (
+                <span className={clsx(addon, addonBorders.trailing)}>
+                    {trailingAddon}
+                </span>
+            )}
         </div>
     );
 }
