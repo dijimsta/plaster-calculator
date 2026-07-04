@@ -61,6 +61,7 @@ export {
 } from "./forms/form-layout/index.ts";
 export type {
     FormLayoutActionsProps,
+    FormLayoutFieldLabelPlacement,
     FormLayoutFieldProps,
     FormLayoutFieldSpan,
     FormLayoutProps,
@@ -101,7 +102,16 @@ export type {
     IconTileTone,
 } from "./elements/icon-tile/index.ts";
 export { Input } from "./forms/input/index.ts";
-export type { InputProps } from "./forms/input/index.ts";
+export type {
+    InputProps,
+    InputShape,
+    InputVariant,
+} from "./forms/input/index.ts";
+export { InputGroup } from "./forms/input-group/index.ts";
+export type {
+    InputGroupOrientation,
+    InputGroupProps,
+} from "./forms/input-group/index.ts";
 export {
     Radio,
     RadioGroup,

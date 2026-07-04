@@ -30,6 +30,12 @@ change, or when the change is the direct purpose of the task.
 
 When using code complexity ESLint rules, prefer the modified variants where appropriate so patterns like `switch` statements can reduce measured complexity.
 
+## Component Styling
+
+Keep component class names in a sibling `*.styles.ts` file rather than inline in the component. When styling pushes a
+component over a complexity limit, extract the class names and style-selection logic before splitting the component
+into smaller internal components.
+
 ## Generated Directories
 
 The `generated/` directory (e.g. `generated/example-data-connector`) holds Firebase Data Connect SDK output.

@@ -1,4 +1,4 @@
-import { Input, Label } from "@libraries/uikit-web";
+import { Box, Input, Label } from "@libraries/uikit-web";
 import { Search } from "lucide-react";
 import { fn } from "storybook/test";
 
@@ -10,12 +10,14 @@ const meta: Meta<typeof Input> = {
     tags: ["autodocs"],
     args: {
         onChange: fn(),
+        shape: "default",
+        variant: "default",
     },
     parameters: {
         docs: {
             description: {
                 component:
-                    "Text input field. Supports an optional leading icon and pairs with the Label component for accessible form layouts.",
+                    "Text input field with configurable shape and visual treatment. Supports leading icons and add-ons, and pairs with Label for accessible form layouts.",
             },
         },
     },
@@ -70,6 +72,62 @@ export const WithLeadingIcon: Story = {
                 {...args}
             />
         </div>
+    ),
+};
+
+export const WithLeadingAddon: Story = {
+    render: (args) => (
+        <Box direction="column" gap="xs">
+            <Label htmlFor="input-url">Website</Label>
+            <Input
+                id="input-url"
+                leadingAddon="https://"
+                placeholder="www.example.com"
+                {...args}
+            />
+        </Box>
+    ),
+};
+
+export const WithLeadingAndTrailingAddons: Story = {
+    render: (args) => (
+        <Box direction="column" gap="xs">
+            <Label htmlFor="input-price">Price</Label>
+            <Input
+                id="input-price"
+                leadingAddon="$"
+                trailingAddon="AUD"
+                inputMode="decimal"
+                placeholder="0.00"
+                {...args}
+            />
+        </Box>
+    ),
+};
+
+export const Pill: Story = {
+    args: {
+        "aria-label": "Search",
+        "placeholder": "Search...",
+        "shape": "pill",
+        "type": "search",
+    },
+};
+
+export const GrayBackgroundWithBottomBorder: Story = {
+    args: {
+        variant: "subtle",
+    },
+    render: (args) => (
+        <Box direction="column" gap="xs">
+            <Label htmlFor="input-subtle">Email</Label>
+            <Input
+                id="input-subtle"
+                type="email"
+                placeholder="you@example.com"
+                {...args}
+            />
+        </Box>
     ),
 };
 
