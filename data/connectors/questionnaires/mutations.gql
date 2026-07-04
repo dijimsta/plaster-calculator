@@ -1,8 +1,12 @@
-mutation CreateQuestionnaireTemplate($id: UUID!, $name: String!)
-@auth(level: NO_ACCESS) {
+mutation CreateQuestionnaireTemplate(
+    $id: UUID!
+    $ownerId: String!
+    $name: String!
+) @auth(level: NO_ACCESS) {
     questionnaireTemplate_insert(
         data: {
             id: $id
+            ownerId: $ownerId
             name: $name
             createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
