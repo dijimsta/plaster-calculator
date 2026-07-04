@@ -1,0 +1,67 @@
+mutation CreateQuestionnaireTemplate($id: UUID!, $name: String!)
+@auth(level: NO_ACCESS) {
+    questionnaireTemplate_insert(
+        data: {
+            id: $id
+            name: $name
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateQuestionnaireTemplateQuestion(
+    $id: UUID!
+    $templateId: UUID!
+    $label: String!
+    $position: Int!
+    $description: String
+) @auth(level: NO_ACCESS) {
+    questionnaireTemplateQuestion_insert(
+        data: {
+            id: $id
+            templateId: $templateId
+            label: $label
+            position: $position
+            description: $description
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateProjectQuestionnaire(
+    $id: UUID!
+    $projectId: UUID!
+    $sourceTemplateId: UUID
+) @auth(level: NO_ACCESS) {
+    projectQuestionnaire_insert(
+        data: {
+            id: $id
+            projectId: $projectId
+            sourceTemplateId: $sourceTemplateId
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateProjectQuestionnaireAnswer(
+    $id: UUID!
+    $projectQuestionnaireId: UUID!
+    $questionId: UUID!
+    $position: Int!
+    $answer: String
+) @auth(level: NO_ACCESS) {
+    projectQuestionnaireAnswer_insert(
+        data: {
+            id: $id
+            projectQuestionnaireId: $projectQuestionnaireId
+            questionId: $questionId
+            position: $position
+            answer: $answer
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}

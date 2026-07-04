@@ -558,11 +558,6 @@ export interface QuestionnaireTemplateQuestion_Key {
   __typename?: 'QuestionnaireTemplateQuestion_Key';
 }
 
-export interface QuestionnaireTemplateSection_Key {
-  id: UUIDString;
-  __typename?: 'QuestionnaireTemplateSection_Key';
-}
-
 export interface QuestionnaireTemplate_Key {
   id: UUIDString;
   __typename?: 'QuestionnaireTemplate_Key';
