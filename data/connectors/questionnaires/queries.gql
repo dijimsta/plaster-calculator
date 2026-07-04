@@ -1,5 +1,8 @@
-query ListQuestionnaireTemplates @auth(level: NO_ACCESS) {
-    questionnaireTemplates(orderBy: [{ updatedAt: DESC }]) {
+query ListQuestionnaireTemplates($ownerId: String!) @auth(level: NO_ACCESS) {
+    questionnaireTemplates(
+        where: { ownerId: { eq: $ownerId } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
         id
         name
         createdAt

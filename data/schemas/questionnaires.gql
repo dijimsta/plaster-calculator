@@ -1,5 +1,8 @@
-type QuestionnaireTemplate @table {
+type QuestionnaireTemplate
+    @table
+    @index(fields: ["ownerId", "updatedAt"], order: [ASC, DESC]) {
     id: UUID! @default(expr: "uuidV4()")
+    ownerId: String!
     name: String!
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")

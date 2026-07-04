@@ -30,9 +30,9 @@ export function createProjectQuestionnaireAnswer(dcOrVarsOrOptions, varsOrOption
   return dcInstance.executeMutation('CreateProjectQuestionnaireAnswer', inputVars, inputOpts);
 }
 
-export function listQuestionnaireTemplates(dcOrOptions, options) {
-  const { dc: dcInstance, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrOptions, options, undefined);
+export function listQuestionnaireTemplates(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListQuestionnaireTemplates', undefined, inputOpts);
+  return dcInstance.executeQuery('ListQuestionnaireTemplates', inputVars, inputOpts);
 }
 
