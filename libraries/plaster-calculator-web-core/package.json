@@ -1,0 +1,24 @@
+{
+    "name": "@libraries/plaster-calculator-web-core",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Contains core services and client-side implementations for browser-capable platforms (web, Electron), including Firebase client SDK interactions.",
+    "type": "module",
+    "exports": "./out/index.js",
+    "main": "./out/index.js",
+    "scripts": {
+        "build": "tsc --build tsconfig.build.json"
+    },
+    "dependencies": {
+        "@libraries/plaster-calculator-common": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.17",
+        "firebase": "^12.15.0",
+        "typescript": "^6.0.3"
+    },
+    "peerDependencies": {
+        "firebase": "^12.15.0",
+        "react": "^19.0.0"
+    }
+}
