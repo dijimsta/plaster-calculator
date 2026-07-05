@@ -15,22 +15,7 @@ export type VerticalNavigationProps = PropsWithChildren<
     HTMLAttributes<HTMLElement>
 >;
 
-export type VerticalNavigationSectionProps = PropsWithChildren<
-    HTMLAttributes<HTMLDivElement> & {
-        readonly title?: string;
-    }
->;
-
-export type VerticalNavigationItemProps = Omit<
-    HTMLAttributes<HTMLLIElement>,
-    "children"
-> & {
-    readonly accessory?: ReactNode;
-    readonly children: ReactElement<AnchorHTMLAttributes<HTMLAnchorElement>>;
-    readonly isCurrent?: boolean;
-};
-
-function VerticalNavigationRoot({
+export function VerticalNavigation({
     className,
     children,
     ...props
@@ -42,53 +27,66 @@ function VerticalNavigationRoot({
     );
 }
 
-function VerticalNavigationSection({
-    title,
-    className,
-    children,
-    ...props
-}: VerticalNavigationSectionProps): ReactElement {
-    return (
-        <div className={clsx(styles.section, className)} {...props}>
-            {title !== undefined && (
-                <h2 className={styles.sectionTitle}>{title}</h2>
-            )}
-            <ul className={styles.list}>{children}</ul>
-        </div>
-    );
-}
+export namespace VerticalNavigation {
+    export type SectionProps = PropsWithChildren<
+        HTMLAttributes<HTMLDivElement> & {
+            readonly title?: string;
+        }
+    >;
 
-function VerticalNavigationItem({
-    accessory,
-    isCurrent = false,
-    className,
-    children,
-    ...props
-}: VerticalNavigationItemProps): ReactElement {
-    const link = cloneElement(
+    export function Section({
+        title,
+        className,
         children,
-        {
-            "aria-current": isCurrent ? "page" : children.props["aria-current"],
-            "className": clsx(
-                children.props.className,
-                styles.item,
-                isCurrent && styles.currentItem,
+        ...props
+    }: SectionProps): ReactElement {
+        return (
+            <div className={clsx(styles.section, className)} {...props}>
+                {title !== undefined && (
+                    <h2 className={styles.sectionTitle}>{title}</h2>
+                )}
+                <ul className={styles.list}>{children}</ul>
+            </div>
+        );
+    }
+
+    export type ItemProps = Omit<HTMLAttributes<HTMLLIElement>, "children"> & {
+        readonly accessory?: ReactNode;
+        readonly children: ReactElement<
+            AnchorHTMLAttributes<HTMLAnchorElement>
+        >;
+        readonly isCurrent?: boolean;
+    };
+
+    export function Item({
+        accessory,
+        isCurrent = false,
+        className,
+        children,
+        ...props
+    }: ItemProps): ReactElement {
+        const link = cloneElement(
+            children,
+            {
+                "aria-current": isCurrent
+                    ? "page"
+                    : children.props["aria-current"],
+                "className": clsx(
+                    children.props.className,
+                    styles.item,
+                    isCurrent && styles.currentItem,
+                ),
+            },
+            children.props.children,
+            accessory !== undefined && (
+                <span className={styles.accessory}>{accessory}</span>
             ),
-        },
-        children.props.children,
-        accessory !== undefined && (
-            <span className={styles.accessory}>{accessory}</span>
-        ),
-    );
+        );
 
-    return (
-        <li className={className} {...props}>
-            {link}
-        </li>
-    );
+        return (
+            <li className={className} {...props}>
+                {link}
+            </li>
+        );
+    }
 }
-
-export const VerticalNavigation = Object.assign(VerticalNavigationRoot, {
-    Section: VerticalNavigationSection,
-    Item: VerticalNavigationItem,
-});
