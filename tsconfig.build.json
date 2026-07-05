@@ -14,6 +14,9 @@
         },
         {
             "path": "./functions/plaster-calculator-functions/tsconfig.build.json"
+        },
+        {
+            "path": "./libraries/plaster-calculator-graphql-server/tsconfig.build.json"
         }
     ],
     "files": []
