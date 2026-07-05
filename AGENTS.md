@@ -36,6 +36,13 @@ Keep component class names in a sibling `*.styles.ts` file rather than inline in
 component over a complexity limit, extract the class names and style-selection logic before splitting the component
 into smaller internal components.
 
+## Storybook Stories
+
+Do not factor story render logic out into wrapper components (e.g. a local `function ResponsiveNavbar() {...}` used by
+multiple stories). Each story's `render` function must be self-contained, including any `useState` calls, so the code
+can be copy-pasted directly out of Storybook and used as-is. Prefer duplicating markup across stories over sharing it
+through a helper component.
+
 ## Generated Directories
 
 The `generated/` directory (e.g. `generated/example-data-connector`) holds Firebase Data Connect SDK output.

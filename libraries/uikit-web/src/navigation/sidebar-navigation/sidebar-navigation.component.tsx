@@ -8,19 +8,7 @@ export type SidebarNavigationProps = PropsWithChildren<
     HTMLAttributes<HTMLDivElement>
 >;
 
-export type SidebarNavigationHeaderProps = PropsWithChildren<
-    HTMLAttributes<HTMLDivElement>
->;
-
-export type SidebarNavigationBodyProps = PropsWithChildren<
-    HTMLAttributes<HTMLDivElement>
->;
-
-export type SidebarNavigationFooterProps = PropsWithChildren<
-    HTMLAttributes<HTMLElement>
->;
-
-function SidebarNavigationRoot({
+export function SidebarNavigation({
     className,
     children,
     ...props
@@ -32,44 +20,46 @@ function SidebarNavigationRoot({
     );
 }
 
-function SidebarNavigationHeader({
-    className,
-    children,
-    ...props
-}: SidebarNavigationHeaderProps): ReactElement {
-    return (
-        <div className={clsx(styles.header, className)} {...props}>
-            {children}
-        </div>
-    );
-}
+export namespace SidebarNavigation {
+    export type HeaderProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>>;
 
-function SidebarNavigationBody({
-    className,
-    children,
-    ...props
-}: SidebarNavigationBodyProps): ReactElement {
-    return (
-        <div className={clsx(styles.body, className)} {...props}>
-            {children}
-        </div>
-    );
-}
+    export function Header({
+        className,
+        children,
+        ...props
+    }: HeaderProps): ReactElement {
+        return (
+            <div className={clsx(styles.header, className)} {...props}>
+                {children}
+            </div>
+        );
+    }
 
-function SidebarNavigationFooter({
-    className,
-    children,
-    ...props
-}: SidebarNavigationFooterProps): ReactElement {
-    return (
-        <footer className={clsx(styles.footer, className)} {...props}>
-            {children}
-        </footer>
-    );
-}
+    export type BodyProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>>;
 
-export const SidebarNavigation = Object.assign(SidebarNavigationRoot, {
-    Header: SidebarNavigationHeader,
-    Body: SidebarNavigationBody,
-    Footer: SidebarNavigationFooter,
-});
+    export function Body({
+        className,
+        children,
+        ...props
+    }: BodyProps): ReactElement {
+        return (
+            <div className={clsx(styles.body, className)} {...props}>
+                {children}
+            </div>
+        );
+    }
+
+    export type FooterProps = PropsWithChildren<HTMLAttributes<HTMLElement>>;
+
+    export function Footer({
+        className,
+        children,
+        ...props
+    }: FooterProps): ReactElement {
+        return (
+            <footer className={clsx(styles.footer, className)} {...props}>
+                {children}
+            </footer>
+        );
+    }
+}

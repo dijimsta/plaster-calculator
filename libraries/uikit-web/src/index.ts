@@ -139,13 +139,10 @@ export { ButtonLink } from "./elements/link/index.ts";
 export type { ButtonLinkProps } from "./elements/link/index.ts";
 export { Breadcrumb } from "./navigation/breadcrumb/index.ts";
 export type { BreadcrumbProps } from "./navigation/breadcrumb/index.ts";
+export { Navbar } from "./navigation/navbar/index.ts";
+export type { NavbarProps, NavbarTone } from "./navigation/navbar/index.ts";
 export { SidebarNavigation } from "./navigation/sidebar-navigation/index.ts";
-export type {
-    SidebarNavigationBodyProps,
-    SidebarNavigationFooterProps,
-    SidebarNavigationHeaderProps,
-    SidebarNavigationProps,
-} from "./navigation/sidebar-navigation/index.ts";
+export type { SidebarNavigationProps } from "./navigation/sidebar-navigation/index.ts";
 export { Tabs } from "./navigation/tabs/index.ts";
 export type { TabsProps, TabsVariant } from "./navigation/tabs/index.ts";
 export { Text } from "./elements/text/index.ts";
@@ -159,8 +156,4 @@ export type { TextareaProps, TextareaResize } from "./forms/textarea/index.ts";
 export { Toggle } from "./forms/toggle/index.ts";
 export type { ToggleProps, ToggleSize } from "./forms/toggle/index.ts";
 export { VerticalNavigation } from "./navigation/vertical-navigation/index.ts";
-export type {
-    VerticalNavigationItemProps,
-    VerticalNavigationProps,
-    VerticalNavigationSectionProps,
-} from "./navigation/vertical-navigation/index.ts";
+export type { VerticalNavigationProps } from "./navigation/vertical-navigation/index.ts";
