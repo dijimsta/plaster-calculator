@@ -17,6 +17,12 @@
     "exclude": ["node_modules"],
     "references": [
         {
+            "path": "../../libraries/plaster-calculator-common/tsconfig.build.json"
+        },
+        {
+            "path": "../../libraries/plaster-calculator-web-core/tsconfig.build.json"
+        },
+        {
             "path": "../../libraries/uikit-web/tsconfig.build.json"
         }
     ]

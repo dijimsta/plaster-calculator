@@ -112,6 +112,12 @@ importers:
 
   apps/plaster-calculator-web:
     dependencies:
+      '@libraries/plaster-calculator-common':
+        specifier: workspace:*
+        version: link:../../libraries/plaster-calculator-common
+      '@libraries/plaster-calculator-web-core':
+        specifier: workspace:*
+        version: link:../../libraries/plaster-calculator-web-core
       '@libraries/uikit-web':
         specifier: workspace:*
         version: link:../../libraries/uikit-web
@@ -306,6 +312,25 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  libraries/plaster-calculator-web-core:
+    dependencies:
+      '@libraries/plaster-calculator-common':
+        specifier: workspace:*
+        version: link:../plaster-calculator-common
+      react:
+        specifier: ^19.0.0
+        version: 19.2.7
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.17
+        version: 19.2.17
+      firebase:
+        specifier: ^12.15.0
+        version: 12.15.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
