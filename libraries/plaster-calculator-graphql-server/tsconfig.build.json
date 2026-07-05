@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./out",
+        "rootDir": "./src",
+        "noEmit": false
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../plaster-calculator-common/tsconfig.build.json"
+        }
+    ]
+}

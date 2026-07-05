@@ -1,0 +1,27 @@
+{
+    "name": "@libraries/plaster-calculator-graphql-server",
+    "version": "0.1.0",
+    "private": true,
+    "description": "GraphQL server (via graphql-yoga) bridging plaster-calculator-common domain contracts to generated Data Connect admin SDK calls.",
+    "type": "module",
+    "exports": "./out/index.js",
+    "main": "./out/index.js",
+    "scripts": {
+        "build": "tsc --build tsconfig.build.json"
+    },
+    "dependencies": {
+        "@generated/questionnaires-data-connector": "workspace:*",
+        "@graphql-tools/schema": "^10.0.34",
+        "@libraries/plaster-calculator-common": "workspace:*",
+        "graphql": "^16.14.2",
+        "graphql-yoga": "^5.21.2"
+    },
+    "devDependencies": {
+        "@types/node": "^26.0.1",
+        "firebase-admin": "^13.10.0",
+        "typescript": "^6.0.3"
+    },
+    "peerDependencies": {
+        "firebase-admin": "^13.10.0"
+    }
+}
