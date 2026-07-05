@@ -1,9 +1,0 @@
-{
-    "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "types": ["node"],
-        // graphql-yoga depends on lru-cache@10.4.3, whose .d.ts Map overrides (entries/keys/values/etc.) don't
-        // satisfy the newer lib.es2024 Map iterator return types; re-enable skipLibCheck for this project only.
-        "skipLibCheck": true
-    }
-}
