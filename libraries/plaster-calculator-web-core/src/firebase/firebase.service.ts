@@ -1,5 +1,11 @@
 import { getApps, initializeApp, type FirebaseApp } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
+import {
+    connectDataConnectEmulator,
+    getDataConnect,
+    type ConnectorConfig,
+    type DataConnect,
+} from "firebase/data-connect";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 
@@ -29,6 +35,12 @@ export class FirebaseService {
         return getStorage(FirebaseService.app);
     }
 
+    public static getDataConnect(
+        connectorConfig: ConnectorConfig,
+    ): DataConnect {
+        return getDataConnect(FirebaseService.app, connectorConfig);
+    }
+
     public static connectEmulators() {
         connectAuthEmulator(
             FirebaseService.getAuth(),
@@ -43,5 +55,9 @@ export class FirebaseService {
             5001,
         );
         connectStorageEmulator(FirebaseService.getStorage(), "127.0.0.1", 9199);
+    }
+
+    public static connectDataConnectEmulator(dataConnect: DataConnect): void {
+        connectDataConnectEmulator(dataConnect, "127.0.0.1", 9399);
     }
 }

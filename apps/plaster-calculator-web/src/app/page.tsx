@@ -1,5 +1,6 @@
 "use client";
 
+import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import {
     Button,
     ButtonLink,
@@ -18,10 +19,10 @@ import {
 import { useRouter } from "next/navigation.js";
 import { useEffect, useState } from "react";
 
-import { auth } from "../firebase/firebase.utils.js";
 import { activeTheme, cx, ui } from "../lib/styles.js";
 
 const googleProvider = new GoogleAuthProvider();
+const auth = FirebaseService.getAuth();
 
 const pageClass = cx(
     "flex min-h-screen items-center justify-center p-5",

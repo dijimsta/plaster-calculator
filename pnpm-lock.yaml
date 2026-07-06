@@ -112,6 +112,9 @@ importers:
 
   apps/plaster-calculator-web:
     dependencies:
+      '@generated/questionnaires-data-connector-web':
+        specifier: workspace:*
+        version: link:../../generated/questionnaires-data-connector-web
       '@libraries/plaster-calculator-common':
         specifier: workspace:*
         version: link:../../libraries/plaster-calculator-common
@@ -124,6 +127,12 @@ importers:
       '@libraries/uikit-web':
         specifier: workspace:*
         version: link:../../libraries/uikit-web
+      '@tanstack-query-firebase/react':
+        specifier: ^2.0.0
+        version: 2.1.1(@tanstack/react-query@5.101.2(react@19.2.7))(firebase@12.15.0)
+      '@tanstack/react-query':
+        specifier: ^5.101.2
+        version: 5.101.2(react@19.2.7)
       firebase:
         specifier: ^12.15.0
         version: 12.15.0

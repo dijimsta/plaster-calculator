@@ -1,5 +1,6 @@
 "use client";
 
+import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import {
     type AppCheck,
     initializeAppCheck,
@@ -8,7 +9,6 @@ import {
 import { useEffect, useState } from "react";
 
 import { RECAPTCHA_SITE_KEY } from "./firebase.constants.ts";
-import { app } from "./firebase.utils.ts";
 
 export function useAppCheck(): AppCheck | undefined {
     const [appCheck, setAppCheck] = useState<AppCheck>();
@@ -17,12 +17,12 @@ export function useAppCheck(): AppCheck | undefined {
     useEffect(() => {
         checkAppCheckDebugToken(environment);
         setAppCheck(
-            initializeAppCheck(app, {
+            initializeAppCheck(FirebaseService.app, {
                 provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
                 isTokenAutoRefreshEnabled: true,
             }),
         );
-    }, [app]);
+    }, []);
 
     return appCheck;
 }

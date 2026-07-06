@@ -1,12 +1,13 @@
+import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { httpsCallable } from "firebase/functions";
-
-import { functions } from "../../firebase/firebase.utils.js";
 
 import type {
     AccountContact,
     AccountDetail,
     AccountSummary,
 } from "../../types.js";
+
+const functions = FirebaseService.getFunctions();
 
 type AccountPayload = {
     companyName?: string;

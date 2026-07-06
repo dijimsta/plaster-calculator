@@ -1,5 +1,6 @@
 "use client";
 
+import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import {
     Avatar,
     Box,
@@ -18,7 +19,6 @@ import { usePathname, useRouter } from "next/navigation.js";
 
 import { useUserInitials } from "../auth/user-initials.hook.js";
 import { useUser } from "../auth/user.hook.js";
-import { auth } from "../firebase/firebase.utils.js";
 
 import type { PropsWithChildren } from "react";
 
@@ -46,7 +46,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
     const initials = useUserInitials();
 
     async function handleLogout() {
-        await signOut(auth);
+        await signOut(FirebaseService.getAuth());
         router.replace("/");
     }
 

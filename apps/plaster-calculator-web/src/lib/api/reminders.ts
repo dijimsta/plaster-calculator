@@ -1,8 +1,9 @@
+import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { httpsCallable } from "firebase/functions";
 
-import { functions } from "../../firebase/firebase.utils.js";
-
 import type { Reminder } from "../../types.js";
+
+const functions = FirebaseService.getFunctions();
 
 type ReminderPayload = {
     projectId: string;
