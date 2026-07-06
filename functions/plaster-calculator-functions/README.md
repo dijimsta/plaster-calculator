@@ -1,8 +1,8 @@
 # Plaster Calculator Functions
 
 `@functions/plaster-calculator-functions` is the Node.js 24 Firebase Functions backend for Plaster Calculator. It exposes
-callable operations for projects, floorplan processing, reminders, settings, and exports. Account CRUD is accessed
-directly from the web app through Firebase Data Connect.
+callable operations for projects, floorplan processing, reminders, and exports. Account CRUD and user settings CRUD are
+accessed directly from the web app through Firebase Data Connect.
 
 ## Runtime
 

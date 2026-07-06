@@ -161,13 +161,6 @@ function getReminderById(dcOrVarsOrOptions, varsOrOptions, options) {
 }
 exports.getReminderById = getReminderById;
 
-function upsertUserSettings(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('UpsertUserSettings', inputVars, inputOpts);
-}
-exports.upsertUserSettings = upsertUserSettings;
-
 function getUserSettings(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

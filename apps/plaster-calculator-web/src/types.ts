@@ -71,6 +71,14 @@ export type AccountDetail = AccountSummary & {
     contacts: AccountContact[];
 };
 
+export type UserSettings = {
+    ownerId: string;
+    quoteFollowUpEnabled: boolean;
+    quoteFollowUpDays: number;
+    createdAt: string | null;
+    updatedAt: string | null;
+};
+
 export type Reminder = {
     id: string;
     ownerId?: string | null;

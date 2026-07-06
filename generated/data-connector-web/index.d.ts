@@ -142,6 +142,16 @@ export interface GetMyAccountVariables {
   id: UUIDString;
 }
 
+export interface GetMyUserSettingsData {
+  userSettings?: {
+    ownerId: string;
+    quoteFollowUpEnabled: boolean;
+    quoteFollowUpDays: number;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & UserSettings_Key;
+}
+
 export interface GetQuestionnaireTemplateData {
   questionnaireTemplate?: {
     id: UUIDString;
@@ -320,6 +330,15 @@ export interface UpdateQuestionnaireTemplateQuestionVariables {
   label: string;
   position: number;
   description?: string | null;
+}
+
+export interface UpsertMyUserSettingsData {
+  userSettings_upsert: UserSettings_Key;
+}
+
+export interface UpsertMyUserSettingsVariables {
+  quoteFollowUpEnabled: boolean;
+  quoteFollowUpDays: number;
 }
 
 export interface UserSettings_Key {
@@ -554,4 +573,28 @@ export const getQuestionnaireTemplateRef: GetQuestionnaireTemplateRef;
 
 export function getQuestionnaireTemplate(vars: GetQuestionnaireTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
 export function getQuestionnaireTemplate(dc: DataConnect, vars: GetQuestionnaireTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
+
+interface UpsertMyUserSettingsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpsertMyUserSettingsVariables): MutationRef<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpsertMyUserSettingsVariables): MutationRef<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
+  operationName: string;
+}
+export const upsertMyUserSettingsRef: UpsertMyUserSettingsRef;
+
+export function upsertMyUserSettings(vars: UpsertMyUserSettingsVariables): MutationPromise<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
+export function upsertMyUserSettings(dc: DataConnect, vars: UpsertMyUserSettingsVariables): MutationPromise<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
+
+interface GetMyUserSettingsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetMyUserSettingsData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<GetMyUserSettingsData, undefined>;
+  operationName: string;
+}
+export const getMyUserSettingsRef: GetMyUserSettingsRef;
+
+export function getMyUserSettings(options?: ExecuteQueryOptions): QueryPromise<GetMyUserSettingsData, undefined>;
+export function getMyUserSettings(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetMyUserSettingsData, undefined>;
 
