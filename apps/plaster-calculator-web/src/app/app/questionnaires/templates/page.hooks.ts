@@ -10,6 +10,7 @@ import {
     useListQuestionnaireTemplates,
 } from "@generated/questionnaires-data-connector-web/react";
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
+import { useNotificationsManager } from "@libraries/uikit-web";
 import { useQueryClient } from "@tanstack/react-query";
 import { QueryFetchPolicy } from "firebase/data-connect";
 import { useCallback } from "react";
@@ -59,6 +60,7 @@ export function useCreateQuestionnaireTemplateCallback(
         useCreateQuestionnaireTemplate(dataConnect);
     const { mutateAsync: createQuestion } =
         useCreateQuestionnaireTemplateQuestion(dataConnect);
+    const { notify } = useNotificationsManager();
 
     return useCallback(
         async (values: QuestionnaireTemplateFormValues): Promise<void> => {
@@ -81,12 +83,22 @@ export function useCreateQuestionnaireTemplateCallback(
                 );
 
                 await refreshTemplates();
-                dispatch({ type: "createSucceeded", name: values.name });
+                dispatch({ type: "createSucceeded" });
+                notify({
+                    intent: "success",
+                    title: "Template created",
+                    description: `"${values.name}" is ready to use.`,
+                });
             } catch {
-                dispatch({ type: "createFailed" });
+                notify({
+                    intent: "error",
+                    title: "Couldn't create template",
+                    description:
+                        "Something went wrong while saving. Please try again.",
+                });
             }
         },
-        [createQuestion, createTemplate, dispatch, refreshTemplates],
+        [createQuestion, createTemplate, dispatch, notify, refreshTemplates],
     );
 }
 
@@ -96,6 +108,7 @@ export function useDeleteQuestionnaireTemplateCallback(
 ) {
     const { mutateAsync: deleteTemplate } =
         useDeleteQuestionnaireTemplate(dataConnect);
+    const { notify } = useNotificationsManager();
 
     return useCallback(
         async (template: QuestionnaireTemplate): Promise<void> => {
@@ -103,12 +116,23 @@ export function useDeleteQuestionnaireTemplateCallback(
             try {
                 await deleteTemplate({ id: template.id });
                 await refreshTemplates();
-                dispatch({ type: "deleteSucceeded", name: template.name });
+                dispatch({ type: "deleteSucceeded" });
+                notify({
+                    intent: "success",
+                    title: "Template deleted",
+                    description: `"${template.name}" was permanently deleted.`,
+                });
             } catch {
                 dispatch({ type: "deleteFailed" });
+                notify({
+                    intent: "error",
+                    title: "Couldn't delete template",
+                    description:
+                        "The template may already be in use. Please try again.",
+                });
             }
         },
-        [deleteTemplate, dispatch, refreshTemplates],
+        [deleteTemplate, dispatch, notify, refreshTemplates],
     );
 }
 

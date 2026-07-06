@@ -8,7 +8,6 @@ import {
     Breadcrumb,
     Button,
     ModalDialog,
-    Notification,
     PageHeading,
     Tabs,
     Text,
@@ -96,50 +95,6 @@ export default function QuestionnaireTemplatesPage() {
                     </Tabs>
                 </PageHeading.Navigation>
             </PageHeading>
-            {state.createdTemplateName !== null && (
-                <Notification
-                    intent="success"
-                    title="Template created"
-                    description={`"${state.createdTemplateName}" is ready to use.`}
-                    onDismiss={() =>
-                        dispatch({ type: "dismissCreatedNotification" })
-                    }
-                />
-            )}
-            {state.creationFailed && (
-                <Notification
-                    intent="error"
-                    title="Couldn't create template"
-                    description="Something went wrong while saving. Please try again."
-                    onDismiss={() =>
-                        dispatch({
-                            type: "dismissCreationFailedNotification",
-                        })
-                    }
-                />
-            )}
-            {state.deletedTemplateName !== null && (
-                <Notification
-                    intent="success"
-                    title="Template deleted"
-                    description={`"${state.deletedTemplateName}" was permanently deleted.`}
-                    onDismiss={() =>
-                        dispatch({ type: "dismissDeletedNotification" })
-                    }
-                />
-            )}
-            {state.deletionFailed && (
-                <Notification
-                    intent="error"
-                    title="Couldn't delete template"
-                    description="The template may already be in use. Please try again."
-                    onDismiss={() =>
-                        dispatch({
-                            type: "dismissDeletionFailedNotification",
-                        })
-                    }
-                />
-            )}
             <QuestionnaireTemplateCardGridList
                 templates={templates}
                 onOpen={() => undefined}
