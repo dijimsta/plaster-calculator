@@ -4,11 +4,11 @@ import { useId, useMemo } from "react";
 import { QuestionnaireTemplateForm } from "../questionnaire-template-form/index.ts";
 
 import type { QuestionnaireTemplateFormValues } from "../questionnaire-template-form/index.ts";
-import type { GetQuestionnaireTemplateData } from "@generated/questionnaires-data-connector-web";
+import type * as DataConnector from "@generated/data-connector-web";
 import type { ReactElement } from "react";
 
 export type QuestionnaireTemplateDetails = NonNullable<
-    GetQuestionnaireTemplateData["questionnaireTemplate"]
+    DataConnector.GetQuestionnaireTemplateData["questionnaireTemplate"]
 >;
 
 export interface EditQuestionnaireTemplateDrawerProps {

@@ -1,21 +1,11 @@
 import "./bootstrap.js";
 
-import {
-    createFloorplanPage as dcCreateFloorplanPage,
-    createProjectFromUpload as dcCreateProjectFromUpload,
-    deleteFloorplanPages as dcDeleteFloorplanPages,
-    deleteProject as dcDeleteProject,
-    getProjectById,
-    listProjectsByAccount as dcListProjectsByAccount,
-    listProjectsByOwnerAndSalesStatus,
-    updateProject as dcUpdateProject,
-} from "@generated/example-data-connector";
+import * as DataConnector from "@generated/data-connector-admin";
 import { getStorage } from "firebase-admin/storage";
 import { HttpsError, onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
 import { buildProjectCsv, csvFileNamePart } from "./csv-export.js";
-import { exampleDataConnect } from "./data-connect.js";
 import { toDetail, toDetailWithDownloadUrls, toSummary } from "./mappers.js";
 import { requireOwnedAccount, requireOwnedProject } from "./ownership.js";
 import {
@@ -63,13 +53,10 @@ export const listProjects = onCall<
     const auth = requireAuth(request);
     const data = request.data ?? {};
     const salesStatus = readSalesStatus(data.salesStatus);
-    const response = await listProjectsByOwnerAndSalesStatus(
-        exampleDataConnect,
-        {
-            ownerId: auth.uid,
-            salesStatus,
-        },
-    );
+    const response = await DataConnector.listProjectsByOwnerAndSalesStatus({
+        ownerId: auth.uid,
+        salesStatus,
+    });
     return { projects: response.data.projects.map(toSummary) };
 });
 
@@ -80,7 +67,7 @@ export const listProjectsByAccount = onCall<
     const auth = requireAuth(request);
     const accountId = readRequiredString(request.data.accountId, "Account ID");
     await requireOwnedAccount(accountId, auth.uid);
-    const response = await dcListProjectsByAccount(exampleDataConnect, {
+    const response = await DataConnector.listProjectsByAccount({
         accountId,
     });
     return { projects: response.data.projects.map(toSummary) };
@@ -133,7 +120,7 @@ export const createProjectFromUpload = onCall<
     const uploadType = inferUploadType(originalFileName, contentType);
     const pageCount =
         uploadType === "PDF" ? readPdfPageCount(request.data.pageCount) : 1;
-    await dcCreateProjectFromUpload(exampleDataConnect, {
+    await DataConnector.createProjectFromUpload({
         id: projectId,
         ownerId: auth.uid,
         accountId,
@@ -148,7 +135,7 @@ export const createProjectFromUpload = onCall<
     });
 
     if (uploadType === "IMAGE") {
-        await dcCreateFloorplanPage(exampleDataConnect, {
+        await DataConnector.createFloorplanPage({
             projectId,
             pageNumber: 1,
             status: "READY",
@@ -192,7 +179,7 @@ export const getProjectStatus = onCall<
     Promise<ProjectSummary>
 >(async (request) => {
     const auth = requireAuth(request);
-    const response = await getProjectById(exampleDataConnect, {
+    const response = await DataConnector.getProjectById({
         id: readRequiredString(request.data.projectId, "Project ID"),
     });
     const project = response.data.project;
@@ -263,8 +250,8 @@ export const deleteProject = onCall<ProjectIdRequest, Promise<{ ok: true }>>(
         const project = await requireOwnedProject(projectId, auth.uid);
 
         await deleteOwnedProjectStorage(project, auth.uid, projectId);
-        await dcDeleteFloorplanPages(exampleDataConnect, { projectId });
-        await dcDeleteProject(exampleDataConnect, { id: projectId });
+        await DataConnector.deleteFloorplanPages({ projectId });
+        await DataConnector.deleteProject({ id: projectId });
 
         return { ok: true };
     },
@@ -305,7 +292,7 @@ async function updateOwnedProject(
 
     const nextSalesStatus = nextSalesStatusFor(updates, project.salesStatus);
 
-    await dcUpdateProject(exampleDataConnect, {
+    await DataConnector.updateProject({
         id: projectId,
         name: updates.name ?? project.name,
         accountId: nextAccountId,

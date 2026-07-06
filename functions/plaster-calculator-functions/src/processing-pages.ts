@@ -1,11 +1,12 @@
-import { createFloorplanPage as dcCreateFloorplanPage } from "@generated/example-data-connector";
+import "./bootstrap.js";
+
+import * as DataConnector from "@generated/data-connector-admin";
 import { HttpsError } from "firebase-functions/https";
 
 import {
     buildOverlayFromAnalyzerResult,
     callFloorplanAnalyzer,
 } from "./analyzer.js";
-import { exampleDataConnect } from "./data-connect.js";
 import {
     fetchStorageImage,
     storageProjectId,
@@ -122,7 +123,7 @@ async function analysePage(
         strategy,
     });
 
-    await dcCreateFloorplanPage(exampleDataConnect, {
+    await DataConnector.createFloorplanPage({
         projectId,
         pageNumber,
         status: "READY",

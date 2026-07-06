@@ -1,19 +1,5 @@
-import {
-    connectorConfig,
-    getQuestionnaireTemplateRef,
-    listQuestionnaireTemplates,
-    listQuestionnaireTemplatesRef,
-} from "@generated/questionnaires-data-connector-web";
-import {
-    useCreateQuestionnaireTemplate,
-    useCreateQuestionnaireTemplateQuestion,
-    useDeleteQuestionnaireTemplate,
-    useDeleteQuestionnaireTemplateQuestion,
-    useGetQuestionnaireTemplate,
-    useListQuestionnaireTemplates,
-    useUpdateQuestionnaireTemplateName,
-    useUpdateQuestionnaireTemplateQuestion,
-} from "@generated/questionnaires-data-connector-web/react";
+import * as DataConnector from "@generated/data-connector-web";
+import * as DataConnectorReact from "@generated/data-connector-web/react";
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { useNotificationsManager } from "@libraries/uikit-web";
 import { useQueryClient } from "@tanstack/react-query";
@@ -36,11 +22,15 @@ type UpdateTemplate = (
 ) => Promise<void>;
 type PageDispatch = Dispatch<QuestionnaireTemplatesPageAction>;
 
-const dataConnect = FirebaseService.getDataConnect(connectorConfig);
-const questionnaireTemplatesRef = listQuestionnaireTemplatesRef(dataConnect);
+const dataConnect = FirebaseService.getDataConnect(
+    DataConnector.connectorConfig,
+);
+const questionnaireTemplatesRef =
+    DataConnector.listQuestionnaireTemplatesRef(dataConnect);
 
 export function useQuestionnaireTemplates() {
-    const { data } = useListQuestionnaireTemplates(dataConnect);
+    const { data } =
+        DataConnectorReact.useListQuestionnaireTemplates(dataConnect);
     return data?.questionnaireTemplates ?? [];
 }
 
@@ -48,10 +38,10 @@ export function useRefreshQuestionnaireTemplatesCallback(): RefreshTemplates {
     const queryClient = useQueryClient();
 
     return useCallback(async () => {
-        const refreshedTemplates = await listQuestionnaireTemplates(
-            dataConnect,
-            { fetchPolicy: QueryFetchPolicy.SERVER_ONLY },
-        );
+        const refreshedTemplates =
+            await DataConnector.listQuestionnaireTemplates(dataConnect, {
+                fetchPolicy: QueryFetchPolicy.SERVER_ONLY,
+            });
         queryClient.setQueryData(
             [
                 questionnaireTemplatesRef.name,
@@ -67,9 +57,9 @@ export function useCreateQuestionnaireTemplateCallback(
     dispatch: PageDispatch,
 ) {
     const { mutateAsync: createTemplate } =
-        useCreateQuestionnaireTemplate(dataConnect);
+        DataConnectorReact.useCreateQuestionnaireTemplate(dataConnect);
     const { mutateAsync: createQuestion } =
-        useCreateQuestionnaireTemplateQuestion(dataConnect);
+        DataConnectorReact.useCreateQuestionnaireTemplateQuestion(dataConnect);
     const { notify } = useNotificationsManager();
 
     return useCallback(
@@ -117,7 +107,7 @@ export function useDeleteQuestionnaireTemplateCallback(
     dispatch: PageDispatch,
 ) {
     const { mutateAsync: deleteTemplate } =
-        useDeleteQuestionnaireTemplate(dataConnect);
+        DataConnectorReact.useDeleteQuestionnaireTemplate(dataConnect);
     const { notify } = useNotificationsManager();
 
     return useCallback(
@@ -161,7 +151,7 @@ export function useQuestionnaireTemplateDetails(templateId: string | null): {
     readonly template: QuestionnaireTemplateDetails | null;
     readonly isLoading: boolean;
 } {
-    const { data, isLoading } = useGetQuestionnaireTemplate(
+    const { data, isLoading } = DataConnectorReact.useGetQuestionnaireTemplate(
         dataConnect,
         { id: templateId ?? "" },
         { enabled: templateId !== null },
@@ -178,13 +168,13 @@ export function useUpdateQuestionnaireTemplateCallback(
     dispatch: PageDispatch,
 ): UpdateTemplate {
     const { mutateAsync: updateName } =
-        useUpdateQuestionnaireTemplateName(dataConnect);
+        DataConnectorReact.useUpdateQuestionnaireTemplateName(dataConnect);
     const { mutateAsync: updateQuestion } =
-        useUpdateQuestionnaireTemplateQuestion(dataConnect);
+        DataConnectorReact.useUpdateQuestionnaireTemplateQuestion(dataConnect);
     const { mutateAsync: createQuestion } =
-        useCreateQuestionnaireTemplateQuestion(dataConnect);
+        DataConnectorReact.useCreateQuestionnaireTemplateQuestion(dataConnect);
     const { mutateAsync: deleteQuestion } =
-        useDeleteQuestionnaireTemplateQuestion(dataConnect);
+        DataConnectorReact.useDeleteQuestionnaireTemplateQuestion(dataConnect);
     const { notify } = useNotificationsManager();
     const queryClient = useQueryClient();
 
@@ -235,9 +225,12 @@ export function useUpdateQuestionnaireTemplateCallback(
                     ),
                 );
 
-                const templateRef = getQuestionnaireTemplateRef(dataConnect, {
-                    id: template.id,
-                });
+                const templateRef = DataConnector.getQuestionnaireTemplateRef(
+                    dataConnect,
+                    {
+                        id: template.id,
+                    },
+                );
                 await queryClient.invalidateQueries({
                     queryKey: [templateRef.name, templateRef.variables ?? null],
                 });

@@ -26,11 +26,3 @@ type AccountContact
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
-
-type UserSettings @table(key: "ownerId") {
-    ownerId: String!
-    quoteFollowUpEnabled: Boolean! @default(value: true)
-    quoteFollowUpDays: Int! @default(value: 3)
-    createdAt: Timestamp! @default(expr: "request.time")
-    updatedAt: Timestamp! @default(expr: "request.time")
-}

@@ -1,0 +1,9 @@
+query GetUserSettings($ownerId: String!) @auth(level: NO_ACCESS) {
+    userSettings(key: { ownerId: $ownerId }) {
+        ownerId
+        quoteFollowUpEnabled
+        quoteFollowUpDays
+        createdAt
+        updatedAt
+    }
+}

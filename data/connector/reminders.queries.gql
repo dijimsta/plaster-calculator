@@ -1,0 +1,54 @@
+query ListDueReminders($ownerId: String!) @auth(level: NO_ACCESS) {
+    reminders(
+        where: {
+            ownerId: { eq: $ownerId }
+            status: { eq: "OPEN" }
+            dueAt: { le_expr: "request.time" }
+        }
+        orderBy: [{ dueAt: ASC }]
+    ) {
+        id
+        ownerId
+        projectId
+        accountId
+        name
+        status
+        dueAt
+        completedAt
+        createdAt
+        updatedAt
+    }
+}
+
+query ListProjectReminders($projectId: UUID!) @auth(level: NO_ACCESS) {
+    reminders(
+        where: { projectId: { eq: $projectId } }
+        orderBy: [{ dueAt: ASC }]
+    ) {
+        id
+        ownerId
+        projectId
+        accountId
+        name
+        status
+        dueAt
+        completedAt
+        createdAt
+        updatedAt
+    }
+}
+
+query GetReminderById($id: UUID!) @auth(level: NO_ACCESS) {
+    reminder(id: $id) {
+        id
+        ownerId
+        projectId
+        accountId
+        name
+        status
+        dueAt
+        completedAt
+        createdAt
+        updatedAt
+    }
+}

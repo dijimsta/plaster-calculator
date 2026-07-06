@@ -7,7 +7,7 @@ on:
             - main
         paths:
             - functions/plaster-calculator-functions/**
-            - generated/example-data-connector/**
+            - generated/data-connector-admin/**
 
 concurrency:
     group: deploy-plaster-calculator-functions

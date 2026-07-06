@@ -1,12 +1,9 @@
+import "./bootstrap.js";
+
 import { randomUUID } from "node:crypto";
 
-import {
-    createReminder as dcCreateReminder,
-    listProjectReminders as dcListProjectReminders,
-    updateReminder as dcUpdateReminder,
-} from "@generated/example-data-connector";
+import * as DataConnector from "@generated/data-connector-admin";
 
-import { exampleDataConnect } from "./data-connect.js";
 import { getUserSettingsOrDefault } from "./settings.js";
 import { toReminderStatus } from "./validation.js";
 
@@ -28,7 +25,7 @@ export async function upsertAutoQuoteReminder(
     const existing = await findOpenProjectReminder(project.id, ownerId);
 
     if (existing && existing.ownerId === ownerId) {
-        await dcUpdateReminder(exampleDataConnect, {
+        await DataConnector.updateReminder({
             id: existing.id,
             accountId: project.accountId ?? null,
             name,
@@ -39,7 +36,7 @@ export async function upsertAutoQuoteReminder(
         return;
     }
 
-    await dcCreateReminder(exampleDataConnect, {
+    await DataConnector.createReminder({
         id: randomUUID(),
         ownerId,
         projectId: project.id,
@@ -59,7 +56,7 @@ export async function cancelOpenProjectReminder(
         return;
     }
 
-    await dcUpdateReminder(exampleDataConnect, {
+    await DataConnector.updateReminder({
         id: reminder.id,
         accountId: reminder.accountId ?? null,
         name: reminder.name,
@@ -73,7 +70,7 @@ export async function findOpenProjectReminder(
     projectId: string,
     ownerId: string,
 ) {
-    const response = await dcListProjectReminders(exampleDataConnect, {
+    const response = await DataConnector.listProjectReminders({
         projectId,
     });
     return (

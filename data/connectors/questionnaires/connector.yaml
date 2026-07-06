@@ -1,9 +1,0 @@
-connectorId: questionnaires
-generate:
-    adminNodeSdk:
-        - package: "@generated/questionnaires-data-connector-admin"
-          outputDir: ../../../generated/questionnaires-data-connector-admin
-    javascriptSdk:
-        - package: "@generated/questionnaires-data-connector-web"
-          outputDir: ../../../generated/questionnaires-data-connector-web
-          react: true
