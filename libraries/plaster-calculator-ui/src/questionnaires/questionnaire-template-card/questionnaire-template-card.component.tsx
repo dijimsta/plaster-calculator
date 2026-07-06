@@ -83,7 +83,7 @@ function TemplateActions({
                 onClick={onDuplicate}
             />
             <Button
-                variant="secondary"
+                variant="dangerSoft"
                 icon={<Trash2 size={16} aria-hidden="true" />}
                 aria-label="Delete template"
                 onClick={onDelete}
