@@ -63,6 +63,11 @@ export type {
     DrawerProps,
     DrawerSize,
 } from "./overlays/drawer/index.ts";
+export { ModalDialog } from "./overlays/modal-dialog/index.ts";
+export type {
+    ModalDialogProps,
+    ModalDialogSize,
+} from "./overlays/modal-dialog/index.ts";
 export {
     FormLayout,
     FormLayoutActions,
