@@ -68,6 +68,11 @@ export type {
     ModalDialogProps,
     ModalDialogSize,
 } from "./overlays/modal-dialog/index.ts";
+export { Notification } from "./overlays/notification/index.ts";
+export type {
+    NotificationIntent,
+    NotificationProps,
+} from "./overlays/notification/index.ts";
 export {
     FormLayout,
     FormLayoutActions,
