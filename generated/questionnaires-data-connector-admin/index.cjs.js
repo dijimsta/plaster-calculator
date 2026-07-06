@@ -7,20 +7,6 @@ const connectorConfig = {
 };
 exports.connectorConfig = connectorConfig;
 
-function listQuestionnaireTemplates(dcOrOptions, options) {
-  const { dc: dcInstance, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrOptions, options, undefined);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListQuestionnaireTemplates', undefined, inputOpts);
-}
-exports.listQuestionnaireTemplates = listQuestionnaireTemplates;
-
-function getQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetQuestionnaireTemplate', inputVars, inputOpts);
-}
-exports.getQuestionnaireTemplate = getQuestionnaireTemplate;
-
 function createQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
@@ -76,4 +62,18 @@ function createProjectQuestionnaireAnswer(dcOrVarsOrOptions, varsOrOptions, opti
   return dcInstance.executeMutation('CreateProjectQuestionnaireAnswer', inputVars, inputOpts);
 }
 exports.createProjectQuestionnaireAnswer = createProjectQuestionnaireAnswer;
+
+function listQuestionnaireTemplates(dcOrOptions, options) {
+  const { dc: dcInstance, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrOptions, options, undefined);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListQuestionnaireTemplates', undefined, inputOpts);
+}
+exports.listQuestionnaireTemplates = listQuestionnaireTemplates;
+
+function getQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetQuestionnaireTemplate', inputVars, inputOpts);
+}
+exports.getQuestionnaireTemplate = getQuestionnaireTemplate;
 

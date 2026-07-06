@@ -12,10 +12,11 @@ import {
     listAccountsByOwner,
     updateAccount as dcUpdateAccount,
     updateAccountContact as dcUpdateAccountContact,
-} from "@generated/example-data-connector";
+} from "@generated/accounts-data-connector-admin";
 import { onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
+import { accountsDataConnect } from "./data-connect.js";
 import {
     toAccountContact,
     toAccountDetail,
@@ -48,7 +49,9 @@ export const listAccounts = onCall<
     Promise<{ accounts: AccountSummary[] }>
 >(async (request) => {
     const auth = requireAuth(request);
-    const response = await listAccountsByOwner({ ownerId: auth.uid });
+    const response = await listAccountsByOwner(accountsDataConnect, {
+        ownerId: auth.uid,
+    });
     return { accounts: response.data.accounts.map(toAccountSummary) };
 });
 
@@ -71,7 +74,10 @@ export const listAccountContactsByAccountId = onCall<
     const auth = requireAuth(request);
     const accountId = readRequiredString(request.data.accountId, "Account ID");
     await requireOwnedAccount(accountId, auth.uid);
-    const response = await dcListAccountContactsByAccountId({ accountId });
+    const response = await dcListAccountContactsByAccountId(
+        accountsDataConnect,
+        { accountId },
+    );
     return { contacts: response.data.accountContacts.map(toAccountContact) };
 });
 
@@ -81,7 +87,7 @@ export const createAccount = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const accountId = randomUUID();
-    await dcCreateAccount({
+    await dcCreateAccount(accountsDataConnect, {
         id: accountId,
         ownerId: auth.uid,
         companyName: readRequiredString(
@@ -120,7 +126,7 @@ export const updateAccount = onCall<
         await requireOwnedAccountContact(accountId, primaryContactId, auth.uid);
     }
 
-    await dcUpdateAccount({
+    await dcUpdateAccount(accountsDataConnect, {
         id: accountId,
         companyName: hasField(data, "companyName")
             ? readRequiredString(data.companyName, "Company name")
@@ -145,8 +151,8 @@ export const deleteAccount = onCall<AccountIdRequest, Promise<{ ok: true }>>(
             "Account ID",
         );
         await requireOwnedAccount(accountId, auth.uid);
-        await dcDeleteAccountContacts({ accountId });
-        await dcDeleteAccount({ id: accountId });
+        await dcDeleteAccountContacts(accountsDataConnect, { accountId });
+        await dcDeleteAccount(accountsDataConnect, { id: accountId });
         return { ok: true };
     },
 );
@@ -159,7 +165,7 @@ export const createAccountContact = onCall<
     const accountId = readRequiredString(request.data.accountId, "Account ID");
     const account = await requireOwnedAccount(accountId, auth.uid);
     const contactId = randomUUID();
-    await dcCreateAccountContact({
+    await dcCreateAccountContact(accountsDataConnect, {
         id: contactId,
         accountId,
         name: readRequiredString(request.data.name, "Contact name"),
@@ -170,7 +176,7 @@ export const createAccountContact = onCall<
         ),
         role: readOptionalNullableString(request.data.role, "Role"),
     });
-    await dcUpdateAccount({
+    await dcUpdateAccount(accountsDataConnect, {
         id: accountId,
         companyName: account.companyName,
         businessNumber: account.businessNumber ?? null,
@@ -197,7 +203,7 @@ export const updateAccountContact = onCall<
     );
     const data = request.data;
 
-    await dcUpdateAccountContact({
+    await dcUpdateAccountContact(accountsDataConnect, {
         id: contactId,
         name: hasField(data, "name")
             ? readRequiredString(data.name, "Contact name")
@@ -227,7 +233,7 @@ export const deleteAccountContact = onCall<
     await requireOwnedAccountContact(accountId, contactId, auth.uid);
 
     if (account.primaryContactId === contactId) {
-        await dcUpdateAccount({
+        await dcUpdateAccount(accountsDataConnect, {
             id: accountId,
             companyName: account.companyName,
             businessNumber: account.businessNumber ?? null,
@@ -236,7 +242,7 @@ export const deleteAccountContact = onCall<
         });
     }
 
-    await dcDeleteAccountContact({ id: contactId });
+    await dcDeleteAccountContact(accountsDataConnect, { id: contactId });
     return toAccountDetail(await requireOwnedAccount(accountId, auth.uid));
 });
 
@@ -249,7 +255,7 @@ export const setPrimaryAccountContact = onCall<
     const contactId = readRequiredString(request.data.contactId, "Contact ID");
     const account = await requireOwnedAccount(accountId, auth.uid);
     await requireOwnedAccountContact(accountId, contactId, auth.uid);
-    await dcUpdateAccount({
+    await dcUpdateAccount(accountsDataConnect, {
         id: accountId,
         companyName: account.companyName,
         businessNumber: account.businessNumber ?? null,

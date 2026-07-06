@@ -7,6 +7,7 @@ import {
 import { onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
+import { exampleDataConnect } from "./data-connect.js";
 import {
     readOptionalBoolean,
     readOptionalPositiveInteger,
@@ -41,7 +42,7 @@ export const updateSettings = onCall<
             "Quote follow-up days",
         ) ?? settings.quoteFollowUpDays;
 
-    await upsertUserSettings({
+    await upsertUserSettings(exampleDataConnect, {
         ownerId: auth.uid,
         quoteFollowUpEnabled,
         quoteFollowUpDays,
@@ -53,7 +54,8 @@ export const updateSettings = onCall<
 export async function getUserSettingsOrDefault(
     ownerId: string,
 ): Promise<UserSettings> {
-    const settings = (await getUserSettings({ ownerId })).data.userSettings;
+    const settings = (await getUserSettings(exampleDataConnect, { ownerId }))
+        .data.userSettings;
     if (!settings) {
         return {
             ownerId,

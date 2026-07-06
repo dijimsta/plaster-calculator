@@ -249,6 +249,9 @@ importers:
 
   functions/plaster-calculator-functions:
     dependencies:
+      '@generated/accounts-data-connector-admin':
+        specifier: workspace:*
+        version: link:../../generated/accounts-data-connector-admin
       '@generated/example-data-connector':
         specifier: workspace:*
         version: link:../../generated/example-data-connector
@@ -277,6 +280,12 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+
+  generated/accounts-data-connector-admin:
+    dependencies:
+      firebase-admin:
+        specifier: ^13.4.0
+        version: 13.10.0
 
   generated/example-data-connector:
     dependencies:

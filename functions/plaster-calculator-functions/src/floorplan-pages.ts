@@ -8,6 +8,7 @@ import {
 import { HttpsError, onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
+import { exampleDataConnect } from "./data-connect.js";
 import { toDetail, toPage } from "./mappers.js";
 import { requireFloorplanPage, requireOwnedProject } from "./ownership.js";
 import {
@@ -66,7 +67,7 @@ export const updateFloorplanPage = onCall<
     }
     const nextValues = nextFloorplanPageValues(request.data, page);
 
-    await dcUpdateFloorplanPage({
+    await dcUpdateFloorplanPage(exampleDataConnect, {
         id: page.id,
         overlayJson: nextValues.overlayJson,
         scaleMmPerPx: nextValues.scaleMmPerPx,
@@ -74,7 +75,7 @@ export const updateFloorplanPage = onCall<
         referencePointsJson: nextValues.referencePointsJson,
         referenceLengthMm: nextValues.referenceLengthMm,
     });
-    await touchProject({ id: projectId });
+    await touchProject(exampleDataConnect, { id: projectId });
 
     return toPage(await requireFloorplanPage(projectId, page.id));
 });
@@ -126,7 +127,7 @@ export const initializeFloorplanPages = onCall<
         }
         await requireStorageImage(entry.path);
         const sourceImageUrl = await ensureFileDownloadUrl(entry.path);
-        await dcCreateFloorplanPage({
+        await dcCreateFloorplanPage(exampleDataConnect, {
             projectId,
             pageNumber: entry.pageNumber,
             status: "READY",
@@ -146,7 +147,7 @@ export const initializeFloorplanPages = onCall<
         });
     }
 
-    await touchProject({
+    await touchProject(exampleDataConnect, {
         id: projectId,
         status: "READY",
         processingError: null,
@@ -210,7 +211,7 @@ export const updateFloorplanPages = onCall<
     for (const page of project.pages) {
         const nextValues = nextBatchPageValues(data, page);
 
-        await dcUpdateFloorplanPage({
+        await dcUpdateFloorplanPage(exampleDataConnect, {
             id: page.id,
             overlayJson: page.overlayJson ?? null,
             scaleMmPerPx: nextValues.scaleMmPerPx,
@@ -220,7 +221,7 @@ export const updateFloorplanPages = onCall<
         });
     }
 
-    await touchProject({ id: projectId });
+    await touchProject(exampleDataConnect, { id: projectId });
     return toDetail(await requireOwnedProject(projectId, auth.uid));
 });
 

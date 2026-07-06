@@ -1,0 +1,73 @@
+query ListAccountsByOwner($ownerId: String!) @auth(level: NO_ACCESS) {
+    accounts(
+        where: { ownerId: { eq: $ownerId } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
+        id
+        ownerId
+        companyName
+        businessNumber
+        phoneNumber
+        primaryContactId
+        createdAt
+        updatedAt
+    }
+}
+
+query GetAccountById($id: UUID!) @auth(level: NO_ACCESS) {
+    account(id: $id) {
+        id
+        ownerId
+        companyName
+        businessNumber
+        phoneNumber
+        primaryContactId
+        createdAt
+        updatedAt
+        contacts: accountContacts_on_account(orderBy: [{ createdAt: ASC }]) {
+            id
+            accountId
+            name
+            email
+            phoneNumber
+            role
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+query ListAccountContactsByAccountId($accountId: UUID!)
+@auth(level: NO_ACCESS) {
+    accountContacts(
+        where: { accountId: { eq: $accountId } }
+        orderBy: [{ createdAt: ASC }]
+    ) {
+        id
+        accountId
+        name
+        email
+        phoneNumber
+        role
+        createdAt
+        updatedAt
+    }
+}
+
+query GetAccountContactById($accountId: UUID!, $contactId: UUID!)
+@auth(level: NO_ACCESS) {
+    accountContact(
+        first: {
+            where: { id: { eq: $contactId }, accountId: { eq: $accountId } }
+        }
+    ) {
+        id
+        accountId
+        name
+        email
+        phoneNumber
+        role
+        createdAt
+        updatedAt
+    }
+}
