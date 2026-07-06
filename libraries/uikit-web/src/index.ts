@@ -164,6 +164,8 @@ export { Breadcrumb } from "./navigation/breadcrumb/index.ts";
 export type { BreadcrumbProps } from "./navigation/breadcrumb/index.ts";
 export { Navbar } from "./navigation/navbar/index.ts";
 export type { NavbarProps, NavbarTone } from "./navigation/navbar/index.ts";
+export { Pagination } from "./navigation/pagination/index.ts";
+export type { PaginationProps } from "./navigation/pagination/index.ts";
 export { SidebarNavigation } from "./navigation/sidebar-navigation/index.ts";
 export type { SidebarNavigationProps } from "./navigation/sidebar-navigation/index.ts";
 export { Tabs } from "./navigation/tabs/index.ts";
