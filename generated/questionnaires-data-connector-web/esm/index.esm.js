@@ -111,7 +111,7 @@ listQuestionnaireTemplatesRef.operationName = 'ListQuestionnaireTemplates';
 export function listQuestionnaireTemplates(dcOrOptions, options) {
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
-  return executeQuery(listQuestionnaireTemplatesRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+  return executeQuery(listQuestionnaireTemplatesRef(dcInstance, inputVars), inputOpts && inputOpts.fetchPolicy);
 }
 
 export const getQuestionnaireTemplateRef = (dcOrVars, vars) => {
@@ -124,6 +124,6 @@ getQuestionnaireTemplateRef.operationName = 'GetQuestionnaireTemplate';
 export function getQuestionnaireTemplate(dcOrVars, varsOrOptions, options) {
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(getQuestionnaireTemplateRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+  return executeQuery(getQuestionnaireTemplateRef(dcInstance, inputVars), inputOpts && inputOpts.fetchPolicy);
 }
 
