@@ -68,6 +68,15 @@ export interface DeleteQuestionnaireTemplateData {
   questionnaireTemplate_delete?: QuestionnaireTemplate_Key | null;
 }
 
+export interface DeleteQuestionnaireTemplateQuestionData {
+  questionnaireTemplateQuestion_delete?: QuestionnaireTemplateQuestion_Key | null;
+}
+
+export interface DeleteQuestionnaireTemplateQuestionVariables {
+  id: UUIDString;
+  templateId: UUIDString;
+}
+
 export interface DeleteQuestionnaireTemplateVariables {
   id: UUIDString;
 }
@@ -75,6 +84,26 @@ export interface DeleteQuestionnaireTemplateVariables {
 export interface FloorplanPage_Key {
   id: UUIDString;
   __typename?: 'FloorplanPage_Key';
+}
+
+export interface GetQuestionnaireTemplateData {
+  questionnaireTemplate?: {
+    id: UUIDString;
+    ownerId: string;
+    name: string;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    questions: ({
+      id: UUIDString;
+      label: string;
+      description?: string | null;
+      position: number;
+    } & QuestionnaireTemplateQuestion_Key)[];
+  } & QuestionnaireTemplate_Key;
+}
+
+export interface GetQuestionnaireTemplateVariables {
+  id: UUIDString;
 }
 
 export interface ListQuestionnaireTemplatesData {
@@ -153,6 +182,27 @@ export interface Supplier_Key {
   __typename?: 'Supplier_Key';
 }
 
+export interface UpdateQuestionnaireTemplateNameData {
+  questionnaireTemplate_update?: QuestionnaireTemplate_Key | null;
+}
+
+export interface UpdateQuestionnaireTemplateNameVariables {
+  id: UUIDString;
+  name: string;
+}
+
+export interface UpdateQuestionnaireTemplateQuestionData {
+  questionnaireTemplateQuestion_update?: QuestionnaireTemplateQuestion_Key | null;
+}
+
+export interface UpdateQuestionnaireTemplateQuestionVariables {
+  id: UUIDString;
+  templateId: UUIDString;
+  label: string;
+  position: number;
+  description?: string | null;
+}
+
 export interface UserSettings_Key {
   ownerId: string;
   __typename?: 'UserSettings_Key';
@@ -181,6 +231,42 @@ export const createQuestionnaireTemplateQuestionRef: CreateQuestionnaireTemplate
 
 export function createQuestionnaireTemplateQuestion(vars: CreateQuestionnaireTemplateQuestionVariables): MutationPromise<CreateQuestionnaireTemplateQuestionData, CreateQuestionnaireTemplateQuestionVariables>;
 export function createQuestionnaireTemplateQuestion(dc: DataConnect, vars: CreateQuestionnaireTemplateQuestionVariables): MutationPromise<CreateQuestionnaireTemplateQuestionData, CreateQuestionnaireTemplateQuestionVariables>;
+
+interface UpdateQuestionnaireTemplateNameRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuestionnaireTemplateNameVariables): MutationRef<UpdateQuestionnaireTemplateNameData, UpdateQuestionnaireTemplateNameVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateQuestionnaireTemplateNameVariables): MutationRef<UpdateQuestionnaireTemplateNameData, UpdateQuestionnaireTemplateNameVariables>;
+  operationName: string;
+}
+export const updateQuestionnaireTemplateNameRef: UpdateQuestionnaireTemplateNameRef;
+
+export function updateQuestionnaireTemplateName(vars: UpdateQuestionnaireTemplateNameVariables): MutationPromise<UpdateQuestionnaireTemplateNameData, UpdateQuestionnaireTemplateNameVariables>;
+export function updateQuestionnaireTemplateName(dc: DataConnect, vars: UpdateQuestionnaireTemplateNameVariables): MutationPromise<UpdateQuestionnaireTemplateNameData, UpdateQuestionnaireTemplateNameVariables>;
+
+interface UpdateQuestionnaireTemplateQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuestionnaireTemplateQuestionVariables): MutationRef<UpdateQuestionnaireTemplateQuestionData, UpdateQuestionnaireTemplateQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateQuestionnaireTemplateQuestionVariables): MutationRef<UpdateQuestionnaireTemplateQuestionData, UpdateQuestionnaireTemplateQuestionVariables>;
+  operationName: string;
+}
+export const updateQuestionnaireTemplateQuestionRef: UpdateQuestionnaireTemplateQuestionRef;
+
+export function updateQuestionnaireTemplateQuestion(vars: UpdateQuestionnaireTemplateQuestionVariables): MutationPromise<UpdateQuestionnaireTemplateQuestionData, UpdateQuestionnaireTemplateQuestionVariables>;
+export function updateQuestionnaireTemplateQuestion(dc: DataConnect, vars: UpdateQuestionnaireTemplateQuestionVariables): MutationPromise<UpdateQuestionnaireTemplateQuestionData, UpdateQuestionnaireTemplateQuestionVariables>;
+
+interface DeleteQuestionnaireTemplateQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteQuestionnaireTemplateQuestionVariables): MutationRef<DeleteQuestionnaireTemplateQuestionData, DeleteQuestionnaireTemplateQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteQuestionnaireTemplateQuestionVariables): MutationRef<DeleteQuestionnaireTemplateQuestionData, DeleteQuestionnaireTemplateQuestionVariables>;
+  operationName: string;
+}
+export const deleteQuestionnaireTemplateQuestionRef: DeleteQuestionnaireTemplateQuestionRef;
+
+export function deleteQuestionnaireTemplateQuestion(vars: DeleteQuestionnaireTemplateQuestionVariables): MutationPromise<DeleteQuestionnaireTemplateQuestionData, DeleteQuestionnaireTemplateQuestionVariables>;
+export function deleteQuestionnaireTemplateQuestion(dc: DataConnect, vars: DeleteQuestionnaireTemplateQuestionVariables): MutationPromise<DeleteQuestionnaireTemplateQuestionData, DeleteQuestionnaireTemplateQuestionVariables>;
 
 interface DeleteQuestionnaireTemplateRef {
   /* Allow users to create refs without passing in DataConnect */
@@ -229,4 +315,16 @@ export const listQuestionnaireTemplatesRef: ListQuestionnaireTemplatesRef;
 
 export function listQuestionnaireTemplates(options?: ExecuteQueryOptions): QueryPromise<ListQuestionnaireTemplatesData, undefined>;
 export function listQuestionnaireTemplates(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuestionnaireTemplatesData, undefined>;
+
+interface GetQuestionnaireTemplateRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionnaireTemplateVariables): QueryRef<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuestionnaireTemplateVariables): QueryRef<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
+  operationName: string;
+}
+export const getQuestionnaireTemplateRef: GetQuestionnaireTemplateRef;
+
+export function getQuestionnaireTemplate(vars: GetQuestionnaireTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
+export function getQuestionnaireTemplate(dc: DataConnect, vars: GetQuestionnaireTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
 

@@ -41,6 +41,69 @@ mutation CreateQuestionnaireTemplateQuestion(
     )
 }
 
+mutation UpdateQuestionnaireTemplateName($id: UUID!, $name: String!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        questionnaireTemplate(key: { id: $id })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this template"
+            ) {
+            id
+            ownerId
+        }
+    }
+    questionnaireTemplate_update(
+        id: $id
+        data: { name: $name, updatedAt_expr: "request.time" }
+    )
+}
+
+mutation UpdateQuestionnaireTemplateQuestion(
+    $id: UUID!
+    $templateId: UUID!
+    $label: String!
+    $position: Int!
+    $description: String
+) @auth(level: USER) @transaction {
+    query @redact {
+        questionnaireTemplate(key: { id: $templateId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this template"
+            ) {
+            id
+            ownerId
+        }
+    }
+    questionnaireTemplateQuestion_update(
+        id: $id
+        data: {
+            label: $label
+            position: $position
+            description: $description
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation DeleteQuestionnaireTemplateQuestion($id: UUID!, $templateId: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        questionnaireTemplate(key: { id: $templateId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this template"
+            ) {
+            id
+            ownerId
+        }
+    }
+    questionnaireTemplateQuestion_delete(id: $id)
+}
+
 mutation DeleteQuestionnaireTemplate($id: UUID!)
 @auth(level: USER)
 @transaction {

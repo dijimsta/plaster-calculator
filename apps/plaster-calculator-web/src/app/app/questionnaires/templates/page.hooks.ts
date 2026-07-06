@@ -1,5 +1,6 @@
 import {
     connectorConfig,
+    getQuestionnaireTemplateRef,
     listQuestionnaireTemplates,
     listQuestionnaireTemplatesRef,
 } from "@generated/questionnaires-data-connector-web";
@@ -7,7 +8,11 @@ import {
     useCreateQuestionnaireTemplate,
     useCreateQuestionnaireTemplateQuestion,
     useDeleteQuestionnaireTemplate,
+    useDeleteQuestionnaireTemplateQuestion,
+    useGetQuestionnaireTemplate,
     useListQuestionnaireTemplates,
+    useUpdateQuestionnaireTemplateName,
+    useUpdateQuestionnaireTemplateQuestion,
 } from "@generated/questionnaires-data-connector-web/react";
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { useNotificationsManager } from "@libraries/uikit-web";
@@ -18,12 +23,17 @@ import { useCallback } from "react";
 import type { QuestionnaireTemplatesPageAction } from "./page.reducer.js";
 import type {
     QuestionnaireTemplate,
+    QuestionnaireTemplateDetails,
     QuestionnaireTemplateFormValues,
 } from "@libraries/plaster-calculator-ui";
 import type { Dispatch } from "react";
 
 type RefreshTemplates = () => Promise<void>;
 type DeleteTemplate = (template: QuestionnaireTemplate) => Promise<void>;
+type UpdateTemplate = (
+    template: QuestionnaireTemplateDetails,
+    values: QuestionnaireTemplateFormValues,
+) => Promise<void>;
 type PageDispatch = Dispatch<QuestionnaireTemplatesPageAction>;
 
 const dataConnect = FirebaseService.getDataConnect(connectorConfig);
@@ -145,4 +155,118 @@ export function useConfirmDeleteCallback(
             void deleteTemplate(template);
         }
     }, [deleteTemplate, template]);
+}
+
+export function useQuestionnaireTemplateDetails(templateId: string | null): {
+    readonly template: QuestionnaireTemplateDetails | null;
+    readonly isLoading: boolean;
+} {
+    const { data, isLoading } = useGetQuestionnaireTemplate(
+        dataConnect,
+        { id: templateId ?? "" },
+        { enabled: templateId !== null },
+    );
+
+    return {
+        template: data?.questionnaireTemplate ?? null,
+        isLoading,
+    };
+}
+
+export function useUpdateQuestionnaireTemplateCallback(
+    refreshTemplates: RefreshTemplates,
+    dispatch: PageDispatch,
+): UpdateTemplate {
+    const { mutateAsync: updateName } =
+        useUpdateQuestionnaireTemplateName(dataConnect);
+    const { mutateAsync: updateQuestion } =
+        useUpdateQuestionnaireTemplateQuestion(dataConnect);
+    const { mutateAsync: createQuestion } =
+        useCreateQuestionnaireTemplateQuestion(dataConnect);
+    const { mutateAsync: deleteQuestion } =
+        useDeleteQuestionnaireTemplateQuestion(dataConnect);
+    const { notify } = useNotificationsManager();
+    const queryClient = useQueryClient();
+
+    return useCallback(
+        async (
+            template: QuestionnaireTemplateDetails,
+            values: QuestionnaireTemplateFormValues,
+        ): Promise<void> => {
+            try {
+                await updateName({ id: template.id, name: values.name });
+
+                const remainingQuestionIds = new Set(
+                    values.questions.flatMap((question) =>
+                        question.id === undefined ? [] : [question.id],
+                    ),
+                );
+                await Promise.all(
+                    template.questions
+                        .filter(
+                            (question) =>
+                                !remainingQuestionIds.has(question.id),
+                        )
+                        .map((question) =>
+                            deleteQuestion({
+                                id: question.id,
+                                templateId: template.id,
+                            }),
+                        ),
+                );
+
+                await Promise.all(
+                    values.questions.map((question, position) =>
+                        question.id === undefined
+                            ? createQuestion({
+                                  id: crypto.randomUUID(),
+                                  templateId: template.id,
+                                  label: question.label,
+                                  description: question.description,
+                                  position,
+                              })
+                            : updateQuestion({
+                                  id: question.id,
+                                  templateId: template.id,
+                                  label: question.label,
+                                  description: question.description,
+                                  position,
+                              }),
+                    ),
+                );
+
+                const templateRef = getQuestionnaireTemplateRef(dataConnect, {
+                    id: template.id,
+                });
+                await queryClient.invalidateQueries({
+                    queryKey: [templateRef.name, templateRef.variables ?? null],
+                });
+
+                await refreshTemplates();
+                dispatch({ type: "editSucceeded" });
+                notify({
+                    intent: "success",
+                    title: "Template updated",
+                    description: `"${values.name}" has been saved.`,
+                });
+            } catch {
+                notify({
+                    intent: "error",
+                    title: "Couldn't update template",
+                    description:
+                        "Something went wrong while saving. Please try again.",
+                });
+            }
+        },
+        [
+            createQuestion,
+            deleteQuestion,
+            dispatch,
+            notify,
+            queryClient,
+            refreshTemplates,
+            updateName,
+            updateQuestion,
+        ],
+    );
 }

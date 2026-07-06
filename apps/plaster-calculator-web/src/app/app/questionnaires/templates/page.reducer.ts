@@ -4,12 +4,19 @@ export interface QuestionnaireTemplatesPageState {
     readonly isDrawerOpen: boolean;
     readonly isDeleting: boolean;
     readonly templatePendingDeletion: QuestionnaireTemplate | null;
+    readonly templateBeingEdited: QuestionnaireTemplate | null;
 }
 
 export type QuestionnaireTemplatesPageAction =
     | { readonly type: "openDrawer" }
     | { readonly type: "closeDrawer" }
     | { readonly type: "createSucceeded" }
+    | {
+          readonly type: "requestEdit";
+          readonly template: QuestionnaireTemplate;
+      }
+    | { readonly type: "closeEditDrawer" }
+    | { readonly type: "editSucceeded" }
     | {
           readonly type: "requestDelete";
           readonly template: QuestionnaireTemplate;
@@ -24,6 +31,7 @@ export function createInitialQuestionnaireTemplatesPageState(): QuestionnaireTem
         isDrawerOpen: false,
         isDeleting: false,
         templatePendingDeletion: null,
+        templateBeingEdited: null,
     };
 }
 
@@ -38,6 +46,12 @@ export function questionnaireTemplatesPageReducer(
             return { ...state, isDrawerOpen: false };
         case "createSucceeded":
             return { ...state, isDrawerOpen: false };
+        case "requestEdit":
+            return { ...state, templateBeingEdited: action.template };
+        case "closeEditDrawer":
+            return { ...state, templateBeingEdited: null };
+        case "editSucceeded":
+            return { ...state, templateBeingEdited: null };
         case "requestDelete":
             return { ...state, templatePendingDeletion: action.template };
         case "cancelDelete":

@@ -9,3 +9,25 @@ query ListQuestionnaireTemplates @auth(level: USER) {
         updatedAt
     }
 }
+
+query GetQuestionnaireTemplate($id: UUID!) @auth(level: USER) {
+    questionnaireTemplate(key: { id: $id })
+        @check(
+            expr: "this != null && this.ownerId == auth.uid"
+            message: "You do not own this template"
+        ) {
+        id
+        ownerId
+        name
+        createdAt
+        updatedAt
+        questions: questionnaireTemplateQuestions_on_template(
+            orderBy: [{ position: ASC }]
+        ) {
+            id
+            label
+            description
+            position
+        }
+    }
+}
