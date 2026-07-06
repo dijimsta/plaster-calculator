@@ -58,7 +58,6 @@ export interface CreateQuestionnaireTemplateQuestionVariables {
 
 export interface CreateQuestionnaireTemplateVariables {
   id: UUIDString;
-  ownerId: string;
   name: string;
 }
 
@@ -74,10 +73,6 @@ export interface ListQuestionnaireTemplatesData {
     createdAt: TimestampString;
     updatedAt: TimestampString;
   } & QuestionnaireTemplate_Key)[];
-}
-
-export interface ListQuestionnaireTemplatesVariables {
-  ownerId: string;
 }
 
 export interface ProjectQuestionnaireAnswer_Key {
@@ -173,7 +168,7 @@ export function createProjectQuestionnaireAnswer(dc: DataConnect, vars: CreatePr
 export function createProjectQuestionnaireAnswer(vars: CreateProjectQuestionnaireAnswerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectQuestionnaireAnswerData>>;
 
 /** Generated Node Admin SDK operation action function for the 'ListQuestionnaireTemplates' Query. Allow users to execute without passing in DataConnect. */
-export function listQuestionnaireTemplates(dc: DataConnect, vars: ListQuestionnaireTemplatesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
+export function listQuestionnaireTemplates(dc: DataConnect, options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
 /** Generated Node Admin SDK operation action function for the 'ListQuestionnaireTemplates' Query. Allow users to pass in custom DataConnect instances. */
-export function listQuestionnaireTemplates(vars: ListQuestionnaireTemplatesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
+export function listQuestionnaireTemplates(options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
 

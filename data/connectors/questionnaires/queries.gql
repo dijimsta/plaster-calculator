@@ -1,6 +1,6 @@
-query ListQuestionnaireTemplates($ownerId: String!) @auth(level: NO_ACCESS) {
+query ListQuestionnaireTemplates @auth(level: USER) {
     questionnaireTemplates(
-        where: { ownerId: { eq: $ownerId } }
+        where: { ownerId: { eq_expr: "auth.uid" } }
         orderBy: [{ updatedAt: DESC }]
     ) {
         id
