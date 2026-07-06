@@ -32,8 +32,8 @@ export const Default: Story = {
         template: {
             id: "detached-dwelling",
             name: "Standard residential questionnaire",
-            usedByLabel: "12 builders",
-            updated: "Updated 2 days ago",
+            createdAt: "2026-01-15T09:00:00.000Z",
+            updatedAt: "2026-07-04T09:00:00.000Z",
         },
     },
 };

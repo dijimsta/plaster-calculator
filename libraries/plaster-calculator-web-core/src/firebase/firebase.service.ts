@@ -1,5 +1,12 @@
+import { connectorConfig as questionnairesConnectorConfig } from "@generated/questionnaires-data-connector-web";
 import { getApps, initializeApp, type FirebaseApp } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
+import {
+    connectDataConnectEmulator,
+    getDataConnect,
+    type ConnectorConfig,
+    type DataConnect,
+} from "firebase/data-connect";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 
@@ -29,7 +36,13 @@ export class FirebaseService {
         return getStorage(FirebaseService.app);
     }
 
-    public static connectEmulators() {
+    public static getDataConnect(
+        connectorConfig: ConnectorConfig,
+    ): DataConnect {
+        return getDataConnect(FirebaseService.app, connectorConfig);
+    }
+
+    public static connectEmulators(): void {
         connectAuthEmulator(
             FirebaseService.getAuth(),
             "http://127.0.0.1:9099",
@@ -43,5 +56,10 @@ export class FirebaseService {
             5001,
         );
         connectStorageEmulator(FirebaseService.getStorage(), "127.0.0.1", 9199);
+        connectDataConnectEmulator(
+            FirebaseService.getDataConnect(questionnairesConnectorConfig),
+            "127.0.0.1",
+            9399,
+        );
     }
 }

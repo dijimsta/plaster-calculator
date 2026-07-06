@@ -2,6 +2,7 @@ import { type Metadata } from "next";
 import { type PropsWithChildren } from "react";
 
 import "./globals.css";
+import { AppQueryClientProvider } from "../components/query-client.provider.js";
 import { ThemeInitializer } from "../components/theme-initializer.js";
 import { AppCheckProvider } from "../firebase/app-check.provider.ts";
 
@@ -48,8 +49,10 @@ export default function RootLayout({ children }: PropsWithChildren) {
         <html lang="en">
             <body>
                 <AppCheckProvider>
-                    <ThemeInitializer />
-                    {children}
+                    <AppQueryClientProvider>
+                        <ThemeInitializer />
+                        {children}
+                    </AppQueryClientProvider>
                 </AppCheckProvider>
             </body>
         </html>

@@ -1,7 +1,6 @@
+import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { httpsCallable } from "firebase/functions";
 import { ref, uploadBytes } from "firebase/storage";
-
-import { auth, functions, storage } from "../../firebase/firebase.utils.js";
 
 import type {
     FloorplanPage,
@@ -9,6 +8,10 @@ import type {
     ProjectSummary,
     SalesStatus,
 } from "../../types.js";
+
+const auth = FirebaseService.getAuth();
+const functions = FirebaseService.getFunctions();
+const storage = FirebaseService.getStorage();
 
 const LONG_RUNNING_CALLABLE_TIMEOUT_MS = 60 * 60 * 1000;
 

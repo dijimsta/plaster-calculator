@@ -11,9 +11,13 @@
         "start": "next start"
     },
     "dependencies": {
+        "@generated/questionnaires-data-connector-web": "workspace:*",
         "@libraries/plaster-calculator-common": "workspace:*",
+        "@libraries/plaster-calculator-ui": "workspace:*",
         "@libraries/plaster-calculator-web-core": "workspace:*",
         "@libraries/uikit-web": "workspace:*",
+        "@tanstack-query-firebase/react": "^2.0.0",
+        "@tanstack/react-query": "^5.101.2",
         "firebase": "^12.15.0",
         "konva": "^10.3.0",
         "lucide-react": "^1.21.0",

@@ -1,12 +1,9 @@
-mutation CreateQuestionnaireTemplate(
-    $id: UUID!
-    $ownerId: String!
-    $name: String!
-) @auth(level: NO_ACCESS) {
+mutation CreateQuestionnaireTemplate($id: UUID!, $name: String!)
+@auth(level: USER) {
     questionnaireTemplate_insert(
         data: {
             id: $id
-            ownerId: $ownerId
+            ownerId_expr: "auth.uid"
             name: $name
             createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
@@ -20,7 +17,17 @@ mutation CreateQuestionnaireTemplateQuestion(
     $label: String!
     $position: Int!
     $description: String
-) @auth(level: NO_ACCESS) {
+) @auth(level: USER) @transaction {
+    query @redact {
+        questionnaireTemplate(key: { id: $templateId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this template"
+            ) {
+            id
+            ownerId
+        }
+    }
     questionnaireTemplateQuestion_insert(
         data: {
             id: $id

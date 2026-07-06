@@ -3,3 +3,7 @@ generate:
     adminNodeSdk:
         - package: "@generated/questionnaires-data-connector"
           outputDir: ../../../generated/questionnaires-data-connector
+    javascriptSdk:
+        - package: "@generated/questionnaires-data-connector-web"
+          outputDir: ../../../generated/questionnaires-data-connector-web
+          react: true
