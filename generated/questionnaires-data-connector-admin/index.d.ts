@@ -206,16 +206,6 @@ export interface UserSettings_Key {
   __typename?: 'UserSettings_Key';
 }
 
-/** Generated Node Admin SDK operation action function for the 'ListQuestionnaireTemplates' Query. Allow users to execute without passing in DataConnect. */
-export function listQuestionnaireTemplates(dc: DataConnect, options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
-/** Generated Node Admin SDK operation action function for the 'ListQuestionnaireTemplates' Query. Allow users to pass in custom DataConnect instances. */
-export function listQuestionnaireTemplates(options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
-
-/** Generated Node Admin SDK operation action function for the 'GetQuestionnaireTemplate' Query. Allow users to execute without passing in DataConnect. */
-export function getQuestionnaireTemplate(dc: DataConnect, vars: GetQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetQuestionnaireTemplateData>>;
-/** Generated Node Admin SDK operation action function for the 'GetQuestionnaireTemplate' Query. Allow users to pass in custom DataConnect instances. */
-export function getQuestionnaireTemplate(vars: GetQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetQuestionnaireTemplateData>>;
-
 /** Generated Node Admin SDK operation action function for the 'CreateQuestionnaireTemplate' Mutation. Allow users to execute without passing in DataConnect. */
 export function createQuestionnaireTemplate(dc: DataConnect, vars: CreateQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuestionnaireTemplateData>>;
 /** Generated Node Admin SDK operation action function for the 'CreateQuestionnaireTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
@@ -255,4 +245,14 @@ export function createProjectQuestionnaire(vars: CreateProjectQuestionnaireVaria
 export function createProjectQuestionnaireAnswer(dc: DataConnect, vars: CreateProjectQuestionnaireAnswerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectQuestionnaireAnswerData>>;
 /** Generated Node Admin SDK operation action function for the 'CreateProjectQuestionnaireAnswer' Mutation. Allow users to pass in custom DataConnect instances. */
 export function createProjectQuestionnaireAnswer(vars: CreateProjectQuestionnaireAnswerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectQuestionnaireAnswerData>>;
+
+/** Generated Node Admin SDK operation action function for the 'ListQuestionnaireTemplates' Query. Allow users to execute without passing in DataConnect. */
+export function listQuestionnaireTemplates(dc: DataConnect, options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
+/** Generated Node Admin SDK operation action function for the 'ListQuestionnaireTemplates' Query. Allow users to pass in custom DataConnect instances. */
+export function listQuestionnaireTemplates(options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
+
+/** Generated Node Admin SDK operation action function for the 'GetQuestionnaireTemplate' Query. Allow users to execute without passing in DataConnect. */
+export function getQuestionnaireTemplate(dc: DataConnect, vars: GetQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetQuestionnaireTemplateData>>;
+/** Generated Node Admin SDK operation action function for the 'GetQuestionnaireTemplate' Query. Allow users to pass in custom DataConnect instances. */
+export function getQuestionnaireTemplate(vars: GetQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetQuestionnaireTemplateData>>;
 
