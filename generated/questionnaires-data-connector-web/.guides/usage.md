@@ -12,12 +12,18 @@ For each operation, there is a wrapper hook that can be used to call the operati
 
 Here are all of the hooks that get generated:
 ```ts
-import { useCreateQuestionnaireTemplate, useCreateQuestionnaireTemplateQuestion, useDeleteQuestionnaireTemplate, useCreateProjectQuestionnaire, useCreateProjectQuestionnaireAnswer, useListQuestionnaireTemplates } from '@generated/questionnaires-data-connector-web/react';
+import { useCreateQuestionnaireTemplate, useCreateQuestionnaireTemplateQuestion, useUpdateQuestionnaireTemplateName, useUpdateQuestionnaireTemplateQuestion, useDeleteQuestionnaireTemplateQuestion, useDeleteQuestionnaireTemplate, useCreateProjectQuestionnaire, useCreateProjectQuestionnaireAnswer, useListQuestionnaireTemplates, useGetQuestionnaireTemplate } from '@generated/questionnaires-data-connector-web/react';
 // The types of these hooks are available in react/index.d.ts
 
 const { data, isPending, isSuccess, isError, error } = useCreateQuestionnaireTemplate(createQuestionnaireTemplateVars);
 
 const { data, isPending, isSuccess, isError, error } = useCreateQuestionnaireTemplateQuestion(createQuestionnaireTemplateQuestionVars);
+
+const { data, isPending, isSuccess, isError, error } = useUpdateQuestionnaireTemplateName(updateQuestionnaireTemplateNameVars);
+
+const { data, isPending, isSuccess, isError, error } = useUpdateQuestionnaireTemplateQuestion(updateQuestionnaireTemplateQuestionVars);
+
+const { data, isPending, isSuccess, isError, error } = useDeleteQuestionnaireTemplateQuestion(deleteQuestionnaireTemplateQuestionVars);
 
 const { data, isPending, isSuccess, isError, error } = useDeleteQuestionnaireTemplate(deleteQuestionnaireTemplateVars);
 
@@ -26,6 +32,8 @@ const { data, isPending, isSuccess, isError, error } = useCreateProjectQuestionn
 const { data, isPending, isSuccess, isError, error } = useCreateProjectQuestionnaireAnswer(createProjectQuestionnaireAnswerVars);
 
 const { data, isPending, isSuccess, isError, error } = useListQuestionnaireTemplates();
+
+const { data, isPending, isSuccess, isError, error } = useGetQuestionnaireTemplate(getQuestionnaireTemplateVars);
 
 ```
 
@@ -64,7 +72,7 @@ If a user is not using a supported framework, they can use the generated SDK dir
 Here's an example of how to use it with the first 5 operations:
 
 ```js
-import { createQuestionnaireTemplate, createQuestionnaireTemplateQuestion, deleteQuestionnaireTemplate, createProjectQuestionnaire, createProjectQuestionnaireAnswer, listQuestionnaireTemplates } from '@generated/questionnaires-data-connector-web';
+import { createQuestionnaireTemplate, createQuestionnaireTemplateQuestion, updateQuestionnaireTemplateName, updateQuestionnaireTemplateQuestion, deleteQuestionnaireTemplateQuestion, deleteQuestionnaireTemplate, createProjectQuestionnaire, createProjectQuestionnaireAnswer, listQuestionnaireTemplates, getQuestionnaireTemplate } from '@generated/questionnaires-data-connector-web';
 
 
 // Operation CreateQuestionnaireTemplate:  For variables, look at type CreateQuestionnaireTemplateVars in ../index.d.ts
@@ -72,6 +80,15 @@ const { data } = await CreateQuestionnaireTemplate(dataConnect, createQuestionna
 
 // Operation CreateQuestionnaireTemplateQuestion:  For variables, look at type CreateQuestionnaireTemplateQuestionVars in ../index.d.ts
 const { data } = await CreateQuestionnaireTemplateQuestion(dataConnect, createQuestionnaireTemplateQuestionVars);
+
+// Operation UpdateQuestionnaireTemplateName:  For variables, look at type UpdateQuestionnaireTemplateNameVars in ../index.d.ts
+const { data } = await UpdateQuestionnaireTemplateName(dataConnect, updateQuestionnaireTemplateNameVars);
+
+// Operation UpdateQuestionnaireTemplateQuestion:  For variables, look at type UpdateQuestionnaireTemplateQuestionVars in ../index.d.ts
+const { data } = await UpdateQuestionnaireTemplateQuestion(dataConnect, updateQuestionnaireTemplateQuestionVars);
+
+// Operation DeleteQuestionnaireTemplateQuestion:  For variables, look at type DeleteQuestionnaireTemplateQuestionVars in ../index.d.ts
+const { data } = await DeleteQuestionnaireTemplateQuestion(dataConnect, deleteQuestionnaireTemplateQuestionVars);
 
 // Operation DeleteQuestionnaireTemplate:  For variables, look at type DeleteQuestionnaireTemplateVars in ../index.d.ts
 const { data } = await DeleteQuestionnaireTemplate(dataConnect, deleteQuestionnaireTemplateVars);
@@ -84,6 +101,9 @@ const { data } = await CreateProjectQuestionnaireAnswer(dataConnect, createProje
 
 // Operation ListQuestionnaireTemplates: 
 const { data } = await ListQuestionnaireTemplates(dataConnect);
+
+// Operation GetQuestionnaireTemplate:  For variables, look at type GetQuestionnaireTemplateVars in ../index.d.ts
+const { data } = await GetQuestionnaireTemplate(dataConnect, getQuestionnaireTemplateVars);
 
 
 ```

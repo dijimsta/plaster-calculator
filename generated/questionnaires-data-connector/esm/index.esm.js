@@ -18,6 +18,24 @@ export function createQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOpt
   return dcInstance.executeMutation('CreateQuestionnaireTemplateQuestion', inputVars, inputOpts);
 }
 
+export function updateQuestionnaireTemplateName(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateQuestionnaireTemplateName', inputVars, inputOpts);
+}
+
+export function updateQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateQuestionnaireTemplateQuestion', inputVars, inputOpts);
+}
+
+export function deleteQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteQuestionnaireTemplateQuestion', inputVars, inputOpts);
+}
+
 export function deleteQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
@@ -40,5 +58,11 @@ export function listQuestionnaireTemplates(dcOrOptions, options) {
   const { dc: dcInstance, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrOptions, options, undefined);
   dcInstance.useGen(true);
   return dcInstance.executeQuery('ListQuestionnaireTemplates', undefined, inputOpts);
+}
+
+export function getQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetQuestionnaireTemplate', inputVars, inputOpts);
 }
 

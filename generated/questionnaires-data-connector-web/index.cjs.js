@@ -35,6 +35,48 @@ exports.createQuestionnaireTemplateQuestion = function createQuestionnaireTempla
 }
 ;
 
+const updateQuestionnaireTemplateNameRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuestionnaireTemplateName', inputVars);
+}
+updateQuestionnaireTemplateNameRef.operationName = 'UpdateQuestionnaireTemplateName';
+exports.updateQuestionnaireTemplateNameRef = updateQuestionnaireTemplateNameRef;
+
+exports.updateQuestionnaireTemplateName = function updateQuestionnaireTemplateName(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateQuestionnaireTemplateNameRef(dcInstance, inputVars));
+}
+;
+
+const updateQuestionnaireTemplateQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuestionnaireTemplateQuestion', inputVars);
+}
+updateQuestionnaireTemplateQuestionRef.operationName = 'UpdateQuestionnaireTemplateQuestion';
+exports.updateQuestionnaireTemplateQuestionRef = updateQuestionnaireTemplateQuestionRef;
+
+exports.updateQuestionnaireTemplateQuestion = function updateQuestionnaireTemplateQuestion(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateQuestionnaireTemplateQuestionRef(dcInstance, inputVars));
+}
+;
+
+const deleteQuestionnaireTemplateQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteQuestionnaireTemplateQuestion', inputVars);
+}
+deleteQuestionnaireTemplateQuestionRef.operationName = 'DeleteQuestionnaireTemplateQuestion';
+exports.deleteQuestionnaireTemplateQuestionRef = deleteQuestionnaireTemplateQuestionRef;
+
+exports.deleteQuestionnaireTemplateQuestion = function deleteQuestionnaireTemplateQuestion(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteQuestionnaireTemplateQuestionRef(dcInstance, inputVars));
+}
+;
+
 const deleteQuestionnaireTemplateRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -89,5 +131,20 @@ exports.listQuestionnaireTemplates = function listQuestionnaireTemplates(dcOrOpt
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
   return executeQuery(listQuestionnaireTemplatesRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
+const getQuestionnaireTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuestionnaireTemplate', inputVars);
+}
+getQuestionnaireTemplateRef.operationName = 'GetQuestionnaireTemplate';
+exports.getQuestionnaireTemplateRef = getQuestionnaireTemplateRef;
+
+exports.getQuestionnaireTemplate = function getQuestionnaireTemplate(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
+  return executeQuery(getQuestionnaireTemplateRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 ;

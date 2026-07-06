@@ -11,9 +11,13 @@ This README will guide you through the process of using the generated JavaScript
   - [*Connecting to the local Emulator*](#connecting-to-the-local-emulator)
 - [**Queries**](#queries)
   - [*ListQuestionnaireTemplates*](#listquestionnairetemplates)
+  - [*GetQuestionnaireTemplate*](#getquestionnairetemplate)
 - [**Mutations**](#mutations)
   - [*CreateQuestionnaireTemplate*](#createquestionnairetemplate)
   - [*CreateQuestionnaireTemplateQuestion*](#createquestionnairetemplatequestion)
+  - [*UpdateQuestionnaireTemplateName*](#updatequestionnairetemplatename)
+  - [*UpdateQuestionnaireTemplateQuestion*](#updatequestionnairetemplatequestion)
+  - [*DeleteQuestionnaireTemplateQuestion*](#deletequestionnairetemplatequestion)
   - [*DeleteQuestionnaireTemplate*](#deletequestionnairetemplate)
   - [*CreateProjectQuestionnaire*](#createprojectquestionnaire)
   - [*CreateProjectQuestionnaireAnswer*](#createprojectquestionnaireanswer)
@@ -156,6 +160,127 @@ console.log(data.questionnaireTemplates);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.questionnaireTemplates);
+});
+```
+
+## GetQuestionnaireTemplate
+You can execute the `GetQuestionnaireTemplate` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+getQuestionnaireTemplate(vars: GetQuestionnaireTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
+
+interface GetQuestionnaireTemplateRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuestionnaireTemplateVariables): QueryRef<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
+}
+export const getQuestionnaireTemplateRef: GetQuestionnaireTemplateRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getQuestionnaireTemplate(dc: DataConnect, vars: GetQuestionnaireTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
+
+interface GetQuestionnaireTemplateRef {
+  ...
+  (dc: DataConnect, vars: GetQuestionnaireTemplateVariables): QueryRef<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
+}
+export const getQuestionnaireTemplateRef: GetQuestionnaireTemplateRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getQuestionnaireTemplateRef:
+```typescript
+const name = getQuestionnaireTemplateRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetQuestionnaireTemplate` query requires an argument of type `GetQuestionnaireTemplateVariables`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetQuestionnaireTemplateVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `GetQuestionnaireTemplate` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetQuestionnaireTemplateData`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetQuestionnaireTemplateData {
+  questionnaireTemplate?: {
+    id: UUIDString;
+    ownerId: string;
+    name: string;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    questions: ({
+      id: UUIDString;
+      label: string;
+      description?: string | null;
+      position: number;
+    } & QuestionnaireTemplateQuestion_Key)[];
+  } & QuestionnaireTemplate_Key;
+}
+```
+### Using `GetQuestionnaireTemplate`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getQuestionnaireTemplate, GetQuestionnaireTemplateVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `GetQuestionnaireTemplate` query requires an argument of type `GetQuestionnaireTemplateVariables`:
+const getQuestionnaireTemplateVars: GetQuestionnaireTemplateVariables = {
+  id: ..., 
+};
+
+// Call the `getQuestionnaireTemplate()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getQuestionnaireTemplate(getQuestionnaireTemplateVars);
+// Variables can be defined inline as well.
+const { data } = await getQuestionnaireTemplate({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getQuestionnaireTemplate(dataConnect, getQuestionnaireTemplateVars);
+
+console.log(data.questionnaireTemplate);
+
+// Or, you can use the `Promise` API.
+getQuestionnaireTemplate(getQuestionnaireTemplateVars).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplate);
+});
+```
+
+### Using `GetQuestionnaireTemplate`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getQuestionnaireTemplateRef, GetQuestionnaireTemplateVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `GetQuestionnaireTemplate` query requires an argument of type `GetQuestionnaireTemplateVariables`:
+const getQuestionnaireTemplateVars: GetQuestionnaireTemplateVariables = {
+  id: ..., 
+};
+
+// Call the `getQuestionnaireTemplateRef()` function to get a reference to the query.
+const ref = getQuestionnaireTemplateRef(getQuestionnaireTemplateVars);
+// Variables can be defined inline as well.
+const ref = getQuestionnaireTemplateRef({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getQuestionnaireTemplateRef(dataConnect, getQuestionnaireTemplateVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.questionnaireTemplate);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplate);
 });
 ```
 
@@ -404,6 +529,351 @@ console.log(data.questionnaireTemplateQuestion_insert);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.questionnaireTemplateQuestion_insert);
+});
+```
+
+## UpdateQuestionnaireTemplateName
+You can execute the `UpdateQuestionnaireTemplateName` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+updateQuestionnaireTemplateName(vars: UpdateQuestionnaireTemplateNameVariables): MutationPromise<UpdateQuestionnaireTemplateNameData, UpdateQuestionnaireTemplateNameVariables>;
+
+interface UpdateQuestionnaireTemplateNameRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuestionnaireTemplateNameVariables): MutationRef<UpdateQuestionnaireTemplateNameData, UpdateQuestionnaireTemplateNameVariables>;
+}
+export const updateQuestionnaireTemplateNameRef: UpdateQuestionnaireTemplateNameRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateQuestionnaireTemplateName(dc: DataConnect, vars: UpdateQuestionnaireTemplateNameVariables): MutationPromise<UpdateQuestionnaireTemplateNameData, UpdateQuestionnaireTemplateNameVariables>;
+
+interface UpdateQuestionnaireTemplateNameRef {
+  ...
+  (dc: DataConnect, vars: UpdateQuestionnaireTemplateNameVariables): MutationRef<UpdateQuestionnaireTemplateNameData, UpdateQuestionnaireTemplateNameVariables>;
+}
+export const updateQuestionnaireTemplateNameRef: UpdateQuestionnaireTemplateNameRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateQuestionnaireTemplateNameRef:
+```typescript
+const name = updateQuestionnaireTemplateNameRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateQuestionnaireTemplateName` mutation requires an argument of type `UpdateQuestionnaireTemplateNameVariables`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateQuestionnaireTemplateNameVariables {
+  id: UUIDString;
+  name: string;
+}
+```
+### Return Type
+Recall that executing the `UpdateQuestionnaireTemplateName` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateQuestionnaireTemplateNameData`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateQuestionnaireTemplateNameData {
+  questionnaireTemplate_update?: QuestionnaireTemplate_Key | null;
+}
+```
+### Using `UpdateQuestionnaireTemplateName`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateQuestionnaireTemplateName, UpdateQuestionnaireTemplateNameVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `UpdateQuestionnaireTemplateName` mutation requires an argument of type `UpdateQuestionnaireTemplateNameVariables`:
+const updateQuestionnaireTemplateNameVars: UpdateQuestionnaireTemplateNameVariables = {
+  id: ..., 
+  name: ..., 
+};
+
+// Call the `updateQuestionnaireTemplateName()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateQuestionnaireTemplateName(updateQuestionnaireTemplateNameVars);
+// Variables can be defined inline as well.
+const { data } = await updateQuestionnaireTemplateName({ id: ..., name: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateQuestionnaireTemplateName(dataConnect, updateQuestionnaireTemplateNameVars);
+
+console.log(data.questionnaireTemplate_update);
+
+// Or, you can use the `Promise` API.
+updateQuestionnaireTemplateName(updateQuestionnaireTemplateNameVars).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplate_update);
+});
+```
+
+### Using `UpdateQuestionnaireTemplateName`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateQuestionnaireTemplateNameRef, UpdateQuestionnaireTemplateNameVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `UpdateQuestionnaireTemplateName` mutation requires an argument of type `UpdateQuestionnaireTemplateNameVariables`:
+const updateQuestionnaireTemplateNameVars: UpdateQuestionnaireTemplateNameVariables = {
+  id: ..., 
+  name: ..., 
+};
+
+// Call the `updateQuestionnaireTemplateNameRef()` function to get a reference to the mutation.
+const ref = updateQuestionnaireTemplateNameRef(updateQuestionnaireTemplateNameVars);
+// Variables can be defined inline as well.
+const ref = updateQuestionnaireTemplateNameRef({ id: ..., name: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateQuestionnaireTemplateNameRef(dataConnect, updateQuestionnaireTemplateNameVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.questionnaireTemplate_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplate_update);
+});
+```
+
+## UpdateQuestionnaireTemplateQuestion
+You can execute the `UpdateQuestionnaireTemplateQuestion` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+updateQuestionnaireTemplateQuestion(vars: UpdateQuestionnaireTemplateQuestionVariables): MutationPromise<UpdateQuestionnaireTemplateQuestionData, UpdateQuestionnaireTemplateQuestionVariables>;
+
+interface UpdateQuestionnaireTemplateQuestionRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuestionnaireTemplateQuestionVariables): MutationRef<UpdateQuestionnaireTemplateQuestionData, UpdateQuestionnaireTemplateQuestionVariables>;
+}
+export const updateQuestionnaireTemplateQuestionRef: UpdateQuestionnaireTemplateQuestionRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateQuestionnaireTemplateQuestion(dc: DataConnect, vars: UpdateQuestionnaireTemplateQuestionVariables): MutationPromise<UpdateQuestionnaireTemplateQuestionData, UpdateQuestionnaireTemplateQuestionVariables>;
+
+interface UpdateQuestionnaireTemplateQuestionRef {
+  ...
+  (dc: DataConnect, vars: UpdateQuestionnaireTemplateQuestionVariables): MutationRef<UpdateQuestionnaireTemplateQuestionData, UpdateQuestionnaireTemplateQuestionVariables>;
+}
+export const updateQuestionnaireTemplateQuestionRef: UpdateQuestionnaireTemplateQuestionRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateQuestionnaireTemplateQuestionRef:
+```typescript
+const name = updateQuestionnaireTemplateQuestionRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateQuestionnaireTemplateQuestion` mutation requires an argument of type `UpdateQuestionnaireTemplateQuestionVariables`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateQuestionnaireTemplateQuestionVariables {
+  id: UUIDString;
+  templateId: UUIDString;
+  label: string;
+  position: number;
+  description?: string | null;
+}
+```
+### Return Type
+Recall that executing the `UpdateQuestionnaireTemplateQuestion` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateQuestionnaireTemplateQuestionData`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateQuestionnaireTemplateQuestionData {
+  questionnaireTemplateQuestion_update?: QuestionnaireTemplateQuestion_Key | null;
+}
+```
+### Using `UpdateQuestionnaireTemplateQuestion`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateQuestionnaireTemplateQuestion, UpdateQuestionnaireTemplateQuestionVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `UpdateQuestionnaireTemplateQuestion` mutation requires an argument of type `UpdateQuestionnaireTemplateQuestionVariables`:
+const updateQuestionnaireTemplateQuestionVars: UpdateQuestionnaireTemplateQuestionVariables = {
+  id: ..., 
+  templateId: ..., 
+  label: ..., 
+  position: ..., 
+  description: ..., // optional
+};
+
+// Call the `updateQuestionnaireTemplateQuestion()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateQuestionnaireTemplateQuestion(updateQuestionnaireTemplateQuestionVars);
+// Variables can be defined inline as well.
+const { data } = await updateQuestionnaireTemplateQuestion({ id: ..., templateId: ..., label: ..., position: ..., description: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateQuestionnaireTemplateQuestion(dataConnect, updateQuestionnaireTemplateQuestionVars);
+
+console.log(data.questionnaireTemplateQuestion_update);
+
+// Or, you can use the `Promise` API.
+updateQuestionnaireTemplateQuestion(updateQuestionnaireTemplateQuestionVars).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplateQuestion_update);
+});
+```
+
+### Using `UpdateQuestionnaireTemplateQuestion`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateQuestionnaireTemplateQuestionRef, UpdateQuestionnaireTemplateQuestionVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `UpdateQuestionnaireTemplateQuestion` mutation requires an argument of type `UpdateQuestionnaireTemplateQuestionVariables`:
+const updateQuestionnaireTemplateQuestionVars: UpdateQuestionnaireTemplateQuestionVariables = {
+  id: ..., 
+  templateId: ..., 
+  label: ..., 
+  position: ..., 
+  description: ..., // optional
+};
+
+// Call the `updateQuestionnaireTemplateQuestionRef()` function to get a reference to the mutation.
+const ref = updateQuestionnaireTemplateQuestionRef(updateQuestionnaireTemplateQuestionVars);
+// Variables can be defined inline as well.
+const ref = updateQuestionnaireTemplateQuestionRef({ id: ..., templateId: ..., label: ..., position: ..., description: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateQuestionnaireTemplateQuestionRef(dataConnect, updateQuestionnaireTemplateQuestionVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.questionnaireTemplateQuestion_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplateQuestion_update);
+});
+```
+
+## DeleteQuestionnaireTemplateQuestion
+You can execute the `DeleteQuestionnaireTemplateQuestion` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+deleteQuestionnaireTemplateQuestion(vars: DeleteQuestionnaireTemplateQuestionVariables): MutationPromise<DeleteQuestionnaireTemplateQuestionData, DeleteQuestionnaireTemplateQuestionVariables>;
+
+interface DeleteQuestionnaireTemplateQuestionRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteQuestionnaireTemplateQuestionVariables): MutationRef<DeleteQuestionnaireTemplateQuestionData, DeleteQuestionnaireTemplateQuestionVariables>;
+}
+export const deleteQuestionnaireTemplateQuestionRef: DeleteQuestionnaireTemplateQuestionRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deleteQuestionnaireTemplateQuestion(dc: DataConnect, vars: DeleteQuestionnaireTemplateQuestionVariables): MutationPromise<DeleteQuestionnaireTemplateQuestionData, DeleteQuestionnaireTemplateQuestionVariables>;
+
+interface DeleteQuestionnaireTemplateQuestionRef {
+  ...
+  (dc: DataConnect, vars: DeleteQuestionnaireTemplateQuestionVariables): MutationRef<DeleteQuestionnaireTemplateQuestionData, DeleteQuestionnaireTemplateQuestionVariables>;
+}
+export const deleteQuestionnaireTemplateQuestionRef: DeleteQuestionnaireTemplateQuestionRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteQuestionnaireTemplateQuestionRef:
+```typescript
+const name = deleteQuestionnaireTemplateQuestionRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeleteQuestionnaireTemplateQuestion` mutation requires an argument of type `DeleteQuestionnaireTemplateQuestionVariables`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeleteQuestionnaireTemplateQuestionVariables {
+  id: UUIDString;
+  templateId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeleteQuestionnaireTemplateQuestion` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeleteQuestionnaireTemplateQuestionData`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeleteQuestionnaireTemplateQuestionData {
+  questionnaireTemplateQuestion_delete?: QuestionnaireTemplateQuestion_Key | null;
+}
+```
+### Using `DeleteQuestionnaireTemplateQuestion`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deleteQuestionnaireTemplateQuestion, DeleteQuestionnaireTemplateQuestionVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `DeleteQuestionnaireTemplateQuestion` mutation requires an argument of type `DeleteQuestionnaireTemplateQuestionVariables`:
+const deleteQuestionnaireTemplateQuestionVars: DeleteQuestionnaireTemplateQuestionVariables = {
+  id: ..., 
+  templateId: ..., 
+};
+
+// Call the `deleteQuestionnaireTemplateQuestion()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deleteQuestionnaireTemplateQuestion(deleteQuestionnaireTemplateQuestionVars);
+// Variables can be defined inline as well.
+const { data } = await deleteQuestionnaireTemplateQuestion({ id: ..., templateId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deleteQuestionnaireTemplateQuestion(dataConnect, deleteQuestionnaireTemplateQuestionVars);
+
+console.log(data.questionnaireTemplateQuestion_delete);
+
+// Or, you can use the `Promise` API.
+deleteQuestionnaireTemplateQuestion(deleteQuestionnaireTemplateQuestionVars).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplateQuestion_delete);
+});
+```
+
+### Using `DeleteQuestionnaireTemplateQuestion`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deleteQuestionnaireTemplateQuestionRef, DeleteQuestionnaireTemplateQuestionVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `DeleteQuestionnaireTemplateQuestion` mutation requires an argument of type `DeleteQuestionnaireTemplateQuestionVariables`:
+const deleteQuestionnaireTemplateQuestionVars: DeleteQuestionnaireTemplateQuestionVariables = {
+  id: ..., 
+  templateId: ..., 
+};
+
+// Call the `deleteQuestionnaireTemplateQuestionRef()` function to get a reference to the mutation.
+const ref = deleteQuestionnaireTemplateQuestionRef(deleteQuestionnaireTemplateQuestionVars);
+// Variables can be defined inline as well.
+const ref = deleteQuestionnaireTemplateQuestionRef({ id: ..., templateId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deleteQuestionnaireTemplateQuestionRef(dataConnect, deleteQuestionnaireTemplateQuestionVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.questionnaireTemplateQuestion_delete);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplateQuestion_delete);
 });
 ```
 
