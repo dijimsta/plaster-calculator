@@ -16,6 +16,12 @@ with no errors before the commit is made. If you cannot run them yourself, ask t
 These checks must also be run before opening a pull request. If any check modifies files (e.g. prettier rewrites),
 stage and commit those changes before creating the PR.
 
+## Manual UI Verification
+
+Do not launch dev servers, Storybook, or browser automation (e.g. Playwright/chromium-cli) to visually verify UI
+changes yourself. The user will verify in their own running session. Instead, describe exactly what to check (URL or
+story name, the interaction steps, and the expected result) and let the user confirm it.
+
 ## Branching
 
 Never commit directly to `main`. All work must be done on a feature branch and merged via a pull request.
