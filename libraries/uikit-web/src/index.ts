@@ -9,6 +9,11 @@ export type {
     EmptyStateProps,
     EmptyStateVariant,
 } from "./feedback/empty-state/index.ts";
+export { ProgressBar } from "./feedback/progress-bar/index.ts";
+export type {
+    ProgressBarProps,
+    ProgressBarSize,
+} from "./feedback/progress-bar/index.ts";
 export { Avatar } from "./elements/avatar/index.ts";
 export type {
     AvatarColor,
@@ -164,6 +169,11 @@ export { Breadcrumb } from "./navigation/breadcrumb/index.ts";
 export type { BreadcrumbProps } from "./navigation/breadcrumb/index.ts";
 export { Navbar } from "./navigation/navbar/index.ts";
 export type { NavbarProps, NavbarTone } from "./navigation/navbar/index.ts";
+export { MultiStepNavigation } from "./navigation/multi-step-navigation/index.ts";
+export type {
+    MultiStepNavigationProps,
+    MultiStepNavigationStep,
+} from "./navigation/multi-step-navigation/index.ts";
 export { Pagination } from "./navigation/pagination/index.ts";
 export type { PaginationProps } from "./navigation/pagination/index.ts";
 export { SidebarNavigation } from "./navigation/sidebar-navigation/index.ts";
