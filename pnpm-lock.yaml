@@ -363,6 +363,9 @@ importers:
 
   libraries/plaster-calculator-web-core:
     dependencies:
+      '@generated/questionnaires-data-connector-web':
+        specifier: workspace:*
+        version: link:../../generated/questionnaires-data-connector-web
       '@libraries/plaster-calculator-common':
         specifier: workspace:*
         version: link:../plaster-calculator-common
