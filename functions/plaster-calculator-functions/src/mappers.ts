@@ -2,13 +2,6 @@ import { ensureFileDownloadUrl, storagePathToUrl } from "./storage.js";
 import { toReminderStatus, toSalesStatus } from "./validation.js";
 
 import type {
-    AccountContact,
-    AccountContactListRow,
-    AccountContactRow,
-    AccountDetail,
-    AccountListRow,
-    AccountSummary,
-    AccountWithContacts,
     FloorplanPage,
     FloorplanPageRow,
     ProjectDetail,
@@ -81,43 +74,6 @@ async function pagePathToDownloadUrl(
     if (!path) return "";
     if (path.startsWith("data:") || path.startsWith("http")) return path;
     return ensureFileDownloadUrl(path);
-}
-
-export function toAccountSummary(
-    account: AccountListRow | AccountWithContacts,
-): AccountSummary {
-    return {
-        id: account.id,
-        ownerId: account.ownerId,
-        companyName: account.companyName,
-        businessNumber: account.businessNumber ?? null,
-        phoneNumber: account.phoneNumber ?? null,
-        primaryContactId: account.primaryContactId ?? null,
-        createdAt: account.createdAt,
-        updatedAt: account.updatedAt,
-    };
-}
-
-export function toAccountDetail(account: AccountWithContacts): AccountDetail {
-    return {
-        ...toAccountSummary(account),
-        contacts: account.contacts.map(toAccountContact),
-    };
-}
-
-export function toAccountContact(
-    contact: AccountContactRow | AccountContactListRow,
-): AccountContact {
-    return {
-        id: contact.id,
-        accountId: contact.accountId,
-        name: contact.name,
-        email: contact.email ?? null,
-        phoneNumber: contact.phoneNumber ?? null,
-        role: contact.role ?? null,
-        createdAt: contact.createdAt,
-        updatedAt: contact.updatedAt,
-    };
 }
 
 export function toReminder(

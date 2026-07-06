@@ -1,0 +1,199 @@
+mutation CreateMyAccount(
+    $id: UUID!
+    $companyName: String!
+    $businessNumber: String
+    $phoneNumber: String
+) @auth(level: USER) {
+    account_insert(
+        data: {
+            id: $id
+            ownerId_expr: "auth.uid"
+            companyName: $companyName
+            businessNumber: $businessNumber
+            phoneNumber: $phoneNumber
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateMyAccount(
+    $id: UUID!
+    $companyName: String!
+    $businessNumber: String
+    $phoneNumber: String
+) @auth(level: USER) @transaction {
+    query @redact {
+        account(key: { id: $id })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this account"
+            ) {
+            id
+            ownerId
+        }
+    }
+    account_update(
+        id: $id
+        data: {
+            companyName: $companyName
+            businessNumber: $businessNumber
+            phoneNumber: $phoneNumber
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation SetMyAccountPrimaryContact($accountId: UUID!, $contactId: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        account(key: { id: $accountId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this account"
+            ) {
+            id
+            ownerId
+        }
+        accountContact(
+            first: {
+                where: { id: { eq: $contactId }, accountId: { eq: $accountId } }
+            }
+        ) @check(expr: "this != null", message: "Contact not found") {
+            id
+        }
+    }
+    account_update(
+        id: $accountId
+        data: { primaryContactId: $contactId, updatedAt_expr: "request.time" }
+    )
+}
+
+mutation ClearMyAccountPrimaryContact($accountId: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        account(key: { id: $accountId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this account"
+            ) {
+            id
+            ownerId
+        }
+    }
+    account_update(
+        id: $accountId
+        data: { primaryContactId: null, updatedAt_expr: "request.time" }
+    )
+}
+
+mutation DeleteMyAccount($id: UUID!) @auth(level: USER) @transaction {
+    query @redact {
+        account(key: { id: $id })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this account"
+            ) {
+            id
+            ownerId
+        }
+    }
+    accountContact_deleteMany(where: { accountId: { eq: $id } })
+    account_delete(id: $id)
+        @check(expr: "this != null", message: "Account not found")
+}
+
+mutation CreateMyAccountContact(
+    $id: UUID!
+    $accountId: UUID!
+    $name: String!
+    $email: String
+    $phoneNumber: String
+    $role: String
+) @auth(level: USER) @transaction {
+    query @redact {
+        account(key: { id: $accountId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this account"
+            ) {
+            id
+            ownerId
+        }
+    }
+    accountContact_insert(
+        data: {
+            id: $id
+            accountId: $accountId
+            name: $name
+            email: $email
+            phoneNumber: $phoneNumber
+            role: $role
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateMyAccountContact(
+    $accountId: UUID!
+    $contactId: UUID!
+    $name: String!
+    $email: String
+    $phoneNumber: String
+    $role: String
+) @auth(level: USER) @transaction {
+    query @redact {
+        account(key: { id: $accountId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this account"
+            ) {
+            id
+            ownerId
+        }
+    }
+    accountContact_update(
+        first: {
+            where: { id: { eq: $contactId }, accountId: { eq: $accountId } }
+        }
+        data: {
+            name: $name
+            email: $email
+            phoneNumber: $phoneNumber
+            role: $role
+            updatedAt_expr: "request.time"
+        }
+    ) @check(expr: "this != null", message: "Contact not found")
+}
+
+mutation DeleteMyAccountContact($accountId: UUID!, $contactId: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        account(key: { id: $accountId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this account"
+            ) {
+            id
+            ownerId
+        }
+    }
+    account_update(
+        first: {
+            where: {
+                id: { eq: $accountId }
+                primaryContactId: { eq: $contactId }
+            }
+        }
+        data: { primaryContactId: null, updatedAt_expr: "request.time" }
+    )
+    accountContact_delete(
+        first: {
+            where: { id: { eq: $contactId }, accountId: { eq: $accountId } }
+        }
+    ) @check(expr: "this != null", message: "Contact not found")
+}

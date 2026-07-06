@@ -18,31 +18,6 @@ export interface Account_Key {
   __typename?: 'Account_Key';
 }
 
-export interface CreateAccountContactData {
-  accountContact_insert: AccountContact_Key;
-}
-
-export interface CreateAccountContactVariables {
-  id: UUIDString;
-  accountId: UUIDString;
-  name: string;
-  email?: string | null;
-  phoneNumber?: string | null;
-  role?: string | null;
-}
-
-export interface CreateAccountData {
-  account_insert: Account_Key;
-}
-
-export interface CreateAccountVariables {
-  id: UUIDString;
-  ownerId: string;
-  companyName: string;
-  businessNumber?: string | null;
-  phoneNumber?: string | null;
-}
-
 export interface CreateFloorplanPageData {
   floorplanPage_insert: FloorplanPage_Key;
 }
@@ -83,106 +58,6 @@ export interface CreateProjectFromUploadVariables {
   pageCount: number;
 }
 
-export interface CreateProjectQuestionnaireAnswerData {
-  projectQuestionnaireAnswer_insert: ProjectQuestionnaireAnswer_Key;
-}
-
-export interface CreateProjectQuestionnaireAnswerVariables {
-  id: UUIDString;
-  projectQuestionnaireId: UUIDString;
-  questionId: UUIDString;
-  position: number;
-  answer?: string | null;
-}
-
-export interface CreateProjectQuestionnaireData {
-  projectQuestionnaire_insert: ProjectQuestionnaire_Key;
-}
-
-export interface CreateProjectQuestionnaireVariables {
-  id: UUIDString;
-  projectId: UUIDString;
-  sourceTemplateId?: UUIDString | null;
-}
-
-export interface CreateQuantitySourceData {
-  quantitySource_insert: QuantitySource_Key;
-}
-
-export interface CreateQuantitySourceVariables {
-  id: UUIDString;
-  measurementSource: string;
-  measurementPlasterType?: string | null;
-}
-
-export interface CreateQuestionnaireTemplateData {
-  questionnaireTemplate_insert: QuestionnaireTemplate_Key;
-}
-
-export interface CreateQuestionnaireTemplateQuestionData {
-  questionnaireTemplateQuestion_insert: QuestionnaireTemplateQuestion_Key;
-}
-
-export interface CreateQuestionnaireTemplateQuestionVariables {
-  id: UUIDString;
-  templateId: UUIDString;
-  label: string;
-  position: number;
-  description?: string | null;
-}
-
-export interface CreateQuestionnaireTemplateVariables {
-  id: UUIDString;
-  name: string;
-}
-
-export interface CreateQuoteData {
-  quote_insert: Quote_Key;
-}
-
-export interface CreateQuoteItemData {
-  quoteItem_insert: QuoteItem_Key;
-}
-
-export interface CreateQuoteItemTemplateData {
-  quoteItemTemplate_insert: QuoteItemTemplate_Key;
-}
-
-export interface CreateQuoteItemTemplateVariables {
-  id: UUIDString;
-  ownerId?: string | null;
-  scope: string;
-  systemKey?: string | null;
-  name: string;
-  hasKeywords: boolean;
-  keywords: string[];
-  quantitySourceId?: UUIDString | null;
-  sortOrder: number;
-}
-
-export interface CreateQuoteItemVariables {
-  id: UUIDString;
-  ownerId: string;
-  quoteId: UUIDString;
-  sourceTemplateId?: UUIDString | null;
-  displayOrder: number;
-  name: string;
-  quantity: number;
-  quantitySourceId?: UUIDString | null;
-  unitPriceCents: number;
-  materialUnitPriceCents: number;
-  labourUnitPriceCents: number;
-  matchedKeywords: string[];
-}
-
-export interface CreateQuoteVariables {
-  id: UUIDString;
-  ownerId: string;
-  projectId: UUIDString;
-  supplierId?: UUIDString | null;
-  status: string;
-}
-
 export interface CreateReminderData {
   reminder_insert: Reminder_Key;
 }
@@ -195,40 +70,6 @@ export interface CreateReminderVariables {
   name: string;
   status: string;
   dueAt: TimestampString;
-}
-
-export interface CreateSupplierData {
-  supplier_insert: Supplier_Key;
-}
-
-export interface CreateSupplierVariables {
-  id: UUIDString;
-  ownerId: string;
-  name: string;
-}
-
-export interface DeleteAccountContactData {
-  accountContact_delete?: AccountContact_Key | null;
-}
-
-export interface DeleteAccountContactVariables {
-  id: UUIDString;
-}
-
-export interface DeleteAccountContactsData {
-  accountContact_deleteMany: number;
-}
-
-export interface DeleteAccountContactsVariables {
-  accountId: UUIDString;
-}
-
-export interface DeleteAccountData {
-  account_delete?: Account_Key | null;
-}
-
-export interface DeleteAccountVariables {
-  id: UUIDString;
 }
 
 export interface DeleteFloorplanPagesData {
@@ -244,57 +85,6 @@ export interface DeleteProjectData {
 }
 
 export interface DeleteProjectVariables {
-  id: UUIDString;
-}
-
-export interface DeleteQuestionnaireTemplateData {
-  questionnaireTemplateQuestion_deleteMany: number;
-  questionnaireTemplate_delete?: QuestionnaireTemplate_Key | null;
-}
-
-export interface DeleteQuestionnaireTemplateQuestionData {
-  questionnaireTemplateQuestion_delete?: QuestionnaireTemplateQuestion_Key | null;
-}
-
-export interface DeleteQuestionnaireTemplateQuestionVariables {
-  id: UUIDString;
-  templateId: UUIDString;
-}
-
-export interface DeleteQuestionnaireTemplateVariables {
-  id: UUIDString;
-}
-
-export interface DeleteQuoteItemTemplateData {
-  quoteItemTemplate_delete?: QuoteItemTemplate_Key | null;
-}
-
-export interface DeleteQuoteItemTemplateVariables {
-  id: UUIDString;
-}
-
-export interface DeleteQuoteItemsData {
-  quoteItem_deleteMany: number;
-}
-
-export interface DeleteQuoteItemsVariables {
-  quoteId: UUIDString;
-}
-
-export interface DeleteSupplierData {
-  supplier_delete?: Supplier_Key | null;
-}
-
-export interface DeleteSupplierQuoteItemPriceData {
-  supplierQuoteItemPrice_delete?: SupplierQuoteItemPrice_Key | null;
-}
-
-export interface DeleteSupplierQuoteItemPriceVariables {
-  supplierId: UUIDString;
-  templateId: UUIDString;
-}
-
-export interface DeleteSupplierVariables {
   id: UUIDString;
 }
 
@@ -442,26 +232,6 @@ export interface GetProjectDetailsByIdVariables {
   id: UUIDString;
 }
 
-export interface GetQuestionnaireTemplateData {
-  questionnaireTemplate?: {
-    id: UUIDString;
-    ownerId: string;
-    name: string;
-    createdAt: TimestampString;
-    updatedAt: TimestampString;
-    questions: ({
-      id: UUIDString;
-      label: string;
-      description?: string | null;
-      position: number;
-    } & QuestionnaireTemplateQuestion_Key)[];
-  } & QuestionnaireTemplate_Key;
-}
-
-export interface GetQuestionnaireTemplateVariables {
-  id: UUIDString;
-}
-
 export interface GetReminderByIdData {
   reminder?: {
     id: UUIDString;
@@ -492,40 +262,6 @@ export interface GetUserSettingsData {
 }
 
 export interface GetUserSettingsVariables {
-  ownerId: string;
-}
-
-export interface ListAccountContactsByAccountIdData {
-  accountContacts: ({
-    id: UUIDString;
-    accountId: UUIDString;
-    name: string;
-    email?: string | null;
-    phoneNumber?: string | null;
-    role?: string | null;
-    createdAt: TimestampString;
-    updatedAt: TimestampString;
-  } & AccountContact_Key)[];
-}
-
-export interface ListAccountContactsByAccountIdVariables {
-  accountId: UUIDString;
-}
-
-export interface ListAccountsByOwnerData {
-  accounts: ({
-    id: UUIDString;
-    ownerId: string;
-    companyName: string;
-    businessNumber?: string | null;
-    phoneNumber?: string | null;
-    primaryContactId?: UUIDString | null;
-    createdAt: TimestampString;
-    updatedAt: TimestampString;
-  } & Account_Key)[];
-}
-
-export interface ListAccountsByOwnerVariables {
   ownerId: string;
 }
 
@@ -614,15 +350,6 @@ export interface ListProjectsByOwnerAndSalesStatusVariables {
   salesStatus: string;
 }
 
-export interface ListQuestionnaireTemplatesData {
-  questionnaireTemplates: ({
-    id: UUIDString;
-    name: string;
-    createdAt: TimestampString;
-    updatedAt: TimestampString;
-  } & QuestionnaireTemplate_Key)[];
-}
-
 export interface ProjectQuestionnaireAnswer_Key {
   id: UUIDString;
   __typename?: 'ProjectQuestionnaireAnswer_Key';
@@ -709,30 +436,6 @@ export interface TouchProjectVariables {
   processingError?: string | null;
 }
 
-export interface UpdateAccountContactData {
-  accountContact_update?: AccountContact_Key | null;
-}
-
-export interface UpdateAccountContactVariables {
-  id: UUIDString;
-  name?: string | null;
-  email?: string | null;
-  phoneNumber?: string | null;
-  role?: string | null;
-}
-
-export interface UpdateAccountData {
-  account_update?: Account_Key | null;
-}
-
-export interface UpdateAccountVariables {
-  id: UUIDString;
-  companyName?: string | null;
-  businessNumber?: string | null;
-  phoneNumber?: string | null;
-  primaryContactId?: UUIDString | null;
-}
-
 export interface UpdateFloorplanPageAnalysisData {
   floorplanPage_update?: FloorplanPage_Key | null;
 }
@@ -789,66 +492,6 @@ export interface UpdateProjectVariables {
   salesStatus?: string | null;
 }
 
-export interface UpdateQuestionnaireTemplateNameData {
-  questionnaireTemplate_update?: QuestionnaireTemplate_Key | null;
-}
-
-export interface UpdateQuestionnaireTemplateNameVariables {
-  id: UUIDString;
-  name: string;
-}
-
-export interface UpdateQuestionnaireTemplateQuestionData {
-  questionnaireTemplateQuestion_update?: QuestionnaireTemplateQuestion_Key | null;
-}
-
-export interface UpdateQuestionnaireTemplateQuestionVariables {
-  id: UUIDString;
-  templateId: UUIDString;
-  label: string;
-  position: number;
-  description?: string | null;
-}
-
-export interface UpdateQuoteData {
-  quote_update?: Quote_Key | null;
-}
-
-export interface UpdateQuoteItemData {
-  quoteItem_update?: QuoteItem_Key | null;
-}
-
-export interface UpdateQuoteItemTemplateData {
-  quoteItemTemplate_update?: QuoteItemTemplate_Key | null;
-}
-
-export interface UpdateQuoteItemTemplateVariables {
-  id: UUIDString;
-  name?: string | null;
-  hasKeywords?: boolean | null;
-  keywords?: string[] | null;
-  quantitySourceId?: UUIDString | null;
-  sortOrder?: number | null;
-}
-
-export interface UpdateQuoteItemVariables {
-  id: UUIDString;
-  displayOrder?: number | null;
-  name?: string | null;
-  quantity?: number | null;
-  quantitySourceId?: UUIDString | null;
-  unitPriceCents?: number | null;
-  materialUnitPriceCents?: number | null;
-  labourUnitPriceCents?: number | null;
-  matchedKeywords?: string[] | null;
-}
-
-export interface UpdateQuoteVariables {
-  id: UUIDString;
-  supplierId?: UUIDString | null;
-  status?: string | null;
-}
-
 export interface UpdateReminderData {
   reminder_update?: Reminder_Key | null;
 }
@@ -860,39 +503,6 @@ export interface UpdateReminderVariables {
   status?: string | null;
   dueAt?: TimestampString | null;
   completedAt?: TimestampString | null;
-}
-
-export interface UpdateSupplierData {
-  supplier_update?: Supplier_Key | null;
-}
-
-export interface UpdateSupplierVariables {
-  id: UUIDString;
-  name?: string | null;
-}
-
-export interface UpsertQuoteItemTemplateConfigData {
-  quoteItemTemplateConfig_upsert: QuoteItemTemplateConfig_Key;
-}
-
-export interface UpsertQuoteItemTemplateConfigVariables {
-  ownerId: string;
-  templateId: UUIDString;
-  enabled: boolean;
-  unitPriceCents: number;
-  materialUnitPriceCents: number;
-  labourUnitPriceCents: number;
-}
-
-export interface UpsertSupplierQuoteItemPriceData {
-  supplierQuoteItemPrice_upsert: SupplierQuoteItemPrice_Key;
-}
-
-export interface UpsertSupplierQuoteItemPriceVariables {
-  ownerId: string;
-  supplierId: UUIDString;
-  templateId: UUIDString;
-  materialUnitPriceCents: number;
 }
 
 export interface UpsertUserSettingsData {
@@ -910,55 +520,10 @@ export interface UserSettings_Key {
   __typename?: 'UserSettings_Key';
 }
 
-/** Generated Node Admin SDK operation action function for the 'CreateAccount' Mutation. Allow users to execute without passing in DataConnect. */
-export function createAccount(dc: DataConnect, vars: CreateAccountVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateAccountData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateAccount' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createAccount(vars: CreateAccountVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateAccountData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpdateAccount' Mutation. Allow users to execute without passing in DataConnect. */
-export function updateAccount(dc: DataConnect, vars: UpdateAccountVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateAccountData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdateAccount' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updateAccount(vars: UpdateAccountVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateAccountData>>;
-
-/** Generated Node Admin SDK operation action function for the 'DeleteAccountContacts' Mutation. Allow users to execute without passing in DataConnect. */
-export function deleteAccountContacts(dc: DataConnect, vars: DeleteAccountContactsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteAccountContactsData>>;
-/** Generated Node Admin SDK operation action function for the 'DeleteAccountContacts' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deleteAccountContacts(vars: DeleteAccountContactsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteAccountContactsData>>;
-
-/** Generated Node Admin SDK operation action function for the 'DeleteAccount' Mutation. Allow users to execute without passing in DataConnect. */
-export function deleteAccount(dc: DataConnect, vars: DeleteAccountVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteAccountData>>;
-/** Generated Node Admin SDK operation action function for the 'DeleteAccount' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deleteAccount(vars: DeleteAccountVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteAccountData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateAccountContact' Mutation. Allow users to execute without passing in DataConnect. */
-export function createAccountContact(dc: DataConnect, vars: CreateAccountContactVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateAccountContactData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateAccountContact' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createAccountContact(vars: CreateAccountContactVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateAccountContactData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpdateAccountContact' Mutation. Allow users to execute without passing in DataConnect. */
-export function updateAccountContact(dc: DataConnect, vars: UpdateAccountContactVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateAccountContactData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdateAccountContact' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updateAccountContact(vars: UpdateAccountContactVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateAccountContactData>>;
-
-/** Generated Node Admin SDK operation action function for the 'DeleteAccountContact' Mutation. Allow users to execute without passing in DataConnect. */
-export function deleteAccountContact(dc: DataConnect, vars: DeleteAccountContactVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteAccountContactData>>;
-/** Generated Node Admin SDK operation action function for the 'DeleteAccountContact' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deleteAccountContact(vars: DeleteAccountContactVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteAccountContactData>>;
-
-/** Generated Node Admin SDK operation action function for the 'ListAccountsByOwner' Query. Allow users to execute without passing in DataConnect. */
-export function listAccountsByOwner(dc: DataConnect, vars: ListAccountsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListAccountsByOwnerData>>;
-/** Generated Node Admin SDK operation action function for the 'ListAccountsByOwner' Query. Allow users to pass in custom DataConnect instances. */
-export function listAccountsByOwner(vars: ListAccountsByOwnerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListAccountsByOwnerData>>;
-
 /** Generated Node Admin SDK operation action function for the 'GetAccountById' Query. Allow users to execute without passing in DataConnect. */
 export function getAccountById(dc: DataConnect, vars: GetAccountByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountByIdData>>;
 /** Generated Node Admin SDK operation action function for the 'GetAccountById' Query. Allow users to pass in custom DataConnect instances. */
 export function getAccountById(vars: GetAccountByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountByIdData>>;
-
-/** Generated Node Admin SDK operation action function for the 'ListAccountContactsByAccountId' Query. Allow users to execute without passing in DataConnect. */
-export function listAccountContactsByAccountId(dc: DataConnect, vars: ListAccountContactsByAccountIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListAccountContactsByAccountIdData>>;
-/** Generated Node Admin SDK operation action function for the 'ListAccountContactsByAccountId' Query. Allow users to pass in custom DataConnect instances. */
-export function listAccountContactsByAccountId(vars: ListAccountContactsByAccountIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListAccountContactsByAccountIdData>>;
 
 /** Generated Node Admin SDK operation action function for the 'GetAccountContactById' Query. Allow users to execute without passing in DataConnect. */
 export function getAccountContactById(dc: DataConnect, vars: GetAccountContactByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountContactByIdData>>;
@@ -1039,131 +604,6 @@ export function getProjectById(vars: GetProjectByIdVariables, options?: Operatio
 export function getFloorplanPageById(dc: DataConnect, vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
 /** Generated Node Admin SDK operation action function for the 'GetFloorplanPageById' Query. Allow users to pass in custom DataConnect instances. */
 export function getFloorplanPageById(vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateQuestionnaireTemplate' Mutation. Allow users to execute without passing in DataConnect. */
-export function createQuestionnaireTemplate(dc: DataConnect, vars: CreateQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuestionnaireTemplateData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateQuestionnaireTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createQuestionnaireTemplate(vars: CreateQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuestionnaireTemplateData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateQuestionnaireTemplateQuestion' Mutation. Allow users to execute without passing in DataConnect. */
-export function createQuestionnaireTemplateQuestion(dc: DataConnect, vars: CreateQuestionnaireTemplateQuestionVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuestionnaireTemplateQuestionData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateQuestionnaireTemplateQuestion' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createQuestionnaireTemplateQuestion(vars: CreateQuestionnaireTemplateQuestionVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuestionnaireTemplateQuestionData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpdateQuestionnaireTemplateName' Mutation. Allow users to execute without passing in DataConnect. */
-export function updateQuestionnaireTemplateName(dc: DataConnect, vars: UpdateQuestionnaireTemplateNameVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuestionnaireTemplateNameData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdateQuestionnaireTemplateName' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updateQuestionnaireTemplateName(vars: UpdateQuestionnaireTemplateNameVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuestionnaireTemplateNameData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpdateQuestionnaireTemplateQuestion' Mutation. Allow users to execute without passing in DataConnect. */
-export function updateQuestionnaireTemplateQuestion(dc: DataConnect, vars: UpdateQuestionnaireTemplateQuestionVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuestionnaireTemplateQuestionData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdateQuestionnaireTemplateQuestion' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updateQuestionnaireTemplateQuestion(vars: UpdateQuestionnaireTemplateQuestionVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuestionnaireTemplateQuestionData>>;
-
-/** Generated Node Admin SDK operation action function for the 'DeleteQuestionnaireTemplateQuestion' Mutation. Allow users to execute without passing in DataConnect. */
-export function deleteQuestionnaireTemplateQuestion(dc: DataConnect, vars: DeleteQuestionnaireTemplateQuestionVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuestionnaireTemplateQuestionData>>;
-/** Generated Node Admin SDK operation action function for the 'DeleteQuestionnaireTemplateQuestion' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deleteQuestionnaireTemplateQuestion(vars: DeleteQuestionnaireTemplateQuestionVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuestionnaireTemplateQuestionData>>;
-
-/** Generated Node Admin SDK operation action function for the 'DeleteQuestionnaireTemplate' Mutation. Allow users to execute without passing in DataConnect. */
-export function deleteQuestionnaireTemplate(dc: DataConnect, vars: DeleteQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuestionnaireTemplateData>>;
-/** Generated Node Admin SDK operation action function for the 'DeleteQuestionnaireTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deleteQuestionnaireTemplate(vars: DeleteQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuestionnaireTemplateData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateProjectQuestionnaire' Mutation. Allow users to execute without passing in DataConnect. */
-export function createProjectQuestionnaire(dc: DataConnect, vars: CreateProjectQuestionnaireVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectQuestionnaireData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateProjectQuestionnaire' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createProjectQuestionnaire(vars: CreateProjectQuestionnaireVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectQuestionnaireData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateProjectQuestionnaireAnswer' Mutation. Allow users to execute without passing in DataConnect. */
-export function createProjectQuestionnaireAnswer(dc: DataConnect, vars: CreateProjectQuestionnaireAnswerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectQuestionnaireAnswerData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateProjectQuestionnaireAnswer' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createProjectQuestionnaireAnswer(vars: CreateProjectQuestionnaireAnswerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectQuestionnaireAnswerData>>;
-
-/** Generated Node Admin SDK operation action function for the 'ListQuestionnaireTemplates' Query. Allow users to execute without passing in DataConnect. */
-export function listQuestionnaireTemplates(dc: DataConnect, options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
-/** Generated Node Admin SDK operation action function for the 'ListQuestionnaireTemplates' Query. Allow users to pass in custom DataConnect instances. */
-export function listQuestionnaireTemplates(options?: OperationOptions): Promise<ExecuteOperationResponse<ListQuestionnaireTemplatesData>>;
-
-/** Generated Node Admin SDK operation action function for the 'GetQuestionnaireTemplate' Query. Allow users to execute without passing in DataConnect. */
-export function getQuestionnaireTemplate(dc: DataConnect, vars: GetQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetQuestionnaireTemplateData>>;
-/** Generated Node Admin SDK operation action function for the 'GetQuestionnaireTemplate' Query. Allow users to pass in custom DataConnect instances. */
-export function getQuestionnaireTemplate(vars: GetQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetQuestionnaireTemplateData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateQuantitySource' Mutation. Allow users to execute without passing in DataConnect. */
-export function createQuantitySource(dc: DataConnect, vars: CreateQuantitySourceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuantitySourceData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateQuantitySource' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createQuantitySource(vars: CreateQuantitySourceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuantitySourceData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateQuoteItemTemplate' Mutation. Allow users to execute without passing in DataConnect. */
-export function createQuoteItemTemplate(dc: DataConnect, vars: CreateQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteItemTemplateData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateQuoteItemTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createQuoteItemTemplate(vars: CreateQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteItemTemplateData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpdateQuoteItemTemplate' Mutation. Allow users to execute without passing in DataConnect. */
-export function updateQuoteItemTemplate(dc: DataConnect, vars: UpdateQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteItemTemplateData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdateQuoteItemTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updateQuoteItemTemplate(vars: UpdateQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteItemTemplateData>>;
-
-/** Generated Node Admin SDK operation action function for the 'DeleteQuoteItemTemplate' Mutation. Allow users to execute without passing in DataConnect. */
-export function deleteQuoteItemTemplate(dc: DataConnect, vars: DeleteQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuoteItemTemplateData>>;
-/** Generated Node Admin SDK operation action function for the 'DeleteQuoteItemTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deleteQuoteItemTemplate(vars: DeleteQuoteItemTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuoteItemTemplateData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpsertQuoteItemTemplateConfig' Mutation. Allow users to execute without passing in DataConnect. */
-export function upsertQuoteItemTemplateConfig(dc: DataConnect, vars: UpsertQuoteItemTemplateConfigVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertQuoteItemTemplateConfigData>>;
-/** Generated Node Admin SDK operation action function for the 'UpsertQuoteItemTemplateConfig' Mutation. Allow users to pass in custom DataConnect instances. */
-export function upsertQuoteItemTemplateConfig(vars: UpsertQuoteItemTemplateConfigVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertQuoteItemTemplateConfigData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateSupplier' Mutation. Allow users to execute without passing in DataConnect. */
-export function createSupplier(dc: DataConnect, vars: CreateSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateSupplierData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateSupplier' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createSupplier(vars: CreateSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateSupplierData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpdateSupplier' Mutation. Allow users to execute without passing in DataConnect. */
-export function updateSupplier(dc: DataConnect, vars: UpdateSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateSupplierData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdateSupplier' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updateSupplier(vars: UpdateSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateSupplierData>>;
-
-/** Generated Node Admin SDK operation action function for the 'DeleteSupplier' Mutation. Allow users to execute without passing in DataConnect. */
-export function deleteSupplier(dc: DataConnect, vars: DeleteSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteSupplierData>>;
-/** Generated Node Admin SDK operation action function for the 'DeleteSupplier' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deleteSupplier(vars: DeleteSupplierVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteSupplierData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpsertSupplierQuoteItemPrice' Mutation. Allow users to execute without passing in DataConnect. */
-export function upsertSupplierQuoteItemPrice(dc: DataConnect, vars: UpsertSupplierQuoteItemPriceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertSupplierQuoteItemPriceData>>;
-/** Generated Node Admin SDK operation action function for the 'UpsertSupplierQuoteItemPrice' Mutation. Allow users to pass in custom DataConnect instances. */
-export function upsertSupplierQuoteItemPrice(vars: UpsertSupplierQuoteItemPriceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertSupplierQuoteItemPriceData>>;
-
-/** Generated Node Admin SDK operation action function for the 'DeleteSupplierQuoteItemPrice' Mutation. Allow users to execute without passing in DataConnect. */
-export function deleteSupplierQuoteItemPrice(dc: DataConnect, vars: DeleteSupplierQuoteItemPriceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteSupplierQuoteItemPriceData>>;
-/** Generated Node Admin SDK operation action function for the 'DeleteSupplierQuoteItemPrice' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deleteSupplierQuoteItemPrice(vars: DeleteSupplierQuoteItemPriceVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteSupplierQuoteItemPriceData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateQuote' Mutation. Allow users to execute without passing in DataConnect. */
-export function createQuote(dc: DataConnect, vars: CreateQuoteVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateQuote' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createQuote(vars: CreateQuoteVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpdateQuote' Mutation. Allow users to execute without passing in DataConnect. */
-export function updateQuote(dc: DataConnect, vars: UpdateQuoteVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdateQuote' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updateQuote(vars: UpdateQuoteVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteData>>;
-
-/** Generated Node Admin SDK operation action function for the 'DeleteQuoteItems' Mutation. Allow users to execute without passing in DataConnect. */
-export function deleteQuoteItems(dc: DataConnect, vars: DeleteQuoteItemsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuoteItemsData>>;
-/** Generated Node Admin SDK operation action function for the 'DeleteQuoteItems' Mutation. Allow users to pass in custom DataConnect instances. */
-export function deleteQuoteItems(vars: DeleteQuoteItemsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuoteItemsData>>;
-
-/** Generated Node Admin SDK operation action function for the 'CreateQuoteItem' Mutation. Allow users to execute without passing in DataConnect. */
-export function createQuoteItem(dc: DataConnect, vars: CreateQuoteItemVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteItemData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateQuoteItem' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createQuoteItem(vars: CreateQuoteItemVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuoteItemData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpdateQuoteItem' Mutation. Allow users to execute without passing in DataConnect. */
-export function updateQuoteItem(dc: DataConnect, vars: UpdateQuoteItemVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteItemData>>;
-/** Generated Node Admin SDK operation action function for the 'UpdateQuoteItem' Mutation. Allow users to pass in custom DataConnect instances. */
-export function updateQuoteItem(vars: UpdateQuoteItemVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateQuoteItemData>>;
 
 /** Generated Node Admin SDK operation action function for the 'CreateReminder' Mutation. Allow users to execute without passing in DataConnect. */
 export function createReminder(dc: DataConnect, vars: CreateReminderVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateReminderData>>;

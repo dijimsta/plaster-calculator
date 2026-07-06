@@ -10,4 +10,5 @@ schemas:
                   instanceId: "plaster-calculator"
                   schemaValidation: "STRICT"
 connectorDirs:
-    - ./data/connector
+    - ./data/connector-admin
+    - ./data/connector-web

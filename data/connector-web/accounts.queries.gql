@@ -1,0 +1,67 @@
+query ListMyAccounts @auth(level: USER) {
+    accounts(
+        where: { ownerId: { eq_expr: "auth.uid" } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
+        id
+        ownerId
+        companyName
+        businessNumber
+        phoneNumber
+        primaryContactId
+        createdAt
+        updatedAt
+    }
+}
+
+query GetMyAccount($id: UUID!) @auth(level: USER) {
+    account(key: { id: $id })
+        @check(
+            expr: "this != null && this.ownerId == auth.uid"
+            message: "You do not own this account"
+        ) {
+        id
+        ownerId
+        companyName
+        businessNumber
+        phoneNumber
+        primaryContactId
+        createdAt
+        updatedAt
+        contacts: accountContacts_on_account(orderBy: [{ createdAt: ASC }]) {
+            id
+            accountId
+            name
+            email
+            phoneNumber
+            role
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+query ListMyAccountContacts($accountId: UUID!) @auth(level: USER) {
+    account(key: { id: $accountId })
+        @redact
+        @check(
+            expr: "this != null && this.ownerId == auth.uid"
+            message: "You do not own this account"
+        ) {
+        id
+        ownerId
+    }
+    accountContacts(
+        where: { accountId: { eq: $accountId } }
+        orderBy: [{ createdAt: ASC }]
+    ) {
+        id
+        accountId
+        name
+        email
+        phoneNumber
+        role
+        createdAt
+        updatedAt
+    }
+}

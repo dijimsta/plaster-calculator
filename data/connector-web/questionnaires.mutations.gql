@@ -121,39 +121,3 @@ mutation DeleteQuestionnaireTemplate($id: UUID!)
     questionnaireTemplate_delete(id: $id)
         @check(expr: "this != null", message: "Template not found")
 }
-
-mutation CreateProjectQuestionnaire(
-    $id: UUID!
-    $projectId: UUID!
-    $sourceTemplateId: UUID
-) @auth(level: NO_ACCESS) {
-    projectQuestionnaire_insert(
-        data: {
-            id: $id
-            projectId: $projectId
-            sourceTemplateId: $sourceTemplateId
-            createdAt_expr: "request.time"
-            updatedAt_expr: "request.time"
-        }
-    )
-}
-
-mutation CreateProjectQuestionnaireAnswer(
-    $id: UUID!
-    $projectQuestionnaireId: UUID!
-    $questionId: UUID!
-    $position: Int!
-    $answer: String
-) @auth(level: NO_ACCESS) {
-    projectQuestionnaireAnswer_insert(
-        data: {
-            id: $id
-            projectQuestionnaireId: $projectQuestionnaireId
-            questionId: $questionId
-            position: $position
-            answer: $answer
-            createdAt_expr: "request.time"
-            updatedAt_expr: "request.time"
-        }
-    )
-}

@@ -1,5 +1,5 @@
+import * as DataConnector from "@generated/data-connector-web";
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
-import { httpsCallable } from "firebase/functions";
 
 import type {
     AccountContact,
@@ -7,7 +7,9 @@ import type {
     AccountSummary,
 } from "../../types.js";
 
-const functions = FirebaseService.getFunctions();
+const dataConnect = FirebaseService.getDataConnect(
+    DataConnector.connectorConfig,
+);
 
 type AccountPayload = {
     companyName?: string;
@@ -23,120 +25,186 @@ type AccountContactPayload = {
     makePrimary?: boolean;
 };
 
-const listAccountsCallable = httpsCallable<
-    unknown,
-    { accounts: AccountSummary[] }
->(functions, "listAccounts");
-const getAccountCallable = httpsCallable<{ accountId: string }, AccountDetail>(
-    functions,
-    "getAccount",
-);
-const listAccountContactsByAccountIdCallable = httpsCallable<
-    { accountId: string },
-    { contacts: AccountContact[] }
->(functions, "listAccountContactsByAccountId");
-const createAccountCallable = httpsCallable<AccountPayload, AccountDetail>(
-    functions,
-    "createAccount",
-);
-const updateAccountCallable = httpsCallable<
-    AccountPayload & { accountId: string; primaryContactId?: string | null },
-    AccountDetail
->(functions, "updateAccount");
-const deleteAccountCallable = httpsCallable<
-    { accountId: string },
-    { ok: true }
->(functions, "deleteAccount");
-const createAccountContactCallable = httpsCallable<
-    AccountContactPayload & { accountId: string },
-    AccountDetail
->(functions, "createAccountContact");
-const updateAccountContactCallable = httpsCallable<
-    AccountContactPayload & { accountId: string; contactId: string },
-    AccountDetail
->(functions, "updateAccountContact");
-const deleteAccountContactCallable = httpsCallable<
-    { accountId: string; contactId: string },
-    AccountDetail
->(functions, "deleteAccountContact");
-const setPrimaryAccountContactCallable = httpsCallable<
-    { accountId: string; contactId: string },
-    AccountDetail
->(functions, "setPrimaryAccountContact");
+type AccountRow = DataConnector.ListMyAccountsData["accounts"][number];
+type AccountDetailRow = NonNullable<DataConnector.GetMyAccountData["account"]>;
+type AccountContactRow = AccountDetailRow["contacts"][number];
 
-export async function listAccounts() {
-    const result = await listAccountsCallable();
-    return result.data.accounts;
+export async function listAccounts(): Promise<AccountSummary[]> {
+    const result = await DataConnector.listMyAccounts(dataConnect);
+    return result.data.accounts.map(toAccountSummary);
 }
 
-export async function getAccount(accountId: string) {
-    const result = await getAccountCallable({ accountId });
-    return result.data;
+export async function getAccount(accountId: string): Promise<AccountDetail> {
+    const result = await DataConnector.getMyAccount(dataConnect, {
+        id: accountId,
+    });
+    if (!result.data.account) {
+        throw new Error("Account was not found.");
+    }
+    return toAccountDetail(result.data.account);
 }
 
-export async function listAccountContactsByAccountId(accountId: string) {
-    const result = await listAccountContactsByAccountIdCallable({ accountId });
-    return result.data.contacts;
+export async function listAccountContactsByAccountId(
+    accountId: string,
+): Promise<AccountContact[]> {
+    const result = await DataConnector.listMyAccountContacts(dataConnect, {
+        accountId,
+    });
+    return result.data.accountContacts.map(toAccountContact);
 }
 
 export async function createAccount(
     payload: AccountPayload & { companyName: string },
-) {
-    const result = await createAccountCallable(payload);
-    return result.data;
+): Promise<AccountDetail> {
+    const accountId = crypto.randomUUID();
+    await DataConnector.createMyAccount(dataConnect, {
+        id: accountId,
+        companyName: payload.companyName,
+        businessNumber: payload.businessNumber,
+        phoneNumber: payload.phoneNumber,
+    });
+    return getAccount(accountId);
 }
 
 export async function updateAccount(
     accountId: string,
     payload: AccountPayload & { primaryContactId?: string | null },
-) {
-    const result = await updateAccountCallable({ accountId, ...payload });
-    return result.data;
+): Promise<AccountDetail> {
+    const account = await getAccount(accountId);
+
+    if (
+        payload.primaryContactId !== undefined &&
+        payload.primaryContactId !== account.primaryContactId
+    ) {
+        if (payload.primaryContactId === null) {
+            await DataConnector.clearMyAccountPrimaryContact(dataConnect, {
+                accountId,
+            });
+        } else {
+            await DataConnector.setMyAccountPrimaryContact(dataConnect, {
+                accountId,
+                contactId: payload.primaryContactId,
+            });
+        }
+    }
+
+    await DataConnector.updateMyAccount(dataConnect, {
+        id: accountId,
+        companyName: payload.companyName ?? account.companyName,
+        businessNumber:
+            payload.businessNumber === undefined
+                ? account.businessNumber
+                : payload.businessNumber,
+        phoneNumber:
+            payload.phoneNumber === undefined
+                ? account.phoneNumber
+                : payload.phoneNumber,
+    });
+    return getAccount(accountId);
 }
 
-export async function deleteAccount(accountId: string) {
-    await deleteAccountCallable({ accountId });
+export async function deleteAccount(accountId: string): Promise<void> {
+    await DataConnector.deleteMyAccount(dataConnect, { id: accountId });
 }
 
 export async function createAccountContact(
     accountId: string,
     payload: AccountContactPayload & { name: string },
-) {
-    const result = await createAccountContactCallable({
+): Promise<AccountDetail> {
+    const contactId = crypto.randomUUID();
+    await DataConnector.createMyAccountContact(dataConnect, {
+        id: contactId,
         accountId,
-        ...payload,
+        name: payload.name,
+        email: payload.email,
+        phoneNumber: payload.phoneNumber,
+        role: payload.role,
     });
-    return result.data;
+    if (payload.makePrimary === true) {
+        await DataConnector.setMyAccountPrimaryContact(dataConnect, {
+            accountId,
+            contactId,
+        });
+    }
+    return getAccount(accountId);
 }
 
 export async function updateAccountContact(
     accountId: string,
     contactId: string,
     payload: AccountContactPayload,
-) {
-    const result = await updateAccountContactCallable({
+): Promise<AccountDetail> {
+    const account = await getAccount(accountId);
+    const contact = account.contacts.find((item) => item.id === contactId);
+    if (!contact) {
+        throw new Error("Contact was not found.");
+    }
+
+    await DataConnector.updateMyAccountContact(dataConnect, {
         accountId,
         contactId,
-        ...payload,
+        name: payload.name ?? contact.name,
+        email: payload.email === undefined ? contact.email : payload.email,
+        phoneNumber:
+            payload.phoneNumber === undefined
+                ? contact.phoneNumber
+                : payload.phoneNumber,
+        role: payload.role === undefined ? contact.role : payload.role,
     });
-    return result.data;
+    return getAccount(accountId);
 }
 
 export async function deleteAccountContact(
     accountId: string,
     contactId: string,
-) {
-    const result = await deleteAccountContactCallable({ accountId, contactId });
-    return result.data;
+): Promise<AccountDetail> {
+    await DataConnector.deleteMyAccountContact(dataConnect, {
+        accountId,
+        contactId,
+    });
+    return getAccount(accountId);
 }
 
 export async function setPrimaryAccountContact(
     accountId: string,
     contactId: string,
-) {
-    const result = await setPrimaryAccountContactCallable({
+): Promise<AccountDetail> {
+    await DataConnector.setMyAccountPrimaryContact(dataConnect, {
         accountId,
         contactId,
     });
-    return result.data;
+    return getAccount(accountId);
+}
+
+function toAccountSummary(account: AccountRow): AccountSummary {
+    return {
+        id: account.id,
+        ownerId: account.ownerId,
+        companyName: account.companyName,
+        businessNumber: account.businessNumber ?? null,
+        phoneNumber: account.phoneNumber ?? null,
+        primaryContactId: account.primaryContactId ?? null,
+        createdAt: account.createdAt,
+        updatedAt: account.updatedAt,
+    };
+}
+
+function toAccountDetail(account: AccountDetailRow): AccountDetail {
+    return {
+        ...toAccountSummary(account),
+        contacts: account.contacts.map(toAccountContact),
+    };
+}
+
+function toAccountContact(contact: AccountContactRow): AccountContact {
+    return {
+        id: contact.id,
+        accountId: contact.accountId,
+        name: contact.name,
+        email: contact.email ?? null,
+        phoneNumber: contact.phoneNumber ?? null,
+        role: contact.role ?? null,
+        createdAt: contact.createdAt,
+        updatedAt: contact.updatedAt,
+    };
 }

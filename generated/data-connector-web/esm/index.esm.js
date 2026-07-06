@@ -1,329 +1,143 @@
 import { queryRef, executeQuery, validateArgsWithOptions, mutationRef, executeMutation, validateArgs } from 'firebase/data-connect';
 
 export const connectorConfig = {
-  connector: 'data-connector',
+  connector: 'data-connector-web',
   service: 'plaster-calculator',
   location: 'us-west1'
 };
-export const createAccountRef = (dcOrVars, vars) => {
+export const createMyAccountRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateAccount', inputVars);
+  return mutationRef(dcInstance, 'CreateMyAccount', inputVars);
 }
-createAccountRef.operationName = 'CreateAccount';
+createMyAccountRef.operationName = 'CreateMyAccount';
 
-export function createAccount(dcOrVars, vars) {
+export function createMyAccount(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createAccountRef(dcInstance, inputVars));
+  return executeMutation(createMyAccountRef(dcInstance, inputVars));
 }
 
-export const updateAccountRef = (dcOrVars, vars) => {
+export const updateMyAccountRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateAccount', inputVars);
+  return mutationRef(dcInstance, 'UpdateMyAccount', inputVars);
 }
-updateAccountRef.operationName = 'UpdateAccount';
+updateMyAccountRef.operationName = 'UpdateMyAccount';
 
-export function updateAccount(dcOrVars, vars) {
+export function updateMyAccount(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateAccountRef(dcInstance, inputVars));
+  return executeMutation(updateMyAccountRef(dcInstance, inputVars));
 }
 
-export const deleteAccountContactsRef = (dcOrVars, vars) => {
+export const setMyAccountPrimaryContactRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'DeleteAccountContacts', inputVars);
+  return mutationRef(dcInstance, 'SetMyAccountPrimaryContact', inputVars);
 }
-deleteAccountContactsRef.operationName = 'DeleteAccountContacts';
+setMyAccountPrimaryContactRef.operationName = 'SetMyAccountPrimaryContact';
 
-export function deleteAccountContacts(dcOrVars, vars) {
+export function setMyAccountPrimaryContact(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(deleteAccountContactsRef(dcInstance, inputVars));
+  return executeMutation(setMyAccountPrimaryContactRef(dcInstance, inputVars));
 }
 
-export const deleteAccountRef = (dcOrVars, vars) => {
+export const clearMyAccountPrimaryContactRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'DeleteAccount', inputVars);
+  return mutationRef(dcInstance, 'ClearMyAccountPrimaryContact', inputVars);
 }
-deleteAccountRef.operationName = 'DeleteAccount';
+clearMyAccountPrimaryContactRef.operationName = 'ClearMyAccountPrimaryContact';
 
-export function deleteAccount(dcOrVars, vars) {
+export function clearMyAccountPrimaryContact(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(deleteAccountRef(dcInstance, inputVars));
+  return executeMutation(clearMyAccountPrimaryContactRef(dcInstance, inputVars));
 }
 
-export const createAccountContactRef = (dcOrVars, vars) => {
+export const deleteMyAccountRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateAccountContact', inputVars);
+  return mutationRef(dcInstance, 'DeleteMyAccount', inputVars);
 }
-createAccountContactRef.operationName = 'CreateAccountContact';
+deleteMyAccountRef.operationName = 'DeleteMyAccount';
 
-export function createAccountContact(dcOrVars, vars) {
+export function deleteMyAccount(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createAccountContactRef(dcInstance, inputVars));
+  return executeMutation(deleteMyAccountRef(dcInstance, inputVars));
 }
 
-export const updateAccountContactRef = (dcOrVars, vars) => {
+export const createMyAccountContactRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateAccountContact', inputVars);
+  return mutationRef(dcInstance, 'CreateMyAccountContact', inputVars);
 }
-updateAccountContactRef.operationName = 'UpdateAccountContact';
+createMyAccountContactRef.operationName = 'CreateMyAccountContact';
 
-export function updateAccountContact(dcOrVars, vars) {
+export function createMyAccountContact(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateAccountContactRef(dcInstance, inputVars));
+  return executeMutation(createMyAccountContactRef(dcInstance, inputVars));
 }
 
-export const deleteAccountContactRef = (dcOrVars, vars) => {
+export const updateMyAccountContactRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'DeleteAccountContact', inputVars);
+  return mutationRef(dcInstance, 'UpdateMyAccountContact', inputVars);
 }
-deleteAccountContactRef.operationName = 'DeleteAccountContact';
+updateMyAccountContactRef.operationName = 'UpdateMyAccountContact';
 
-export function deleteAccountContact(dcOrVars, vars) {
+export function updateMyAccountContact(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(deleteAccountContactRef(dcInstance, inputVars));
+  return executeMutation(updateMyAccountContactRef(dcInstance, inputVars));
 }
 
-export const listAccountsByOwnerRef = (dcOrVars, vars) => {
+export const deleteMyAccountContactRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListAccountsByOwner', inputVars);
+  return mutationRef(dcInstance, 'DeleteMyAccountContact', inputVars);
 }
-listAccountsByOwnerRef.operationName = 'ListAccountsByOwner';
+deleteMyAccountContactRef.operationName = 'DeleteMyAccountContact';
 
-export function listAccountsByOwner(dcOrVars, varsOrOptions, options) {
+export function deleteMyAccountContact(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteMyAccountContactRef(dcInstance, inputVars));
+}
+
+export const listMyAccountsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListMyAccounts');
+}
+listMyAccountsRef.operationName = 'ListMyAccounts';
+
+export function listMyAccounts(dcOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  return executeQuery(listMyAccountsRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+
+export const getMyAccountRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetMyAccount', inputVars);
+}
+getMyAccountRef.operationName = 'GetMyAccount';
+
+export function getMyAccount(dcOrVars, varsOrOptions, options) {
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(listAccountsByOwnerRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+  return executeQuery(getMyAccountRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 
-export const getAccountByIdRef = (dcOrVars, vars) => {
+export const listMyAccountContactsRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetAccountById', inputVars);
+  return queryRef(dcInstance, 'ListMyAccountContacts', inputVars);
 }
-getAccountByIdRef.operationName = 'GetAccountById';
+listMyAccountContactsRef.operationName = 'ListMyAccountContacts';
 
-export function getAccountById(dcOrVars, varsOrOptions, options) {
+export function listMyAccountContacts(dcOrVars, varsOrOptions, options) {
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(getAccountByIdRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const listAccountContactsByAccountIdRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListAccountContactsByAccountId', inputVars);
-}
-listAccountContactsByAccountIdRef.operationName = 'ListAccountContactsByAccountId';
-
-export function listAccountContactsByAccountId(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(listAccountContactsByAccountIdRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const getAccountContactByIdRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetAccountContactById', inputVars);
-}
-getAccountContactByIdRef.operationName = 'GetAccountContactById';
-
-export function getAccountContactById(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(getAccountContactByIdRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const createProjectFromUploadRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateProjectFromUpload', inputVars);
-}
-createProjectFromUploadRef.operationName = 'CreateProjectFromUpload';
-
-export function createProjectFromUpload(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createProjectFromUploadRef(dcInstance, inputVars));
-}
-
-export const updateProjectRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateProject', inputVars);
-}
-updateProjectRef.operationName = 'UpdateProject';
-
-export function updateProject(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateProjectRef(dcInstance, inputVars));
-}
-
-export const renameProjectRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'RenameProject', inputVars);
-}
-renameProjectRef.operationName = 'RenameProject';
-
-export function renameProject(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(renameProjectRef(dcInstance, inputVars));
-}
-
-export const touchProjectRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'TouchProject', inputVars);
-}
-touchProjectRef.operationName = 'TouchProject';
-
-export function touchProject(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(touchProjectRef(dcInstance, inputVars));
-}
-
-export const deleteFloorplanPagesRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'DeleteFloorplanPages', inputVars);
-}
-deleteFloorplanPagesRef.operationName = 'DeleteFloorplanPages';
-
-export function deleteFloorplanPages(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(deleteFloorplanPagesRef(dcInstance, inputVars));
-}
-
-export const deleteProjectRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'DeleteProject', inputVars);
-}
-deleteProjectRef.operationName = 'DeleteProject';
-
-export function deleteProject(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(deleteProjectRef(dcInstance, inputVars));
-}
-
-export const createFloorplanPageRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateFloorplanPage', inputVars);
-}
-createFloorplanPageRef.operationName = 'CreateFloorplanPage';
-
-export function createFloorplanPage(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createFloorplanPageRef(dcInstance, inputVars));
-}
-
-export const updateFloorplanPageAnalysisRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateFloorplanPageAnalysis', inputVars);
-}
-updateFloorplanPageAnalysisRef.operationName = 'UpdateFloorplanPageAnalysis';
-
-export function updateFloorplanPageAnalysis(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateFloorplanPageAnalysisRef(dcInstance, inputVars));
-}
-
-export const updateFloorplanPageRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateFloorplanPage', inputVars);
-}
-updateFloorplanPageRef.operationName = 'UpdateFloorplanPage';
-
-export function updateFloorplanPage(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateFloorplanPageRef(dcInstance, inputVars));
-}
-
-export const updateFloorplanPagesRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateFloorplanPages', inputVars);
-}
-updateFloorplanPagesRef.operationName = 'UpdateFloorplanPages';
-
-export function updateFloorplanPages(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateFloorplanPagesRef(dcInstance, inputVars));
-}
-
-export const listProjectsByOwnerAndSalesStatusRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListProjectsByOwnerAndSalesStatus', inputVars);
-}
-listProjectsByOwnerAndSalesStatusRef.operationName = 'ListProjectsByOwnerAndSalesStatus';
-
-export function listProjectsByOwnerAndSalesStatus(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(listProjectsByOwnerAndSalesStatusRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const listProjectsByAccountRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListProjectsByAccount', inputVars);
-}
-listProjectsByAccountRef.operationName = 'ListProjectsByAccount';
-
-export function listProjectsByAccount(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(listProjectsByAccountRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const getProjectDetailsByIdRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetProjectDetailsById', inputVars);
-}
-getProjectDetailsByIdRef.operationName = 'GetProjectDetailsById';
-
-export function getProjectDetailsById(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(getProjectDetailsByIdRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const getProjectByIdRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetProjectById', inputVars);
-}
-getProjectByIdRef.operationName = 'GetProjectById';
-
-export function getProjectById(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(getProjectByIdRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const getFloorplanPageByIdRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetFloorplanPageById', inputVars);
-}
-getFloorplanPageByIdRef.operationName = 'GetFloorplanPageById';
-
-export function getFloorplanPageById(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(getFloorplanPageByIdRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+  return executeQuery(listMyAccountContactsRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 
 export const createQuestionnaireTemplateRef = (dcOrVars, vars) => {
@@ -398,30 +212,6 @@ export function deleteQuestionnaireTemplate(dcOrVars, vars) {
   return executeMutation(deleteQuestionnaireTemplateRef(dcInstance, inputVars));
 }
 
-export const createProjectQuestionnaireRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateProjectQuestionnaire', inputVars);
-}
-createProjectQuestionnaireRef.operationName = 'CreateProjectQuestionnaire';
-
-export function createProjectQuestionnaire(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createProjectQuestionnaireRef(dcInstance, inputVars));
-}
-
-export const createProjectQuestionnaireAnswerRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateProjectQuestionnaireAnswer', inputVars);
-}
-createProjectQuestionnaireAnswerRef.operationName = 'CreateProjectQuestionnaireAnswer';
-
-export function createProjectQuestionnaireAnswer(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createProjectQuestionnaireAnswerRef(dcInstance, inputVars));
-}
-
 export const listQuestionnaireTemplatesRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
@@ -446,273 +236,5 @@ export function getQuestionnaireTemplate(dcOrVars, varsOrOptions, options) {
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
   return executeQuery(getQuestionnaireTemplateRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const createQuantitySourceRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateQuantitySource', inputVars);
-}
-createQuantitySourceRef.operationName = 'CreateQuantitySource';
-
-export function createQuantitySource(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createQuantitySourceRef(dcInstance, inputVars));
-}
-
-export const createQuoteItemTemplateRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateQuoteItemTemplate', inputVars);
-}
-createQuoteItemTemplateRef.operationName = 'CreateQuoteItemTemplate';
-
-export function createQuoteItemTemplate(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createQuoteItemTemplateRef(dcInstance, inputVars));
-}
-
-export const updateQuoteItemTemplateRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateQuoteItemTemplate', inputVars);
-}
-updateQuoteItemTemplateRef.operationName = 'UpdateQuoteItemTemplate';
-
-export function updateQuoteItemTemplate(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateQuoteItemTemplateRef(dcInstance, inputVars));
-}
-
-export const deleteQuoteItemTemplateRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'DeleteQuoteItemTemplate', inputVars);
-}
-deleteQuoteItemTemplateRef.operationName = 'DeleteQuoteItemTemplate';
-
-export function deleteQuoteItemTemplate(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(deleteQuoteItemTemplateRef(dcInstance, inputVars));
-}
-
-export const upsertQuoteItemTemplateConfigRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpsertQuoteItemTemplateConfig', inputVars);
-}
-upsertQuoteItemTemplateConfigRef.operationName = 'UpsertQuoteItemTemplateConfig';
-
-export function upsertQuoteItemTemplateConfig(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(upsertQuoteItemTemplateConfigRef(dcInstance, inputVars));
-}
-
-export const createSupplierRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateSupplier', inputVars);
-}
-createSupplierRef.operationName = 'CreateSupplier';
-
-export function createSupplier(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createSupplierRef(dcInstance, inputVars));
-}
-
-export const updateSupplierRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateSupplier', inputVars);
-}
-updateSupplierRef.operationName = 'UpdateSupplier';
-
-export function updateSupplier(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateSupplierRef(dcInstance, inputVars));
-}
-
-export const deleteSupplierRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'DeleteSupplier', inputVars);
-}
-deleteSupplierRef.operationName = 'DeleteSupplier';
-
-export function deleteSupplier(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(deleteSupplierRef(dcInstance, inputVars));
-}
-
-export const upsertSupplierQuoteItemPriceRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpsertSupplierQuoteItemPrice', inputVars);
-}
-upsertSupplierQuoteItemPriceRef.operationName = 'UpsertSupplierQuoteItemPrice';
-
-export function upsertSupplierQuoteItemPrice(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(upsertSupplierQuoteItemPriceRef(dcInstance, inputVars));
-}
-
-export const deleteSupplierQuoteItemPriceRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'DeleteSupplierQuoteItemPrice', inputVars);
-}
-deleteSupplierQuoteItemPriceRef.operationName = 'DeleteSupplierQuoteItemPrice';
-
-export function deleteSupplierQuoteItemPrice(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(deleteSupplierQuoteItemPriceRef(dcInstance, inputVars));
-}
-
-export const createQuoteRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateQuote', inputVars);
-}
-createQuoteRef.operationName = 'CreateQuote';
-
-export function createQuote(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createQuoteRef(dcInstance, inputVars));
-}
-
-export const updateQuoteRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateQuote', inputVars);
-}
-updateQuoteRef.operationName = 'UpdateQuote';
-
-export function updateQuote(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateQuoteRef(dcInstance, inputVars));
-}
-
-export const deleteQuoteItemsRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'DeleteQuoteItems', inputVars);
-}
-deleteQuoteItemsRef.operationName = 'DeleteQuoteItems';
-
-export function deleteQuoteItems(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(deleteQuoteItemsRef(dcInstance, inputVars));
-}
-
-export const createQuoteItemRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateQuoteItem', inputVars);
-}
-createQuoteItemRef.operationName = 'CreateQuoteItem';
-
-export function createQuoteItem(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createQuoteItemRef(dcInstance, inputVars));
-}
-
-export const updateQuoteItemRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateQuoteItem', inputVars);
-}
-updateQuoteItemRef.operationName = 'UpdateQuoteItem';
-
-export function updateQuoteItem(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateQuoteItemRef(dcInstance, inputVars));
-}
-
-export const createReminderRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateReminder', inputVars);
-}
-createReminderRef.operationName = 'CreateReminder';
-
-export function createReminder(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createReminderRef(dcInstance, inputVars));
-}
-
-export const updateReminderRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateReminder', inputVars);
-}
-updateReminderRef.operationName = 'UpdateReminder';
-
-export function updateReminder(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateReminderRef(dcInstance, inputVars));
-}
-
-export const listDueRemindersRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListDueReminders', inputVars);
-}
-listDueRemindersRef.operationName = 'ListDueReminders';
-
-export function listDueReminders(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(listDueRemindersRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const listProjectRemindersRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListProjectReminders', inputVars);
-}
-listProjectRemindersRef.operationName = 'ListProjectReminders';
-
-export function listProjectReminders(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(listProjectRemindersRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const getReminderByIdRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetReminderById', inputVars);
-}
-getReminderByIdRef.operationName = 'GetReminderById';
-
-export function getReminderById(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(getReminderByIdRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
-}
-
-export const upsertUserSettingsRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpsertUserSettings', inputVars);
-}
-upsertUserSettingsRef.operationName = 'UpsertUserSettings';
-
-export function upsertUserSettings(dcOrVars, vars) {
-  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(upsertUserSettingsRef(dcInstance, inputVars));
-}
-
-export const getUserSettingsRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'GetUserSettings', inputVars);
-}
-getUserSettingsRef.operationName = 'GetUserSettings';
-
-export function getUserSettings(dcOrVars, varsOrOptions, options) {
-  
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
-  return executeQuery(getUserSettingsRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 
