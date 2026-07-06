@@ -11,6 +11,7 @@ import {
 import { onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
+import { exampleDataConnect } from "./data-connect.js";
 import { toReminder } from "./mappers.js";
 import {
     requireOwnedAccount,
@@ -39,7 +40,9 @@ export const listDueReminders = onCall<
     Promise<{ reminders: Reminder[] }>
 >(async (request) => {
     const auth = requireAuth(request);
-    const response = await dcListDueReminders({ ownerId: auth.uid });
+    const response = await dcListDueReminders(exampleDataConnect, {
+        ownerId: auth.uid,
+    });
     return { reminders: response.data.reminders.map(toReminder) };
 });
 
@@ -50,7 +53,9 @@ export const listProjectReminders = onCall<
     const auth = requireAuth(request);
     const projectId = readRequiredString(request.data.projectId, "Project ID");
     await requireOwnedProject(projectId, auth.uid);
-    const response = await dcListProjectReminders({ projectId });
+    const response = await dcListProjectReminders(exampleDataConnect, {
+        projectId,
+    });
     return {
         reminders: response.data.reminders
             .filter((reminder) => reminder.ownerId === auth.uid)
@@ -73,7 +78,7 @@ export const createReminder = onCall<CreateReminderRequest, Promise<Reminder>>(
         }
 
         const reminderId = randomUUID();
-        await dcCreateReminder({
+        await dcCreateReminder(exampleDataConnect, {
             id: reminderId,
             ownerId: auth.uid,
             projectId: project.id,
@@ -103,7 +108,7 @@ export const updateReminder = onCall<UpdateReminderRequest, Promise<Reminder>>(
             await requireOwnedAccount(accountId, auth.uid);
         }
 
-        await dcUpdateReminder({
+        await dcUpdateReminder(exampleDataConnect, {
             id: reminder.id,
             accountId,
             name: hasField(data, "name")
@@ -132,7 +137,7 @@ export const completeReminder = onCall<ReminderIdRequest, Promise<Reminder>>(
             readRequiredString(request.data.reminderId, "Reminder ID"),
             auth.uid,
         );
-        await dcUpdateReminder({
+        await dcUpdateReminder(exampleDataConnect, {
             id: reminder.id,
             accountId: reminder.accountId ?? null,
             name: reminder.name,
@@ -151,7 +156,7 @@ export const cancelReminder = onCall<ReminderIdRequest, Promise<Reminder>>(
             readRequiredString(request.data.reminderId, "Reminder ID"),
             auth.uid,
         );
-        await dcUpdateReminder({
+        await dcUpdateReminder(exampleDataConnect, {
             id: reminder.id,
             accountId: reminder.accountId ?? null,
             name: reminder.name,

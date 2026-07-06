@@ -1,12 +1,14 @@
 import type {
     GetAccountByIdData,
     GetAccountContactByIdData,
+    ListAccountContactsByAccountIdData,
+    ListAccountsByOwnerData,
+} from "@generated/accounts-data-connector-admin";
+import type {
     GetFloorplanPageByIdData,
     GetProjectByIdData,
     GetProjectDetailsByIdData,
     GetReminderByIdData,
-    ListAccountContactsByAccountIdData,
-    ListAccountsByOwnerData,
     ListProjectsByAccountData,
     ListProjectsByOwnerAndSalesStatusData,
     ListProjectRemindersData,

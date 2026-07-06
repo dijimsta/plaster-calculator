@@ -1,16 +1,22 @@
 import {
     getAccountById,
     getAccountContactById,
+} from "@generated/accounts-data-connector-admin";
+import {
     getFloorplanPageById,
     getProjectDetailsById,
     getReminderById,
 } from "@generated/example-data-connector";
 import { HttpsError } from "firebase-functions/https";
 
+import { accountsDataConnect, exampleDataConnect } from "./data-connect.js";
+
 export async function requireOwnedProject(projectId: string, ownerId: string) {
     // TODO: Add a lightweight ownership helper backed by getProjectById for
     // callsites that do not need floorplan pages.
-    const response = await getProjectDetailsById({ id: projectId });
+    const response = await getProjectDetailsById(exampleDataConnect, {
+        id: projectId,
+    });
     const project = response.data.project;
     if (!project || project.ownerId !== ownerId) {
         throw new HttpsError("not-found", "Project was not found.");
@@ -20,7 +26,9 @@ export async function requireOwnedProject(projectId: string, ownerId: string) {
 }
 
 export async function requireOwnedAccount(accountId: string, ownerId: string) {
-    const response = await getAccountById({ id: accountId });
+    const response = await getAccountById(accountsDataConnect, {
+        id: accountId,
+    });
     const account = response.data.account;
     if (!account || account.ownerId !== ownerId) {
         throw new HttpsError("not-found", "Account was not found.");
@@ -35,7 +43,10 @@ export async function requireOwnedAccountContact(
     ownerId: string,
 ) {
     await requireOwnedAccount(accountId, ownerId);
-    const response = await getAccountContactById({ accountId, contactId });
+    const response = await getAccountContactById(accountsDataConnect, {
+        accountId,
+        contactId,
+    });
     const contact = response.data.accountContact;
     if (!contact) {
         throw new HttpsError("not-found", "Contact was not found.");
@@ -48,7 +59,9 @@ export async function requireOwnedReminder(
     reminderId: string,
     ownerId: string,
 ) {
-    const response = await getReminderById({ id: reminderId });
+    const response = await getReminderById(exampleDataConnect, {
+        id: reminderId,
+    });
     const reminder = response.data.reminder;
     if (!reminder || reminder.ownerId !== ownerId) {
         throw new HttpsError("not-found", "Reminder was not found.");
@@ -57,7 +70,10 @@ export async function requireOwnedReminder(
     return reminder;
 }
 export async function requireFloorplanPage(projectId: string, pageId: string) {
-    const response = await getFloorplanPageById({ projectId, pageId });
+    const response = await getFloorplanPageById(exampleDataConnect, {
+        projectId,
+        pageId,
+    });
     const page = response.data.floorplanPage;
     if (!page) {
         throw new HttpsError("not-found", "Page was not found.");

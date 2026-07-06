@@ -5,6 +5,7 @@ import {
     buildOverlayFromAnalyzerResult,
     callFloorplanAnalyzer,
 } from "./analyzer.js";
+import { exampleDataConnect } from "./data-connect.js";
 import {
     fetchStorageImage,
     storageProjectId,
@@ -121,7 +122,7 @@ async function analysePage(
         strategy,
     });
 
-    await dcCreateFloorplanPage({
+    await dcCreateFloorplanPage(exampleDataConnect, {
         projectId,
         pageNumber,
         status: "READY",

@@ -6,6 +6,7 @@ import {
     updateReminder as dcUpdateReminder,
 } from "@generated/example-data-connector";
 
+import { exampleDataConnect } from "./data-connect.js";
 import { getUserSettingsOrDefault } from "./settings.js";
 import { toReminderStatus } from "./validation.js";
 
@@ -27,7 +28,7 @@ export async function upsertAutoQuoteReminder(
     const existing = await findOpenProjectReminder(project.id, ownerId);
 
     if (existing && existing.ownerId === ownerId) {
-        await dcUpdateReminder({
+        await dcUpdateReminder(exampleDataConnect, {
             id: existing.id,
             accountId: project.accountId ?? null,
             name,
@@ -38,7 +39,7 @@ export async function upsertAutoQuoteReminder(
         return;
     }
 
-    await dcCreateReminder({
+    await dcCreateReminder(exampleDataConnect, {
         id: randomUUID(),
         ownerId,
         projectId: project.id,
@@ -58,7 +59,7 @@ export async function cancelOpenProjectReminder(
         return;
     }
 
-    await dcUpdateReminder({
+    await dcUpdateReminder(exampleDataConnect, {
         id: reminder.id,
         accountId: reminder.accountId ?? null,
         name: reminder.name,
@@ -72,7 +73,9 @@ export async function findOpenProjectReminder(
     projectId: string,
     ownerId: string,
 ) {
-    const response = await dcListProjectReminders({ projectId });
+    const response = await dcListProjectReminders(exampleDataConnect, {
+        projectId,
+    });
     return (
         response.data.reminders.find(
             (reminder) =>
