@@ -1,68 +1,79 @@
-import { validateAdminArgs } from 'firebase-admin/data-connect';
+const { validateAdminArgs } = require('firebase-admin/data-connect');
 
-export const connectorConfig = {
+const connectorConfig = {
   connector: 'questionnaires',
   serviceId: 'plaster-calculator',
   location: 'us-west1'
 };
+exports.connectorConfig = connectorConfig;
 
-export function createQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateQuestionnaireTemplate', inputVars, inputOpts);
-}
-
-export function createQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateQuestionnaireTemplateQuestion', inputVars, inputOpts);
-}
-
-export function updateQuestionnaireTemplateName(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('UpdateQuestionnaireTemplateName', inputVars, inputOpts);
-}
-
-export function updateQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('UpdateQuestionnaireTemplateQuestion', inputVars, inputOpts);
-}
-
-export function deleteQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('DeleteQuestionnaireTemplateQuestion', inputVars, inputOpts);
-}
-
-export function deleteQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('DeleteQuestionnaireTemplate', inputVars, inputOpts);
-}
-
-export function createProjectQuestionnaire(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateProjectQuestionnaire', inputVars, inputOpts);
-}
-
-export function createProjectQuestionnaireAnswer(dcOrVarsOrOptions, varsOrOptions, options) {
-  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
-  dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateProjectQuestionnaireAnswer', inputVars, inputOpts);
-}
-
-export function listQuestionnaireTemplates(dcOrOptions, options) {
+function listQuestionnaireTemplates(dcOrOptions, options) {
   const { dc: dcInstance, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrOptions, options, undefined);
   dcInstance.useGen(true);
   return dcInstance.executeQuery('ListQuestionnaireTemplates', undefined, inputOpts);
 }
+exports.listQuestionnaireTemplates = listQuestionnaireTemplates;
 
-export function getQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
+function getQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
   return dcInstance.executeQuery('GetQuestionnaireTemplate', inputVars, inputOpts);
 }
+exports.getQuestionnaireTemplate = getQuestionnaireTemplate;
+
+function createQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateQuestionnaireTemplate', inputVars, inputOpts);
+}
+exports.createQuestionnaireTemplate = createQuestionnaireTemplate;
+
+function createQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateQuestionnaireTemplateQuestion', inputVars, inputOpts);
+}
+exports.createQuestionnaireTemplateQuestion = createQuestionnaireTemplateQuestion;
+
+function updateQuestionnaireTemplateName(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateQuestionnaireTemplateName', inputVars, inputOpts);
+}
+exports.updateQuestionnaireTemplateName = updateQuestionnaireTemplateName;
+
+function updateQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateQuestionnaireTemplateQuestion', inputVars, inputOpts);
+}
+exports.updateQuestionnaireTemplateQuestion = updateQuestionnaireTemplateQuestion;
+
+function deleteQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteQuestionnaireTemplateQuestion', inputVars, inputOpts);
+}
+exports.deleteQuestionnaireTemplateQuestion = deleteQuestionnaireTemplateQuestion;
+
+function deleteQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteQuestionnaireTemplate', inputVars, inputOpts);
+}
+exports.deleteQuestionnaireTemplate = deleteQuestionnaireTemplate;
+
+function createProjectQuestionnaire(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateProjectQuestionnaire', inputVars, inputOpts);
+}
+exports.createProjectQuestionnaire = createProjectQuestionnaire;
+
+function createProjectQuestionnaireAnswer(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateProjectQuestionnaireAnswer', inputVars, inputOpts);
+}
+exports.createProjectQuestionnaireAnswer = createProjectQuestionnaireAnswer;
 

@@ -1,5 +1,5 @@
 {
-  "name": "@generated/questionnaires-data-connector",
+  "name": "@generated/questionnaires-data-connector-admin",
   "version": "0.0.1",
   "author": "Firebase <firebase-support@google.com> (https://firebase.google.com/)",
   "description": "Generated Admin SDK For questionnaires",

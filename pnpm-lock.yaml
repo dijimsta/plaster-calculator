@@ -284,7 +284,7 @@ importers:
         specifier: ^13.4.0
         version: 13.10.0
 
-  generated/questionnaires-data-connector:
+  generated/questionnaires-data-connector-admin:
     dependencies:
       firebase-admin:
         specifier: ^13.4.0
