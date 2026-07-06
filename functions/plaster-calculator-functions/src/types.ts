@@ -12,16 +12,6 @@ export type ProjectDetailsRow = NonNullable<
 export type FloorplanPageRow = NonNullable<
     DataConnector.GetFloorplanPageByIdData["floorplanPage"]
 >;
-export type AccountListRow =
-    DataConnector.ListAccountsByOwnerData["accounts"][number];
-export type AccountWithContacts = NonNullable<
-    DataConnector.GetAccountByIdData["account"]
->;
-export type AccountContactRow = NonNullable<
-    DataConnector.GetAccountContactByIdData["accountContact"]
->;
-export type AccountContactListRow =
-    DataConnector.ListAccountContactsByAccountIdData["accountContacts"][number];
 export type ReminderRow = NonNullable<
     DataConnector.GetReminderByIdData["reminder"]
 >;
@@ -68,32 +58,6 @@ export interface FloorplanPage {
 export interface ProjectDetail extends ProjectSummary {
     ownerId?: string | null;
     pages: FloorplanPage[];
-}
-
-export interface AccountContact {
-    id: string;
-    accountId: string;
-    name: string;
-    email: string | null;
-    phoneNumber: string | null;
-    role: string | null;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface AccountSummary {
-    id: string;
-    ownerId?: string | null;
-    companyName: string;
-    businessNumber: string | null;
-    phoneNumber: string | null;
-    primaryContactId: string | null;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface AccountDetail extends AccountSummary {
-    contacts: AccountContact[];
 }
 
 export interface UserSettings {
@@ -164,38 +128,6 @@ export interface UpdateProjectRequest extends ProjectIdRequest {
 
 export interface AccountIdRequest {
     accountId?: unknown;
-}
-
-export interface ContactIdRequest extends AccountIdRequest {
-    contactId?: unknown;
-}
-
-export interface CreateAccountRequest {
-    companyName?: unknown;
-    businessNumber?: unknown;
-    phoneNumber?: unknown;
-}
-
-export interface UpdateAccountRequest extends AccountIdRequest {
-    companyName?: unknown;
-    businessNumber?: unknown;
-    phoneNumber?: unknown;
-    primaryContactId?: unknown;
-}
-
-export interface CreateAccountContactRequest extends AccountIdRequest {
-    name?: unknown;
-    email?: unknown;
-    phoneNumber?: unknown;
-    role?: unknown;
-    makePrimary?: unknown;
-}
-
-export interface UpdateAccountContactRequest extends ContactIdRequest {
-    name?: unknown;
-    email?: unknown;
-    phoneNumber?: unknown;
-    role?: unknown;
 }
 
 export interface UpdateSettingsRequest {

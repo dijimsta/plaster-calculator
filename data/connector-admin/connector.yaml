@@ -1,0 +1,5 @@
+connectorId: data-connector-admin
+generate:
+    adminNodeSdk:
+        - package: "@generated/data-connector-admin"
+          outputDir: ../../generated/data-connector-admin

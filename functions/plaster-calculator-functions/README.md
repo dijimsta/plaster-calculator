@@ -1,7 +1,8 @@
 # Plaster Calculator Functions
 
 `@functions/plaster-calculator-functions` is the Node.js 24 Firebase Functions backend for Plaster Calculator. It exposes
-callable operations for accounts, projects, floorplan processing, reminders, settings, and exports.
+callable operations for projects, floorplan processing, reminders, settings, and exports. Account CRUD is accessed
+directly from the web app through Firebase Data Connect.
 
 ## Runtime
 
@@ -12,7 +13,7 @@ Function bootstrap configures:
 - A maximum of five instances.
 - App Check enforcement.
 
-The package uses the generated Firebase Data Connect Admin SDK at `@generated/example-data-connector` for relational
+The package uses the generated Firebase Data Connect Admin SDK at `@generated/data-connector-admin` for relational
 data operations.
 
 ## Commands
