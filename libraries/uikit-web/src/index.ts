@@ -4,6 +4,11 @@ export type {
     AlertProps,
     AlertVariant,
 } from "./feedback/alert/index.ts";
+export { EmptyState } from "./feedback/empty-state/index.ts";
+export type {
+    EmptyStateProps,
+    EmptyStateVariant,
+} from "./feedback/empty-state/index.ts";
 export { Avatar } from "./elements/avatar/index.ts";
 export type {
     AvatarColor,
