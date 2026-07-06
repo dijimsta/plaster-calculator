@@ -61,6 +61,15 @@ export interface CreateQuestionnaireTemplateVariables {
   name: string;
 }
 
+export interface DeleteQuestionnaireTemplateData {
+  questionnaireTemplateQuestion_deleteMany: number;
+  questionnaireTemplate_delete?: QuestionnaireTemplate_Key | null;
+}
+
+export interface DeleteQuestionnaireTemplateVariables {
+  id: UUIDString;
+}
+
 export interface FloorplanPage_Key {
   id: UUIDString;
   __typename?: 'FloorplanPage_Key';
@@ -156,6 +165,11 @@ export function createQuestionnaireTemplate(vars: CreateQuestionnaireTemplateVar
 export function createQuestionnaireTemplateQuestion(dc: DataConnect, vars: CreateQuestionnaireTemplateQuestionVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuestionnaireTemplateQuestionData>>;
 /** Generated Node Admin SDK operation action function for the 'CreateQuestionnaireTemplateQuestion' Mutation. Allow users to pass in custom DataConnect instances. */
 export function createQuestionnaireTemplateQuestion(vars: CreateQuestionnaireTemplateQuestionVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateQuestionnaireTemplateQuestionData>>;
+
+/** Generated Node Admin SDK operation action function for the 'DeleteQuestionnaireTemplate' Mutation. Allow users to execute without passing in DataConnect. */
+export function deleteQuestionnaireTemplate(dc: DataConnect, vars: DeleteQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuestionnaireTemplateData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteQuestionnaireTemplate' Mutation. Allow users to pass in custom DataConnect instances. */
+export function deleteQuestionnaireTemplate(vars: DeleteQuestionnaireTemplateVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteQuestionnaireTemplateData>>;
 
 /** Generated Node Admin SDK operation action function for the 'CreateProjectQuestionnaire' Mutation. Allow users to execute without passing in DataConnect. */
 export function createProjectQuestionnaire(dc: DataConnect, vars: CreateProjectQuestionnaireVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectQuestionnaireData>>;

@@ -63,6 +63,15 @@ export interface CreateQuestionnaireTemplateVariables {
   name: string;
 }
 
+export interface DeleteQuestionnaireTemplateData {
+  questionnaireTemplateQuestion_deleteMany: number;
+  questionnaireTemplate_delete?: QuestionnaireTemplate_Key | null;
+}
+
+export interface DeleteQuestionnaireTemplateVariables {
+  id: UUIDString;
+}
+
 export interface FloorplanPage_Key {
   id: UUIDString;
   __typename?: 'FloorplanPage_Key';
@@ -172,6 +181,18 @@ export const createQuestionnaireTemplateQuestionRef: CreateQuestionnaireTemplate
 
 export function createQuestionnaireTemplateQuestion(vars: CreateQuestionnaireTemplateQuestionVariables): MutationPromise<CreateQuestionnaireTemplateQuestionData, CreateQuestionnaireTemplateQuestionVariables>;
 export function createQuestionnaireTemplateQuestion(dc: DataConnect, vars: CreateQuestionnaireTemplateQuestionVariables): MutationPromise<CreateQuestionnaireTemplateQuestionData, CreateQuestionnaireTemplateQuestionVariables>;
+
+interface DeleteQuestionnaireTemplateRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteQuestionnaireTemplateVariables): MutationRef<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteQuestionnaireTemplateVariables): MutationRef<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
+  operationName: string;
+}
+export const deleteQuestionnaireTemplateRef: DeleteQuestionnaireTemplateRef;
+
+export function deleteQuestionnaireTemplate(vars: DeleteQuestionnaireTemplateVariables): MutationPromise<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
+export function deleteQuestionnaireTemplate(dc: DataConnect, vars: DeleteQuestionnaireTemplateVariables): MutationPromise<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
 
 interface CreateProjectQuestionnaireRef {
   /* Allow users to create refs without passing in DataConnect */

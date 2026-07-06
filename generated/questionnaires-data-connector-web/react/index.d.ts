@@ -1,4 +1,4 @@
-import { CreateQuestionnaireTemplateData, CreateQuestionnaireTemplateVariables, CreateQuestionnaireTemplateQuestionData, CreateQuestionnaireTemplateQuestionVariables, CreateProjectQuestionnaireData, CreateProjectQuestionnaireVariables, CreateProjectQuestionnaireAnswerData, CreateProjectQuestionnaireAnswerVariables, ListQuestionnaireTemplatesData } from '../';
+import { CreateQuestionnaireTemplateData, CreateQuestionnaireTemplateVariables, CreateQuestionnaireTemplateQuestionData, CreateQuestionnaireTemplateQuestionVariables, DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables, CreateProjectQuestionnaireData, CreateProjectQuestionnaireVariables, CreateProjectQuestionnaireAnswerData, CreateProjectQuestionnaireAnswerVariables, ListQuestionnaireTemplatesData } from '../';
 import { UseDataConnectQueryResult, useDataConnectQueryOptions, UseDataConnectMutationResult, useDataConnectMutationOptions} from '@tanstack-query-firebase/react/data-connect';
 import { UseQueryResult, UseMutationResult} from '@tanstack/react-query';
 import { DataConnect } from 'firebase/data-connect';
@@ -10,6 +10,9 @@ export function useCreateQuestionnaireTemplate(dc: DataConnect, options?: useDat
 
 export function useCreateQuestionnaireTemplateQuestion(options?: useDataConnectMutationOptions<CreateQuestionnaireTemplateQuestionData, FirebaseError, CreateQuestionnaireTemplateQuestionVariables>): UseDataConnectMutationResult<CreateQuestionnaireTemplateQuestionData, CreateQuestionnaireTemplateQuestionVariables>;
 export function useCreateQuestionnaireTemplateQuestion(dc: DataConnect, options?: useDataConnectMutationOptions<CreateQuestionnaireTemplateQuestionData, FirebaseError, CreateQuestionnaireTemplateQuestionVariables>): UseDataConnectMutationResult<CreateQuestionnaireTemplateQuestionData, CreateQuestionnaireTemplateQuestionVariables>;
+
+export function useDeleteQuestionnaireTemplate(options?: useDataConnectMutationOptions<DeleteQuestionnaireTemplateData, FirebaseError, DeleteQuestionnaireTemplateVariables>): UseDataConnectMutationResult<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
+export function useDeleteQuestionnaireTemplate(dc: DataConnect, options?: useDataConnectMutationOptions<DeleteQuestionnaireTemplateData, FirebaseError, DeleteQuestionnaireTemplateVariables>): UseDataConnectMutationResult<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
 
 export function useCreateProjectQuestionnaire(options?: useDataConnectMutationOptions<CreateProjectQuestionnaireData, FirebaseError, CreateProjectQuestionnaireVariables>): UseDataConnectMutationResult<CreateProjectQuestionnaireData, CreateProjectQuestionnaireVariables>;
 export function useCreateProjectQuestionnaire(dc: DataConnect, options?: useDataConnectMutationOptions<CreateProjectQuestionnaireData, FirebaseError, CreateProjectQuestionnaireVariables>): UseDataConnectMutationResult<CreateProjectQuestionnaireData, CreateProjectQuestionnaireVariables>;

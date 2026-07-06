@@ -29,6 +29,18 @@ export function createQuestionnaireTemplateQuestion(dcOrVars, vars) {
   return executeMutation(createQuestionnaireTemplateQuestionRef(dcInstance, inputVars));
 }
 
+export const deleteQuestionnaireTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteQuestionnaireTemplate', inputVars);
+}
+deleteQuestionnaireTemplateRef.operationName = 'DeleteQuestionnaireTemplate';
+
+export function deleteQuestionnaireTemplate(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteQuestionnaireTemplateRef(dcInstance, inputVars));
+}
+
 export const createProjectQuestionnaireRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
