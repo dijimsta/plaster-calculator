@@ -19,6 +19,8 @@ export type {
     BadgeSize,
     BadgeVariant,
 } from "./elements/badge/index.ts";
+export { Backdrop } from "./overlays/backdrop/index.ts";
+export type { BackdropProps } from "./overlays/backdrop/index.ts";
 export { Box } from "./layout/box/index.ts";
 export type {
     BoxAlign,
@@ -55,6 +57,12 @@ export type {
 export { Combobox } from "./forms/combobox/index.ts";
 export type { ComboboxOption, ComboboxProps } from "./forms/combobox/index.ts";
 export { Divider } from "./layout/divider/index.ts";
+export { Drawer } from "./overlays/drawer/index.ts";
+export type {
+    DrawerPlacement,
+    DrawerProps,
+    DrawerSize,
+} from "./overlays/drawer/index.ts";
 export {
     FormLayout,
     FormLayoutActions,
