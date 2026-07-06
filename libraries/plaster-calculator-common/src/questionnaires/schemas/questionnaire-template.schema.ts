@@ -3,9 +3,10 @@ import { z } from "zod";
 export const QuestionnaireTemplateSchema = z
     .object({
         id: z.string(),
+        ownerId: z.string(),
         name: z.string(),
-        usedByLabel: z.string(),
-        updated: z.string(),
+        createdAt: z.string(),
+        updatedAt: z.string(),
     })
     .readonly();
 

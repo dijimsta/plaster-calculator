@@ -1,3 +1,4 @@
+import { formatRelativeTime } from "@libraries/plaster-calculator-common";
 import { Box, Button, Card, IconTile, Text } from "@libraries/uikit-web";
 import { ClipboardList, Copy, Pencil, Trash2 } from "lucide-react";
 
@@ -34,7 +35,7 @@ export function QuestionnaireTemplateCard({
             </Box>
 
             <Card.Footer>
-                {template.usedByLabel} · {template.updated}
+                Updated {formatRelativeTime(new Date(template.updatedAt))}
             </Card.Footer>
         </Card>
     );

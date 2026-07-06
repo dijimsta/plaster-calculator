@@ -1,10 +1,10 @@
 import { QuestionnairesServiceContext } from "./questionnaires-service.context.ts";
 
-import type { QuestionnairesService } from "@libraries/plaster-calculator-common";
+import type { IQuestionnairesService } from "@libraries/plaster-calculator-common";
 import type { ReactElement, ReactNode } from "react";
 
 export interface QuestionnairesServiceProviderProps {
-    readonly service: QuestionnairesService;
+    readonly service: IQuestionnairesService;
     readonly children: ReactNode;
 }
 

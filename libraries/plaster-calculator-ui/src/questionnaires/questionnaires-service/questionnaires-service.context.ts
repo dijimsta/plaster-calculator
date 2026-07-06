@@ -1,12 +1,12 @@
 import { createContext, useContext } from "react";
 
-import type { QuestionnairesService } from "@libraries/plaster-calculator-common";
+import type { IQuestionnairesService } from "@libraries/plaster-calculator-common";
 
 export const QuestionnairesServiceContext = createContext<
-    QuestionnairesService | undefined
+    IQuestionnairesService | undefined
 >(undefined);
 
-export function useQuestionnairesService(): QuestionnairesService {
+export function useQuestionnairesService(): IQuestionnairesService {
     const service = useContext(QuestionnairesServiceContext);
     if (service) {
         return service;
