@@ -84,6 +84,11 @@ export type {
     NotificationProps,
 } from "./overlays/notification/index.ts";
 export {
+    NotificationsProvider,
+    useNotificationsManager,
+} from "./overlays/notifications-manager/index.ts";
+export type { NotifyOptions } from "./overlays/notifications-manager/index.ts";
+export {
     FormLayout,
     FormLayoutActions,
     FormLayoutField,

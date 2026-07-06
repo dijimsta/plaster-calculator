@@ -2,6 +2,7 @@ import { type Metadata } from "next";
 import { type PropsWithChildren } from "react";
 
 import "./globals.css";
+import { AppNotificationsProvider } from "../components/notifications-manager.provider.js";
 import { AppQueryClientProvider } from "../components/query-client.provider.js";
 import { ThemeInitializer } from "../components/theme-initializer.js";
 import { AppCheckProvider } from "../firebase/app-check.provider.ts";
@@ -50,8 +51,10 @@ export default function RootLayout({ children }: PropsWithChildren) {
             <body>
                 <AppCheckProvider>
                     <AppQueryClientProvider>
-                        <ThemeInitializer />
-                        {children}
+                        <AppNotificationsProvider>
+                            <ThemeInitializer />
+                            {children}
+                        </AppNotificationsProvider>
                     </AppQueryClientProvider>
                 </AppCheckProvider>
             </body>
