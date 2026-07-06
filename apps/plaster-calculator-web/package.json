@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@libraries/plaster-calculator-common": "workspace:*",
+        "@libraries/plaster-calculator-ui": "workspace:*",
         "@libraries/plaster-calculator-web-core": "workspace:*",
         "@libraries/uikit-web": "workspace:*",
         "firebase": "^12.15.0",

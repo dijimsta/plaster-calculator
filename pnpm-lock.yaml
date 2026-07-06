@@ -115,6 +115,9 @@ importers:
       '@libraries/plaster-calculator-common':
         specifier: workspace:*
         version: link:../../libraries/plaster-calculator-common
+      '@libraries/plaster-calculator-ui':
+        specifier: workspace:*
+        version: link:../../libraries/plaster-calculator-ui
       '@libraries/plaster-calculator-web-core':
         specifier: workspace:*
         version: link:../../libraries/plaster-calculator-web-core
