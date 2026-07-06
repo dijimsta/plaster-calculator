@@ -1,4 +1,4 @@
-import { connectorConfig as questionnairesConnectorConfig } from "@generated/questionnaires-data-connector-web";
+import * as DataConnector from "@generated/data-connector-web";
 import { getApps, initializeApp, type FirebaseApp } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import {
@@ -57,7 +57,7 @@ export class FirebaseService {
         );
         connectStorageEmulator(FirebaseService.getStorage(), "127.0.0.1", 9199);
         connectDataConnectEmulator(
-            FirebaseService.getDataConnect(questionnairesConnectorConfig),
+            FirebaseService.getDataConnect(DataConnector.connectorConfig),
             "127.0.0.1",
             9399,
         );

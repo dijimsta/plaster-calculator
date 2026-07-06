@@ -1,38 +1,32 @@
-import type {
-    GetAccountByIdData,
-    GetAccountContactByIdData,
-    ListAccountContactsByAccountIdData,
-    ListAccountsByOwnerData,
-} from "@generated/accounts-data-connector-admin";
-import type {
-    GetFloorplanPageByIdData,
-    GetProjectByIdData,
-    GetProjectDetailsByIdData,
-    GetReminderByIdData,
-    ListProjectsByAccountData,
-    ListProjectsByOwnerAndSalesStatusData,
-    ListProjectRemindersData,
-} from "@generated/example-data-connector";
+import type * as DataConnector from "@generated/data-connector-admin";
 
 export type ProjectListRow =
-    | ListProjectsByOwnerAndSalesStatusData["projects"][number]
-    | ListProjectsByAccountData["projects"][number];
+    | DataConnector.ListProjectsByOwnerAndSalesStatusData["projects"][number]
+    | DataConnector.ListProjectsByAccountData["projects"][number];
 export type ProjectWithPages = NonNullable<
-    GetProjectDetailsByIdData["project"]
+    DataConnector.GetProjectDetailsByIdData["project"]
 >;
-export type ProjectDetailsRow = NonNullable<GetProjectByIdData["project"]>;
+export type ProjectDetailsRow = NonNullable<
+    DataConnector.GetProjectByIdData["project"]
+>;
 export type FloorplanPageRow = NonNullable<
-    GetFloorplanPageByIdData["floorplanPage"]
+    DataConnector.GetFloorplanPageByIdData["floorplanPage"]
 >;
-export type AccountListRow = ListAccountsByOwnerData["accounts"][number];
-export type AccountWithContacts = NonNullable<GetAccountByIdData["account"]>;
+export type AccountListRow =
+    DataConnector.ListAccountsByOwnerData["accounts"][number];
+export type AccountWithContacts = NonNullable<
+    DataConnector.GetAccountByIdData["account"]
+>;
 export type AccountContactRow = NonNullable<
-    GetAccountContactByIdData["accountContact"]
+    DataConnector.GetAccountContactByIdData["accountContact"]
 >;
 export type AccountContactListRow =
-    ListAccountContactsByAccountIdData["accountContacts"][number];
-export type ReminderRow = NonNullable<GetReminderByIdData["reminder"]>;
-export type ProjectReminderRow = ListProjectRemindersData["reminders"][number];
+    DataConnector.ListAccountContactsByAccountIdData["accountContacts"][number];
+export type ReminderRow = NonNullable<
+    DataConnector.GetReminderByIdData["reminder"]
+>;
+export type ProjectReminderRow =
+    DataConnector.ListProjectRemindersData["reminders"][number];
 
 export type UploadType = "PDF" | "IMAGE";
 export type ProjectStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";

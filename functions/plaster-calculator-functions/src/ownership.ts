@@ -1,20 +1,12 @@
-import {
-    getAccountById,
-    getAccountContactById,
-} from "@generated/accounts-data-connector-admin";
-import {
-    getFloorplanPageById,
-    getProjectDetailsById,
-    getReminderById,
-} from "@generated/example-data-connector";
-import { HttpsError } from "firebase-functions/https";
+import "./bootstrap.js";
 
-import { accountsDataConnect, exampleDataConnect } from "./data-connect.js";
+import * as DataConnector from "@generated/data-connector-admin";
+import { HttpsError } from "firebase-functions/https";
 
 export async function requireOwnedProject(projectId: string, ownerId: string) {
     // TODO: Add a lightweight ownership helper backed by getProjectById for
     // callsites that do not need floorplan pages.
-    const response = await getProjectDetailsById(exampleDataConnect, {
+    const response = await DataConnector.getProjectDetailsById({
         id: projectId,
     });
     const project = response.data.project;
@@ -26,7 +18,7 @@ export async function requireOwnedProject(projectId: string, ownerId: string) {
 }
 
 export async function requireOwnedAccount(accountId: string, ownerId: string) {
-    const response = await getAccountById(accountsDataConnect, {
+    const response = await DataConnector.getAccountById({
         id: accountId,
     });
     const account = response.data.account;
@@ -43,7 +35,7 @@ export async function requireOwnedAccountContact(
     ownerId: string,
 ) {
     await requireOwnedAccount(accountId, ownerId);
-    const response = await getAccountContactById(accountsDataConnect, {
+    const response = await DataConnector.getAccountContactById({
         accountId,
         contactId,
     });
@@ -59,7 +51,7 @@ export async function requireOwnedReminder(
     reminderId: string,
     ownerId: string,
 ) {
-    const response = await getReminderById(exampleDataConnect, {
+    const response = await DataConnector.getReminderById({
         id: reminderId,
     });
     const reminder = response.data.reminder;
@@ -70,7 +62,7 @@ export async function requireOwnedReminder(
     return reminder;
 }
 export async function requireFloorplanPage(projectId: string, pageId: string) {
-    const response = await getFloorplanPageById(exampleDataConnect, {
+    const response = await DataConnector.getFloorplanPageById({
         projectId,
         pageId,
     });

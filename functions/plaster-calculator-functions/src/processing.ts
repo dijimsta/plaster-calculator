@@ -1,14 +1,10 @@
 import "./bootstrap.js";
 
-import {
-    deleteFloorplanPages as dcDeleteFloorplanPages,
-    touchProject,
-} from "@generated/example-data-connector";
+import * as DataConnector from "@generated/data-connector-admin";
 import { HttpsError, onCall } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 
 import { requireAuth } from "./auth.js";
-import { exampleDataConnect } from "./data-connect.js";
 import { toDetail } from "./mappers.js";
 import { requireOwnedProject } from "./ownership.js";
 import { analyseProjectPages } from "./processing-pages.js";
@@ -71,12 +67,12 @@ export const processProject = onCall<
                   )
                 : new Map<number, string>();
 
-        await touchProject(exampleDataConnect, {
+        await DataConnector.touchProject({
             id: projectId,
             status: "PROCESSING",
             processingError: null,
         });
-        await dcDeleteFloorplanPages(exampleDataConnect, { projectId });
+        await DataConnector.deleteFloorplanPages({ projectId });
 
         try {
             await analyseProjectPages(
@@ -92,7 +88,7 @@ export const processProject = onCall<
                     ? error.message
                     : "Floorplan analysis failed.";
             logger.error("processProject failed", { projectId, message });
-            await touchProject(exampleDataConnect, {
+            await DataConnector.touchProject({
                 id: projectId,
                 status: "FAILED",
                 processingError: message,
@@ -102,7 +98,7 @@ export const processProject = onCall<
                 : new HttpsError("internal", message);
         }
 
-        await touchProject(exampleDataConnect, {
+        await DataConnector.touchProject({
             id: projectId,
             status: "READY",
             processingError: null,

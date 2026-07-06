@@ -11,8 +11,7 @@
         "logs": "firebase functions:log"
     },
     "dependencies": {
-        "@generated/accounts-data-connector-admin": "workspace:*",
-        "@generated/example-data-connector": "workspace:*",
+        "@generated/data-connector-admin": "workspace:*",
         "firebase-admin": "^13.10.0",
         "firebase-functions": "^7.2.5",
         "google-auth-library": "^10.9.0",

@@ -10,7 +10,7 @@
         "build": "tsc --build tsconfig.build.json"
     },
     "dependencies": {
-        "@generated/questionnaires-data-connector-web": "workspace:*",
+        "@generated/data-connector-web": "workspace:*",
         "@libraries/plaster-calculator-common": "workspace:*"
     },
     "devDependencies": {

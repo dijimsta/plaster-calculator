@@ -11,7 +11,7 @@
         "start": "next start"
     },
     "dependencies": {
-        "@generated/questionnaires-data-connector-web": "workspace:*",
+        "@generated/data-connector-web": "workspace:*",
         "@libraries/plaster-calculator-common": "workspace:*",
         "@libraries/plaster-calculator-ui": "workspace:*",
         "@libraries/plaster-calculator-web-core": "workspace:*",

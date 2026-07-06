@@ -1,14 +1,9 @@
 import "./bootstrap.js";
 
-import {
-    createFloorplanPage as dcCreateFloorplanPage,
-    touchProject,
-    updateFloorplanPage as dcUpdateFloorplanPage,
-} from "@generated/example-data-connector";
+import * as DataConnector from "@generated/data-connector-admin";
 import { HttpsError, onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
-import { exampleDataConnect } from "./data-connect.js";
 import { toDetail, toPage } from "./mappers.js";
 import { requireFloorplanPage, requireOwnedProject } from "./ownership.js";
 import {
@@ -67,7 +62,7 @@ export const updateFloorplanPage = onCall<
     }
     const nextValues = nextFloorplanPageValues(request.data, page);
 
-    await dcUpdateFloorplanPage(exampleDataConnect, {
+    await DataConnector.updateFloorplanPage({
         id: page.id,
         overlayJson: nextValues.overlayJson,
         scaleMmPerPx: nextValues.scaleMmPerPx,
@@ -75,7 +70,7 @@ export const updateFloorplanPage = onCall<
         referencePointsJson: nextValues.referencePointsJson,
         referenceLengthMm: nextValues.referenceLengthMm,
     });
-    await touchProject(exampleDataConnect, { id: projectId });
+    await DataConnector.touchProject({ id: projectId });
 
     return toPage(await requireFloorplanPage(projectId, page.id));
 });
@@ -127,7 +122,7 @@ export const initializeFloorplanPages = onCall<
         }
         await requireStorageImage(entry.path);
         const sourceImageUrl = await ensureFileDownloadUrl(entry.path);
-        await dcCreateFloorplanPage(exampleDataConnect, {
+        await DataConnector.createFloorplanPage({
             projectId,
             pageNumber: entry.pageNumber,
             status: "READY",
@@ -147,7 +142,7 @@ export const initializeFloorplanPages = onCall<
         });
     }
 
-    await touchProject(exampleDataConnect, {
+    await DataConnector.touchProject({
         id: projectId,
         status: "READY",
         processingError: null,
@@ -211,7 +206,7 @@ export const updateFloorplanPages = onCall<
     for (const page of project.pages) {
         const nextValues = nextBatchPageValues(data, page);
 
-        await dcUpdateFloorplanPage(exampleDataConnect, {
+        await DataConnector.updateFloorplanPage({
             id: page.id,
             overlayJson: page.overlayJson ?? null,
             scaleMmPerPx: nextValues.scaleMmPerPx,
@@ -221,7 +216,7 @@ export const updateFloorplanPages = onCall<
         });
     }
 
-    await touchProject(exampleDataConnect, { id: projectId });
+    await DataConnector.touchProject({ id: projectId });
     return toDetail(await requireOwnedProject(projectId, auth.uid));
 });
 

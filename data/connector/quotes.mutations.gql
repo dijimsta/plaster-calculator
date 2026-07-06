@@ -1,0 +1,234 @@
+mutation CreateQuantitySource(
+    $id: UUID!
+    $measurementSource: String!
+    $measurementPlasterType: String
+) @auth(level: NO_ACCESS) {
+    quantitySource_insert(
+        data: {
+            id: $id
+            measurementSource: $measurementSource
+            measurementPlasterType: $measurementPlasterType
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateQuoteItemTemplate(
+    $id: UUID!
+    $ownerId: String
+    $scope: String!
+    $systemKey: String
+    $name: String!
+    $hasKeywords: Boolean!
+    $keywords: [String!]!
+    $quantitySourceId: UUID
+    $sortOrder: Int!
+) @auth(level: NO_ACCESS) {
+    quoteItemTemplate_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            scope: $scope
+            systemKey: $systemKey
+            name: $name
+            hasKeywords: $hasKeywords
+            keywords: $keywords
+            quantitySourceId: $quantitySourceId
+            sortOrder: $sortOrder
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateQuoteItemTemplate(
+    $id: UUID!
+    $name: String
+    $hasKeywords: Boolean
+    $keywords: [String!]
+    $quantitySourceId: UUID
+    $sortOrder: Int
+) @auth(level: NO_ACCESS) {
+    quoteItemTemplate_update(
+        id: $id
+        data: {
+            name: $name
+            hasKeywords: $hasKeywords
+            keywords: $keywords
+            quantitySourceId: $quantitySourceId
+            sortOrder: $sortOrder
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation DeleteQuoteItemTemplate($id: UUID!) @auth(level: NO_ACCESS) {
+    quoteItemTemplate_delete(id: $id)
+}
+
+mutation UpsertQuoteItemTemplateConfig(
+    $ownerId: String!
+    $templateId: UUID!
+    $enabled: Boolean!
+    $unitPriceCents: Int!
+    $materialUnitPriceCents: Int!
+    $labourUnitPriceCents: Int!
+) @auth(level: NO_ACCESS) {
+    quoteItemTemplateConfig_upsert(
+        data: {
+            ownerId: $ownerId
+            templateId: $templateId
+            enabled: $enabled
+            unitPriceCents: $unitPriceCents
+            materialUnitPriceCents: $materialUnitPriceCents
+            labourUnitPriceCents: $labourUnitPriceCents
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateSupplier($id: UUID!, $ownerId: String!, $name: String!)
+@auth(level: NO_ACCESS) {
+    supplier_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            name: $name
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateSupplier($id: UUID!, $name: String) @auth(level: NO_ACCESS) {
+    supplier_update(
+        id: $id
+        data: { name: $name, updatedAt_expr: "request.time" }
+    )
+}
+
+mutation DeleteSupplier($id: UUID!) @auth(level: NO_ACCESS) {
+    supplier_delete(id: $id)
+}
+
+mutation UpsertSupplierQuoteItemPrice(
+    $ownerId: String!
+    $supplierId: UUID!
+    $templateId: UUID!
+    $materialUnitPriceCents: Int!
+) @auth(level: NO_ACCESS) {
+    supplierQuoteItemPrice_upsert(
+        data: {
+            ownerId: $ownerId
+            supplierId: $supplierId
+            templateId: $templateId
+            materialUnitPriceCents: $materialUnitPriceCents
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation DeleteSupplierQuoteItemPrice($supplierId: UUID!, $templateId: UUID!)
+@auth(level: NO_ACCESS) {
+    supplierQuoteItemPrice_delete(
+        key: { supplierId: $supplierId, templateId: $templateId }
+    )
+}
+
+mutation CreateQuote(
+    $id: UUID!
+    $ownerId: String!
+    $projectId: UUID!
+    $supplierId: UUID
+    $status: String!
+) @auth(level: NO_ACCESS) {
+    quote_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            projectId: $projectId
+            supplierId: $supplierId
+            status: $status
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateQuote($id: UUID!, $supplierId: UUID, $status: String)
+@auth(level: NO_ACCESS) {
+    quote_update(
+        id: $id
+        data: {
+            supplierId: $supplierId
+            status: $status
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation DeleteQuoteItems($quoteId: UUID!) @auth(level: NO_ACCESS) {
+    quoteItem_deleteMany(where: { quoteId: { eq: $quoteId } })
+}
+
+mutation CreateQuoteItem(
+    $id: UUID!
+    $ownerId: String!
+    $quoteId: UUID!
+    $sourceTemplateId: UUID
+    $displayOrder: Int!
+    $name: String!
+    $quantity: Float!
+    $quantitySourceId: UUID
+    $unitPriceCents: Int!
+    $materialUnitPriceCents: Int!
+    $labourUnitPriceCents: Int!
+    $matchedKeywords: [String!]!
+) @auth(level: NO_ACCESS) {
+    quoteItem_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            quoteId: $quoteId
+            sourceTemplateId: $sourceTemplateId
+            displayOrder: $displayOrder
+            name: $name
+            quantity: $quantity
+            quantitySourceId: $quantitySourceId
+            unitPriceCents: $unitPriceCents
+            materialUnitPriceCents: $materialUnitPriceCents
+            labourUnitPriceCents: $labourUnitPriceCents
+            matchedKeywords: $matchedKeywords
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateQuoteItem(
+    $id: UUID!
+    $displayOrder: Int
+    $name: String
+    $quantity: Float
+    $quantitySourceId: UUID
+    $unitPriceCents: Int
+    $materialUnitPriceCents: Int
+    $labourUnitPriceCents: Int
+    $matchedKeywords: [String!]
+) @auth(level: NO_ACCESS) {
+    quoteItem_update(
+        id: $id
+        data: {
+            displayOrder: $displayOrder
+            name: $name
+            quantity: $quantity
+            quantitySourceId: $quantitySourceId
+            unitPriceCents: $unitPriceCents
+            materialUnitPriceCents: $materialUnitPriceCents
+            labourUnitPriceCents: $labourUnitPriceCents
+            matchedKeywords: $matchedKeywords
+            updatedAt_expr: "request.time"
+        }
+    )
+}

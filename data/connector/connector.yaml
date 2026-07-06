@@ -1,0 +1,9 @@
+connectorId: data-connector
+generate:
+    adminNodeSdk:
+        - package: "@generated/data-connector-admin"
+          outputDir: ../../generated/data-connector-admin
+    javascriptSdk:
+        - package: "@generated/data-connector-web"
+          outputDir: ../../generated/data-connector-web
+          react: true

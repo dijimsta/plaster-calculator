@@ -1,11 +1,10 @@
 import "./bootstrap.js";
 
-import { updateFloorplanPageAnalysis } from "@generated/example-data-connector";
+import * as DataConnector from "@generated/data-connector-admin";
 import { HttpsError, onCall } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 
 import { requireAuth } from "./auth.js";
-import { exampleDataConnect } from "./data-connect.js";
 import { toDetail } from "./mappers.js";
 import { requireFloorplanPage, requireOwnedProject } from "./ownership.js";
 import { analyzePageImage } from "./processing-pages.js";
@@ -67,7 +66,7 @@ export const analyzeFloorplanPage = onCall<
                 imageBytes: source,
                 strategy,
             });
-            await updateFloorplanPageAnalysis(exampleDataConnect, {
+            await DataConnector.updateFloorplanPageAnalysis({
                 id: page.id,
                 status: "READY",
                 processingError: null,
@@ -131,7 +130,7 @@ async function writeAnalysisState(
     status: "PROCESSING" | "FAILED",
     processingError: string | null,
 ): Promise<void> {
-    await updateFloorplanPageAnalysis(exampleDataConnect, {
+    await DataConnector.updateFloorplanPageAnalysis({
         id: page.id,
         status,
         processingError,

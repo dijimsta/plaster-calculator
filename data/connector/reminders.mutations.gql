@@ -1,0 +1,44 @@
+mutation CreateReminder(
+    $id: UUID!
+    $ownerId: String!
+    $projectId: UUID!
+    $accountId: UUID
+    $name: String!
+    $status: String!
+    $dueAt: Timestamp!
+) @auth(level: NO_ACCESS) {
+    reminder_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            projectId: $projectId
+            accountId: $accountId
+            name: $name
+            status: $status
+            dueAt: $dueAt
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateReminder(
+    $id: UUID!
+    $accountId: UUID
+    $name: String
+    $status: String
+    $dueAt: Timestamp
+    $completedAt: Timestamp
+) @auth(level: NO_ACCESS) {
+    reminder_update(
+        id: $id
+        data: {
+            accountId: $accountId
+            name: $name
+            status: $status
+            dueAt: $dueAt
+            completedAt: $completedAt
+            updatedAt_expr: "request.time"
+        }
+    )
+}

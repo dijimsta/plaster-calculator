@@ -112,9 +112,9 @@ importers:
 
   apps/plaster-calculator-web:
     dependencies:
-      '@generated/questionnaires-data-connector-web':
+      '@generated/data-connector-web':
         specifier: workspace:*
-        version: link:../../generated/questionnaires-data-connector-web
+        version: link:../../generated/data-connector-web
       '@libraries/plaster-calculator-common':
         specifier: workspace:*
         version: link:../../libraries/plaster-calculator-common
@@ -182,9 +182,9 @@ importers:
 
   apps/storybook-web:
     dependencies:
-      '@generated/questionnaires-data-connector-web':
+      '@generated/data-connector-web':
         specifier: workspace:*
-        version: link:../../generated/questionnaires-data-connector-web
+        version: link:../../generated/data-connector-web
       '@libraries/plaster-calculator-common':
         specifier: workspace:*
         version: link:../../libraries/plaster-calculator-common
@@ -249,12 +249,9 @@ importers:
 
   functions/plaster-calculator-functions:
     dependencies:
-      '@generated/accounts-data-connector-admin':
+      '@generated/data-connector-admin':
         specifier: workspace:*
-        version: link:../../generated/accounts-data-connector-admin
-      '@generated/example-data-connector':
-        specifier: workspace:*
-        version: link:../../generated/example-data-connector
+        version: link:../../generated/data-connector-admin
       firebase-admin:
         specifier: ^13.10.0
         version: 13.10.0
@@ -281,25 +278,13 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  generated/accounts-data-connector-admin:
+  generated/data-connector-admin:
     dependencies:
       firebase-admin:
         specifier: ^13.4.0
         version: 13.10.0
 
-  generated/example-data-connector:
-    dependencies:
-      firebase-admin:
-        specifier: ^13.4.0
-        version: 13.10.0
-
-  generated/questionnaires-data-connector-admin:
-    dependencies:
-      firebase-admin:
-        specifier: ^13.4.0
-        version: 13.10.0
-
-  generated/questionnaires-data-connector-web:
+  generated/data-connector-web:
     dependencies:
       '@tanstack-query-firebase/react':
         specifier: ^2.0.0
@@ -335,9 +320,9 @@ importers:
 
   libraries/plaster-calculator-ui:
     dependencies:
-      '@generated/questionnaires-data-connector-web':
+      '@generated/data-connector-web':
         specifier: workspace:*
-        version: link:../../generated/questionnaires-data-connector-web
+        version: link:../../generated/data-connector-web
       '@libraries/plaster-calculator-common':
         specifier: workspace:*
         version: link:../plaster-calculator-common
@@ -372,9 +357,9 @@ importers:
 
   libraries/plaster-calculator-web-core:
     dependencies:
-      '@generated/questionnaires-data-connector-web':
+      '@generated/data-connector-web':
         specifier: workspace:*
-        version: link:../../generated/questionnaires-data-connector-web
+        version: link:../../generated/data-connector-web
       '@libraries/plaster-calculator-common':
         specifier: workspace:*
         version: link:../plaster-calculator-common

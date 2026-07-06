@@ -1,0 +1,14 @@
+mutation UpsertUserSettings(
+    $ownerId: String!
+    $quoteFollowUpEnabled: Boolean!
+    $quoteFollowUpDays: Int!
+) @auth(level: NO_ACCESS) {
+    userSettings_upsert(
+        data: {
+            ownerId: $ownerId
+            quoteFollowUpEnabled: $quoteFollowUpEnabled
+            quoteFollowUpDays: $quoteFollowUpDays
+            updatedAt_expr: "request.time"
+        }
+    )
+}

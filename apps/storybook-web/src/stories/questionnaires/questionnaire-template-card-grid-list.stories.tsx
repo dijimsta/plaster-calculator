@@ -1,4 +1,4 @@
-import { useListQuestionnaireTemplates } from "@generated/questionnaires-data-connector-web/react";
+import * as DataConnectorReact from "@generated/data-connector-web/react";
 import { QuestionnaireTemplateCardGridList } from "@libraries/plaster-calculator-ui";
 import { fn } from "storybook/test";
 
@@ -47,7 +47,7 @@ export const FromDataConnectHook: Story = {
         },
     },
     render: () => {
-        const { data } = useListQuestionnaireTemplates({
+        const { data } = DataConnectorReact.useListQuestionnaireTemplates({
             enabled: false,
             initialData: {
                 questionnaireTemplates: [...questionnaireTemplates],

@@ -10,7 +10,7 @@
         "storybook": "storybook dev --port 6006"
     },
     "dependencies": {
-        "@generated/questionnaires-data-connector-web": "workspace:*",
+        "@generated/data-connector-web": "workspace:*",
         "@libraries/plaster-calculator-common": "workspace:*",
         "@libraries/plaster-calculator-ui": "workspace:*",
         "@libraries/uikit-web": "workspace:*",
