@@ -7,84 +7,56 @@ import {
     FormLayoutField,
     FormLayoutSection,
     Input,
+    preventDefaultEvent,
     Text,
     Textarea,
 } from "@libraries/uikit-web";
 import { Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useReducer } from "react";
 
-import type { FormEvent, ReactElement } from "react";
+import {
+    createInitialQuestionnaireTemplateFormState,
+    questionnaireTemplateFormReducer,
+} from "./questionnaire-template-form.reducer.ts";
 
-export interface QuestionnaireTemplateFormValues {
-    readonly name: string;
-    readonly questions: readonly {
-        readonly label: string;
-        readonly description: string;
-    }[];
-}
+import type { QuestionnaireTemplateFormValues } from "./questionnaire-template-form.reducer.ts";
+import type { ReactElement } from "react";
+
+export type { QuestionnaireTemplateFormValues };
 
 export interface QuestionnaireTemplateFormProps {
     readonly formId: string;
+    readonly initialValues?: QuestionnaireTemplateFormValues;
+    readonly submitLabel?: string;
     readonly onCancel: () => void;
     readonly onSubmit: (values: QuestionnaireTemplateFormValues) => void;
-}
-
-interface QuestionDraft {
-    readonly id: string;
-    readonly label: string;
-    readonly description: string;
 }
 
 /** A form for drafting a questionnaire template's name and questions. */
 export function QuestionnaireTemplateForm({
     formId,
+    initialValues,
+    submitLabel = "Create template",
     onCancel,
     onSubmit,
 }: QuestionnaireTemplateFormProps): ReactElement {
-    const [name, setName] = useState("");
-    const [questions, setQuestions] = useState<readonly QuestionDraft[]>([]);
-
-    function addQuestion(): void {
-        setQuestions((current) => [
-            ...current,
-            { id: crypto.randomUUID(), label: "", description: "" },
-        ]);
-    }
-
-    function removeQuestion(id: string): void {
-        setQuestions((current) =>
-            current.filter((question) => question.id !== id),
-        );
-    }
-
-    function updateQuestion(
-        id: string,
-        updater: (question: QuestionDraft) => QuestionDraft,
-    ): void {
-        setQuestions((current) =>
-            current.map((question) =>
-                question.id === id ? updater(question) : question,
-            ),
-        );
-    }
-
-    function handleSubmit(event: FormEvent<HTMLFormElement>): void {
-        event.preventDefault();
-        onSubmit({
-            name,
-            questions: questions.map(({ label, description }) => ({
-                label,
-                description,
-            })),
-        });
-    }
+    const [{ name, questions }, dispatch] = useReducer(
+        questionnaireTemplateFormReducer,
+        initialValues,
+        createInitialQuestionnaireTemplateFormState,
+    );
 
     return (
-        <FormLayout id={formId} onSubmit={handleSubmit}>
+        <FormLayout
+            id={formId}
+            onSubmit={preventDefaultEvent(() => onSubmit({ name, questions }))}
+        >
             <Input
                 id={`${formId}-name`}
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(event) =>
+                    dispatch({ type: "setName", name: event.target.value })
+                }
                 placeholder="Template name"
                 aria-label="Template name"
                 required
@@ -96,7 +68,7 @@ export function QuestionnaireTemplateForm({
                 <FormLayoutField label="" span="full">
                     <Box direction="column" gap="sm">
                         {questions.map((question, index) => (
-                            <Card key={question.id}>
+                            <Card key={question.draftId}>
                                 <Box direction="column" gap="sm">
                                     <Box
                                         direction="row"
@@ -117,47 +89,46 @@ export function QuestionnaireTemplateForm({
                                             }
                                             aria-label={`Remove question ${index + 1}`}
                                             onClick={() =>
-                                                removeQuestion(question.id)
+                                                dispatch({
+                                                    type: "removeQuestion",
+                                                    draftId: question.draftId,
+                                                })
                                             }
                                         />
                                     </Box>
                                     <FormLayoutField
                                         label="Label"
-                                        htmlFor={`${formId}-question-${question.id}-label`}
+                                        htmlFor={`${formId}-question-${question.draftId}-label`}
                                     >
                                         <Input
-                                            id={`${formId}-question-${question.id}-label`}
+                                            id={`${formId}-question-${question.draftId}-label`}
                                             value={question.label}
                                             onChange={(event) =>
-                                                updateQuestion(
-                                                    question.id,
-                                                    (current) => ({
-                                                        ...current,
-                                                        label: event.target
-                                                            .value,
-                                                    }),
-                                                )
+                                                dispatch({
+                                                    type: "updateQuestion",
+                                                    draftId: question.draftId,
+                                                    field: "label",
+                                                    value: event.target.value,
+                                                })
                                             }
                                             required
                                         />
                                     </FormLayoutField>
                                     <FormLayoutField
                                         label="Description (optional)"
-                                        htmlFor={`${formId}-question-${question.id}-description`}
+                                        htmlFor={`${formId}-question-${question.draftId}-description`}
                                     >
                                         <Textarea
-                                            id={`${formId}-question-${question.id}-description`}
+                                            id={`${formId}-question-${question.draftId}-description`}
                                             rows={2}
                                             value={question.description}
                                             onChange={(event) =>
-                                                updateQuestion(
-                                                    question.id,
-                                                    (current) => ({
-                                                        ...current,
-                                                        description:
-                                                            event.target.value,
-                                                    }),
-                                                )
+                                                dispatch({
+                                                    type: "updateQuestion",
+                                                    draftId: question.draftId,
+                                                    field: "description",
+                                                    value: event.target.value,
+                                                })
                                             }
                                         />
                                     </FormLayoutField>
@@ -169,7 +140,9 @@ export function QuestionnaireTemplateForm({
                                 type="button"
                                 variant="secondary"
                                 icon={<Plus size={16} aria-hidden="true" />}
-                                onClick={addQuestion}
+                                onClick={() =>
+                                    dispatch({ type: "addQuestion" })
+                                }
                             >
                                 Add question
                             </Button>
@@ -181,7 +154,7 @@ export function QuestionnaireTemplateForm({
                 <Button type="button" variant="secondary" onClick={onCancel}>
                     Cancel
                 </Button>
-                <Button type="submit">Create template</Button>
+                <Button type="submit">{submitLabel}</Button>
             </FormLayoutActions>
         </FormLayout>
     );
