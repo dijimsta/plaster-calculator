@@ -1,18 +1,20 @@
 "use client";
 
 import {
+    EditQuestionnaireTemplateDrawer,
     NewQuestionnaireTemplateDrawer,
     QuestionnaireTemplateCardGridList,
 } from "@libraries/plaster-calculator-ui";
 import {
     Breadcrumb,
     Button,
+    EmptyState,
     ModalDialog,
     PageHeading,
     Tabs,
     Text,
 } from "@libraries/uikit-web";
-import { Home, Plus } from "lucide-react";
+import { ClipboardList, Home, Plus } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 import { useReducer } from "react";
 
@@ -20,8 +22,10 @@ import {
     useConfirmDeleteCallback,
     useCreateQuestionnaireTemplateCallback,
     useDeleteQuestionnaireTemplateCallback,
+    useQuestionnaireTemplateDetails,
     useQuestionnaireTemplates,
     useRefreshQuestionnaireTemplatesCallback,
+    useUpdateQuestionnaireTemplateCallback,
 } from "./page.hooks.js";
 import {
     createInitialQuestionnaireTemplatesPageState,
@@ -50,6 +54,14 @@ export default function QuestionnaireTemplatesPage() {
     const confirmDelete = useConfirmDeleteCallback(
         state.templatePendingDeletion,
         deleteTemplate,
+    );
+    const {
+        template: templateBeingEdited,
+        isLoading: isLoadingEditedTemplate,
+    } = useQuestionnaireTemplateDetails(state.templateBeingEdited?.id ?? null);
+    const handleUpdate = useUpdateQuestionnaireTemplateCallback(
+        refreshTemplates,
+        dispatch,
     );
 
     return (
@@ -95,18 +107,47 @@ export default function QuestionnaireTemplatesPage() {
                     </Tabs>
                 </PageHeading.Navigation>
             </PageHeading>
-            <QuestionnaireTemplateCardGridList
-                templates={templates}
-                onOpen={() => undefined}
-                onDuplicate={() => undefined}
-                onDelete={(template) =>
-                    dispatch({ type: "requestDelete", template })
-                }
-            />
+            {templates.length === 0 ? (
+                <EmptyState
+                    icon={<ClipboardList />}
+                    title="No templates yet"
+                    description="Create a template to define the questions the AI fills in when auto-filling a project."
+                    actions={
+                        <Button
+                            icon={<Plus size={18} />}
+                            onClick={() => dispatch({ type: "openDrawer" })}
+                        >
+                            New Template
+                        </Button>
+                    }
+                />
+            ) : (
+                <QuestionnaireTemplateCardGridList
+                    templates={templates}
+                    onOpen={(template) =>
+                        dispatch({ type: "requestEdit", template })
+                    }
+                    onDuplicate={() => undefined}
+                    onDelete={(template) =>
+                        dispatch({ type: "requestDelete", template })
+                    }
+                />
+            )}
             <NewQuestionnaireTemplateDrawer
                 open={state.isDrawerOpen}
                 onClose={() => dispatch({ type: "closeDrawer" })}
                 onCreate={handleCreate}
+            />
+            <EditQuestionnaireTemplateDrawer
+                open={state.templateBeingEdited !== null}
+                template={templateBeingEdited}
+                isLoading={isLoadingEditedTemplate}
+                onClose={() => dispatch({ type: "closeEditDrawer" })}
+                onSave={(values) => {
+                    if (templateBeingEdited !== null) {
+                        void handleUpdate(templateBeingEdited, values);
+                    }
+                }}
             />
             <ModalDialog
                 open={state.templatePendingDeletion !== null}
