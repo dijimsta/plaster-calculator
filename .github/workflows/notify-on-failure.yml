@@ -1,0 +1,31 @@
+name: Notify Slack on Workflow Failure
+
+on:
+    workflow_run:
+        workflows:
+            - Checks
+            - Deploy Data Connect
+            - Deploy Plaster Calculator Functions
+            - Deploy Floorplan Analyzer Functions
+            - Deploy Storage
+        types:
+            - completed
+
+jobs:
+    notify:
+        if: github.event.workflow_run.conclusion == 'failure'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Send Slack alert
+              env:
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+                  WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+                  WORKFLOW_BRANCH: ${{ github.event.workflow_run.head_branch }}
+                  WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
+              run: |
+                  curl --fail --silent --show-error -X POST \
+                      -H 'Content-type: application/json' \
+                      --data "$(jq -n \
+                          --arg text ":rotating_light: *${WORKFLOW_NAME}* failed on \`${WORKFLOW_BRANCH}\` — <${WORKFLOW_URL}|view run>" \
+                          '{text: $text}')" \
+                      "$SLACK_WEBHOOK_URL"
