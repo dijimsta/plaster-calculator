@@ -2,7 +2,7 @@ import { GridList } from "@libraries/uikit-web";
 
 import { QuestionnaireTemplateCard } from "../questionnaire-template-card/index.ts";
 
-import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-common";
+import type { QuestionnaireTemplate } from "../questionnaire-template-card/index.ts";
 import type { ReactElement } from "react";
 
 export interface QuestionnaireTemplateCardGridListProps {

@@ -1,13 +1,9 @@
-import {
-    QuestionnaireTemplateCardGridList,
-    QuestionnairesServiceProvider,
-} from "@libraries/plaster-calculator-ui";
+import { useListQuestionnaireTemplates } from "@generated/questionnaires-data-connector-web/react";
+import { QuestionnaireTemplateCardGridList } from "@libraries/plaster-calculator-ui";
 import { fn } from "storybook/test";
 
-import {
-    questionnaireTemplates,
-    questionnairesServiceStub,
-} from "../../stubs/questionnaires-service.stub.ts";
+import { questionnaireTemplates } from "./questionnaires.stubs.ts";
+import { withDataConnectQueryClient } from "../../stubs/data-connect.stub.tsx";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
@@ -33,13 +29,6 @@ const meta: Meta<typeof QuestionnaireTemplateCardGridList> = {
     argTypes: {
         templates: { control: false },
     },
-    decorators: [
-        (Story) => (
-            <QuestionnairesServiceProvider service={questionnairesServiceStub}>
-                <Story />
-            </QuestionnairesServiceProvider>
-        ),
-    ],
 };
 
 export default meta;
@@ -47,3 +36,31 @@ export default meta;
 type Story = StoryObj<typeof QuestionnaireTemplateCardGridList>;
 
 export const Default: Story = {};
+
+export const FromDataConnectHook: Story = {
+    decorators: [withDataConnectQueryClient],
+    parameters: {
+        docs: {
+            description: {
+                story: "Sourced from the generated useListQuestionnaireTemplates hook instead of a static stub, using initialData + enabled: false to mock the network response.",
+            },
+        },
+    },
+    render: () => {
+        const { data } = useListQuestionnaireTemplates({
+            enabled: false,
+            initialData: {
+                questionnaireTemplates: [...questionnaireTemplates],
+            },
+        });
+
+        return (
+            <QuestionnaireTemplateCardGridList
+                templates={data?.questionnaireTemplates ?? []}
+                onOpen={fn()}
+                onDuplicate={fn()}
+                onDelete={fn()}
+            />
+        );
+    },
+};

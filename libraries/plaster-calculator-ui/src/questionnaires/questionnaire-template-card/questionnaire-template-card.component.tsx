@@ -2,8 +2,11 @@ import { formatRelativeTime } from "@libraries/plaster-calculator-common";
 import { Box, Button, Card, IconTile, Text } from "@libraries/uikit-web";
 import { ClipboardList, Copy, Pencil, Trash2 } from "lucide-react";
 
-import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-common";
+import type { ListQuestionnaireTemplatesData } from "@generated/questionnaires-data-connector-web";
 import type { ReactElement } from "react";
+
+export type QuestionnaireTemplate =
+    ListQuestionnaireTemplatesData["questionnaireTemplates"][number];
 
 export interface QuestionnaireTemplateCardProps {
     readonly template: QuestionnaireTemplate;

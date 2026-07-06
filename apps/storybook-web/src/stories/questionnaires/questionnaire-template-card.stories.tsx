@@ -31,7 +31,6 @@ export const Default: Story = {
     args: {
         template: {
             id: "detached-dwelling",
-            ownerId: "stub-owner",
             name: "Standard residential questionnaire",
             createdAt: "2026-01-15T09:00:00.000Z",
             updatedAt: "2026-07-04T09:00:00.000Z",

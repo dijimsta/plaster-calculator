@@ -10,8 +10,11 @@
         "build": "tsc --build tsconfig.build.json"
     },
     "dependencies": {
+        "@generated/questionnaires-data-connector-web": "workspace:*",
         "@libraries/plaster-calculator-common": "workspace:*",
         "@libraries/uikit-web": "workspace:*",
+        "@tanstack-query-firebase/react": "^2.0.0",
+        "firebase": "^12.15.0",
         "lucide-react": "^1.21.0"
     },
     "devDependencies": {
