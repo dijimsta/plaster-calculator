@@ -41,6 +41,24 @@ mutation CreateQuestionnaireTemplateQuestion(
     )
 }
 
+mutation DeleteQuestionnaireTemplate($id: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        questionnaireTemplate(key: { id: $id })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this template"
+            ) {
+            id
+            ownerId
+        }
+    }
+    questionnaireTemplateQuestion_deleteMany(where: { templateId: { eq: $id } })
+    questionnaireTemplate_delete(id: $id)
+        @check(expr: "this != null", message: "Template not found")
+}
+
 mutation CreateProjectQuestionnaire(
     $id: UUID!
     $projectId: UUID!

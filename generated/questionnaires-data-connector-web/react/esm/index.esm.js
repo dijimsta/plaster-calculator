@@ -1,4 +1,4 @@
-import { createQuestionnaireTemplateRef, createQuestionnaireTemplateQuestionRef, createProjectQuestionnaireRef, createProjectQuestionnaireAnswerRef, listQuestionnaireTemplatesRef, connectorConfig } from '../../esm/index.esm.js';
+import { createQuestionnaireTemplateRef, createQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateRef, createProjectQuestionnaireRef, createProjectQuestionnaireAnswerRef, listQuestionnaireTemplatesRef, connectorConfig } from '../../esm/index.esm.js';
 import { validateArgs, CallerSdkTypeEnum } from 'firebase/data-connect';
 import { useDataConnectQuery, useDataConnectMutation, validateReactArgs } from '@tanstack-query-firebase/react/data-connect';
 
@@ -14,6 +14,14 @@ export function useCreateQuestionnaireTemplateQuestion(dcOrOptions, options) {
   const { dc: dcInstance, vars: inputOpts } = validateArgs(connectorConfig, dcOrOptions, options);
   function refFactory(vars) {
     return createQuestionnaireTemplateQuestionRef(dcInstance, vars);
+  }
+  return useDataConnectMutation(refFactory, inputOpts, CallerSdkTypeEnum.GeneratedReact);
+}
+
+export function useDeleteQuestionnaireTemplate(dcOrOptions, options) {
+  const { dc: dcInstance, vars: inputOpts } = validateArgs(connectorConfig, dcOrOptions, options);
+  function refFactory(vars) {
+    return deleteQuestionnaireTemplateRef(dcInstance, vars);
   }
   return useDataConnectMutation(refFactory, inputOpts, CallerSdkTypeEnum.GeneratedReact);
 }

@@ -18,6 +18,12 @@ export function createQuestionnaireTemplateQuestion(dcOrVarsOrOptions, varsOrOpt
   return dcInstance.executeMutation('CreateQuestionnaireTemplateQuestion', inputVars, inputOpts);
 }
 
+export function deleteQuestionnaireTemplate(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteQuestionnaireTemplate', inputVars, inputOpts);
+}
+
 export function createProjectQuestionnaire(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

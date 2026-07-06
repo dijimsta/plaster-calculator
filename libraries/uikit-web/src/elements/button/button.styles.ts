@@ -9,6 +9,9 @@ export type ButtonVariant =
 export const variants = Object.freeze({
     primary:
         "p-2.5 rounded-lg bg-indigo-600 text-white enabled:hover:bg-indigo-700",
+    danger: "p-2.5 rounded-lg bg-red-600 text-white enabled:hover:bg-red-700 focus-visible:ring-red-600",
+    dangerSoft:
+        "p-2.5 rounded-lg bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 enabled:hover:bg-red-100 focus-visible:ring-red-600 dark:bg-red-500/10 dark:text-red-300 dark:ring-red-500/20 dark:enabled:hover:bg-red-500/20",
     secondary:
         "p-2.5 rounded-lg bg-white text-gray-900 font-semibold ring-1 ring-inset ring-gray-200 shadow-xs enabled:hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-600 dark:bg-white/5 dark:text-white dark:ring-white/10 dark:enabled:hover:bg-white/10",
     soft: "p-2.5 rounded-lg bg-indigo-50 text-indigo-600 enabled:hover:bg-indigo-100",

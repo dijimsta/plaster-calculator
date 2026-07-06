@@ -14,6 +14,7 @@ This README will guide you through the process of using the generated JavaScript
 - [**Mutations**](#mutations)
   - [*CreateQuestionnaireTemplate*](#createquestionnairetemplate)
   - [*CreateQuestionnaireTemplateQuestion*](#createquestionnairetemplatequestion)
+  - [*DeleteQuestionnaireTemplate*](#deletequestionnairetemplate)
   - [*CreateProjectQuestionnaire*](#createprojectquestionnaire)
   - [*CreateProjectQuestionnaireAnswer*](#createprojectquestionnaireanswer)
 
@@ -403,6 +404,120 @@ console.log(data.questionnaireTemplateQuestion_insert);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.questionnaireTemplateQuestion_insert);
+});
+```
+
+## DeleteQuestionnaireTemplate
+You can execute the `DeleteQuestionnaireTemplate` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+deleteQuestionnaireTemplate(vars: DeleteQuestionnaireTemplateVariables): MutationPromise<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
+
+interface DeleteQuestionnaireTemplateRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteQuestionnaireTemplateVariables): MutationRef<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
+}
+export const deleteQuestionnaireTemplateRef: DeleteQuestionnaireTemplateRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deleteQuestionnaireTemplate(dc: DataConnect, vars: DeleteQuestionnaireTemplateVariables): MutationPromise<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
+
+interface DeleteQuestionnaireTemplateRef {
+  ...
+  (dc: DataConnect, vars: DeleteQuestionnaireTemplateVariables): MutationRef<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
+}
+export const deleteQuestionnaireTemplateRef: DeleteQuestionnaireTemplateRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteQuestionnaireTemplateRef:
+```typescript
+const name = deleteQuestionnaireTemplateRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeleteQuestionnaireTemplate` mutation requires an argument of type `DeleteQuestionnaireTemplateVariables`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeleteQuestionnaireTemplateVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeleteQuestionnaireTemplate` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeleteQuestionnaireTemplateData`, which is defined in [questionnaires-data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeleteQuestionnaireTemplateData {
+  questionnaireTemplateQuestion_deleteMany: number;
+  questionnaireTemplate_delete?: QuestionnaireTemplate_Key | null;
+}
+```
+### Using `DeleteQuestionnaireTemplate`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deleteQuestionnaireTemplate, DeleteQuestionnaireTemplateVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `DeleteQuestionnaireTemplate` mutation requires an argument of type `DeleteQuestionnaireTemplateVariables`:
+const deleteQuestionnaireTemplateVars: DeleteQuestionnaireTemplateVariables = {
+  id: ..., 
+};
+
+// Call the `deleteQuestionnaireTemplate()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deleteQuestionnaireTemplate(deleteQuestionnaireTemplateVars);
+// Variables can be defined inline as well.
+const { data } = await deleteQuestionnaireTemplate({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deleteQuestionnaireTemplate(dataConnect, deleteQuestionnaireTemplateVars);
+
+console.log(data.questionnaireTemplateQuestion_deleteMany);
+console.log(data.questionnaireTemplate_delete);
+
+// Or, you can use the `Promise` API.
+deleteQuestionnaireTemplate(deleteQuestionnaireTemplateVars).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplateQuestion_deleteMany);
+  console.log(data.questionnaireTemplate_delete);
+});
+```
+
+### Using `DeleteQuestionnaireTemplate`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deleteQuestionnaireTemplateRef, DeleteQuestionnaireTemplateVariables } from '@generated/questionnaires-data-connector-web';
+
+// The `DeleteQuestionnaireTemplate` mutation requires an argument of type `DeleteQuestionnaireTemplateVariables`:
+const deleteQuestionnaireTemplateVars: DeleteQuestionnaireTemplateVariables = {
+  id: ..., 
+};
+
+// Call the `deleteQuestionnaireTemplateRef()` function to get a reference to the mutation.
+const ref = deleteQuestionnaireTemplateRef(deleteQuestionnaireTemplateVars);
+// Variables can be defined inline as well.
+const ref = deleteQuestionnaireTemplateRef({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deleteQuestionnaireTemplateRef(dataConnect, deleteQuestionnaireTemplateVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.questionnaireTemplateQuestion_deleteMany);
+console.log(data.questionnaireTemplate_delete);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.questionnaireTemplateQuestion_deleteMany);
+  console.log(data.questionnaireTemplate_delete);
 });
 ```
 

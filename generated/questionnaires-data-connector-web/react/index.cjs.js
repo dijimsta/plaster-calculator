@@ -1,4 +1,4 @@
-const { createQuestionnaireTemplateRef, createQuestionnaireTemplateQuestionRef, createProjectQuestionnaireRef, createProjectQuestionnaireAnswerRef, listQuestionnaireTemplatesRef, connectorConfig } = require('../index.cjs.js');
+const { createQuestionnaireTemplateRef, createQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateRef, createProjectQuestionnaireRef, createProjectQuestionnaireAnswerRef, listQuestionnaireTemplatesRef, connectorConfig } = require('../index.cjs.js');
 const { validateArgs, CallerSdkTypeEnum } = require('firebase/data-connect');
 const { useDataConnectQuery, useDataConnectMutation, validateReactArgs } = require('@tanstack-query-firebase/react/data-connect');
 
@@ -14,6 +14,14 @@ exports.useCreateQuestionnaireTemplateQuestion = function useCreateQuestionnaire
   const { dc: dcInstance, vars: inputOpts } = validateArgs(connectorConfig, dcOrOptions, options);
   function refFactory(vars) {
     return createQuestionnaireTemplateQuestionRef(dcInstance, vars);
+  }
+  return useDataConnectMutation(refFactory, inputOpts, CallerSdkTypeEnum.GeneratedReact);
+}
+
+exports.useDeleteQuestionnaireTemplate = function useDeleteQuestionnaireTemplate(dcOrOptions, options) {
+  const { dc: dcInstance, vars: inputOpts } = validateArgs(connectorConfig, dcOrOptions, options);
+  function refFactory(vars) {
+    return deleteQuestionnaireTemplateRef(dcInstance, vars);
   }
   return useDataConnectMutation(refFactory, inputOpts, CallerSdkTypeEnum.GeneratedReact);
 }

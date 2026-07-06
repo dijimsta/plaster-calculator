@@ -1,78 +1,57 @@
 "use client";
 
 import {
-    connectorConfig,
-    listQuestionnaireTemplatesRef,
-} from "@generated/questionnaires-data-connector-web";
-import {
-    useCreateQuestionnaireTemplate,
-    useCreateQuestionnaireTemplateQuestion,
-    useListQuestionnaireTemplates,
-} from "@generated/questionnaires-data-connector-web/react";
-import {
     NewQuestionnaireTemplateDrawer,
     QuestionnaireTemplateCardGridList,
 } from "@libraries/plaster-calculator-ui";
-import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import {
     Breadcrumb,
     Button,
+    ModalDialog,
     Notification,
     PageHeading,
     Tabs,
+    Text,
 } from "@libraries/uikit-web";
 import { Home, Plus } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
-import { useState } from "react";
+import { useReducer } from "react";
 
+import {
+    useConfirmDeleteCallback,
+    useCreateQuestionnaireTemplateCallback,
+    useDeleteQuestionnaireTemplateCallback,
+    useQuestionnaireTemplates,
+    useRefreshQuestionnaireTemplatesCallback,
+} from "./page.hooks.js";
+import {
+    createInitialQuestionnaireTemplatesPageState,
+    questionnaireTemplatesPageReducer,
+} from "./page.reducer.js";
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
 
-import type { QuestionnaireTemplateFormValues } from "@libraries/plaster-calculator-ui";
-
 const Link = LinkModule.default;
-const dataConnect = FirebaseService.getDataConnect(connectorConfig);
 
 export default function QuestionnaireTemplatesPage() {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [createdTemplateName, setCreatedTemplateName] = useState<
-        string | null
-    >(null);
-    const [creationFailed, setCreationFailed] = useState(false);
-
-    const { data } = useListQuestionnaireTemplates(dataConnect);
-    const createTemplate = useCreateQuestionnaireTemplate(dataConnect, {
-        invalidate: [listQuestionnaireTemplatesRef],
-    });
-    const createQuestion = useCreateQuestionnaireTemplateQuestion(dataConnect);
-
-    async function handleCreate(
-        values: QuestionnaireTemplateFormValues,
-    ): Promise<void> {
-        try {
-            const { questionnaireTemplate_insert } =
-                await createTemplate.mutateAsync({
-                    id: crypto.randomUUID(),
-                    name: values.name,
-                });
-
-            await Promise.all(
-                values.questions.map((question, position) =>
-                    createQuestion.mutateAsync({
-                        id: crypto.randomUUID(),
-                        templateId: questionnaireTemplate_insert.id,
-                        label: question.label,
-                        description: question.description,
-                        position,
-                    }),
-                ),
-            );
-
-            setIsDrawerOpen(false);
-            setCreatedTemplateName(values.name);
-        } catch {
-            setCreationFailed(true);
-        }
-    }
+    const [state, dispatch] = useReducer(
+        questionnaireTemplatesPageReducer,
+        undefined,
+        createInitialQuestionnaireTemplatesPageState,
+    );
+    const templates = useQuestionnaireTemplates();
+    const refreshTemplates = useRefreshQuestionnaireTemplatesCallback();
+    const handleCreate = useCreateQuestionnaireTemplateCallback(
+        refreshTemplates,
+        dispatch,
+    );
+    const deleteTemplate = useDeleteQuestionnaireTemplateCallback(
+        refreshTemplates,
+        dispatch,
+    );
+    const confirmDelete = useConfirmDeleteCallback(
+        state.templatePendingDeletion,
+        deleteTemplate,
+    );
 
     return (
         <>
@@ -99,7 +78,7 @@ export default function QuestionnaireTemplatesPage() {
                 <PageHeading.Actions>
                     <Button
                         icon={<Plus size={18} />}
-                        onClick={() => setIsDrawerOpen(true)}
+                        onClick={() => dispatch({ type: "openDrawer" })}
                     >
                         New Template
                     </Button>
@@ -117,33 +96,95 @@ export default function QuestionnaireTemplatesPage() {
                     </Tabs>
                 </PageHeading.Navigation>
             </PageHeading>
-            {createdTemplateName !== null && (
+            {state.createdTemplateName !== null && (
                 <Notification
                     intent="success"
                     title="Template created"
-                    description={`"${createdTemplateName}" is ready to use.`}
-                    onDismiss={() => setCreatedTemplateName(null)}
+                    description={`"${state.createdTemplateName}" is ready to use.`}
+                    onDismiss={() =>
+                        dispatch({ type: "dismissCreatedNotification" })
+                    }
                 />
             )}
-            {creationFailed && (
+            {state.creationFailed && (
                 <Notification
                     intent="error"
                     title="Couldn't create template"
                     description="Something went wrong while saving. Please try again."
-                    onDismiss={() => setCreationFailed(false)}
+                    onDismiss={() =>
+                        dispatch({
+                            type: "dismissCreationFailedNotification",
+                        })
+                    }
+                />
+            )}
+            {state.deletedTemplateName !== null && (
+                <Notification
+                    intent="success"
+                    title="Template deleted"
+                    description={`"${state.deletedTemplateName}" was permanently deleted.`}
+                    onDismiss={() =>
+                        dispatch({ type: "dismissDeletedNotification" })
+                    }
+                />
+            )}
+            {state.deletionFailed && (
+                <Notification
+                    intent="error"
+                    title="Couldn't delete template"
+                    description="The template may already be in use. Please try again."
+                    onDismiss={() =>
+                        dispatch({
+                            type: "dismissDeletionFailedNotification",
+                        })
+                    }
                 />
             )}
             <QuestionnaireTemplateCardGridList
-                templates={data?.questionnaireTemplates ?? []}
+                templates={templates}
                 onOpen={() => undefined}
                 onDuplicate={() => undefined}
-                onDelete={() => undefined}
+                onDelete={(template) =>
+                    dispatch({ type: "requestDelete", template })
+                }
             />
             <NewQuestionnaireTemplateDrawer
-                open={isDrawerOpen}
-                onClose={() => setIsDrawerOpen(false)}
+                open={state.isDrawerOpen}
+                onClose={() => dispatch({ type: "closeDrawer" })}
                 onCreate={handleCreate}
             />
+            <ModalDialog
+                open={state.templatePendingDeletion !== null}
+                onClose={() => dispatch({ type: "cancelDelete" })}
+                size="sm"
+                title="Delete template?"
+                description="This action cannot be undone."
+                showCloseButton={false}
+                footer={
+                    <>
+                        <Button
+                            variant="secondary"
+                            disabled={state.isDeleting}
+                            onClick={() => dispatch({ type: "cancelDelete" })}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="danger"
+                            disabled={state.isDeleting}
+                            onClick={confirmDelete}
+                        >
+                            {state.isDeleting ? "Deleting..." : "Delete"}
+                        </Button>
+                    </>
+                }
+            >
+                <Text variant="muted">
+                    {state.templatePendingDeletion === null
+                        ? ""
+                        : `“${state.templatePendingDeletion.name}” will be permanently deleted.`}
+                </Text>
+            </ModalDialog>
         </>
     );
 }
