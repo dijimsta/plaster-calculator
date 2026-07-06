@@ -27,4 +27,3 @@ export {
     listProjectReminders,
     updateReminder,
 } from "./reminders.js";
-export { getSettings, updateSettings } from "./settings.js";

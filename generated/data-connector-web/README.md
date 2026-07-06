@@ -15,6 +15,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*ListMyAccountContacts*](#listmyaccountcontacts)
   - [*ListQuestionnaireTemplates*](#listquestionnairetemplates)
   - [*GetQuestionnaireTemplate*](#getquestionnairetemplate)
+  - [*GetMyUserSettings*](#getmyusersettings)
 - [**Mutations**](#mutations)
   - [*CreateMyAccount*](#createmyaccount)
   - [*UpdateMyAccount*](#updatemyaccount)
@@ -30,6 +31,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*UpdateQuestionnaireTemplateQuestion*](#updatequestionnairetemplatequestion)
   - [*DeleteQuestionnaireTemplateQuestion*](#deletequestionnairetemplatequestion)
   - [*DeleteQuestionnaireTemplate*](#deletequestionnairetemplate)
+  - [*UpsertMyUserSettings*](#upsertmyusersettings)
 
 # Accessing the connector
 A connector is a collection of Queries and Mutations. One SDK is generated for each connector - this SDK is generated for the connector `data-connector-web`. You can find more information about connectors in the [Data Connect documentation](https://firebase.google.com/docs/data-connect#how-does).
@@ -636,6 +638,103 @@ console.log(data.questionnaireTemplate);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.questionnaireTemplate);
+});
+```
+
+## GetMyUserSettings
+You can execute the `GetMyUserSettings` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+getMyUserSettings(options?: ExecuteQueryOptions): QueryPromise<GetMyUserSettingsData, undefined>;
+
+interface GetMyUserSettingsRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetMyUserSettingsData, undefined>;
+}
+export const getMyUserSettingsRef: GetMyUserSettingsRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getMyUserSettings(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetMyUserSettingsData, undefined>;
+
+interface GetMyUserSettingsRef {
+  ...
+  (dc: DataConnect): QueryRef<GetMyUserSettingsData, undefined>;
+}
+export const getMyUserSettingsRef: GetMyUserSettingsRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getMyUserSettingsRef:
+```typescript
+const name = getMyUserSettingsRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetMyUserSettings` query has no variables.
+### Return Type
+Recall that executing the `GetMyUserSettings` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetMyUserSettingsData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetMyUserSettingsData {
+  userSettings?: {
+    ownerId: string;
+    quoteFollowUpEnabled: boolean;
+    quoteFollowUpDays: number;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & UserSettings_Key;
+}
+```
+### Using `GetMyUserSettings`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getMyUserSettings } from '@generated/data-connector-web';
+
+
+// Call the `getMyUserSettings()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getMyUserSettings();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getMyUserSettings(dataConnect);
+
+console.log(data.userSettings);
+
+// Or, you can use the `Promise` API.
+getMyUserSettings().then((response) => {
+  const data = response.data;
+  console.log(data.userSettings);
+});
+```
+
+### Using `GetMyUserSettings`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getMyUserSettingsRef } from '@generated/data-connector-web';
+
+
+// Call the `getMyUserSettingsRef()` function to get a reference to the query.
+const ref = getMyUserSettingsRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getMyUserSettingsRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.userSettings);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.userSettings);
 });
 ```
 
@@ -2279,6 +2378,118 @@ executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.questionnaireTemplateQuestion_deleteMany);
   console.log(data.questionnaireTemplate_delete);
+});
+```
+
+## UpsertMyUserSettings
+You can execute the `UpsertMyUserSettings` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+upsertMyUserSettings(vars: UpsertMyUserSettingsVariables): MutationPromise<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
+
+interface UpsertMyUserSettingsRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpsertMyUserSettingsVariables): MutationRef<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
+}
+export const upsertMyUserSettingsRef: UpsertMyUserSettingsRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+upsertMyUserSettings(dc: DataConnect, vars: UpsertMyUserSettingsVariables): MutationPromise<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
+
+interface UpsertMyUserSettingsRef {
+  ...
+  (dc: DataConnect, vars: UpsertMyUserSettingsVariables): MutationRef<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
+}
+export const upsertMyUserSettingsRef: UpsertMyUserSettingsRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the upsertMyUserSettingsRef:
+```typescript
+const name = upsertMyUserSettingsRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpsertMyUserSettings` mutation requires an argument of type `UpsertMyUserSettingsVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpsertMyUserSettingsVariables {
+  quoteFollowUpEnabled: boolean;
+  quoteFollowUpDays: number;
+}
+```
+### Return Type
+Recall that executing the `UpsertMyUserSettings` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpsertMyUserSettingsData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpsertMyUserSettingsData {
+  userSettings_upsert: UserSettings_Key;
+}
+```
+### Using `UpsertMyUserSettings`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, upsertMyUserSettings, UpsertMyUserSettingsVariables } from '@generated/data-connector-web';
+
+// The `UpsertMyUserSettings` mutation requires an argument of type `UpsertMyUserSettingsVariables`:
+const upsertMyUserSettingsVars: UpsertMyUserSettingsVariables = {
+  quoteFollowUpEnabled: ..., 
+  quoteFollowUpDays: ..., 
+};
+
+// Call the `upsertMyUserSettings()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await upsertMyUserSettings(upsertMyUserSettingsVars);
+// Variables can be defined inline as well.
+const { data } = await upsertMyUserSettings({ quoteFollowUpEnabled: ..., quoteFollowUpDays: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await upsertMyUserSettings(dataConnect, upsertMyUserSettingsVars);
+
+console.log(data.userSettings_upsert);
+
+// Or, you can use the `Promise` API.
+upsertMyUserSettings(upsertMyUserSettingsVars).then((response) => {
+  const data = response.data;
+  console.log(data.userSettings_upsert);
+});
+```
+
+### Using `UpsertMyUserSettings`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, upsertMyUserSettingsRef, UpsertMyUserSettingsVariables } from '@generated/data-connector-web';
+
+// The `UpsertMyUserSettings` mutation requires an argument of type `UpsertMyUserSettingsVariables`:
+const upsertMyUserSettingsVars: UpsertMyUserSettingsVariables = {
+  quoteFollowUpEnabled: ..., 
+  quoteFollowUpDays: ..., 
+};
+
+// Call the `upsertMyUserSettingsRef()` function to get a reference to the mutation.
+const ref = upsertMyUserSettingsRef(upsertMyUserSettingsVars);
+// Variables can be defined inline as well.
+const ref = upsertMyUserSettingsRef({ quoteFollowUpEnabled: ..., quoteFollowUpDays: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = upsertMyUserSettingsRef(dataConnect, upsertMyUserSettingsVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.userSettings_upsert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.userSettings_upsert);
 });
 ```
 

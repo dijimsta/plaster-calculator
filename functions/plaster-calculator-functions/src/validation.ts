@@ -54,37 +54,6 @@ export function readOptionalNullableString(value: unknown, field: string) {
     return trimmed.length > 0 ? trimmed : null;
 }
 
-export function readOptionalBoolean(value: unknown, field: string) {
-    if (value == null) {
-        return undefined;
-    }
-
-    if (typeof value !== "boolean") {
-        throw new HttpsError("invalid-argument", `${field} must be a boolean.`);
-    }
-
-    return value;
-}
-
-export function readPositiveInteger(value: unknown, field: string) {
-    if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
-        throw new HttpsError(
-            "invalid-argument",
-            `${field} must be a positive integer.`,
-        );
-    }
-
-    return value;
-}
-
-export function readOptionalPositiveInteger(value: unknown, field: string) {
-    if (value == null) {
-        return undefined;
-    }
-
-    return readPositiveInteger(value, field);
-}
-
 export function readDueAt(value: unknown, field: string) {
     const dueAt = readRequiredString(value, field);
     const timestamp = Date.parse(dueAt);

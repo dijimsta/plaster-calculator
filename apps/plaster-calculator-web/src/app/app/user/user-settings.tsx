@@ -1,21 +1,16 @@
 "use client";
 
-import {
-    FirebaseService,
-    SettingsService,
-} from "@libraries/plaster-calculator-web-core";
 import { Button } from "@libraries/uikit-web";
 import { useEffect, useState } from "react";
 
-import { updateSettings } from "../../../lib/api.js";
+import { getSettings, updateSettings } from "../../../lib/api.js";
 import { cx, ui } from "../../../lib/styles.js";
 
-import type { UserSettings } from "@libraries/plaster-calculator-common";
+import type { UserSettings } from "../../../types.js";
 
 const minimumReminderDays = 1;
 
 export function UserSettingsPanel() {
-    const settingsService = SettingsService.use(FirebaseService.getFunctions());
     const [settings, setSettings] = useState<UserSettings | null>(null);
     const [quoteFollowUpEnabled, setQuoteFollowUpEnabled] = useState(true);
     const [quoteFollowUpDays, setQuoteFollowUpDays] = useState(3);
@@ -30,7 +25,7 @@ export function UserSettingsPanel() {
     async function loadSettings(): Promise<void> {
         setLoading(true);
         try {
-            const nextSettings = await settingsService.getSettings();
+            const nextSettings = await getSettings();
             setSettings(nextSettings);
             setQuoteFollowUpEnabled(nextSettings.quoteFollowUpEnabled);
             setQuoteFollowUpDays(nextSettings.quoteFollowUpDays);

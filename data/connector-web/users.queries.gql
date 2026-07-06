@@ -1,0 +1,9 @@
+query GetMyUserSettings @auth(level: USER) {
+    userSettings(key: { ownerId_expr: "auth.uid" }) {
+        ownerId
+        quoteFollowUpEnabled
+        quoteFollowUpDays
+        createdAt
+        updatedAt
+    }
+}

@@ -130,11 +130,6 @@ export interface AccountIdRequest {
     accountId?: unknown;
 }
 
-export interface UpdateSettingsRequest {
-    quoteFollowUpEnabled?: unknown;
-    quoteFollowUpDays?: unknown;
-}
-
 export interface ReminderIdRequest {
     reminderId?: unknown;
 }

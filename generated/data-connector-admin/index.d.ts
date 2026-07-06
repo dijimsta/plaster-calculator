@@ -505,16 +505,6 @@ export interface UpdateReminderVariables {
   completedAt?: TimestampString | null;
 }
 
-export interface UpsertUserSettingsData {
-  userSettings_upsert: UserSettings_Key;
-}
-
-export interface UpsertUserSettingsVariables {
-  ownerId: string;
-  quoteFollowUpEnabled: boolean;
-  quoteFollowUpDays: number;
-}
-
 export interface UserSettings_Key {
   ownerId: string;
   __typename?: 'UserSettings_Key';
@@ -629,11 +619,6 @@ export function listProjectReminders(vars: ListProjectRemindersVariables, option
 export function getReminderById(dc: DataConnect, vars: GetReminderByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetReminderByIdData>>;
 /** Generated Node Admin SDK operation action function for the 'GetReminderById' Query. Allow users to pass in custom DataConnect instances. */
 export function getReminderById(vars: GetReminderByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetReminderByIdData>>;
-
-/** Generated Node Admin SDK operation action function for the 'UpsertUserSettings' Mutation. Allow users to execute without passing in DataConnect. */
-export function upsertUserSettings(dc: DataConnect, vars: UpsertUserSettingsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertUserSettingsData>>;
-/** Generated Node Admin SDK operation action function for the 'UpsertUserSettings' Mutation. Allow users to pass in custom DataConnect instances. */
-export function upsertUserSettings(vars: UpsertUserSettingsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertUserSettingsData>>;
 
 /** Generated Node Admin SDK operation action function for the 'GetUserSettings' Query. Allow users to execute without passing in DataConnect. */
 export function getUserSettings(dc: DataConnect, vars: GetUserSettingsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetUserSettingsData>>;
