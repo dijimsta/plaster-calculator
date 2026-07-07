@@ -272,6 +272,8 @@ export default function ProjectPage({
         <Fragment>
             <ProjectHeader
                 project={project}
+                projectId={projectId}
+                activeTab="floorplan"
                 renaming={renaming}
                 renameValue={renameValue}
                 load={load}

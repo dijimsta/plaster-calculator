@@ -1,24 +1,37 @@
-import { Box, Breadcrumb, Button, PageHeading } from "@libraries/uikit-web";
+import {
+    Box,
+    Breadcrumb,
+    Button,
+    PageHeading,
+    Tabs,
+} from "@libraries/uikit-web";
 import { Download, File, Home, Pencil, RefreshCcw } from "lucide-react";
+import { default as LinkModule } from "next/link.js";
 
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
 import { ui } from "../../../../lib/styles.js";
 
 import type { ProjectDetail } from "../../../../types.js";
 
+const Link = LinkModule.default;
+
 export interface ProjectHeaderProps {
     readonly project: ProjectDetail | null;
-    readonly renaming: boolean;
-    readonly renameValue: string;
+    readonly projectId: string;
+    readonly activeTab: "floorplan" | "questionnaires";
+    readonly renaming?: boolean;
+    readonly renameValue?: string;
     readonly load: () => void;
-    readonly saveRename: () => Promise<void>;
-    readonly setRenaming: (renaming: boolean) => void;
-    readonly setRenameValue: (value: string) => void;
-    readonly validateAndExport: () => Promise<void>;
+    readonly saveRename?: () => Promise<void>;
+    readonly setRenaming?: (renaming: boolean) => void;
+    readonly setRenameValue?: (value: string) => void;
+    readonly validateAndExport?: () => Promise<void>;
 }
 
 export function ProjectHeader({
     project,
+    projectId,
+    activeTab,
     renaming,
     renameValue,
     load,
@@ -43,15 +56,14 @@ export function ProjectHeader({
                 </Breadcrumb>
             </PageHeading.Breadcrumbs>
             <PageHeading.Content>
-                {renaming ? (
-                    <ProjectRenameForm
-                        renameValue={renameValue}
-                        saveRename={saveRename}
-                        setRenameValue={setRenameValue}
-                    />
-                ) : (
-                    <ProjectTitle project={project} setRenaming={setRenaming} />
-                )}
+                <ProjectHeaderTitle
+                    project={project}
+                    renaming={renaming}
+                    renameValue={renameValue}
+                    saveRename={saveRename}
+                    setRenaming={setRenaming}
+                    setRenameValue={setRenameValue}
+                />
                 <PageHeading.Meta aria-label="Project details">
                     <PageHeading.Meta.Item>
                         <File aria-hidden="true" />
@@ -59,25 +71,83 @@ export function ProjectHeader({
                     </PageHeading.Meta.Item>
                 </PageHeading.Meta>
             </PageHeading.Content>
-            <PageHeading.Actions>
-                {project && (
-                    <Button
-                        icon={<Download aria-hidden="true" />}
-                        variant="secondary"
-                        onClick={() => void validateAndExport()}
-                    >
-                        CSV
-                    </Button>
-                )}
-                <Button
-                    icon={<RefreshCcw aria-hidden="true" />}
-                    variant="secondary"
-                    onClick={load}
-                >
-                    Refresh
-                </Button>
-            </PageHeading.Actions>
+            <ProjectHeaderActions
+                project={project}
+                load={load}
+                validateAndExport={validateAndExport}
+            />
+            <PageHeading.Navigation>
+                <Tabs>
+                    <Tabs.Item current={activeTab === "floorplan"}>
+                        <Link href={`/app/projects/${projectId}`}>
+                            Floorplan
+                        </Link>
+                    </Tabs.Item>
+                    <Tabs.Item current={activeTab === "questionnaires"}>
+                        <Link
+                            href={`/app/projects/${projectId}/questionnaires`}
+                        >
+                            Questionnaires
+                        </Link>
+                    </Tabs.Item>
+                </Tabs>
+            </PageHeading.Navigation>
         </PageHeading>
+    );
+}
+
+function ProjectHeaderTitle({
+    project,
+    renaming,
+    renameValue,
+    saveRename,
+    setRenaming,
+    setRenameValue,
+}: Pick<
+    ProjectHeaderProps,
+    | "project"
+    | "renaming"
+    | "renameValue"
+    | "saveRename"
+    | "setRenaming"
+    | "setRenameValue"
+>) {
+    if (renaming && saveRename && setRenameValue) {
+        return (
+            <ProjectRenameForm
+                renameValue={renameValue ?? ""}
+                saveRename={saveRename}
+                setRenameValue={setRenameValue}
+            />
+        );
+    }
+    return <ProjectTitle project={project} setRenaming={setRenaming} />;
+}
+
+function ProjectHeaderActions({
+    project,
+    load,
+    validateAndExport,
+}: Pick<ProjectHeaderProps, "project" | "load" | "validateAndExport">) {
+    return (
+        <PageHeading.Actions>
+            {project && validateAndExport && (
+                <Button
+                    icon={<Download aria-hidden="true" />}
+                    variant="secondary"
+                    onClick={() => void validateAndExport()}
+                >
+                    CSV
+                </Button>
+            )}
+            <Button
+                icon={<RefreshCcw aria-hidden="true" />}
+                variant="secondary"
+                onClick={load}
+            >
+                Refresh
+            </Button>
+        </PageHeading.Actions>
     );
 }
 
@@ -85,7 +155,11 @@ function ProjectRenameForm({
     renameValue,
     saveRename,
     setRenameValue,
-}: Pick<ProjectHeaderProps, "renameValue" | "saveRename" | "setRenameValue">) {
+}: {
+    readonly renameValue: string;
+    readonly saveRename: () => Promise<void>;
+    readonly setRenameValue: (value: string) => void;
+}) {
     return (
         <Box align="center" gap="sm">
             <input
@@ -110,10 +184,10 @@ function ProjectTitle({
     return (
         <Box align="center" gap="sm">
             <PageHeading.Title>{project?.name ?? "Project"}</PageHeading.Title>
-            {project && (
+            {project && setRenaming && (
                 <Button
                     aria-label="Rename project"
-                    icon={<Pencil aria-hidden="true" />}
+                    icon={<Pencil size={14} aria-hidden="true" />}
                     onClick={() => setRenaming(true)}
                     variant="secondary"
                 />
