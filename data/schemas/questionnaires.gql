@@ -17,13 +17,11 @@ type QuestionnaireTemplateQuestion
     templateId: UUID!
     label: String!
     position: Int!
-    description: String
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
 
-type ProjectQuestionnaire @table {
-    id: UUID! @default(expr: "uuidV4()")
+type ProjectQuestionnaire @table(key: "projectId") {
     project: Project! @unique @ref(fields: "projectId", references: "id")
     projectId: UUID!
     sourceTemplate: QuestionnaireTemplate
@@ -33,16 +31,14 @@ type ProjectQuestionnaire @table {
     updatedAt: Timestamp! @default(expr: "request.time")
 }
 
-type ProjectQuestionnaireAnswer
+type ProjectQuestionnaireQuestion
     @table
     @index(fields: ["projectQuestionnaireId", "position"], order: [ASC, ASC]) {
     id: UUID! @default(expr: "uuidV4()")
     projectQuestionnaire: ProjectQuestionnaire!
-        @ref(fields: "projectQuestionnaireId", references: "id")
+        @ref(fields: "projectQuestionnaireId", references: "projectId")
     projectQuestionnaireId: UUID!
-    question: QuestionnaireTemplateQuestion!
-        @ref(fields: "questionId", references: "id")
-    questionId: UUID!
+    label: String!
     position: Int!
     answer: String
     createdAt: Timestamp! @default(expr: "request.time")

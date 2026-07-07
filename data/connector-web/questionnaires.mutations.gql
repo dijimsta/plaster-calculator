@@ -16,7 +16,6 @@ mutation CreateQuestionnaireTemplateQuestion(
     $templateId: UUID!
     $label: String!
     $position: Int!
-    $description: String
 ) @auth(level: USER) @transaction {
     query @redact {
         questionnaireTemplate(key: { id: $templateId })
@@ -34,7 +33,6 @@ mutation CreateQuestionnaireTemplateQuestion(
             templateId: $templateId
             label: $label
             position: $position
-            description: $description
             createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
         }
@@ -65,7 +63,6 @@ mutation UpdateQuestionnaireTemplateQuestion(
     $templateId: UUID!
     $label: String!
     $position: Int!
-    $description: String
 ) @auth(level: USER) @transaction {
     query @redact {
         questionnaireTemplate(key: { id: $templateId })
@@ -82,7 +79,6 @@ mutation UpdateQuestionnaireTemplateQuestion(
         data: {
             label: $label
             position: $position
-            description: $description
             updatedAt_expr: "request.time"
         }
     )
@@ -120,4 +116,144 @@ mutation DeleteQuestionnaireTemplate($id: UUID!)
     questionnaireTemplateQuestion_deleteMany(where: { templateId: { eq: $id } })
     questionnaireTemplate_delete(id: $id)
         @check(expr: "this != null", message: "Template not found")
+}
+
+mutation EnsureProjectQuestionnaire($projectId: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        project(key: { id: $projectId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this project"
+            ) {
+            id
+            ownerId
+        }
+    }
+    projectQuestionnaire_upsert(
+        data: { projectId: $projectId, updatedAt_expr: "request.time" }
+    )
+}
+
+mutation ApplyQuestionnaireTemplateToProject(
+    $projectId: UUID!
+    $sourceTemplateId: UUID!
+) @auth(level: USER) @transaction {
+    query @redact {
+        project(key: { id: $projectId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this project"
+            ) {
+            id
+            ownerId
+        }
+        questionnaireTemplate(key: { id: $sourceTemplateId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this template"
+            ) {
+            id
+            ownerId
+        }
+    }
+    projectQuestionnaire_upsert(
+        data: {
+            projectId: $projectId
+            sourceTemplateId: $sourceTemplateId
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateProjectQuestionnaireQuestion(
+    $id: UUID!
+    $projectId: UUID!
+    $label: String!
+    $position: Int!
+) @auth(level: USER) @transaction {
+    query @redact {
+        project(key: { id: $projectId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this project"
+            ) {
+            id
+            ownerId
+        }
+    }
+    projectQuestionnaireQuestion_insert(
+        data: {
+            id: $id
+            projectQuestionnaireId: $projectId
+            label: $label
+            position: $position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateProjectQuestionnaireQuestion(
+    $id: UUID!
+    $projectId: UUID!
+    $label: String!
+    $position: Int!
+) @auth(level: USER) @transaction {
+    query @redact {
+        project(key: { id: $projectId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this project"
+            ) {
+            id
+            ownerId
+        }
+    }
+    projectQuestionnaireQuestion_update(
+        id: $id
+        data: {
+            label: $label
+            position: $position
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateProjectQuestionnaireQuestionAnswer(
+    $id: UUID!
+    $projectId: UUID!
+    $answer: String
+) @auth(level: USER) @transaction {
+    query @redact {
+        project(key: { id: $projectId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this project"
+            ) {
+            id
+            ownerId
+        }
+    }
+    projectQuestionnaireQuestion_update(
+        id: $id
+        data: { answer: $answer, updatedAt_expr: "request.time" }
+    )
+}
+
+mutation DeleteProjectQuestionnaireQuestion($id: UUID!, $projectId: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        project(key: { id: $projectId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this project"
+            ) {
+            id
+            ownerId
+        }
+    }
+    projectQuestionnaireQuestion_delete(id: $id)
 }

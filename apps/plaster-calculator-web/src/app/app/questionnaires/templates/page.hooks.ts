@@ -76,7 +76,6 @@ export function useCreateQuestionnaireTemplateCallback(
                             id: crypto.randomUUID(),
                             templateId: questionnaireTemplate_insert.id,
                             label: question.label,
-                            description: question.description,
                             position,
                         }),
                     ),
@@ -212,14 +211,12 @@ export function useUpdateQuestionnaireTemplateCallback(
                                   id: crypto.randomUUID(),
                                   templateId: template.id,
                                   label: question.label,
-                                  description: question.description,
                                   position,
                               })
                             : updateQuestion({
                                   id: question.id,
                                   templateId: template.id,
                                   label: question.label,
-                                  description: question.description,
                                   position,
                               }),
                     ),
@@ -231,9 +228,16 @@ export function useUpdateQuestionnaireTemplateCallback(
                         id: template.id,
                     },
                 );
-                await queryClient.invalidateQueries({
-                    queryKey: [templateRef.name, templateRef.variables ?? null],
-                });
+                const refreshedTemplate =
+                    await DataConnector.getQuestionnaireTemplate(
+                        dataConnect,
+                        { id: template.id },
+                        { fetchPolicy: QueryFetchPolicy.SERVER_ONLY },
+                    );
+                queryClient.setQueryData(
+                    [templateRef.name, templateRef.variables ?? null],
+                    refreshedTemplate.data,
+                );
 
                 await refreshTemplates();
                 dispatch({ type: "editSucceeded" });

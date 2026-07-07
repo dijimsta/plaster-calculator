@@ -3,7 +3,6 @@ export interface QuestionnaireTemplateFormValues {
     readonly questions: readonly {
         readonly id?: string;
         readonly label: string;
-        readonly description: string;
     }[];
 }
 
@@ -11,7 +10,6 @@ export interface QuestionDraft {
     readonly draftId: string;
     readonly id?: string;
     readonly label: string;
-    readonly description: string;
 }
 
 export interface QuestionnaireTemplateFormState {
@@ -24,10 +22,9 @@ export type QuestionnaireTemplateFormAction =
     | { readonly type: "addQuestion" }
     | { readonly type: "removeQuestion"; readonly draftId: string }
     | {
-          readonly type: "updateQuestion";
+          readonly type: "updateQuestionLabel";
           readonly draftId: string;
-          readonly field: "label" | "description";
-          readonly value: string;
+          readonly label: string;
       };
 
 export function createInitialQuestionnaireTemplateFormState(
@@ -39,7 +36,6 @@ export function createInitialQuestionnaireTemplateFormState(
             draftId: crypto.randomUUID(),
             id: question.id,
             label: question.label,
-            description: question.description,
         })),
     };
 }
@@ -56,11 +52,7 @@ export function questionnaireTemplateFormReducer(
                 ...state,
                 questions: [
                     ...state.questions,
-                    {
-                        draftId: crypto.randomUUID(),
-                        label: "",
-                        description: "",
-                    },
+                    { draftId: crypto.randomUUID(), label: "" },
                 ],
             };
         case "removeQuestion":
@@ -70,12 +62,12 @@ export function questionnaireTemplateFormReducer(
                     (question) => question.draftId !== action.draftId,
                 ),
             };
-        case "updateQuestion":
+        case "updateQuestionLabel":
             return {
                 ...state,
                 questions: state.questions.map((question) =>
                     question.draftId === action.draftId
-                        ? { ...question, [action.field]: action.value }
+                        ? { ...question, label: action.label }
                         : question,
                 ),
             };

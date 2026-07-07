@@ -26,8 +26,33 @@ query GetQuestionnaireTemplate($id: UUID!) @auth(level: USER) {
         ) {
             id
             label
-            description
             position
+        }
+    }
+}
+
+query GetProjectQuestionnaire($projectId: UUID!) @auth(level: USER) {
+    project(key: { id: $projectId })
+        @redact
+        @check(
+            expr: "this != null && this.ownerId == auth.uid"
+            message: "You do not own this project"
+        ) {
+        id
+        ownerId
+    }
+    projectQuestionnaire(key: { projectId: $projectId }) {
+        projectId
+        sourceTemplateId
+        createdAt
+        updatedAt
+        questions: projectQuestionnaireQuestions_on_projectQuestionnaire(
+            orderBy: [{ position: ASC }]
+        ) {
+            id
+            label
+            position
+            answer
         }
     }
 }
