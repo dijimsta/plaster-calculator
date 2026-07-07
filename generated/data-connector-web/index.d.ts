@@ -20,6 +20,15 @@ export interface Account_Key {
   __typename?: 'Account_Key';
 }
 
+export interface ApplyQuestionnaireTemplateToProjectData {
+  projectQuestionnaire_upsert: ProjectQuestionnaire_Key;
+}
+
+export interface ApplyQuestionnaireTemplateToProjectVariables {
+  projectId: UUIDString;
+  sourceTemplateId: UUIDString;
+}
+
 export interface ClearMyAccountPrimaryContactData {
   account_update?: Account_Key | null;
 }
@@ -52,6 +61,17 @@ export interface CreateMyAccountVariables {
   phoneNumber?: string | null;
 }
 
+export interface CreateProjectQuestionnaireQuestionData {
+  projectQuestionnaireQuestion_insert: ProjectQuestionnaireQuestion_Key;
+}
+
+export interface CreateProjectQuestionnaireQuestionVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+  label: string;
+  position: number;
+}
+
 export interface CreateQuestionnaireTemplateData {
   questionnaireTemplate_insert: QuestionnaireTemplate_Key;
 }
@@ -65,7 +85,6 @@ export interface CreateQuestionnaireTemplateQuestionVariables {
   templateId: UUIDString;
   label: string;
   position: number;
-  description?: string | null;
 }
 
 export interface CreateQuestionnaireTemplateVariables {
@@ -92,6 +111,15 @@ export interface DeleteMyAccountVariables {
   id: UUIDString;
 }
 
+export interface DeleteProjectQuestionnaireQuestionData {
+  projectQuestionnaireQuestion_delete?: ProjectQuestionnaireQuestion_Key | null;
+}
+
+export interface DeleteProjectQuestionnaireQuestionVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+}
+
 export interface DeleteQuestionnaireTemplateData {
   questionnaireTemplateQuestion_deleteMany: number;
   questionnaireTemplate_delete?: QuestionnaireTemplate_Key | null;
@@ -108,6 +136,14 @@ export interface DeleteQuestionnaireTemplateQuestionVariables {
 
 export interface DeleteQuestionnaireTemplateVariables {
   id: UUIDString;
+}
+
+export interface EnsureProjectQuestionnaireData {
+  projectQuestionnaire_upsert: ProjectQuestionnaire_Key;
+}
+
+export interface EnsureProjectQuestionnaireVariables {
+  projectId: UUIDString;
 }
 
 export interface FloorplanPage_Key {
@@ -152,6 +188,25 @@ export interface GetMyUserSettingsData {
   } & UserSettings_Key;
 }
 
+export interface GetProjectQuestionnaireData {
+  projectQuestionnaire?: {
+    projectId: UUIDString;
+    sourceTemplateId?: UUIDString | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    questions: ({
+      id: UUIDString;
+      label: string;
+      position: number;
+      answer?: string | null;
+    } & ProjectQuestionnaireQuestion_Key)[];
+  } & ProjectQuestionnaire_Key;
+}
+
+export interface GetProjectQuestionnaireVariables {
+  projectId: UUIDString;
+}
+
 export interface GetQuestionnaireTemplateData {
   questionnaireTemplate?: {
     id: UUIDString;
@@ -162,7 +217,6 @@ export interface GetQuestionnaireTemplateData {
     questions: ({
       id: UUIDString;
       label: string;
-      description?: string | null;
       position: number;
     } & QuestionnaireTemplateQuestion_Key)[];
   } & QuestionnaireTemplate_Key;
@@ -211,13 +265,13 @@ export interface ListQuestionnaireTemplatesData {
   } & QuestionnaireTemplate_Key)[];
 }
 
-export interface ProjectQuestionnaireAnswer_Key {
+export interface ProjectQuestionnaireQuestion_Key {
   id: UUIDString;
-  __typename?: 'ProjectQuestionnaireAnswer_Key';
+  __typename?: 'ProjectQuestionnaireQuestion_Key';
 }
 
 export interface ProjectQuestionnaire_Key {
-  id: UUIDString;
+  projectId: UUIDString;
   __typename?: 'ProjectQuestionnaire_Key';
 }
 
@@ -311,6 +365,27 @@ export interface UpdateMyAccountVariables {
   phoneNumber?: string | null;
 }
 
+export interface UpdateProjectQuestionnaireQuestionAnswerData {
+  projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
+}
+
+export interface UpdateProjectQuestionnaireQuestionAnswerVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+  answer?: string | null;
+}
+
+export interface UpdateProjectQuestionnaireQuestionData {
+  projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
+}
+
+export interface UpdateProjectQuestionnaireQuestionVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+  label: string;
+  position: number;
+}
+
 export interface UpdateQuestionnaireTemplateNameData {
   questionnaireTemplate_update?: QuestionnaireTemplate_Key | null;
 }
@@ -329,7 +404,6 @@ export interface UpdateQuestionnaireTemplateQuestionVariables {
   templateId: UUIDString;
   label: string;
   position: number;
-  description?: string | null;
 }
 
 export interface UpsertMyUserSettingsData {
@@ -550,6 +624,78 @@ export const deleteQuestionnaireTemplateRef: DeleteQuestionnaireTemplateRef;
 export function deleteQuestionnaireTemplate(vars: DeleteQuestionnaireTemplateVariables): MutationPromise<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
 export function deleteQuestionnaireTemplate(dc: DataConnect, vars: DeleteQuestionnaireTemplateVariables): MutationPromise<DeleteQuestionnaireTemplateData, DeleteQuestionnaireTemplateVariables>;
 
+interface EnsureProjectQuestionnaireRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: EnsureProjectQuestionnaireVariables): MutationRef<EnsureProjectQuestionnaireData, EnsureProjectQuestionnaireVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: EnsureProjectQuestionnaireVariables): MutationRef<EnsureProjectQuestionnaireData, EnsureProjectQuestionnaireVariables>;
+  operationName: string;
+}
+export const ensureProjectQuestionnaireRef: EnsureProjectQuestionnaireRef;
+
+export function ensureProjectQuestionnaire(vars: EnsureProjectQuestionnaireVariables): MutationPromise<EnsureProjectQuestionnaireData, EnsureProjectQuestionnaireVariables>;
+export function ensureProjectQuestionnaire(dc: DataConnect, vars: EnsureProjectQuestionnaireVariables): MutationPromise<EnsureProjectQuestionnaireData, EnsureProjectQuestionnaireVariables>;
+
+interface ApplyQuestionnaireTemplateToProjectRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ApplyQuestionnaireTemplateToProjectVariables): MutationRef<ApplyQuestionnaireTemplateToProjectData, ApplyQuestionnaireTemplateToProjectVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ApplyQuestionnaireTemplateToProjectVariables): MutationRef<ApplyQuestionnaireTemplateToProjectData, ApplyQuestionnaireTemplateToProjectVariables>;
+  operationName: string;
+}
+export const applyQuestionnaireTemplateToProjectRef: ApplyQuestionnaireTemplateToProjectRef;
+
+export function applyQuestionnaireTemplateToProject(vars: ApplyQuestionnaireTemplateToProjectVariables): MutationPromise<ApplyQuestionnaireTemplateToProjectData, ApplyQuestionnaireTemplateToProjectVariables>;
+export function applyQuestionnaireTemplateToProject(dc: DataConnect, vars: ApplyQuestionnaireTemplateToProjectVariables): MutationPromise<ApplyQuestionnaireTemplateToProjectData, ApplyQuestionnaireTemplateToProjectVariables>;
+
+interface CreateProjectQuestionnaireQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateProjectQuestionnaireQuestionVariables): MutationRef<CreateProjectQuestionnaireQuestionData, CreateProjectQuestionnaireQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateProjectQuestionnaireQuestionVariables): MutationRef<CreateProjectQuestionnaireQuestionData, CreateProjectQuestionnaireQuestionVariables>;
+  operationName: string;
+}
+export const createProjectQuestionnaireQuestionRef: CreateProjectQuestionnaireQuestionRef;
+
+export function createProjectQuestionnaireQuestion(vars: CreateProjectQuestionnaireQuestionVariables): MutationPromise<CreateProjectQuestionnaireQuestionData, CreateProjectQuestionnaireQuestionVariables>;
+export function createProjectQuestionnaireQuestion(dc: DataConnect, vars: CreateProjectQuestionnaireQuestionVariables): MutationPromise<CreateProjectQuestionnaireQuestionData, CreateProjectQuestionnaireQuestionVariables>;
+
+interface UpdateProjectQuestionnaireQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateProjectQuestionnaireQuestionVariables): MutationRef<UpdateProjectQuestionnaireQuestionData, UpdateProjectQuestionnaireQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionVariables): MutationRef<UpdateProjectQuestionnaireQuestionData, UpdateProjectQuestionnaireQuestionVariables>;
+  operationName: string;
+}
+export const updateProjectQuestionnaireQuestionRef: UpdateProjectQuestionnaireQuestionRef;
+
+export function updateProjectQuestionnaireQuestion(vars: UpdateProjectQuestionnaireQuestionVariables): MutationPromise<UpdateProjectQuestionnaireQuestionData, UpdateProjectQuestionnaireQuestionVariables>;
+export function updateProjectQuestionnaireQuestion(dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionVariables): MutationPromise<UpdateProjectQuestionnaireQuestionData, UpdateProjectQuestionnaireQuestionVariables>;
+
+interface UpdateProjectQuestionnaireQuestionAnswerRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateProjectQuestionnaireQuestionAnswerVariables): MutationRef<UpdateProjectQuestionnaireQuestionAnswerData, UpdateProjectQuestionnaireQuestionAnswerVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionAnswerVariables): MutationRef<UpdateProjectQuestionnaireQuestionAnswerData, UpdateProjectQuestionnaireQuestionAnswerVariables>;
+  operationName: string;
+}
+export const updateProjectQuestionnaireQuestionAnswerRef: UpdateProjectQuestionnaireQuestionAnswerRef;
+
+export function updateProjectQuestionnaireQuestionAnswer(vars: UpdateProjectQuestionnaireQuestionAnswerVariables): MutationPromise<UpdateProjectQuestionnaireQuestionAnswerData, UpdateProjectQuestionnaireQuestionAnswerVariables>;
+export function updateProjectQuestionnaireQuestionAnswer(dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionAnswerVariables): MutationPromise<UpdateProjectQuestionnaireQuestionAnswerData, UpdateProjectQuestionnaireQuestionAnswerVariables>;
+
+interface DeleteProjectQuestionnaireQuestionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteProjectQuestionnaireQuestionVariables): MutationRef<DeleteProjectQuestionnaireQuestionData, DeleteProjectQuestionnaireQuestionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteProjectQuestionnaireQuestionVariables): MutationRef<DeleteProjectQuestionnaireQuestionData, DeleteProjectQuestionnaireQuestionVariables>;
+  operationName: string;
+}
+export const deleteProjectQuestionnaireQuestionRef: DeleteProjectQuestionnaireQuestionRef;
+
+export function deleteProjectQuestionnaireQuestion(vars: DeleteProjectQuestionnaireQuestionVariables): MutationPromise<DeleteProjectQuestionnaireQuestionData, DeleteProjectQuestionnaireQuestionVariables>;
+export function deleteProjectQuestionnaireQuestion(dc: DataConnect, vars: DeleteProjectQuestionnaireQuestionVariables): MutationPromise<DeleteProjectQuestionnaireQuestionData, DeleteProjectQuestionnaireQuestionVariables>;
+
 interface ListQuestionnaireTemplatesRef {
   /* Allow users to create refs without passing in DataConnect */
   (): QueryRef<ListQuestionnaireTemplatesData, undefined>;
@@ -573,6 +719,18 @@ export const getQuestionnaireTemplateRef: GetQuestionnaireTemplateRef;
 
 export function getQuestionnaireTemplate(vars: GetQuestionnaireTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
 export function getQuestionnaireTemplate(dc: DataConnect, vars: GetQuestionnaireTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuestionnaireTemplateData, GetQuestionnaireTemplateVariables>;
+
+interface GetProjectQuestionnaireRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetProjectQuestionnaireVariables): QueryRef<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetProjectQuestionnaireVariables): QueryRef<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
+  operationName: string;
+}
+export const getProjectQuestionnaireRef: GetProjectQuestionnaireRef;
+
+export function getProjectQuestionnaire(vars: GetProjectQuestionnaireVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
+export function getProjectQuestionnaire(dc: DataConnect, vars: GetProjectQuestionnaireVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
 
 interface UpsertMyUserSettingsRef {
   /* Allow users to create refs without passing in DataConnect */

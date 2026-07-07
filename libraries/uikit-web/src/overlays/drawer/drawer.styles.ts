@@ -3,7 +3,7 @@ export const styles = Object.freeze({
     positioner: "pointer-events-none relative flex h-full w-full",
     leftPositioner: "justify-start",
     rightPositioner: "justify-end",
-    panel: "pointer-events-auto flex h-full w-full flex-col bg-white shadow-xl transition-transform duration-300 ease-in-out dark:bg-slate-900",
+    panel: "pointer-events-auto flex h-full w-full flex-col bg-white text-gray-900 shadow-xl transition-transform duration-300 ease-in-out dark:bg-slate-900 dark:text-white",
     leftPanel: "starting:-translate-x-full",
     rightPanel: "starting:translate-x-full",
     header: "flex shrink-0 items-start justify-between gap-4 border-b border-slate-200 px-4 py-5 sm:px-6 dark:border-white/10",

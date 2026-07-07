@@ -350,13 +350,13 @@ export interface ListProjectsByOwnerAndSalesStatusVariables {
   salesStatus: string;
 }
 
-export interface ProjectQuestionnaireAnswer_Key {
+export interface ProjectQuestionnaireQuestion_Key {
   id: UUIDString;
-  __typename?: 'ProjectQuestionnaireAnswer_Key';
+  __typename?: 'ProjectQuestionnaireQuestion_Key';
 }
 
 export interface ProjectQuestionnaire_Key {
-  id: UUIDString;
+  projectId: UUIDString;
   __typename?: 'ProjectQuestionnaire_Key';
 }
 

@@ -22,6 +22,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*ListMyAccountContacts*](#listmyaccountcontacts)
   - [*ListQuestionnaireTemplates*](#listquestionnairetemplates)
   - [*GetQuestionnaireTemplate*](#getquestionnairetemplate)
+  - [*GetProjectQuestionnaire*](#getprojectquestionnaire)
   - [*GetMyUserSettings*](#getmyusersettings)
 - [**Mutations**](#mutations)
   - [*CreateMyAccount*](#createmyaccount)
@@ -38,6 +39,12 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*UpdateQuestionnaireTemplateQuestion*](#updatequestionnairetemplatequestion)
   - [*DeleteQuestionnaireTemplateQuestion*](#deletequestionnairetemplatequestion)
   - [*DeleteQuestionnaireTemplate*](#deletequestionnairetemplate)
+  - [*EnsureProjectQuestionnaire*](#ensureprojectquestionnaire)
+  - [*ApplyQuestionnaireTemplateToProject*](#applyquestionnairetemplatetoproject)
+  - [*CreateProjectQuestionnaireQuestion*](#createprojectquestionnairequestion)
+  - [*UpdateProjectQuestionnaireQuestion*](#updateprojectquestionnairequestion)
+  - [*UpdateProjectQuestionnaireQuestionAnswer*](#updateprojectquestionnairequestionanswer)
+  - [*DeleteProjectQuestionnaireQuestion*](#deleteprojectquestionnairequestion)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
 
 # TanStack Query Firebase & TanStack React Query
@@ -510,7 +517,6 @@ export interface GetQuestionnaireTemplateData {
     questions: ({
       id: UUIDString;
       label: string;
-      description?: string | null;
       position: number;
     } & QuestionnaireTemplateQuestion_Key)[];
   } & QuestionnaireTemplate_Key;
@@ -563,6 +569,99 @@ export default function GetQuestionnaireTemplateComponent() {
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
     console.log(query.data.questionnaireTemplate);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetProjectQuestionnaire
+You can execute the `GetProjectQuestionnaire` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetProjectQuestionnaire(dc: DataConnect, vars: GetProjectQuestionnaireVariables, options?: useDataConnectQueryOptions<GetProjectQuestionnaireData>): UseDataConnectQueryResult<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetProjectQuestionnaire(vars: GetProjectQuestionnaireVariables, options?: useDataConnectQueryOptions<GetProjectQuestionnaireData>): UseDataConnectQueryResult<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
+```
+
+### Variables
+The `GetProjectQuestionnaire` Query requires an argument of type `GetProjectQuestionnaireVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetProjectQuestionnaireVariables {
+  projectId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetProjectQuestionnaire` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetProjectQuestionnaire` Query is of type `GetProjectQuestionnaireData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetProjectQuestionnaireData {
+  projectQuestionnaire?: {
+    projectId: UUIDString;
+    sourceTemplateId?: UUIDString | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    questions: ({
+      id: UUIDString;
+      label: string;
+      position: number;
+      answer?: string | null;
+    } & ProjectQuestionnaireQuestion_Key)[];
+  } & ProjectQuestionnaire_Key;
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetProjectQuestionnaire`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetProjectQuestionnaireVariables } from '@generated/data-connector-web';
+import { useGetProjectQuestionnaire } from '@generated/data-connector-web/react'
+
+export default function GetProjectQuestionnaireComponent() {
+  // The `useGetProjectQuestionnaire` Query hook requires an argument of type `GetProjectQuestionnaireVariables`:
+  const getProjectQuestionnaireVars: GetProjectQuestionnaireVariables = {
+    projectId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetProjectQuestionnaire(getProjectQuestionnaireVars);
+  // Variables can be defined inline as well.
+  const query = useGetProjectQuestionnaire({ projectId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetProjectQuestionnaire(dataConnect, getProjectQuestionnaireVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetProjectQuestionnaire(getProjectQuestionnaireVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetProjectQuestionnaire(dataConnect, getProjectQuestionnaireVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.projectQuestionnaire);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
@@ -1575,7 +1674,6 @@ export interface CreateQuestionnaireTemplateQuestionVariables {
   templateId: UUIDString;
   label: string;
   position: number;
-  description?: string | null;
 }
 ```
 ### Return Type
@@ -1629,11 +1727,10 @@ export default function CreateQuestionnaireTemplateQuestionComponent() {
     templateId: ..., 
     label: ..., 
     position: ..., 
-    description: ..., // optional
   };
   mutation.mutate(createQuestionnaireTemplateQuestionVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ id: ..., templateId: ..., label: ..., position: ..., description: ..., });
+  mutation.mutate({ id: ..., templateId: ..., label: ..., position: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -1773,7 +1870,6 @@ export interface UpdateQuestionnaireTemplateQuestionVariables {
   templateId: UUIDString;
   label: string;
   position: number;
-  description?: string | null;
 }
 ```
 ### Return Type
@@ -1827,11 +1923,10 @@ export default function UpdateQuestionnaireTemplateQuestionComponent() {
     templateId: ..., 
     label: ..., 
     position: ..., 
-    description: ..., // optional
   };
   mutation.mutate(updateQuestionnaireTemplateQuestionVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ id: ..., templateId: ..., label: ..., position: ..., description: ..., });
+  mutation.mutate({ id: ..., templateId: ..., label: ..., position: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -2043,6 +2138,590 @@ export default function DeleteQuestionnaireTemplateComponent() {
   if (mutation.isSuccess) {
     console.log(mutation.data.questionnaireTemplateQuestion_deleteMany);
     console.log(mutation.data.questionnaireTemplate_delete);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## EnsureProjectQuestionnaire
+You can execute the `EnsureProjectQuestionnaire` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useEnsureProjectQuestionnaire(options?: useDataConnectMutationOptions<EnsureProjectQuestionnaireData, FirebaseError, EnsureProjectQuestionnaireVariables>): UseDataConnectMutationResult<EnsureProjectQuestionnaireData, EnsureProjectQuestionnaireVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useEnsureProjectQuestionnaire(dc: DataConnect, options?: useDataConnectMutationOptions<EnsureProjectQuestionnaireData, FirebaseError, EnsureProjectQuestionnaireVariables>): UseDataConnectMutationResult<EnsureProjectQuestionnaireData, EnsureProjectQuestionnaireVariables>;
+```
+
+### Variables
+The `EnsureProjectQuestionnaire` Mutation requires an argument of type `EnsureProjectQuestionnaireVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface EnsureProjectQuestionnaireVariables {
+  projectId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `EnsureProjectQuestionnaire` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `EnsureProjectQuestionnaire` Mutation is of type `EnsureProjectQuestionnaireData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface EnsureProjectQuestionnaireData {
+  projectQuestionnaire_upsert: ProjectQuestionnaire_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `EnsureProjectQuestionnaire`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, EnsureProjectQuestionnaireVariables } from '@generated/data-connector-web';
+import { useEnsureProjectQuestionnaire } from '@generated/data-connector-web/react'
+
+export default function EnsureProjectQuestionnaireComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useEnsureProjectQuestionnaire();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useEnsureProjectQuestionnaire(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useEnsureProjectQuestionnaire(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useEnsureProjectQuestionnaire(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useEnsureProjectQuestionnaire` Mutation requires an argument of type `EnsureProjectQuestionnaireVariables`:
+  const ensureProjectQuestionnaireVars: EnsureProjectQuestionnaireVariables = {
+    projectId: ..., 
+  };
+  mutation.mutate(ensureProjectQuestionnaireVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ projectId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(ensureProjectQuestionnaireVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.projectQuestionnaire_upsert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## ApplyQuestionnaireTemplateToProject
+You can execute the `ApplyQuestionnaireTemplateToProject` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useApplyQuestionnaireTemplateToProject(options?: useDataConnectMutationOptions<ApplyQuestionnaireTemplateToProjectData, FirebaseError, ApplyQuestionnaireTemplateToProjectVariables>): UseDataConnectMutationResult<ApplyQuestionnaireTemplateToProjectData, ApplyQuestionnaireTemplateToProjectVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useApplyQuestionnaireTemplateToProject(dc: DataConnect, options?: useDataConnectMutationOptions<ApplyQuestionnaireTemplateToProjectData, FirebaseError, ApplyQuestionnaireTemplateToProjectVariables>): UseDataConnectMutationResult<ApplyQuestionnaireTemplateToProjectData, ApplyQuestionnaireTemplateToProjectVariables>;
+```
+
+### Variables
+The `ApplyQuestionnaireTemplateToProject` Mutation requires an argument of type `ApplyQuestionnaireTemplateToProjectVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ApplyQuestionnaireTemplateToProjectVariables {
+  projectId: UUIDString;
+  sourceTemplateId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `ApplyQuestionnaireTemplateToProject` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `ApplyQuestionnaireTemplateToProject` Mutation is of type `ApplyQuestionnaireTemplateToProjectData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ApplyQuestionnaireTemplateToProjectData {
+  projectQuestionnaire_upsert: ProjectQuestionnaire_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `ApplyQuestionnaireTemplateToProject`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, ApplyQuestionnaireTemplateToProjectVariables } from '@generated/data-connector-web';
+import { useApplyQuestionnaireTemplateToProject } from '@generated/data-connector-web/react'
+
+export default function ApplyQuestionnaireTemplateToProjectComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useApplyQuestionnaireTemplateToProject();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useApplyQuestionnaireTemplateToProject(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useApplyQuestionnaireTemplateToProject(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useApplyQuestionnaireTemplateToProject(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useApplyQuestionnaireTemplateToProject` Mutation requires an argument of type `ApplyQuestionnaireTemplateToProjectVariables`:
+  const applyQuestionnaireTemplateToProjectVars: ApplyQuestionnaireTemplateToProjectVariables = {
+    projectId: ..., 
+    sourceTemplateId: ..., 
+  };
+  mutation.mutate(applyQuestionnaireTemplateToProjectVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ projectId: ..., sourceTemplateId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(applyQuestionnaireTemplateToProjectVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.projectQuestionnaire_upsert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## CreateProjectQuestionnaireQuestion
+You can execute the `CreateProjectQuestionnaireQuestion` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useCreateProjectQuestionnaireQuestion(options?: useDataConnectMutationOptions<CreateProjectQuestionnaireQuestionData, FirebaseError, CreateProjectQuestionnaireQuestionVariables>): UseDataConnectMutationResult<CreateProjectQuestionnaireQuestionData, CreateProjectQuestionnaireQuestionVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useCreateProjectQuestionnaireQuestion(dc: DataConnect, options?: useDataConnectMutationOptions<CreateProjectQuestionnaireQuestionData, FirebaseError, CreateProjectQuestionnaireQuestionVariables>): UseDataConnectMutationResult<CreateProjectQuestionnaireQuestionData, CreateProjectQuestionnaireQuestionVariables>;
+```
+
+### Variables
+The `CreateProjectQuestionnaireQuestion` Mutation requires an argument of type `CreateProjectQuestionnaireQuestionVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface CreateProjectQuestionnaireQuestionVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+  label: string;
+  position: number;
+}
+```
+### Return Type
+Recall that calling the `CreateProjectQuestionnaireQuestion` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateProjectQuestionnaireQuestion` Mutation is of type `CreateProjectQuestionnaireQuestionData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface CreateProjectQuestionnaireQuestionData {
+  projectQuestionnaireQuestion_insert: ProjectQuestionnaireQuestion_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `CreateProjectQuestionnaireQuestion`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, CreateProjectQuestionnaireQuestionVariables } from '@generated/data-connector-web';
+import { useCreateProjectQuestionnaireQuestion } from '@generated/data-connector-web/react'
+
+export default function CreateProjectQuestionnaireQuestionComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useCreateProjectQuestionnaireQuestion();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useCreateProjectQuestionnaireQuestion(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateProjectQuestionnaireQuestion(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateProjectQuestionnaireQuestion(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useCreateProjectQuestionnaireQuestion` Mutation requires an argument of type `CreateProjectQuestionnaireQuestionVariables`:
+  const createProjectQuestionnaireQuestionVars: CreateProjectQuestionnaireQuestionVariables = {
+    id: ..., 
+    projectId: ..., 
+    label: ..., 
+    position: ..., 
+  };
+  mutation.mutate(createProjectQuestionnaireQuestionVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ id: ..., projectId: ..., label: ..., position: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(createProjectQuestionnaireQuestionVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.projectQuestionnaireQuestion_insert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpdateProjectQuestionnaireQuestion
+You can execute the `UpdateProjectQuestionnaireQuestion` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpdateProjectQuestionnaireQuestion(options?: useDataConnectMutationOptions<UpdateProjectQuestionnaireQuestionData, FirebaseError, UpdateProjectQuestionnaireQuestionVariables>): UseDataConnectMutationResult<UpdateProjectQuestionnaireQuestionData, UpdateProjectQuestionnaireQuestionVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpdateProjectQuestionnaireQuestion(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateProjectQuestionnaireQuestionData, FirebaseError, UpdateProjectQuestionnaireQuestionVariables>): UseDataConnectMutationResult<UpdateProjectQuestionnaireQuestionData, UpdateProjectQuestionnaireQuestionVariables>;
+```
+
+### Variables
+The `UpdateProjectQuestionnaireQuestion` Mutation requires an argument of type `UpdateProjectQuestionnaireQuestionVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpdateProjectQuestionnaireQuestionVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+  label: string;
+  position: number;
+}
+```
+### Return Type
+Recall that calling the `UpdateProjectQuestionnaireQuestion` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateProjectQuestionnaireQuestion` Mutation is of type `UpdateProjectQuestionnaireQuestionData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpdateProjectQuestionnaireQuestionData {
+  projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpdateProjectQuestionnaireQuestion`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpdateProjectQuestionnaireQuestionVariables } from '@generated/data-connector-web';
+import { useUpdateProjectQuestionnaireQuestion } from '@generated/data-connector-web/react'
+
+export default function UpdateProjectQuestionnaireQuestionComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpdateProjectQuestionnaireQuestion();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpdateProjectQuestionnaireQuestion(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateProjectQuestionnaireQuestion(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateProjectQuestionnaireQuestion(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpdateProjectQuestionnaireQuestion` Mutation requires an argument of type `UpdateProjectQuestionnaireQuestionVariables`:
+  const updateProjectQuestionnaireQuestionVars: UpdateProjectQuestionnaireQuestionVariables = {
+    id: ..., 
+    projectId: ..., 
+    label: ..., 
+    position: ..., 
+  };
+  mutation.mutate(updateProjectQuestionnaireQuestionVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ id: ..., projectId: ..., label: ..., position: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(updateProjectQuestionnaireQuestionVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.projectQuestionnaireQuestion_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpdateProjectQuestionnaireQuestionAnswer
+You can execute the `UpdateProjectQuestionnaireQuestionAnswer` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpdateProjectQuestionnaireQuestionAnswer(options?: useDataConnectMutationOptions<UpdateProjectQuestionnaireQuestionAnswerData, FirebaseError, UpdateProjectQuestionnaireQuestionAnswerVariables>): UseDataConnectMutationResult<UpdateProjectQuestionnaireQuestionAnswerData, UpdateProjectQuestionnaireQuestionAnswerVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpdateProjectQuestionnaireQuestionAnswer(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateProjectQuestionnaireQuestionAnswerData, FirebaseError, UpdateProjectQuestionnaireQuestionAnswerVariables>): UseDataConnectMutationResult<UpdateProjectQuestionnaireQuestionAnswerData, UpdateProjectQuestionnaireQuestionAnswerVariables>;
+```
+
+### Variables
+The `UpdateProjectQuestionnaireQuestionAnswer` Mutation requires an argument of type `UpdateProjectQuestionnaireQuestionAnswerVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpdateProjectQuestionnaireQuestionAnswerVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+  answer?: string | null;
+}
+```
+### Return Type
+Recall that calling the `UpdateProjectQuestionnaireQuestionAnswer` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateProjectQuestionnaireQuestionAnswer` Mutation is of type `UpdateProjectQuestionnaireQuestionAnswerData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpdateProjectQuestionnaireQuestionAnswerData {
+  projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpdateProjectQuestionnaireQuestionAnswer`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpdateProjectQuestionnaireQuestionAnswerVariables } from '@generated/data-connector-web';
+import { useUpdateProjectQuestionnaireQuestionAnswer } from '@generated/data-connector-web/react'
+
+export default function UpdateProjectQuestionnaireQuestionAnswerComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpdateProjectQuestionnaireQuestionAnswer();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpdateProjectQuestionnaireQuestionAnswer(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateProjectQuestionnaireQuestionAnswer(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateProjectQuestionnaireQuestionAnswer(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpdateProjectQuestionnaireQuestionAnswer` Mutation requires an argument of type `UpdateProjectQuestionnaireQuestionAnswerVariables`:
+  const updateProjectQuestionnaireQuestionAnswerVars: UpdateProjectQuestionnaireQuestionAnswerVariables = {
+    id: ..., 
+    projectId: ..., 
+    answer: ..., // optional
+  };
+  mutation.mutate(updateProjectQuestionnaireQuestionAnswerVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ id: ..., projectId: ..., answer: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(updateProjectQuestionnaireQuestionAnswerVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.projectQuestionnaireQuestion_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## DeleteProjectQuestionnaireQuestion
+You can execute the `DeleteProjectQuestionnaireQuestion` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useDeleteProjectQuestionnaireQuestion(options?: useDataConnectMutationOptions<DeleteProjectQuestionnaireQuestionData, FirebaseError, DeleteProjectQuestionnaireQuestionVariables>): UseDataConnectMutationResult<DeleteProjectQuestionnaireQuestionData, DeleteProjectQuestionnaireQuestionVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useDeleteProjectQuestionnaireQuestion(dc: DataConnect, options?: useDataConnectMutationOptions<DeleteProjectQuestionnaireQuestionData, FirebaseError, DeleteProjectQuestionnaireQuestionVariables>): UseDataConnectMutationResult<DeleteProjectQuestionnaireQuestionData, DeleteProjectQuestionnaireQuestionVariables>;
+```
+
+### Variables
+The `DeleteProjectQuestionnaireQuestion` Mutation requires an argument of type `DeleteProjectQuestionnaireQuestionVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface DeleteProjectQuestionnaireQuestionVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `DeleteProjectQuestionnaireQuestion` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeleteProjectQuestionnaireQuestion` Mutation is of type `DeleteProjectQuestionnaireQuestionData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface DeleteProjectQuestionnaireQuestionData {
+  projectQuestionnaireQuestion_delete?: ProjectQuestionnaireQuestion_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `DeleteProjectQuestionnaireQuestion`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, DeleteProjectQuestionnaireQuestionVariables } from '@generated/data-connector-web';
+import { useDeleteProjectQuestionnaireQuestion } from '@generated/data-connector-web/react'
+
+export default function DeleteProjectQuestionnaireQuestionComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useDeleteProjectQuestionnaireQuestion();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useDeleteProjectQuestionnaireQuestion(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeleteProjectQuestionnaireQuestion(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeleteProjectQuestionnaireQuestion(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useDeleteProjectQuestionnaireQuestion` Mutation requires an argument of type `DeleteProjectQuestionnaireQuestionVariables`:
+  const deleteProjectQuestionnaireQuestionVars: DeleteProjectQuestionnaireQuestionVariables = {
+    id: ..., 
+    projectId: ..., 
+  };
+  mutation.mutate(deleteProjectQuestionnaireQuestionVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ id: ..., projectId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(deleteProjectQuestionnaireQuestionVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.projectQuestionnaireQuestion_delete);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }

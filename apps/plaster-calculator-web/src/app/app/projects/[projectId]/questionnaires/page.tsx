@@ -1,14 +1,28 @@
 "use client";
 
-import { Box, EmptyState } from "@libraries/uikit-web";
-import { ClipboardList } from "lucide-react";
+import {
+    AddProjectQuestionnaireQuestionModal,
+    AddQuestionsFromTemplateDrawer,
+    ProjectQuestionnaireQuestionList,
+} from "@libraries/plaster-calculator-ui";
+import { Box, Button, EmptyState } from "@libraries/uikit-web";
+import { ClipboardList, Plus } from "lucide-react";
 import { use, useCallback, useEffect, useState } from "react";
 
+import {
+    useAddProjectQuestionnaireQuestionCallback,
+    useApplyQuestionnaireTemplateCallback,
+    useProjectQuestionnaireQuestions,
+    useQuestionnaireTemplates,
+    useRemoveProjectQuestionnaireQuestionCallback,
+    useSaveProjectQuestionnaireQuestionAnswerCallback,
+} from "./page.hooks.js";
 import { getProject, renameProject } from "../../../../../lib/api.js";
 import { ui } from "../../../../../lib/styles.js";
 import { ProjectHeader } from "../project-page-header.js";
 
 import type { ProjectDetail } from "../../../../../types.js";
+import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
 
 export default function ProjectQuestionnairesPage({
     params,
@@ -20,6 +34,12 @@ export default function ProjectQuestionnairesPage({
     const [error, setError] = useState("");
     const [renaming, setRenaming] = useState(false);
     const [renameValue, setRenameValue] = useState("");
+    const [isAddQuestionModalOpen, setAddQuestionModalOpen] = useState(false);
+    const [isTemplateDrawerOpen, setTemplateDrawerOpen] = useState(false);
+    const [applyingTemplateId, setApplyingTemplateId] = useState<string | null>(
+        null,
+    );
+    const [isAddingQuestion, setAddingQuestion] = useState(false);
 
     const load = useCallback(async (): Promise<void> => {
         try {
@@ -50,6 +70,37 @@ export default function ProjectQuestionnairesPage({
         }
     }
 
+    const { questions } = useProjectQuestionnaireQuestions(projectId);
+    const templates = useQuestionnaireTemplates();
+    const addQuestion = useAddProjectQuestionnaireQuestionCallback(
+        projectId,
+        questions,
+    );
+    const applyTemplate = useApplyQuestionnaireTemplateCallback(
+        projectId,
+        questions,
+    );
+    const removeQuestion =
+        useRemoveProjectQuestionnaireQuestionCallback(projectId);
+    const saveAnswer =
+        useSaveProjectQuestionnaireQuestionAnswerCallback(projectId);
+
+    async function handleAddQuestion(label: string): Promise<void> {
+        setAddingQuestion(true);
+        await addQuestion(label);
+        setAddingQuestion(false);
+        setAddQuestionModalOpen(false);
+    }
+
+    async function handleSelectTemplate(
+        template: QuestionnaireTemplate,
+    ): Promise<void> {
+        setApplyingTemplateId(template.id);
+        await applyTemplate(template);
+        setApplyingTemplateId(null);
+        setTemplateDrawerOpen(false);
+    }
+
     return (
         <>
             <ProjectHeader
@@ -63,14 +114,53 @@ export default function ProjectQuestionnairesPage({
                 setRenaming={setRenaming}
                 setRenameValue={setRenameValue}
             />
-            <Box padding="md">
+            <Box padding="md" direction="column" gap="md">
                 {error && <p className={ui.error}>{error}</p>}
-                <EmptyState
-                    icon={<ClipboardList />}
-                    title="No questionnaire yet"
-                    description="This project's questionnaire will appear here."
-                />
+                <Box direction="row" justify="end" gap="sm">
+                    <Button
+                        variant="secondary"
+                        onClick={() => setTemplateDrawerOpen(true)}
+                    >
+                        Add from template
+                    </Button>
+                    <Button
+                        icon={<Plus size={18} aria-hidden="true" />}
+                        onClick={() => setAddQuestionModalOpen(true)}
+                    >
+                        Add question
+                    </Button>
+                </Box>
+                {questions.length === 0 ? (
+                    <EmptyState
+                        icon={<ClipboardList />}
+                        title="No questionnaire yet"
+                        description="Add a question or copy them in from a template."
+                    />
+                ) : (
+                    <ProjectQuestionnaireQuestionList
+                        questions={questions}
+                        onSaveAnswer={(question, answer) =>
+                            void saveAnswer(question, answer)
+                        }
+                        onRemove={(question) => void removeQuestion(question)}
+                    />
+                )}
             </Box>
+            <AddProjectQuestionnaireQuestionModal
+                open={isAddQuestionModalOpen}
+                isSaving={isAddingQuestion}
+                onClose={() => setAddQuestionModalOpen(false)}
+                onAdd={(label) => void handleAddQuestion(label)}
+            />
+            <AddQuestionsFromTemplateDrawer
+                open={isTemplateDrawerOpen}
+                templates={templates}
+                applyingTemplateId={applyingTemplateId}
+                onClose={() => setTemplateDrawerOpen(false)}
+                onSelectTemplate={(template) =>
+                    void handleSelectTemplate(template)
+                }
+            />
         </>
     );
 }

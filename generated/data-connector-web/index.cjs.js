@@ -248,6 +248,90 @@ exports.deleteQuestionnaireTemplate = function deleteQuestionnaireTemplate(dcOrV
 }
 ;
 
+const ensureProjectQuestionnaireRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'EnsureProjectQuestionnaire', inputVars);
+}
+ensureProjectQuestionnaireRef.operationName = 'EnsureProjectQuestionnaire';
+exports.ensureProjectQuestionnaireRef = ensureProjectQuestionnaireRef;
+
+exports.ensureProjectQuestionnaire = function ensureProjectQuestionnaire(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(ensureProjectQuestionnaireRef(dcInstance, inputVars));
+}
+;
+
+const applyQuestionnaireTemplateToProjectRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ApplyQuestionnaireTemplateToProject', inputVars);
+}
+applyQuestionnaireTemplateToProjectRef.operationName = 'ApplyQuestionnaireTemplateToProject';
+exports.applyQuestionnaireTemplateToProjectRef = applyQuestionnaireTemplateToProjectRef;
+
+exports.applyQuestionnaireTemplateToProject = function applyQuestionnaireTemplateToProject(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(applyQuestionnaireTemplateToProjectRef(dcInstance, inputVars));
+}
+;
+
+const createProjectQuestionnaireQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateProjectQuestionnaireQuestion', inputVars);
+}
+createProjectQuestionnaireQuestionRef.operationName = 'CreateProjectQuestionnaireQuestion';
+exports.createProjectQuestionnaireQuestionRef = createProjectQuestionnaireQuestionRef;
+
+exports.createProjectQuestionnaireQuestion = function createProjectQuestionnaireQuestion(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createProjectQuestionnaireQuestionRef(dcInstance, inputVars));
+}
+;
+
+const updateProjectQuestionnaireQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateProjectQuestionnaireQuestion', inputVars);
+}
+updateProjectQuestionnaireQuestionRef.operationName = 'UpdateProjectQuestionnaireQuestion';
+exports.updateProjectQuestionnaireQuestionRef = updateProjectQuestionnaireQuestionRef;
+
+exports.updateProjectQuestionnaireQuestion = function updateProjectQuestionnaireQuestion(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateProjectQuestionnaireQuestionRef(dcInstance, inputVars));
+}
+;
+
+const updateProjectQuestionnaireQuestionAnswerRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateProjectQuestionnaireQuestionAnswer', inputVars);
+}
+updateProjectQuestionnaireQuestionAnswerRef.operationName = 'UpdateProjectQuestionnaireQuestionAnswer';
+exports.updateProjectQuestionnaireQuestionAnswerRef = updateProjectQuestionnaireQuestionAnswerRef;
+
+exports.updateProjectQuestionnaireQuestionAnswer = function updateProjectQuestionnaireQuestionAnswer(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateProjectQuestionnaireQuestionAnswerRef(dcInstance, inputVars));
+}
+;
+
+const deleteProjectQuestionnaireQuestionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteProjectQuestionnaireQuestion', inputVars);
+}
+deleteProjectQuestionnaireQuestionRef.operationName = 'DeleteProjectQuestionnaireQuestion';
+exports.deleteProjectQuestionnaireQuestionRef = deleteProjectQuestionnaireQuestionRef;
+
+exports.deleteProjectQuestionnaireQuestion = function deleteProjectQuestionnaireQuestion(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteProjectQuestionnaireQuestionRef(dcInstance, inputVars));
+}
+;
+
 const listQuestionnaireTemplatesRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
@@ -275,6 +359,21 @@ exports.getQuestionnaireTemplate = function getQuestionnaireTemplate(dcOrVars, v
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
   return executeQuery(getQuestionnaireTemplateRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
+const getProjectQuestionnaireRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetProjectQuestionnaire', inputVars);
+}
+getProjectQuestionnaireRef.operationName = 'GetProjectQuestionnaire';
+exports.getProjectQuestionnaireRef = getProjectQuestionnaireRef;
+
+exports.getProjectQuestionnaire = function getProjectQuestionnaire(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
+  return executeQuery(getProjectQuestionnaireRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 ;
 

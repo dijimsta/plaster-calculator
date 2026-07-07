@@ -9,7 +9,6 @@ import {
     Input,
     preventDefaultEvent,
     Text,
-    Textarea,
 } from "@libraries/uikit-web";
 import { Plus, Trash2 } from "lucide-react";
 import { useReducer } from "react";
@@ -105,31 +104,12 @@ export function QuestionnaireTemplateForm({
                                             value={question.label}
                                             onChange={(event) =>
                                                 dispatch({
-                                                    type: "updateQuestion",
+                                                    type: "updateQuestionLabel",
                                                     draftId: question.draftId,
-                                                    field: "label",
-                                                    value: event.target.value,
+                                                    label: event.target.value,
                                                 })
                                             }
                                             required
-                                        />
-                                    </FormLayoutField>
-                                    <FormLayoutField
-                                        label="Description (optional)"
-                                        htmlFor={`${formId}-question-${question.draftId}-description`}
-                                    >
-                                        <Textarea
-                                            id={`${formId}-question-${question.draftId}-description`}
-                                            rows={2}
-                                            value={question.description}
-                                            onChange={(event) =>
-                                                dispatch({
-                                                    type: "updateQuestion",
-                                                    draftId: question.draftId,
-                                                    field: "description",
-                                                    value: event.target.value,
-                                                })
-                                            }
                                         />
                                     </FormLayoutField>
                                 </Box>

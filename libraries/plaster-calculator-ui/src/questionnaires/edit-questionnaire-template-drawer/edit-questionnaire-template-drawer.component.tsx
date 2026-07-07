@@ -37,7 +37,6 @@ export function EditQuestionnaireTemplateDrawer({
                       questions: template.questions.map((question) => ({
                           id: question.id,
                           label: question.label,
-                          description: question.description ?? "",
                       })),
                   },
         [template],

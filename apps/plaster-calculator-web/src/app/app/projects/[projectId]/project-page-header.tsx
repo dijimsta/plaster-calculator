@@ -87,7 +87,7 @@ export function ProjectHeader({
                         <Link
                             href={`/app/projects/${projectId}/questionnaires`}
                         >
-                            Questionnaires
+                            Questionnaire
                         </Link>
                     </Tabs.Item>
                 </Tabs>
