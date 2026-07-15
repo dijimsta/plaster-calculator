@@ -1,4 +1,4 @@
-import { Button } from "@libraries/uikit-web";
+import { Button, RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
 import {
     AlignHorizontalJustifyCenter,
     CopyPlus,
@@ -16,7 +16,7 @@ import {
     ZoomIn,
 } from "lucide-react";
 
-import { cx, ui } from "../../lib/styles.js";
+import { ui } from "../../lib/styles.js";
 
 import type { OverlayMode } from "./project-editor.types.js";
 import type { AreaPolygon } from "../../types.js";
@@ -258,20 +258,22 @@ function OverlayModeSelector({
     onSetOverlayMode,
 }: Pick<EditorToolbarProps, "overlayMode" | "onSetOverlayMode">) {
     return (
-        <div className={ui.segmented}>
+        <RadioGroup
+            name="overlay-mode"
+            legend="Overlay mode"
+            variant="segmented"
+            hideLegend
+        >
             {OVERLAY_MODES.map((mode) => (
-                <button
+                <RadioGroupOption
                     key={mode}
-                    className={cx(
-                        ui.segmentedButton,
-                        overlayMode === mode && ui.segmentedButtonActive,
-                    )}
-                    onClick={() => onSetOverlayMode(mode)}
-                >
-                    {OVERLAY_MODE_LABELS[mode]}
-                </button>
+                    value={mode}
+                    label={OVERLAY_MODE_LABELS[mode]}
+                    checked={overlayMode === mode}
+                    onChange={() => onSetOverlayMode(mode)}
+                />
             ))}
-        </div>
+        </RadioGroup>
     );
 }
 

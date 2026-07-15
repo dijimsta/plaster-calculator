@@ -1,5 +1,6 @@
 "use client";
 
+import { RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
 import { useEffect, useState } from "react";
 
 import {
@@ -8,7 +9,6 @@ import {
     writeThemeCookie,
     type ThemeMode,
 } from "./theme-cookie.js";
-import { cx, ui } from "../lib/styles.js";
 
 const themeModes: readonly ThemeMode[] = ["system", "light", "dark"];
 
@@ -39,23 +39,22 @@ export function ThemeSettingsControl() {
     }, [themeLoaded, themeMode]);
 
     return (
-        <div className={ui.field}>
-            <span className={ui.label}>Colour theme</span>
-            <div className={cx(ui.segmented, ui.segmentedWide)}>
-                {themeModes.map((mode) => (
-                    <button
-                        key={mode}
-                        className={cx(
-                            ui.segmentedButton,
-                            themeMode === mode && ui.segmentedButtonActive,
-                        )}
-                        onClick={() => setThemeMode(mode)}
-                    >
-                        {getThemeLabel(mode)}
-                    </button>
-                ))}
-            </div>
-        </div>
+        <RadioGroup
+            name="theme-mode"
+            legend="Colour theme"
+            variant="segmented"
+            fullWidth
+        >
+            {themeModes.map((mode) => (
+                <RadioGroupOption
+                    key={mode}
+                    value={mode}
+                    label={getThemeLabel(mode)}
+                    checked={themeMode === mode}
+                    onChange={() => setThemeMode(mode)}
+                />
+            ))}
+        </RadioGroup>
     );
 }
 
