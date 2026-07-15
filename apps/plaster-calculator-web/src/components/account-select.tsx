@@ -115,20 +115,16 @@ export function AccountSelect({
                     placeholder={placeholder}
                 />
                 {selectedAccountId && (
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                            "absolute right-1 top-1 h-8 min-h-8 w-8",
-                        )}
+                    <Button
+                        variant="secondary"
+                        size="small"
+                        className="absolute right-1 top-1"
+                        icon={<X size={14} aria-hidden="true" />}
                         disabled={disabled}
                         onClick={clearAccount}
-                        title="Clear account"
+                        aria-label="Clear account"
                         type="button"
-                    >
-                        <X size={14} />
-                    </button>
+                    />
                 )}
             </div>
             {isOpen && !disabled && (

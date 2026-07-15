@@ -103,18 +103,13 @@ export function ProjectAccountPanel({
                 <>
                     <AccountSummary account={account} error={error} />
                     {accountId && (
-                        <button
-                            className={cx(
-                                ui.button,
-                                ui.buttonDefault,
-                                ui.buttonIcon,
-                            )}
+                        <Button
+                            variant="secondary"
+                            icon={<Pencil size={18} aria-hidden="true" />}
                             onClick={() => setIsEditing(true)}
-                            title="Edit project account"
+                            aria-label="Edit project account"
                             type="button"
-                        >
-                            <Pencil size={18} />
-                        </button>
+                        />
                     )}
                 </>
             )}

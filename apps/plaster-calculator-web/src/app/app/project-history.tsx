@@ -142,32 +142,32 @@ export function ProjectHistory({
                                             Save
                                         </Button>
                                     ) : (
-                                        <button
-                                            className={cx(
-                                                ui.button,
-                                                ui.buttonDefault,
-                                                ui.buttonIcon,
-                                            )}
+                                        <Button
+                                            variant="secondary"
+                                            icon={
+                                                <Pencil
+                                                    size={18}
+                                                    aria-hidden="true"
+                                                />
+                                            }
                                             onClick={() => {
                                                 setRenamingId(project.id);
                                                 setRenameValue(project.name);
                                             }}
-                                            title="Rename project"
-                                        >
-                                            <Pencil size={18} />
-                                        </button>
+                                            aria-label="Rename project"
+                                        />
                                     )}
-                                    <button
-                                        className={cx(
-                                            ui.button,
-                                            ui.buttonDefault,
-                                            ui.buttonIcon,
-                                        )}
+                                    <Button
+                                        variant="secondary"
+                                        icon={
+                                            <Trash2
+                                                size={18}
+                                                aria-hidden="true"
+                                            />
+                                        }
                                         onClick={() => removeProject(project)}
-                                        title="Delete project"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
+                                        aria-label="Delete project"
+                                    />
                                 </div>
                             </div>
                         ))}

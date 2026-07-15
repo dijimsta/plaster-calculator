@@ -1,3 +1,5 @@
+import { Button } from "@libraries/uikit-web";
+
 import { ValidationMessage } from "./validation-message.js";
 import { cx, ui } from "../../lib/styles.js";
 
@@ -146,28 +148,20 @@ function RakedCeilingFields({
     return (
         <>
             <div className={ui.buttonRow}>
-                <button
-                    className={cx(
-                        ui.button,
-                        ui.buttonDefault,
-                        lowEdgeError && ui.buttonInvalid,
-                    )}
+                <Button
+                    variant={lowEdgeError ? "dangerSoft" : "secondary"}
                     onClick={() => setRakedEdge("low")}
                     disabled={edgeSelectionDisabled}
                 >
                     Set selected low edge
-                </button>
-                <button
-                    className={cx(
-                        ui.button,
-                        ui.buttonDefault,
-                        highEdgeError && ui.buttonInvalid,
-                    )}
+                </Button>
+                <Button
+                    variant={highEdgeError ? "dangerSoft" : "secondary"}
                     onClick={() => setRakedEdge("high")}
                     disabled={edgeSelectionDisabled}
                 >
                     Set selected high edge
-                </button>
+                </Button>
             </div>
             {edgeError && <span className={ui.fieldError}>{edgeError}</span>}
             <div className={ui.metric}>

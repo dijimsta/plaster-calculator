@@ -1,6 +1,6 @@
 "use client";
 
-import { Box } from "@libraries/uikit-web";
+import { Box, Button } from "@libraries/uikit-web";
 import { LoaderCircle, X } from "lucide-react";
 import { useRouter } from "next/navigation.js";
 import { useEffect, useState, type FormEvent } from "react";
@@ -219,18 +219,13 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
                 {toast && (
                     <div className={ui.toast}>
                         <span>{toast}</span>
-                        <button
-                            className={cx(
-                                ui.button,
-                                ui.buttonDefault,
-                                ui.buttonIcon,
-                            )}
+                        <Button
+                            variant="secondary"
+                            icon={<X size={16} aria-hidden="true" />}
                             onClick={() => setToast("")}
-                            title="Dismiss message"
+                            aria-label="Dismiss message"
                             type="button"
-                        >
-                            <X size={16} />
-                        </button>
+                        />
                     </div>
                 )}
                 {message && <p className={ui.muted}>{message}</p>}

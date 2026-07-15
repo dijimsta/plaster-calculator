@@ -98,12 +98,9 @@ export const themes = {
         focus: "focus:border-slate-500 focus:ring-2 focus:ring-slate-300 dark:focus:border-slate-400 dark:focus:ring-slate-700",
         dropzoneHover:
             "hover:border-slate-400 hover:bg-slate-100 dark:hover:border-slate-500 dark:hover:bg-slate-800",
-        inverseText: "text-white dark:text-slate-950",
         line: "border-slate-200 dark:border-slate-800",
         muted: "text-slate-500 dark:text-slate-400",
         panelBg: "bg-white dark:bg-slate-900",
-        primary:
-            "border-slate-900 bg-slate-900 hover:bg-slate-700 dark:border-slate-100 dark:bg-slate-100 dark:hover:bg-slate-300",
         primarySubtle:
             "border-slate-400 bg-slate-100 dark:border-slate-500 dark:bg-slate-800",
         softBg: "bg-slate-100 dark:bg-slate-800",
@@ -201,12 +198,9 @@ export const themes = {
         focus: "focus:border-zinc-500 focus:ring-2 focus:ring-zinc-300 dark:focus:border-zinc-400 dark:focus:ring-zinc-700",
         dropzoneHover:
             "hover:border-zinc-400 hover:bg-zinc-100 dark:hover:border-zinc-500 dark:hover:bg-zinc-800",
-        inverseText: "text-white dark:text-zinc-950",
         line: "border-zinc-200 dark:border-zinc-800",
         muted: "text-zinc-500 dark:text-zinc-400",
         panelBg: "bg-white dark:bg-zinc-900",
-        primary:
-            "border-zinc-900 bg-zinc-900 hover:bg-zinc-700 dark:border-zinc-100 dark:bg-zinc-100 dark:hover:bg-zinc-300",
         primarySubtle:
             "border-zinc-400 bg-zinc-100 dark:border-zinc-500 dark:bg-zinc-800",
         softBg: "bg-zinc-100 dark:bg-zinc-800",
@@ -235,9 +229,6 @@ function createUi(theme: Theme) {
             theme.focus,
         ),
         buttonDefault: cx(theme.controlBg, theme.text),
-        buttonIcon: "aspect-square w-10 p-2",
-        buttonPrimary: cx(theme.primary, theme.inverseText),
-        buttonInvalid: cx(theme.dangerBorder, theme.dangerRing),
         buttonRow: "flex flex-wrap gap-2",
         canvasWrap: cx(
             "flex-1 min-h-[560px] overflow-auto rounded-lg border p-3.5 max-[980px]:h-[70vh]",
@@ -292,12 +283,6 @@ function createUi(theme: Theme) {
         modalBackdrop:
             "fixed inset-0 z-30 flex items-center justify-center bg-slate-950/60 p-6",
         muted: cx("text-sm", theme.muted),
-        navLink: cx(
-            "rounded-lg px-3 py-2 text-sm font-semibold no-underline outline-none transition-colors",
-            theme.muted,
-            theme.focus,
-        ),
-        navLinkActive: cx(theme.controlBg, theme.text, "shadow-sm"),
         panel: cx(
             "rounded-lg border p-[18px] shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",
             theme.panelBg,
@@ -335,7 +320,6 @@ function createUi(theme: Theme) {
         ),
         segmentedButtonActive: cx("shadow-sm", theme.controlBg, theme.text),
         segmentedWide: "grid w-full grid-cols-3",
-        shell: cx("min-h-screen", theme.appBg, theme.text),
         stack: "grid gap-3.5",
         toast: cx(
             contentWidth,

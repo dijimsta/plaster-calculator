@@ -1,4 +1,4 @@
-import { Button } from "@libraries/uikit-web";
+import { Button, RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
 import {
     AlignHorizontalJustifyCenter,
     CopyPlus,
@@ -16,7 +16,7 @@ import {
     ZoomIn,
 } from "lucide-react";
 
-import { cx, ui } from "../../lib/styles.js";
+import { ui } from "../../lib/styles.js";
 
 import type { OverlayMode } from "./project-editor.types.js";
 import type { AreaPolygon } from "../../types.js";
@@ -91,84 +91,59 @@ export function EditorToolbar({
         <div className={ui.editorToolbar}>
             <fieldset className="contents" disabled={analyzing}>
                 <div className={ui.buttonRow}>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                    <Button
+                        variant="secondary"
+                        icon={<Undo2 size={18} aria-hidden="true" />}
                         onClick={onUndo}
                         disabled={historyCount === 0}
-                        title="Undo"
-                    >
-                        <Undo2 size={18} />
-                    </button>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                        aria-label="Undo"
+                    />
+                    <Button
+                        variant="secondary"
+                        icon={<Redo2 size={18} aria-hidden="true" />}
                         onClick={onRedo}
                         disabled={futureCount === 0}
-                        title="Redo"
-                    >
-                        <Redo2 size={18} />
-                    </button>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                        aria-label="Redo"
+                    />
+                    <Button
+                        variant="secondary"
+                        icon={<MousePointer2 size={18} aria-hidden="true" />}
                         onClick={onClearSelection}
                         disabled={!hasSelection()}
-                        title="Deselect all"
-                    >
-                        <MousePointer2 size={18} />
-                    </button>
+                        aria-label="Deselect all"
+                    />
                     <AddAreaControls
                         addMenuOpen={addMenuOpen}
                         onAddRectangle={onAddRectangle}
                         onSetAddMenuOpen={onSetAddMenuOpen}
                         onStartFreeShape={onStartFreeShape}
                     />
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                    <Button
+                        variant="secondary"
+                        icon={<CopyPlus size={18} aria-hidden="true" />}
                         onClick={onAddPoint}
                         disabled={!selectedArea}
-                        title="Add point"
-                    >
-                        <CopyPlus size={18} />
-                    </button>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                        aria-label="Add point"
+                    />
+                    <Button
+                        variant="secondary"
+                        icon={
+                            <AlignHorizontalJustifyCenter
+                                size={18}
+                                aria-hidden="true"
+                            />
+                        }
                         onClick={onStraightenSelectedPoints}
                         disabled={!selectedArea || selectedPointCount !== 2}
-                        title="Straighten between selected points"
-                    >
-                        <AlignHorizontalJustifyCenter size={18} />
-                    </button>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                        aria-label="Straighten between selected points"
+                    />
+                    <Button
+                        variant="secondary"
+                        icon={<Scissors size={18} aria-hidden="true" />}
                         onClick={onSplitArea}
                         disabled={!selectedArea || selectedPointCount !== 2}
-                        title="Split selected polygon"
-                    >
-                        <Scissors size={18} />
-                    </button>
+                        aria-label="Split selected polygon"
+                    />
                     <DeleteSelectionButton
                         selectedArea={selectedArea}
                         selectedPointCount={selectedPointCount}
@@ -176,17 +151,12 @@ export function EditorToolbar({
                     />
                 </div>
                 <div className={ui.buttonRow}>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                    <Button
+                        variant="secondary"
+                        icon={<Minus size={18} aria-hidden="true" />}
                         onClick={() => onChangeZoom(zoom - 0.15)}
-                        title="Zoom out"
-                    >
-                        <Minus size={18} />
-                    </button>
+                        aria-label="Zoom out"
+                    />
                     <Button
                         variant="secondary"
                         onClick={onResetView}
@@ -194,17 +164,12 @@ export function EditorToolbar({
                     >
                         <ZoomIn size={18} /> {Math.round(zoom * 100)}%
                     </Button>
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                    <Button
+                        variant="secondary"
+                        icon={<Plus size={18} aria-hidden="true" />}
                         onClick={() => onChangeZoom(zoom + 0.15)}
-                        title="Zoom in"
-                    >
-                        <Plus size={18} />
-                    </button>
+                        aria-label="Zoom in"
+                    />
                     <OverlayModeSelector
                         overlayMode={overlayMode}
                         onSetOverlayMode={onSetOverlayMode}
@@ -244,13 +209,12 @@ function AddAreaControls({
 >) {
     return (
         <div className="relative">
-            <button
-                className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+            <Button
+                variant="secondary"
+                icon={<Plus size={18} aria-hidden="true" />}
                 onClick={() => onSetAddMenuOpen(!addMenuOpen)}
-                title="Add area"
-            >
-                <Plus size={18} />
-            </button>
+                aria-label="Add area"
+            />
             {addMenuOpen && (
                 <div className={ui.popoverMenu}>
                     <Button variant="secondary" onClick={onAddRectangle}>
@@ -273,20 +237,19 @@ function DeleteSelectionButton({
     EditorToolbarProps,
     "onDeleteSelection" | "selectedArea" | "selectedPointCount"
 >) {
-    const title =
+    const label =
         selectedPointCount > 0
             ? "Delete selected points"
             : "Delete selected area";
 
     return (
-        <button
-            className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+        <Button
+            variant="secondary"
+            icon={<Trash2 size={18} aria-hidden="true" />}
             onClick={onDeleteSelection}
             disabled={!selectedArea}
-            title={title}
-        >
-            <Trash2 size={18} />
-        </button>
+            aria-label={label}
+        />
     );
 }
 
@@ -295,20 +258,22 @@ function OverlayModeSelector({
     onSetOverlayMode,
 }: Pick<EditorToolbarProps, "overlayMode" | "onSetOverlayMode">) {
     return (
-        <div className={ui.segmented}>
+        <RadioGroup
+            name="overlay-mode"
+            legend="Overlay mode"
+            variant="segmented"
+            hideLegend
+        >
             {OVERLAY_MODES.map((mode) => (
-                <button
+                <RadioGroupOption
                     key={mode}
-                    className={cx(
-                        ui.segmentedButton,
-                        overlayMode === mode && ui.segmentedButtonActive,
-                    )}
-                    onClick={() => onSetOverlayMode(mode)}
-                >
-                    {OVERLAY_MODE_LABELS[mode]}
-                </button>
+                    value={mode}
+                    label={OVERLAY_MODE_LABELS[mode]}
+                    checked={overlayMode === mode}
+                    onChange={() => onSetOverlayMode(mode)}
+                />
             ))}
-        </div>
+        </RadioGroup>
     );
 }
 

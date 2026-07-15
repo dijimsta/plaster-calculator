@@ -7,11 +7,11 @@ import {
     defaultOptionAlignment,
     describedRadio,
     disabledOption,
-    groupContentSpacing,
+    groupContentSpacingClassName,
     groupDescription,
     groupFieldset,
-    groupLegend,
     groupVariants,
+    legendClassName,
     optionDescription,
     optionLabel,
     optionLabelCursor,
@@ -24,6 +24,7 @@ import {
     panelListLabel,
     panelOption,
     panelOptionLayout,
+    segmentedDisplayClassName,
     type RadioGroupVariant,
     type RadioSize,
 } from "./radio-group.styles.ts";
@@ -44,6 +45,7 @@ type RadioGroupContextValue = {
     readonly name: string;
     readonly size: RadioSize;
     readonly variant: RadioGroupVariant;
+    readonly fullWidth: boolean;
 };
 
 const RadioGroupContext = createContext<RadioGroupContextValue | undefined>(
@@ -56,6 +58,10 @@ export type RadioGroupProps = {
     readonly description?: ReactNode;
     readonly variant?: RadioGroupVariant;
     readonly size?: RadioSize;
+    /** Stretches options to fill the available width. Only affects the segmented variant. */
+    readonly fullWidth?: boolean;
+    /** Keeps the legend in the accessibility tree but visually hides it. */
+    readonly hideLegend?: boolean;
 } & Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, "name">;
 
 /** A semantic fieldset for a mutually exclusive collection of radio options. */
@@ -65,23 +71,29 @@ export function RadioGroup({
     description,
     variant = "default",
     size = "md",
+    fullWidth = false,
+    hideLegend = false,
     className,
     children,
     ...props
 }: RadioGroupProps): ReactElement {
     return (
-        <RadioGroupContext.Provider value={{ name, size, variant }}>
+        <RadioGroupContext.Provider value={{ name, size, variant, fullWidth }}>
             <fieldset className={clsx(groupFieldset, className)} {...props}>
-                <legend className={groupLegend}>{legend}</legend>
+                <legend className={legendClassName(hideLegend)}>
+                    {legend}
+                </legend>
                 {description === undefined ? null : (
                     <p className={groupDescription}>{description}</p>
                 )}
                 <div
                     className={clsx(
-                        description === undefined
-                            ? groupContentSpacing.default
-                            : groupContentSpacing.described,
+                        groupContentSpacingClassName(
+                            hideLegend,
+                            description !== undefined,
+                        ),
                         groupVariants[variant],
+                        segmentedDisplayClassName(variant, fullWidth),
                     )}
                 >
                     {children}
@@ -126,7 +138,11 @@ export function RadioGroupOption({
         throw new Error("RadioGroupOption must be used within a RadioGroup.");
     }
 
-    if (context.variant === "cards" || context.variant === "small-cards") {
+    if (
+        context.variant === "cards" ||
+        context.variant === "small-cards" ||
+        context.variant === "segmented"
+    ) {
         return (
             <RadioGroupCardOption
                 id={generatedId}
@@ -134,7 +150,12 @@ export function RadioGroupOption({
                 value={value}
                 label={label}
                 description={description}
-                className={className}
+                className={clsx(
+                    context.variant === "segmented" &&
+                        context.fullWidth &&
+                        "flex-1",
+                    className,
+                )}
                 disabled={disabled}
                 variant={context.variant}
                 {...props}

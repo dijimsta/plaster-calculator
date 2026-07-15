@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
+import { Button, ButtonLink } from "@libraries/uikit-web";
 import { Mail, Pencil, Trash2, X } from "lucide-react";
 
 import { toContactDraft } from "./account.utils.js";
@@ -50,43 +50,33 @@ export function ContactRow({
                         setEditContactId={setEditContactId}
                     />
                 ) : (
-                    <button
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                    <Button
+                        variant="secondary"
+                        icon={<Pencil size={18} aria-hidden="true" />}
                         onClick={() => {
                             setEditContactId(contact.id);
                             setEditContactDraft(toContactDraft(contact));
                         }}
-                        title="Edit contact"
+                        aria-label="Edit contact"
                         type="button"
-                    >
-                        <Pencil size={18} />
-                    </button>
+                    />
                 )}
                 {contact.email && (
-                    <a
-                        className={cx(
-                            ui.button,
-                            ui.buttonDefault,
-                            ui.buttonIcon,
-                        )}
+                    <ButtonLink
+                        variant="secondary"
                         href={`mailto:${contact.email}`}
-                        title={`Email ${contact.name}`}
+                        aria-label={`Email ${contact.name}`}
                     >
-                        <Mail size={18} />
-                    </a>
+                        <Mail size={18} aria-hidden="true" />
+                    </ButtonLink>
                 )}
-                <button
-                    className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+                <Button
+                    variant="secondary"
+                    icon={<Trash2 size={18} aria-hidden="true" />}
                     onClick={() => void removeContact(contact)}
-                    title="Delete contact"
+                    aria-label="Delete contact"
                     type="button"
-                >
-                    <Trash2 size={18} />
-                </button>
+                />
             </div>
         </div>
     );
@@ -136,14 +126,13 @@ function EditContactActions({
             >
                 Save
             </Button>
-            <button
-                className={cx(ui.button, ui.buttonDefault, ui.buttonIcon)}
+            <Button
+                variant="secondary"
+                icon={<X size={18} aria-hidden="true" />}
                 onClick={() => setEditContactId(null)}
-                title="Cancel edit"
+                aria-label="Cancel edit"
                 type="button"
-            >
-                <X size={18} />
-            </button>
+            />
         </>
     );
 }

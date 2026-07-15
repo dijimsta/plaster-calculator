@@ -3,17 +3,20 @@ import clsx from "clsx";
 import {
     base,
     growStyle,
+    sizes,
     variants,
+    type ButtonSize,
     type ButtonVariant,
 } from "./button.styles.ts";
 
 import type { ButtonHTMLAttributes, ReactElement } from "react";
 
+export type { ButtonSize };
 export type ButtonIconPosition = "left" | "right";
-export type ButtonSize = "small" | "medium" | "large";
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     readonly variant?: ButtonVariant;
+    readonly size?: ButtonSize;
     readonly icon?: ReactElement;
     readonly iconPosition?: ButtonIconPosition;
     /** Allows the button to grow to fill available space in a flex row. */
@@ -22,6 +25,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export function Button({
     variant = "primary",
+    size = "medium",
     icon,
     iconPosition = "left",
     grow = false,
@@ -34,14 +38,15 @@ export function Button({
             className={clsx(
                 base,
                 variants[variant],
+                variant === "link" ? "p-0" : sizes[size],
                 grow && growStyle,
                 className,
             )}
             {...props}
         >
-            {icon !== undefined && iconPosition === "left" && icon}
+            {iconPosition === "left" && icon}
             {children}
-            {icon !== undefined && iconPosition === "right" && icon}
+            {iconPosition === "right" && icon}
         </button>
     );
 }
