@@ -7,11 +7,17 @@ import {
     cardInput,
     cardLabel,
     cardWrapper,
+    segmentedOption,
     smallCard,
     type RadioGroupVariant,
 } from "./radio-group.styles.ts";
 
 import type { InputHTMLAttributes, ReactElement, ReactNode } from "react";
+
+export type RadioGroupCardOptionVariant = Extract<
+    RadioGroupVariant,
+    "cards" | "small-cards" | "segmented"
+>;
 
 export type RadioGroupCardOptionProps = {
     readonly id: string;
@@ -20,11 +26,17 @@ export type RadioGroupCardOptionProps = {
     readonly label: ReactNode;
     readonly description?: ReactNode;
     readonly className?: string;
-    readonly variant: RadioGroupVariant;
+    readonly variant: RadioGroupCardOptionVariant;
 } & Omit<
     InputHTMLAttributes<HTMLInputElement>,
     "children" | "className" | "id" | "name" | "size" | "type" | "value"
 >;
+
+const optionStyles: Record<RadioGroupCardOptionVariant, string> = {
+    "cards": card,
+    "small-cards": smallCard,
+    "segmented": segmentedOption,
+};
 
 export function RadioGroupCardOption({
     id,
@@ -53,7 +65,7 @@ export function RadioGroupCardOption({
                 className={cardInput}
                 {...props}
             />
-            <span className={variant === "cards" ? card : smallCard}>
+            <span className={optionStyles[variant]}>
                 <span>
                     <span className={cardLabel}>{label}</span>
                     {description === undefined ? null : (

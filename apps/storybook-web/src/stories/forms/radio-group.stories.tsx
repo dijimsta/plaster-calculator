@@ -131,6 +131,21 @@ export const SmallCards: Story = {
     ),
 };
 
+export const Segmented: Story = {
+    render: (args) => (
+        <RadioGroup
+            {...args}
+            name="overlay-mode"
+            legend="Overlay mode"
+            variant="segmented"
+        >
+            <RadioGroupOption value="none" label="None" defaultChecked />
+            <RadioGroupOption value="grid" label="Grid" />
+            <RadioGroupOption value="outline" label="Outline" />
+        </RadioGroup>
+    ),
+};
+
 export const List: Story = {
     render: (args) => (
         <RadioGroup
