@@ -14,7 +14,7 @@ const meta: Meta<typeof Button> = {
         docs: {
             description: {
                 component:
-                    "Clickable action element. Supports four visual variants and an optional icon on either side.",
+                    "Clickable action element. Supports four visual variants and an optional icon on either side. Omitting children and passing only icon renders an icon-only button — always pass aria-label in that case.",
             },
         },
     },
@@ -22,6 +22,10 @@ const meta: Meta<typeof Button> = {
         variant: {
             control: "select",
             options: ["primary", "secondary", "soft", "ghost", "link"],
+        },
+        size: {
+            control: "select",
+            options: ["small", "medium", "large"],
         },
         iconPosition: {
             control: "select",
