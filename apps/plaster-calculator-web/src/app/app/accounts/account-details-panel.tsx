@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@libraries/uikit-web";
 import { Trash2 } from "lucide-react";
 import { type FormEvent } from "react";
 
@@ -34,20 +35,18 @@ export function AccountDetailsPanel({
             <div className={ui.editorToolbar}>
                 <h2>Account Details</h2>
                 <div className={ui.buttonRow}>
-                    <button
-                        className={cx(ui.button, ui.buttonPrimary)}
-                        disabled={!hasAccountChanges}
-                    >
+                    <Button variant="primary" disabled={!hasAccountChanges}>
                         Save account
-                    </button>
-                    <button
-                        className={cx(ui.button, ui.buttonDefault)}
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        icon={<Trash2 size={18} aria-hidden="true" />}
                         onClick={() => void removeAccount()}
                         title="Delete account"
                         type="button"
                     >
-                        <Trash2 size={18} /> Delete
-                    </button>
+                        Delete
+                    </Button>
                 </div>
             </div>
             <AccountDetailFields
