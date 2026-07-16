@@ -1,0 +1,14 @@
+mutation UpdateProjectQuestionnaireQuestionAiAnswer(
+    $id: UUID!
+    $answer: String!
+    $answerSource: String!
+) @auth(level: NO_ACCESS) {
+    projectQuestionnaireQuestion_update(
+        id: $id
+        data: {
+            answer: $answer
+            answerSource: $answerSource
+            updatedAt_expr: "request.time"
+        }
+    )
+}

@@ -53,6 +53,7 @@ query GetProjectQuestionnaire($projectId: UUID!) @auth(level: USER) {
             label
             position
             answer
+            answerSource
         }
     }
 }

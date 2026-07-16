@@ -238,7 +238,32 @@ mutation UpdateProjectQuestionnaireQuestionAnswer(
     }
     projectQuestionnaireQuestion_update(
         id: $id
-        data: { answer: $answer, updatedAt_expr: "request.time" }
+        data: {
+            answer: $answer
+            answerSource: "MANUAL"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateProjectQuestionnaireQuestionAnswerSource(
+    $id: UUID!
+    $projectId: UUID!
+    $answerSource: String!
+) @auth(level: USER) @transaction {
+    query @redact {
+        project(key: { id: $projectId })
+            @check(
+                expr: "this != null && this.ownerId == auth.uid"
+                message: "You do not own this project"
+            ) {
+            id
+            ownerId
+        }
+    }
+    projectQuestionnaireQuestion_update(
+        id: $id
+        data: { answerSource: $answerSource, updatedAt_expr: "request.time" }
     )
 }
 
