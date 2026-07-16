@@ -68,6 +68,17 @@ mutation TouchProject($id: UUID!, $status: String, $processingError: String)
     )
 }
 
+mutation UpdateProjectExtractedText($id: UUID!, $extractedTextJson: String)
+@auth(level: NO_ACCESS) {
+    project_update(
+        id: $id
+        data: {
+            extractedTextJson: $extractedTextJson
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
 mutation DeleteFloorplanPages($projectId: UUID!) @auth(level: NO_ACCESS) {
     floorplanPage_deleteMany(where: { projectId: { eq: $projectId } })
 }

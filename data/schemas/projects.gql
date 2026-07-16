@@ -18,6 +18,7 @@ type Project
     salesStatus: String! @default(value: "QUOTING")
     processingError: String
     pageCount: Int!
+    extractedTextJson: String
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
