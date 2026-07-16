@@ -283,7 +283,7 @@ export default function ProjectPage({
                 setRenameValue={setRenameValue}
                 validateAndExport={validateAndExport}
             />
-            <Box padding="md">
+            <Box padding="md" direction="column">
                 <ProjectToast toast={toast} setToast={setToast} />
                 {error && <p className={ui.error}>{error}</p>}
                 {project && (
