@@ -1,11 +1,16 @@
 import * as DataConnector from "@generated/data-connector-web";
 import * as DataConnectorReact from "@generated/data-connector-web/react";
+import {
+    AI_CONFIRMED_ANSWER_SOURCE,
+    AnswerSourceSchema,
+} from "@libraries/plaster-calculator-common";
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { useNotificationsManager } from "@libraries/uikit-web";
 import { useQueryClient } from "@tanstack/react-query";
 import { QueryFetchPolicy } from "firebase/data-connect";
 import { useCallback } from "react";
 
+import type { AnswerSource } from "@libraries/plaster-calculator-common";
 import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
 
 const dataConnect = FirebaseService.getDataConnect(
@@ -17,6 +22,7 @@ export interface ProjectQuestionnaireQuestion {
     readonly label: string;
     readonly position: number;
     readonly answer?: string | null;
+    readonly answerSource?: AnswerSource;
 }
 
 function nextPositionAfter(
@@ -44,7 +50,12 @@ export function useProjectQuestionnaireQuestions(projectId: string): {
     );
 
     return {
-        questions: data?.projectQuestionnaire?.questions ?? [],
+        questions: (data?.projectQuestionnaire?.questions ?? []).map(
+            (question) => ({
+                ...question,
+                answerSource: AnswerSourceSchema.parse(question.answerSource),
+            }),
+        ),
         isLoading,
     };
 }
@@ -203,6 +214,38 @@ export function useSaveProjectQuestionnaireQuestionAnswerCallback(
             }
         },
         [notify, projectId, refresh, updateAnswer],
+    );
+}
+
+export function useConfirmProjectQuestionnaireQuestionAnswerCallback(
+    projectId: string,
+): (question: ProjectQuestionnaireQuestion) => Promise<void> {
+    const { mutateAsync: updateAnswerSource } =
+        DataConnectorReact.useUpdateProjectQuestionnaireQuestionAnswerSource(
+            dataConnect,
+        );
+    const refresh = useRefreshProjectQuestionnaireCallback(projectId);
+    const { notify } = useNotificationsManager();
+
+    return useCallback(
+        async (question: ProjectQuestionnaireQuestion): Promise<void> => {
+            try {
+                await updateAnswerSource({
+                    id: question.id,
+                    projectId,
+                    answerSource: AI_CONFIRMED_ANSWER_SOURCE,
+                });
+                await refresh();
+            } catch {
+                notify({
+                    intent: "error",
+                    title: "Couldn't confirm answer",
+                    description:
+                        "Something went wrong while confirming. Please try again.",
+                });
+            }
+        },
+        [notify, projectId, refresh, updateAnswerSource],
     );
 }
 
