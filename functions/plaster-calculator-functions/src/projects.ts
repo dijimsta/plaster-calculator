@@ -41,10 +41,10 @@ import type {
     ProjectIdRequest,
     ProjectSummary,
     RenameProjectRequest,
-    SalesStatus,
     UpdateProjectRequest,
     UploadResponse,
 } from "./types.js";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 export const listProjects = onCall<
     ListProjectsRequest,
