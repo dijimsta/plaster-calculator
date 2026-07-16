@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { extractPdfText } from "../out/pdf-text-extraction.js";
+import { extractPdfText } from "../src/pdf-text-extraction.ts";
 
-function minimalPdf(pageTexts) {
-    const objects = [];
-    const pageObjNums = [];
+function minimalPdf(pageTexts: string[]): Buffer {
+    const objects: string[] = [];
+    const pageObjNums: number[] = [];
     const fontObjNum = 3 + pageTexts.length * 2;
 
     for (const [index, pageText] of pageTexts.entries()) {
@@ -26,7 +26,7 @@ function minimalPdf(pageTexts) {
         `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>`;
 
     let pdf = "%PDF-1.4\n";
-    const offsets = [0];
+    const offsets: number[] = [0];
     for (let n = 1; n <= fontObjNum; n += 1) {
         offsets.push(pdf.length);
         pdf += `${n} 0 obj\n${objects[n]}\nendobj\n`;
