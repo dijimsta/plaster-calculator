@@ -12,6 +12,7 @@ import { use, useCallback, useEffect, useState } from "react";
 import {
     useAddProjectQuestionnaireQuestionCallback,
     useApplyQuestionnaireTemplateCallback,
+    useConfirmProjectQuestionnaireQuestionAnswerCallback,
     useProjectQuestionnaireQuestions,
     useQuestionnaireTemplates,
     useRemoveProjectQuestionnaireQuestionCallback,
@@ -84,6 +85,8 @@ export default function ProjectQuestionnairesPage({
         useRemoveProjectQuestionnaireQuestionCallback(projectId);
     const saveAnswer =
         useSaveProjectQuestionnaireQuestionAnswerCallback(projectId);
+    const confirmAnswer =
+        useConfirmProjectQuestionnaireQuestionAnswerCallback(projectId);
 
     async function handleAddQuestion(label: string): Promise<void> {
         setAddingQuestion(true);
@@ -143,6 +146,9 @@ export default function ProjectQuestionnairesPage({
                             void saveAnswer(question, answer)
                         }
                         onRemove={(question) => void removeQuestion(question)}
+                        onConfirmAnswer={(question) =>
+                            void confirmAnswer(question)
+                        }
                     />
                 )}
             </Box>
