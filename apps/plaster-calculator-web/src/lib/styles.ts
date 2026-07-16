@@ -313,9 +313,12 @@ function createUi(theme: Theme) {
         ),
         projectMetaLine:
             "block overflow-hidden text-ellipsis whitespace-nowrap max-[720px]:whitespace-normal",
-        segmented: cx("inline-flex gap-[3px] rounded-lg p-[3px]", theme.softBg),
+        segmented: cx(
+            "inline-flex max-w-full gap-[3px] overflow-x-auto rounded-lg p-[3px]",
+            theme.softBg,
+        ),
         segmentedButton: cx(
-            "cursor-pointer rounded-md border-0 bg-transparent px-[11px] py-2",
+            "shrink-0 cursor-pointer rounded-md border-0 bg-transparent px-[11px] py-2 whitespace-nowrap",
             theme.muted,
         ),
         segmentedButtonActive: cx("shadow-sm", theme.controlBg, theme.text),
