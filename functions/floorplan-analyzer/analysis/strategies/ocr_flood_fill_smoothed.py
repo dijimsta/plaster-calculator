@@ -55,7 +55,7 @@ class OcrFloodFillSmoothedStrategy:
             wall_mask, (original_w, original_h), interpolation=cv2.INTER_NEAREST
         )
         wall_mask_closed = _close_wall_mask(wall_mask, params.wall_kernel_size)
-        seeds = self.ocr.find_seeds(image)
+        detected_texts, seeds = self.ocr.read_text_and_seeds(image)
         rooms_result = _rooms_from_seeds(
             wall_mask_closed,
             seeds,
@@ -80,6 +80,7 @@ class OcrFloodFillSmoothedStrategy:
             "min_point_distance_px": params.min_point_distance_px,
             "unknown_room_min_area": params.unknown_room_min_area,
             "ocr_seed_count": len(seeds),
+            "ocr_detected_text": self.ocr.summarize_detected_text(detected_texts),
             "room_count": len(rooms_result),
             "unknown_room_count": sum(
                 1

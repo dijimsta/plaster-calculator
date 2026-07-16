@@ -9,6 +9,8 @@ from PIL import Image
 from ocr.keywords import OCR_KEYWORDS, OCR_ROOM_TYPE_BY_KEYWORD
 from ocr.schemas import DetectedText, OcrSeed
 
+MIN_DETECTED_TEXT_CONFIDENCE = 0.4
+
 
 @lru_cache(maxsize=1)
 def _ocr_reader():
@@ -32,30 +34,47 @@ class OcrService:
             for bbox, text, confidence in results
         ]
 
-    def find_seeds(self, image: Image.Image) -> list[OcrSeed]:
-        seeds: list[OcrSeed] = []
-        for detected in self.read_text(image):
-            matched = self._match_keyword(detected["text"])
-            if matched is None:
-                continue
-            cx = int(np.mean([p[0] for p in detected["bbox"]]))
-            cy = int(np.mean([p[1] for p in detected["bbox"]]))
-            seeds.append(
-                OcrSeed(
-                    x=cx,
-                    y=cy,
-                    text=detected["text"],
-                    label=self._label_from_text(detected["text"]),
-                    matched_keyword=matched,
-                    confidence=detected["confidence"],
-                )
-            )
-        return seeds
+    def read_text_and_seeds(
+        self, image: Image.Image
+    ) -> tuple[list[DetectedText], list[OcrSeed]]:
+        detected_texts = self.read_text(image)
+        seeds = [
+            seed
+            for detected in detected_texts
+            if (seed := self._seed_from_detected(detected)) is not None
+        ]
+        return detected_texts, seeds
+
+    def summarize_detected_text(
+        self,
+        detected_texts: list[DetectedText],
+        min_confidence: float = MIN_DETECTED_TEXT_CONFIDENCE,
+    ) -> list[dict]:
+        return [
+            {"text": detected["text"], "confidence": detected["confidence"]}
+            for detected in detected_texts
+            if detected["confidence"] >= min_confidence
+        ]
 
     def room_type_from_keyword(self, keyword: str | None) -> str | None:
         if keyword is None:
             return None
         return OCR_ROOM_TYPE_BY_KEYWORD.get(keyword)
+
+    def _seed_from_detected(self, detected: DetectedText) -> OcrSeed | None:
+        matched = self._match_keyword(detected["text"])
+        if matched is None:
+            return None
+        cx = int(np.mean([p[0] for p in detected["bbox"]]))
+        cy = int(np.mean([p[1] for p in detected["bbox"]]))
+        return OcrSeed(
+            x=cx,
+            y=cy,
+            text=detected["text"],
+            label=self._label_from_text(detected["text"]),
+            matched_keyword=matched,
+            confidence=detected["confidence"],
+        )
 
     def _match_keyword(self, text: str) -> str | None:
         lower = text.lower()
