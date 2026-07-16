@@ -42,6 +42,12 @@ export function touchProject(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeMutation('TouchProject', inputVars, inputOpts);
 }
 
+export function updateProjectExtractedText(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateProjectExtractedText', inputVars, inputOpts);
+}
+
 export function deleteFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

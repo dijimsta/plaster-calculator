@@ -204,6 +204,7 @@ export interface GetProjectDetailsByIdData {
     salesStatus: string;
     processingError?: string | null;
     pageCount: number;
+    extractedTextJson?: string | null;
     createdAt: TimestampString;
     updatedAt: TimestampString;
     pages: ({
@@ -504,6 +505,15 @@ export interface UpdateProjectData {
   project_update?: Project_Key | null;
 }
 
+export interface UpdateProjectExtractedTextData {
+  project_update?: Project_Key | null;
+}
+
+export interface UpdateProjectExtractedTextVariables {
+  id: UUIDString;
+  extractedTextJson?: string | null;
+}
+
 export interface UpdateProjectQuestionnaireQuestionAiAnswerData {
   projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
 }
@@ -569,6 +579,11 @@ export function renameProject(vars: RenameProjectVariables, options?: OperationO
 export function touchProject(dc: DataConnect, vars: TouchProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<TouchProjectData>>;
 /** Generated Node Admin SDK operation action function for the 'TouchProject' Mutation. Allow users to pass in custom DataConnect instances. */
 export function touchProject(vars: TouchProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<TouchProjectData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpdateProjectExtractedText' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateProjectExtractedText(dc: DataConnect, vars: UpdateProjectExtractedTextVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateProjectExtractedTextData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateProjectExtractedText' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateProjectExtractedText(vars: UpdateProjectExtractedTextVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateProjectExtractedTextData>>;
 
 /** Generated Node Admin SDK operation action function for the 'DeleteFloorplanPages' Mutation. Allow users to execute without passing in DataConnect. */
 export function deleteFloorplanPages(dc: DataConnect, vars: DeleteFloorplanPagesVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteFloorplanPagesData>>;
