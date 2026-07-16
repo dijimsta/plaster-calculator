@@ -92,6 +92,7 @@ mutation CreateFloorplanPage(
     $referenceLengthMm: Float
     $processingStrategy: String
     $processingMetadataJson: String
+    $ocrTextContent: String
 ) @auth(level: NO_ACCESS) {
     floorplanPage_insert(
         data: {
@@ -110,6 +111,7 @@ mutation CreateFloorplanPage(
             referenceLengthMm: $referenceLengthMm
             processingStrategy: $processingStrategy
             processingMetadataJson: $processingMetadataJson
+            ocrTextContent: $ocrTextContent
             createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
         }
@@ -131,6 +133,7 @@ mutation UpdateFloorplanPageAnalysis(
     $referenceLengthMm: Float
     $processingStrategy: String
     $processingMetadataJson: String
+    $ocrTextContent: String
 ) @auth(level: NO_ACCESS) {
     floorplanPage_update(
         id: $id
@@ -148,6 +151,7 @@ mutation UpdateFloorplanPageAnalysis(
             referenceLengthMm: $referenceLengthMm
             processingStrategy: $processingStrategy
             processingMetadataJson: $processingMetadataJson
+            ocrTextContent: $ocrTextContent
             updatedAt_expr: "request.time"
         }
     )

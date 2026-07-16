@@ -38,6 +38,7 @@ export interface CreateFloorplanPageVariables {
   referenceLengthMm?: number | null;
   processingStrategy?: string | null;
   processingMetadataJson?: string | null;
+  ocrTextContent?: string | null;
 }
 
 export interface CreateProjectFromUploadData {
@@ -222,6 +223,7 @@ export interface GetProjectDetailsByIdData {
       referenceLengthMm?: number | null;
       processingStrategy?: string | null;
       processingMetadataJson?: string | null;
+      ocrTextContent?: string | null;
       createdAt: TimestampString;
       updatedAt: TimestampString;
     } & FloorplanPage_Key)[];
@@ -472,6 +474,7 @@ export interface UpdateFloorplanPageAnalysisVariables {
   referenceLengthMm?: number | null;
   processingStrategy?: string | null;
   processingMetadataJson?: string | null;
+  ocrTextContent?: string | null;
 }
 
 export interface UpdateFloorplanPageData {
