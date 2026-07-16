@@ -1,5 +1,8 @@
 import type * as DataConnector from "@generated/data-connector-admin";
-import type { SalesStatus } from "@libraries/plaster-calculator-common";
+import type {
+    ReminderStatus,
+    SalesStatus,
+} from "@libraries/plaster-calculator-common";
 
 export type ProjectListRow =
     | DataConnector.ListProjectsByOwnerAndSalesStatusData["projects"][number]
@@ -21,7 +24,6 @@ export type ProjectReminderRow =
 
 export type UploadType = "PDF" | "IMAGE";
 export type ProjectStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
-export type ReminderStatus = "OPEN" | "DONE" | "CANCELLED";
 
 export interface ProjectSummary {
     id: string;
