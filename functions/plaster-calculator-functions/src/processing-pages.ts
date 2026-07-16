@@ -17,6 +17,7 @@ import type { ProcessingStrategy, ProjectWithPages } from "./types.js";
 
 export interface AnalyzedPageData {
     readonly overlayJson: string;
+    readonly ocrTextContent: string | null;
     readonly previewImagePath: string;
     readonly processingMetadataJson: string;
     readonly processingStrategy: string;
@@ -133,6 +134,7 @@ async function analysePage(
         rawJsonPath: analyzed.rawJsonPath,
         rawFloorplanPath: analyzed.rawFloorplanPath,
         overlayJson: analyzed.overlayJson,
+        ocrTextContent: analyzed.ocrTextContent,
         scaleMmPerPx: null,
         ceilingHeightMm: null,
         referencePointsJson: null,
@@ -188,6 +190,7 @@ export async function analyzePageImage(options: {
 
     return {
         overlayJson: JSON.stringify(overlay),
+        ocrTextContent: buildOcrTextContent(result.ocr_detected_text),
         previewImagePath: floorplanPath,
         rawFloorplanPath: floorplanPath,
         rawJsonPath: jsonPath,
@@ -203,6 +206,16 @@ export async function analyzePageImage(options: {
             floorplanUrl,
         }),
     };
+}
+
+function buildOcrTextContent(
+    detectedText: { text: string; confidence: number }[] | undefined,
+): string | null {
+    if (!detectedText || detectedText.length === 0) {
+        return null;
+    }
+
+    return detectedText.map((entry) => entry.text).join("\n");
 }
 
 async function fetchOriginalImage(originalUrl: string): Promise<Buffer> {

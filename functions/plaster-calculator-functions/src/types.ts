@@ -218,6 +218,7 @@ export interface AnalyzerResult {
     icons?: AnalyzerPolygon[];
     strategy?: string;
     ocr_seed_count?: number;
+    ocr_detected_text?: { text: string; confidence: number }[];
     room_count?: number;
     wall_count?: number;
 }
