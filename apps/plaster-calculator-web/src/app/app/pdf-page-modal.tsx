@@ -6,6 +6,7 @@ import { cx, ui } from "../../lib/styles.js";
 import type { PdfPageModalProps } from "./dashboard.types.js";
 
 export function PdfPageModal({
+    errorMessage,
     loading,
     pageUploadProgress,
     pdfPages,
@@ -30,6 +31,7 @@ export function PdfPageModal({
                         <X size={18} />
                     </Button>
                 </header>
+                {errorMessage && <p className={ui.error}>{errorMessage}</p>}
                 {pageUploadProgress && (
                     <div className={ui.pdfProgress}>
                         <div className={ui.pdfProgressLabel}>

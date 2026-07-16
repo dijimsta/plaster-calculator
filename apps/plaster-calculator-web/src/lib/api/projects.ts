@@ -119,7 +119,9 @@ const processProjectCallable = httpsCallable<
 const initializeFloorplanPagesCallable = httpsCallable<
     { projectId: string; pageImagePaths: Record<number, string> },
     ProjectDetail
->(functions, "initializeFloorplanPages");
+>(functions, "initializeFloorplanPages", {
+    timeout: LONG_RUNNING_CALLABLE_TIMEOUT_MS,
+});
 const analyzeFloorplanPageCallable = httpsCallable<
     AnalyzeFloorplanPageRequest,
     ProjectDetail

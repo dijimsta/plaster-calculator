@@ -52,6 +52,7 @@ export function useDashboardUpload({
     const [selectedPages, setSelectedPages] = useState<number[]>([]);
     const [pageUploadProgress, setPageUploadProgress] =
         useState<PageUploadProgress | null>(null);
+    const [pdfPageError, setPdfPageError] = useState<string | null>(null);
 
     async function submit(event: FormEvent) {
         event.preventDefault();
@@ -124,6 +125,7 @@ export function useDashboardUpload({
             return;
         }
         setLoading(true);
+        setPdfPageError(null);
         const pageImagePaths: Record<number, string> = {};
         const total = selectedPages.length;
         try {
@@ -155,11 +157,11 @@ export function useDashboardUpload({
             }
             setMessage("Creating editable PDF pages...");
             const projectId = draftProjectId;
-            cleanupPdfModal();
             await initializeFloorplanPages(projectId, pageImagePaths);
+            cleanupPdfModal();
             router.push(`/app/projects/${projectId}`);
         } catch (error) {
-            setMessage(
+            setPdfPageError(
                 error instanceof Error ? error.message : "Processing failed",
             );
         } finally {
@@ -193,6 +195,7 @@ export function useDashboardUpload({
         setPdfPages([]);
         setSelectedPages([]);
         setPageUploadProgress(null);
+        setPdfPageError(null);
     }
 
     function togglePage(pageNumber: number) {
@@ -211,6 +214,7 @@ export function useDashboardUpload({
         loading,
         name,
         pageUploadProgress,
+        pdfPageError,
         pdfPages,
         selectedPages,
         closePdfModal,
