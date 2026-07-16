@@ -46,6 +46,7 @@ export interface ProjectHistoryProps {
 }
 
 export interface PdfPageModalProps {
+    readonly errorMessage: string | null;
     readonly loading: boolean;
     readonly pageUploadProgress: PageUploadProgress | null;
     readonly pdfPages: PdfPagePreview[];

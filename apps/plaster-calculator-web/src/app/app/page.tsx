@@ -83,6 +83,7 @@ export default function HomePage() {
                 </section>
                 {upload.draftProjectId && (
                     <PdfPageModal
+                        errorMessage={upload.pdfPageError}
                         loading={upload.loading}
                         pageUploadProgress={upload.pageUploadProgress}
                         pdfPages={upload.pdfPages}
