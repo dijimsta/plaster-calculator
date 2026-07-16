@@ -8,14 +8,17 @@
         "build": "tsc --build tsconfig.build.json",
         "bundle": "dev-cli bundle",
         "deploy": "firebase deploy --only functions",
+        "genkit:ui": "genkit start -- npx tsx --watch src/ai/index.ts",
         "logs": "firebase functions:log",
         "test": "node --test"
     },
     "dependencies": {
         "@generated/data-connector-admin": "workspace:*",
+        "@genkit-ai/google-genai": "^1.39.0",
         "@libraries/plaster-calculator-common": "workspace:*",
         "firebase-admin": "^13.10.0",
         "firebase-functions": "^7.2.5",
+        "genkit": "^1.39.0",
         "google-auth-library": "^10.9.0",
         "jszip": "^3.10.1",
         "pdfjs-dist": "^6.1.200"

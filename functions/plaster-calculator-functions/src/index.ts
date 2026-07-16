@@ -8,6 +8,7 @@ export {
 } from "./floorplan-pages.js";
 export { listProcessingStrategies, processProject } from "./processing.js";
 export { analyzeFloorplanPage } from "./page-analysis.js";
+export { answerQuestionnaireWithAI } from "./questionnaire-ai.js";
 export {
     createProjectFromUpload,
     deleteProject,
