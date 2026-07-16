@@ -1,6 +1,8 @@
-import { effectiveFlatHeight } from "../lib/editor/overlay-geometry.js";
+import {
+    OverlayGeometryHelper,
+    type AreaPolygon,
+} from "@libraries/plaster-calculator-common";
 
-import type { AreaPolygon } from "../types.js";
 import type { UpdateArea } from "./use-editor-actions.types.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 
@@ -25,7 +27,10 @@ export function useEditorCeilingActions({
                     ceilingMode: "flat",
                     rakedCeiling: undefined,
                 };
-            const defaultHeight = effectiveFlatHeight(area, ceilingHeightMm);
+            const defaultHeight = OverlayGeometryHelper.effectiveFlatHeight(
+                area,
+                ceilingHeightMm,
+            );
             return {
                 ...area,
                 ceilingMode: "raked",
@@ -54,7 +59,10 @@ export function useEditorCeilingActions({
         )
             return;
         updateSelectedArea((area) => {
-            const defaultHeight = effectiveFlatHeight(area, ceilingHeightMm);
+            const defaultHeight = OverlayGeometryHelper.effectiveFlatHeight(
+                area,
+                ceilingHeightMm,
+            );
             const current = area.rakedCeiling ?? {
                 lowEdgeIndex: -1,
                 highEdgeIndex: -1,
@@ -77,7 +85,10 @@ export function useEditorCeilingActions({
         value: string,
     ) {
         updateSelectedArea((area) => {
-            const defaultHeight = effectiveFlatHeight(area, ceilingHeightMm);
+            const defaultHeight = OverlayGeometryHelper.effectiveFlatHeight(
+                area,
+                ceilingHeightMm,
+            );
             const current = area.rakedCeiling ?? {
                 lowEdgeIndex: -1,
                 highEdgeIndex: -1,

@@ -1,15 +1,18 @@
+import {
+    BoardMaterialsHelper,
+    OverlayGeometryHelper,
+} from "@libraries/plaster-calculator-common";
 import { Line } from "react-konva";
 
-import {
-    colorFor,
-    normalizeWallBoardType,
-} from "../../lib/editor/board-materials.js";
-import { pointAt } from "../../lib/editor/overlay-geometry.js";
+import { colorFor } from "../../lib/editor/board-materials.js";
 import { activeTheme } from "../../lib/styles.js";
 
 import type { OverlayMode } from "./project-editor.types.js";
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
-import type { AreaPolygon, EdgeOverride } from "../../types.js";
+import type {
+    AreaPolygon,
+    EdgeOverride,
+} from "@libraries/plaster-calculator-common";
 
 const SELECTED_COLOR = activeTheme.editor.selected;
 const LOW_EDGE_COLOR = activeTheme.editor.lowEdge;
@@ -44,7 +47,10 @@ export function CanvasWallEdges({
             {visibleAreas.map((area) =>
                 area.points.map((point, index) => {
                     const nextIndex = (index + 1) % area.points.length;
-                    const next = pointAt(area.points, nextIndex);
+                    const next = OverlayGeometryHelper.pointAt(
+                        area.points,
+                        nextIndex,
+                    );
                     const override = area.edgeOverrides?.[String(index)];
                     const selectedStroke = isSelectedStroke({
                         area,
@@ -58,7 +64,7 @@ export function CanvasWallEdges({
                     const edgeColor = getEdgeColor(
                         rakedEdgeRole,
                         noPlaster,
-                        normalizeWallBoardType(
+                        BoardMaterialsHelper.normalizeWallBoardType(
                             override?.wallBoardType ?? area.wallBoardType,
                             override?.wallPlasterType ?? area.wallPlasterType,
                         ),

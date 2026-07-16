@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import type { Overlay } from "../types.js";
+import type { Overlay } from "@libraries/plaster-calculator-common";
 
 interface EditorAutosaveOptions {
     readonly autoSaving: boolean;

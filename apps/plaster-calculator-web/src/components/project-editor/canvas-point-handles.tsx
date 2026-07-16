@@ -1,7 +1,7 @@
+import { OverlayGeometryHelper } from "@libraries/plaster-calculator-common";
 import { useRef } from "react";
 import { Circle } from "react-konva";
 
-import { pointAt } from "../../lib/editor/overlay-geometry.js";
 import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
 import { snapToReferences } from "../../lib/editor/snap-guides.js";
 import { activeTheme } from "../../lib/styles.js";
@@ -9,7 +9,11 @@ import { activeTheme } from "../../lib/styles.js";
 import type { CanvasPointHandlesProps } from "./canvas-point-handles.types.js";
 import type { DragState, SnapGuide } from "./project-editor.types.js";
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
-import type { AreaPolygon, Overlay, Point } from "../../types.js";
+import type {
+    AreaPolygon,
+    Overlay,
+    Point,
+} from "@libraries/plaster-calculator-common";
 import type { KonvaEventObject } from "konva/lib/Node.js";
 
 const SELECTED_COLOR = activeTheme.editor.selected;
@@ -210,7 +214,8 @@ function movedPointFromDrag(
     const snapshotArea =
         drag.before.areas.find((item) => item.id === area.id) ?? area;
     const originalPoint =
-        snapshotArea.points[pointIndex] ?? pointAt(area.points, pointIndex);
+        snapshotArea.points[pointIndex] ??
+        OverlayGeometryHelper.pointAt(area.points, pointIndex);
     const pointerPoint: Point = [
         originalPoint[0] + offset.dx,
         originalPoint[1] + offset.dy,
@@ -224,11 +229,14 @@ function snapDraggedPoint(
     pointer: Point,
     zoom: number,
 ): { point: Point; guide: SnapGuide } {
-    const previous = pointAt(
+    const previous = OverlayGeometryHelper.pointAt(
         area.points,
         (pointIndex - 1 + area.points.length) % area.points.length,
     );
-    const next = pointAt(area.points, (pointIndex + 1) % area.points.length);
+    const next = OverlayGeometryHelper.pointAt(
+        area.points,
+        (pointIndex + 1) % area.points.length,
+    );
     return snapToReferences(pointer, [previous, next], zoom);
 }
 

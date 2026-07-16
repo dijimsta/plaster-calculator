@@ -1,11 +1,12 @@
 import {
-    normalizeCeilingBoardType,
-    normalizeWallBoardProfile,
-    normalizeWallBoardType,
-} from "./editor/board-materials.js";
+    BoardMaterialsHelper,
+    type AreaPolygon,
+} from "@libraries/plaster-calculator-common";
+
+import { normalizeCeilingBoardType } from "./editor/board-materials.js";
 import { parseOverlay } from "./editor/overlay-serialization.js";
 
-import type { AreaPolygon, FloorplanPage } from "../types.js";
+import type { FloorplanPage } from "../types.js";
 
 export {
     parseOverlay,
@@ -111,7 +112,9 @@ function validateAreaBasics(
     }
     if (
         !area.isOutdoor &&
-        !normalizeWallBoardProfile(area.wallBoardProfile).trim()
+        !BoardMaterialsHelper.normalizeWallBoardProfile(
+            area.wallBoardProfile,
+        ).trim()
     ) {
         addAreaIssue(
             issues,
@@ -123,7 +126,10 @@ function validateAreaBasics(
     }
     if (
         !area.isOutdoor &&
-        !normalizeWallBoardType(area.wallBoardType, area.wallPlasterType).trim()
+        !BoardMaterialsHelper.normalizeWallBoardType(
+            area.wallBoardType,
+            area.wallPlasterType,
+        ).trim()
     ) {
         addAreaIssue(
             issues,

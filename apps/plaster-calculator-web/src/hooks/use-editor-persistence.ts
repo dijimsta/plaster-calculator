@@ -7,7 +7,7 @@ import {
     savePageOverlay,
 } from "../lib/api.js";
 
-import type { Overlay, Point } from "../types.js";
+import type { Overlay, Point } from "@libraries/plaster-calculator-common";
 
 interface EditorPersistenceOptions {
     readonly ceilingHeightMm: number | null;

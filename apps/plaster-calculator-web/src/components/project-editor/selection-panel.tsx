@@ -1,17 +1,21 @@
-import { BoardControls, MaterialSelect } from "./selection-board-controls.js";
-import { SelectedEdgeControls } from "./selection-edge-controls.js";
 import {
-    CEILING_BOARD_TYPES,
     WALL_BOARD_PROFILES,
     WALL_BOARD_TYPES,
-} from "../../lib/editor/board-materials.js";
+} from "@libraries/plaster-calculator-common";
+
+import { BoardControls, MaterialSelect } from "./selection-board-controls.js";
+import { SelectedEdgeControls } from "./selection-edge-controls.js";
+import { CEILING_BOARD_TYPES } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type { SelectionMetrics } from "./editor-sidebar.types.js";
 import type { MaterialField } from "../../hooks/use-editor-material-actions.js";
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type { ValidationIssue } from "../../lib/validation.js";
-import type { AreaPolygon, EdgeOverride } from "../../types.js";
+import type {
+    AreaPolygon,
+    EdgeOverride,
+} from "@libraries/plaster-calculator-common";
 import type { ReactNode } from "react";
 
 interface SelectionPanelProps {

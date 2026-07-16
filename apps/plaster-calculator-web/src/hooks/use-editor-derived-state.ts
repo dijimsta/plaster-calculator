@@ -1,17 +1,18 @@
+import {
+    OverlayGeometryHelper,
+    type AreaPolygon,
+    type EdgeOverride,
+    type Overlay,
+} from "@libraries/plaster-calculator-common";
 import { useMemo } from "react";
 
 import { normalizeCeilingBoardType } from "../lib/editor/board-materials.js";
-import {
-    ceilingAreaM2ForArea,
-    wallLengthByType,
-} from "../lib/editor/overlay-geometry.js";
 
 import type { SelectedEdge } from "./use-editor-selection.js";
 import type {
     EditorSummary,
     SelectionMetrics,
 } from "../components/project-editor/editor-sidebar.types.js";
-import type { AreaPolygon, EdgeOverride, Overlay } from "../types.js";
 
 interface EditorDerivedStateOptions {
     readonly image: HTMLImageElement | null;
@@ -68,13 +69,16 @@ export function useEditorDerivedState({
     const metrics = useMemo(() => {
         if (!selectedArea || !scaleMmPerPx) return null;
         const wallLengthM =
-            (wallLengthByType(selectedArea).reduce(
+            (OverlayGeometryHelper.wallLengthByType(selectedArea).reduce(
                 (total, item) => total + item.lengthPx,
                 0,
             ) *
                 scaleMmPerPx) /
             1000;
-        const ceilingAreaM2 = ceilingAreaM2ForArea(selectedArea, scaleMmPerPx);
+        const ceilingAreaM2 = OverlayGeometryHelper.ceilingAreaM2ForArea(
+            selectedArea,
+            scaleMmPerPx,
+        );
         return { wallLengthM, ceilingAreaM2 };
     }, [selectedArea, scaleMmPerPx]);
 
@@ -83,14 +87,17 @@ export function useEditorDerivedState({
         const wallTotals = new Map<string, number>();
         const ceilingTotals = new Map<string, number>();
         visibleAreas.forEach((area) => {
-            wallLengthByType(area).forEach((item) => {
+            OverlayGeometryHelper.wallLengthByType(area).forEach((item) => {
                 wallTotals.set(
                     item.type,
                     (wallTotals.get(item.type) ?? 0) +
                         (item.lengthPx * scaleMmPerPx) / 1000,
                 );
             });
-            const ceilingAreaM2 = ceilingAreaM2ForArea(area, scaleMmPerPx);
+            const ceilingAreaM2 = OverlayGeometryHelper.ceilingAreaM2ForArea(
+                area,
+                scaleMmPerPx,
+            );
             const ceilingType = normalizeCeilingBoardType(
                 area.ceilingPlasterType,
             );

@@ -1,16 +1,18 @@
 import {
-    CEILING_BOARD_TYPES,
-    normalizeCeilingBoardType,
-    normalizeWallBoardProfile,
-    normalizeWallBoardType,
+    BoardMaterialsHelper,
     WALL_BOARD_PROFILES,
     WALL_BOARD_TYPES,
+} from "@libraries/plaster-calculator-common";
+
+import {
+    CEILING_BOARD_TYPES,
+    normalizeCeilingBoardType,
 } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type { MaterialField } from "../../hooks/use-editor-material-actions.js";
 import type { ValidationIssue } from "../../lib/validation.js";
-import type { AreaPolygon } from "../../types.js";
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import type { ReactNode } from "react";
 
 interface BoardControlsProps {
@@ -37,7 +39,7 @@ export function BoardControls({
                         error={areaIssue(selectedArea.id, "wallBoardProfile")}
                         label="Wall profile"
                         options={WALL_BOARD_PROFILES}
-                        value={normalizeWallBoardProfile(
+                        value={BoardMaterialsHelper.normalizeWallBoardProfile(
                             selectedArea.wallBoardProfile,
                         )}
                         onChange={(value) =>
@@ -49,7 +51,7 @@ export function BoardControls({
                         error={areaIssue(selectedArea.id, "wallBoardType")}
                         label="Wall board"
                         options={WALL_BOARD_TYPES}
-                        value={normalizeWallBoardType(
+                        value={BoardMaterialsHelper.normalizeWallBoardType(
                             selectedArea.wallBoardType,
                             selectedArea.wallPlasterType,
                         )}

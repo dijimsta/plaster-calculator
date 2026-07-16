@@ -1,12 +1,12 @@
 import type { MaterialField } from "../../hooks/use-editor-material-actions.js";
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type { ValidationIssue } from "../../lib/validation.js";
+import type { FloorplanPage } from "../../types.js";
 import type {
     AreaPolygon,
     EdgeOverride,
-    FloorplanPage,
     Point,
-} from "../../types.js";
+} from "@libraries/plaster-calculator-common";
 import type { ReactNode } from "react";
 
 export interface EditorSummary {

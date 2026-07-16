@@ -3,7 +3,7 @@ import { Circle, Line } from "react-konva";
 import { activeTheme } from "../../lib/styles.js";
 
 import type { SnapGuide } from "./project-editor.types.js";
-import type { Point } from "../../types.js";
+import type { Point } from "@libraries/plaster-calculator-common";
 
 const SELECTED_COLOR = activeTheme.editor.selected;
 

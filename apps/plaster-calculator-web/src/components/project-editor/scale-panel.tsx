@@ -4,7 +4,7 @@ import { MousePointer2 } from "lucide-react";
 import { cx, ui } from "../../lib/styles.js";
 
 import type { ValidationIssue } from "../../lib/validation.js";
-import type { Point } from "../../types.js";
+import type { Point } from "@libraries/plaster-calculator-common";
 import type { ReactNode } from "react";
 
 interface ScalePanelProps {
