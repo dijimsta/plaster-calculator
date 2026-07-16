@@ -1,4 +1,4 @@
-export type SalesStatus = "QUOTING" | "QUOTE_SUBMITTED" | "WON" | "LOST";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 export type ProjectSummary = {
     id: string;

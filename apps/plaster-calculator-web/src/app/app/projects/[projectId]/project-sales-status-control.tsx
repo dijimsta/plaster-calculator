@@ -4,7 +4,7 @@ import { SelectMenu } from "@libraries/uikit-web";
 
 import { salesStatusLabels } from "../../../../lib/sales-status.js";
 
-import type { SalesStatus } from "../../../../types.js";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import type { SelectMenuOption } from "@libraries/uikit-web";
 
 const STATUS_OPTIONS: SelectMenuOption[] = [
