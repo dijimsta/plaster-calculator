@@ -78,6 +78,7 @@ query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
             referenceLengthMm
             processingStrategy
             processingMetadataJson
+            ocrTextContent
             createdAt
             updatedAt
         }

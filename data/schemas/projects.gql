@@ -42,6 +42,7 @@ type FloorplanPage
     referenceLengthMm: Float
     processingStrategy: String
     processingMetadataJson: String
+    ocrTextContent: String
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
