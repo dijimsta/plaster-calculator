@@ -11,6 +11,7 @@ import {
     isOwnedPageSourcePath,
     requireStorageImage,
 } from "./storage.js";
+import { LONG_RUNNING_TIMEOUT_SECONDS } from "./types.js";
 import {
     hasField,
     isRecord,
@@ -78,77 +79,86 @@ export const updateFloorplanPage = onCall<
 export const initializeFloorplanPages = onCall<
     InitializeFloorplanPagesRequest,
     Promise<ProjectDetail>
->(async (request) => {
-    const auth = requireAuth(request);
-    const projectId = readRequiredString(request.data.projectId, "Project ID");
-    const project = await requireOwnedProject(projectId, auth.uid);
-    if (project.uploadType !== "PDF") {
-        throw new HttpsError(
-            "failed-precondition",
-            "Only PDF projects require page initialization.",
+>(
+    { timeoutSeconds: LONG_RUNNING_TIMEOUT_SECONDS, memory: "512MiB" },
+    async (request) => {
+        const auth = requireAuth(request);
+        const projectId = readRequiredString(
+            request.data.projectId,
+            "Project ID",
         );
-    }
-    if (project.pages.length > 0) {
-        throw new HttpsError(
-            "already-exists",
-            "Floorplan pages have already been initialized.",
-        );
-    }
-    if (!isRecord(request.data.pageImagePaths)) {
-        throw new HttpsError(
-            "invalid-argument",
-            "PDF page images are required.",
-        );
-    }
-
-    const entries = readPageImageEntries(request.data.pageImagePaths);
-    if (entries.length === 0) {
-        throw new HttpsError(
-            "invalid-argument",
-            "Select at least one PDF page.",
-        );
-    }
-
-    for (const entry of entries) {
-        if (
-            !isValidPageImageEntry(
-                entry,
-                project.pageCount,
-                auth.uid,
-                projectId,
-            )
-        ) {
-            throw new HttpsError("invalid-argument", "Invalid PDF page image.");
+        const project = await requireOwnedProject(projectId, auth.uid);
+        if (project.uploadType !== "PDF") {
+            throw new HttpsError(
+                "failed-precondition",
+                "Only PDF projects require page initialization.",
+            );
         }
-        await requireStorageImage(entry.path);
-        const sourceImageUrl = await ensureFileDownloadUrl(entry.path);
-        await DataConnector.createFloorplanPage({
-            projectId,
-            pageNumber: entry.pageNumber,
+        if (project.pages.length > 0) {
+            throw new HttpsError(
+                "already-exists",
+                "Floorplan pages have already been initialized.",
+            );
+        }
+        if (!isRecord(request.data.pageImagePaths)) {
+            throw new HttpsError(
+                "invalid-argument",
+                "PDF page images are required.",
+            );
+        }
+
+        const entries = readPageImageEntries(request.data.pageImagePaths);
+        if (entries.length === 0) {
+            throw new HttpsError(
+                "invalid-argument",
+                "Select at least one PDF page.",
+            );
+        }
+
+        for (const entry of entries) {
+            if (
+                !isValidPageImageEntry(
+                    entry,
+                    project.pageCount,
+                    auth.uid,
+                    projectId,
+                )
+            ) {
+                throw new HttpsError(
+                    "invalid-argument",
+                    "Invalid PDF page image.",
+                );
+            }
+            await requireStorageImage(entry.path);
+            const sourceImageUrl = await ensureFileDownloadUrl(entry.path);
+            await DataConnector.createFloorplanPage({
+                projectId,
+                pageNumber: entry.pageNumber,
+                status: "READY",
+                processingError: null,
+                sourceImagePath: sourceImageUrl,
+                previewImagePath: sourceImageUrl,
+                overlayJson: JSON.stringify({
+                    sourceFile: `${project.originalFileName} page ${entry.pageNumber}`,
+                    areas: [],
+                }),
+                scaleMmPerPx: null,
+                ceilingHeightMm: null,
+                referencePointsJson: null,
+                referenceLengthMm: null,
+                processingStrategy: null,
+                processingMetadataJson: null,
+            });
+        }
+
+        await DataConnector.touchProject({
+            id: projectId,
             status: "READY",
             processingError: null,
-            sourceImagePath: sourceImageUrl,
-            previewImagePath: sourceImageUrl,
-            overlayJson: JSON.stringify({
-                sourceFile: `${project.originalFileName} page ${entry.pageNumber}`,
-                areas: [],
-            }),
-            scaleMmPerPx: null,
-            ceilingHeightMm: null,
-            referencePointsJson: null,
-            referenceLengthMm: null,
-            processingStrategy: null,
-            processingMetadataJson: null,
         });
-    }
-
-    await DataConnector.touchProject({
-        id: projectId,
-        status: "READY",
-        processingError: null,
-    });
-    return toDetail(await requireOwnedProject(projectId, auth.uid));
-});
+        return toDetail(await requireOwnedProject(projectId, auth.uid));
+    },
+);
 
 interface PageImageEntry {
     readonly pageNumber: number;
