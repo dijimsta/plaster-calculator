@@ -6,8 +6,8 @@ import type {
     FloorplanPage,
     ProjectDetail,
     ProjectSummary,
-    SalesStatus,
 } from "../../types.js";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 const auth = FirebaseService.getAuth();
 const functions = FirebaseService.getFunctions();

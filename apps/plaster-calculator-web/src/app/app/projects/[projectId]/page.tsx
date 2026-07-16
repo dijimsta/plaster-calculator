@@ -31,7 +31,8 @@ import {
     type ValidationIssue,
 } from "../../../../lib/validation.js";
 
-import type { ProjectDetail, SalesStatus } from "../../../../types.js";
+import type { ProjectDetail } from "../../../../types.js";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 export default function ProjectPage({
     params,

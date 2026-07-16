@@ -1,5 +1,6 @@
 import type { PdfPagePreview } from "../../lib/pdf.js";
-import type { ProjectSummary, SalesStatus } from "../../types.js";
+import type { ProjectSummary } from "../../types.js";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 
 export interface PageUploadProgress {

@@ -1,6 +1,10 @@
+import {
+    SalesStatusSchema,
+    type SalesStatus,
+} from "@libraries/plaster-calculator-common";
 import { HttpsError } from "firebase-functions/https";
 
-import type { ReminderStatus, SalesStatus } from "./types.js";
+import type { ReminderStatus } from "./types.js";
 
 export function readRequiredString(value: unknown, field: string) {
     if (typeof value !== "string" || value.trim().length === 0) {
@@ -83,35 +87,20 @@ export function hasField(data: object, field: string) {
     return Object.prototype.hasOwnProperty.call(data, field);
 }
 export function readSalesStatus(value: unknown): SalesStatus {
-    if (typeof value !== "string") {
-        throw new HttpsError(
-            "invalid-argument",
-            "Sales status must be a string.",
-        );
-    }
-
-    const status = toSalesStatus(value);
-    if (status !== value) {
+    const result = SalesStatusSchema.safeParse(value);
+    if (!result.success) {
         throw new HttpsError(
             "invalid-argument",
             "Sales status must be QUOTING, QUOTE_SUBMITTED, WON, or LOST.",
         );
     }
 
-    return status;
+    return result.data;
 }
 
 export function toSalesStatus(value: string): SalesStatus {
-    if (
-        value === "QUOTING" ||
-        value === "QUOTE_SUBMITTED" ||
-        value === "WON" ||
-        value === "LOST"
-    ) {
-        return value;
-    }
-
-    return "QUOTING";
+    const result = SalesStatusSchema.safeParse(value);
+    return result.success ? result.data : "QUOTING";
 }
 
 export function readReminderStatus(value: unknown): ReminderStatus {

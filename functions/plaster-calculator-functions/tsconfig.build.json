@@ -5,5 +5,10 @@
         "rootDir": "./src",
         "noEmit": false
     },
-    "include": ["src"]
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../../libraries/plaster-calculator-common/tsconfig.build.json"
+        }
+    ]
 }

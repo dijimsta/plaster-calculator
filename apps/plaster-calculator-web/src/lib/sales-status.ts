@@ -1,4 +1,4 @@
-import type { SalesStatus } from "../types.js";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 export const salesStatusLabels: Record<SalesStatus, string> = {
     QUOTING: "Quoting",
