@@ -295,6 +295,9 @@ importers:
 
   libraries/plaster-calculator-common:
     devDependencies:
+      '@types/node':
+        specifier: ^26.0.1
+        version: 26.0.1
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
