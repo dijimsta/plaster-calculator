@@ -1,10 +1,10 @@
 import {
+    ReminderStatusSchema,
     SalesStatusSchema,
+    type ReminderStatus,
     type SalesStatus,
 } from "@libraries/plaster-calculator-common";
 import { HttpsError } from "firebase-functions/https";
-
-import type { ReminderStatus } from "./types.js";
 
 export function readRequiredString(value: unknown, field: string) {
     if (typeof value !== "string" || value.trim().length === 0) {
@@ -104,30 +104,20 @@ export function toSalesStatus(value: string): SalesStatus {
 }
 
 export function readReminderStatus(value: unknown): ReminderStatus {
-    if (typeof value !== "string") {
-        throw new HttpsError(
-            "invalid-argument",
-            "Reminder status must be a string.",
-        );
-    }
-
-    const status = toReminderStatus(value);
-    if (status !== value) {
+    const result = ReminderStatusSchema.safeParse(value);
+    if (!result.success) {
         throw new HttpsError(
             "invalid-argument",
             "Reminder status must be OPEN, DONE, or CANCELLED.",
         );
     }
 
-    return status;
+    return result.data;
 }
 
 export function toReminderStatus(value: string): ReminderStatus {
-    if (value === "OPEN" || value === "DONE" || value === "CANCELLED") {
-        return value;
-    }
-
-    return "OPEN";
+    const result = ReminderStatusSchema.safeParse(value);
+    return result.success ? result.data : "OPEN";
 }
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
