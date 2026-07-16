@@ -267,6 +267,9 @@ importers:
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
+      pdfjs-dist:
+        specifier: ^6.1.200
+        version: 6.1.200
     devDependencies:
       '@apps/dev-cli':
         specifier: workspace:*
