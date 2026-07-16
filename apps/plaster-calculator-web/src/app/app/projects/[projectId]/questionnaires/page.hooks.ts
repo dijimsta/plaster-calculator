@@ -10,6 +10,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QueryFetchPolicy } from "firebase/data-connect";
 import { useCallback } from "react";
 
+import { answerQuestionnaireWithAI } from "../../../../../lib/api.js";
+
 import type { AnswerSource } from "@libraries/plaster-calculator-common";
 import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
 
@@ -247,6 +249,38 @@ export function useConfirmProjectQuestionnaireQuestionAnswerCallback(
         },
         [notify, projectId, refresh, updateAnswerSource],
     );
+}
+
+export function useAnswerQuestionnaireWithAiCallback(
+    projectId: string,
+): () => Promise<void> {
+    const refresh = useRefreshProjectQuestionnaireCallback(projectId);
+    const { notify } = useNotificationsManager();
+
+    return useCallback(async (): Promise<void> => {
+        try {
+            const { updatedCount } = await answerQuestionnaireWithAI(projectId);
+            await refresh();
+            notify({
+                intent: updatedCount > 0 ? "success" : "info",
+                title:
+                    updatedCount > 0
+                        ? "Auto-fill complete"
+                        : "No confident answers found",
+                description:
+                    updatedCount > 0
+                        ? `${updatedCount} answer${updatedCount === 1 ? "" : "s"} suggested from the floor plan.`
+                        : "The AI couldn't confidently answer any questions from the available floor plan data.",
+            });
+        } catch {
+            notify({
+                intent: "error",
+                title: "Couldn't auto-fill answers",
+                description:
+                    "Something went wrong while auto-filling. Please try again.",
+            });
+        }
+    }, [notify, projectId, refresh]);
 }
 
 export function useRemoveProjectQuestionnaireQuestionCallback(
