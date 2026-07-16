@@ -1,4 +1,5 @@
 import { EditorCanvas } from "./editor-canvas.js";
+import { EditorLegend } from "./editor-legend.js";
 import { EditorSidebar } from "./editor-sidebar.js";
 import { EditorToolbar } from "./editor-toolbar.js";
 import { ui } from "../../lib/styles.js";
@@ -167,9 +168,10 @@ export function ProjectEditorView({
                         setSnapGuide={setSnapGuide}
                     />
                 </div>
+                <EditorLegend visibleAreas={derivedState.visibleAreas} />
             </div>
 
-            <div inert={analyzing}>
+            <div inert={analyzing} className={ui.editorRightPanel}>
                 <EditorSidebar
                     page={page}
                     status={persistence.status}
