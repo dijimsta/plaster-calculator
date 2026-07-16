@@ -318,6 +318,20 @@ exports.updateProjectQuestionnaireQuestionAnswer = function updateProjectQuestio
 }
 ;
 
+const updateProjectQuestionnaireQuestionAnswerSourceRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateProjectQuestionnaireQuestionAnswerSource', inputVars);
+}
+updateProjectQuestionnaireQuestionAnswerSourceRef.operationName = 'UpdateProjectQuestionnaireQuestionAnswerSource';
+exports.updateProjectQuestionnaireQuestionAnswerSourceRef = updateProjectQuestionnaireQuestionAnswerSourceRef;
+
+exports.updateProjectQuestionnaireQuestionAnswerSource = function updateProjectQuestionnaireQuestionAnswerSource(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateProjectQuestionnaireQuestionAnswerSourceRef(dcInstance, inputVars));
+}
+;
+
 const deleteProjectQuestionnaireQuestionRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();

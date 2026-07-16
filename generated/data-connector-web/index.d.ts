@@ -199,6 +199,7 @@ export interface GetProjectQuestionnaireData {
       label: string;
       position: number;
       answer?: string | null;
+      answerSource: string;
     } & ProjectQuestionnaireQuestion_Key)[];
   } & ProjectQuestionnaire_Key;
 }
@@ -367,6 +368,16 @@ export interface UpdateMyAccountVariables {
 
 export interface UpdateProjectQuestionnaireQuestionAnswerData {
   projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
+}
+
+export interface UpdateProjectQuestionnaireQuestionAnswerSourceData {
+  projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
+}
+
+export interface UpdateProjectQuestionnaireQuestionAnswerSourceVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+  answerSource: string;
 }
 
 export interface UpdateProjectQuestionnaireQuestionAnswerVariables {
@@ -683,6 +694,18 @@ export const updateProjectQuestionnaireQuestionAnswerRef: UpdateProjectQuestionn
 
 export function updateProjectQuestionnaireQuestionAnswer(vars: UpdateProjectQuestionnaireQuestionAnswerVariables): MutationPromise<UpdateProjectQuestionnaireQuestionAnswerData, UpdateProjectQuestionnaireQuestionAnswerVariables>;
 export function updateProjectQuestionnaireQuestionAnswer(dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionAnswerVariables): MutationPromise<UpdateProjectQuestionnaireQuestionAnswerData, UpdateProjectQuestionnaireQuestionAnswerVariables>;
+
+interface UpdateProjectQuestionnaireQuestionAnswerSourceRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables): MutationRef<UpdateProjectQuestionnaireQuestionAnswerSourceData, UpdateProjectQuestionnaireQuestionAnswerSourceVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables): MutationRef<UpdateProjectQuestionnaireQuestionAnswerSourceData, UpdateProjectQuestionnaireQuestionAnswerSourceVariables>;
+  operationName: string;
+}
+export const updateProjectQuestionnaireQuestionAnswerSourceRef: UpdateProjectQuestionnaireQuestionAnswerSourceRef;
+
+export function updateProjectQuestionnaireQuestionAnswerSource(vars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables): MutationPromise<UpdateProjectQuestionnaireQuestionAnswerSourceData, UpdateProjectQuestionnaireQuestionAnswerSourceVariables>;
+export function updateProjectQuestionnaireQuestionAnswerSource(dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables): MutationPromise<UpdateProjectQuestionnaireQuestionAnswerSourceData, UpdateProjectQuestionnaireQuestionAnswerSourceVariables>;
 
 interface DeleteProjectQuestionnaireQuestionRef {
   /* Allow users to create refs without passing in DataConnect */

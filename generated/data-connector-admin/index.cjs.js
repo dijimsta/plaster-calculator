@@ -126,6 +126,20 @@ function getFloorplanPageById(dcOrVarsOrOptions, varsOrOptions, options) {
 }
 exports.getFloorplanPageById = getFloorplanPageById;
 
+function updateProjectQuestionnaireQuestionAiAnswer(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateProjectQuestionnaireQuestionAiAnswer', inputVars, inputOpts);
+}
+exports.updateProjectQuestionnaireQuestionAiAnswer = updateProjectQuestionnaireQuestionAiAnswer;
+
+function getProjectQuestionnaireQuestionsForProject(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetProjectQuestionnaireQuestionsForProject', inputVars, inputOpts);
+}
+exports.getProjectQuestionnaireQuestionsForProject = getProjectQuestionnaireQuestionsForProject;
+
 function createReminder(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

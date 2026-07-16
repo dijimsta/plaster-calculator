@@ -37,6 +37,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*CreateProjectQuestionnaireQuestion*](#createprojectquestionnairequestion)
   - [*UpdateProjectQuestionnaireQuestion*](#updateprojectquestionnairequestion)
   - [*UpdateProjectQuestionnaireQuestionAnswer*](#updateprojectquestionnairequestionanswer)
+  - [*UpdateProjectQuestionnaireQuestionAnswerSource*](#updateprojectquestionnairequestionanswersource)
   - [*DeleteProjectQuestionnaireQuestion*](#deleteprojectquestionnairequestion)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
 
@@ -700,6 +701,7 @@ export interface GetProjectQuestionnaireData {
       label: string;
       position: number;
       answer?: string | null;
+      answerSource: string;
     } & ProjectQuestionnaireQuestion_Key)[];
   } & ProjectQuestionnaire_Key;
 }
@@ -3059,6 +3061,121 @@ const ref = updateProjectQuestionnaireQuestionAnswerRef({ id: ..., projectId: ..
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
 const ref = updateProjectQuestionnaireQuestionAnswerRef(dataConnect, updateProjectQuestionnaireQuestionAnswerVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.projectQuestionnaireQuestion_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.projectQuestionnaireQuestion_update);
+});
+```
+
+## UpdateProjectQuestionnaireQuestionAnswerSource
+You can execute the `UpdateProjectQuestionnaireQuestionAnswerSource` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+updateProjectQuestionnaireQuestionAnswerSource(vars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables): MutationPromise<UpdateProjectQuestionnaireQuestionAnswerSourceData, UpdateProjectQuestionnaireQuestionAnswerSourceVariables>;
+
+interface UpdateProjectQuestionnaireQuestionAnswerSourceRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables): MutationRef<UpdateProjectQuestionnaireQuestionAnswerSourceData, UpdateProjectQuestionnaireQuestionAnswerSourceVariables>;
+}
+export const updateProjectQuestionnaireQuestionAnswerSourceRef: UpdateProjectQuestionnaireQuestionAnswerSourceRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateProjectQuestionnaireQuestionAnswerSource(dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables): MutationPromise<UpdateProjectQuestionnaireQuestionAnswerSourceData, UpdateProjectQuestionnaireQuestionAnswerSourceVariables>;
+
+interface UpdateProjectQuestionnaireQuestionAnswerSourceRef {
+  ...
+  (dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables): MutationRef<UpdateProjectQuestionnaireQuestionAnswerSourceData, UpdateProjectQuestionnaireQuestionAnswerSourceVariables>;
+}
+export const updateProjectQuestionnaireQuestionAnswerSourceRef: UpdateProjectQuestionnaireQuestionAnswerSourceRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateProjectQuestionnaireQuestionAnswerSourceRef:
+```typescript
+const name = updateProjectQuestionnaireQuestionAnswerSourceRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateProjectQuestionnaireQuestionAnswerSource` mutation requires an argument of type `UpdateProjectQuestionnaireQuestionAnswerSourceVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateProjectQuestionnaireQuestionAnswerSourceVariables {
+  id: UUIDString;
+  projectId: UUIDString;
+  answerSource: string;
+}
+```
+### Return Type
+Recall that executing the `UpdateProjectQuestionnaireQuestionAnswerSource` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateProjectQuestionnaireQuestionAnswerSourceData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateProjectQuestionnaireQuestionAnswerSourceData {
+  projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
+}
+```
+### Using `UpdateProjectQuestionnaireQuestionAnswerSource`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateProjectQuestionnaireQuestionAnswerSource, UpdateProjectQuestionnaireQuestionAnswerSourceVariables } from '@generated/data-connector-web';
+
+// The `UpdateProjectQuestionnaireQuestionAnswerSource` mutation requires an argument of type `UpdateProjectQuestionnaireQuestionAnswerSourceVariables`:
+const updateProjectQuestionnaireQuestionAnswerSourceVars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables = {
+  id: ..., 
+  projectId: ..., 
+  answerSource: ..., 
+};
+
+// Call the `updateProjectQuestionnaireQuestionAnswerSource()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateProjectQuestionnaireQuestionAnswerSource(updateProjectQuestionnaireQuestionAnswerSourceVars);
+// Variables can be defined inline as well.
+const { data } = await updateProjectQuestionnaireQuestionAnswerSource({ id: ..., projectId: ..., answerSource: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateProjectQuestionnaireQuestionAnswerSource(dataConnect, updateProjectQuestionnaireQuestionAnswerSourceVars);
+
+console.log(data.projectQuestionnaireQuestion_update);
+
+// Or, you can use the `Promise` API.
+updateProjectQuestionnaireQuestionAnswerSource(updateProjectQuestionnaireQuestionAnswerSourceVars).then((response) => {
+  const data = response.data;
+  console.log(data.projectQuestionnaireQuestion_update);
+});
+```
+
+### Using `UpdateProjectQuestionnaireQuestionAnswerSource`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateProjectQuestionnaireQuestionAnswerSourceRef, UpdateProjectQuestionnaireQuestionAnswerSourceVariables } from '@generated/data-connector-web';
+
+// The `UpdateProjectQuestionnaireQuestionAnswerSource` mutation requires an argument of type `UpdateProjectQuestionnaireQuestionAnswerSourceVariables`:
+const updateProjectQuestionnaireQuestionAnswerSourceVars: UpdateProjectQuestionnaireQuestionAnswerSourceVariables = {
+  id: ..., 
+  projectId: ..., 
+  answerSource: ..., 
+};
+
+// Call the `updateProjectQuestionnaireQuestionAnswerSourceRef()` function to get a reference to the mutation.
+const ref = updateProjectQuestionnaireQuestionAnswerSourceRef(updateProjectQuestionnaireQuestionAnswerSourceVars);
+// Variables can be defined inline as well.
+const ref = updateProjectQuestionnaireQuestionAnswerSourceRef({ id: ..., projectId: ..., answerSource: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateProjectQuestionnaireQuestionAnswerSourceRef(dataConnect, updateProjectQuestionnaireQuestionAnswerSourceVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.

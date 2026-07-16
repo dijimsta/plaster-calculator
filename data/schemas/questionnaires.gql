@@ -41,6 +41,7 @@ type ProjectQuestionnaireQuestion
     label: String!
     position: Int!
     answer: String
+    answerSource: String! @default(value: "MANUAL")
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }

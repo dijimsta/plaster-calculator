@@ -1,4 +1,4 @@
-const { createMyAccountRef, updateMyAccountRef, setMyAccountPrimaryContactRef, clearMyAccountPrimaryContactRef, deleteMyAccountRef, createMyAccountContactRef, updateMyAccountContactRef, deleteMyAccountContactRef, listMyAccountsRef, getMyAccountRef, listMyAccountContactsRef, createQuestionnaireTemplateRef, createQuestionnaireTemplateQuestionRef, updateQuestionnaireTemplateNameRef, updateQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateRef, ensureProjectQuestionnaireRef, applyQuestionnaireTemplateToProjectRef, createProjectQuestionnaireQuestionRef, updateProjectQuestionnaireQuestionRef, updateProjectQuestionnaireQuestionAnswerRef, deleteProjectQuestionnaireQuestionRef, listQuestionnaireTemplatesRef, getQuestionnaireTemplateRef, getProjectQuestionnaireRef, upsertMyUserSettingsRef, getMyUserSettingsRef, connectorConfig } = require('../index.cjs.js');
+const { createMyAccountRef, updateMyAccountRef, setMyAccountPrimaryContactRef, clearMyAccountPrimaryContactRef, deleteMyAccountRef, createMyAccountContactRef, updateMyAccountContactRef, deleteMyAccountContactRef, listMyAccountsRef, getMyAccountRef, listMyAccountContactsRef, createQuestionnaireTemplateRef, createQuestionnaireTemplateQuestionRef, updateQuestionnaireTemplateNameRef, updateQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateRef, ensureProjectQuestionnaireRef, applyQuestionnaireTemplateToProjectRef, createProjectQuestionnaireQuestionRef, updateProjectQuestionnaireQuestionRef, updateProjectQuestionnaireQuestionAnswerRef, updateProjectQuestionnaireQuestionAnswerSourceRef, deleteProjectQuestionnaireQuestionRef, listQuestionnaireTemplatesRef, getQuestionnaireTemplateRef, getProjectQuestionnaireRef, upsertMyUserSettingsRef, getMyUserSettingsRef, connectorConfig } = require('../index.cjs.js');
 const { validateArgs, CallerSdkTypeEnum } = require('firebase/data-connect');
 const { useDataConnectQuery, useDataConnectMutation, validateReactArgs } = require('@tanstack-query-firebase/react/data-connect');
 
@@ -168,6 +168,14 @@ exports.useUpdateProjectQuestionnaireQuestionAnswer = function useUpdateProjectQ
   const { dc: dcInstance, vars: inputOpts } = validateArgs(connectorConfig, dcOrOptions, options);
   function refFactory(vars) {
     return updateProjectQuestionnaireQuestionAnswerRef(dcInstance, vars);
+  }
+  return useDataConnectMutation(refFactory, inputOpts, CallerSdkTypeEnum.GeneratedReact);
+}
+
+exports.useUpdateProjectQuestionnaireQuestionAnswerSource = function useUpdateProjectQuestionnaireQuestionAnswerSource(dcOrOptions, options) {
+  const { dc: dcInstance, vars: inputOpts } = validateArgs(connectorConfig, dcOrOptions, options);
+  function refFactory(vars) {
+    return updateProjectQuestionnaireQuestionAnswerSourceRef(dcInstance, vars);
   }
   return useDataConnectMutation(refFactory, inputOpts, CallerSdkTypeEnum.GeneratedReact);
 }

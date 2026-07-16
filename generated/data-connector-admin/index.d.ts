@@ -232,6 +232,23 @@ export interface GetProjectDetailsByIdVariables {
   id: UUIDString;
 }
 
+export interface GetProjectQuestionnaireQuestionsForProjectData {
+  projectQuestionnaire?: {
+    projectId: UUIDString;
+    questions: ({
+      id: UUIDString;
+      label: string;
+      position: number;
+      answer?: string | null;
+      answerSource: string;
+    } & ProjectQuestionnaireQuestion_Key)[];
+  } & ProjectQuestionnaire_Key;
+}
+
+export interface GetProjectQuestionnaireQuestionsForProjectVariables {
+  projectId: UUIDString;
+}
+
 export interface GetReminderByIdData {
   reminder?: {
     id: UUIDString;
@@ -484,6 +501,16 @@ export interface UpdateProjectData {
   project_update?: Project_Key | null;
 }
 
+export interface UpdateProjectQuestionnaireQuestionAiAnswerData {
+  projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
+}
+
+export interface UpdateProjectQuestionnaireQuestionAiAnswerVariables {
+  id: UUIDString;
+  answer: string;
+  answerSource: string;
+}
+
 export interface UpdateProjectVariables {
   id: UUIDString;
   name?: string | null;
@@ -594,6 +621,16 @@ export function getProjectById(vars: GetProjectByIdVariables, options?: Operatio
 export function getFloorplanPageById(dc: DataConnect, vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
 /** Generated Node Admin SDK operation action function for the 'GetFloorplanPageById' Query. Allow users to pass in custom DataConnect instances. */
 export function getFloorplanPageById(vars: GetFloorplanPageByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetFloorplanPageByIdData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpdateProjectQuestionnaireQuestionAiAnswer' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateProjectQuestionnaireQuestionAiAnswer(dc: DataConnect, vars: UpdateProjectQuestionnaireQuestionAiAnswerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateProjectQuestionnaireQuestionAiAnswerData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateProjectQuestionnaireQuestionAiAnswer' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateProjectQuestionnaireQuestionAiAnswer(vars: UpdateProjectQuestionnaireQuestionAiAnswerVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateProjectQuestionnaireQuestionAiAnswerData>>;
+
+/** Generated Node Admin SDK operation action function for the 'GetProjectQuestionnaireQuestionsForProject' Query. Allow users to execute without passing in DataConnect. */
+export function getProjectQuestionnaireQuestionsForProject(dc: DataConnect, vars: GetProjectQuestionnaireQuestionsForProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectQuestionnaireQuestionsForProjectData>>;
+/** Generated Node Admin SDK operation action function for the 'GetProjectQuestionnaireQuestionsForProject' Query. Allow users to pass in custom DataConnect instances. */
+export function getProjectQuestionnaireQuestionsForProject(vars: GetProjectQuestionnaireQuestionsForProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectQuestionnaireQuestionsForProjectData>>;
 
 /** Generated Node Admin SDK operation action function for the 'CreateReminder' Mutation. Allow users to execute without passing in DataConnect. */
 export function createReminder(dc: DataConnect, vars: CreateReminderVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateReminderData>>;
