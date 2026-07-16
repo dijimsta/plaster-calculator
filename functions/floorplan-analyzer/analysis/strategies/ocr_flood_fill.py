@@ -36,7 +36,7 @@ class OcrFloodFillStrategy:
         room_map_full = np.argmax(seg.rooms, axis=0).astype(np.uint8)
         wall_mask = (room_map_full == WALL_CLASS).astype(np.uint8)
         wall_mask_closed = _close_wall_mask(wall_mask, params.wall_kernel_size)
-        seeds = self.ocr.find_seeds(image)
+        detected_texts, seeds = self.ocr.read_text_and_seeds(image)
         rooms_result = _rooms_from_seeds(
             wall_mask_closed, seeds, min_area=params.min_area
         )
@@ -48,6 +48,7 @@ class OcrFloodFillStrategy:
             "strategy": "ocr-flood-fill",
             "wall_kernel_size": params.wall_kernel_size,
             "ocr_seed_count": len(seeds),
+            "ocr_detected_text": self.ocr.summarize_detected_text(detected_texts),
             "room_count": len(rooms_result),
             "rooms": rooms_result,
         }
