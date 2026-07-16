@@ -1,11 +1,15 @@
+import { OverlayGeometryHelper } from "@libraries/plaster-calculator-common";
 import { useRef, type RefObject } from "react";
 import { Line } from "react-konva";
 
-import { pointAt } from "../../lib/editor/overlay-geometry.js";
 import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
 
 import type { DragState } from "./project-editor.types.js";
-import type { AreaPolygon, Overlay, Point } from "../../types.js";
+import type {
+    AreaPolygon,
+    Overlay,
+    Point,
+} from "@libraries/plaster-calculator-common";
 import type { KonvaEventObject } from "konva/lib/Node.js";
 
 interface CanvasEdgeHandlesProps {
@@ -38,7 +42,10 @@ export function CanvasEdgeHandles({
             {visibleAreas.map((area) =>
                 area.points.map((point, index) => {
                     const nextIndex = (index + 1) % area.points.length;
-                    const next = pointAt(area.points, nextIndex);
+                    const next = OverlayGeometryHelper.pointAt(
+                        area.points,
+                        nextIndex,
+                    );
                     return (
                         <Line
                             key={`edge-hit-${area.id}-${index}`}

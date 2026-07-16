@@ -1,16 +1,18 @@
+import {
+    BoardMaterialsHelper,
+    WALL_BOARD_PROFILES,
+    WALL_BOARD_TYPES,
+} from "@libraries/plaster-calculator-common";
 import { Button } from "@libraries/uikit-web";
 
 import { MaterialSelect } from "./selection-board-controls.js";
-import {
-    normalizeWallBoardProfile,
-    normalizeWallBoardType,
-    WALL_BOARD_PROFILES,
-    WALL_BOARD_TYPES,
-} from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
-import type { AreaPolygon, EdgeOverride } from "../../types.js";
+import type {
+    AreaPolygon,
+    EdgeOverride,
+} from "@libraries/plaster-calculator-common";
 import type { ReactNode } from "react";
 
 interface SelectedEdgeControlsProps {
@@ -138,7 +140,7 @@ function selectedEdgeWallType(
     edgeOverride: EdgeOverride | undefined | null,
     selectedEdgeArea: AreaPolygon,
 ) {
-    return normalizeWallBoardType(
+    return BoardMaterialsHelper.normalizeWallBoardType(
         edgeOverride?.wallBoardType ?? selectedEdgeArea.wallBoardType,
         edgeOverride?.wallPlasterType ?? selectedEdgeArea.wallPlasterType,
     );
@@ -148,7 +150,7 @@ function selectedEdgeWallProfile(
     edgeOverride: EdgeOverride | undefined | null,
     selectedEdgeArea: AreaPolygon,
 ) {
-    return normalizeWallBoardProfile(
+    return BoardMaterialsHelper.normalizeWallBoardProfile(
         edgeOverride?.wallBoardProfile ?? selectedEdgeArea.wallBoardProfile,
     );
 }

@@ -1,4 +1,7 @@
-import type { AreaPolygon, EdgeOverride } from "../../types.js";
+import type {
+    AreaPolygon,
+    EdgeOverride,
+} from "@libraries/plaster-calculator-common";
 
 export function cleanOverrides(
     overrides: Record<string, EdgeOverride>,

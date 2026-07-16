@@ -1,4 +1,9 @@
 import {
+    OverlayGeometryHelper,
+    type Point,
+} from "@libraries/plaster-calculator-common";
+
+import {
     createManualArea,
     pointsRemovedByStraighten,
     splitAreaPart,
@@ -9,9 +14,7 @@ import {
     edgeOverridesAfterRemoveMany,
     rakedAfterPointRemoval,
 } from "../lib/editor/edge-overrides.js";
-import { clamp, pointAt } from "../lib/editor/overlay-geometry.js";
 
-import type { Point } from "../types.js";
 import type {
     EditorActionsOptions,
     UpdateArea,
@@ -82,12 +85,12 @@ export function useEditorAreaActions(options: AreaActionsOptions) {
         });
         const width = 220;
         const height = 160;
-        const x = clamp(
+        const x = OverlayGeometryHelper.clamp(
             Math.round(center[0] - width / 2),
             0,
             Math.max(0, imageWidth - width),
         );
-        const y = clamp(
+        const y = OverlayGeometryHelper.clamp(
             Math.round(center[1] - height / 2),
             0,
             Math.max(0, imageHeight - height),
@@ -140,8 +143,11 @@ export function useEditorAreaActions(options: AreaActionsOptions) {
                 ? selectedEdge.edgeIndex
                 : (selectedPoint ?? 0);
         const nextIndex = (anchorIndex + 1) % selectedArea.points.length;
-        const a = pointAt(selectedArea.points, anchorIndex);
-        const b = pointAt(selectedArea.points, nextIndex);
+        const a = OverlayGeometryHelper.pointAt(
+            selectedArea.points,
+            anchorIndex,
+        );
+        const b = OverlayGeometryHelper.pointAt(selectedArea.points, nextIndex);
         const point: Point = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
         updateArea(selectedArea.id, (area) => ({
             ...area,

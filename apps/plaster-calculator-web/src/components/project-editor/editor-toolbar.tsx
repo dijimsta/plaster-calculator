@@ -19,7 +19,7 @@ import {
 import { ui } from "../../lib/styles.js";
 
 import type { OverlayMode } from "./project-editor.types.js";
-import type { AreaPolygon } from "../../types.js";
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 
 interface EditorToolbarProps {
     readonly addMenuOpen: boolean;

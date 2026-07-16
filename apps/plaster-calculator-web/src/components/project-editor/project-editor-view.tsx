@@ -17,7 +17,7 @@ import type { useEditorOverlay } from "../../hooks/use-editor-overlay.js";
 import type { useEditorPersistence } from "../../hooks/use-editor-persistence.js";
 import type { useEditorSelection } from "../../hooks/use-editor-selection.js";
 import type { useEditorValidation } from "../../hooks/use-editor-validation.js";
-import type { Point } from "../../types.js";
+import type { Point } from "@libraries/plaster-calculator-common";
 
 interface ProjectEditorViewProps {
     readonly actions: ReturnType<typeof useEditorActions>;

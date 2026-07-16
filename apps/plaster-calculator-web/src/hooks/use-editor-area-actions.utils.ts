@@ -1,12 +1,13 @@
 import {
-    DEFAULT_CEILING_BOARD_TYPE,
     DEFAULT_WALL_BOARD_PROFILE,
     DEFAULT_WALL_BOARD_TYPE,
-} from "../lib/editor/board-materials.js";
-import { splitEdgeOverrides } from "../lib/editor/edge-overrides.js";
-import { pathLengthBetween } from "../lib/editor/overlay-geometry.js";
+    OverlayGeometryHelper,
+    type AreaPolygon,
+    type Point,
+} from "@libraries/plaster-calculator-common";
 
-import type { AreaPolygon, Point } from "../types.js";
+import { DEFAULT_CEILING_BOARD_TYPE } from "../lib/editor/board-materials.js";
+import { splitEdgeOverrides } from "../lib/editor/edge-overrides.js";
 
 interface ViewportCenterOptions {
     readonly element: HTMLDivElement | null;
@@ -57,8 +58,18 @@ export function pointsRemovedByStraighten(
     a: number,
     b: number,
 ): Set<number> {
-    const forwardLength = pathLengthBetween(area.points, a, b, 1);
-    const backwardLength = pathLengthBetween(area.points, b, a, 1);
+    const forwardLength = OverlayGeometryHelper.pathLengthBetween(
+        area.points,
+        a,
+        b,
+        1,
+    );
+    const backwardLength = OverlayGeometryHelper.pathLengthBetween(
+        area.points,
+        b,
+        a,
+        1,
+    );
     const removeForward = forwardLength <= backwardLength;
     const removed = new Set<number>();
     if (removeForward) {

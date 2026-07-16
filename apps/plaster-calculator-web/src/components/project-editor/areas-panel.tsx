@@ -1,11 +1,12 @@
 import {
-    BOARD_SWATCH_CLASSES,
-    normalizeWallBoardType,
+    BoardMaterialsHelper,
     WALL_BOARD_TYPES,
-} from "../../lib/editor/board-materials.js";
+} from "@libraries/plaster-calculator-common";
+
+import { BOARD_SWATCH_CLASSES } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
 
-import type { AreaPolygon } from "../../types.js";
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 
 interface AreasPanelProps {
     readonly selectedAreaIds: string[];
@@ -69,12 +70,15 @@ function wallBoardTypesInUse(areas: AreaPolygon[]) {
     areas.forEach((area) => {
         if (area.isOutdoor) return;
         usedTypes.add(
-            normalizeWallBoardType(area.wallBoardType, area.wallPlasterType),
+            BoardMaterialsHelper.normalizeWallBoardType(
+                area.wallBoardType,
+                area.wallPlasterType,
+            ),
         );
         Object.values(area.edgeOverrides ?? {}).forEach((override) => {
             if (override.noPlaster) return;
             usedTypes.add(
-                normalizeWallBoardType(
+                BoardMaterialsHelper.normalizeWallBoardType(
                     override.wallBoardType ?? area.wallBoardType,
                     override.wallPlasterType ?? area.wallPlasterType,
                 ),

@@ -5,7 +5,7 @@ import { ValidationMessage } from "../components/project-editor/validation-messa
 
 import type { SelectedEdge } from "./use-editor-selection.js";
 import type { ValidationIssue } from "../lib/validation.js";
-import type { AreaPolygon } from "../types.js";
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import type { ReactNode } from "react";
 
 interface EditorValidationOptions {

@@ -1,4 +1,4 @@
-import type { Overlay, Point } from "../../types.js";
+import type { Overlay, Point } from "@libraries/plaster-calculator-common";
 
 export function parseOverlay(value: string | null): Overlay {
     if (!value) return { areas: [] };

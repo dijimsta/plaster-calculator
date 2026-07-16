@@ -6,7 +6,8 @@ import {
 } from "../lib/editor/overlay-serialization.js";
 
 import type { PageValidationInput } from "../lib/validation.js";
-import type { Overlay, FloorplanPage, Point } from "../types.js";
+import type { FloorplanPage } from "../types.js";
+import type { Overlay, Point } from "@libraries/plaster-calculator-common";
 
 interface EditorOverlayState {
     readonly ceilingHeightMm: number | null;

@@ -20,7 +20,7 @@ import type {
     ProjectEditorProps,
     SnapGuide,
 } from "./project-editor.types.js";
-import type { Point } from "../../types.js";
+import type { Point } from "@libraries/plaster-calculator-common";
 import type { Stage as KonvaStage } from "konva/lib/Stage.js";
 
 export function ProjectEditor({

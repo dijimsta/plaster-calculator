@@ -1,10 +1,12 @@
 import {
-    normalizeCeilingBoardType,
-    normalizeWallBoardProfile,
-    normalizeWallBoardType,
-} from "../lib/editor/board-materials.js";
+    BoardMaterialsHelper,
+    type AreaPolygon,
+    type EdgeOverride,
+    type Overlay,
+} from "@libraries/plaster-calculator-common";
 
-import type { AreaPolygon, EdgeOverride, Overlay } from "../types.js";
+import { normalizeCeilingBoardType } from "../lib/editor/board-materials.js";
+
 import type { UpdateArea } from "./use-editor-actions.types.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 
@@ -135,8 +137,13 @@ function materialValue(area: AreaPolygon, field: MaterialField) {
         return normalizeCeilingBoardType(area.ceilingPlasterType);
     }
     if (field === "wallBoardProfile") {
-        return normalizeWallBoardProfile(area.wallBoardProfile);
+        return BoardMaterialsHelper.normalizeWallBoardProfile(
+            area.wallBoardProfile,
+        );
     }
 
-    return normalizeWallBoardType(area.wallBoardType, area.wallPlasterType);
+    return BoardMaterialsHelper.normalizeWallBoardType(
+        area.wallBoardType,
+        area.wallPlasterType,
+    );
 }

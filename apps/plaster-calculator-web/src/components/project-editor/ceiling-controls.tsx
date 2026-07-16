@@ -5,7 +5,7 @@ import { cx, ui } from "../../lib/styles.js";
 
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type { ValidationIssue } from "../../lib/validation.js";
-import type { AreaPolygon } from "../../types.js";
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 
 interface CeilingControlsProps {
     readonly area: AreaPolygon;
