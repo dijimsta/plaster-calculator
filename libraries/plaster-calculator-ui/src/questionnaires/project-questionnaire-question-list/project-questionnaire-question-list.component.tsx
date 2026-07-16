@@ -60,7 +60,13 @@ function ProjectQuestionnaireQuestionRow({
     readonly onRemove: ProjectQuestionnaireQuestionListProps["onRemove"];
     readonly onConfirmAnswer: ProjectQuestionnaireQuestionListProps["onConfirmAnswer"];
 }): ReactElement {
-    const [answer, setAnswer] = useState(question.answer ?? "");
+    const normalizedAnswer = question.answer ?? "";
+    const [answer, setAnswer] = useState(normalizedAnswer);
+    const [syncedAnswer, setSyncedAnswer] = useState(normalizedAnswer);
+    if (normalizedAnswer !== syncedAnswer) {
+        setSyncedAnswer(normalizedAnswer);
+        setAnswer(normalizedAnswer);
+    }
     const answerId = useId();
     const isAiSuggested = question.answerSource === AI_SUGGESTED_ANSWER_SOURCE;
 
@@ -106,7 +112,7 @@ function ProjectQuestionnaireQuestionRow({
                     aria-label={`Answer for question ${index + 1}`}
                     onChange={(event) => setAnswer(event.target.value)}
                     onBlur={() => {
-                        if (answer !== (question.answer ?? "")) {
+                        if (answer !== normalizedAnswer) {
                             onSaveAnswer(question, answer);
                         }
                     }}
