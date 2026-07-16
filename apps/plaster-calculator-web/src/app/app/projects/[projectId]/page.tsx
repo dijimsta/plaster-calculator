@@ -1,14 +1,7 @@
 "use client";
 
 import { Box } from "@libraries/uikit-web";
-import {
-    Fragment,
-    use,
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
 
 import { ProjectHeader } from "./project-page-header.js";
 import { ProjectSalesStatusControl } from "./project-sales-status-control.js";
@@ -270,20 +263,27 @@ export default function ProjectPage({
     }
 
     return (
-        <Fragment>
-            <ProjectHeader
-                project={project}
-                projectId={projectId}
-                activeTab="floorplan"
-                renaming={renaming}
-                renameValue={renameValue}
-                load={load}
-                saveRename={saveRename}
-                setRenaming={setRenaming}
-                setRenameValue={setRenameValue}
-                validateAndExport={validateAndExport}
-            />
-            <Box padding="md" direction="column">
+        <div className={ui.projectPage}>
+            <div className={ui.projectPageHeader}>
+                <ProjectHeader
+                    project={project}
+                    projectId={projectId}
+                    activeTab="floorplan"
+                    renaming={renaming}
+                    renameValue={renameValue}
+                    load={load}
+                    saveRename={saveRename}
+                    setRenaming={setRenaming}
+                    setRenameValue={setRenameValue}
+                    validateAndExport={validateAndExport}
+                />
+            </div>
+            <Box
+                padding="none"
+                direction="column"
+                grow
+                className={ui.projectPageBody}
+            >
                 <ProjectToast toast={toast} setToast={setToast} />
                 {error && <p className={ui.error}>{error}</p>}
                 {project && (
@@ -312,6 +312,6 @@ export default function ProjectPage({
                     />
                 )}
             </Box>
-        </Fragment>
+        </div>
     );
 }

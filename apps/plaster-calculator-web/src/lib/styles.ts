@@ -231,20 +231,23 @@ function createUi(theme: Theme) {
         buttonDefault: cx(theme.controlBg, theme.text),
         buttonRow: "flex flex-wrap gap-2",
         canvasWrap: cx(
-            "flex-1 min-h-[560px] overflow-auto rounded-lg border p-3.5 max-[980px]:h-[70vh]",
+            "flex-1 min-h-[560px] overflow-auto rounded-lg border max-[980px]:h-[70vh]",
             theme.canvasBg,
             theme.line,
         ),
         editorCanvasContainer: "flex flex-col flex-1 min-h-0",
         editorLeftPanel: cx(
-            "flex flex-col min-h-0 rounded-lg border p-[18px] shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",
+            "flex flex-col min-h-0 rounded-lg border shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",
             theme.panelBg,
             theme.line,
         ),
-        editorShell: cx(
-            contentWidth,
-            "grid grid-cols-[minmax(0,1fr)_320px] gap-3.5 flex-1 min-h-0 max-[980px]:grid-cols-1",
+        editorLegend: cx(
+            "flex shrink-0 flex-wrap items-center gap-2 border-t p-2",
+            theme.line,
         ),
+        editorRightPanel: "min-h-0",
+        editorShell:
+            "grid grid-cols-[minmax(0,1fr)_320px] grid-rows-[minmax(0,1fr)] flex-1 min-h-0 max-[980px]:grid-cols-1",
         editorToolbar: "mb-3 flex flex-wrap items-center justify-between gap-2",
         error: cx("text-sm", theme.danger),
         field: cx(
@@ -313,6 +316,9 @@ function createUi(theme: Theme) {
         ),
         projectMetaLine:
             "block overflow-hidden text-ellipsis whitespace-nowrap max-[720px]:whitespace-normal",
+        projectPage: "flex h-full min-h-0 flex-col",
+        projectPageBody: "min-h-0 overflow-y-auto",
+        projectPageHeader: "shrink-0",
         segmented: cx(
             "inline-flex max-w-full gap-[3px] overflow-x-auto rounded-lg p-[3px]",
             theme.softBg,
