@@ -75,6 +75,7 @@ export const analyzeFloorplanPage = onCall<
                 rawJsonPath: analyzed.rawJsonPath,
                 rawFloorplanPath: analyzed.rawFloorplanPath,
                 overlayJson: analyzed.overlayJson,
+                ocrTextContent: analyzed.ocrTextContent,
                 scaleMmPerPx: settings.scaleMmPerPx,
                 ceilingHeightMm: settings.ceilingHeightMm,
                 referencePointsJson: settings.referencePointsJson,
