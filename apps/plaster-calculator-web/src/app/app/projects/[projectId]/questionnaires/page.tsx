@@ -6,11 +6,12 @@ import {
     ProjectQuestionnaireQuestionList,
 } from "@libraries/plaster-calculator-ui";
 import { Box, Button, EmptyState } from "@libraries/uikit-web";
-import { ClipboardList, Plus } from "lucide-react";
+import { ClipboardList, Plus, Sparkles } from "lucide-react";
 import { use, useCallback, useEffect, useState } from "react";
 
 import {
     useAddProjectQuestionnaireQuestionCallback,
+    useAnswerQuestionnaireWithAiCallback,
     useApplyQuestionnaireTemplateCallback,
     useConfirmProjectQuestionnaireQuestionAnswerCallback,
     useProjectQuestionnaireQuestions,
@@ -41,6 +42,7 @@ export default function ProjectQuestionnairesPage({
         null,
     );
     const [isAddingQuestion, setAddingQuestion] = useState(false);
+    const [isAutoFilling, setAutoFilling] = useState(false);
 
     const load = useCallback(async (): Promise<void> => {
         try {
@@ -87,6 +89,7 @@ export default function ProjectQuestionnairesPage({
         useSaveProjectQuestionnaireQuestionAnswerCallback(projectId);
     const confirmAnswer =
         useConfirmProjectQuestionnaireQuestionAnswerCallback(projectId);
+    const answerWithAi = useAnswerQuestionnaireWithAiCallback(projectId);
 
     async function handleAddQuestion(label: string): Promise<void> {
         setAddingQuestion(true);
@@ -102,6 +105,12 @@ export default function ProjectQuestionnairesPage({
         await applyTemplate(template);
         setApplyingTemplateId(null);
         setTemplateDrawerOpen(false);
+    }
+
+    async function handleAutoFill(): Promise<void> {
+        setAutoFilling(true);
+        await answerWithAi();
+        setAutoFilling(false);
     }
 
     return (
@@ -120,6 +129,14 @@ export default function ProjectQuestionnairesPage({
             <Box padding="md" direction="column" gap="md">
                 {error && <p className={ui.error}>{error}</p>}
                 <Box direction="row" justify="end" gap="sm">
+                    <Button
+                        variant="secondary"
+                        icon={<Sparkles size={18} aria-hidden="true" />}
+                        disabled={isAutoFilling || questions.length === 0}
+                        onClick={() => void handleAutoFill()}
+                    >
+                        {isAutoFilling ? "Auto-filling…" : "Auto-fill"}
+                    </Button>
                     <Button
                         variant="secondary"
                         onClick={() => setTemplateDrawerOpen(true)}
