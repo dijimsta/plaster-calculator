@@ -11,3 +11,25 @@ mutation UpsertMyUserSettings(
         }
     )
 }
+
+mutation UpsertMyUserSignature(
+    $name: String
+    $companyName: String
+    $address: String
+    $mobile: String
+    $phone: String
+    $email: String
+) @auth(level: USER) {
+    userSignature_upsert(
+        data: {
+            ownerId_expr: "auth.uid"
+            name: $name
+            companyName: $companyName
+            address: $address
+            mobile: $mobile
+            phone: $phone
+            email: $email
+            updatedAt_expr: "request.time"
+        }
+    )
+}

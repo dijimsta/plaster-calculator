@@ -25,6 +25,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*ListProjectQuestionnaires*](#listprojectquestionnaires)
   - [*GetProjectQuestionnaire*](#getprojectquestionnaire)
   - [*GetMyUserSettings*](#getmyusersettings)
+  - [*GetMyUserSignature*](#getmyusersignature)
 - [**Mutations**](#mutations)
   - [*CreateMyAccount*](#createmyaccount)
   - [*UpdateMyAccount*](#updatemyaccount)
@@ -48,6 +49,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*UpdateProjectQuestionnaireQuestionAnswerSource*](#updateprojectquestionnairequestionanswersource)
   - [*DeleteProjectQuestionnaireQuestion*](#deleteprojectquestionnairequestion)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
+  - [*UpsertMyUserSignature*](#upsertmyusersignature)
 
 # TanStack Query Firebase & TanStack React Query
 This SDK provides [React](https://react.dev/) hooks generated specific to your application, for the operations found in the connector `data-connector-web`. These hooks are generated using [TanStack Query Firebase](https://react-query-firebase.invertase.dev/) by our partners at Invertase, a library built on top of [TanStack React Query v5](https://tanstack.com/query/v5/docs/framework/react/overview).
@@ -819,6 +821,85 @@ export default function GetMyUserSettingsComponent() {
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
     console.log(query.data.userSettings);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetMyUserSignature
+You can execute the `GetMyUserSignature` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetMyUserSignature(dc: DataConnect, options?: useDataConnectQueryOptions<GetMyUserSignatureData>): UseDataConnectQueryResult<GetMyUserSignatureData, undefined>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetMyUserSignature(options?: useDataConnectQueryOptions<GetMyUserSignatureData>): UseDataConnectQueryResult<GetMyUserSignatureData, undefined>;
+```
+
+### Variables
+The `GetMyUserSignature` Query has no variables.
+### Return Type
+Recall that calling the `GetMyUserSignature` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetMyUserSignature` Query is of type `GetMyUserSignatureData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetMyUserSignatureData {
+  userSignature?: {
+    ownerId: string;
+    name?: string | null;
+    companyName?: string | null;
+    address?: string | null;
+    mobile?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & UserSignature_Key;
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetMyUserSignature`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig } from '@generated/data-connector-web';
+import { useGetMyUserSignature } from '@generated/data-connector-web/react'
+
+export default function GetMyUserSignatureComponent() {
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetMyUserSignature();
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetMyUserSignature(dataConnect);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetMyUserSignature(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetMyUserSignature(dataConnect, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.userSignature);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
@@ -2998,6 +3079,114 @@ export default function UpsertMyUserSettingsComponent() {
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
     console.log(mutation.data.userSettings_upsert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpsertMyUserSignature
+You can execute the `UpsertMyUserSignature` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpsertMyUserSignature(options?: useDataConnectMutationOptions<UpsertMyUserSignatureData, FirebaseError, UpsertMyUserSignatureVariables | void>): UseDataConnectMutationResult<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpsertMyUserSignature(dc: DataConnect, options?: useDataConnectMutationOptions<UpsertMyUserSignatureData, FirebaseError, UpsertMyUserSignatureVariables | void>): UseDataConnectMutationResult<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+```
+
+### Variables
+The `UpsertMyUserSignature` Mutation has an optional argument of type `UpsertMyUserSignatureVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpsertMyUserSignatureVariables {
+  name?: string | null;
+  companyName?: string | null;
+  address?: string | null;
+  mobile?: string | null;
+  phone?: string | null;
+  email?: string | null;
+}
+```
+### Return Type
+Recall that calling the `UpsertMyUserSignature` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpsertMyUserSignature` Mutation is of type `UpsertMyUserSignatureData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpsertMyUserSignatureData {
+  userSignature_upsert: UserSignature_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpsertMyUserSignature`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpsertMyUserSignatureVariables } from '@generated/data-connector-web';
+import { useUpsertMyUserSignature } from '@generated/data-connector-web/react'
+
+export default function UpsertMyUserSignatureComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpsertMyUserSignature();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpsertMyUserSignature(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpsertMyUserSignature(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpsertMyUserSignature(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpsertMyUserSignature` Mutation has an optional argument of type `UpsertMyUserSignatureVariables`:
+  const upsertMyUserSignatureVars: UpsertMyUserSignatureVariables = {
+    name: ..., // optional
+    companyName: ..., // optional
+    address: ..., // optional
+    mobile: ..., // optional
+    phone: ..., // optional
+    email: ..., // optional
+  };
+  mutation.mutate(upsertMyUserSignatureVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ name: ..., companyName: ..., address: ..., mobile: ..., phone: ..., email: ..., });
+  // Since all variables are optional for this Mutation, you can omit the `UpsertMyUserSignatureVariables` argument.
+  mutation.mutate();
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  // Since all variables are optional for this Mutation, you can provide options without providing any variables.
+  // To do so, you must pass `undefined` where you would normally pass the variables.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(upsertMyUserSignatureVars /** or undefined */, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.userSignature_upsert);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
