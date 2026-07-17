@@ -9,7 +9,9 @@ import { answerQuestionnaireFlow } from "./ai/flows/answer-questionnaire.js";
 import { buildRoomSummary } from "./ai/room-summary.js";
 import { requireAuth } from "./auth.js";
 import { requireOwnedProject } from "./ownership.js";
+import { analyzeFloorplanPageCore } from "./page-analysis.js";
 import { extractPdfText } from "./pdf-text-extraction.js";
+import { LONG_RUNNING_TIMEOUT_SECONDS } from "./types.js";
 import { readRequiredString } from "./validation.js";
 
 import type { ProjectIdRequest, ProjectWithPages } from "./types.js";
@@ -26,17 +28,23 @@ interface ExtractedPdfPage {
 export const answerQuestionnaireWithAI = onCall<
     ProjectIdRequest,
     Promise<{ updatedCount: number }>
->({ timeoutSeconds: 120, memory: "512MiB" }, async (request) => {
-    const auth = requireAuth(request);
-    const projectId = readRequiredString(request.data.projectId, "Project ID");
-    return answerQuestionnaire(projectId, auth.uid);
-});
+>(
+    { timeoutSeconds: LONG_RUNNING_TIMEOUT_SECONDS, memory: "512MiB" },
+    async (request) => {
+        const auth = requireAuth(request);
+        const projectId = readRequiredString(
+            request.data.projectId,
+            "Project ID",
+        );
+        return answerQuestionnaire(projectId, auth.uid);
+    },
+);
 
 export async function answerQuestionnaire(
     projectId: string,
     uid: string,
 ): Promise<{ updatedCount: number }> {
-    const project = await requireOwnedProject(projectId, uid);
+    let project = await requireOwnedProject(projectId, uid);
 
     const questionsResponse =
         await DataConnector.getProjectQuestionnaireQuestionsForProject({
@@ -52,6 +60,8 @@ export async function answerQuestionnaire(
     }
 
     try {
+        project = await ensurePagesAnalyzed(project, projectId, uid);
+
         const pdfText = await resolveExtractedText(project);
         const ocrText = buildOcrText(project);
         const rooms = project.pages.flatMap((page) => buildRoomSummary(page));
@@ -94,6 +104,36 @@ export async function answerQuestionnaire(
                   "AI auto-fill failed. Please try again.",
               );
     }
+}
+
+async function ensurePagesAnalyzed(
+    project: ProjectWithPages,
+    projectId: string,
+    uid: string,
+): Promise<ProjectWithPages> {
+    const pagesNeedingAnalysis = project.pages.filter(
+        (page) =>
+            page.status !== "PROCESSING" &&
+            (page.status === "FAILED" || page.scaleMmPerPx == null),
+    );
+    if (pagesNeedingAnalysis.length === 0) {
+        return project;
+    }
+
+    for (const page of pagesNeedingAnalysis) {
+        try {
+            await analyzeFloorplanPageCore(uid, projectId, page.id, {});
+        } catch (error) {
+            logger.error("Inline floorplan analysis failed during auto-fill", {
+                projectId,
+                pageId: page.id,
+                errorMessage:
+                    error instanceof Error ? error.message : String(error),
+            });
+        }
+    }
+
+    return requireOwnedProject(projectId, uid);
 }
 
 async function resolveExtractedText(

@@ -1,5 +1,57 @@
 # plaster-calculator
 
+## Getting Started
+
+New to the repo? This gets a full local environment running with one command: `pnpm start`.
+
+### Prerequisites
+
+| Tool         | Version                                         | Notes                                                                                                 |
+| ------------ | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Node.js      | 24.15.0 (see `.nvmrc`)                          | `nvm use`                                                                                             |
+| pnpm         | 11.1.3 (see `packageManager` in `package.json`) | `corepack enable` picks up the pinned version automatically                                           |
+| Firebase CLI | latest                                          | `npm install -g firebase-tools`                                                                       |
+| uv           | latest                                          | Manages the Python venv for the `floorplan-analyzer` function; `brew install uv`                      |
+| LM Studio    | latest                                          | Runs the questionnaire AI flow locally instead of Vertex AI; [download](https://lmstudio.ai/download) |
+
+### First-time setup
+
+```bash
+nvm use                          # or install Node 24.15.0 another way
+corepack enable                  # installs the pinned pnpm version
+pnpm install
+lms get google/gemma-4-26b-a4b   # default local model for the Genkit AI flow; see below
+lms server start                 # start LM Studio's local server (default port 1234)
+lms load google/gemma-4-26b-a4b
+```
+
+### Running everything
+
+```bash
+pnpm start
+```
+
+This builds the `floorplan-analyzer` Python function, builds all TypeScript packages, then starts the Firebase
+Emulator Suite (Auth, Functions, Storage, Tasks, Data Connect, and App Hosting, which runs the Next.js dev server).
+Everything runs locally: no GCP project access, billing, or `firebase login` is required for day-to-day development.
+
+- Emulator UI: http://localhost:4000
+- Web app: http://localhost:5050
+
+See [Firebase Emulators](#firebase-emulators) below for port details, [floorplan-analyzer local setup](#floorplan-analyzer-local-setup)
+for the Python/OCR function, and [App Check on localhost](#app-check-on-localhost) for auth debug tokens.
+
+### AI flow (Genkit) without cloud credentials
+
+The questionnaire auto-fill flow uses [Genkit](https://genkit.dev/), which has no local emulator for a hosted model.
+Instead, `functions/plaster-calculator-functions/src/ai/genkit.ts` detects the Functions emulator and routes to a
+local [LM Studio](https://lmstudio.ai/) server (its OpenAI-compatible API, via `@genkit-ai/compat-oai`) rather than
+Vertex AI, so it works offline and free of cost. The default, `google/gemma-4-26b-a4b`, is
+[Gemma](https://ai.google.dev/gemma) — Gemini's open-weight sibling, built on Gemini 3 research — the closest free
+local equivalent to the production model. Download and load it once as shown above; override the model with the
+`GENKIT_LM_STUDIO_MODEL` environment variable if you want a different local model. Details in
+[functions/plaster-calculator-functions/README.md](./functions/plaster-calculator-functions/README.md#ai-genkit).
+
 ## Firebase Emulators
 
 The project uses the Firebase Local Emulator Suite for local development. The following emulators are configured:

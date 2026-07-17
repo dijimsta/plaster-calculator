@@ -1,4 +1,5 @@
-import { ai, z } from "../genkit.js";
+import { isEmulator } from "../../environment.js";
+import { ai, checkLmStudioSetup, z } from "../genkit.js";
 import { SYSTEM_PROMPT } from "../system-prompt.js";
 
 const RoomSummaryInputSchema = z.object({
@@ -52,11 +53,26 @@ export const answerQuestionnaireFlow = ai.defineFlow(
         outputSchema: AnswerQuestionnaireOutputSchema,
     },
     async (input) => {
+        const prompt = buildPrompt(input);
+        // LM Studio's local server truncates prompts/responses in its own logs, so log
+        // the untruncated request/response here instead when running under the emulator.
+        logAiDebug("answerQuestionnaireFlow request", {
+            system: SYSTEM_PROMPT,
+            prompt,
+        });
+
+        await checkLmStudioSetup();
+
         const { output } = await ai.generate({
             system: SYSTEM_PROMPT,
-            prompt: buildPrompt(input),
+            prompt,
             output: { schema: AnswerQuestionnaireOutputSchema },
         });
+
+        logAiDebug("answerQuestionnaireFlow response", {
+            output: JSON.stringify(output, null, 2),
+        });
+
         if (output == null) {
             throw new Error("Response doesn't satisfy schema.");
         }
@@ -64,6 +80,21 @@ export const answerQuestionnaireFlow = ai.defineFlow(
         return output;
     },
 );
+
+function logAiDebug(title: string, sections: Record<string, string>): void {
+    if (!isEmulator()) {
+        return;
+    }
+
+    const body = Object.entries(sections)
+        .map(([heading, content]) => `--- ${heading} ---\n${content}`)
+        .join("\n\n");
+    // Plain console output, not firebase-functions/logger: the emulator writes logger
+    // output as a single-line structured JSON entry, which escapes newlines and makes a
+    // multi-line prompt/response unreadable.
+
+    console.debug(`\n=== ${title} ===\n${body}\n`);
+}
 
 function buildPrompt(input: AnswerQuestionnaireInput): string {
     return [
