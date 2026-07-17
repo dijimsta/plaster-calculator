@@ -5,7 +5,7 @@ import {
     radioInput,
     radioSizes,
     type RadioSize,
-} from "./radio-group.styles.ts";
+} from "./radio.styles.ts";
 
 import type { InputHTMLAttributes, ReactElement } from "react";
 
