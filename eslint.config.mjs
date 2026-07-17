@@ -104,7 +104,7 @@ export default tseslint.config(
         settings: importSettings,
         rules: {
             ...sharedTypescriptRules,
-            "max-lines": ["warn", { ...maxLinesOptions, max: 300 }],
+            "max-lines": ["error", { ...maxLinesOptions, max: 300 }],
         },
     },
     {
@@ -121,7 +121,7 @@ export default tseslint.config(
         settings: importSettings,
         rules: {
             ...sharedTypescriptRules,
-            "max-lines": ["warn", { ...maxLinesOptions, max: 300 }],
+            "max-lines": ["error", { ...maxLinesOptions, max: 300 }],
         },
     },
     {
