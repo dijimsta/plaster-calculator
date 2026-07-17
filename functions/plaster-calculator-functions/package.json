@@ -8,12 +8,13 @@
         "build": "tsc --build tsconfig.build.json",
         "bundle": "dev-cli bundle",
         "deploy": "firebase deploy --only functions",
-        "genkit:ui": "genkit start -- npx tsx --watch src/ai/index.ts",
+        "genkit:ui": "genkit start -- tsx --watch src/ai/index.ts",
         "logs": "firebase functions:log",
         "test": "node --test"
     },
     "dependencies": {
         "@generated/data-connector-admin": "workspace:*",
+        "@genkit-ai/compat-oai": "^1.39.0",
         "@genkit-ai/google-genai": "^1.39.0",
         "@libraries/plaster-calculator-common": "workspace:*",
         "firebase-admin": "^13.10.0",
@@ -27,7 +28,9 @@
         "@apps/dev-cli": "workspace:*",
         "@types/node": "^26.0.1",
         "firebase-functions-test": "^3.5.0",
+        "genkit-cli": "^1.39.0",
         "jest": "^30.4.2",
+        "tsx": "^4.23.0",
         "typescript": "^6.0.3"
     },
     "engines": {
