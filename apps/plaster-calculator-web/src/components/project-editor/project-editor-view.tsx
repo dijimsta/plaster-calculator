@@ -1,3 +1,5 @@
+import { Paragraph } from "@libraries/uikit-web";
+
 import { EditorCanvas } from "./editor-canvas.js";
 import { EditorLegend } from "./editor-legend.js";
 import { EditorSidebar } from "./editor-sidebar.js";
@@ -124,9 +126,9 @@ export function ProjectEditorView({
                     hasSelection={selection.hasSelection}
                 />
                 {analyzing && (
-                    <p className={ui.muted} role="status">
+                    <Paragraph textSize="sm" variant="muted" role="status">
                         Analysis is running. Editing is temporarily disabled.
-                    </p>
+                    </Paragraph>
                 )}
                 <div inert={analyzing} className={ui.editorCanvasContainer}>
                     <EditorCanvas

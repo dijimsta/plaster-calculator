@@ -1,4 +1,4 @@
-import { Button } from "@libraries/uikit-web";
+import { Button, Paragraph } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
 
 import { ui } from "../../lib/styles.js";
@@ -35,7 +35,9 @@ export function SummaryPanel({
                     <div className={ui.field}>
                         <span className={ui.label}>Wall length</span>
                         {summary.wallTotals.length === 0 && (
-                            <p className={ui.muted}>No counted wall lengths.</p>
+                            <Paragraph textSize="sm" variant="muted">
+                                No counted wall lengths.
+                            </Paragraph>
                         )}
                         {summary.wallTotals.map(([type, total]) => (
                             <div className={ui.metric} key={`wall-${type}`}>

@@ -1,4 +1,4 @@
-import { Button } from "@libraries/uikit-web";
+import { Button, Text } from "@libraries/uikit-web";
 
 import { cx, ui } from "../../lib/styles.js";
 
@@ -27,10 +27,10 @@ export function PageSettingsPanel({
 }: PageSettingsPanelProps) {
     return (
         <div className={ui.stack}>
-            <span className={ui.muted}>
+            <Text size="sm" variant="muted">
                 {status || "Ready"}{" "}
                 {dirty ? "- autosaves every 15 seconds" : ""}
-            </span>
+            </Text>
             <div className={ui.field}>
                 <label>Ceiling height mm</label>
                 <input

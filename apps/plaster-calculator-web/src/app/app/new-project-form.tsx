@@ -1,4 +1,4 @@
-import { Button } from "@libraries/uikit-web";
+import { Button, Text } from "@libraries/uikit-web";
 import { Upload } from "lucide-react";
 
 import { AccountSelect } from "../../components/account-select.js";
@@ -75,11 +75,11 @@ export function NewProjectForm({
                     <strong>
                         {file ? file.name : "Drop a PDF or image here"}
                     </strong>
-                    <span className={ui.muted}>
+                    <Text size="sm" variant="muted">
                         {file
                             ? "Click to choose a different file"
                             : "Click to browse from your computer"}
-                    </span>
+                    </Text>
                 </label>
             </div>
             <Button variant="primary" disabled={!file || loading}>

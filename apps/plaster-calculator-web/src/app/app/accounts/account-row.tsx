@@ -1,8 +1,9 @@
 "use client";
 
+import { Text } from "@libraries/uikit-web";
 import { default as LinkModule } from "next/link.js";
 
-import { cx, ui } from "../../../lib/styles.js";
+import { ui } from "../../../lib/styles.js";
 
 import type { AccountSummary } from "../../../types.js";
 
@@ -18,14 +19,18 @@ export function AccountRow({ account }: AccountRowProps) {
             <div className="grid min-w-0 gap-2">
                 <Link href={`/app/accounts/${account.id}`}>
                     <strong>{account.companyName}</strong>
-                    <span className={cx(ui.muted, ui.projectMetaLine)}>
+                    <Text
+                        size="sm"
+                        variant="muted"
+                        className={ui.projectMetaLine}
+                    >
                         {account.businessNumber || "No business number"} /{" "}
                         {account.phoneNumber || "No phone"} /{" "}
                         {account.primaryContactId
                             ? "Primary contact set"
                             : "No primary contact"}{" "}
                         / {new Date(account.updatedAt).toLocaleString()}
-                    </span>
+                    </Text>
                 </Link>
             </div>
         </div>

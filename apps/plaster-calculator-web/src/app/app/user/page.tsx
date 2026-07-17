@@ -1,6 +1,12 @@
 "use client";
 
-import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
+import {
+    Box,
+    Breadcrumb,
+    PageHeading,
+    Paragraph,
+    Text,
+} from "@libraries/uikit-web";
 import { Home } from "lucide-react";
 
 import { UserSettingsPanel } from "./user-settings.js";
@@ -54,9 +60,9 @@ export default function UserPage() {
                             )}
                             <div>
                                 <h2>{user.displayName || "Signed in user"}</h2>
-                                <p className={ui.muted}>
+                                <Paragraph textSize="sm" variant="muted">
                                     {user.email || "No email address"}
-                                </p>
+                                </Paragraph>
                             </div>
                         </div>
                         <dl className="grid gap-3">
@@ -77,18 +83,18 @@ export default function UserPage() {
                                                     provider.providerId,
                                                 )}
                                             </strong>
-                                            <span className={ui.muted}>
+                                            <Text size="sm" variant="muted">
                                                 {provider.email ||
                                                     provider.phoneNumber ||
                                                     provider.uid}
-                                            </span>
+                                            </Text>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <p className={ui.muted}>
+                                <Paragraph textSize="sm" variant="muted">
                                     No connected social logins.
-                                </p>
+                                </Paragraph>
                             )}
                         </div>
                     </div>

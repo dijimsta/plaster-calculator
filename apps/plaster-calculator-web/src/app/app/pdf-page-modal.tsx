@@ -1,4 +1,4 @@
-import { Button } from "@libraries/uikit-web";
+import { Button, Paragraph } from "@libraries/uikit-web";
 import { FileUp, X } from "lucide-react";
 
 import { cx, ui } from "../../lib/styles.js";
@@ -21,7 +21,9 @@ export function PdfPageModal({
                 <header className={ui.editorToolbar}>
                     <div>
                         <h2>Select PDF Pages</h2>
-                        <p className={ui.muted}>Tick the pages to annotate.</p>
+                        <Paragraph textSize="sm" variant="muted">
+                            Tick the pages to annotate.
+                        </Paragraph>
                     </div>
                     <Button
                         variant="ghost"
