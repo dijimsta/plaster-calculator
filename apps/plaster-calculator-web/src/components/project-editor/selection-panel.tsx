@@ -2,6 +2,7 @@ import {
     WALL_BOARD_PROFILES,
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
+import { Paragraph } from "@libraries/uikit-web";
 
 import { BoardControls, MaterialSelect } from "./selection-board-controls.js";
 import { SelectedEdgeControls } from "./selection-edge-controls.js";
@@ -112,9 +113,9 @@ function SelectionPanelContent({
 }: SelectionPanelProps) {
     if (!selectedArea && !selectedEdgeArea) {
         return (
-            <p className={ui.muted}>
+            <Paragraph textSize="sm" variant="muted">
                 Select an area to edit labels and board types.
-            </p>
+            </Paragraph>
         );
     }
 

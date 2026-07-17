@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button } from "@libraries/uikit-web";
+import { Box, Button, Paragraph, Text } from "@libraries/uikit-web";
 import { LoaderCircle, X } from "lucide-react";
 import { useRouter } from "next/navigation.js";
 import { useEffect, useState, type FormEvent } from "react";
@@ -201,7 +201,9 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
                 <Box direction="column" padding="md">
                     <div className={ui.projectListState}>
                         <LoaderCircle className="animate-spin" size={24} />
-                        <span className={ui.muted}>Loading account...</span>
+                        <Text size="sm" variant="muted">
+                            Loading account...
+                        </Text>
                     </div>
                 </Box>
             </>
@@ -228,7 +230,11 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
                         />
                     </div>
                 )}
-                {message && <p className={ui.muted}>{message}</p>}
+                {message && (
+                    <Paragraph textSize="sm" variant="muted">
+                        {message}
+                    </Paragraph>
+                )}
                 {account && draft ? (
                     <section
                         className={cx(

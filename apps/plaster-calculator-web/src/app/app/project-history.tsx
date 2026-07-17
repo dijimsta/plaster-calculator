@@ -1,4 +1,11 @@
-import { Button, Input, Label, SelectMenu } from "@libraries/uikit-web";
+import {
+    Button,
+    Input,
+    Label,
+    Paragraph,
+    SelectMenu,
+    Text,
+} from "@libraries/uikit-web";
 import { LoaderCircle, Pencil, RefreshCcw, Search, Trash2 } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
@@ -82,7 +89,9 @@ export function ProjectHistory({
                         aria-live="polite"
                     >
                         <LoaderCircle className="animate-spin" size={24} />
-                        <span className={ui.muted}>Loading projects...</span>
+                        <Text size="sm" variant="muted">
+                            Loading projects...
+                        </Text>
                     </div>
                 ) : (
                     <>
@@ -111,11 +120,10 @@ export function ProjectHistory({
                                     ) : (
                                         <strong>{project.name}</strong>
                                     )}
-                                    <span
-                                        className={cx(
-                                            ui.muted,
-                                            ui.projectMetaLine,
-                                        )}
+                                    <Text
+                                        size="sm"
+                                        variant="muted"
+                                        className={ui.projectMetaLine}
                                     >
                                         {project.originalFileName} /{" "}
                                         {project.uploadType} / {project.status}{" "}
@@ -129,7 +137,7 @@ export function ProjectHistory({
                                         {new Date(
                                             project.updatedAt,
                                         ).toLocaleString()}
-                                    </span>
+                                    </Text>
                                 </Link>
                                 <div className={ui.projectActions}>
                                     {renamingId === project.id ? (
@@ -172,10 +180,10 @@ export function ProjectHistory({
                             </div>
                         ))}
                         {filtered.length === 0 && (
-                            <p className={ui.muted}>
+                            <Paragraph textSize="sm" variant="muted">
                                 No {salesStatusLabel(activeSalesStatus)}{" "}
                                 projects.
-                            </p>
+                            </Paragraph>
                         )}
                     </>
                 )}

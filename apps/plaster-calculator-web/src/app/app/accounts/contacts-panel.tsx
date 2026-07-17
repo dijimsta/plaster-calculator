@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
+import { Button, Paragraph } from "@libraries/uikit-web";
 import { Plus } from "lucide-react";
 
 import { ContactRow } from "./contact-row.js";
@@ -56,7 +56,9 @@ export function ContactsPanel({
                 />
             ))}
             {account.contacts.length === 0 && (
-                <p className={ui.muted}>No contacts yet.</p>
+                <Paragraph textSize="sm" variant="muted">
+                    No contacts yet.
+                </Paragraph>
             )}
         </section>
     );

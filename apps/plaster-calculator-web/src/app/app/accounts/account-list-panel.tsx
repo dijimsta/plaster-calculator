@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Input, Label } from "@libraries/uikit-web";
+import { Button, Input, Label, Paragraph, Text } from "@libraries/uikit-web";
 import { LoaderCircle, RefreshCcw, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -75,11 +75,17 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
                     </Button>
                 </div>
             </div>
-            {message && <p className={ui.muted}>{message}</p>}
+            {message && (
+                <Paragraph textSize="sm" variant="muted">
+                    {message}
+                </Paragraph>
+            )}
             {isLoading ? (
                 <div className={ui.projectListState}>
                     <LoaderCircle className="animate-spin" size={24} />
-                    <span className={ui.muted}>Loading accounts...</span>
+                    <Text size="sm" variant="muted">
+                        Loading accounts...
+                    </Text>
                 </div>
             ) : (
                 <div className={ui.projectList}>
@@ -87,7 +93,9 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
                         <AccountRow key={account.id} account={account} />
                     ))}
                     {filtered.length === 0 && (
-                        <p className={ui.muted}>No accounts found.</p>
+                        <Paragraph textSize="sm" variant="muted">
+                            No accounts found.
+                        </Paragraph>
                     )}
                 </div>
             )}

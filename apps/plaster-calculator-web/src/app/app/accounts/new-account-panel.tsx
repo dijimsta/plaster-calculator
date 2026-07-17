@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
+import { Button, Paragraph } from "@libraries/uikit-web";
 import { Plus } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
@@ -49,7 +49,11 @@ export function NewAccountPanel({ onCreated }: NewAccountPanelProps) {
             <Button variant="primary">
                 <Plus size={18} /> Create account
             </Button>
-            {message && <p className={ui.muted}>{message}</p>}
+            {message && (
+                <Paragraph textSize="sm" variant="muted">
+                    {message}
+                </Paragraph>
+            )}
         </form>
     );
 }

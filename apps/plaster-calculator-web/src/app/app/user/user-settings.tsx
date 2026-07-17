@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
+import { Button, Paragraph } from "@libraries/uikit-web";
 import { useEffect, useState } from "react";
 
 import { getSettings, updateSettings } from "../../../lib/api.js";
@@ -67,8 +67,16 @@ export function UserSettingsPanel() {
         <section className={cx(ui.panel, ui.stack)}>
             <div>
                 <h2>Reminder settings</h2>
-                {loading && <p className={ui.muted}>Loading settings...</p>}
-                {message && <p className={ui.muted}>{message}</p>}
+                {loading && (
+                    <Paragraph textSize="sm" variant="muted">
+                        Loading settings...
+                    </Paragraph>
+                )}
+                {message && (
+                    <Paragraph textSize="sm" variant="muted">
+                        {message}
+                    </Paragraph>
+                )}
             </div>
             <label className="flex items-center gap-3">
                 <input

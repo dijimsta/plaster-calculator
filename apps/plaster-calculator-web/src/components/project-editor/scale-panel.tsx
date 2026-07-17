@@ -1,4 +1,4 @@
-import { Button } from "@libraries/uikit-web";
+import { Button, Paragraph } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
 
 import { cx, ui } from "../../lib/styles.js";
@@ -62,11 +62,11 @@ export function ScalePanel({
                     Reset
                 </Button>
             </div>
-            <p className={ui.muted}>
+            <Paragraph textSize="sm" variant="muted">
                 {isSettingReference
                     ? "Click two points on the image."
                     : `${referencePoints.length}/2 reference points set.`}
-            </p>
+            </Paragraph>
             <div className={ui.field}>
                 <label>Reference length mm</label>
                 <input

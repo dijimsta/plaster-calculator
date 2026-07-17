@@ -1,6 +1,10 @@
 "use client";
 
-import { InspectorPanel, InspectorSection } from "@libraries/uikit-web";
+import {
+    InspectorPanel,
+    InspectorSection,
+    Paragraph,
+} from "@libraries/uikit-web";
 import { default as DynamicModule } from "next/dynamic.js";
 
 import { cx, ui } from "../../../../lib/styles.js";
@@ -86,10 +90,10 @@ export function ProjectStatusContent({
             <section className={cx(ui.editorShell, "items-start")}>
                 <div className={cx(ui.panel, ui.stack)}>
                     <h2>Quote follow-up</h2>
-                    <p className={ui.muted}>
+                    <Paragraph textSize="sm" variant="muted">
                         Reminder workflow placeholder. Follow-up reminders will
                         be configured here later.
-                    </p>
+                    </Paragraph>
                 </div>
                 {inspectorPanel}
             </section>
@@ -101,10 +105,10 @@ export function ProjectStatusContent({
             <section className={cx(ui.editorShell, "items-start")}>
                 <div className={cx(ui.panel, ui.stack)}>
                     <h2>Project won</h2>
-                    <p className={ui.muted}>
+                    <Paragraph textSize="sm" variant="muted">
                         Won project workflow placeholder. The next steps for
                         accepted work will be added here later.
-                    </p>
+                    </Paragraph>
                 </div>
                 {inspectorPanel}
             </section>
@@ -116,10 +120,10 @@ export function ProjectStatusContent({
             <section className={cx(ui.editorShell, "items-start")}>
                 <div className={cx(ui.panel, ui.stack)}>
                     <h2>Project lost</h2>
-                    <p className={ui.muted}>
+                    <Paragraph textSize="sm" variant="muted">
                         Lost project workflow placeholder. Loss reasons can be
                         captured here later.
-                    </p>
+                    </Paragraph>
                 </div>
                 {inspectorPanel}
             </section>

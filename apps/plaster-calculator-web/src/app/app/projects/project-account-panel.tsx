@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
+import { Button, Paragraph } from "@libraries/uikit-web";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { AccountSelect } from "../../../components/account-select.js";
 import { getAccount } from "../../../lib/api.js";
-import { cx, ui } from "../../../lib/styles.js";
+import { ui } from "../../../lib/styles.js";
 
 import type { AccountDetail } from "../../../types.js";
 
@@ -125,13 +125,18 @@ function AccountSummary({
     readonly error: string;
 }) {
     if (error) return <p className={ui.error}>{error}</p>;
-    if (!account) return <p className={ui.muted}>Loading account...</p>;
+    if (!account)
+        return (
+            <Paragraph textSize="sm" variant="muted">
+                Loading account...
+            </Paragraph>
+        );
     return (
         <div className={ui.metric}>
             <strong>{account.companyName}</strong>
-            <span className={cx(ui.muted, "block")}>
+            <Paragraph textSize="sm" variant="muted">
                 {account.businessNumber || account.phoneNumber || "No details"}
-            </span>
+            </Paragraph>
         </div>
     );
 }

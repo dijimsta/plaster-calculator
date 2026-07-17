@@ -1,5 +1,6 @@
 "use client";
 
+import { Paragraph, Text } from "@libraries/uikit-web";
 import { default as LinkModule } from "next/link.js";
 
 import { cx, ui } from "../../../lib/styles.js";
@@ -23,16 +24,20 @@ export function AccountProjectsPanel({ projects }: AccountProjectsPanelProps) {
                     href={`/app/projects/${project.id}`}
                 >
                     <strong>{project.name}</strong>
-                    <span className={cx(ui.muted, ui.projectMetaLine)}>
+                    <Text
+                        size="sm"
+                        variant="muted"
+                        className={ui.projectMetaLine}
+                    >
                         {project.originalFileName} / {project.status} /{" "}
                         {new Date(project.updatedAt).toLocaleString()}
-                    </span>
+                    </Text>
                 </Link>
             ))}
             {projects.length === 0 && (
-                <p className={ui.muted}>
+                <Paragraph textSize="sm" variant="muted">
                     No projects are linked to this account.
-                </p>
+                </Paragraph>
             )}
         </section>
     );

@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, ButtonLink } from "@libraries/uikit-web";
+import { Button, ButtonLink, Text } from "@libraries/uikit-web";
 import { Mail, Pencil, Trash2, X } from "lucide-react";
 
 import { toContactDraft } from "./account.utils.js";
 import { ContactFormFields } from "./contact-form-fields.js";
-import { cx, ui } from "../../../lib/styles.js";
+import { ui } from "../../../lib/styles.js";
 
 import type { ContactDraft } from "./account.types.js";
 import type { AccountContact } from "../../../types.js";
@@ -95,7 +95,7 @@ function ContactSummary({
                 {contact.name}
                 {isPrimary ? " (Primary)" : ""}
             </strong>
-            <span className={cx(ui.muted, ui.projectMetaLine)}>
+            <Text size="sm" variant="muted" className={ui.projectMetaLine}>
                 {contact.email ? (
                     <a href={`mailto:${contact.email}`}>{contact.email}</a>
                 ) : (
@@ -103,7 +103,7 @@ function ContactSummary({
                 )}{" "}
                 / {contact.phoneNumber || "No phone"} /{" "}
                 {contact.role || "No role"}
-            </span>
+            </Text>
         </div>
     );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
+import { Button, Paragraph, Text } from "@libraries/uikit-web";
 import { LoaderCircle, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -151,9 +151,11 @@ function AccountSelectMenu({
 }: AccountSelectMenuProps) {
     if (isLoading) {
         return (
-            <div className={cx(ui.muted, "flex items-center gap-2")}>
+            <div className="flex items-center gap-2">
                 <LoaderCircle className="animate-spin" size={16} />
-                Loading accounts...
+                <Text size="sm" variant="muted">
+                    Loading accounts...
+                </Text>
             </div>
         );
     }
@@ -163,7 +165,11 @@ function AccountSelectMenu({
     }
 
     if (filtered.length === 0) {
-        return <p className={ui.muted}>No matching accounts.</p>;
+        return (
+            <Paragraph textSize="sm" variant="muted">
+                No matching accounts.
+            </Paragraph>
+        );
     }
 
     return (
@@ -179,11 +185,11 @@ function AccountSelectMenu({
                 >
                     <span className="grid gap-0.5">
                         <strong>{account.companyName}</strong>
-                        <span className={ui.muted}>
+                        <Text size="sm" variant="muted">
                             {account.businessNumber ||
                                 account.phoneNumber ||
                                 "No account details"}
-                        </span>
+                        </Text>
                     </span>
                 </Button>
             ))}
