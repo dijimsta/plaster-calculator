@@ -108,6 +108,15 @@ export type {
     DescriptionListItem,
     DescriptionListProps,
 } from "./lists/description-list/index.ts";
+export { Stats } from "./data-display/stats/index.ts";
+export type {
+    StatsColumnCount,
+    StatsItem,
+    StatsProps,
+    StatsTrend,
+    StatsTrendDirection,
+    StatsVariant,
+} from "./data-display/stats/index.ts";
 export { GridList } from "./lists/grid-list/index.ts";
 export type {
     GridListColumnCount,
