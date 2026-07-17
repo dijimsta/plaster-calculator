@@ -2,34 +2,19 @@ import clsx from "clsx";
 import { createContext, useContext, useId } from "react";
 
 import { RadioGroupCardOption } from "./radio-group-card-option.component.tsx";
+import { RadioGroupDefaultOption } from "./radio-group-default-option.component.tsx";
+import { RadioGroupPanelOption } from "./radio-group-panel-option.component.tsx";
 import {
-    defaultOption,
-    defaultOptionAlignment,
-    describedRadio,
-    disabledOption,
     groupContentSpacingClassName,
     groupDescription,
     groupFieldset,
     groupVariants,
     legendClassName,
-    optionDescription,
-    optionLabel,
-    optionLabelCursor,
-    optionText,
-    panelDescription,
-    panelDescriptionRight,
-    panelLabel,
-    panelListContent,
-    panelListDescription,
-    panelListLabel,
-    panelOption,
-    panelOptionLayout,
     segmentedDisplayClassName,
     type RadioGroupVariant,
-    type RadioSize,
 } from "./radio-group.styles.ts";
-import { Radio } from "./radio.component.tsx";
 
+import type { RadioSize } from "./radio.styles.ts";
 import type {
     FieldsetHTMLAttributes,
     InputHTMLAttributes,
@@ -113,15 +98,6 @@ export type RadioGroupOptionProps = {
     "children" | "className" | "id" | "name" | "size" | "type" | "value"
 >;
 
-type OptionRendererProps = RadioGroupOptionProps & {
-    readonly id: string;
-    readonly name: string;
-    readonly size: RadioSize;
-    readonly variant: RadioGroupVariant;
-};
-
-type DefaultOptionProps = Omit<OptionRendererProps, "variant">;
-
 /** A labelled option within a RadioGroup. */
 export function RadioGroupOption({
     value,
@@ -169,7 +145,7 @@ export function RadioGroupOption({
         context.variant === "table"
     ) {
         return (
-            <PanelOption
+            <RadioGroupPanelOption
                 id={generatedId}
                 name={context.name}
                 size={context.size}
@@ -185,7 +161,7 @@ export function RadioGroupOption({
     }
 
     return (
-        <DefaultOption
+        <RadioGroupDefaultOption
             id={generatedId}
             name={context.name}
             size={context.size}
@@ -196,139 +172,5 @@ export function RadioGroupOption({
             disabled={disabled}
             {...props}
         />
-    );
-}
-
-function DefaultOption({
-    id,
-    name,
-    size,
-    value,
-    label,
-    description,
-    className,
-    disabled,
-    ...props
-}: DefaultOptionProps): ReactElement {
-    const descriptionId = `${id}-description`;
-
-    return (
-        <div
-            className={clsx(
-                defaultOption,
-                description === undefined
-                    ? defaultOptionAlignment.default
-                    : defaultOptionAlignment.described,
-                disabled && disabledOption,
-                className,
-            )}
-        >
-            <Radio
-                id={id}
-                name={name}
-                value={value}
-                size={size}
-                className={
-                    description === undefined ? undefined : describedRadio
-                }
-                disabled={disabled}
-                aria-describedby={
-                    description === undefined ? undefined : descriptionId
-                }
-                {...props}
-            />
-            <div className={optionText}>
-                <label
-                    htmlFor={id}
-                    className={clsx(
-                        optionLabel,
-                        disabled
-                            ? optionLabelCursor.disabled
-                            : optionLabelCursor.default,
-                    )}
-                >
-                    {label}
-                </label>
-                {description === undefined ? null : (
-                    <p id={descriptionId} className={optionDescription}>
-                        {description}
-                    </p>
-                )}
-            </div>
-        </div>
-    );
-}
-
-function PanelOption({
-    id,
-    name,
-    size,
-    value,
-    label,
-    description,
-    className,
-    disabled,
-    variant,
-    ...props
-}: OptionRendererProps): ReactElement {
-    const descriptionId = `${id}-description`;
-    const radio = (
-        <Radio
-            id={id}
-            name={name}
-            value={value}
-            size={size}
-            disabled={disabled}
-            aria-describedby={
-                description === undefined ? undefined : descriptionId
-            }
-            {...props}
-        />
-    );
-    const radioOnRight = variant === "list-right" || variant === "table";
-
-    return (
-        <label
-            htmlFor={id}
-            className={clsx(
-                panelOption,
-                variant === "table"
-                    ? panelOptionLayout.table
-                    : panelOptionLayout.default,
-                className,
-            )}
-        >
-            {radioOnRight ? null : radio}
-            {variant === "list" ? (
-                <span className={panelListContent}>
-                    <span className={panelListLabel}>{label}</span>
-                    {description === undefined ? null : (
-                        <span
-                            id={descriptionId}
-                            className={panelListDescription}
-                        >
-                            {description}
-                        </span>
-                    )}
-                </span>
-            ) : (
-                <>
-                    <span className={panelLabel}>{label}</span>
-                    {description === undefined ? null : (
-                        <span
-                            id={descriptionId}
-                            className={clsx(
-                                panelDescription,
-                                variant === "list-right" &&
-                                    panelDescriptionRight,
-                            )}
-                        >
-                            {description}
-                        </span>
-                    )}
-                </>
-            )}
-            {radioOnRight ? radio : null}
-        </label>
     );
 }

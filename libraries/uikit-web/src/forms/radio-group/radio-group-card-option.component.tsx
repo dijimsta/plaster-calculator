@@ -9,9 +9,9 @@ import {
     cardWrapper,
     segmentedOption,
     smallCard,
-    type RadioGroupVariant,
-} from "./radio-group.styles.ts";
+} from "./radio-group-card-option.styles.ts";
 
+import type { RadioGroupVariant } from "./radio-group.styles.ts";
 import type { InputHTMLAttributes, ReactElement, ReactNode } from "react";
 
 export type RadioGroupCardOptionVariant = Extract<
