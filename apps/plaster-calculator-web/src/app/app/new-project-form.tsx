@@ -24,7 +24,10 @@ export function NewProjectForm({
     submit,
 }: NewProjectFormProps) {
     return (
-        <form className={cx(ui.panel, ui.stack)} onSubmit={submit}>
+        <form
+            className={cx(ui.panel, ui.stack, "self-start")}
+            onSubmit={submit}
+        >
             <h2>New Project</h2>
             <div className={ui.field}>
                 <label htmlFor="name">Address or project name</label>
