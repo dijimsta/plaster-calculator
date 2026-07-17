@@ -104,3 +104,27 @@ export const SharedBorders: Story = {
         variant: "shared-borders",
     },
 };
+
+export const WithColorTones: Story = {
+    args: {
+        items: [
+            {
+                id: "total",
+                label: "Total questionnaires",
+                value: "24",
+            },
+            {
+                id: "in-progress",
+                label: "In progress",
+                value: "9",
+                valueTone: "info",
+            },
+            {
+                id: "completed",
+                label: "Completed",
+                value: "15",
+                valueTone: "success",
+            },
+        ],
+    },
+};

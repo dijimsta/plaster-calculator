@@ -15,6 +15,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*ListMyAccountContacts*](#listmyaccountcontacts)
   - [*ListQuestionnaireTemplates*](#listquestionnairetemplates)
   - [*GetQuestionnaireTemplate*](#getquestionnairetemplate)
+  - [*ListProjectQuestionnaires*](#listprojectquestionnaires)
   - [*GetProjectQuestionnaire*](#getprojectquestionnaire)
   - [*GetMyUserSettings*](#getmyusersettings)
 - [**Mutations**](#mutations)
@@ -645,6 +646,107 @@ console.log(data.questionnaireTemplate);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.questionnaireTemplate);
+});
+```
+
+## ListProjectQuestionnaires
+You can execute the `ListProjectQuestionnaires` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+listProjectQuestionnaires(options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, undefined>;
+
+interface ListProjectQuestionnairesRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListProjectQuestionnairesData, undefined>;
+}
+export const listProjectQuestionnairesRef: ListProjectQuestionnairesRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listProjectQuestionnaires(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, undefined>;
+
+interface ListProjectQuestionnairesRef {
+  ...
+  (dc: DataConnect): QueryRef<ListProjectQuestionnairesData, undefined>;
+}
+export const listProjectQuestionnairesRef: ListProjectQuestionnairesRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listProjectQuestionnairesRef:
+```typescript
+const name = listProjectQuestionnairesRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListProjectQuestionnaires` query has no variables.
+### Return Type
+Recall that executing the `ListProjectQuestionnaires` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListProjectQuestionnairesData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListProjectQuestionnairesData {
+  projectQuestionnaires: ({
+    projectId: UUIDString;
+    updatedAt: TimestampString;
+    project: {
+      name: string;
+    };
+    questions: ({
+      id: UUIDString;
+      answer?: string | null;
+    } & ProjectQuestionnaireQuestion_Key)[];
+  } & ProjectQuestionnaire_Key)[];
+}
+```
+### Using `ListProjectQuestionnaires`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listProjectQuestionnaires } from '@generated/data-connector-web';
+
+
+// Call the `listProjectQuestionnaires()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listProjectQuestionnaires();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listProjectQuestionnaires(dataConnect);
+
+console.log(data.projectQuestionnaires);
+
+// Or, you can use the `Promise` API.
+listProjectQuestionnaires().then((response) => {
+  const data = response.data;
+  console.log(data.projectQuestionnaires);
+});
+```
+
+### Using `ListProjectQuestionnaires`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listProjectQuestionnairesRef } from '@generated/data-connector-web';
+
+
+// Call the `listProjectQuestionnairesRef()` function to get a reference to the query.
+const ref = listProjectQuestionnairesRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listProjectQuestionnairesRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.projectQuestionnaires);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.projectQuestionnaires);
 });
 ```
 

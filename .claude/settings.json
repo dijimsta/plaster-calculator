@@ -28,7 +28,7 @@
             "Bash(pnpm format *)",
             "Bash(pnpm install *)",
             "Bash(pnpm * build)",
-            "Bash(sed *",
+            "Bash(sed *)",
             "Bash(uv run *)",
             "Bash(xargs *)",
             "mcp__claude_ai_Atlassian_Rovo__createIssueLink",

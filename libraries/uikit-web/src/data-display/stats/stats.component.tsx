@@ -5,21 +5,29 @@ import {
     DEFAULT_COLUMNS,
     DEFAULT_TREND_DIRECTION,
     DEFAULT_VARIANT,
+    DEFAULT_VALUE_TONE,
     columns,
     itemVariants,
     sharedBorderColumns,
     sharedBorderItemStyle,
     styles,
     trendDirections,
+    valueTones,
     variants,
     type StatsColumnCount,
     type StatsTrendDirection,
+    type StatsValueTone,
     type StatsVariant,
 } from "./stats.styles.ts";
 
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 
-export type { StatsColumnCount, StatsTrendDirection, StatsVariant };
+export type {
+    StatsColumnCount,
+    StatsTrendDirection,
+    StatsValueTone,
+    StatsVariant,
+};
 
 export type StatsTrend = {
     /** Direction used to color and icon the trend value. */
@@ -43,6 +51,8 @@ export type StatsItem = {
     readonly description?: ReactNode;
     /** Optional directional trend displayed below the stat value. */
     readonly trend?: StatsTrend;
+    /** Optional color tone applied to the stat value. */
+    readonly valueTone?: StatsValueTone;
 };
 
 export type StatsProps = Omit<HTMLAttributes<HTMLDListElement>, "children"> & {
@@ -101,7 +111,14 @@ function StatsItemView({ item, variant }: StatsItemProps): ReactElement {
             <div className={styles.itemContent}>
                 <div className={styles.itemBody}>
                     <dt className={styles.label}>{item.label}</dt>
-                    <dd className={styles.value}>{item.value}</dd>
+                    <dd
+                        className={clsx(
+                            styles.value,
+                            valueTones[item.valueTone ?? DEFAULT_VALUE_TONE],
+                        )}
+                    >
+                        {item.value}
+                    </dd>
                 </div>
                 {item.icon && (
                     <span className={styles.icon} aria-hidden="true">

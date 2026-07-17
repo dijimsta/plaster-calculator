@@ -100,3 +100,37 @@ export const BorderedAndCompact: Story = {
     },
     render: PeopleTable,
 };
+
+export const FitColumns: Story = {
+    render: () => (
+        <Table bordered>
+            <Table.Head>
+                <Table.Row>
+                    <Table.Header>Name</Table.Header>
+                    <Table.Header fit>Status</Table.Header>
+                    <Table.Header fit>Updated</Table.Header>
+                </Table.Row>
+            </Table.Head>
+            <Table.Body>
+                <Table.Row>
+                    <Table.Cell>Lindsay Walton</Table.Cell>
+                    <Table.Cell fit>
+                        <Badge color="green" size="xs">
+                            Active
+                        </Badge>
+                    </Table.Cell>
+                    <Table.Cell fit>2 hours ago</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                    <Table.Cell>Courtney Henry</Table.Cell>
+                    <Table.Cell fit>
+                        <Badge color="yellow" size="xs">
+                            Away
+                        </Badge>
+                    </Table.Cell>
+                    <Table.Cell fit>Yesterday</Table.Cell>
+                </Table.Row>
+            </Table.Body>
+        </Table>
+    ),
+};

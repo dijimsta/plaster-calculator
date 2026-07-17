@@ -1,5 +1,6 @@
 export const DEFAULT_COLUMNS = 3;
 export const DEFAULT_TREND_DIRECTION = "neutral";
+export const DEFAULT_VALUE_TONE = "default";
 export const DEFAULT_VARIANT = "simple";
 
 export const styles = Object.freeze({
@@ -8,7 +9,7 @@ export const styles = Object.freeze({
     itemContent: "flex min-w-0 items-start justify-between gap-4",
     icon: "inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300 [&_svg]:size-5",
     label: "truncate text-sm font-medium text-gray-500 dark:text-gray-400",
-    value: "mt-1 truncate text-3xl font-semibold tracking-normal text-gray-900 dark:text-white",
+    value: "mt-1 truncate text-3xl font-semibold tracking-normal",
     description: "mt-1 text-sm leading-6 text-gray-500 dark:text-gray-400",
     trend: "mt-4 inline-flex items-center gap-1.5 text-sm font-medium",
     trendIcon: "size-4 shrink-0",
@@ -59,3 +60,12 @@ export const trendDirections = Object.freeze({
 
 export type StatsTrendDirection =
     typeof trendDirections extends Record<infer K, string> ? K : never;
+
+export const valueTones = Object.freeze({
+    default: "text-gray-900 dark:text-white",
+    info: "text-blue-600 dark:text-blue-400",
+    success: "text-green-600 dark:text-green-400",
+});
+
+export type StatsValueTone =
+    typeof valueTones extends Record<infer K, string> ? K : never;

@@ -19,6 +19,10 @@ const meta: Meta<typeof ProgressBar> = {
             control: "select",
             options: ["sm", "md"],
         },
+        tone: {
+            control: "select",
+            options: ["default", "info", "success"],
+        },
     },
 };
 
@@ -47,5 +51,25 @@ export const CustomRange: Story = {
         max: 10,
         showValue: true,
         size: "md",
+    },
+};
+
+export const InfoTone: Story = {
+    args: {
+        label: "Questionnaire in progress",
+        value: 4,
+        max: 10,
+        showValue: true,
+        tone: "info",
+    },
+};
+
+export const SuccessTone: Story = {
+    args: {
+        label: "Questionnaire completed",
+        value: 10,
+        max: 10,
+        showValue: true,
+        tone: "success",
     },
 };
