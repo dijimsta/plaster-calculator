@@ -36,72 +36,90 @@ export const analyzeFloorplanPage = onCall<
             "Project ID",
         );
         const pageId = readRequiredString(request.data.pageId, "Page ID");
-        const project = await requireOwnedProject(projectId, auth.uid);
-        const page = await requireFloorplanPage(projectId, pageId);
-        if (page.status === "PROCESSING") {
-            throw new HttpsError(
-                "already-exists",
-                "This page is already being analyzed.",
-            );
-        }
-
-        const settings = readAnalysisSettings(request.data, page);
-        await writeAnalysisState(page, settings, "PROCESSING", null);
-        try {
-            const source = await readSourceImage(page.sourceImagePath);
-            const strategy =
-                processingStrategies.find((item) => item.defaultStrategy) ??
-                processingStrategies[0];
-            if (!strategy) {
-                throw new HttpsError(
-                    "internal",
-                    "No processing strategy is configured.",
-                );
-            }
-            const analyzed = await analyzePageImage({
-                uid: auth.uid,
-                projectId,
-                pageNumber: page.pageNumber,
-                originalFileName: `${project.originalFileName} page ${page.pageNumber}`,
-                imageBytes: source,
-                strategy,
-            });
-            await DataConnector.updateFloorplanPageAnalysis({
-                id: page.id,
-                status: "READY",
-                processingError: null,
-                sourceImagePath: page.sourceImagePath ?? null,
-                previewImagePath: analyzed.previewImagePath,
-                rawJsonPath: analyzed.rawJsonPath,
-                rawFloorplanPath: analyzed.rawFloorplanPath,
-                overlayJson: analyzed.overlayJson,
-                ocrTextContent: analyzed.ocrTextContent,
-                scaleMmPerPx: settings.scaleMmPerPx,
-                ceilingHeightMm: settings.ceilingHeightMm,
-                referencePointsJson: settings.referencePointsJson,
-                referenceLengthMm: settings.referenceLengthMm,
-                processingStrategy: analyzed.processingStrategy,
-                processingMetadataJson: analyzed.processingMetadataJson,
-            });
-        } catch (error) {
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : "Floorplan analysis failed.";
-            logger.error("analyzeFloorplanPage failed", {
-                projectId,
-                pageId,
-                errorMessage: message,
-            });
-            await writeAnalysisState(page, settings, "FAILED", message);
-            throw error instanceof HttpsError
-                ? error
-                : new HttpsError("internal", message);
-        }
-
+        await analyzeFloorplanPageCore(
+            auth.uid,
+            projectId,
+            pageId,
+            request.data,
+        );
         return toDetail(await requireOwnedProject(projectId, auth.uid));
     },
 );
+
+/**
+ * Runs floorplan analysis for a single page. Shared by the `analyzeFloorplanPage`
+ * callable and by callers (e.g. questionnaire auto-fill) that need to trigger
+ * analysis inline rather than requiring the user to do it as a separate step.
+ */
+export async function analyzeFloorplanPageCore(
+    uid: string,
+    projectId: string,
+    pageId: string,
+    data: AnalyzeFloorplanPageRequest,
+): Promise<void> {
+    const project = await requireOwnedProject(projectId, uid);
+    const page = await requireFloorplanPage(projectId, pageId);
+    if (page.status === "PROCESSING") {
+        throw new HttpsError(
+            "already-exists",
+            "This page is already being analyzed.",
+        );
+    }
+
+    const settings = readAnalysisSettings(data, page);
+    await writeAnalysisState(page, settings, "PROCESSING", null);
+    try {
+        const source = await readSourceImage(page.sourceImagePath);
+        const strategy =
+            processingStrategies.find((item) => item.defaultStrategy) ??
+            processingStrategies[0];
+        if (!strategy) {
+            throw new HttpsError(
+                "internal",
+                "No processing strategy is configured.",
+            );
+        }
+        const analyzed = await analyzePageImage({
+            uid,
+            projectId,
+            pageNumber: page.pageNumber,
+            originalFileName: `${project.originalFileName} page ${page.pageNumber}`,
+            imageBytes: source,
+            strategy,
+        });
+        await DataConnector.updateFloorplanPageAnalysis({
+            id: page.id,
+            status: "READY",
+            processingError: null,
+            sourceImagePath: page.sourceImagePath ?? null,
+            previewImagePath: analyzed.previewImagePath,
+            rawJsonPath: analyzed.rawJsonPath,
+            rawFloorplanPath: analyzed.rawFloorplanPath,
+            overlayJson: analyzed.overlayJson,
+            ocrTextContent: analyzed.ocrTextContent,
+            scaleMmPerPx: settings.scaleMmPerPx,
+            ceilingHeightMm: settings.ceilingHeightMm,
+            referencePointsJson: settings.referencePointsJson,
+            referenceLengthMm: settings.referenceLengthMm,
+            processingStrategy: analyzed.processingStrategy,
+            processingMetadataJson: analyzed.processingMetadataJson,
+        });
+    } catch (error) {
+        const message =
+            error instanceof Error
+                ? error.message
+                : "Floorplan analysis failed.";
+        logger.error("analyzeFloorplanPage failed", {
+            projectId,
+            pageId,
+            errorMessage: message,
+        });
+        await writeAnalysisState(page, settings, "FAILED", message);
+        throw error instanceof HttpsError
+            ? error
+            : new HttpsError("internal", message);
+    }
+}
 
 async function readSourceImage(
     path: string | null | undefined,
