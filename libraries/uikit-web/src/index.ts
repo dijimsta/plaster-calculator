@@ -181,6 +181,12 @@ export type {
 } from "./navigation/multi-step-navigation/index.ts";
 export { Pagination } from "./navigation/pagination/index.ts";
 export type { PaginationProps } from "./navigation/pagination/index.ts";
+export { Paragraph } from "./elements/paragraph/index.ts";
+export type {
+    ParagraphProps,
+    ParagraphSize,
+    ParagraphVariant,
+} from "./elements/paragraph/index.ts";
 export { SidebarNavigation } from "./navigation/sidebar-navigation/index.ts";
 export type { SidebarNavigationProps } from "./navigation/sidebar-navigation/index.ts";
 export { Tabs } from "./navigation/tabs/index.ts";
