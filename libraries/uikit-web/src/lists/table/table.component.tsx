@@ -100,10 +100,14 @@ export namespace Table {
 
     export type HeaderProps = PropsWithChildren<
         ThHTMLAttributes<HTMLTableCellElement>
-    >;
+    > & {
+        /** Shrinks the column to the width of its content instead of stretching. */
+        readonly fit?: boolean;
+    };
 
     export function Header({
         scope = "col",
+        fit = false,
         className,
         children,
         ...props
@@ -111,7 +115,11 @@ export namespace Table {
         return (
             <th
                 scope={scope}
-                className={clsx(styles.header, className)}
+                className={clsx(
+                    styles.header,
+                    fit && styles.fitWidth,
+                    className,
+                )}
                 {...props}
             >
                 {children}
@@ -121,15 +129,22 @@ export namespace Table {
 
     export type CellProps = PropsWithChildren<
         TdHTMLAttributes<HTMLTableCellElement>
-    >;
+    > & {
+        /** Shrinks the column to the width of its content instead of stretching. */
+        readonly fit?: boolean;
+    };
 
     export function Cell({
+        fit = false,
         className,
         children,
         ...props
     }: CellProps): ReactElement {
         return (
-            <td className={clsx(styles.cell, className)} {...props}>
+            <td
+                className={clsx(styles.cell, fit && styles.fitWidth, className)}
+                {...props}
+            >
                 {children}
             </td>
         );

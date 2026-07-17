@@ -1,10 +1,16 @@
 import clsx from "clsx";
 
-import { styles, type ProgressBarSize } from "./progress-bar.styles.ts";
+import {
+    DEFAULT_TONE,
+    indicatorTones,
+    styles,
+    type ProgressBarSize,
+    type ProgressBarTone,
+} from "./progress-bar.styles.ts";
 
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 
-export type { ProgressBarSize };
+export type { ProgressBarSize, ProgressBarTone };
 
 export type ProgressBarProps = Omit<
     HTMLAttributes<HTMLDivElement>,
@@ -20,6 +26,8 @@ export type ProgressBarProps = Omit<
     readonly showValue?: boolean;
     /** Height of the progress track. */
     readonly size?: ProgressBarSize;
+    /** Color tone applied to the progress indicator. */
+    readonly tone?: ProgressBarTone;
 };
 
 type ProgressBarHeaderProps = {
@@ -59,6 +67,7 @@ export function ProgressBar({
     label,
     showValue = false,
     size = "sm",
+    tone = DEFAULT_TONE,
     className,
     "aria-label": ariaLabel,
     ...props
@@ -87,7 +96,7 @@ export function ProgressBar({
             >
                 <div
                     aria-hidden="true"
-                    className={styles.indicator}
+                    className={clsx(styles.indicator, indicatorTones[tone])}
                     style={{ width: `${percentage}%` }}
                 />
             </div>
