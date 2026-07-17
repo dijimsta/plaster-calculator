@@ -31,6 +31,25 @@ query GetQuestionnaireTemplate($id: UUID!) @auth(level: USER) {
     }
 }
 
+query ListProjectQuestionnaires @auth(level: USER) {
+    projectQuestionnaires(
+        where: { project: { ownerId: { eq_expr: "auth.uid" } } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
+        projectId
+        updatedAt
+        project {
+            name
+        }
+        questions: projectQuestionnaireQuestions_on_projectQuestionnaire(
+            orderBy: [{ position: ASC }]
+        ) {
+            id
+            answer
+        }
+    }
+}
+
 query GetProjectQuestionnaire($projectId: UUID!) @auth(level: USER) {
     project(key: { id: $projectId })
         @redact

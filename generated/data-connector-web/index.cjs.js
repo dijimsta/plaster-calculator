@@ -376,6 +376,21 @@ exports.getQuestionnaireTemplate = function getQuestionnaireTemplate(dcOrVars, v
 }
 ;
 
+const listProjectQuestionnairesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListProjectQuestionnaires');
+}
+listProjectQuestionnairesRef.operationName = 'ListProjectQuestionnaires';
+exports.listProjectQuestionnairesRef = listProjectQuestionnairesRef;
+
+exports.listProjectQuestionnaires = function listProjectQuestionnaires(dcOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  return executeQuery(listProjectQuestionnairesRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
 const getProjectQuestionnaireRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
