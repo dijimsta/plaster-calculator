@@ -5,3 +5,15 @@ type UserSettings @table(key: "ownerId") {
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
+
+type UserSignature @table(key: "ownerId") {
+    ownerId: String!
+    name: String
+    companyName: String
+    address: String
+    mobile: String
+    phone: String
+    email: String
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}

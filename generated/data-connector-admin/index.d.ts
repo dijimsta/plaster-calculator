@@ -550,6 +550,11 @@ export interface UserSettings_Key {
   __typename?: 'UserSettings_Key';
 }
 
+export interface UserSignature_Key {
+  ownerId: string;
+  __typename?: 'UserSignature_Key';
+}
+
 /** Generated Node Admin SDK operation action function for the 'GetAccountById' Query. Allow users to execute without passing in DataConnect. */
 export function getAccountById(dc: DataConnect, vars: GetAccountByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountByIdData>>;
 /** Generated Node Admin SDK operation action function for the 'GetAccountById' Query. Allow users to pass in custom DataConnect instances. */

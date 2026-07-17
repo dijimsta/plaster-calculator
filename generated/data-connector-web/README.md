@@ -18,6 +18,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*ListProjectQuestionnaires*](#listprojectquestionnaires)
   - [*GetProjectQuestionnaire*](#getprojectquestionnaire)
   - [*GetMyUserSettings*](#getmyusersettings)
+  - [*GetMyUserSignature*](#getmyusersignature)
 - [**Mutations**](#mutations)
   - [*CreateMyAccount*](#createmyaccount)
   - [*UpdateMyAccount*](#updatemyaccount)
@@ -41,6 +42,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*UpdateProjectQuestionnaireQuestionAnswerSource*](#updateprojectquestionnairequestionanswersource)
   - [*DeleteProjectQuestionnaireQuestion*](#deleteprojectquestionnairequestion)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
+  - [*UpsertMyUserSignature*](#upsertmyusersignature)
 
 # Accessing the connector
 A connector is a collection of Queries and Mutations. One SDK is generated for each connector - this SDK is generated for the connector `data-connector-web`. You can find more information about connectors in the [Data Connect documentation](https://firebase.google.com/docs/data-connect#how-does).
@@ -965,6 +967,107 @@ console.log(data.userSettings);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.userSettings);
+});
+```
+
+## GetMyUserSignature
+You can execute the `GetMyUserSignature` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+getMyUserSignature(options?: ExecuteQueryOptions): QueryPromise<GetMyUserSignatureData, undefined>;
+
+interface GetMyUserSignatureRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetMyUserSignatureData, undefined>;
+}
+export const getMyUserSignatureRef: GetMyUserSignatureRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getMyUserSignature(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetMyUserSignatureData, undefined>;
+
+interface GetMyUserSignatureRef {
+  ...
+  (dc: DataConnect): QueryRef<GetMyUserSignatureData, undefined>;
+}
+export const getMyUserSignatureRef: GetMyUserSignatureRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getMyUserSignatureRef:
+```typescript
+const name = getMyUserSignatureRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetMyUserSignature` query has no variables.
+### Return Type
+Recall that executing the `GetMyUserSignature` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetMyUserSignatureData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetMyUserSignatureData {
+  userSignature?: {
+    ownerId: string;
+    name?: string | null;
+    companyName?: string | null;
+    address?: string | null;
+    mobile?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & UserSignature_Key;
+}
+```
+### Using `GetMyUserSignature`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getMyUserSignature } from '@generated/data-connector-web';
+
+
+// Call the `getMyUserSignature()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getMyUserSignature();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getMyUserSignature(dataConnect);
+
+console.log(data.userSignature);
+
+// Or, you can use the `Promise` API.
+getMyUserSignature().then((response) => {
+  const data = response.data;
+  console.log(data.userSignature);
+});
+```
+
+### Using `GetMyUserSignature`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getMyUserSignatureRef } from '@generated/data-connector-web';
+
+
+// Call the `getMyUserSignatureRef()` function to get a reference to the query.
+const ref = getMyUserSignatureRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getMyUserSignatureRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.userSignature);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.userSignature);
 });
 ```
 
@@ -3513,6 +3616,134 @@ console.log(data.userSettings_upsert);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.userSettings_upsert);
+});
+```
+
+## UpsertMyUserSignature
+You can execute the `UpsertMyUserSignature` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+upsertMyUserSignature(vars?: UpsertMyUserSignatureVariables): MutationPromise<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+
+interface UpsertMyUserSignatureRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars?: UpsertMyUserSignatureVariables): MutationRef<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+}
+export const upsertMyUserSignatureRef: UpsertMyUserSignatureRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+upsertMyUserSignature(dc: DataConnect, vars?: UpsertMyUserSignatureVariables): MutationPromise<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+
+interface UpsertMyUserSignatureRef {
+  ...
+  (dc: DataConnect, vars?: UpsertMyUserSignatureVariables): MutationRef<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+}
+export const upsertMyUserSignatureRef: UpsertMyUserSignatureRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the upsertMyUserSignatureRef:
+```typescript
+const name = upsertMyUserSignatureRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpsertMyUserSignature` mutation has an optional argument of type `UpsertMyUserSignatureVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpsertMyUserSignatureVariables {
+  name?: string | null;
+  companyName?: string | null;
+  address?: string | null;
+  mobile?: string | null;
+  phone?: string | null;
+  email?: string | null;
+}
+```
+### Return Type
+Recall that executing the `UpsertMyUserSignature` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpsertMyUserSignatureData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpsertMyUserSignatureData {
+  userSignature_upsert: UserSignature_Key;
+}
+```
+### Using `UpsertMyUserSignature`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, upsertMyUserSignature, UpsertMyUserSignatureVariables } from '@generated/data-connector-web';
+
+// The `UpsertMyUserSignature` mutation has an optional argument of type `UpsertMyUserSignatureVariables`:
+const upsertMyUserSignatureVars: UpsertMyUserSignatureVariables = {
+  name: ..., // optional
+  companyName: ..., // optional
+  address: ..., // optional
+  mobile: ..., // optional
+  phone: ..., // optional
+  email: ..., // optional
+};
+
+// Call the `upsertMyUserSignature()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await upsertMyUserSignature(upsertMyUserSignatureVars);
+// Variables can be defined inline as well.
+const { data } = await upsertMyUserSignature({ name: ..., companyName: ..., address: ..., mobile: ..., phone: ..., email: ..., });
+// Since all variables are optional for this mutation, you can omit the `UpsertMyUserSignatureVariables` argument.
+const { data } = await upsertMyUserSignature();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await upsertMyUserSignature(dataConnect, upsertMyUserSignatureVars);
+
+console.log(data.userSignature_upsert);
+
+// Or, you can use the `Promise` API.
+upsertMyUserSignature(upsertMyUserSignatureVars).then((response) => {
+  const data = response.data;
+  console.log(data.userSignature_upsert);
+});
+```
+
+### Using `UpsertMyUserSignature`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, upsertMyUserSignatureRef, UpsertMyUserSignatureVariables } from '@generated/data-connector-web';
+
+// The `UpsertMyUserSignature` mutation has an optional argument of type `UpsertMyUserSignatureVariables`:
+const upsertMyUserSignatureVars: UpsertMyUserSignatureVariables = {
+  name: ..., // optional
+  companyName: ..., // optional
+  address: ..., // optional
+  mobile: ..., // optional
+  phone: ..., // optional
+  email: ..., // optional
+};
+
+// Call the `upsertMyUserSignatureRef()` function to get a reference to the mutation.
+const ref = upsertMyUserSignatureRef(upsertMyUserSignatureVars);
+// Variables can be defined inline as well.
+const ref = upsertMyUserSignatureRef({ name: ..., companyName: ..., address: ..., mobile: ..., phone: ..., email: ..., });
+// Since all variables are optional for this mutation, you can omit the `UpsertMyUserSignatureVariables` argument.
+const ref = upsertMyUserSignatureRef();
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = upsertMyUserSignatureRef(dataConnect, upsertMyUserSignatureVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.userSignature_upsert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.userSignature_upsert);
 });
 ```
 

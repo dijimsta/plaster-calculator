@@ -7,3 +7,17 @@ query GetMyUserSettings @auth(level: USER) {
         updatedAt
     }
 }
+
+query GetMyUserSignature @auth(level: USER) {
+    userSignature(key: { ownerId_expr: "auth.uid" }) {
+        ownerId
+        name
+        companyName
+        address
+        mobile
+        phone
+        email
+        createdAt
+        updatedAt
+    }
+}

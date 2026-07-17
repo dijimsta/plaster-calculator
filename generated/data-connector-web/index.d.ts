@@ -188,6 +188,20 @@ export interface GetMyUserSettingsData {
   } & UserSettings_Key;
 }
 
+export interface GetMyUserSignatureData {
+  userSignature?: {
+    ownerId: string;
+    name?: string | null;
+    companyName?: string | null;
+    address?: string | null;
+    mobile?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & UserSignature_Key;
+}
+
 export interface GetProjectQuestionnaireData {
   projectQuestionnaire?: {
     projectId: UUIDString;
@@ -440,9 +454,27 @@ export interface UpsertMyUserSettingsVariables {
   quoteFollowUpDays: number;
 }
 
+export interface UpsertMyUserSignatureData {
+  userSignature_upsert: UserSignature_Key;
+}
+
+export interface UpsertMyUserSignatureVariables {
+  name?: string | null;
+  companyName?: string | null;
+  address?: string | null;
+  mobile?: string | null;
+  phone?: string | null;
+  email?: string | null;
+}
+
 export interface UserSettings_Key {
   ownerId: string;
   __typename?: 'UserSettings_Key';
+}
+
+export interface UserSignature_Key {
+  ownerId: string;
+  __typename?: 'UserSignature_Key';
 }
 
 interface CreateMyAccountRef {
@@ -793,6 +825,18 @@ export const upsertMyUserSettingsRef: UpsertMyUserSettingsRef;
 export function upsertMyUserSettings(vars: UpsertMyUserSettingsVariables): MutationPromise<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
 export function upsertMyUserSettings(dc: DataConnect, vars: UpsertMyUserSettingsVariables): MutationPromise<UpsertMyUserSettingsData, UpsertMyUserSettingsVariables>;
 
+interface UpsertMyUserSignatureRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars?: UpsertMyUserSignatureVariables): MutationRef<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars?: UpsertMyUserSignatureVariables): MutationRef<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+  operationName: string;
+}
+export const upsertMyUserSignatureRef: UpsertMyUserSignatureRef;
+
+export function upsertMyUserSignature(vars?: UpsertMyUserSignatureVariables): MutationPromise<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+export function upsertMyUserSignature(dc: DataConnect, vars?: UpsertMyUserSignatureVariables): MutationPromise<UpsertMyUserSignatureData, UpsertMyUserSignatureVariables>;
+
 interface GetMyUserSettingsRef {
   /* Allow users to create refs without passing in DataConnect */
   (): QueryRef<GetMyUserSettingsData, undefined>;
@@ -804,4 +848,16 @@ export const getMyUserSettingsRef: GetMyUserSettingsRef;
 
 export function getMyUserSettings(options?: ExecuteQueryOptions): QueryPromise<GetMyUserSettingsData, undefined>;
 export function getMyUserSettings(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetMyUserSettingsData, undefined>;
+
+interface GetMyUserSignatureRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetMyUserSignatureData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<GetMyUserSignatureData, undefined>;
+  operationName: string;
+}
+export const getMyUserSignatureRef: GetMyUserSignatureRef;
+
+export function getMyUserSignature(options?: ExecuteQueryOptions): QueryPromise<GetMyUserSignatureData, undefined>;
+export function getMyUserSignature(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetMyUserSignatureData, undefined>;
 

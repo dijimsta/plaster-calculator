@@ -420,6 +420,20 @@ exports.upsertMyUserSettings = function upsertMyUserSettings(dcOrVars, vars) {
 }
 ;
 
+const upsertMyUserSignatureRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpsertMyUserSignature', inputVars);
+}
+upsertMyUserSignatureRef.operationName = 'UpsertMyUserSignature';
+exports.upsertMyUserSignatureRef = upsertMyUserSignatureRef;
+
+exports.upsertMyUserSignature = function upsertMyUserSignature(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars);
+  return executeMutation(upsertMyUserSignatureRef(dcInstance, inputVars));
+}
+;
+
 const getMyUserSettingsRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
@@ -432,5 +446,20 @@ exports.getMyUserSettings = function getMyUserSettings(dcOrOptions, options) {
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
   return executeQuery(getMyUserSettingsRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
+const getMyUserSignatureRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetMyUserSignature');
+}
+getMyUserSignatureRef.operationName = 'GetMyUserSignature';
+exports.getMyUserSignatureRef = getMyUserSignatureRef;
+
+exports.getMyUserSignature = function getMyUserSignature(dcOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  return executeQuery(getMyUserSignatureRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 ;
