@@ -61,7 +61,7 @@ export class EmailTemplateBuilder {
             unansweredQuestions.length === 0
                 ? NO_UNANSWERED_QUESTIONS_LINE
                 : unansweredQuestions
-                      .map((question) => question.label)
+                      .map((question) => `- ${question.label}`)
                       .join("\n");
         return [SCOPE_OF_WORK_INTRO, questions].join("\n");
     }
