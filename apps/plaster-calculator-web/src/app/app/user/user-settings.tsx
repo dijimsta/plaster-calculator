@@ -1,10 +1,10 @@
 "use client";
 
-import { Button, Paragraph } from "@libraries/uikit-web";
+import { Button, Input, Paragraph, Toggle } from "@libraries/uikit-web";
 import { useEffect, useState } from "react";
 
+import { userPageStyles as styles } from "./page.styles.js";
 import { getSettings, updateSettings } from "../../../lib/api.js";
-import { cx, ui } from "../../../lib/styles.js";
 
 import type { UserSettings } from "../../../types.js";
 
@@ -64,64 +64,87 @@ export function UserSettingsPanel() {
     }
 
     return (
-        <section className={cx(ui.panel, ui.stack)}>
-            <div>
-                <h2>Reminder settings</h2>
-                {loading && (
-                    <Paragraph textSize="sm" variant="muted">
-                        Loading settings...
-                    </Paragraph>
-                )}
-                {message && (
-                    <Paragraph textSize="sm" variant="muted">
-                        {message}
-                    </Paragraph>
-                )}
+        <section className={styles.section}>
+            <div className={styles.sectionCopy}>
+                <h2 className={styles.sectionTitle}>Reminder settings</h2>
+                <Paragraph
+                    className={styles.sectionDescription}
+                    textSize="sm"
+                    variant="muted"
+                >
+                    Control how quote follow-up reminders are created for new
+                    work.
+                </Paragraph>
+                <div className={styles.statusText}>
+                    {loading && (
+                        <Paragraph textSize="sm" variant="muted">
+                            Loading settings...
+                        </Paragraph>
+                    )}
+                    {message && (
+                        <Paragraph textSize="sm" variant="muted">
+                            {message}
+                        </Paragraph>
+                    )}
+                </div>
             </div>
-            <label className="flex items-center gap-3">
-                <input
-                    checked={quoteFollowUpEnabled}
-                    disabled={loading || saving}
-                    type="checkbox"
-                    onChange={(event) =>
-                        setQuoteFollowUpEnabled(event.target.checked)
-                    }
-                />
-                <span>
-                    Automatically create reminders to follow up on quotes
-                </span>
-            </label>
-            {quoteFollowUpEnabled && (
-                <div className={cx(ui.field, "max-w-[220px]")}>
-                    <label htmlFor="quoteFollowUpDays">
-                        Automatic reminder due date in days
-                    </label>
-                    <input
-                        id="quoteFollowUpDays"
-                        className={ui.input}
+            <div className={styles.settingsPanel}>
+                <div className={styles.settingRow}>
+                    <div className={styles.settingText}>
+                        <label
+                            className={styles.fieldLabel}
+                            htmlFor="quoteFollowUpEnabled"
+                        >
+                            Quote follow-up reminders
+                        </label>
+                        <Paragraph textSize="sm" variant="muted">
+                            Automatically create reminders to follow up on
+                            quotes.
+                        </Paragraph>
+                    </div>
+                    <Toggle
+                        id="quoteFollowUpEnabled"
+                        checked={quoteFollowUpEnabled}
                         disabled={loading || saving}
-                        min={minimumReminderDays}
-                        step={1}
-                        type="number"
-                        value={quoteFollowUpDays}
                         onChange={(event) =>
-                            setQuoteFollowUpDays(
-                                sanitizeReminderDays(
-                                    Number(event.target.value),
-                                ),
-                            )
+                            setQuoteFollowUpEnabled(event.target.checked)
                         }
                     />
                 </div>
-            )}
-            <div className={ui.buttonRow}>
-                <Button
-                    variant="primary"
-                    disabled={loading || saving || !settings}
-                    onClick={() => void saveSettings()}
-                >
-                    {saving ? "Saving..." : "Save reminder settings"}
-                </Button>
+                {quoteFollowUpEnabled && (
+                    <div className={styles.fieldGroup}>
+                        <label
+                            className={styles.fieldLabel}
+                            htmlFor="quoteFollowUpDays"
+                        >
+                            Due in days
+                        </label>
+                        <Input
+                            id="quoteFollowUpDays"
+                            disabled={loading || saving}
+                            min={minimumReminderDays}
+                            step={1}
+                            type="number"
+                            value={quoteFollowUpDays}
+                            onChange={(event) =>
+                                setQuoteFollowUpDays(
+                                    sanitizeReminderDays(
+                                        Number(event.target.value),
+                                    ),
+                                )
+                            }
+                        />
+                    </div>
+                )}
+                <div className={styles.actionRow}>
+                    <Button
+                        variant="primary"
+                        disabled={loading || saving || !settings}
+                        onClick={() => void saveSettings()}
+                    >
+                        {saving ? "Saving..." : "Save reminder settings"}
+                    </Button>
+                </div>
             </div>
         </section>
     );

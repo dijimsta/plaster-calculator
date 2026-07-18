@@ -1,5 +1,6 @@
 import * as DataConnector from "@generated/data-connector-web";
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
+import { QueryFetchPolicy } from "firebase/data-connect";
 
 import type { UserSettings } from "../../types.js";
 
@@ -15,7 +16,9 @@ type UserSettingsRow = NonNullable<
 >;
 
 export async function getSettings(): Promise<UserSettings> {
-    const result = await DataConnector.getMyUserSettings(dataConnect);
+    const result = await DataConnector.getMyUserSettings(dataConnect, {
+        fetchPolicy: QueryFetchPolicy.SERVER_ONLY,
+    });
     return toUserSettings(result.data.userSettings);
 }
 

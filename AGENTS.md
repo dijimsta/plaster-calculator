@@ -16,6 +16,11 @@ with no errors before the commit is made. If you cannot run them yourself, ask t
 These checks must also be run before opening a pull request. If any check modifies files (e.g. prettier rewrites),
 stage and commit those changes before creating the PR.
 
+## Scratch Files
+
+When a task needs a throwaway file (command output, logs, a one-off script), write it under the repo's `tmp/`
+directory (gitignored) rather than `/tmp` or a loose untracked path in the repo root.
+
 ## Manual UI Verification
 
 Do not launch dev servers, Storybook, or browser automation (e.g. Playwright/chromium-cli) to visually verify UI
