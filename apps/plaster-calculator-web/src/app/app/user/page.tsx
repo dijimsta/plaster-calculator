@@ -1,19 +1,12 @@
 "use client";
 
-import {
-    Box,
-    Breadcrumb,
-    PageHeading,
-    Paragraph,
-    Text,
-} from "@libraries/uikit-web";
-import { Home } from "lucide-react";
+import { Box, Paragraph, Text } from "@libraries/uikit-web";
 
+import { userPageStyles as styles } from "./page.styles.js";
+import { UserPageHeader } from "./user-page-header.js";
 import { UserSettingsPanel } from "./user-settings.js";
 import { useUser } from "../../../auth/user.hook.js";
-import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { ThemeSettingsControl } from "../../../components/theme-settings-control.js";
-import { activeTheme, cx, ui } from "../../../lib/styles.js";
 
 export default function UserPage() {
     const user = useUser();
@@ -22,90 +15,103 @@ export default function UserPage() {
 
     return (
         <>
-            <PageHeading>
-                <PageHeading.Breadcrumbs>
-                    <Breadcrumb>
-                        <RoutedBreadcrumbItem href="/app">
-                            <Home size={16} aria-label="Home" />
-                        </RoutedBreadcrumbItem>
-                        <Breadcrumb.Item current>User</Breadcrumb.Item>
-                    </Breadcrumb>
-                </PageHeading.Breadcrumbs>
-                <PageHeading.Content>
-                    <PageHeading.Title>User</PageHeading.Title>
-                    <PageHeading.Description>
-                        Profile and settings
-                    </PageHeading.Description>
-                </PageHeading.Content>
-            </PageHeading>
+            <UserPageHeader activeTab="general" />
             <Box direction="column" padding="md">
-                <section className={cx(ui.layoutGrid, "items-start")}>
-                    <div className={cx(ui.panel, ui.stack)}>
-                        <div className="flex items-center gap-3">
-                            {user.photoURL ? (
-                                <img
-                                    alt=""
-                                    className="h-14 w-14 rounded-full object-cover"
-                                    src={user.photoURL}
-                                />
-                            ) : (
-                                <div
-                                    className={cx(
-                                        "flex h-14 w-14 items-center justify-center rounded-full text-xl font-semibold",
-                                        activeTheme.softBg,
-                                    )}
-                                >
-                                    {getInitial(user.displayName, user.email)}
+                <div className={styles.settingsStack}>
+                    <section className={styles.section}>
+                        <div className={styles.sectionCopy}>
+                            <h2 className={styles.sectionTitle}>Profile</h2>
+                            <Paragraph
+                                className={styles.sectionDescription}
+                                textSize="sm"
+                                variant="muted"
+                            >
+                                Account details from your signed-in profile and
+                                connected login providers.
+                            </Paragraph>
+                        </div>
+                        <div className={styles.settingsPanel}>
+                            <div className={styles.profileHeader}>
+                                {user.photoURL ? (
+                                    <img
+                                        alt=""
+                                        className={styles.avatar}
+                                        src={user.photoURL}
+                                    />
+                                ) : (
+                                    <div className={styles.avatarFallback}>
+                                        {getInitial(
+                                            user.displayName,
+                                            user.email,
+                                        )}
+                                    </div>
+                                )}
+                                <div className={styles.profileText}>
+                                    <h3 className={styles.profileName}>
+                                        {user.displayName || "Signed in user"}
+                                    </h3>
+                                    <Paragraph textSize="sm" variant="muted">
+                                        {user.email || "No email address"}
+                                    </Paragraph>
                                 </div>
-                            )}
-                            <div>
-                                <h2>{user.displayName || "Signed in user"}</h2>
-                                <Paragraph textSize="sm" variant="muted">
-                                    {user.email || "No email address"}
-                                </Paragraph>
+                            </div>
+                            <dl className={styles.metaList}>
+                                <ProfileRow
+                                    label="Name"
+                                    value={user.displayName}
+                                />
+                                <ProfileRow label="Email" value={user.email} />
+                            </dl>
+                            <div className={styles.providerSection}>
+                                <h3 className={styles.sectionTitle}>
+                                    Connected logins
+                                </h3>
+                                {user.providerData.length > 0 ? (
+                                    <div className={styles.providerList}>
+                                        {user.providerData.map((provider) => (
+                                            <div
+                                                className={styles.providerItem}
+                                                key={`${provider.providerId}-${provider.uid}`}
+                                            >
+                                                <strong>
+                                                    {formatProviderId(
+                                                        provider.providerId,
+                                                    )}
+                                                </strong>
+                                                <Text size="sm" variant="muted">
+                                                    {provider.email ||
+                                                        provider.phoneNumber ||
+                                                        provider.uid}
+                                                </Text>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <Paragraph textSize="sm" variant="muted">
+                                        No connected social logins.
+                                    </Paragraph>
+                                )}
                             </div>
                         </div>
-                        <dl className="grid gap-3">
-                            <ProfileRow label="Name" value={user.displayName} />
-                            <ProfileRow label="Email" value={user.email} />
-                        </dl>
-                        <div className={ui.stack}>
-                            <h2>Connected logins</h2>
-                            {user.providerData.length > 0 ? (
-                                <div className={ui.projectList}>
-                                    {user.providerData.map((provider) => (
-                                        <div
-                                            className={ui.projectItem}
-                                            key={`${provider.providerId}-${provider.uid}`}
-                                        >
-                                            <strong>
-                                                {formatProviderId(
-                                                    provider.providerId,
-                                                )}
-                                            </strong>
-                                            <Text size="sm" variant="muted">
-                                                {provider.email ||
-                                                    provider.phoneNumber ||
-                                                    provider.uid}
-                                            </Text>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <Paragraph textSize="sm" variant="muted">
-                                    No connected social logins.
-                                </Paragraph>
-                            )}
+                    </section>
+                    <section className={styles.section}>
+                        <div className={styles.sectionCopy}>
+                            <h2 className={styles.sectionTitle}>Appearance</h2>
+                            <Paragraph
+                                className={styles.sectionDescription}
+                                textSize="sm"
+                                variant="muted"
+                            >
+                                Choose the colour mode used across the
+                                calculator workspace.
+                            </Paragraph>
                         </div>
-                    </div>
-                    <div className={ui.stack}>
-                        <section className={cx(ui.panel, ui.stack)}>
-                            <h2>Appearance</h2>
+                        <div className={styles.settingsPanel}>
                             <ThemeSettingsControl />
-                        </section>
-                        <UserSettingsPanel />
-                    </div>
-                </section>
+                        </div>
+                    </section>
+                    <UserSettingsPanel />
+                </div>
             </Box>
         </>
     );
@@ -119,9 +125,9 @@ function ProfileRow({
     readonly value: string | null | undefined;
 }) {
     return (
-        <div className="grid gap-1">
-            <dt className={ui.label}>{label}</dt>
-            <dd className="m-0 break-words">{value || "Not provided"}</dd>
+        <div className={styles.metaRow}>
+            <dt className={styles.fieldLabel}>{label}</dt>
+            <dd className={styles.value}>{value || "Not provided"}</dd>
         </div>
     );
 }
