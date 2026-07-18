@@ -81,6 +81,8 @@ Add login endpoint
 For commit messages, append the issue key in square brackets at the end of the subject when a ticket exists. Omit it
 when there is no ticket.
 
+Before starting work on a ticket, transition it to "In Progress".
+
 ## Commit Messages
 
 All commits must use the [Conventional Commits](https://www.conventionalcommits.org/) format:
