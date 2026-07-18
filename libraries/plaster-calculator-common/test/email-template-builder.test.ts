@@ -41,8 +41,8 @@ test("build lists each unanswered question", () => {
         { label: "How many bedrooms?" },
         { label: "What is the ceiling height?" },
     ]);
-    assert.match(body, /^How many bedrooms\?$/m);
-    assert.match(body, /^What is the ceiling height\?$/m);
+    assert.match(body, /^- How many bedrooms\?$/m);
+    assert.match(body, /^- What is the ceiling height\?$/m);
 });
 
 test("build notes when there are no unanswered questions", () => {

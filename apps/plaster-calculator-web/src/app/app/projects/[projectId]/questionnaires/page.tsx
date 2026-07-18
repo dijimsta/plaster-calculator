@@ -3,12 +3,14 @@
 import {
     AddProjectQuestionnaireQuestionModal,
     AddQuestionsFromTemplateDrawer,
+    GenerateQuestionnaireEmailModal,
     ProjectQuestionnaireQuestionList,
 } from "@libraries/plaster-calculator-ui";
 import { Box, Button, EmptyState } from "@libraries/uikit-web";
-import { ClipboardList, Plus, Sparkles } from "lucide-react";
+import { ClipboardList, Mail, Plus, Sparkles } from "lucide-react";
 import { use, useCallback, useEffect, useState } from "react";
 
+import { useGenerateQuestionnaireEmailModal } from "./generate-questionnaire-email.hook.js";
 import {
     useAddProjectQuestionnaireQuestionCallback,
     useAnswerQuestionnaireWithAiCallback,
@@ -90,6 +92,10 @@ export default function ProjectQuestionnairesPage({
     const confirmAnswer =
         useConfirmProjectQuestionnaireQuestionAnswerCallback(projectId);
     const answerWithAi = useAnswerQuestionnaireWithAiCallback(projectId);
+    const emailModal = useGenerateQuestionnaireEmailModal(
+        project?.accountId ?? null,
+        questions,
+    );
 
     async function handleAddQuestion(label: string): Promise<void> {
         setAddingQuestion(true);
@@ -139,6 +145,14 @@ export default function ProjectQuestionnairesPage({
                     </Button>
                     <Button
                         variant="secondary"
+                        icon={<Mail size={18} aria-hidden="true" />}
+                        disabled={emailModal.disabled}
+                        onClick={emailModal.openModal}
+                    >
+                        Generate email
+                    </Button>
+                    <Button
+                        variant="secondary"
                         onClick={() => setTemplateDrawerOpen(true)}
                     >
                         Add from template
@@ -174,6 +188,13 @@ export default function ProjectQuestionnairesPage({
                 isSaving={isAddingQuestion}
                 onClose={() => setAddQuestionModalOpen(false)}
                 onAdd={(label) => void handleAddQuestion(label)}
+            />
+            <GenerateQuestionnaireEmailModal
+                open={emailModal.isOpen}
+                onClose={emailModal.closeModal}
+                subject={emailModal.subject}
+                body={emailModal.body}
+                mailtoHref={emailModal.mailtoHref}
             />
             <AddQuestionsFromTemplateDrawer
                 open={isTemplateDrawerOpen}
