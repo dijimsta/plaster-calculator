@@ -178,7 +178,12 @@ function createUi(theme: Theme) {
             theme.panelBg,
         ),
         modalBackdrop:
-            "fixed inset-0 z-30 flex items-center justify-center bg-slate-950/60 p-6",
+            "fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/60 p-6",
+        modalScrollable: cx(
+            "flex max-h-[88vh] w-[min(980px,100%)] max-w-[980px] flex-col gap-4 overflow-hidden rounded-lg p-[18px] shadow-lg",
+            theme.panelBg,
+        ),
+        modalScrollableBody: "min-h-0 flex-1 overflow-y-auto",
         muted: cx("text-sm", theme.muted),
         panel: cx(
             "rounded-lg border p-[18px] shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",

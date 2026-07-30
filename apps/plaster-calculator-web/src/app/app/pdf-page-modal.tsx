@@ -17,8 +17,8 @@ export function PdfPageModal({
 }: PdfPageModalProps) {
     return (
         <div className={ui.modalBackdrop}>
-            <section className={ui.modal}>
-                <header className={ui.editorToolbar}>
+            <section className={ui.modalScrollable}>
+                <header className={cx(ui.editorToolbar, "shrink-0")}>
                     <div>
                         <h2>Select PDF Pages</h2>
                         <Paragraph textSize="sm" variant="muted">
@@ -33,9 +33,11 @@ export function PdfPageModal({
                         <X size={18} />
                     </Button>
                 </header>
-                {errorMessage && <p className={ui.error}>{errorMessage}</p>}
+                {errorMessage && (
+                    <p className={cx(ui.error, "shrink-0")}>{errorMessage}</p>
+                )}
                 {pageUploadProgress && (
-                    <div className={ui.pdfProgress}>
+                    <div className={cx(ui.pdfProgress, "shrink-0")}>
                         <div className={ui.pdfProgressLabel}>
                             <span>{pageUploadProgress.label}</span>
                             <span>
@@ -50,27 +52,34 @@ export function PdfPageModal({
                         />
                     </div>
                 )}
-                <div className={ui.previewGrid}>
-                    {pdfPages.map((page) => (
-                        <div className={ui.previewTile} key={page.pageNumber}>
-                            <img
-                                src={page.previewUrl}
-                                alt={`Page ${page.pageNumber}`}
-                            />
-                            <footer>
-                                <span>Page {page.pageNumber}</span>
-                                <input
-                                    type="checkbox"
-                                    checked={selectedPages.includes(
-                                        page.pageNumber,
-                                    )}
-                                    onChange={() => togglePage(page.pageNumber)}
+                <div className={ui.modalScrollableBody}>
+                    <div className={ui.previewGrid}>
+                        {pdfPages.map((page) => (
+                            <div
+                                className={ui.previewTile}
+                                key={page.pageNumber}
+                            >
+                                <img
+                                    src={page.previewUrl}
+                                    alt={`Page ${page.pageNumber}`}
                                 />
-                            </footer>
-                        </div>
-                    ))}
+                                <footer>
+                                    <span>Page {page.pageNumber}</span>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedPages.includes(
+                                            page.pageNumber,
+                                        )}
+                                        onChange={() =>
+                                            togglePage(page.pageNumber)
+                                        }
+                                    />
+                                </footer>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                <footer className={cx(ui.buttonRow, "justify-end")}>
+                <footer className={cx(ui.buttonRow, "justify-end shrink-0")}>
                     <Button
                         variant="secondary"
                         disabled={loading}
