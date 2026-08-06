@@ -1,7 +1,13 @@
 "use client";
 
-import { Box, Button, Paragraph, Text } from "@libraries/uikit-web";
-import { LoaderCircle, X } from "lucide-react";
+import {
+    Box,
+    EmptyState,
+    Paragraph,
+    Text,
+    useNotificationsManager,
+} from "@libraries/uikit-web";
+import { Building2, LoaderCircle } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 
 import { AccountDetailHeader } from "./account-detail-header.js";
@@ -46,6 +52,7 @@ export function AccountDetailView({
     accountId,
     onAccountDeleted,
 }: AccountDetailViewProps) {
+    const { notify } = useNotificationsManager();
     const [account, setAccount] = useState<AccountDetail | null>(null);
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [draft, setDraft] = useState<AccountDetailDraft | null>(null);
@@ -58,17 +65,10 @@ export function AccountDetailView({
     const [isLoading, setIsLoading] = useState(true);
     const [busyMessage, setBusyMessage] = useState("");
     const [message, setMessage] = useState("");
-    const [toast, setToast] = useState("");
 
     useEffect(() => {
         void load();
     }, [accountId]);
-
-    useEffect(() => {
-        if (!toast) return;
-        const timeout = window.setTimeout(() => setToast(""), 6000);
-        return () => window.clearTimeout(timeout);
-    }, [toast]);
 
     const accountProjects = projects;
     const hasAccountChanges =
@@ -128,7 +128,7 @@ export function AccountDetailView({
             });
             updateAccountState(updated);
             closeContactModal();
-            setToast("Contact added.");
+            notify({ intent: "success", title: "Contact added." });
         } catch (error) {
             setMessage(errorMessage(error, "Unable to add contact"));
         }
@@ -220,18 +220,6 @@ export function AccountDetailView({
                 refresh={() => void load()}
             />
             <Box direction="column" gap="lg" padding="md">
-                {toast && (
-                    <div className={ui.toast}>
-                        <span>{toast}</span>
-                        <Button
-                            variant="secondary"
-                            icon={<X size={16} aria-hidden="true" />}
-                            onClick={() => setToast("")}
-                            label="Dismiss message"
-                            type="button"
-                        />
-                    </div>
-                )}
                 {message && (
                     <Paragraph textSize="sm" variant="muted">
                         {message}
@@ -268,7 +256,10 @@ export function AccountDetailView({
                         </div>
                     </section>
                 ) : (
-                    <section className={ui.panel}>Account not found.</section>
+                    <EmptyState
+                        icon={<Building2 />}
+                        title="Account not found"
+                    />
                 )}
                 {isContactModalOpen && (
                     <NewContactModal
