@@ -1,7 +1,14 @@
 "use client";
 
-import { Button, Input, Label, Paragraph, Text } from "@libraries/uikit-web";
-import { LoaderCircle, RefreshCcw, Search } from "lucide-react";
+import {
+    Button,
+    EmptyState,
+    Input,
+    Label,
+    Paragraph,
+    Text,
+} from "@libraries/uikit-web";
+import { Building2, LoaderCircle, RefreshCcw, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { AccountRow } from "./account-row.js";
@@ -93,9 +100,10 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
                         <AccountRow key={account.id} account={account} />
                     ))}
                     {filtered.length === 0 && (
-                        <Paragraph textSize="sm" variant="muted">
-                            No accounts found.
-                        </Paragraph>
+                        <EmptyState
+                            icon={<Building2 />}
+                            title="No accounts found"
+                        />
                     )}
                 </div>
             )}

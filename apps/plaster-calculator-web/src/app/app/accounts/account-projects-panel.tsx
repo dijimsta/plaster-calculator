@@ -1,6 +1,7 @@
 "use client";
 
-import { Paragraph, Text } from "@libraries/uikit-web";
+import { EmptyState, Text } from "@libraries/uikit-web";
+import { FolderKanban } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
 import { cx, ui } from "../../../lib/styles.js";
@@ -31,9 +32,10 @@ export function AccountProjectsPanel({ projects }: AccountProjectsPanelProps) {
                 </Link>
             ))}
             {projects.length === 0 && (
-                <Paragraph textSize="sm" variant="muted">
-                    No projects are linked to this account.
-                </Paragraph>
+                <EmptyState
+                    icon={<FolderKanban />}
+                    title="No projects are linked to this account"
+                />
             )}
         </section>
     );

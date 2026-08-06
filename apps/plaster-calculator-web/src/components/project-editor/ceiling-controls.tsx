@@ -1,7 +1,7 @@
-import { Button } from "@libraries/uikit-web";
+import { Button, Input, Label, SelectMenu } from "@libraries/uikit-web";
 
 import { ValidationMessage } from "./validation-message.js";
-import { cx, ui } from "../../lib/styles.js";
+import { ui } from "../../lib/styles.js";
 
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type { ValidationIssue } from "../../lib/validation.js";
@@ -45,17 +45,17 @@ export function CeilingControls({
     return (
         <>
             <div className={ui.field}>
-                <label>Room ceiling</label>
-                <select
-                    className={ui.input}
+                <Label>Room ceiling</Label>
+                <SelectMenu
+                    options={[
+                        { value: "flat", label: "Flat" },
+                        { value: "raked", label: "Raked" },
+                    ]}
                     value={mode}
                     onChange={(event) =>
                         setCeilingMode(event.target.value as "flat" | "raked")
                     }
-                >
-                    <option value="flat">Flat</option>
-                    <option value="raked">Raked</option>
-                </select>
+                />
             </div>
             {mode === "flat" && (
                 <FlatCeilingHeightField
@@ -102,10 +102,10 @@ function FlatCeilingHeightField({
 
     return (
         <div className={ui.field}>
-            <label>Room height override mm</label>
-            <input
-                className={cx(ui.input, error && ui.inputInvalid)}
+            <Label>Room height override mm</Label>
+            <Input
                 type="number"
+                invalid={Boolean(error)}
                 placeholder={placeholder}
                 value={value ?? ""}
                 onChange={(event) => setSelectedAreaHeight(event.target.value)}
@@ -206,10 +206,10 @@ function RakedHeightField({
 }: RakedHeightFieldProps) {
     return (
         <div className={ui.field}>
-            <label>{label}</label>
-            <input
-                className={cx(ui.input, error && ui.inputInvalid)}
+            <Label>{label}</Label>
+            <Input
                 type="number"
+                invalid={Boolean(error)}
                 value={value ?? ""}
                 onChange={(event) => setRakedHeight(field, event.target.value)}
             />

@@ -1,12 +1,19 @@
 import {
     Button,
+    EmptyState,
     Input,
     Label,
-    Paragraph,
     SelectMenu,
     Text,
 } from "@libraries/uikit-web";
-import { LoaderCircle, Pencil, RefreshCcw, Search, Trash2 } from "lucide-react";
+import {
+    FolderKanban,
+    LoaderCircle,
+    Pencil,
+    RefreshCcw,
+    Search,
+    Trash2,
+} from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
 import { salesStatusLabel } from "../../lib/sales-status.js";
@@ -99,24 +106,26 @@ export function ProjectHistory({
                             <div className={ui.projectItem} key={project.id}>
                                 <Link href={`/app/projects/${project.id}`}>
                                     {renamingId === project.id ? (
-                                        <input
-                                            className={ui.input}
-                                            value={renameValue}
+                                        <span
                                             onClick={(event) =>
                                                 event.preventDefault()
                                             }
-                                            onChange={(event) =>
-                                                setRenameValue(
-                                                    event.target.value,
-                                                )
-                                            }
-                                            onKeyDown={(event) => {
-                                                if (event.key === "Enter") {
-                                                    event.preventDefault();
-                                                    saveRename(project.id);
+                                        >
+                                            <Input
+                                                value={renameValue}
+                                                onChange={(event) =>
+                                                    setRenameValue(
+                                                        event.target.value,
+                                                    )
                                                 }
-                                            }}
-                                        />
+                                                onKeyDown={(event) => {
+                                                    if (event.key === "Enter") {
+                                                        event.preventDefault();
+                                                        saveRename(project.id);
+                                                    }
+                                                }}
+                                            />
+                                        </span>
                                     ) : (
                                         <strong>{project.name}</strong>
                                     )}
@@ -176,10 +185,10 @@ export function ProjectHistory({
                             </div>
                         ))}
                         {filtered.length === 0 && (
-                            <Paragraph textSize="sm" variant="muted">
-                                No {salesStatusLabel(activeSalesStatus)}{" "}
-                                projects.
-                            </Paragraph>
+                            <EmptyState
+                                icon={<FolderKanban />}
+                                title={`No ${salesStatusLabel(activeSalesStatus)} projects`}
+                            />
                         )}
                     </>
                 )}
