@@ -1,14 +1,25 @@
 "use client";
 
+import { useRouter } from "next/navigation.js";
 import { use } from "react";
 
 import { AccountDetailView } from "../account-detail-view.js";
 
-export default function AccountDetailPage({
-    params,
-}: {
-    params: Promise<{ accountId: string }>;
-}) {
+export type AccountDetailPageParams = {
+    readonly accountId: string;
+};
+
+export type AccountDetailPageProps = {
+    readonly params: Promise<AccountDetailPageParams>;
+};
+
+export default function AccountDetailPage({ params }: AccountDetailPageProps) {
     const { accountId } = use(params);
-    return <AccountDetailView accountId={accountId} />;
+    const router = useRouter();
+    return (
+        <AccountDetailView
+            accountId={accountId}
+            onAccountDeleted={() => router.replace("/app/accounts")}
+        />
+    );
 }

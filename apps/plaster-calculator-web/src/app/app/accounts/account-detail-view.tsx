@@ -2,7 +2,6 @@
 
 import { Box, Button, Paragraph, Text } from "@libraries/uikit-web";
 import { LoaderCircle, X } from "lucide-react";
-import { useRouter } from "next/navigation.js";
 import { useEffect, useState, type FormEvent } from "react";
 
 import { AccountDetailHeader } from "./account-detail-header.js";
@@ -40,10 +39,13 @@ import type {
 
 interface AccountDetailViewProps {
     readonly accountId: string;
+    readonly onAccountDeleted: () => void;
 }
 
-export function AccountDetailView({ accountId }: AccountDetailViewProps) {
-    const router = useRouter();
+export function AccountDetailView({
+    accountId,
+    onAccountDeleted,
+}: AccountDetailViewProps) {
     const [account, setAccount] = useState<AccountDetail | null>(null);
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [draft, setDraft] = useState<AccountDetailDraft | null>(null);
@@ -178,7 +180,7 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
         setBusyMessage("Deleting account...");
         try {
             await deleteAccount(account.id);
-            router.replace("/app/accounts");
+            onAccountDeleted();
         } catch (error) {
             setBusyMessage("");
             setMessage(errorMessage(error, "Unable to delete account"));
