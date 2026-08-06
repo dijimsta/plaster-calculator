@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
+import { createElement, useEffect, useMemo, useState } from "react";
 
 import {
     deleteProject,
@@ -26,8 +27,6 @@ interface DashboardProjectsState {
     readonly query: string;
     readonly renameValue: string;
     readonly renamingId: string | null;
-    readonly toast: string;
-    readonly toastProject: { id: string; name: string } | null;
     readonly refresh: () => Promise<void>;
     readonly removeProject: (project: ProjectSummary) => Promise<void>;
     readonly saveRename: (projectId: string) => Promise<void>;
@@ -37,13 +36,10 @@ interface DashboardProjectsState {
     readonly setActiveSalesStatus: (status: ActiveProjectSalesStatus) => void;
     readonly setRenameValue: (value: string) => void;
     readonly setRenamingId: (projectId: string | null) => void;
-    readonly setToast: (toast: string) => void;
-    readonly setToastProject: (
-        project: { id: string; name: string } | null,
-    ) => void;
 }
 
 export function useDashboardProjects(): DashboardProjectsState {
+    const { notify } = useNotificationsManager();
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [accountCompanyNames, setAccountCompanyNames] = useState<
         ReadonlyMap<string, string>
@@ -54,11 +50,6 @@ export function useDashboardProjects(): DashboardProjectsState {
     const [projectsLoading, setProjectsLoading] = useState(true);
     const [message, setMessage] = useState("");
     const [busyMessage, setBusyMessage] = useState("");
-    const [toast, setToast] = useState("");
-    const [toastProject, setToastProject] = useState<{
-        id: string;
-        name: string;
-    } | null>(null);
     const [processingProjectId, setProcessingProjectId] = useState<
         string | null
     >(null);
@@ -80,31 +71,41 @@ export function useDashboardProjects(): DashboardProjectsState {
                 const project = await getProjectStatus(processingProjectId);
                 setProjects((current) => upsertProject(current, project));
                 if (project.status === "READY") {
-                    setToast("finished processing.");
-                    setToastProject({ id: project.id, name: project.name });
+                    notify({
+                        intent: "success",
+                        title: `${project.name} finished processing`,
+                        actions: projectNotificationAction(project.id),
+                    });
                     setProcessingProjectId(null);
                     window.clearInterval(timer);
                     await refresh();
                 }
                 if (project.status === "FAILED") {
-                    setToast(
-                        `${project.name} failed to process${project.processingError ? `: ${project.processingError}` : "."}`,
-                    );
-                    setToastProject(null);
+                    notify({
+                        intent: "error",
+                        title: `${project.name} failed to process`,
+                        description:
+                            project.processingError ??
+                            "The project could not be processed.",
+                    });
                     setProcessingProjectId(null);
                     window.clearInterval(timer);
                     await refresh();
                 }
             } catch (error) {
-                setToast(
-                    error instanceof Error
-                        ? error.message
-                        : "Unable to poll processing status",
-                );
+                notify({
+                    intent: "error",
+                    title: "Unable to check project status",
+                    description:
+                        error instanceof Error
+                            ? error.message
+                            : "Unable to poll processing status",
+                    duration: 6000,
+                });
             }
         }, 10_000);
         return () => window.clearInterval(timer);
-    }, [processingProjectId]);
+    }, [notify, processingProjectId]);
 
     async function refresh() {
         setProjectsLoading(true);
@@ -166,10 +167,14 @@ export function useDashboardProjects(): DashboardProjectsState {
         try {
             await renameProject(projectId, trimmed);
             setRenamingId(null);
-            setToast("Project renamed.");
+            notify({ intent: "success", title: "Project renamed" });
             await refresh();
         } catch (error) {
-            setToast(error instanceof Error ? error.message : "Rename failed");
+            notify({
+                intent: "error",
+                title: "Rename failed",
+                description: error instanceof Error ? error.message : undefined,
+            });
         }
     }
 
@@ -199,8 +204,6 @@ export function useDashboardProjects(): DashboardProjectsState {
         query,
         renameValue,
         renamingId,
-        toast,
-        toastProject,
         refresh,
         removeProject,
         saveRename,
@@ -210,9 +213,15 @@ export function useDashboardProjects(): DashboardProjectsState {
         setQuery,
         setRenameValue,
         setRenamingId,
-        setToast,
-        setToastProject,
     };
+}
+
+function projectNotificationAction(projectId: string) {
+    return createElement(
+        ButtonLink,
+        { href: `/app/projects/${projectId}`, variant: "link" },
+        "Open project",
+    );
 }
 
 function upsertProject(

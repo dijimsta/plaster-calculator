@@ -1,9 +1,8 @@
 "use client";
 
-import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
+import { Alert, Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
 import { Home } from "lucide-react";
 
-import { DashboardToast } from "./dashboard-toast.js";
 import { useDashboardProjects } from "./hooks/use-dashboard-projects.js";
 import { useDashboardUpload } from "./hooks/use-dashboard-upload.js";
 import { NewProjectForm } from "./new-project-form.js";
@@ -18,8 +17,6 @@ export default function HomePage() {
         refresh: projects.refresh,
         setMessage: projects.setMessage,
         setProcessingProjectId: projects.setProcessingProjectId,
-        setToast: projects.setToast,
-        setToastProject: projects.setToastProject,
     });
 
     return (
@@ -43,13 +40,12 @@ export default function HomePage() {
                 </PageHeading.Content>
             </PageHeading>
             <Box direction="column" gap="lg" padding="md">
-                <DashboardToast
-                    toast={projects.toast}
-                    toastProject={projects.toastProject}
-                    processingProjectId={projects.processingProjectId}
-                    setToast={projects.setToast}
-                    setToastProject={projects.setToastProject}
-                />
+                {projects.processingProjectId && (
+                    <Alert intent="info" title="Project processing">
+                        This list will update automatically when processing is
+                        complete.
+                    </Alert>
+                )}
                 <section className={ui.layoutGrid}>
                     <NewProjectForm
                         accountId={upload.accountId}

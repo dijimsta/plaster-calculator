@@ -1,5 +1,6 @@
+import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
 import { useRouter } from "next/navigation.js";
-import { useState, type DragEvent, type FormEvent } from "react";
+import { createElement, useState, type DragEvent, type FormEvent } from "react";
 
 import {
     initializeFloorplanPages,
@@ -26,19 +27,14 @@ interface DashboardUploadOptions {
     readonly refresh: () => Promise<void>;
     readonly setMessage: (message: string) => void;
     readonly setProcessingProjectId: (projectId: string | null) => void;
-    readonly setToast: (toast: string) => void;
-    readonly setToastProject: (
-        project: { id: string; name: string } | null,
-    ) => void;
 }
 
 export function useDashboardUpload({
     refresh,
     setMessage,
-    setToast,
-    setToastProject,
 }: DashboardUploadOptions) {
     const router = useRouter();
+    const { notify } = useNotificationsManager();
     const [name, setName] = useState("");
     const [accountId, setAccountId] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
@@ -73,10 +69,11 @@ export function useDashboardUpload({
                 preparedPdf = emptyPreparedPdfUpload();
             } else {
                 setMessage("");
-                setToast("Project created and ready for annotation.");
-                setToastProject({
-                    id: upload.projectId,
-                    name: name || file.name,
+                notify({
+                    intent: "success",
+                    title: `${name || file.name} created`,
+                    description: "The project is ready for annotation.",
+                    actions: projectNotificationAction(upload.projectId),
                 });
             }
             await refresh();
@@ -242,5 +239,13 @@ function isPdfFile(candidate: File) {
     return (
         candidate.type === "application/pdf" ||
         candidate.name.toLowerCase().endsWith(".pdf")
+    );
+}
+
+function projectNotificationAction(projectId: string) {
+    return createElement(
+        ButtonLink,
+        { href: `/app/projects/${projectId}`, variant: "link" },
+        "Open project",
     );
 }
