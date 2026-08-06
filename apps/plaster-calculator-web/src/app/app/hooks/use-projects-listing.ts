@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
+import { createElement, useEffect, useMemo, useState } from "react";
 
 import {
     deleteProject,
@@ -19,7 +20,6 @@ export interface ProjectsListingState {
     readonly query: string;
     readonly projectsLoading: boolean;
     readonly busyMessage: string;
-    readonly message: string;
     readonly totalCount: number;
     readonly quotingCount: number;
     readonly quoteSubmittedCount: number;
@@ -28,25 +28,19 @@ export interface ProjectsListingState {
     readonly renameValue: string;
     readonly renamingId: string | null;
     readonly processingProjectId: string | null;
-    readonly toast: string;
-    readonly toastProject: { id: string; name: string } | null;
     readonly refresh: () => Promise<void>;
     readonly removeProject: (project: ProjectSummary) => Promise<void>;
     readonly saveRename: (projectId: string) => Promise<void>;
     readonly setStatusFilter: (filter: StatusFilter) => void;
     readonly setQuery: (query: string) => void;
     readonly clearFilters: () => void;
-    readonly setMessage: (message: string) => void;
     readonly setProcessingProjectId: (projectId: string | null) => void;
     readonly setRenameValue: (value: string) => void;
     readonly setRenamingId: (projectId: string | null) => void;
-    readonly setToast: (toast: string) => void;
-    readonly setToastProject: (
-        project: { id: string; name: string } | null,
-    ) => void;
 }
 
 export function useProjectsListing(): ProjectsListingState {
+    const { notify } = useNotificationsManager();
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [accountCompanyNames, setAccountCompanyNames] = useState<
         ReadonlyMap<string, string>
@@ -54,13 +48,7 @@ export function useProjectsListing(): ProjectsListingState {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
     const [query, setQuery] = useState("");
     const [projectsLoading, setProjectsLoading] = useState(true);
-    const [message, setMessage] = useState("");
     const [busyMessage, setBusyMessage] = useState("");
-    const [toast, setToast] = useState("");
-    const [toastProject, setToastProject] = useState<{
-        id: string;
-        name: string;
-    } | null>(null);
     const [processingProjectId, setProcessingProjectId] = useState<
         string | null
     >(null);
@@ -79,31 +67,41 @@ export function useProjectsListing(): ProjectsListingState {
                 const project = await getProjectStatus(processingProjectId);
                 setProjects((current) => upsertProject(current, project));
                 if (project.status === "READY") {
-                    setToast("finished processing.");
-                    setToastProject({ id: project.id, name: project.name });
+                    notify({
+                        intent: "success",
+                        title: `${project.name} finished processing`,
+                        actions: projectNotificationAction(project.id),
+                    });
                     setProcessingProjectId(null);
                     window.clearInterval(timer);
                     await refresh();
                 }
                 if (project.status === "FAILED") {
-                    setToast(
-                        `${project.name} failed to process${project.processingError ? `: ${project.processingError}` : "."}`,
-                    );
-                    setToastProject(null);
+                    notify({
+                        intent: "error",
+                        title: `${project.name} failed to process`,
+                        description:
+                            project.processingError ??
+                            "The project could not be processed.",
+                    });
                     setProcessingProjectId(null);
                     window.clearInterval(timer);
                     await refresh();
                 }
             } catch (error) {
-                setToast(
-                    error instanceof Error
-                        ? error.message
-                        : "Unable to poll processing status",
-                );
+                notify({
+                    intent: "error",
+                    title: "Unable to check project status",
+                    description:
+                        error instanceof Error
+                            ? error.message
+                            : "Unable to poll processing status",
+                    duration: 6000,
+                });
             }
         }, 10_000);
         return () => window.clearInterval(timer);
-    }, [processingProjectId]);
+    }, [notify, processingProjectId]);
 
     async function refresh() {
         setProjectsLoading(true);
@@ -115,11 +113,11 @@ export function useProjectsListing(): ProjectsListingState {
             const merged = mergeProjects(quoting, submitted);
             setProjects(merged);
         } catch (error) {
-            setMessage(
-                error instanceof Error
-                    ? error.message
-                    : "Unable to load projects",
-            );
+            notify({
+                intent: "error",
+                title: "Unable to load projects",
+                description: error instanceof Error ? error.message : undefined,
+            });
         } finally {
             setProjectsLoading(false);
         }
@@ -137,11 +135,11 @@ export function useProjectsListing(): ProjectsListingState {
                 ),
             );
         } catch (error) {
-            setMessage(
-                error instanceof Error
-                    ? error.message
-                    : "Unable to load account names",
-            );
+            notify({
+                intent: "error",
+                title: "Unable to load account names",
+                description: error instanceof Error ? error.message : undefined,
+            });
         }
     }
 
@@ -154,11 +152,13 @@ export function useProjectsListing(): ProjectsListingState {
         try {
             await deleteProject(project.id);
             await refresh();
-            setMessage("Project deleted.");
+            notify({ intent: "success", title: "Project deleted" });
         } catch (error) {
-            setMessage(
-                error instanceof Error ? error.message : "Delete failed",
-            );
+            notify({
+                intent: "error",
+                title: "Delete failed",
+                description: error instanceof Error ? error.message : undefined,
+            });
         } finally {
             setBusyMessage("");
         }
@@ -170,10 +170,14 @@ export function useProjectsListing(): ProjectsListingState {
         try {
             await renameProject(projectId, trimmed);
             setRenamingId(null);
-            setToast("Project renamed.");
+            notify({ intent: "success", title: "Project renamed" });
             await refresh();
         } catch (error) {
-            setToast(error instanceof Error ? error.message : "Rename failed");
+            notify({
+                intent: "error",
+                title: "Rename failed",
+                description: error instanceof Error ? error.message : undefined,
+            });
         }
     }
 
@@ -226,7 +230,6 @@ export function useProjectsListing(): ProjectsListingState {
         query,
         projectsLoading,
         busyMessage,
-        message,
         totalCount,
         quotingCount,
         quoteSubmittedCount,
@@ -235,21 +238,24 @@ export function useProjectsListing(): ProjectsListingState {
         renameValue,
         renamingId,
         processingProjectId,
-        toast,
-        toastProject,
         refresh,
         removeProject,
         saveRename,
         setStatusFilter,
         setQuery,
         clearFilters,
-        setMessage,
         setProcessingProjectId,
         setRenameValue,
         setRenamingId,
-        setToast,
-        setToastProject,
     };
+}
+
+function projectNotificationAction(projectId: string) {
+    return createElement(
+        ButtonLink,
+        { href: `/app/projects/${projectId}`, variant: "link" },
+        "Open project",
+    );
 }
 
 function mergeProjects(...lists: ProjectSummary[][]): ProjectSummary[] {

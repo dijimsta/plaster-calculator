@@ -5,6 +5,7 @@ import {
     Box,
     Breadcrumb,
     Button,
+    EmptyState,
     Input,
     PageHeading,
     Table,
@@ -12,6 +13,7 @@ import {
     Text,
 } from "@libraries/uikit-web";
 import {
+    FolderKanban,
     Home,
     LoaderCircle,
     Pencil,
@@ -149,7 +151,20 @@ export default function ProjectsPage() {
                         <Text variant="muted">Loading projects...</Text>
                     </Box>
                 ) : filtered.length === 0 ? (
-                    <Text variant="muted">No projects match your filters.</Text>
+                    <EmptyState
+                        icon={<FolderKanban />}
+                        title="No projects match your filters"
+                        actions={
+                            filtersActive ? (
+                                <Button
+                                    variant="secondary"
+                                    onClick={clearFilters}
+                                >
+                                    Clear filters
+                                </Button>
+                            ) : undefined
+                        }
+                    />
                 ) : (
                     <Table bordered>
                         <Table.Head>

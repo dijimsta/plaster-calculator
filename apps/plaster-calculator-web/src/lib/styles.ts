@@ -103,8 +103,6 @@ export const activeTheme = {
         "border-slate-400 bg-slate-100 dark:border-slate-500 dark:bg-slate-800",
     softBg: "bg-slate-100 dark:bg-slate-800",
     text: "text-slate-900 dark:text-slate-100",
-    toast: "border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900",
-    toastLinkNested: "[&_a]:text-slate-900 dark:[&_a]:text-slate-100",
 } as const;
 
 type Theme = typeof activeTheme;
@@ -172,17 +170,6 @@ function createUi(theme: Theme) {
             "grid grid-cols-[minmax(380px,0.34fr)_minmax(0,1fr)] gap-[18px] max-[980px]:grid-cols-1",
         ),
         metric: cx("rounded-lg border p-2.5", theme.softBg, theme.line),
-        modal: cx(
-            "grid max-h-[88vh] w-[min(980px,100%)] max-w-[980px] gap-4 overflow-auto rounded-lg p-[18px] shadow-lg",
-            theme.panelBg,
-        ),
-        modalBackdrop:
-            "fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/60 p-6",
-        modalScrollable: cx(
-            "flex max-h-[88vh] w-[min(980px,100%)] max-w-[980px] flex-col gap-4 overflow-hidden rounded-lg p-[18px] shadow-lg",
-            theme.panelBg,
-        ),
-        modalScrollableBody: "min-h-0 flex-1 overflow-y-auto",
         muted: cx("text-sm", theme.muted),
         panel: cx(
             "rounded-lg border p-[18px] shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",
@@ -214,23 +201,7 @@ function createUi(theme: Theme) {
         ),
         projectPage: "flex h-full min-h-0 flex-col",
         projectPageHeader: "shrink-0",
-        segmented: cx(
-            "inline-flex max-w-full gap-[3px] overflow-x-auto rounded-lg p-[3px]",
-            theme.softBg,
-        ),
-        segmentedButton: cx(
-            "shrink-0 cursor-pointer rounded-md border-0 bg-transparent px-[11px] py-2 whitespace-nowrap",
-            theme.muted,
-        ),
-        segmentedButtonActive: cx("shadow-sm", theme.controlBg, theme.text),
         stack: "grid gap-3.5",
-        toast: cx(
-            contentWidth,
-            "mb-4 flex items-center gap-2.5 rounded-lg border px-3 py-2.5 shadow-lg [&_a]:font-bold [&_a]:underline [&_a]:underline-offset-3 [&_span]:flex-1",
-            theme.toast,
-            theme.text,
-            theme.toastLinkNested,
-        ),
         topbar: cx(
             contentWidth,
             "mb-5 flex items-center justify-between gap-4",

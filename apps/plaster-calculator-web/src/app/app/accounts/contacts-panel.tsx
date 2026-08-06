@@ -1,7 +1,7 @@
 "use client";
 
-import { Button, Paragraph } from "@libraries/uikit-web";
-import { Plus } from "lucide-react";
+import { Button, EmptyState } from "@libraries/uikit-web";
+import { Plus, Users } from "lucide-react";
 
 import { ContactRow } from "./contact-row.js";
 import { cx, ui } from "../../../lib/styles.js";
@@ -56,9 +56,7 @@ export function ContactsPanel({
                 />
             ))}
             {account.contacts.length === 0 && (
-                <Paragraph textSize="sm" variant="muted">
-                    No contacts yet.
-                </Paragraph>
+                <EmptyState icon={<Users />} title="No contacts yet" />
             )}
         </section>
     );

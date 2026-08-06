@@ -1,8 +1,13 @@
 "use client";
 
-import { Box, Button, Paragraph, Text } from "@libraries/uikit-web";
-import { LoaderCircle, X } from "lucide-react";
-import { useRouter } from "next/navigation.js";
+import {
+    Box,
+    EmptyState,
+    Paragraph,
+    Text,
+    useNotificationsManager,
+} from "@libraries/uikit-web";
+import { Building2, LoaderCircle } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 
 import { AccountDetailHeader } from "./account-detail-header.js";
@@ -40,10 +45,14 @@ import type {
 
 interface AccountDetailViewProps {
     readonly accountId: string;
+    readonly onAccountDeleted: () => void;
 }
 
-export function AccountDetailView({ accountId }: AccountDetailViewProps) {
-    const router = useRouter();
+export function AccountDetailView({
+    accountId,
+    onAccountDeleted,
+}: AccountDetailViewProps) {
+    const { notify } = useNotificationsManager();
     const [account, setAccount] = useState<AccountDetail | null>(null);
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [draft, setDraft] = useState<AccountDetailDraft | null>(null);
@@ -56,17 +65,10 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [busyMessage, setBusyMessage] = useState("");
     const [message, setMessage] = useState("");
-    const [toast, setToast] = useState("");
 
     useEffect(() => {
         void load();
     }, [accountId]);
-
-    useEffect(() => {
-        if (!toast) return;
-        const timeout = window.setTimeout(() => setToast(""), 6000);
-        return () => window.clearTimeout(timeout);
-    }, [toast]);
 
     const accountProjects = projects;
     const hasAccountChanges =
@@ -126,7 +128,7 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
             });
             updateAccountState(updated);
             closeContactModal();
-            setToast("Contact added.");
+            notify({ intent: "success", title: "Contact added." });
         } catch (error) {
             setMessage(errorMessage(error, "Unable to add contact"));
         }
@@ -178,7 +180,7 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
         setBusyMessage("Deleting account...");
         try {
             await deleteAccount(account.id);
-            router.replace("/app/accounts");
+            onAccountDeleted();
         } catch (error) {
             setBusyMessage("");
             setMessage(errorMessage(error, "Unable to delete account"));
@@ -218,18 +220,6 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
                 refresh={() => void load()}
             />
             <Box direction="column" gap="lg" padding="md">
-                {toast && (
-                    <div className={ui.toast}>
-                        <span>{toast}</span>
-                        <Button
-                            variant="secondary"
-                            icon={<X size={16} aria-hidden="true" />}
-                            onClick={() => setToast("")}
-                            label="Dismiss message"
-                            type="button"
-                        />
-                    </div>
-                )}
                 {message && (
                     <Paragraph textSize="sm" variant="muted">
                         {message}
@@ -238,7 +228,7 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
                 {account && draft ? (
                     <section
                         className={cx(
-                            "mx-auto grid w-[min(1600px,calc(100vw-48px))] grid-cols-[minmax(520px,0.48fr)_minmax(0,1fr)] items-start gap-[18px] min-[1500px]:w-[min(1600px,80vw)] max-[980px]:grid-cols-1",
+                            "grid grid-cols-[minmax(520px,0.48fr)_minmax(0,1fr)] items-start gap-[18px] max-[980px]:grid-cols-1",
                         )}
                     >
                         <AccountDetailsPanel
@@ -266,7 +256,10 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
                         </div>
                     </section>
                 ) : (
-                    <section className={ui.panel}>Account not found.</section>
+                    <EmptyState
+                        icon={<Building2 />}
+                        title="Account not found"
+                    />
                 )}
                 {isContactModalOpen && (
                     <NewContactModal

@@ -1,4 +1,4 @@
-import { Button, Text } from "@libraries/uikit-web";
+import { Button, Input, Label, Text } from "@libraries/uikit-web";
 import { Upload } from "lucide-react";
 
 import { AccountSelect } from "../../components/account-select.js";
@@ -30,10 +30,9 @@ export function NewProjectForm({
         >
             <h2>New Project</h2>
             <div className={ui.field}>
-                <label htmlFor="name">Address or project name</label>
-                <input
+                <Label htmlFor="name">Address or project name</Label>
+                <Input
                     id="name"
-                    className={ui.input}
                     value={name}
                     onChange={(event) => setName(event.target.value)}
                     placeholder="12 Example Street"

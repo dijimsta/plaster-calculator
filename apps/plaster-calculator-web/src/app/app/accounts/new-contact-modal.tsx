@@ -1,11 +1,9 @@
 "use client";
 
-import { Button } from "@libraries/uikit-web";
-import { X } from "lucide-react";
+import { Button, ModalDialog } from "@libraries/uikit-web";
 import { type FormEvent } from "react";
 
 import { ContactFormFields } from "./contact-form-fields.js";
-import { ui } from "../../../lib/styles.js";
 
 import type { ContactDraft } from "./account.types.js";
 
@@ -16,6 +14,8 @@ interface NewContactModalProps {
     readonly setContactDraft: (draft: ContactDraft) => void;
 }
 
+const FORM_ID = "new-contact-form";
+
 export function NewContactModal({
     close,
     contactDraft,
@@ -23,31 +23,28 @@ export function NewContactModal({
     setContactDraft,
 }: NewContactModalProps) {
     return (
-        <div className={ui.modalBackdrop}>
-            <form className={ui.modal} onSubmit={save}>
-                <div className={ui.editorToolbar}>
-                    <h2>New Contact</h2>
-                    <Button
-                        variant="ghost"
-                        onClick={close}
-                        title="Close new contact"
-                        type="button"
-                    >
-                        <X size={18} />
+        <ModalDialog
+            open
+            onClose={close}
+            title="New Contact"
+            footer={
+                <>
+                    <Button variant="secondary" onClick={close} type="button">
+                        Cancel
                     </Button>
-                </div>
+                    <Button variant="primary" type="submit" form={FORM_ID}>
+                        Add contact
+                    </Button>
+                </>
+            }
+        >
+            <form id={FORM_ID} onSubmit={save}>
                 <ContactFormFields
                     draft={contactDraft}
                     setDraft={setContactDraft}
                     showPrimaryCheckbox
                 />
-                <div className={ui.buttonRow}>
-                    <Button variant="primary">Add contact</Button>
-                    <Button variant="secondary" onClick={close} type="button">
-                        Cancel
-                    </Button>
-                </div>
             </form>
-        </div>
+        </ModalDialog>
     );
 }

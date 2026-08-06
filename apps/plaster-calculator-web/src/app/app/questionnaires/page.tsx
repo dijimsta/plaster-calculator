@@ -5,6 +5,7 @@ import {
     Badge,
     Box,
     Breadcrumb,
+    EmptyState,
     PageHeading,
     ProgressBar,
     Stats,
@@ -12,7 +13,7 @@ import {
     Tabs,
     Text,
 } from "@libraries/uikit-web";
-import { Home, LoaderCircle } from "lucide-react";
+import { ClipboardList, Home, LoaderCircle } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
 import { useQuestionnaireStats } from "./page.hooks.js";
@@ -113,7 +114,10 @@ export default function QuestionnairesPage() {
                         <Text variant="muted">Loading questionnaires...</Text>
                     </Box>
                 ) : stats.questionnaires.length === 0 ? (
-                    <Text variant="muted">No questionnaires yet.</Text>
+                    <EmptyState
+                        icon={<ClipboardList />}
+                        title="No questionnaires yet"
+                    />
                 ) : (
                     <Table bordered>
                         <Table.Head>

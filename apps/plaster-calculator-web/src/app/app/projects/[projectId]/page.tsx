@@ -1,12 +1,11 @@
 "use client";
 
-import { Box } from "@libraries/uikit-web";
+import { Box, useNotificationsManager } from "@libraries/uikit-web";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
 import { ProjectHeader } from "./project-page-header.js";
 import { ProjectSalesStatusControl } from "./project-sales-status-control.js";
 import { ProjectStatusContent } from "./project-status-content.js";
-import { ProjectToast } from "./project-toast.js";
 import {
     exportProjectCsv,
     getProject,
@@ -33,10 +32,13 @@ export default function ProjectPage({
     params: Promise<{ projectId: string }>;
 }) {
     const { projectId } = use(params);
+    const { notify, dismiss } = useNotificationsManager();
     const [project, setProject] = useState<ProjectDetail | null>(null);
     const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
     const [error, setError] = useState("");
-    const [toast, setToast] = useState("");
+    const [exportNotificationId, setExportNotificationId] = useState<
+        string | null
+    >(null);
     const [validationIssues, setValidationIssues] = useState<ValidationIssue[]>(
         [],
     );
@@ -90,14 +92,11 @@ export default function ProjectPage({
             validatePageForExport(pageDrafts[page.id] ?? page),
         );
         setValidationIssues(issues);
-        if (issues.length === 0) setToast("");
+        if (issues.length === 0 && exportNotificationId) {
+            dismiss(exportNotificationId);
+            setExportNotificationId(null);
+        }
     }, [pageDrafts]);
-
-    useEffect(() => {
-        if (!toast) return;
-        const timeout = window.setTimeout(() => setToast(""), 6000);
-        return () => window.clearTimeout(timeout);
-    }, [toast]);
 
     const selectedPage = useMemo(
         () => project?.pages.find((page) => page.id === selectedPageId) ?? null,
@@ -127,7 +126,7 @@ export default function ProjectPage({
             });
             setProject(updated);
             setError("");
-            setToast("Account linked to project.");
+            notify({ intent: "success", title: "Account linked to project." });
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "Unable to link account",
@@ -158,7 +157,10 @@ export default function ProjectPage({
             setProject(updated);
             setAccountId(updated.accountId);
             setError("");
-            setToast(`Status changed to ${salesStatusLabel(status)}.`);
+            notify({
+                intent: "success",
+                title: `Status changed to ${salesStatusLabel(status)}.`,
+            });
         } catch (err) {
             setError(
                 err instanceof Error
@@ -232,8 +234,12 @@ export default function ProjectPage({
         );
         setValidationIssues(issues);
         if (issues.length > 0) {
-            setToast(
-                "A few details need attention before export. I've highlighted the first one for you.",
+            setExportNotificationId(
+                notify({
+                    intent: "error",
+                    title: "A few details need attention before export",
+                    description: "I've highlighted the first one for you.",
+                }),
             );
             setError("");
             const firstIssue = issues[0];
@@ -279,7 +285,6 @@ export default function ProjectPage({
                 />
             </div>
             <Box padding="none" direction="column" grow scroll>
-                <ProjectToast toast={toast} setToast={setToast} />
                 {error && <p className={ui.error}>{error}</p>}
                 {project && (
                     <ProjectStatusContent
