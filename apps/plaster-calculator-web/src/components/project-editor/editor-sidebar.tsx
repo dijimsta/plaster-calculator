@@ -5,7 +5,6 @@ import { PageSettingsPanel } from "./page-settings-panel.js";
 import { ScalePanel } from "./scale-panel.js";
 import { SelectionPanel } from "./selection-panel.js";
 import { SummaryPanel } from "./summary-panel.js";
-import { ui } from "../../lib/styles.js";
 
 import type { EditorSidebarProps } from "./editor-sidebar.types.js";
 
@@ -53,7 +52,7 @@ export function EditorSidebar({
     updateArea,
 }: EditorSidebarProps) {
     return (
-        <InspectorPanel className={ui.inspector}>
+        <InspectorPanel fullHeight>
             {salesStatusPanel && (
                 <InspectorSection title="Status" defaultOpen>
                     {salesStatusPanel}

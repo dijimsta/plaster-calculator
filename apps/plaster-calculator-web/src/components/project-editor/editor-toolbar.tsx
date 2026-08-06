@@ -96,21 +96,21 @@ export function EditorToolbar({
                         icon={<Undo2 size={18} aria-hidden="true" />}
                         onClick={onUndo}
                         disabled={historyCount === 0}
-                        aria-label="Undo"
+                        label="Undo"
                     />
                     <Button
                         variant="secondary"
                         icon={<Redo2 size={18} aria-hidden="true" />}
                         onClick={onRedo}
                         disabled={futureCount === 0}
-                        aria-label="Redo"
+                        label="Redo"
                     />
                     <Button
                         variant="secondary"
                         icon={<MousePointer2 size={18} aria-hidden="true" />}
                         onClick={onClearSelection}
                         disabled={!hasSelection()}
-                        aria-label="Deselect all"
+                        label="Deselect all"
                     />
                     <AddAreaControls
                         addMenuOpen={addMenuOpen}
@@ -123,7 +123,7 @@ export function EditorToolbar({
                         icon={<CopyPlus size={18} aria-hidden="true" />}
                         onClick={onAddPoint}
                         disabled={!selectedArea}
-                        aria-label="Add point"
+                        label="Add point"
                     />
                     <Button
                         variant="secondary"
@@ -135,14 +135,14 @@ export function EditorToolbar({
                         }
                         onClick={onStraightenSelectedPoints}
                         disabled={!selectedArea || selectedPointCount !== 2}
-                        aria-label="Straighten between selected points"
+                        label="Straighten between selected points"
                     />
                     <Button
                         variant="secondary"
                         icon={<Scissors size={18} aria-hidden="true" />}
                         onClick={onSplitArea}
                         disabled={!selectedArea || selectedPointCount !== 2}
-                        aria-label="Split selected polygon"
+                        label="Split selected polygon"
                     />
                     <DeleteSelectionButton
                         selectedArea={selectedArea}
@@ -155,7 +155,7 @@ export function EditorToolbar({
                         variant="secondary"
                         icon={<Minus size={18} aria-hidden="true" />}
                         onClick={() => onChangeZoom(zoom - 0.15)}
-                        aria-label="Zoom out"
+                        label="Zoom out"
                     />
                     <Button
                         variant="secondary"
@@ -168,7 +168,7 @@ export function EditorToolbar({
                         variant="secondary"
                         icon={<Plus size={18} aria-hidden="true" />}
                         onClick={() => onChangeZoom(zoom + 0.15)}
-                        aria-label="Zoom in"
+                        label="Zoom in"
                     />
                     <OverlayModeSelector
                         overlayMode={overlayMode}
@@ -213,7 +213,7 @@ function AddAreaControls({
                 variant="secondary"
                 icon={<Plus size={18} aria-hidden="true" />}
                 onClick={() => onSetAddMenuOpen(!addMenuOpen)}
-                aria-label="Add area"
+                label="Add area"
             />
             {addMenuOpen && (
                 <div className={ui.popoverMenu}>
@@ -248,7 +248,7 @@ function DeleteSelectionButton({
             icon={<Trash2 size={18} aria-hidden="true" />}
             onClick={onDeleteSelection}
             disabled={!selectedArea}
-            aria-label={label}
+            label={label}
         />
     );
 }

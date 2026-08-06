@@ -4,12 +4,9 @@ import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
 import { iconColors, styles } from "./notification.styles.ts";
 
 import type { NotificationIntent } from "./notification.styles.ts";
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export interface NotificationProps extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    "title"
-> {
+export type NotificationProps = {
     readonly title: ReactNode;
     readonly description?: ReactNode;
     readonly intent?: NotificationIntent;
@@ -17,7 +14,7 @@ export interface NotificationProps extends Omit<
     readonly actions?: ReactNode;
     readonly onDismiss?: () => void;
     readonly dismissLabel?: string;
-}
+};
 
 /** A compact toast-style message for non-interruptive feedback. */
 export function Notification({
@@ -28,12 +25,9 @@ export function Notification({
     actions,
     onDismiss,
     dismissLabel = "Dismiss notification",
-    className,
-    role = "status",
-    ...props
 }: NotificationProps): ReactElement {
     return (
-        <div {...props} role={role} className={clsx(styles.root, className)}>
+        <div role="status" className={styles.root}>
             <div className={styles.layout}>
                 <div className={styles.iconWrapper}>
                     {media ?? <NotificationIcon intent={intent} />}

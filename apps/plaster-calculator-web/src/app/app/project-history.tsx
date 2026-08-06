@@ -120,11 +120,7 @@ export function ProjectHistory({
                                     ) : (
                                         <strong>{project.name}</strong>
                                     )}
-                                    <Text
-                                        size="sm"
-                                        variant="muted"
-                                        className={ui.projectMetaLine}
-                                    >
+                                    <Text size="sm" variant="muted" truncate>
                                         {project.originalFileName} /{" "}
                                         {project.uploadType} / {project.status}{" "}
                                         /{" "}
@@ -162,7 +158,7 @@ export function ProjectHistory({
                                                 setRenamingId(project.id);
                                                 setRenameValue(project.name);
                                             }}
-                                            aria-label="Rename project"
+                                            label="Rename project"
                                         />
                                     )}
                                     <Button
@@ -174,7 +170,7 @@ export function ProjectHistory({
                                             />
                                         }
                                         onClick={() => removeProject(project)}
-                                        aria-label="Delete project"
+                                        label="Delete project"
                                     />
                                 </div>
                             </div>

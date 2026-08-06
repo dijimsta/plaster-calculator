@@ -1,22 +1,19 @@
-import clsx from "clsx";
-
 import { root } from "./button-group.styles.ts";
 
-import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type ButtonGroupProps = PropsWithChildren<
-    HTMLAttributes<HTMLDivElement>
->;
+export type ButtonGroupProps = {
+    readonly label?: string;
+    readonly children?: ReactNode;
+};
 
 /** Visually joins related buttons into a single action group. */
 export function ButtonGroup({
-    className,
     children,
-    role = "group",
-    ...props
+    label,
 }: ButtonGroupProps): ReactElement {
     return (
-        <div className={clsx(root, className)} role={role} {...props}>
+        <div className={root} role="group" aria-label={label}>
             {children}
         </div>
     );

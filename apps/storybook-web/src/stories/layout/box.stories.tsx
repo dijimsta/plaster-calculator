@@ -32,7 +32,7 @@ export const HorizontalRow: Story = {
             <Button
                 variant="secondary"
                 icon={<LogOut aria-hidden="true" />}
-                aria-label="Log out"
+                label="Log out"
             />
         </Box>
     ),

@@ -225,7 +225,7 @@ export function AccountDetailView({ accountId }: AccountDetailViewProps) {
                             variant="secondary"
                             icon={<X size={16} aria-hidden="true" />}
                             onClick={() => setToast("")}
-                            aria-label="Dismiss message"
+                            label="Dismiss message"
                             type="button"
                         />
                     </div>

@@ -186,7 +186,7 @@ function ProjectTitle({
             <PageHeading.Title>{project?.name ?? "Project"}</PageHeading.Title>
             {project && setRenaming && (
                 <Button
-                    aria-label="Rename project"
+                    label="Rename project"
                     icon={<Pencil size={14} aria-hidden="true" />}
                     onClick={() => setRenaming(true)}
                     variant="secondary"

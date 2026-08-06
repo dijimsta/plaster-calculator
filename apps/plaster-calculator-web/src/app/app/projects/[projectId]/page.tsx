@@ -278,12 +278,7 @@ export default function ProjectPage({
                     validateAndExport={validateAndExport}
                 />
             </div>
-            <Box
-                padding="none"
-                direction="column"
-                grow
-                className={ui.projectPageBody}
-            >
+            <Box padding="none" direction="column" grow scroll>
                 <ProjectToast toast={toast} setToast={setToast} />
                 {error && <p className={ui.error}>{error}</p>}
                 {project && (

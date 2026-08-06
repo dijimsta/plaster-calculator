@@ -67,11 +67,7 @@ export function UserSettingsPanel() {
         <section className={styles.section}>
             <div className={styles.sectionCopy}>
                 <h2 className={styles.sectionTitle}>Reminder settings</h2>
-                <Paragraph
-                    className={styles.sectionDescription}
-                    textSize="sm"
-                    variant="muted"
-                >
+                <Paragraph measure="narrow" textSize="sm" variant="muted">
                     Control how quote follow-up reminders are created for new
                     work.
                 </Paragraph>

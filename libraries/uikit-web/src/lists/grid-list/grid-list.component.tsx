@@ -10,38 +10,25 @@ import {
     type GridListGap,
 } from "./grid-list.styles.ts";
 
-import type {
-    HTMLAttributes,
-    LiHTMLAttributes,
-    PropsWithChildren,
-    ReactElement,
-} from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type GridListProps = HTMLAttributes<HTMLUListElement> & {
+export type GridListProps = {
     /** Maximum number of columns shown at large viewports. */
     readonly columns?: GridListColumnCount;
     /** Space between grid items. */
     readonly gap?: GridListGap;
+    readonly children?: ReactNode;
 };
 
 export function GridList({
     columns: columnCount = DEFAULT_COLUMNS,
     gap = DEFAULT_GAP,
-    className,
     children,
-    role = "list",
-    ...props
-}: PropsWithChildren<GridListProps>): ReactElement {
+}: GridListProps): ReactElement {
     return (
         <ul
-            role={role}
-            className={clsx(
-                styles.root,
-                columns[columnCount],
-                gaps[gap],
-                className,
-            )}
-            {...props}
+            role="list"
+            className={clsx(styles.root, columns[columnCount], gaps[gap])}
         >
             {children}
         </ul>
@@ -50,14 +37,10 @@ export function GridList({
 
 export namespace GridList {
     export function Item({
-        className,
         children,
-        ...props
-    }: PropsWithChildren<LiHTMLAttributes<HTMLLIElement>>): ReactElement {
-        return (
-            <li className={clsx(styles.item, className)} {...props}>
-                {children}
-            </li>
-        );
+    }: {
+        readonly children?: ReactNode;
+    }): ReactElement {
+        return <li className={styles.item}>{children}</li>;
     }
 }

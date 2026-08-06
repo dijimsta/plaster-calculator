@@ -10,6 +10,9 @@ export const base = [
     "dark:disabled:bg-white/10",
 ].join(" ");
 
+export const wrapper = "grid gap-1.5";
+export const descriptionStyle = "text-sm text-slate-500 dark:text-slate-400";
+
 export const resizes = Object.freeze({
     both: "resize",
     horizontal: "resize-x",

@@ -1,14 +1,5 @@
-import clsx from "clsx";
-
 import {
-    aligns,
-    base,
-    directions,
-    gaps,
-    growStyle,
-    justifies,
-    paddings,
-    wrapStyle,
+    boxClassName,
     type BoxAlign,
     type BoxDirection,
     type BoxGap,
@@ -16,11 +7,11 @@ import {
     type BoxPadding,
 } from "./box.styles.ts";
 
-import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type { BoxAlign, BoxDirection, BoxGap, BoxJustify, BoxPadding };
 
-export type BoxProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
+export type BoxProps = {
     readonly direction?: BoxDirection;
     readonly align?: BoxAlign;
     readonly justify?: BoxJustify;
@@ -31,6 +22,11 @@ export type BoxProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
     readonly grow?: boolean;
     /** Allows flex items to wrap onto multiple lines. */
     readonly wrap?: boolean;
+    /** Allows this Box to shrink and scroll vertically within its parent. */
+    readonly scroll?: boolean;
+    /** Announces the content as a polite status update. */
+    readonly status?: boolean;
+    readonly children?: ReactNode;
 };
 
 export function Box({
@@ -41,26 +37,32 @@ export function Box({
     padding,
     grow = false,
     wrap = false,
-    className,
+    scroll = false,
+    status = false,
     children,
-    ...props
 }: BoxProps): ReactElement {
     return (
         <div
-            className={clsx(
-                base,
-                directions[direction],
-                align !== undefined && aligns[align],
-                justify !== undefined && justifies[justify],
-                gap !== undefined && gaps[gap],
-                padding !== undefined && paddings[padding],
-                grow && growStyle,
-                wrap && wrapStyle,
-                className,
-            )}
-            {...props}
+            {...statusProps(status)}
+            className={boxClassName({
+                align,
+                direction,
+                gap,
+                grow,
+                justify,
+                padding,
+                scroll,
+                wrap,
+            })}
         >
             {children}
         </div>
     );
+}
+
+function statusProps(status: boolean): {
+    readonly "aria-live"?: "polite";
+    readonly "role"?: "status";
+} {
+    return status ? { "aria-live": "polite", "role": "status" } : {};
 }

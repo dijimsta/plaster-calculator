@@ -3,23 +3,19 @@ import { ChevronRight } from "lucide-react";
 
 import { styles } from "./breadcrumb.styles.ts";
 
-import type {
-    AnchorHTMLAttributes,
-    HTMLAttributes,
-    PropsWithChildren,
-    ReactElement,
-} from "react";
+import type { MouseEventHandler, ReactElement, ReactNode } from "react";
 
-export type BreadcrumbProps = HTMLAttributes<HTMLElement>;
+export type BreadcrumbProps = {
+    readonly label?: string;
+    readonly children?: ReactNode;
+};
 
 export function Breadcrumb({
-    className,
     children,
-    "aria-label": ariaLabel = "Breadcrumb",
-    ...props
-}: PropsWithChildren<BreadcrumbProps>): ReactElement {
+    label = "Breadcrumb",
+}: BreadcrumbProps): ReactElement {
     return (
-        <nav aria-label={ariaLabel} className={className} {...props}>
+        <nav aria-label={label}>
             <ol role="list" className={clsx(styles.list)}>
                 {children}
             </ol>
@@ -28,25 +24,25 @@ export function Breadcrumb({
 }
 
 export namespace Breadcrumb {
-    export type LinkItemProps = Omit<
-        AnchorHTMLAttributes<HTMLAnchorElement>,
-        "aria-current" | "href"
-    > & {
-        readonly current?: false;
-        readonly href: string;
+    type SharedItemProps = {
+        readonly label?: string;
+        readonly children?: ReactNode;
     };
 
-    export type CurrentItemProps = Omit<
-        HTMLAttributes<HTMLSpanElement>,
-        "aria-current"
-    > & {
+    export type LinkItemProps = SharedItemProps & {
+        readonly current?: false;
+        readonly href: string;
+        readonly onClick?: MouseEventHandler<HTMLAnchorElement>;
+    };
+
+    export type CurrentItemProps = SharedItemProps & {
         readonly current: true;
         readonly href?: never;
     };
 
     export type ItemProps = LinkItemProps | CurrentItemProps;
 
-    export function Item(props: PropsWithChildren<ItemProps>): ReactElement {
+    export function Item(props: ItemProps): ReactElement {
         if (props.current) {
             return <CurrentItem {...props} />;
         } else {
@@ -56,10 +52,9 @@ export namespace Breadcrumb {
 
     function CurrentItem({
         current,
-        className,
+        label,
         children,
-        ...props
-    }: PropsWithChildren<CurrentItemProps>): ReactElement {
+    }: CurrentItemProps): ReactElement {
         return (
             <li className={clsx(styles.item)}>
                 <ChevronRight
@@ -68,8 +63,8 @@ export namespace Breadcrumb {
                 />
                 <span
                     aria-current={current ? "page" : undefined}
-                    className={clsx(styles.current, className)}
-                    {...props}
+                    aria-label={label}
+                    className={styles.current}
                 >
                     {children}
                 </span>
@@ -78,17 +73,23 @@ export namespace Breadcrumb {
     }
 
     function LinkItem({
-        className,
+        href,
+        onClick,
+        label,
         children,
-        ...props
-    }: PropsWithChildren<LinkItemProps>): ReactElement {
+    }: LinkItemProps): ReactElement {
         return (
             <li className={clsx(styles.item)}>
                 <ChevronRight
                     aria-hidden="true"
                     className={clsx(styles.separator)}
                 />
-                <a className={clsx(styles.link, className)} {...props}>
+                <a
+                    href={href}
+                    onClick={onClick}
+                    aria-label={label}
+                    className={styles.link}
+                >
                     {children}
                 </a>
             </li>

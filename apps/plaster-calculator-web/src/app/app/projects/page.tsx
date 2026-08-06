@@ -95,10 +95,7 @@ export default function ProjectsPage() {
             <Box direction="column" gap="lg" padding="md">
                 <Box direction="column" gap="md">
                     <Box direction="row" align="center" gap="md" wrap>
-                        <Tabs
-                            variant="pills-on-gray"
-                            aria-label="Filter by status"
-                        >
+                        <Tabs variant="pills-on-gray" label="Filter by status">
                             {statusTabs.map((tab) => (
                                 <Tabs.Item
                                     key={tab.value}
@@ -147,13 +144,7 @@ export default function ProjectsPage() {
                     </Text>
                 </Box>
                 {projectsLoading ? (
-                    <Box
-                        align="center"
-                        justify="center"
-                        gap="sm"
-                        role="status"
-                        aria-live="polite"
-                    >
+                    <Box align="center" justify="center" gap="sm" status>
                         <LoaderCircle className="animate-spin" size={24} />
                         <Text variant="muted">Loading projects...</Text>
                     </Box>

@@ -79,13 +79,13 @@ function TemplateActions({
             <Button
                 variant="secondary"
                 icon={<Copy size={16} aria-hidden="true" />}
-                aria-label="Duplicate template"
+                label="Duplicate template"
                 onClick={onDuplicate}
             />
             <Button
                 variant="dangerSoft"
                 icon={<Trash2 size={16} aria-hidden="true" />}
-                aria-label="Delete template"
+                label="Delete template"
                 onClick={onDelete}
             />
         </Box>

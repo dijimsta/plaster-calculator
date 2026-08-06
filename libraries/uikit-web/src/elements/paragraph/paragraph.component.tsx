@@ -1,34 +1,43 @@
 import clsx from "clsx";
 
 import {
+    measures,
     sizes,
     variants,
     type ParagraphSize,
+    type ParagraphMeasure,
     type ParagraphVariant,
 } from "./paragraph.styles.ts";
 
-import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type { ParagraphSize, ParagraphVariant };
+export type { ParagraphMeasure, ParagraphSize, ParagraphVariant };
 
-export type ParagraphProps = PropsWithChildren<
-    HTMLAttributes<HTMLParagraphElement>
-> & {
+export type ParagraphProps = {
     readonly textSize?: ParagraphSize;
     readonly variant?: ParagraphVariant;
+    readonly measure?: ParagraphMeasure;
+    /** Announces the paragraph as a polite status update. */
+    readonly status?: boolean;
+    readonly children?: ReactNode;
 };
 
 export function Paragraph({
     textSize = "base",
     variant = "default",
-    className,
+    measure = "default",
+    status = false,
     children,
-    ...props
 }: ParagraphProps): ReactElement {
     return (
         <p
-            className={clsx(sizes[textSize], variants[variant], className)}
-            {...props}
+            role={status ? "status" : undefined}
+            aria-live={status ? "polite" : undefined}
+            className={clsx(
+                sizes[textSize],
+                variants[variant],
+                measures[measure],
+            )}
         >
             {children}
         </p>

@@ -1,5 +1,3 @@
-import clsx from "clsx";
-
 import {
     DEFAULT_FORM_LAYOUT_VARIANT,
     FormLayoutContext,
@@ -9,26 +7,30 @@ import {
     type FormLayoutVariant,
 } from "./form-layout.styles.ts";
 
-import type { FormHTMLAttributes, ReactElement } from "react";
+import type { FormEventHandler, ReactElement, ReactNode } from "react";
 
 export type { FormLayoutVariant };
 
 export type FormLayoutProps = {
     readonly variant?: FormLayoutVariant;
-} & FormHTMLAttributes<HTMLFormElement>;
+    readonly id?: string;
+    readonly children?: ReactNode;
+    readonly onSubmit?: FormEventHandler<HTMLFormElement>;
+};
 
 /** A responsive form shell for settings and data-entry screens. */
 export function FormLayout({
     variant = DEFAULT_FORM_LAYOUT_VARIANT,
-    className,
+    id,
     children,
-    ...props
+    onSubmit,
 }: FormLayoutProps): ReactElement {
     return (
         <FormLayoutContext.Provider value={variant}>
             <form
-                className={clsx(formLayoutVariants[variant], className)}
-                {...props}
+                id={id}
+                className={formLayoutVariants[variant]}
+                onSubmit={onSubmit}
             >
                 {children}
             </form>

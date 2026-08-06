@@ -3,17 +3,17 @@ import clsx from "clsx";
 import {
     defaultOption,
     defaultOptionAlignment,
-    describedRadio,
     disabledOption,
     optionDescription,
     optionLabel,
     optionLabelCursor,
     optionText,
 } from "./radio-group-default-option.styles.ts";
-import { Radio } from "./radio.component.tsx";
+import { RadioControl } from "./radio.component.tsx";
 
 import type { RadioSize } from "./radio.styles.ts";
-import type { InputHTMLAttributes, ReactElement, ReactNode } from "react";
+import type { CheckableControlProps } from "../form-control.types.ts";
+import type { ReactElement, ReactNode } from "react";
 
 export type RadioGroupDefaultOptionProps = {
     readonly id: string;
@@ -22,11 +22,7 @@ export type RadioGroupDefaultOptionProps = {
     readonly value: string;
     readonly label: ReactNode;
     readonly description?: ReactNode;
-    readonly className?: string;
-} & Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    "children" | "className" | "id" | "name" | "size" | "type" | "value"
->;
+} & Omit<CheckableControlProps, "id" | "label" | "name" | "value">;
 
 export function RadioGroupDefaultOption({
     id,
@@ -35,9 +31,8 @@ export function RadioGroupDefaultOption({
     value,
     label,
     description,
-    className,
     disabled,
-    ...props
+    ...controlProps
 }: RadioGroupDefaultOptionProps): ReactElement {
     const descriptionId = `${id}-description`;
 
@@ -49,22 +44,19 @@ export function RadioGroupDefaultOption({
                     ? defaultOptionAlignment.default
                     : defaultOptionAlignment.described,
                 disabled && disabledOption,
-                className,
             )}
         >
-            <Radio
+            <RadioControl
                 id={id}
                 name={name}
                 value={value}
                 size={size}
-                className={
-                    description === undefined ? undefined : describedRadio
-                }
                 disabled={disabled}
-                aria-describedby={
+                describedBy={
                     description === undefined ? undefined : descriptionId
                 }
-                {...props}
+                offset={description !== undefined}
+                {...controlProps}
             />
             <div className={optionText}>
                 <label

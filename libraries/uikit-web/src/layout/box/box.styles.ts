@@ -49,3 +49,39 @@ export type BoxPadding =
 
 export const growStyle = "flex-1 min-w-0";
 export const wrapStyle = "flex-wrap";
+export const scrollStyle = "min-h-0 overflow-y-auto";
+
+export type BoxClassNameOptions = {
+    readonly align?: BoxAlign;
+    readonly direction: BoxDirection;
+    readonly gap?: BoxGap;
+    readonly grow: boolean;
+    readonly justify?: BoxJustify;
+    readonly padding?: BoxPadding;
+    readonly scroll: boolean;
+    readonly wrap: boolean;
+};
+
+export function boxClassName({
+    align,
+    direction,
+    gap,
+    grow,
+    justify,
+    padding,
+    scroll,
+    wrap,
+}: BoxClassNameOptions): string {
+    return clsx(
+        base,
+        directions[direction],
+        align !== undefined && aligns[align],
+        justify !== undefined && justifies[justify],
+        gap !== undefined && gaps[gap],
+        padding !== undefined && paddings[padding],
+        grow && growStyle,
+        wrap && wrapStyle,
+        scroll && scrollStyle,
+    );
+}
+import clsx from "clsx";

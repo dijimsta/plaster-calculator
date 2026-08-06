@@ -82,9 +82,9 @@ export const Default: Story = {
 export const WithLinks: Story = {
     render: () => (
         <div className="mx-auto max-w-3xl">
-            <StackedList className="border-y border-gray-200">
+            <StackedList bordered density="compact">
                 {jobs.map((job) => (
-                    <StackedList.Item key={job.name} className="py-3">
+                    <StackedList.Item key={job.name}>
                         <a
                             href="#"
                             className="group flex items-center gap-x-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-600"

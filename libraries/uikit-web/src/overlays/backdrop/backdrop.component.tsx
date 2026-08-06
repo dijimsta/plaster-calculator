@@ -1,18 +1,12 @@
-import clsx from "clsx";
-
 import { styles } from "./backdrop.styles.ts";
 
-import type { HTMLAttributes, ReactElement } from "react";
+import type { MouseEventHandler, ReactElement } from "react";
 
-export type BackdropProps = HTMLAttributes<HTMLDivElement>;
+export type BackdropProps = {
+    readonly onClick?: MouseEventHandler<HTMLDivElement>;
+};
 
 /** A full-viewport scrim for visually separating overlaid content. */
-export function Backdrop({ className, ...props }: BackdropProps): ReactElement {
-    return (
-        <div
-            aria-hidden="true"
-            className={clsx(styles.root, className)}
-            {...props}
-        />
-    );
+export function Backdrop({ onClick }: BackdropProps): ReactElement {
+    return <div aria-hidden="true" onClick={onClick} className={styles.root} />;
 }

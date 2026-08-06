@@ -23,7 +23,7 @@ type Story = StoryObj<typeof VerticalNavigation>;
 
 export const Simple: Story = {
     render: () => (
-        <VerticalNavigation aria-label="Primary navigation">
+        <VerticalNavigation label="Primary navigation">
             <VerticalNavigation.Section>
                 <VerticalNavigation.Item isCurrent>
                     <a href="#home">Home</a>
@@ -38,7 +38,7 @@ export const Simple: Story = {
 
 export const WithIcons: Story = {
     render: () => (
-        <VerticalNavigation aria-label="Primary navigation">
+        <VerticalNavigation label="Primary navigation">
             <VerticalNavigation.Section>
                 <VerticalNavigation.Item isCurrent>
                     <a href="#home">
@@ -59,7 +59,7 @@ export const WithIcons: Story = {
 
 export const WithBadges: Story = {
     render: () => (
-        <VerticalNavigation aria-label="Primary navigation">
+        <VerticalNavigation label="Primary navigation">
             <VerticalNavigation.Section>
                 <VerticalNavigation.Item isCurrent>
                     <a href="#home">
@@ -87,7 +87,7 @@ export const WithBadges: Story = {
 
 export const WithSecondaryNavigation: Story = {
     render: () => (
-        <VerticalNavigation aria-label="Application navigation">
+        <VerticalNavigation label="Application navigation">
             <VerticalNavigation.Section>
                 <VerticalNavigation.Item isCurrent>
                     <a href="#home">

@@ -15,16 +15,15 @@ import {
     type NavbarTone,
 } from "./navbar.styles.ts";
 
-import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type { NavbarTone };
 
-export type NavbarProps = PropsWithChildren<
-    HTMLAttributes<HTMLElement> & {
-        /** Color treatment for the navbar and its navigation items. */
-        readonly tone?: NavbarTone;
-    }
->;
+export type NavbarProps = {
+    /** Color treatment for the navbar and its navigation items. */
+    readonly tone?: NavbarTone;
+    readonly children?: ReactNode;
+};
 
 type NavbarContextValue = {
     readonly tone: NavbarTone;
@@ -55,9 +54,7 @@ const NavigationContext = createContext<NavigationContextValue>({
  */
 export function Navbar({
     tone = DEFAULT_TONE,
-    className,
     children,
-    ...props
 }: NavbarProps): ReactElement {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuId = useId();
@@ -73,10 +70,7 @@ export function Navbar({
                 },
             }}
         >
-            <header
-                className={clsx(styles.root, tones[tone].root, className)}
-                {...props}
-            >
+            <header className={clsx(styles.root, tones[tone].root)}>
                 <div className={styles.inner}>
                     <MenuToggle />
                     {children}
@@ -108,18 +102,12 @@ function MenuToggle(): ReactElement {
 }
 
 export namespace Navbar {
-    export type BrandProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>>;
+    export type BrandProps = {
+        readonly children?: ReactNode;
+    };
 
-    export function Brand({
-        className,
-        children,
-        ...props
-    }: BrandProps): ReactElement {
-        return (
-            <div className={clsx(styles.brand, className)} {...props}>
-                {children}
-            </div>
-        );
+    export function Brand({ children }: BrandProps): ReactElement {
+        return <div className={styles.brand}>{children}</div>;
     }
 
     /**
@@ -127,15 +115,13 @@ export namespace Navbar {
      * desktop link row and the mobile disclosure panel, so consumers never
      * author the item list twice.
      */
-    export type NavigationProps = PropsWithChildren<
-        HTMLAttributes<HTMLElement>
-    >;
+    export type NavigationProps = BrandProps & {
+        readonly label?: string;
+    };
 
     export function Navigation({
-        className,
         children,
-        "aria-label": ariaLabel = "Primary",
-        ...props
+        label = "Primary",
     }: NavigationProps): ReactElement {
         const { isMenuOpen, menuId, tone } = useContext(NavbarContext);
 
@@ -143,9 +129,8 @@ export namespace Navbar {
             <>
                 <NavigationContext value={{ layout: "desktop" }}>
                     <nav
-                        aria-label={ariaLabel}
-                        className={clsx(styles.desktopNavigation, className)}
-                        {...props}
+                        aria-label={label}
+                        className={styles.desktopNavigation}
                     >
                         <ul role="list" className={styles.desktopList}>
                             {children}
@@ -155,12 +140,11 @@ export namespace Navbar {
                 <NavigationContext value={{ layout: "mobile" }}>
                     <nav
                         id={menuId}
-                        aria-label={ariaLabel}
+                        aria-label={label}
                         className={clsx(
                             styles.mobilePanel,
                             tones[tone].mobilePanel,
                             !isMenuOpen && styles.mobilePanelClosed,
-                            className,
                         )}
                     >
                         <ul role="list" className={styles.mobileList}>
@@ -181,46 +165,31 @@ export namespace Navbar {
         /** Marks the child link as the current page. */
         readonly current?: boolean;
         /** A single link element, such as an anchor or Next.js Link. */
-        readonly children: ReactElement<ItemLinkProps>;
-        /** Additional classes applied to the child link. */
-        readonly className?: string;
+        readonly children: ReactElement;
     };
 
     export function Item({
         current = false,
-        className,
         children,
     }: ItemProps): ReactElement {
         const { tone } = useContext(NavbarContext);
         const { layout } = useContext(NavigationContext);
         const toneStyles = tones[tone];
-        const link = cloneElement(children, {
+        const link = cloneElement(children as ReactElement<ItemLinkProps>, {
             "aria-current": current ? "page" : undefined,
             "className": clsx(
                 styles.item,
                 current ? toneStyles.itemCurrent : toneStyles.itemDefault,
                 layout === "mobile" && styles.mobileItem,
-                children.props.className,
-                className,
             ),
         });
 
         return <li>{link}</li>;
     }
 
-    export type ActionsProps = PropsWithChildren<
-        HTMLAttributes<HTMLDivElement>
-    >;
+    export type ActionsProps = BrandProps;
 
-    export function Actions({
-        className,
-        children,
-        ...props
-    }: ActionsProps): ReactElement {
-        return (
-            <div className={clsx(styles.actions, className)} {...props}>
-                {children}
-            </div>
-        );
+    export function Actions({ children }: ActionsProps): ReactElement {
+        return <div className={styles.actions}>{children}</div>;
     }
 }

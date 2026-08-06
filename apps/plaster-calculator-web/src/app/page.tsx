@@ -121,7 +121,8 @@ export default function LoginPage() {
                                 <ButtonLink
                                     href="/app"
                                     variant="primary"
-                                    className="w-full py-3.5 font-bold"
+                                    fullWidth
+                                    size="large"
                                 >
                                     Go to App
                                 </ButtonLink>
@@ -182,7 +183,8 @@ export default function LoginPage() {
                                 type="submit"
                                 disabled={loading}
                                 variant="primary"
-                                className="w-full py-3.5 font-bold"
+                                fullWidth
+                                size="large"
                             >
                                 {loading ? "Please wait…" : "Log in"}
                             </Button>
@@ -195,7 +197,8 @@ export default function LoginPage() {
                             onClick={handleGoogleSignIn}
                             disabled={loading}
                             variant="secondary"
-                            className="w-full py-3.5"
+                            fullWidth
+                            size="large"
                             icon={<GoogleIcon />}
                         >
                             Continue with Google

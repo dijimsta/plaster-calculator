@@ -8,20 +8,19 @@ import {
     type ProgressBarTone,
 } from "./progress-bar.styles.ts";
 
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type { ProgressBarSize, ProgressBarTone };
 
-export type ProgressBarProps = Omit<
-    HTMLAttributes<HTMLDivElement>,
-    "children"
-> & {
+export type ProgressBarProps = {
     /** Current progress value. Values outside the range are clamped. */
     readonly value: number;
     /** Highest possible progress value. Must be greater than zero. */
     readonly max?: number;
     /** Optional label displayed above the progress track. */
     readonly label?: ReactNode;
+    /** Human-readable name used when the visible label is not plain text. */
+    readonly name?: string;
     /** Displays the normalized progress as a percentage. */
     readonly showValue?: boolean;
     /** Height of the progress track. */
@@ -65,19 +64,17 @@ export function ProgressBar({
     value,
     max = 100,
     label,
+    name,
     showValue = false,
     size = "sm",
     tone = DEFAULT_TONE,
-    className,
-    "aria-label": ariaLabel,
-    ...props
 }: ProgressBarProps): ReactElement {
     const normalizedMax = normalizeMax(max);
     const normalizedValue = normalizeValue(value, normalizedMax);
     const percentage = Math.round((normalizedValue / normalizedMax) * 100);
 
     return (
-        <div className={clsx(styles.root, className)} {...props}>
+        <div className={styles.root}>
             <ProgressBarHeader
                 label={label}
                 percentage={percentage}
@@ -86,8 +83,7 @@ export function ProgressBar({
             <div
                 role="progressbar"
                 aria-label={
-                    ariaLabel ??
-                    (typeof label === "string" ? label : "Progress")
+                    name ?? (typeof label === "string" ? label : "Progress")
                 }
                 aria-valuemax={normalizedMax}
                 aria-valuemin={0}

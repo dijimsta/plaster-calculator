@@ -1,28 +1,42 @@
 import clsx from "clsx";
 
-import { variants, type ButtonVariant } from "../button/button.styles.ts";
+import {
+    fullWidthStyle,
+    sizes,
+    variants,
+    type ButtonSize,
+    type ButtonVariant,
+} from "../button/button.styles.ts";
 
-import type { AnchorHTMLAttributes, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
+export type ButtonLinkProps = {
     readonly variant?: ButtonVariant;
+    readonly size?: ButtonSize;
+    readonly fullWidth?: boolean;
+    readonly label?: string;
+    readonly href?: string;
+    readonly children?: ReactNode;
 };
 
 export function ButtonLink({
     variant = "primary",
-    className,
+    size = "medium",
+    fullWidth = false,
+    label,
+    href,
     children,
-    ...props
 }: ButtonLinkProps): ReactElement {
     return (
         <a
+            href={href}
+            aria-label={label}
             className={clsx(
                 "inline-flex",
                 "items-center",
                 "justify-center",
                 "gap-2",
                 "rounded-lg",
-                "p-2.5",
                 "text-sm",
                 "font-medium",
                 "leading-5",
@@ -32,10 +46,10 @@ export function ButtonLink({
                 "focus-visible:outline-none",
                 "focus-visible:ring-2",
                 "focus-visible:ring-indigo-600",
+                sizes[size],
+                fullWidth && fullWidthStyle,
                 variants[variant],
-                className,
             )}
-            {...props}
         >
             {children}
         </a>

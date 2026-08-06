@@ -10,11 +10,12 @@ import {
     panelOption,
     panelOptionLayout,
 } from "./radio-group-panel-option.styles.ts";
-import { Radio } from "./radio.component.tsx";
+import { RadioControl } from "./radio.component.tsx";
 
 import type { RadioGroupVariant } from "./radio-group.styles.ts";
 import type { RadioSize } from "./radio.styles.ts";
-import type { InputHTMLAttributes, ReactElement, ReactNode } from "react";
+import type { CheckableControlProps } from "../form-control.types.ts";
+import type { ReactElement, ReactNode } from "react";
 
 export type RadioGroupPanelOptionVariant = Extract<
     RadioGroupVariant,
@@ -28,12 +29,8 @@ export type RadioGroupPanelOptionProps = {
     readonly value: string;
     readonly label: ReactNode;
     readonly description?: ReactNode;
-    readonly className?: string;
     readonly variant: RadioGroupPanelOptionVariant;
-} & Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    "children" | "className" | "id" | "name" | "size" | "type" | "value"
->;
+} & Omit<CheckableControlProps, "id" | "label" | "name" | "value">;
 
 export function RadioGroupPanelOption({
     id,
@@ -42,23 +39,20 @@ export function RadioGroupPanelOption({
     value,
     label,
     description,
-    className,
     disabled,
     variant,
-    ...props
+    ...controlProps
 }: RadioGroupPanelOptionProps): ReactElement {
     const descriptionId = `${id}-description`;
     const radio = (
-        <Radio
+        <RadioControl
             id={id}
             name={name}
             value={value}
             size={size}
             disabled={disabled}
-            aria-describedby={
-                description === undefined ? undefined : descriptionId
-            }
-            {...props}
+            describedBy={description === undefined ? undefined : descriptionId}
+            {...controlProps}
         />
     );
     const radioOnRight = variant === "list-right" || variant === "table";
@@ -71,7 +65,6 @@ export function RadioGroupPanelOption({
                 variant === "table"
                     ? panelOptionLayout.table
                     : panelOptionLayout.default,
-                className,
             )}
         >
             {radioOnRight ? null : radio}

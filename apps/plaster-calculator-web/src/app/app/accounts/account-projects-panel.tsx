@@ -24,11 +24,7 @@ export function AccountProjectsPanel({ projects }: AccountProjectsPanelProps) {
                     href={`/app/projects/${project.id}`}
                 >
                     <strong>{project.name}</strong>
-                    <Text
-                        size="sm"
-                        variant="muted"
-                        className={ui.projectMetaLine}
-                    >
+                    <Text size="sm" variant="muted" truncate>
                         {project.originalFileName} / {project.status} /{" "}
                         {new Date(project.updatedAt).toLocaleString()}
                     </Text>

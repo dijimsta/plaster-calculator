@@ -16,3 +16,10 @@ export const variants = Object.freeze({
 
 export type ParagraphVariant =
     typeof variants extends Record<infer K, string> ? K : never;
+
+export const measures = Object.freeze({
+    default: "",
+    narrow: "max-w-[30rem] leading-6",
+});
+
+export type ParagraphMeasure = keyof typeof measures;

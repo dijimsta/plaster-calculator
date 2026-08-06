@@ -3,20 +3,21 @@ import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react";
 
 import { styles } from "./pagination.styles.ts";
 
-import type { HTMLAttributes, ReactElement } from "react";
+import type { ReactElement } from "react";
 
 const EDGE_PAGE_COUNT = 2;
 const SURROUNDING_PAGE_COUNT = 1;
 
 type PaginationItem = number | "ellipsis";
 
-export type PaginationProps = Omit<HTMLAttributes<HTMLElement>, "onChange"> & {
+export type PaginationProps = {
     /** The currently selected page, using one-based numbering. */
     readonly page: number;
     /** The total number of pages available. Values below one are treated as one. */
     readonly pageCount: number;
     /** Called with the selected one-based page number. */
     readonly onPageChange: (page: number) => void;
+    readonly label?: string;
 };
 
 function createRange(start: number, end: number): readonly number[] {
@@ -64,9 +65,7 @@ export function Pagination({
     page,
     pageCount,
     onPageChange,
-    className,
-    "aria-label": ariaLabel = "Pagination",
-    ...props
+    label = "Pagination",
 }: PaginationProps): ReactElement {
     const normalizedPageCount = Math.max(1, Math.floor(pageCount));
     const currentPage = Math.min(
@@ -78,11 +77,7 @@ export function Pagination({
     const isLastPage = currentPage === normalizedPageCount;
 
     return (
-        <nav
-            aria-label={ariaLabel}
-            className={clsx(styles.root, className)}
-            {...props}
-        >
+        <nav aria-label={label} className={styles.root}>
             <div className={clsx(styles.mobileActions)}>
                 <button
                     type="button"

@@ -1,28 +1,19 @@
-import clsx from "clsx";
-
 import { styles } from "./description-list.styles.ts";
 
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type DescriptionListItem = {
     readonly term: ReactNode;
     readonly details: ReactNode;
 };
 
-export type DescriptionListProps = Omit<
-    HTMLAttributes<HTMLDListElement>,
-    "children"
-> & {
+export type DescriptionListProps = {
     readonly items: readonly DescriptionListItem[];
 };
 
-export function DescriptionList({
-    items,
-    className,
-    ...props
-}: DescriptionListProps): ReactElement {
+export function DescriptionList({ items }: DescriptionListProps): ReactElement {
     return (
-        <dl className={clsx(styles.root, className)} {...props}>
+        <dl className={styles.root}>
             {items.map((item, index) => (
                 <div key={index} className={styles.item}>
                     <dt className={styles.term}>{item.term}</dt>

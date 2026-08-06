@@ -14,7 +14,7 @@ const meta: Meta<typeof Button> = {
         docs: {
             description: {
                 component:
-                    "Clickable action element. Supports four visual variants and an optional icon on either side. Omitting children and passing only icon renders an icon-only button — always pass aria-label in that case.",
+                    "Clickable action element with controlled visual variants, sizes, alignment, and optional icons. Use label to name icon-only actions; UIKit applies the accessible name internally.",
             },
         },
     },
@@ -113,7 +113,7 @@ export const IconOnly: Story = {
             {...args}
             variant="ghost"
             icon={<GitHubIcon />}
-            aria-label="GitHub"
+            label="GitHub"
         />
     ),
 };
@@ -124,7 +124,7 @@ export const IconOnlySecondary: Story = {
             {...args}
             variant="secondary"
             icon={<GitHubIcon />}
-            aria-label="GitHub"
+            label="GitHub"
         />
     ),
 };

@@ -46,7 +46,7 @@ export const CustomLabel: Story = {
 
         return (
             <Pagination
-                aria-label="Questionnaire pages"
+                label="Questionnaire pages"
                 page={page}
                 pageCount={12}
                 onPageChange={setPage}

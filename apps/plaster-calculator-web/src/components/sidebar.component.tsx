@@ -70,7 +70,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
                         </Link>
                     </SidebarNavigation.Header>
                     <SidebarNavigation.Body>
-                        <VerticalNavigation aria-label="Application navigation">
+                        <VerticalNavigation label="Application navigation">
                             <VerticalNavigation.Section title="Workspace">
                                 {navItems.map((item) => (
                                     <VerticalNavigation.Item
@@ -109,7 +109,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
                             <Button
                                 variant="secondary"
                                 icon={<Icons.LogOut aria-hidden="true" />}
-                                aria-label="Log out"
+                                label="Log out"
                                 onClick={handleLogout}
                             />
                         </Box>

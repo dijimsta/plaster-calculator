@@ -7,28 +7,30 @@ import {
     sizes,
     type CheckboxSize,
 } from "./checkbox.styles.ts";
+import {
+    checkableInputProps,
+    type CheckableControlProps,
+} from "../form-control.types.ts";
 
-import type { InputHTMLAttributes, ReactElement } from "react";
+import type { ReactElement } from "react";
 
 export type { CheckboxSize };
 
 export type CheckboxProps = {
     readonly size?: CheckboxSize;
-    readonly className?: string;
-} & Omit<InputHTMLAttributes<HTMLInputElement>, "className" | "size" | "type">;
+} & CheckableControlProps;
 
 /** An accessible checkbox for selecting one or more options. */
 export function Checkbox({
     size = "md",
-    className,
-    ...props
+    ...controlProps
 }: CheckboxProps): ReactElement {
     return (
-        <span className={clsx(container, className)}>
+        <span className={container}>
             <input
                 type="checkbox"
                 className={clsx(input, sizes[size].input)}
-                {...props}
+                {...checkableInputProps(controlProps)}
             />
             <svg
                 aria-hidden="true"

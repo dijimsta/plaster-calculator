@@ -10,9 +10,13 @@ import {
     segmentedOption,
     smallCard,
 } from "./radio-group-card-option.styles.ts";
+import {
+    checkableInputProps,
+    type CheckableControlProps,
+} from "../form-control.types.ts";
 
 import type { RadioGroupVariant } from "./radio-group.styles.ts";
-import type { InputHTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type RadioGroupCardOptionVariant = Extract<
     RadioGroupVariant,
@@ -25,12 +29,9 @@ export type RadioGroupCardOptionProps = {
     readonly value: string;
     readonly label: ReactNode;
     readonly description?: ReactNode;
-    readonly className?: string;
+    readonly fullWidth?: boolean;
     readonly variant: RadioGroupCardOptionVariant;
-} & Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    "children" | "className" | "id" | "name" | "size" | "type" | "value"
->;
+} & Omit<CheckableControlProps, "id" | "label" | "name" | "value">;
 
 const optionStyles: Record<RadioGroupCardOptionVariant, string> = {
     "cards": card,
@@ -44,17 +45,18 @@ export function RadioGroupCardOption({
     value,
     label,
     description,
-    className,
+    fullWidth = false,
     disabled,
     variant,
-    ...props
+    ...controlProps
 }: RadioGroupCardOptionProps): ReactElement {
     const descriptionId = `${id}-description`;
 
     return (
-        <label className={clsx(cardWrapper, className)}>
+        <label className={clsx(cardWrapper, fullWidth && "flex-1")}>
             <input
                 type="radio"
+                {...checkableInputProps(controlProps)}
                 id={id}
                 name={name}
                 value={value}
@@ -63,7 +65,6 @@ export function RadioGroupCardOption({
                     description === undefined ? undefined : descriptionId
                 }
                 className={cardInput}
-                {...props}
             />
             <span className={optionStyles[variant]}>
                 <span>

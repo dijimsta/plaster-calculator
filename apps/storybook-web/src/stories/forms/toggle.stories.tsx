@@ -32,14 +32,14 @@ type Story = StoryObj<typeof Toggle>;
 
 export const Default: Story = {
     args: {
-        "aria-label": "Enable notifications",
+        label: "Enable notifications",
     },
 };
 
 export const Checked: Story = {
     args: {
-        "aria-label": "Enable notifications",
-        "defaultChecked": true,
+        label: "Enable notifications",
+        defaultChecked: true,
     },
 };
 
@@ -55,18 +55,8 @@ export const WithLabel: Story = {
 export const Sizes: Story = {
     render: (args) => (
         <Box align="center" gap="md">
-            <Toggle
-                {...args}
-                size="sm"
-                aria-label="Small toggle"
-                defaultChecked
-            />
-            <Toggle
-                {...args}
-                size="md"
-                aria-label="Default toggle"
-                defaultChecked
-            />
+            <Toggle {...args} size="sm" label="Small toggle" defaultChecked />
+            <Toggle {...args} size="md" label="Default toggle" defaultChecked />
         </Box>
     ),
 };
@@ -74,10 +64,10 @@ export const Sizes: Story = {
 export const Disabled: Story = {
     render: (args) => (
         <Box align="center" gap="md">
-            <Toggle {...args} aria-label="Disabled toggle" disabled />
+            <Toggle {...args} label="Disabled toggle" disabled />
             <Toggle
                 {...args}
-                aria-label="Disabled checked toggle"
+                label="Disabled checked toggle"
                 defaultChecked
                 disabled
             />

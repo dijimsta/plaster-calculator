@@ -23,11 +23,11 @@ import {
     type AvatarStatus,
 } from "./avatar.styles.ts";
 
-import type { HTMLAttributes, ReactElement } from "react";
+import type { ReactElement } from "react";
 
 export type { AvatarColor, AvatarShape, AvatarSize, AvatarStatus };
 
-export type AvatarProps = HTMLAttributes<HTMLSpanElement> & {
+export type AvatarProps = {
     /** URL of the image to display. When provided, initials and placeholder are ignored. */
     readonly src?: string;
     /** Alt text for the image. Ignored when no src is provided. */
@@ -52,14 +52,12 @@ export function Avatar({
     size = DEFAULT_SIZE,
     shape = DEFAULT_SHAPE,
     status,
-    className,
-    ...props
 }: AvatarProps): ReactElement {
     const shapeClass = shapes[shape];
     const sizeClass = sizes[size];
 
     return (
-        <span className={clsx(wrapperBase, className)} {...props}>
+        <span className={wrapperBase}>
             {src !== undefined ? (
                 <img
                     src={src}
