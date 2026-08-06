@@ -56,14 +56,4 @@ export interface PdfPageModalProps {
     readonly togglePage: (pageNumber: number) => void;
 }
 
-export interface ToastState {
-    readonly toast: string;
-    readonly toastProject: { id: string; name: string } | null;
-    readonly processingProjectId: string | null;
-    readonly setToast: (toast: string) => void;
-    readonly setToastProject: (
-        project: { id: string; name: string } | null,
-    ) => void;
-}
-
 export type FileInputChange = ChangeEvent<HTMLInputElement>;
