@@ -6,7 +6,7 @@ import {
     type MultiStepStatus,
 } from "./multi-step-navigation.styles.ts";
 
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type MultiStepNavigationStep = {
     readonly id: string;
@@ -15,15 +15,13 @@ export type MultiStepNavigationStep = {
     readonly disabled?: boolean;
 };
 
-export type MultiStepNavigationProps = Omit<
-    HTMLAttributes<HTMLElement>,
-    "onChange"
-> & {
+export type MultiStepNavigationProps = {
     readonly steps: readonly MultiStepNavigationStep[];
     /** Current step, using one-based numbering. */
     readonly currentStep: number;
     /** Called with the selected one-based step number. */
     readonly onStepChange?: (step: number) => void;
+    readonly label?: string;
 };
 
 function getStatus(step: number, currentStep: number): MultiStepStatus {
@@ -37,9 +35,7 @@ export function MultiStepNavigation({
     steps,
     currentStep,
     onStepChange,
-    className,
-    "aria-label": ariaLabel = "Progress",
-    ...props
+    label = "Progress",
 }: MultiStepNavigationProps): ReactElement {
     const normalizedCurrentStep = Math.min(
         Math.max(1, Math.floor(currentStep)),
@@ -47,11 +43,7 @@ export function MultiStepNavigation({
     );
 
     return (
-        <nav
-            aria-label={ariaLabel}
-            className={clsx(styles.root, className)}
-            {...props}
-        >
+        <nav aria-label={label} className={styles.root}>
             <ol role="list" className={styles.list}>
                 {steps.map((step, index) => {
                     const stepNumber = index + 1;

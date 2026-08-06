@@ -6,12 +6,9 @@ import { modalDialogSizes, styles } from "./modal-dialog.styles.ts";
 import { Backdrop } from "../backdrop/index.ts";
 
 import type { ModalDialogSize } from "./modal-dialog.styles.ts";
-import type { DialogHTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export interface ModalDialogProps extends Omit<
-    DialogHTMLAttributes<HTMLDialogElement>,
-    "children" | "onClose" | "open" | "title"
-> {
+export type ModalDialogProps = {
     readonly open: boolean;
     readonly onClose: () => void;
     readonly title: ReactNode;
@@ -21,7 +18,7 @@ export interface ModalDialogProps extends Omit<
     readonly size?: ModalDialogSize;
     readonly closeLabel?: string;
     readonly showCloseButton?: boolean;
-}
+};
 
 /** An accessible modal dialog for focused content, alerts, and confirmations. */
 export function ModalDialog({
@@ -34,8 +31,6 @@ export function ModalDialog({
     size = "md",
     closeLabel = "Close dialog",
     showCloseButton = true,
-    className,
-    ...props
 }: ModalDialogProps): ReactElement {
     const dialogRef = useRef<HTMLDialogElement>(null);
     const titleId = useId();
@@ -53,11 +48,10 @@ export function ModalDialog({
 
     return (
         <dialog
-            {...props}
             ref={dialogRef}
             aria-describedby={description ? descriptionId : undefined}
             aria-labelledby={titleId}
-            className={clsx(styles.root, className)}
+            className={styles.root}
             onCancel={(event) => {
                 event.preventDefault();
                 onClose();

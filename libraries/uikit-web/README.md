@@ -30,6 +30,12 @@ here. Do not work around a missing capability with consumer-owned class names, C
 
 Consumer-facing stories live in `apps/storybook-web` and import UIKit through `@libraries/uikit-web`.
 
+## Public component APIs
+
+UIKit props are deliberate component APIs, not extensions of React DOM attribute types. Components do not accept
+`className` or raw accessibility attributes. Add an owned visual or semantic prop when consumers need a new capability;
+UIKit is responsible for translating that prop into styling, HTML semantics, and accessibility attributes.
+
 ## Build
 
 From the repository root:

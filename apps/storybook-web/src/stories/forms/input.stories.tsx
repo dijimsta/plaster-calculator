@@ -107,10 +107,10 @@ export const WithLeadingAndTrailingAddons: Story = {
 
 export const Pill: Story = {
     args: {
-        "aria-label": "Search",
-        "placeholder": "Search...",
-        "shape": "pill",
-        "type": "search",
+        label: "Search",
+        placeholder: "Search...",
+        shape: "pill",
+        type: "search",
     },
 };
 

@@ -18,9 +18,9 @@ import {
     type BadgeVariant,
 } from "./badge.styles.ts";
 
-import type { HTMLAttributes, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
+export type BadgeProps = {
     /** Color scheme applied to the badge. */
     readonly color?: BadgeColor;
     /** Shape and border style of the badge. */
@@ -31,6 +31,7 @@ export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
     readonly dot?: boolean;
     /** When provided, renders a remove button and calls this handler on click. */
     readonly onRemove?: () => void;
+    readonly children?: ReactNode;
 };
 
 export function Badge({
@@ -39,9 +40,7 @@ export function Badge({
     size = DEFAULT_SIZE,
     dot,
     onRemove,
-    className,
     children,
-    ...props
 }: BadgeProps): ReactElement {
     return (
         <span
@@ -52,9 +51,7 @@ export function Badge({
                 (variant === "flat-with-border" ||
                     variant === "pill-with-border") &&
                     borderColors[color],
-                className,
             )}
-            {...props}
         >
             {dot && <BadgeDot color={color} />}
             {children}

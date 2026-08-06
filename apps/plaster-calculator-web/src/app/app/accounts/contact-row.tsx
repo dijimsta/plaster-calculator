@@ -57,7 +57,7 @@ export function ContactRow({
                             setEditContactId(contact.id);
                             setEditContactDraft(toContactDraft(contact));
                         }}
-                        aria-label="Edit contact"
+                        label="Edit contact"
                         type="button"
                     />
                 )}
@@ -65,7 +65,7 @@ export function ContactRow({
                     <ButtonLink
                         variant="secondary"
                         href={`mailto:${contact.email}`}
-                        aria-label={`Email ${contact.name}`}
+                        label={`Email ${contact.name}`}
                     >
                         <Mail size={18} aria-hidden="true" />
                     </ButtonLink>
@@ -74,7 +74,7 @@ export function ContactRow({
                     variant="secondary"
                     icon={<Trash2 size={18} aria-hidden="true" />}
                     onClick={() => void removeContact(contact)}
-                    aria-label="Delete contact"
+                    label="Delete contact"
                     type="button"
                 />
             </div>
@@ -95,7 +95,7 @@ function ContactSummary({
                 {contact.name}
                 {isPrimary ? " (Primary)" : ""}
             </strong>
-            <Text size="sm" variant="muted" className={ui.projectMetaLine}>
+            <Text size="sm" variant="muted" truncate>
                 {contact.email ? (
                     <a href={`mailto:${contact.email}`}>{contact.email}</a>
                 ) : (
@@ -130,7 +130,7 @@ function EditContactActions({
                 variant="secondary"
                 icon={<X size={18} aria-hidden="true" />}
                 onClick={() => setEditContactId(null)}
-                aria-label="Cancel edit"
+                label="Cancel edit"
                 type="button"
             />
         </>

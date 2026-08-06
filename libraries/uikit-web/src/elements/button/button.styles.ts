@@ -1,7 +1,17 @@
+import clsx from "clsx";
+
 export const base =
-    "inline-flex items-center justify-center gap-2 border-0 text-sm font-medium leading-5 cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center gap-2 border-0 text-sm font-medium leading-5 cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed";
 
 export const growStyle = "flex-1";
+export const fullWidthStyle = "w-full";
+
+export const contentAlignments = Object.freeze({
+    center: "justify-center",
+    start: "justify-start text-left",
+});
+
+export type ButtonContentAlignment = keyof typeof contentAlignments;
 
 export type ButtonSize =
     typeof sizes extends Record<infer K, string> ? K : never;
@@ -26,3 +36,28 @@ export const variants = Object.freeze({
     ghost: "rounded-lg bg-transparent text-slate-900 dark:text-slate-100 font-semibold hover:underline underline-offset-2",
     link: "rounded-none text-indigo-600 underline underline-offset-2 enabled:hover:text-indigo-800 dark:text-indigo-400 dark:enabled:hover:text-indigo-300",
 });
+
+type ButtonClassNameOptions = {
+    readonly align: ButtonContentAlignment;
+    readonly fullWidth: boolean;
+    readonly grow: boolean;
+    readonly size: ButtonSize;
+    readonly variant: ButtonVariant;
+};
+
+export function buttonClassName({
+    align,
+    fullWidth,
+    grow,
+    size,
+    variant,
+}: ButtonClassNameOptions): string {
+    return clsx(
+        base,
+        variants[variant],
+        variant === "link" ? "p-0" : sizes[size],
+        grow && growStyle,
+        fullWidth && fullWidthStyle,
+        contentAlignments[align],
+    );
+}

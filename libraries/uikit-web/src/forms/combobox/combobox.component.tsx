@@ -17,7 +17,6 @@ export type ComboboxProps = {
     readonly placeholder?: string;
     readonly disabled?: boolean;
     readonly id?: string;
-    readonly className?: string;
 };
 
 export function Combobox({
@@ -27,7 +26,6 @@ export function Combobox({
     placeholder,
     disabled = false,
     id: externalId,
-    className,
 }: ComboboxProps): ReactElement {
     const generatedId = useId();
     const id = externalId ?? generatedId;
@@ -82,7 +80,7 @@ export function Combobox({
         activeIndex >= 0 ? `${id}-option-${activeIndex}` : undefined;
 
     return (
-        <div className={clsx("relative", className)}>
+        <div className="relative">
             <input
                 ref={inputRef}
                 id={id}

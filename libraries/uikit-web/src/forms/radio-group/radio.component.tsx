@@ -6,26 +6,40 @@ import {
     radioSizes,
     type RadioSize,
 } from "./radio.styles.ts";
+import {
+    checkableInputProps,
+    type CheckableControlProps,
+} from "../form-control.types.ts";
 
-import type { InputHTMLAttributes, ReactElement } from "react";
+import type { ReactElement } from "react";
 
 export type RadioProps = {
     readonly size?: RadioSize;
-    readonly className?: string;
-} & Omit<InputHTMLAttributes<HTMLInputElement>, "className" | "size" | "type">;
+} & CheckableControlProps;
+
+type RadioControlProps = RadioProps & {
+    readonly describedBy?: string;
+    readonly offset?: boolean;
+};
 
 /** An accessible radio control for selecting one option from a group. */
-export function Radio({
+export function Radio({ ...props }: RadioProps): ReactElement {
+    return <RadioControl {...props} />;
+}
+
+export function RadioControl({
     size = "md",
-    className,
-    ...props
-}: RadioProps): ReactElement {
+    describedBy,
+    offset = false,
+    ...controlProps
+}: RadioControlProps): ReactElement {
     return (
-        <span className={clsx(radioContainer, className)}>
+        <span className={clsx(radioContainer, offset && "mt-0.5")}>
             <input
                 type="radio"
+                aria-describedby={describedBy}
                 className={clsx(radioInput, radioSizes[size])}
-                {...props}
+                {...checkableInputProps(controlProps)}
             />
         </span>
     );

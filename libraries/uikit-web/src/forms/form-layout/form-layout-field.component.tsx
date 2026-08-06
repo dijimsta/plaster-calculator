@@ -13,7 +13,7 @@ import {
 } from "./form-layout-field.styles.ts";
 import { useFormLayoutVariant } from "./form-layout.context.ts";
 
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type { FormLayoutFieldLabelPlacement, FormLayoutFieldSpan };
 
@@ -23,7 +23,8 @@ export type FormLayoutFieldProps = {
     readonly htmlFor?: string;
     readonly labelPlacement?: FormLayoutFieldLabelPlacement;
     readonly span?: FormLayoutFieldSpan;
-} & HTMLAttributes<HTMLDivElement>;
+    readonly children?: ReactNode;
+};
 
 /** A labelled form control with optional supporting text. */
 export function FormLayoutField({
@@ -32,9 +33,7 @@ export function FormLayoutField({
     htmlFor,
     labelPlacement = "above",
     span = "full",
-    className,
     children,
-    ...props
 }: FormLayoutFieldProps): ReactElement {
     const variant = useFormLayoutVariant();
     const isLabelsLeft = variant === "labels-left";
@@ -45,9 +44,7 @@ export function FormLayoutField({
             className={clsx(
                 fieldSpans[span],
                 fieldVariants[isLabelsLeft ? "labels-left" : "default"],
-                className,
             )}
-            {...props}
         >
             <label
                 htmlFor={htmlFor}

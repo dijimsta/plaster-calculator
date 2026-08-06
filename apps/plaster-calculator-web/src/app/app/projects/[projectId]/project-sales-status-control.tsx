@@ -27,7 +27,7 @@ export function ProjectSalesStatusControl({
 }: ProjectSalesStatusControlProps) {
     return (
         <SelectMenu
-            aria-label="Sales status"
+            label="Sales status"
             disabled={disabled}
             options={STATUS_OPTIONS}
             value={currentStatus}

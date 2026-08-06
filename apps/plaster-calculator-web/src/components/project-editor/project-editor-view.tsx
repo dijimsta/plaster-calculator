@@ -126,7 +126,7 @@ export function ProjectEditorView({
                     hasSelection={selection.hasSelection}
                 />
                 {analyzing && (
-                    <Paragraph textSize="sm" variant="muted" role="status">
+                    <Paragraph textSize="sm" variant="muted" status>
                         Analysis is running. Editing is temporarily disabled.
                     </Paragraph>
                 )}

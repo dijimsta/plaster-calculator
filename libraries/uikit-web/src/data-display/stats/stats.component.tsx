@@ -20,7 +20,7 @@ import {
     type StatsVariant,
 } from "./stats.styles.ts";
 
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type {
     StatsColumnCount,
@@ -55,7 +55,7 @@ export type StatsItem = {
     readonly valueTone?: StatsValueTone;
 };
 
-export type StatsProps = Omit<HTMLAttributes<HTMLDListElement>, "children"> & {
+export type StatsProps = {
     /** Stats to display. */
     readonly items: readonly StatsItem[];
     /** Maximum number of columns shown at large viewports. */
@@ -78,8 +78,6 @@ export function Stats({
     items,
     columns: columnCount = DEFAULT_COLUMNS,
     variant = DEFAULT_VARIANT,
-    className,
-    ...props
 }: StatsProps): ReactElement {
     return (
         <dl
@@ -89,9 +87,7 @@ export function Stats({
                 variants[variant],
                 variant === "shared-borders" &&
                     sharedBorderColumns[columnCount],
-                className,
             )}
-            {...props}
         >
             {items.map((item) => (
                 <StatsItemView key={item.id} item={item} variant={variant} />

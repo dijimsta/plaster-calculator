@@ -113,7 +113,6 @@ export function inputControlPadding(
 }
 
 export type InputRootClassNameOptions = {
-    readonly className?: string;
     readonly disabled: boolean;
     readonly groupStyle: string;
     readonly invalidStyle?: string;
@@ -122,7 +121,6 @@ export type InputRootClassNameOptions = {
 };
 
 export function inputRootClassName({
-    className,
     disabled,
     groupStyle,
     invalidStyle,
@@ -136,6 +134,5 @@ export function inputRootClassName({
         groupStyle,
         disabled && disabledInputRoot,
         invalidStyle,
-        className,
     );
 }

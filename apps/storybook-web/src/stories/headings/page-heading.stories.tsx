@@ -68,7 +68,7 @@ export const WithMetaAndActions: Story = {
         <PageHeading>
             <PageHeading.Content>
                 <PageHeading.Title>Richmond apartment</PageHeading.Title>
-                <PageHeading.Meta aria-label="Project details">
+                <PageHeading.Meta label="Project details">
                     <PageHeading.Meta.Item>
                         <MapPin aria-hidden="true" />
                         Richmond, Victoria
@@ -104,7 +104,7 @@ export const WithActionsAndBreadcrumbs: Story = {
             </PageHeading.Breadcrumbs>
             <PageHeading.Content>
                 <PageHeading.Title>Richmond apartment</PageHeading.Title>
-                <PageHeading.Meta aria-label="Project details">
+                <PageHeading.Meta label="Project details">
                     <PageHeading.Meta.Item>
                         <MapPin aria-hidden="true" />
                         Richmond, Victoria

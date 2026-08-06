@@ -1,5 +1,3 @@
-import clsx from "clsx";
-
 import {
     sectionBodyVariants,
     sectionDescription,
@@ -9,28 +7,24 @@ import {
 } from "./form-layout-section.styles.ts";
 import { useFormLayoutVariant } from "./form-layout.context.ts";
 
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type FormLayoutSectionProps = {
     readonly title: ReactNode;
     readonly description?: ReactNode;
-} & HTMLAttributes<HTMLElement>;
+    readonly children?: ReactNode;
+};
 
 /** A titled group of related fields within a FormLayout. */
 export function FormLayoutSection({
     title,
     description,
-    className,
     children,
-    ...props
 }: FormLayoutSectionProps): ReactElement {
     const variant = useFormLayoutVariant();
 
     return (
-        <section
-            className={clsx(sectionVariants[variant], className)}
-            {...props}
-        >
+        <section className={sectionVariants[variant]}>
             <div className={sectionHeader}>
                 <h2 className={sectionTitle}>{title}</h2>
                 {description === undefined ? null : (

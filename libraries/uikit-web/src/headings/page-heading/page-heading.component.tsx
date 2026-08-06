@@ -1,125 +1,54 @@
-import clsx from "clsx";
-
 import { styles } from "./page-heading.styles.ts";
 
-import type {
-    HTMLAttributes,
-    LiHTMLAttributes,
-    PropsWithChildren,
-    ReactElement,
-} from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type PageHeadingProps = PropsWithChildren<HTMLAttributes<HTMLElement>>;
+export type PageHeadingProps = {
+    readonly children?: ReactNode;
+};
 
-export function PageHeading({
-    className,
-    children,
-    ...props
-}: PageHeadingProps): ReactElement {
-    return (
-        <header className={clsx(styles.root, className)} {...props}>
-            {children}
-        </header>
-    );
+export function PageHeading({ children }: PageHeadingProps): ReactElement {
+    return <header className={styles.root}>{children}</header>;
 }
 
 export namespace PageHeading {
-    export function Breadcrumbs({
-        className,
-        children,
-        ...props
-    }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>): ReactElement {
-        return (
-            <div className={clsx(styles.breadcrumbs, className)} {...props}>
-                {children}
-            </div>
-        );
+    export function Breadcrumbs({ children }: PageHeadingProps): ReactElement {
+        return <div className={styles.breadcrumbs}>{children}</div>;
     }
 
-    export function Content({
-        className,
-        children,
-        ...props
-    }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>): ReactElement {
-        return (
-            <div className={clsx(styles.content, className)} {...props}>
-                {children}
-            </div>
-        );
+    export function Content({ children }: PageHeadingProps): ReactElement {
+        return <div className={styles.content}>{children}</div>;
     }
 
-    export function Title({
-        className,
-        children,
-        ...props
-    }: PropsWithChildren<HTMLAttributes<HTMLHeadingElement>>): ReactElement {
-        return (
-            <h1 className={clsx(styles.title, className)} {...props}>
-                {children}
-            </h1>
-        );
+    export function Title({ children }: PageHeadingProps): ReactElement {
+        return <h1 className={styles.title}>{children}</h1>;
     }
 
-    export function Description({
-        className,
-        children,
-        ...props
-    }: PropsWithChildren<HTMLAttributes<HTMLParagraphElement>>): ReactElement {
-        return (
-            <p className={clsx(styles.description, className)} {...props}>
-                {children}
-            </p>
-        );
+    export function Description({ children }: PageHeadingProps): ReactElement {
+        return <p className={styles.description}>{children}</p>;
     }
 
     export function Meta({
-        className,
         children,
-        role = "list",
-        ...props
-    }: PropsWithChildren<HTMLAttributes<HTMLUListElement>>): ReactElement {
+        label,
+    }: PageHeadingProps & { readonly label?: string }): ReactElement {
         return (
-            <ul role={role} className={clsx(styles.meta, className)} {...props}>
+            <ul role="list" aria-label={label} className={styles.meta}>
                 {children}
             </ul>
         );
     }
 
     export namespace Meta {
-        export function Item({
-            className,
-            children,
-            ...props
-        }: PropsWithChildren<LiHTMLAttributes<HTMLLIElement>>): ReactElement {
-            return (
-                <li className={clsx(styles.metaItem, className)} {...props}>
-                    {children}
-                </li>
-            );
+        export function Item({ children }: PageHeadingProps): ReactElement {
+            return <li className={styles.metaItem}>{children}</li>;
         }
     }
 
-    export function Actions({
-        className,
-        children,
-        ...props
-    }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>): ReactElement {
-        return (
-            <div className={clsx(styles.actions, className)} {...props}>
-                {children}
-            </div>
-        );
+    export function Actions({ children }: PageHeadingProps): ReactElement {
+        return <div className={styles.actions}>{children}</div>;
     }
 
-    export function Navigation({
-        className,
-        children,
-        ...props
-    }: PropsWithChildren<HTMLAttributes<HTMLDivElement>>): ReactElement {
-        return (
-            <div className={clsx(styles.navigation, className)} {...props}>
-                {children}
-            </div>
-        );
+    export function Navigation({ children }: PageHeadingProps): ReactElement {
+        return <div className={styles.navigation}>{children}</div>;
     }
 }

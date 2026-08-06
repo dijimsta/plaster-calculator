@@ -8,11 +8,11 @@ import {
     type IconTileTone,
 } from "./icon-tile.styles.ts";
 
-import type { HTMLAttributes, ReactNode, ReactElement } from "react";
+import type { ReactNode, ReactElement } from "react";
 
 export type { IconTileSize, IconTileTone };
 
-export type IconTileProps = HTMLAttributes<HTMLSpanElement> & {
+export type IconTileProps = {
     readonly size?: IconTileSize;
     readonly tone?: IconTileTone;
     readonly children: ReactNode;
@@ -21,16 +21,9 @@ export type IconTileProps = HTMLAttributes<HTMLSpanElement> & {
 export function IconTile({
     size = "md",
     tone = "neutral",
-    className,
     children,
-    ...props
 }: IconTileProps): ReactElement {
     return (
-        <span
-            className={clsx(base, sizes[size], tones[tone], className)}
-            {...props}
-        >
-            {children}
-        </span>
+        <span className={clsx(base, sizes[size], tones[tone])}>{children}</span>
     );
 }

@@ -14,13 +14,9 @@ import {
     type RadioGroupVariant,
 } from "./radio-group.styles.ts";
 
+import type { CheckableControlProps } from "../form-control.types.ts";
 import type { RadioSize } from "./radio.styles.ts";
-import type {
-    FieldsetHTMLAttributes,
-    InputHTMLAttributes,
-    ReactElement,
-    ReactNode,
-} from "react";
+import type { ChangeEventHandler, ReactElement, ReactNode } from "react";
 
 export { Radio } from "./radio.component.tsx";
 export type { RadioProps } from "./radio.component.tsx";
@@ -47,7 +43,10 @@ export type RadioGroupProps = {
     readonly fullWidth?: boolean;
     /** Keeps the legend in the accessibility tree but visually hides it. */
     readonly hideLegend?: boolean;
-} & Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, "name">;
+    readonly disabled?: boolean;
+    readonly children?: ReactNode;
+    readonly onChange?: ChangeEventHandler<HTMLFieldSetElement>;
+};
 
 /** A semantic fieldset for a mutually exclusive collection of radio options. */
 export function RadioGroup({
@@ -58,13 +57,17 @@ export function RadioGroup({
     size = "md",
     fullWidth = false,
     hideLegend = false,
-    className,
+    disabled,
     children,
-    ...props
+    onChange,
 }: RadioGroupProps): ReactElement {
     return (
         <RadioGroupContext.Provider value={{ name, size, variant, fullWidth }}>
-            <fieldset className={clsx(groupFieldset, className)} {...props}>
+            <fieldset
+                disabled={disabled}
+                className={groupFieldset}
+                onChange={onChange}
+            >
                 <legend className={legendClassName(hideLegend)}>
                     {legend}
                 </legend>
@@ -92,20 +95,15 @@ export type RadioGroupOptionProps = {
     readonly value: string;
     readonly label: ReactNode;
     readonly description?: ReactNode;
-    readonly className?: string;
-} & Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    "children" | "className" | "id" | "name" | "size" | "type" | "value"
->;
+} & Omit<CheckableControlProps, "id" | "label" | "name" | "value">;
 
 /** A labelled option within a RadioGroup. */
 export function RadioGroupOption({
     value,
     label,
     description,
-    className,
     disabled,
-    ...props
+    ...controlProps
 }: RadioGroupOptionProps): ReactElement {
     const context = useContext(RadioGroupContext);
     const generatedId = useId();
@@ -126,15 +124,10 @@ export function RadioGroupOption({
                 value={value}
                 label={label}
                 description={description}
-                className={clsx(
-                    context.variant === "segmented" &&
-                        context.fullWidth &&
-                        "flex-1",
-                    className,
-                )}
+                fullWidth={context.variant === "segmented" && context.fullWidth}
                 disabled={disabled}
                 variant={context.variant}
-                {...props}
+                {...controlProps}
             />
         );
     }
@@ -152,10 +145,9 @@ export function RadioGroupOption({
                 value={value}
                 label={label}
                 description={description}
-                className={className}
                 disabled={disabled}
                 variant={context.variant}
-                {...props}
+                {...controlProps}
             />
         );
     }
@@ -168,9 +160,8 @@ export function RadioGroupOption({
             value={value}
             label={label}
             description={description}
-            className={className}
             disabled={disabled}
-            {...props}
+            {...controlProps}
         />
     );
 }

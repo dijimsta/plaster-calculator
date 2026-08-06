@@ -3,45 +3,33 @@ import { cloneElement } from "react";
 
 import { styles } from "./vertical-navigation.styles.ts";
 
-import type {
-    AnchorHTMLAttributes,
-    HTMLAttributes,
-    PropsWithChildren,
-    ReactElement,
-    ReactNode,
-} from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type VerticalNavigationProps = PropsWithChildren<
-    HTMLAttributes<HTMLElement>
->;
+export type VerticalNavigationProps = {
+    readonly label?: string;
+    readonly children?: ReactNode;
+};
 
 export function VerticalNavigation({
-    className,
+    label = "Navigation",
     children,
-    ...props
 }: VerticalNavigationProps): ReactElement {
     return (
-        <nav className={clsx(styles.navigation, className)} {...props}>
+        <nav aria-label={label} className={styles.navigation}>
             {children}
         </nav>
     );
 }
 
 export namespace VerticalNavigation {
-    export type SectionProps = PropsWithChildren<
-        HTMLAttributes<HTMLDivElement> & {
-            readonly title?: string;
-        }
-    >;
+    export type SectionProps = {
+        readonly title?: string;
+        readonly children?: ReactNode;
+    };
 
-    export function Section({
-        title,
-        className,
-        children,
-        ...props
-    }: SectionProps): ReactElement {
+    export function Section({ title, children }: SectionProps): ReactElement {
         return (
-            <div className={clsx(styles.section, className)} {...props}>
+            <div className={styles.section}>
                 {title !== undefined && (
                     <h2 className={styles.sectionTitle}>{title}</h2>
                 )}
@@ -50,43 +38,36 @@ export namespace VerticalNavigation {
         );
     }
 
-    export type ItemProps = Omit<HTMLAttributes<HTMLLIElement>, "children"> & {
+    type ItemLinkProps = {
+        readonly "aria-current"?: "page";
+        readonly "className"?: string;
+        readonly "children"?: ReactNode;
+    };
+
+    export type ItemProps = {
         readonly accessory?: ReactNode;
-        readonly children: ReactElement<
-            AnchorHTMLAttributes<HTMLAnchorElement>
-        >;
+        readonly children: ReactElement;
         readonly isCurrent?: boolean;
     };
 
     export function Item({
         accessory,
         isCurrent = false,
-        className,
         children,
-        ...props
     }: ItemProps): ReactElement {
+        const ownedLink = children as ReactElement<ItemLinkProps>;
         const link = cloneElement(
-            children,
+            ownedLink,
             {
-                "aria-current": isCurrent
-                    ? "page"
-                    : children.props["aria-current"],
-                "className": clsx(
-                    children.props.className,
-                    styles.item,
-                    isCurrent && styles.currentItem,
-                ),
+                "aria-current": isCurrent ? "page" : undefined,
+                "className": clsx(styles.item, isCurrent && styles.currentItem),
             },
-            children.props.children,
+            ownedLink.props.children,
             accessory !== undefined && (
                 <span className={styles.accessory}>{accessory}</span>
             ),
         );
 
-        return (
-            <li className={className} {...props}>
-                {link}
-            </li>
-        );
+        return <li>{link}</li>;
     }
 }

@@ -2,11 +2,11 @@ import clsx from "clsx";
 
 import { styles, type EmptyStateVariant } from "./empty-state.styles.ts";
 
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type { EmptyStateVariant };
 
-export type EmptyStateProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
+export type EmptyStateProps = {
     readonly icon?: ReactNode;
     readonly title: ReactNode;
     readonly description?: ReactNode;
@@ -21,14 +21,9 @@ export function EmptyState({
     description,
     actions,
     variant = "simple",
-    className,
-    ...props
 }: EmptyStateProps): ReactElement {
     return (
-        <div
-            className={clsx(styles.base, styles.variants[variant], className)}
-            {...props}
-        >
+        <div className={clsx(styles.base, styles.variants[variant])}>
             {icon !== undefined && (
                 <div aria-hidden="true" className={styles.icon}>
                     {icon}

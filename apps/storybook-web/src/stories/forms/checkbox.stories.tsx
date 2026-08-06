@@ -32,14 +32,14 @@ type Story = StoryObj<typeof Checkbox>;
 
 export const Default: Story = {
     args: {
-        "aria-label": "Receive product updates",
+        label: "Receive product updates",
     },
 };
 
 export const Checked: Story = {
     args: {
-        "aria-label": "Receive product updates",
-        "defaultChecked": true,
+        label: "Receive product updates",
+        defaultChecked: true,
     },
 };
 
@@ -58,13 +58,13 @@ export const Sizes: Story = {
             <Checkbox
                 {...args}
                 size="sm"
-                aria-label="Small checkbox"
+                label="Small checkbox"
                 defaultChecked
             />
             <Checkbox
                 {...args}
                 size="md"
-                aria-label="Default checkbox"
+                label="Default checkbox"
                 defaultChecked
             />
         </Box>
@@ -74,10 +74,10 @@ export const Sizes: Story = {
 export const Disabled: Story = {
     render: (args) => (
         <Box align="center" gap="md">
-            <Checkbox {...args} aria-label="Disabled checkbox" disabled />
+            <Checkbox {...args} label="Disabled checkbox" disabled />
             <Checkbox
                 {...args}
-                aria-label="Disabled checked checkbox"
+                label="Disabled checked checkbox"
                 defaultChecked
                 disabled
             />

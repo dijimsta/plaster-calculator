@@ -34,10 +34,6 @@ export const userPageStyles = {
         activeTheme.line,
     ),
     sectionCopy: "grid content-start gap-1",
-    sectionDescription: cx(
-        "max-w-[30rem] text-sm leading-6",
-        activeTheme.muted,
-    ),
     sectionTitle: "m-0 text-base font-semibold",
     settingsPanel: cx(
         "grid min-w-0 gap-5 rounded-lg border p-5 shadow-lg",

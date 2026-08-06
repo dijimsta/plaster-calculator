@@ -8,13 +8,15 @@ import {
     type TabsVariant,
 } from "./tabs.styles.ts";
 
-import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type TabsProps = HTMLAttributes<HTMLElement> & {
+export type TabsProps = {
     /** Visual treatment applied to every tab. */
     readonly variant?: TabsVariant;
     /** Makes each tab share the available width equally. */
     readonly fullWidth?: boolean;
+    readonly label?: string;
+    readonly children?: ReactNode;
 };
 
 type TabsContextValue = {
@@ -30,18 +32,12 @@ const TabsContext = createContext<TabsContextValue>({
 export function Tabs({
     variant = DEFAULT_VARIANT,
     fullWidth = false,
-    className,
     children,
-    "aria-label": ariaLabel = "Tabs",
-    ...props
-}: PropsWithChildren<TabsProps>): ReactElement {
+    label = "Tabs",
+}: TabsProps): ReactElement {
     return (
         <TabsContext value={{ variant, fullWidth }}>
-            <nav
-                aria-label={ariaLabel}
-                className={clsx(styles.root, className)}
-                {...props}
-            >
+            <nav aria-label={label} className={styles.root}>
                 <ul
                     role="list"
                     className={clsx(
@@ -67,26 +63,21 @@ export namespace Tabs {
         /** Marks the child link as the current page. */
         readonly current?: boolean;
         /** A single link element, such as an anchor or Next.js Link. */
-        readonly children: ReactElement<LinkProps>;
-        /** Additional classes applied to the child link. */
-        readonly className?: string;
+        readonly children: ReactElement;
     };
 
     export function Item({
         current = false,
-        className,
         children,
     }: ItemProps): ReactElement {
         const context = useContext(TabsContext);
         const variant = variants[context.variant];
-        const link = cloneElement(children, {
+        const link = cloneElement(children as ReactElement<LinkProps>, {
             "aria-current": current ? "page" : undefined,
             "className": clsx(
                 variant.item,
                 current ? variant.current : variant.default,
                 context.fullWidth && styles.fullWidthItem,
-                children.props.className,
-                className,
             ),
         });
 

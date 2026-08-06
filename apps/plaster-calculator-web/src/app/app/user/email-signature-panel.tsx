@@ -51,11 +51,7 @@ export function EmailSignaturePanel() {
         <section className={styles.section}>
             <div className={styles.sectionCopy}>
                 <h2 className={styles.sectionTitle}>Email signature</h2>
-                <Paragraph
-                    className={styles.sectionDescription}
-                    textSize="sm"
-                    variant="muted"
-                >
+                <Paragraph measure="narrow" textSize="sm" variant="muted">
                     These details are used to build the signature appended to
                     outgoing emails.
                 </Paragraph>

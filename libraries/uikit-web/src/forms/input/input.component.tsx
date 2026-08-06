@@ -18,7 +18,14 @@ import {
 } from "./input.styles.ts";
 import { useInputGroup } from "../input-group/input-group.context.ts";
 
-import type { InputHTMLAttributes, ReactElement, ReactNode } from "react";
+import type {
+    ChangeEventHandler,
+    FocusEventHandler,
+    HTMLInputTypeAttribute,
+    KeyboardEventHandler,
+    ReactElement,
+    ReactNode,
+} from "react";
 
 export type { InputShape, InputVariant };
 
@@ -29,8 +36,33 @@ export type InputProps = {
     readonly shape?: InputShape;
     readonly variant?: InputVariant;
     readonly id?: string;
-    readonly className?: string;
-} & Omit<InputHTMLAttributes<HTMLInputElement>, "id" | "className">;
+    readonly label?: string;
+    readonly invalid?: boolean;
+    readonly type?: HTMLInputTypeAttribute;
+    readonly value?: string | number;
+    readonly defaultValue?: string | number;
+    readonly name?: string;
+    readonly placeholder?: string;
+    readonly autoFocus?: boolean;
+    readonly disabled?: boolean;
+    readonly readOnly?: boolean;
+    readonly required?: boolean;
+    readonly inputMode?:
+        | "none"
+        | "text"
+        | "tel"
+        | "url"
+        | "email"
+        | "numeric"
+        | "decimal"
+        | "search";
+    readonly min?: string | number;
+    readonly max?: string | number;
+    readonly step?: string | number;
+    readonly onBlur?: FocusEventHandler<HTMLInputElement>;
+    readonly onChange?: ChangeEventHandler<HTMLInputElement>;
+    readonly onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
+};
 
 export function Input({
     leadingAddon,
@@ -38,19 +70,32 @@ export function Input({
     trailingAddon,
     shape = "default",
     variant = "default",
-    "id": externalId,
-    className,
-    "aria-invalid": ariaInvalid,
+    id: externalId,
+    label,
+    invalid = false,
+    type,
+    value,
+    defaultValue,
+    name,
+    placeholder,
+    autoFocus,
     disabled,
-    ...props
+    readOnly,
+    required,
+    inputMode,
+    min,
+    max,
+    step,
+    onBlur,
+    onChange,
+    onKeyDown,
 }: InputProps): ReactElement {
     const generatedId = useId();
     const id = externalId ?? generatedId;
     const inputGroup = useInputGroup();
-    const isInvalid = ariaInvalid === true || ariaInvalid === "true";
     const appearance = inputAppearance({
         groupOrientation: inputGroup?.orientation,
-        invalid: isInvalid,
+        invalid,
         shape,
         variant,
     });
@@ -58,8 +103,7 @@ export function Input({
     return (
         <div
             className={inputRootClassName({
-                className,
-                disabled: disabled === true,
+                disabled: Boolean(disabled),
                 groupStyle: appearance.groupStyle,
                 invalidStyle: appearance.invalidStyle,
                 shapeStyle: appearance.shapeStyle,
@@ -84,8 +128,28 @@ export function Input({
                 )}
                 <input
                     id={id}
-                    aria-invalid={ariaInvalid}
+                    type={type}
+                    value={value}
+                    defaultValue={defaultValue}
+                    name={name}
+                    placeholder={placeholder}
+                    autoFocus={autoFocus}
+                    aria-invalid={invalidState(invalid)}
+                    aria-label={inputLabel(
+                        label,
+                        placeholder,
+                        externalId !== undefined,
+                    )}
                     disabled={disabled}
+                    readOnly={readOnly}
+                    required={required}
+                    inputMode={inputMode}
+                    min={min}
+                    max={max}
+                    step={step}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onKeyDown={onKeyDown}
                     className={clsx(
                         inputControl,
                         inputControlPadding(
@@ -93,7 +157,6 @@ export function Input({
                             appearance.pill,
                         ),
                     )}
-                    {...props}
                 />
             </span>
             {trailingAddon !== undefined && (
@@ -103,4 +166,16 @@ export function Input({
             )}
         </div>
     );
+}
+
+function invalidState(invalid: boolean): true | undefined {
+    return invalid ? true : undefined;
+}
+
+function inputLabel(
+    label: string | undefined,
+    placeholder: string | undefined,
+    hasExternalId: boolean,
+): string | undefined {
+    return label ?? (hasExternalId ? undefined : placeholder);
 }

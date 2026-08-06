@@ -5,37 +5,36 @@ import { useId, useState } from "react";
 import { statusTones, styles } from "./inspector-panel.styles.ts";
 
 import type { InspectorStatusTone } from "./inspector-panel.styles.ts";
-import type {
-    HTMLAttributes,
-    PropsWithChildren,
-    ReactElement,
-    ReactNode,
-} from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type InspectorPanelProps = HTMLAttributes<HTMLDivElement>;
+export type InspectorPanelProps = {
+    readonly fullHeight?: boolean;
+    readonly children?: ReactNode;
+};
 
 export type InspectorSectionStatus = {
     readonly label: string;
     readonly tone: InspectorStatusTone;
 };
 
-export type InspectorSectionProps = PropsWithChildren<{
+export type InspectorSectionProps = {
     readonly title: string;
     readonly icon?: ReactNode;
     readonly status?: InspectorSectionStatus;
     readonly defaultOpen?: boolean;
     readonly open?: boolean;
     readonly onToggle?: (open: boolean) => void;
-    readonly className?: string;
-}>;
+    readonly children?: ReactNode;
+};
 
 export function InspectorPanel({
-    className,
+    fullHeight = false,
     children,
-    ...props
-}: PropsWithChildren<InspectorPanelProps>): ReactElement {
+}: InspectorPanelProps): ReactElement {
     return (
-        <div className={clsx(styles.panel, className)} {...props}>
+        <div
+            className={clsx(styles.panel, fullHeight && styles.fullHeightPanel)}
+        >
             {children}
         </div>
     );
@@ -48,7 +47,6 @@ export function InspectorSection({
     defaultOpen = false,
     open,
     onToggle,
-    className,
     children,
 }: InspectorSectionProps): ReactElement {
     const [internalOpen, setInternalOpen] = useState(defaultOpen);
@@ -67,7 +65,7 @@ export function InspectorSection({
     }
 
     return (
-        <section className={clsx(styles.section, className)}>
+        <section className={styles.section}>
             <button
                 type="button"
                 aria-controls={bodyId}

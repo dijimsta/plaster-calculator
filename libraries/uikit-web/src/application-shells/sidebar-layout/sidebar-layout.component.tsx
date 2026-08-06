@@ -18,25 +18,19 @@ import {
 } from "./sidebar-layout.reducer.ts";
 import { styles } from "./sidebar-layout.styles.ts";
 
-import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type SidebarLayoutProps = PropsWithChildren<
-    HTMLAttributes<HTMLDivElement>
->;
+export type SidebarLayoutProps = {
+    readonly children?: ReactNode;
+};
 
-export type SidebarLayoutSidebarProps = PropsWithChildren<
-    HTMLAttributes<HTMLElement>
->;
+export type SidebarLayoutSidebarProps = SidebarLayoutProps & {
+    readonly label?: string;
+};
 
-export type SidebarLayoutMainProps = PropsWithChildren<
-    HTMLAttributes<HTMLElement>
->;
+export type SidebarLayoutMainProps = SidebarLayoutProps;
 
-export function SidebarLayout({
-    className,
-    children,
-    ...props
-}: SidebarLayoutProps): ReactElement {
+export function SidebarLayout({ children }: SidebarLayoutProps): ReactElement {
     const sidebarId = useId();
     const [state, dispatch] = useReducer(
         sidebarLayoutReducer,
@@ -48,7 +42,7 @@ export function SidebarLayout({
 
     return (
         <SidebarLayoutContext value={{ state, dispatch }}>
-            <div className={clsx(styles.root, className)} {...props}>
+            <div className={styles.root}>
                 {state.isSidebarOpen && (
                     <button
                         type="button"
@@ -66,10 +60,8 @@ export function SidebarLayout({
 
 export namespace SidebarLayout {
     export function Sidebar({
-        "aria-label": ariaLabel = "Application navigation",
-        className,
+        label = "Application navigation",
         children,
-        ...props
     }: SidebarLayoutSidebarProps): ReactElement {
         const context = useSidebarLayoutContext();
         const sidebarRef = useRef<HTMLElement>(null);
@@ -84,10 +76,9 @@ export namespace SidebarLayout {
 
         return (
             <aside
-                {...props}
                 id={context.state.sidebarId}
                 ref={sidebarRef}
-                aria-label={ariaLabel}
+                aria-label={label}
                 inert={
                     (!context.state.isDesktop &&
                         !context.state.isSidebarOpen) ||
@@ -98,7 +89,6 @@ export namespace SidebarLayout {
                     context.state.isSidebarOpen
                         ? styles.sidebarOpen
                         : styles.sidebarClosed,
-                    className,
                 )}
             >
                 <button
@@ -115,11 +105,7 @@ export namespace SidebarLayout {
         );
     }
 
-    export function Main({
-        className,
-        children,
-        ...props
-    }: SidebarLayoutMainProps): ReactElement {
+    export function Main({ children }: SidebarLayoutMainProps): ReactElement {
         const context = useSidebarLayoutContext();
 
         return (
@@ -144,9 +130,7 @@ export namespace SidebarLayout {
                         <Menu aria-hidden="true" />
                     </button>
                 </header>
-                <main className={clsx(styles.main, className)} {...props}>
-                    {children}
-                </main>
+                <main className={styles.main}>{children}</main>
             </div>
         );
     }

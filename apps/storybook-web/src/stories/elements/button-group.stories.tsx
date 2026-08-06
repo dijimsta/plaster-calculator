@@ -24,7 +24,7 @@ type Story = StoryObj<typeof ButtonGroup>;
 
 export const Basic: Story = {
     render: (args) => (
-        <ButtonGroup {...args} aria-label="Text alignment">
+        <ButtonGroup {...args} label="Text alignment">
             <Button variant="secondary" onClick={fn()}>
                 Left
             </Button>
@@ -40,16 +40,16 @@ export const Basic: Story = {
 
 export const IconOnly: Story = {
     render: (args) => (
-        <ButtonGroup {...args} aria-label="Pagination">
+        <ButtonGroup {...args} label="Pagination">
             <Button
                 variant="secondary"
-                aria-label="Previous page"
+                label="Previous page"
                 icon={<ChevronLeft aria-hidden="true" />}
                 onClick={fn()}
             />
             <Button
                 variant="secondary"
-                aria-label="Next page"
+                label="Next page"
                 icon={<ChevronRight aria-hidden="true" />}
                 onClick={fn()}
             />
@@ -59,11 +59,11 @@ export const IconOnly: Story = {
 
 export const WithStat: Story = {
     render: (args) => (
-        <ButtonGroup {...args} aria-label="Reactions">
+        <ButtonGroup {...args} label="Reactions">
             <Button variant="secondary" onClick={fn()}>
                 Like
             </Button>
-            <Button variant="secondary" aria-label="12 likes" onClick={fn()}>
+            <Button variant="secondary" label="12 likes" onClick={fn()}>
                 12
             </Button>
         </ButtonGroup>
@@ -72,13 +72,13 @@ export const WithStat: Story = {
 
 export const WithDropdown: Story = {
     render: (args) => (
-        <ButtonGroup {...args} aria-label="Save options">
+        <ButtonGroup {...args} label="Save options">
             <Button variant="secondary" onClick={fn()}>
                 Save
             </Button>
             <Button
                 variant="secondary"
-                aria-label="More save options"
+                label="More save options"
                 icon={<ChevronDown aria-hidden="true" />}
                 onClick={fn()}
             />

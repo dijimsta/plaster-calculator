@@ -115,16 +115,17 @@ export function AccountSelect({
                     placeholder={placeholder}
                 />
                 {selectedAccountId && (
-                    <Button
-                        variant="secondary"
-                        size="small"
-                        className="absolute right-1 top-1"
-                        icon={<X size={14} aria-hidden="true" />}
-                        disabled={disabled}
-                        onClick={clearAccount}
-                        aria-label="Clear account"
-                        type="button"
-                    />
+                    <div className="absolute right-1 top-1">
+                        <Button
+                            variant="secondary"
+                            size="small"
+                            icon={<X size={14} aria-hidden="true" />}
+                            disabled={disabled}
+                            onClick={clearAccount}
+                            label="Clear account"
+                            type="button"
+                        />
+                    </div>
                 )}
             </div>
             {isOpen && !disabled && (
@@ -178,7 +179,8 @@ function AccountSelectMenu({
                 <Button
                     key={account.id}
                     variant="secondary"
-                    className="w-full justify-start text-left"
+                    align="start"
+                    fullWidth
                     onMouseDown={(event) => event.preventDefault()}
                     onClick={() => onSelect(account)}
                     type="button"

@@ -16,14 +16,15 @@ import {
     type AlertVariant,
 } from "./alert.styles.ts";
 
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type AlertProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
+export type AlertProps = {
     readonly intent?: AlertIntent;
     readonly variant?: AlertVariant;
     readonly accent?: boolean;
     readonly title?: ReactNode;
     readonly onDismiss?: () => void;
+    readonly children?: ReactNode;
 };
 
 export function Alert({
@@ -33,14 +34,9 @@ export function Alert({
     title,
     children,
     onDismiss,
-    className,
-    ...props
 }: AlertProps): ReactElement {
     return (
-        <div
-            className={containerClass(intent, variant, accent, className)}
-            {...props}
-        >
+        <div className={containerClass(intent, variant, accent)}>
             <div className={styles.inner}>
                 <div className={styles.iconWrapper}>
                     <AlertIcon intent={intent} />
@@ -69,7 +65,6 @@ function containerClass(
     intent: AlertIntent,
     variant: AlertVariant,
     accent: boolean,
-    className?: string,
 ): string {
     const isLight = variant === "light-with-border";
     const hasBorder =
@@ -80,7 +75,6 @@ function containerClass(
         isLight && "bg-white",
         hasBorder && ringColors[intent],
         accent && accentBorderColors[intent],
-        className,
     );
 }
 

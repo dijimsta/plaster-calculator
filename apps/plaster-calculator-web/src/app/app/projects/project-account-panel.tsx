@@ -107,7 +107,7 @@ export function ProjectAccountPanel({
                             variant="secondary"
                             icon={<Pencil size={18} aria-hidden="true" />}
                             onClick={() => setIsEditing(true)}
-                            aria-label="Edit project account"
+                            label="Edit project account"
                             type="button"
                         />
                     )}

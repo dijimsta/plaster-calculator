@@ -2,23 +2,28 @@ import clsx from "clsx";
 
 import { styles } from "./stacked-list.styles.ts";
 
-import type {
-    HTMLAttributes,
-    LiHTMLAttributes,
-    PropsWithChildren,
-    ReactElement,
-} from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type StackedListProps = HTMLAttributes<HTMLUListElement>;
+export type StackedListProps = {
+    readonly bordered?: boolean;
+    readonly density?: "compact" | "default";
+    readonly children?: ReactNode;
+};
 
 export function StackedList({
-    className,
+    bordered = false,
+    density = "default",
     children,
-    role = "list",
-    ...props
-}: PropsWithChildren<StackedListProps>): ReactElement {
+}: StackedListProps): ReactElement {
     return (
-        <ul role={role} className={clsx(styles.root, className)} {...props}>
+        <ul
+            role="list"
+            className={clsx(
+                styles.root,
+                bordered && styles.borderedRoot,
+                density === "compact" && styles.compactRoot,
+            )}
+        >
             {children}
         </ul>
     );
@@ -26,14 +31,8 @@ export function StackedList({
 
 export namespace StackedList {
     export function Item({
-        className,
         children,
-        ...props
-    }: PropsWithChildren<LiHTMLAttributes<HTMLLIElement>>): ReactElement {
-        return (
-            <li className={clsx(styles.item, className)} {...props}>
-                {children}
-            </li>
-        );
+    }: Pick<StackedListProps, "children">): ReactElement {
+        return <li className={styles.item}>{children}</li>;
     }
 }

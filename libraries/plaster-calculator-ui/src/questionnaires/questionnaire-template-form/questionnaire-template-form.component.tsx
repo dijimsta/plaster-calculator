@@ -57,7 +57,7 @@ export function QuestionnaireTemplateForm({
                     dispatch({ type: "setName", name: event.target.value })
                 }
                 placeholder="Template name"
-                aria-label="Template name"
+                label="Template name"
                 required
             />
             <FormLayoutSection
@@ -86,7 +86,7 @@ export function QuestionnaireTemplateForm({
                                                     aria-hidden="true"
                                                 />
                                             }
-                                            aria-label={`Remove question ${index + 1}`}
+                                            label={`Remove question ${index + 1}`}
                                             onClick={() =>
                                                 dispatch({
                                                     type: "removeQuestion",

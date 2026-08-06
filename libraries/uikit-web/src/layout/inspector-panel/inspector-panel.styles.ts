@@ -1,5 +1,6 @@
 export const styles = {
     panel: "overflow-y-auto rounded-xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900 [&>*+*]:border-t [&>*+*]:border-slate-200 dark:[&>*+*]:border-white/10",
+    fullHeightPanel: "h-full",
     section: "bg-white dark:bg-slate-900",
     header: "flex w-full items-center gap-2 bg-slate-50 px-3.5 py-2.5 text-left dark:bg-slate-800",
     openHeader: "border-b border-slate-200 dark:border-white/10",

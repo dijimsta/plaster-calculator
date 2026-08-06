@@ -8,33 +8,33 @@ import {
     type TextVariant,
 } from "./text.styles.ts";
 
-import type { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type { TextSize, TextVariant };
 
-export type TextProps = PropsWithChildren<HTMLAttributes<HTMLSpanElement>> & {
+export type TextProps = {
     readonly size?: TextSize;
     readonly variant?: TextVariant;
     readonly truncate?: boolean;
+    readonly id?: string;
+    readonly children?: ReactNode;
 };
 
 export function Text({
     size = "base",
     variant = "default",
     truncate = false,
-    className,
+    id,
     children,
-    ...props
 }: TextProps): ReactElement {
     return (
         <span
+            id={id}
             className={clsx(
                 sizes[size],
                 variants[variant],
                 truncate && truncateStyle,
-                className,
             )}
-            {...props}
         >
             {children}
         </span>

@@ -1,4 +1,4 @@
-import { Box, Label, Text, Textarea } from "@libraries/uikit-web";
+import { Box, Label, Textarea } from "@libraries/uikit-web";
 import { fn } from "storybook/test";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -14,7 +14,7 @@ const meta: Meta<typeof Textarea> = {
         docs: {
             description: {
                 component:
-                    "Multi-line text input with consistent focus, disabled, and dark-mode styling. Supports all native textarea attributes and configurable resizing.",
+                    "Multi-line text input with a controlled value, validation, description, and resizing API. UIKit owns styling and accessibility wiring.",
             },
         },
     },
@@ -50,23 +50,20 @@ export const WithDescription: Story = {
             <Label htmlFor="textarea-description">Project notes</Label>
             <Textarea
                 id="textarea-description"
-                aria-describedby="textarea-description-help"
+                description="Include measurements, materials, or access requirements."
                 placeholder="Share any details the team should know..."
                 {...args}
             />
-            <Text id="textarea-description-help" size="sm" variant="muted">
-                Include measurements, materials, or access requirements.
-            </Text>
         </Box>
     ),
 };
 
 export const FixedSize: Story = {
     args: {
-        "aria-label": "Message",
-        "placeholder": "This textarea cannot be resized.",
-        "resize": "none",
-        "rows": 6,
+        label: "Message",
+        placeholder: "This textarea cannot be resized.",
+        resize: "none",
+        rows: 6,
     },
 };
 

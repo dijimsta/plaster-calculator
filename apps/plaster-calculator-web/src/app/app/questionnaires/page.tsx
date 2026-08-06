@@ -108,13 +108,7 @@ export default function QuestionnairesPage() {
                     ]}
                 />
                 {stats.isLoading ? (
-                    <Box
-                        align="center"
-                        justify="center"
-                        gap="sm"
-                        role="status"
-                        aria-live="polite"
-                    >
+                    <Box align="center" justify="center" gap="sm" status>
                         <LoaderCircle className="animate-spin" size={24} />
                         <Text variant="muted">Loading questionnaires...</Text>
                     </Box>
@@ -162,7 +156,7 @@ export default function QuestionnairesPage() {
                                                             ? "success"
                                                             : "info"
                                                     }
-                                                    aria-label={`${questionnaire.projectName} answered`}
+                                                    name={`${questionnaire.projectName} answered`}
                                                 />
                                                 <Text size="xs" variant="muted">
                                                     {answeredSummary(

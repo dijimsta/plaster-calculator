@@ -65,7 +65,7 @@ export function AddProjectQuestionnaireQuestionModal({
                     value={label}
                     onChange={(event) => setLabel(event.target.value)}
                     placeholder="Question"
-                    aria-label="Question"
+                    label="Question"
                     autoFocus
                     required
                 />

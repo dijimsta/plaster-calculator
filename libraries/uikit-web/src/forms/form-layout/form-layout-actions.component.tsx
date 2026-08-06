@@ -1,20 +1,14 @@
-import clsx from "clsx";
-
 import { actions } from "./form-layout-actions.styles.ts";
 
-import type { HTMLAttributes, ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-export type FormLayoutActionsProps = HTMLAttributes<HTMLDivElement>;
+export type FormLayoutActionsProps = {
+    readonly children?: ReactNode;
+};
 
 /** A right-aligned row for form-level actions. */
 export function FormLayoutActions({
-    className,
     children,
-    ...props
 }: FormLayoutActionsProps): ReactElement {
-    return (
-        <div className={clsx(actions, className)} {...props}>
-            {children}
-        </div>
-    );
+    return <div className={actions}>{children}</div>;
 }

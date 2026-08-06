@@ -166,7 +166,6 @@ function createUi(theme: Theme) {
             theme.focus,
         ),
         inputInvalid: cx(theme.dangerBorder, theme.dangerRing),
-        inspector: "h-full",
         label: cx("text-[13px] font-bold", theme.fieldText),
         layoutGrid: cx(
             contentWidth,
@@ -213,10 +212,7 @@ function createUi(theme: Theme) {
             "flex min-h-40 items-center justify-center gap-2.5",
             theme.muted,
         ),
-        projectMetaLine:
-            "block overflow-hidden text-ellipsis whitespace-nowrap max-[720px]:whitespace-normal",
         projectPage: "flex h-full min-h-0 flex-col",
-        projectPageBody: "min-h-0 overflow-y-auto",
         projectPageHeader: "shrink-0",
         segmented: cx(
             "inline-flex max-w-full gap-[3px] overflow-x-auto rounded-lg p-[3px]",

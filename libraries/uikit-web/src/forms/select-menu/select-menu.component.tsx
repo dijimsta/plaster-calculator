@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import { useId } from "react";
 
-import type { ReactElement, SelectHTMLAttributes } from "react";
+import type { ChangeEventHandler, ReactElement } from "react";
 
 export type SelectMenuOption = {
     readonly value: string;
@@ -13,22 +13,40 @@ export type SelectMenuOption = {
 export type SelectMenuProps = {
     readonly options: readonly SelectMenuOption[];
     readonly id?: string;
-    readonly className?: string;
-} & Omit<SelectHTMLAttributes<HTMLSelectElement>, "id" | "className">;
+    readonly label?: string;
+    readonly value?: string;
+    readonly defaultValue?: string;
+    readonly name?: string;
+    readonly disabled?: boolean;
+    readonly required?: boolean;
+    readonly onChange?: ChangeEventHandler<HTMLSelectElement>;
+};
 
 export function SelectMenu({
     options,
     id: externalId,
-    className,
-    ...props
+    label,
+    value,
+    defaultValue,
+    name,
+    disabled,
+    required,
+    onChange,
 }: SelectMenuProps): ReactElement {
     const generatedId = useId();
     const id = externalId ?? generatedId;
 
     return (
-        <div className={clsx("grid", "grid-cols-1", className)}>
+        <div className={clsx("grid", "grid-cols-1")}>
             <select
                 id={id}
+                value={value}
+                defaultValue={defaultValue}
+                name={name}
+                disabled={disabled}
+                required={required}
+                aria-label={label}
+                onChange={onChange}
                 className={clsx(
                     "col-start-1",
                     "row-start-1",
@@ -59,7 +77,6 @@ export function SelectMenu({
                     "disabled:text-gray-400",
                     "dark:disabled:bg-white/10",
                 )}
-                {...props}
             >
                 {options.map((option) => (
                     <option key={option.value} value={option.value}>

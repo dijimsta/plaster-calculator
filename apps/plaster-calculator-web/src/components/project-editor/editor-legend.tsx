@@ -2,7 +2,7 @@ import {
     BoardMaterialsHelper,
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
-import { Text } from "@libraries/uikit-web";
+import { Box, Text } from "@libraries/uikit-web";
 
 import { BOARD_SWATCH_CLASSES } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
@@ -20,20 +20,17 @@ export function EditorLegend({ visibleAreas }: EditorLegendProps) {
     return (
         <footer className={ui.editorLegend}>
             {legendBoardTypes.map((type) => (
-                <Text
-                    size="sm"
-                    variant="muted"
-                    className="inline-flex items-center gap-1.5"
-                    key={type}
-                >
+                <Box align="center" gap="xs" key={type}>
                     <span
                         className={cx(
                             "inline-block h-3 w-3 rounded",
                             BOARD_SWATCH_CLASSES[type],
                         )}
                     />
-                    {type}
-                </Text>
+                    <Text size="sm" variant="muted">
+                        {type}
+                    </Text>
+                </Box>
             ))}
         </footer>
     );

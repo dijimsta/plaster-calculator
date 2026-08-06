@@ -6,14 +6,11 @@ import { drawerSizes, styles } from "./drawer.styles.ts";
 import { Backdrop } from "../backdrop/index.ts";
 
 import type { DrawerSize } from "./drawer.styles.ts";
-import type { DialogHTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 export type DrawerPlacement = "left" | "right";
 
-export interface DrawerProps extends Omit<
-    DialogHTMLAttributes<HTMLDialogElement>,
-    "children" | "onClose" | "open" | "title"
-> {
+export type DrawerProps = {
     readonly open: boolean;
     readonly onClose: () => void;
     readonly title: ReactNode;
@@ -23,7 +20,7 @@ export interface DrawerProps extends Omit<
     readonly placement?: DrawerPlacement;
     readonly size?: DrawerSize;
     readonly closeLabel?: string;
-}
+};
 
 /** An accessible, modal panel that slides in from either side of the viewport. */
 export function Drawer({
@@ -36,8 +33,6 @@ export function Drawer({
     placement = "right",
     size = "md",
     closeLabel = "Close panel",
-    className,
-    ...props
 }: DrawerProps): ReactElement {
     const dialogRef = useRef<HTMLDialogElement>(null);
     const titleId = useId();
@@ -57,11 +52,10 @@ export function Drawer({
 
     return (
         <dialog
-            {...props}
             ref={dialogRef}
             aria-describedby={description ? descriptionId : undefined}
             aria-labelledby={titleId}
-            className={clsx(styles.root, className)}
+            className={styles.root}
             onCancel={(event) => {
                 event.preventDefault();
                 onClose();

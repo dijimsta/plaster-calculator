@@ -22,7 +22,7 @@ export default function UserPage() {
                         <div className={styles.sectionCopy}>
                             <h2 className={styles.sectionTitle}>Profile</h2>
                             <Paragraph
-                                className={styles.sectionDescription}
+                                measure="narrow"
                                 textSize="sm"
                                 variant="muted"
                             >
@@ -98,7 +98,7 @@ export default function UserPage() {
                         <div className={styles.sectionCopy}>
                             <h2 className={styles.sectionTitle}>Appearance</h2>
                             <Paragraph
-                                className={styles.sectionDescription}
+                                measure="narrow"
                                 textSize="sm"
                                 variant="muted"
                             >

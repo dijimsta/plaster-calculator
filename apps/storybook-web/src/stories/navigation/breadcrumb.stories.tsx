@@ -34,7 +34,7 @@ export const Default: Story = {
 export const WithHomeIcon: Story = {
     render: () => (
         <Breadcrumb>
-            <Breadcrumb.Item href="#" aria-label="Home">
+            <Breadcrumb.Item href="#" label="Home">
                 <Home aria-hidden="true" className="size-5 shrink-0" />
             </Breadcrumb.Item>
             <Breadcrumb.Item href="#">Projects</Breadcrumb.Item>

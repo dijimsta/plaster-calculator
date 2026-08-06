@@ -35,7 +35,7 @@ function ExampleSidebar(): React.ReactElement {
                 <strong>Plaster Calculator</strong>
             </SidebarNavigation.Header>
             <SidebarNavigation.Body>
-                <VerticalNavigation aria-label="Application navigation">
+                <VerticalNavigation label="Application navigation">
                     <VerticalNavigation.Section>
                         <VerticalNavigation.Item isCurrent>
                             <a href="#home">
@@ -53,7 +53,7 @@ function ExampleSidebar(): React.ReactElement {
                 </VerticalNavigation>
             </SidebarNavigation.Body>
             <SidebarNavigation.Footer>
-                <VerticalNavigation aria-label="Account navigation">
+                <VerticalNavigation label="Account navigation">
                     <VerticalNavigation.Section>
                         <VerticalNavigation.Item>
                             <a href="#profile">

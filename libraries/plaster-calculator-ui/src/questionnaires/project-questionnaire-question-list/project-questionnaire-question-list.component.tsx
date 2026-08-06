@@ -99,7 +99,7 @@ function ProjectQuestionnaireQuestionRow({
                             type="button"
                             variant="ghost"
                             icon={<Trash2 size={16} aria-hidden="true" />}
-                            aria-label={`Remove question ${index + 1}`}
+                            label={`Remove question ${index + 1}`}
                             onClick={() => onRemove(question)}
                         />
                     </Box>
@@ -109,7 +109,7 @@ function ProjectQuestionnaireQuestionRow({
                     rows={2}
                     value={answer}
                     placeholder="Answer"
-                    aria-label={`Answer for question ${index + 1}`}
+                    label={`Answer for question ${index + 1}`}
                     onChange={(event) => setAnswer(event.target.value)}
                     onBlur={() => {
                         if (answer !== normalizedAnswer) {
