@@ -228,7 +228,7 @@ export function AccountDetailView({
                 {account && draft ? (
                     <section
                         className={cx(
-                            "mx-auto grid w-[min(1600px,calc(100vw-48px))] grid-cols-[minmax(520px,0.48fr)_minmax(0,1fr)] items-start gap-[18px] min-[1500px]:w-[min(1600px,80vw)] max-[980px]:grid-cols-1",
+                            "grid grid-cols-[minmax(520px,0.48fr)_minmax(0,1fr)] items-start gap-[18px] max-[980px]:grid-cols-1",
                         )}
                     >
                         <AccountDetailsPanel
