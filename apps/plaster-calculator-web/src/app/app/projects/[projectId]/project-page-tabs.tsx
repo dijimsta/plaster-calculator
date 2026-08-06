@@ -1,3 +1,5 @@
+import { Tabs } from "@libraries/uikit-web";
+
 import { cx, ui } from "../../../../lib/styles.js";
 
 import type { ProjectDetail } from "../../../../types.js";
@@ -21,22 +23,22 @@ export function ProjectPageTabs({
 
     return (
         <div className={cx(ui.topbar, "justify-start")}>
-            <div className={ui.segmented}>
+            <Tabs variant="pills-on-gray" label="Select page">
                 {project.pages.map((page) => (
-                    <button
+                    <Tabs.Item
                         key={page.id}
-                        className={cx(
-                            ui.segmentedButton,
-                            page.id === selectedPageId &&
-                                ui.segmentedButtonActive,
-                        )}
-                        onClick={() => void selectPage(page.id)}
-                        disabled={switchingPage}
+                        current={page.id === selectedPageId}
                     >
-                        Page {page.pageNumber}
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => void selectPage(page.id)}
+                            disabled={switchingPage}
+                        >
+                            Page {page.pageNumber}
+                        </button>
+                    </Tabs.Item>
                 ))}
-            </div>
+            </Tabs>
         </div>
     );
 }

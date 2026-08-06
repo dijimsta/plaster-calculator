@@ -201,15 +201,6 @@ function createUi(theme: Theme) {
         ),
         projectPage: "flex h-full min-h-0 flex-col",
         projectPageHeader: "shrink-0",
-        segmented: cx(
-            "inline-flex max-w-full gap-[3px] overflow-x-auto rounded-lg p-[3px]",
-            theme.softBg,
-        ),
-        segmentedButton: cx(
-            "shrink-0 cursor-pointer rounded-md border-0 bg-transparent px-[11px] py-2 whitespace-nowrap",
-            theme.muted,
-        ),
-        segmentedButtonActive: cx("shadow-sm", theme.controlBg, theme.text),
         stack: "grid gap-3.5",
         topbar: cx(
             contentWidth,
