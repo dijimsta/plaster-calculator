@@ -76,6 +76,7 @@ export interface Reminder {
     teamId?: string | null;
     projectId: string;
     accountId: string | null;
+    assignee: string | null;
     name: string;
     status: ReminderStatus;
     dueAt: string;
@@ -143,6 +144,7 @@ export interface CreateReminderRequest extends ProjectIdRequest {
     accountId?: unknown;
     name?: unknown;
     dueAt?: unknown;
+    assignee?: unknown;
 }
 
 export interface UpdateReminderRequest extends ReminderIdRequest {
@@ -150,6 +152,7 @@ export interface UpdateReminderRequest extends ReminderIdRequest {
     name?: unknown;
     dueAt?: unknown;
     status?: unknown;
+    assignee?: unknown;
 }
 
 export interface ProcessProjectRequest extends ProjectIdRequest {

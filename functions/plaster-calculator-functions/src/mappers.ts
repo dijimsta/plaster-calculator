@@ -85,6 +85,7 @@ export function toReminder(
         teamId: reminder.teamId,
         projectId: reminder.projectId,
         accountId: reminder.accountId ?? null,
+        assignee: reminder.assignee ?? null,
         name: reminder.name,
         status: toReminderStatus(reminder.status),
         dueAt: reminder.dueAt,

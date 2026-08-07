@@ -12,6 +12,7 @@ import {
     requireOwnedProject,
     requireOwnedReminder,
     requireTeamId,
+    requireTeamMember,
 } from "./ownership.js";
 import {
     hasField,
@@ -69,6 +70,11 @@ export const createReminder = onCall<CreateReminderRequest, Promise<Reminder>>(
         if (accountId) {
             await requireOwnedAccount(accountId, auth.uid);
         }
+        const assignee = await resolveReminderAssignee(
+            request.data,
+            project.assignee ?? null,
+            auth.uid,
+        );
 
         const reminderId = randomUUID();
         await DataConnector.createReminder({
@@ -76,6 +82,7 @@ export const createReminder = onCall<CreateReminderRequest, Promise<Reminder>>(
             teamId: await requireTeamId(auth.uid),
             projectId: project.id,
             accountId,
+            assignee,
             name: readRequiredString(request.data.name, "Reminder name"),
             status: "OPEN",
             dueAt: readDueAt(request.data.dueAt, "Due date"),
@@ -93,17 +100,21 @@ export const updateReminder = onCall<UpdateReminderRequest, Promise<Reminder>>(
             auth.uid,
         );
         const data = request.data;
-        const accountId = hasField(data, "accountId")
-            ? readOptionalNullableString(data.accountId, "Account ID")
-            : (reminder.accountId ?? null);
-
-        if (accountId) {
-            await requireOwnedAccount(accountId, auth.uid);
-        }
+        const accountId = await resolveReminderAccount(
+            data,
+            reminder.accountId ?? null,
+            auth.uid,
+        );
+        const assignee = await resolveReminderAssignee(
+            data,
+            reminder.assignee ?? null,
+            auth.uid,
+        );
 
         await DataConnector.updateReminder({
             id: reminder.id,
             accountId,
+            assignee,
             name: hasField(data, "name")
                 ? readRequiredString(data.name, "Reminder name")
                 : reminder.name,
@@ -133,6 +144,7 @@ export const completeReminder = onCall<ReminderIdRequest, Promise<Reminder>>(
         await DataConnector.updateReminder({
             id: reminder.id,
             accountId: reminder.accountId ?? null,
+            assignee: reminder.assignee ?? null,
             name: reminder.name,
             status: "DONE",
             dueAt: reminder.dueAt,
@@ -152,6 +164,7 @@ export const cancelReminder = onCall<ReminderIdRequest, Promise<Reminder>>(
         await DataConnector.updateReminder({
             id: reminder.id,
             accountId: reminder.accountId ?? null,
+            assignee: reminder.assignee ?? null,
             name: reminder.name,
             status: "CANCELLED",
             dueAt: reminder.dueAt,
@@ -160,3 +173,31 @@ export const cancelReminder = onCall<ReminderIdRequest, Promise<Reminder>>(
         return toReminder(await requireOwnedReminder(reminder.id, auth.uid));
     },
 );
+
+async function resolveReminderAssignee(
+    data: { assignee?: unknown },
+    fallback: string | null,
+    userId: string,
+) {
+    const assignee = hasField(data, "assignee")
+        ? readOptionalNullableString(data.assignee, "Assignee")
+        : fallback;
+    if (assignee) {
+        await requireTeamMember(await requireTeamId(userId), assignee);
+    }
+    return assignee;
+}
+
+async function resolveReminderAccount(
+    data: { accountId?: unknown },
+    fallback: string | null,
+    userId: string,
+) {
+    const accountId = hasField(data, "accountId")
+        ? readOptionalNullableString(data.accountId, "Account ID")
+        : fallback;
+    if (accountId) {
+        await requireOwnedAccount(accountId, userId);
+    }
+    return accountId;
+}

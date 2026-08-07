@@ -11,6 +11,7 @@ type Reminder
     projectId: UUID!
     account: Account @ref(fields: "accountId", references: "id")
     accountId: UUID
+    assignee: String
     name: String!
     status: String!
     dueAt: Timestamp!

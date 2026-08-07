@@ -87,6 +87,7 @@ export type Reminder = {
     teamId?: string | null;
     projectId: string;
     accountId: string | null;
+    assignee: string | null;
     name: string;
     status: "OPEN" | "DONE" | "CANCELLED";
     dueAt: string;

@@ -161,6 +161,7 @@ export interface CreateReminderVariables {
   teamId: string;
   projectId: UUIDString;
   accountId?: UUIDString | null;
+  assignee?: string | null;
   name: string;
   status: string;
   dueAt: TimestampString;
@@ -373,6 +374,7 @@ export interface GetReminderByIdData {
     teamId?: string | null;
     projectId: UUIDString;
     accountId?: UUIDString | null;
+    assignee?: string | null;
     name: string;
     status: string;
     dueAt: TimestampString;
@@ -435,6 +437,7 @@ export interface ListDueRemindersData {
     teamId?: string | null;
     projectId: UUIDString;
     accountId?: UUIDString | null;
+    assignee?: string | null;
     name: string;
     status: string;
     dueAt: TimestampString;
@@ -499,6 +502,7 @@ export interface ListProjectRemindersData {
     teamId?: string | null;
     projectId: UUIDString;
     accountId?: UUIDString | null;
+    assignee?: string | null;
     name: string;
     status: string;
     dueAt: TimestampString;
@@ -742,6 +746,7 @@ export interface UpdateReminderData {
 export interface UpdateReminderVariables {
   id: UUIDString;
   accountId?: UUIDString | null;
+  assignee?: string | null;
   name?: string | null;
   status?: string | null;
   dueAt?: TimestampString | null;

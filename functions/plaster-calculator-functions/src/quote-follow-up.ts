@@ -45,6 +45,7 @@ export async function upsertAutoQuoteReminder(
         teamId,
         projectId: project.id,
         accountId: project.accountId ?? null,
+        assignee: project.assignee ?? null,
         name,
         status: "OPEN",
         dueAt,
