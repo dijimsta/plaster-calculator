@@ -1,24 +1,22 @@
-mutation CreateTeam($id: String!, $name: String!, $createdByUserId: String!)
+mutation UpsertTeam($id: String!, $name: String!, $createdByUserId: String!)
 @auth(level: NO_ACCESS) {
-    team_insert(
+    team_upsert(
         data: {
             id: $id
             name: $name
             createdByUserId: $createdByUserId
-            createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
         }
     )
 }
 
-mutation CreateTeamMember($teamId: String!, $userId: String!, $role: String!)
+mutation UpsertTeamMember($teamId: String!, $userId: String!, $role: String!)
 @auth(level: NO_ACCESS) {
-    teamMember_insert(
+    teamMember_upsert(
         data: {
             teamId: $teamId
             userId: $userId
             role: $role
-            createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
         }
     )

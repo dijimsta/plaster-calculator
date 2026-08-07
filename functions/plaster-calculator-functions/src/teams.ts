@@ -1,7 +1,5 @@
 import "./bootstrap.js";
 
-import { randomUUID } from "node:crypto";
-
 import * as DataConnector from "@generated/data-connector-admin";
 import { getAuth } from "firebase-admin/auth";
 import { onCall } from "firebase-functions/https";
@@ -15,13 +13,13 @@ export async function ensureTeamForUser(userId: string): Promise<string> {
     if (existing) return existing.teamId;
 
     const user = await getAuth().getUser(userId);
-    const teamId = `T${randomUUID()}`;
-    await DataConnector.createTeam({
+    const teamId = personalTeamId(userId);
+    await DataConnector.upsertTeam({
         id: teamId,
         name: personalTeamName(user.displayName, user.email),
         createdByUserId: userId,
     });
-    await DataConnector.createTeamMember({ teamId, userId, role: "OWNER" });
+    await DataConnector.upsertTeamMember({ teamId, userId, role: "OWNER" });
     await getAuth().setCustomUserClaims(userId, {
         ...(user.customClaims ?? {}),
         teamId,
@@ -43,4 +41,8 @@ export const createPersonalTeamForNewUser = firebaseAuth
 function personalTeamName(displayName?: string, email?: string): string {
     const name = displayName?.trim() || email?.split("@")[0] || "Personal";
     return `${name}'s team`;
+}
+
+function personalTeamId(userId: string): string {
+    return `T${userId}`;
 }

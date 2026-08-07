@@ -280,19 +280,19 @@ function listLegacyTeamOwnedResources(dcOrOptions, options) {
 }
 exports.listLegacyTeamOwnedResources = listLegacyTeamOwnedResources;
 
-function createTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+function upsertTeam(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateTeam', inputVars, inputOpts);
+  return dcInstance.executeMutation('UpsertTeam', inputVars, inputOpts);
 }
-exports.createTeam = createTeam;
+exports.upsertTeam = upsertTeam;
 
-function createTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
+function upsertTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateTeamMember', inputVars, inputOpts);
+  return dcInstance.executeMutation('UpsertTeamMember', inputVars, inputOpts);
 }
-exports.createTeamMember = createTeamMember;
+exports.upsertTeamMember = upsertTeamMember;
 
 function getTeamMembershipForUser(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
