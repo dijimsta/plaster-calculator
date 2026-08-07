@@ -154,7 +154,7 @@ export interface FloorplanPage_Key {
 export interface GetMyAccountData {
   account?: {
     id: UUIDString;
-    teamId?: string | null;
+    teamId: string;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -236,7 +236,7 @@ export interface GetProjectQuestionnaireVariables {
 export interface GetQuestionnaireTemplateData {
   questionnaireTemplate?: {
     id: UUIDString;
-    teamId?: string | null;
+    teamId: string;
     name: string;
     createdAt: TimestampString;
     updatedAt: TimestampString;
@@ -272,7 +272,7 @@ export interface ListMyAccountContactsVariables {
 export interface ListMyAccountsData {
   accounts: ({
     id: UUIDString;
-    teamId?: string | null;
+    teamId: string;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -336,7 +336,7 @@ export interface QuestionnaireTemplate_Key {
 }
 
 export interface QuoteItemTemplateConfig_Key {
-  ownerId: string;
+  teamId: string;
   templateId: UUIDString;
   __typename?: 'QuoteItemTemplateConfig_Key';
 }

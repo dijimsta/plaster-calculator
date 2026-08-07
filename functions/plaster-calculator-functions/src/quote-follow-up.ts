@@ -40,9 +40,8 @@ export async function upsertAutoQuoteReminder(
         return;
     }
 
-    await DataConnector.createTeamReminder({
+    await DataConnector.createReminder({
         id: randomUUID(),
-        ownerId: userId,
         teamId,
         projectId: project.id,
         accountId: project.accountId ?? null,

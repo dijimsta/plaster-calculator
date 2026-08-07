@@ -5,7 +5,6 @@ query ListMyAccounts @auth(level: USER) {
     ) {
         id
         teamId
-        ownerId @retired
         companyName
         businessNumber
         phoneNumber
@@ -23,7 +22,6 @@ query GetMyAccount($id: UUID!) @auth(level: USER) {
         ) {
         id
         teamId
-        ownerId @retired
         companyName
         businessNumber
         phoneNumber
@@ -52,7 +50,6 @@ query ListMyAccountContacts($accountId: UUID!) @auth(level: USER) {
         ) {
         id
         teamId
-        ownerId @retired
     }
     accountContacts(
         where: { accountId: { eq: $accountId } }

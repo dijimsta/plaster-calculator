@@ -8,9 +8,8 @@ type QuantitySource @table {
 
 type QuoteItemTemplate @table {
     id: UUID! @default(expr: "uuidV4()")
-    # Temporary legacy source for the team backfill. Remove after migration.
-    ownerId: String
     team: Team @ref(fields: "teamId", references: "id")
+    # System templates are global; user-created templates belong to a team.
     teamId: String
     scope: String!
     systemKey: String @unique
@@ -25,11 +24,9 @@ type QuoteItemTemplate @table {
     updatedAt: Timestamp! @default(expr: "request.time")
 }
 
-type QuoteItemTemplateConfig @table(key: ["ownerId", "templateId"]) {
-    # Temporary legacy source for the team backfill. Remove after migration.
-    ownerId: String!
-    team: Team @ref(fields: "teamId", references: "id")
-    teamId: String
+type QuoteItemTemplateConfig @table(key: ["teamId", "templateId"]) {
+    team: Team! @ref(fields: "teamId", references: "id")
+    teamId: String!
     template: QuoteItemTemplate! @ref(fields: "templateId", references: "id")
     templateId: UUID!
     enabled: Boolean! @default(value: true)
@@ -44,10 +41,8 @@ type Supplier
     @table
     @index(fields: ["teamId", "updatedAt"], order: [ASC, DESC]) {
     id: UUID! @default(expr: "uuidV4()")
-    # Temporary legacy source for the team backfill. Remove after migration.
-    ownerId: String
-    team: Team @ref(fields: "teamId", references: "id")
-    teamId: String
+    team: Team! @ref(fields: "teamId", references: "id")
+    teamId: String!
     name: String!
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
@@ -55,10 +50,8 @@ type Supplier
 
 type Quote @table @index(fields: ["teamId", "updatedAt"], order: [ASC, DESC]) {
     id: UUID! @default(expr: "uuidV4()")
-    # Temporary legacy source for the team backfill. Remove after migration.
-    ownerId: String
-    team: Team @ref(fields: "teamId", references: "id")
-    teamId: String
+    team: Team! @ref(fields: "teamId", references: "id")
+    teamId: String!
     project: Project! @unique @ref(fields: "projectId", references: "id")
     projectId: UUID!
     supplier: Supplier @ref(fields: "supplierId", references: "id")
@@ -70,10 +63,8 @@ type Quote @table @index(fields: ["teamId", "updatedAt"], order: [ASC, DESC]) {
 
 type QuoteItem @table {
     id: UUID! @default(expr: "uuidV4()")
-    # Temporary legacy source for the team backfill. Remove after migration.
-    ownerId: String
-    team: Team @ref(fields: "teamId", references: "id")
-    teamId: String
+    team: Team! @ref(fields: "teamId", references: "id")
+    teamId: String!
     quote: Quote! @ref(fields: "quoteId", references: "id")
     quoteId: UUID!
     sourceTemplate: QuoteItemTemplate
@@ -94,10 +85,8 @@ type QuoteItem @table {
 }
 
 type SupplierQuoteItemPrice @table(key: ["supplierId", "templateId"]) {
-    # Temporary legacy source for the team backfill. Remove after migration.
-    ownerId: String
-    team: Team @ref(fields: "teamId", references: "id")
-    teamId: String
+    team: Team! @ref(fields: "teamId", references: "id")
+    teamId: String!
     supplier: Supplier! @ref(fields: "supplierId", references: "id")
     supplierId: UUID!
     template: QuoteItemTemplate! @ref(fields: "templateId", references: "id")

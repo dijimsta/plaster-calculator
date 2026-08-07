@@ -1,28 +1,3 @@
-query ListProjectsByOwnerAndSalesStatus(
-    $ownerId: String!
-    $salesStatus: String!
-) @auth(level: NO_ACCESS) @retired {
-    projects(
-        where: { ownerId: { eq: $ownerId }, salesStatus: { eq: $salesStatus } }
-        orderBy: [{ updatedAt: DESC }]
-    ) {
-        id
-        ownerId
-        accountId
-        name
-        address
-        originalFileName
-        uploadType
-        originalPath
-        status
-        salesStatus
-        processingError
-        pageCount
-        createdAt
-        updatedAt
-    }
-}
-
 query ListProjectsByTeamAndSalesStatus($teamId: String!, $salesStatus: String!)
 @auth(level: NO_ACCESS) {
     projects(
@@ -31,7 +6,6 @@ query ListProjectsByTeamAndSalesStatus($teamId: String!, $salesStatus: String!)
     ) {
         id
         teamId
-        ownerId @retired
         assignee
         accountId
         name
@@ -55,7 +29,6 @@ query ListProjectsByAccount($accountId: UUID!) @auth(level: NO_ACCESS) {
     ) {
         id
         teamId
-        ownerId @retired
         assignee
         accountId
         name
@@ -76,7 +49,6 @@ query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id
         teamId
-        ownerId @retired
         assignee
         accountId
         name
@@ -119,7 +91,6 @@ query GetProjectById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id
         teamId
-        ownerId @retired
         assignee
         accountId
         name
