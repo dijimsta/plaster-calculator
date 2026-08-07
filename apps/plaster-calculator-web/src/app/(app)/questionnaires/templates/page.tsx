@@ -69,10 +69,10 @@ export default function QuestionnaireTemplatesPage() {
             <PageHeading>
                 <PageHeading.Breadcrumbs>
                     <Breadcrumb>
-                        <RoutedBreadcrumbItem href="/app">
+                        <RoutedBreadcrumbItem href="/">
                             <Home size={16} aria-label="Home" />
                         </RoutedBreadcrumbItem>
-                        <RoutedBreadcrumbItem href="/app/questionnaires">
+                        <RoutedBreadcrumbItem href="/questionnaires">
                             Questionnaires
                         </RoutedBreadcrumbItem>
                         <Breadcrumb.Item current>Templates</Breadcrumb.Item>
@@ -97,10 +97,10 @@ export default function QuestionnaireTemplatesPage() {
                 <PageHeading.Navigation>
                     <Tabs>
                         <Tabs.Item>
-                            <Link href="/app/questionnaires">Projects</Link>
+                            <Link href="/questionnaires">Projects</Link>
                         </Tabs.Item>
                         <Tabs.Item current>
-                            <Link href="/app/questionnaires/templates">
+                            <Link href="/questionnaires/templates">
                                 Templates
                             </Link>
                         </Tabs.Item>

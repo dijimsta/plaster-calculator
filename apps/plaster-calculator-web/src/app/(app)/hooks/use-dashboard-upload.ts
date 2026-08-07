@@ -156,7 +156,7 @@ export function useDashboardUpload({
             const projectId = draftProjectId;
             await initializeFloorplanPages(projectId, pageImagePaths);
             cleanupPdfModal();
-            router.push(`/app/projects/${projectId}`);
+            router.push(`/projects/${projectId}`);
         } catch (error) {
             setPdfPageError(
                 error instanceof Error ? error.message : "Processing failed",
@@ -245,7 +245,7 @@ function isPdfFile(candidate: File) {
 function projectNotificationAction(projectId: string) {
     return createElement(
         ButtonLink,
-        { href: `/app/projects/${projectId}`, variant: "link" },
+        { href: `/projects/${projectId}`, variant: "link" },
         "Open project",
     );
 }

@@ -44,10 +44,10 @@ export function ProjectHeader({
         <PageHeading>
             <PageHeading.Breadcrumbs>
                 <Breadcrumb>
-                    <RoutedBreadcrumbItem href="/app">
+                    <RoutedBreadcrumbItem href="/">
                         <Home size={16} aria-label="Home" />
                     </RoutedBreadcrumbItem>
-                    <RoutedBreadcrumbItem href="/app/projects">
+                    <RoutedBreadcrumbItem href="/projects">
                         Projects
                     </RoutedBreadcrumbItem>
                     <Breadcrumb.Item current>
@@ -79,14 +79,10 @@ export function ProjectHeader({
             <PageHeading.Navigation>
                 <Tabs>
                     <Tabs.Item current={activeTab === "floorplan"}>
-                        <Link href={`/app/projects/${projectId}`}>
-                            Floorplan
-                        </Link>
+                        <Link href={`/projects/${projectId}`}>Floorplan</Link>
                     </Tabs.Item>
                     <Tabs.Item current={activeTab === "questionnaires"}>
-                        <Link
-                            href={`/app/projects/${projectId}/questionnaires`}
-                        >
+                        <Link href={`/projects/${projectId}/questionnaires`}>
                             Questionnaire
                         </Link>
                     </Tabs.Item>

@@ -54,7 +54,7 @@ export default function QuestionnairesPage() {
             <PageHeading>
                 <PageHeading.Breadcrumbs>
                     <Breadcrumb>
-                        <RoutedBreadcrumbItem href="/app">
+                        <RoutedBreadcrumbItem href="/">
                             <Home size={16} aria-label="Home" />
                         </RoutedBreadcrumbItem>
                         <Breadcrumb.Item current>
@@ -73,10 +73,10 @@ export default function QuestionnairesPage() {
                 <PageHeading.Navigation>
                     <Tabs>
                         <Tabs.Item current>
-                            <Link href="/app/questionnaires">Projects</Link>
+                            <Link href="/questionnaires">Projects</Link>
                         </Tabs.Item>
                         <Tabs.Item>
-                            <Link href="/app/questionnaires/templates">
+                            <Link href="/questionnaires/templates">
                                 Templates
                             </Link>
                         </Tabs.Item>
@@ -138,7 +138,7 @@ export default function QuestionnairesPage() {
                                     <Table.Row key={questionnaire.projectId}>
                                         <Table.Cell>
                                             <Link
-                                                href={`/app/projects/${questionnaire.projectId}/questionnaires`}
+                                                href={`/projects/${questionnaire.projectId}/questionnaires`}
                                             >
                                                 <strong>
                                                     {questionnaire.projectName}

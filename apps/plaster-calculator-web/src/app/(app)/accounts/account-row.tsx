@@ -17,7 +17,7 @@ export function AccountRow({ account }: AccountRowProps) {
     return (
         <div className={ui.projectItem}>
             <div className="grid min-w-0 gap-2">
-                <Link href={`/app/accounts/${account.id}`}>
+                <Link href={`/accounts/${account.id}`}>
                     <strong>{account.companyName}</strong>
                     <Text size="sm" variant="muted" truncate>
                         {account.businessNumber || "No business number"} /{" "}

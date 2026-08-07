@@ -17,7 +17,7 @@ export default function AccountsPage() {
             <PageHeading>
                 <PageHeading.Breadcrumbs>
                     <Breadcrumb>
-                        <RoutedBreadcrumbItem href="/app">
+                        <RoutedBreadcrumbItem href="/">
                             <Home size={16} aria-label="Home" />
                         </RoutedBreadcrumbItem>
                         <Breadcrumb.Item current>Accounts</Breadcrumb.Item>

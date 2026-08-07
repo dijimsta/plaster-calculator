@@ -10,44 +10,45 @@ import {
 } from "../../../lib/api.js";
 
 import type { ProjectSummary } from "../../../types.js";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
-export type StatusFilter = "ALL" | "QUOTING" | "QUOTE_SUBMITTED";
+type ActiveProjectSalesStatus = Extract<
+    SalesStatus,
+    "QUOTING" | "QUOTE_SUBMITTED"
+>;
 
-type EnrichedProject = ProjectSummary & { accountCompanyName: string | null };
-
-export interface ProjectsListingState {
-    readonly statusFilter: StatusFilter;
-    readonly query: string;
+interface DashboardProjectsState {
+    readonly activeSalesStatus: ActiveProjectSalesStatus;
+    readonly filtered: ProjectSummary[];
+    readonly processingProjectId: string | null;
     readonly projectsLoading: boolean;
+    readonly message: string;
     readonly busyMessage: string;
-    readonly totalCount: number;
-    readonly quotingCount: number;
-    readonly quoteSubmittedCount: number;
-    readonly filtered: EnrichedProject[];
-    readonly resultCount: number;
+    readonly query: string;
     readonly renameValue: string;
     readonly renamingId: string | null;
-    readonly processingProjectId: string | null;
     readonly refresh: () => Promise<void>;
     readonly removeProject: (project: ProjectSummary) => Promise<void>;
     readonly saveRename: (projectId: string) => Promise<void>;
-    readonly setStatusFilter: (filter: StatusFilter) => void;
-    readonly setQuery: (query: string) => void;
-    readonly clearFilters: () => void;
+    readonly setMessage: (message: string) => void;
     readonly setProcessingProjectId: (projectId: string | null) => void;
+    readonly setQuery: (query: string) => void;
+    readonly setActiveSalesStatus: (status: ActiveProjectSalesStatus) => void;
     readonly setRenameValue: (value: string) => void;
     readonly setRenamingId: (projectId: string | null) => void;
 }
 
-export function useProjectsListing(): ProjectsListingState {
+export function useDashboardProjects(): DashboardProjectsState {
     const { notify } = useNotificationsManager();
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [accountCompanyNames, setAccountCompanyNames] = useState<
         ReadonlyMap<string, string>
     >(new Map());
-    const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+    const [activeSalesStatus, setActiveSalesStatus] =
+        useState<ActiveProjectSalesStatus>("QUOTING");
     const [query, setQuery] = useState("");
     const [projectsLoading, setProjectsLoading] = useState(true);
+    const [message, setMessage] = useState("");
     const [busyMessage, setBusyMessage] = useState("");
     const [processingProjectId, setProcessingProjectId] = useState<
         string | null
@@ -57,6 +58,9 @@ export function useProjectsListing(): ProjectsListingState {
 
     useEffect(() => {
         void refresh();
+    }, [activeSalesStatus]);
+
+    useEffect(() => {
         void loadAccountCompanyNames();
     }, []);
 
@@ -106,18 +110,13 @@ export function useProjectsListing(): ProjectsListingState {
     async function refresh() {
         setProjectsLoading(true);
         try {
-            const [quoting, submitted] = await Promise.all([
-                listProjects({ salesStatus: "QUOTING" }),
-                listProjects({ salesStatus: "QUOTE_SUBMITTED" }),
-            ]);
-            const merged = mergeProjects(quoting, submitted);
-            setProjects(merged);
+            setProjects(await listProjects({ salesStatus: activeSalesStatus }));
         } catch (error) {
-            notify({
-                intent: "error",
-                title: "Unable to load projects",
-                description: error instanceof Error ? error.message : undefined,
-            });
+            setMessage(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to load projects",
+            );
         } finally {
             setProjectsLoading(false);
         }
@@ -135,11 +134,11 @@ export function useProjectsListing(): ProjectsListingState {
                 ),
             );
         } catch (error) {
-            notify({
-                intent: "error",
-                title: "Unable to load account names",
-                description: error instanceof Error ? error.message : undefined,
-            });
+            setMessage(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to load account names",
+            );
         }
     }
 
@@ -152,13 +151,11 @@ export function useProjectsListing(): ProjectsListingState {
         try {
             await deleteProject(project.id);
             await refresh();
-            notify({ intent: "success", title: "Project deleted" });
+            setMessage("Project deleted.");
         } catch (error) {
-            notify({
-                intent: "error",
-                title: "Delete failed",
-                description: error instanceof Error ? error.message : undefined,
-            });
+            setMessage(
+                error instanceof Error ? error.message : "Delete failed",
+            );
         } finally {
             setBusyMessage("");
         }
@@ -181,70 +178,39 @@ export function useProjectsListing(): ProjectsListingState {
         }
     }
 
-    function clearFilters() {
-        setStatusFilter("ALL");
-        setQuery("");
-    }
-
-    const enriched = useMemo<EnrichedProject[]>(
-        () =>
-            projects.map((project) => ({
-                ...project,
-                accountCompanyName: project.accountId
-                    ? (accountCompanyNames.get(project.accountId) ?? null)
-                    : null,
-            })),
-        [accountCompanyNames, projects],
-    );
-
-    const totalCount = enriched.length;
-    const quotingCount = useMemo(
-        () => enriched.filter((p) => p.salesStatus === "QUOTING").length,
-        [enriched],
-    );
-    const quoteSubmittedCount = useMemo(
-        () =>
-            enriched.filter((p) => p.salesStatus === "QUOTE_SUBMITTED").length,
-        [enriched],
-    );
-
-    const filtered = useMemo<EnrichedProject[]>(() => {
+    const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
-        const byStatus =
-            statusFilter === "ALL"
-                ? enriched
-                : enriched.filter((p) => p.salesStatus === statusFilter);
-        if (!q) return byStatus;
-        return byStatus.filter(
-            (p) =>
-                p.name.toLowerCase().includes(q) ||
-                p.originalFileName.toLowerCase().includes(q) ||
-                (p.accountCompanyName?.toLowerCase().includes(q) ?? false),
+        const projectsWithAccountNames = projects.map((project) => ({
+            ...project,
+            accountCompanyName: project.accountId
+                ? (accountCompanyNames.get(project.accountId) ?? null)
+                : null,
+        }));
+        if (!q) return projectsWithAccountNames;
+        return projectsWithAccountNames.filter(
+            (project) =>
+                project.name.toLowerCase().includes(q) ||
+                project.originalFileName.toLowerCase().includes(q),
         );
-    }, [enriched, statusFilter, query]);
-
-    const resultCount = filtered.length;
+    }, [accountCompanyNames, projects, query]);
 
     return {
-        statusFilter,
-        query,
-        projectsLoading,
-        busyMessage,
-        totalCount,
-        quotingCount,
-        quoteSubmittedCount,
+        activeSalesStatus,
         filtered,
-        resultCount,
+        busyMessage,
+        message,
+        processingProjectId,
+        projectsLoading,
+        query,
         renameValue,
         renamingId,
-        processingProjectId,
         refresh,
         removeProject,
         saveRename,
-        setStatusFilter,
-        setQuery,
-        clearFilters,
+        setMessage,
         setProcessingProjectId,
+        setActiveSalesStatus,
+        setQuery,
         setRenameValue,
         setRenamingId,
     };
@@ -253,23 +219,9 @@ export function useProjectsListing(): ProjectsListingState {
 function projectNotificationAction(projectId: string) {
     return createElement(
         ButtonLink,
-        { href: `/app/projects/${projectId}`, variant: "link" },
+        { href: `/projects/${projectId}`, variant: "link" },
         "Open project",
     );
-}
-
-function mergeProjects(...lists: ProjectSummary[][]): ProjectSummary[] {
-    const seen = new Set<string>();
-    const result: ProjectSummary[] = [];
-    for (const list of lists) {
-        for (const project of list) {
-            if (!seen.has(project.id)) {
-                seen.add(project.id);
-                result.push(project);
-            }
-        }
-    }
-    return result;
 }
 
 function upsertProject(

@@ -104,7 +104,7 @@ export function ProjectHistory({
                     <>
                         {filtered.map((project) => (
                             <div className={ui.projectItem} key={project.id}>
-                                <Link href={`/app/projects/${project.id}`}>
+                                <Link href={`/projects/${project.id}`}>
                                     {renamingId === project.id ? (
                                         <span
                                             onClick={(event) =>

@@ -24,7 +24,7 @@ import {
 import { useRouter } from "next/navigation.js";
 import { useEffect, useState } from "react";
 
-import { activeTheme, cx } from "../lib/styles.js";
+import { activeTheme, cx } from "../../../lib/styles.js";
 
 const googleProvider = new GoogleAuthProvider();
 const auth = FirebaseService.getAuth();
@@ -67,7 +67,7 @@ export default function LoginPage() {
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
             }
-            router.push("/app");
+            router.push("/");
         } catch (err: unknown) {
             setError(
                 err instanceof Error ? err.message : "Authentication failed.",
@@ -82,7 +82,7 @@ export default function LoginPage() {
         setLoading(true);
         try {
             await signInWithPopup(auth, googleProvider);
-            router.push("/app");
+            router.push("/");
         } catch (err: unknown) {
             setError(
                 err instanceof Error ? err.message : "Google sign-in failed.",
@@ -119,7 +119,7 @@ export default function LoginPage() {
                             </Paragraph>
                             <Card.ButtonGroup>
                                 <ButtonLink
-                                    href="/app"
+                                    href="/"
                                     variant="primary"
                                     fullWidth
                                     size="large"

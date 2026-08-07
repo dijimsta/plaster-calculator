@@ -19,7 +19,7 @@ export default function AccountDetailPage({ params }: AccountDetailPageProps) {
     return (
         <AccountDetailView
             accountId={accountId}
-            onAccountDeleted={() => router.replace("/app/accounts")}
+            onAccountDeleted={() => router.replace("/accounts")}
         />
     );
 }
