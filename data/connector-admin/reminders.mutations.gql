@@ -1,6 +1,31 @@
 mutation CreateReminder(
     $id: UUID!
-    $teamId: String!
+    $ownerId: String!
+    $projectId: UUID!
+    $accountId: UUID
+    $name: String!
+    $status: String!
+    $dueAt: Timestamp!
+) @auth(level: NO_ACCESS) {
+    reminder_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            projectId: $projectId
+            accountId: $accountId
+            name: $name
+            status: $status
+            dueAt: $dueAt
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateTeamReminder(
+    $id: UUID!
+    $ownerId: String!
+    $teamId: String
     $projectId: UUID!
     $accountId: UUID
     $assignee: String
@@ -11,6 +36,7 @@ mutation CreateReminder(
     reminder_insert(
         data: {
             id: $id
+            ownerId: $ownerId
             teamId: $teamId
             projectId: $projectId
             accountId: $accountId

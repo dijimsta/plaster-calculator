@@ -6,8 +6,8 @@ type Project
     )
     @index(fields: ["accountId", "updatedAt"], order: [ASC, DESC]) {
     id: UUID! @default(expr: "uuidV4()")
-    # Temporary legacy source for the team backfill. Remove after migration.
-    ownerId: String
+    # Legacy compatibility field. Remove after existing clients are retired.
+    ownerId: String!
     team: Team @ref(fields: "teamId", references: "id")
     teamId: String
     assignee: String

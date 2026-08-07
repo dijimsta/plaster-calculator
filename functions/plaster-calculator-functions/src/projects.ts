@@ -127,8 +127,9 @@ export const createProjectFromUpload = onCall<
     if (assignee) {
         await requireTeamMember(teamId, assignee);
     }
-    await DataConnector.createProjectFromUpload({
+    await DataConnector.createTeamProjectFromUpload({
         id: projectId,
+        ownerId: auth.uid,
         teamId,
         assignee,
         accountId,

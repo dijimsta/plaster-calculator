@@ -24,6 +24,12 @@ export function createProjectFromUpload(dcOrVarsOrOptions, varsOrOptions, option
   return dcInstance.executeMutation('CreateProjectFromUpload', inputVars, inputOpts);
 }
 
+export function createTeamProjectFromUpload(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateTeamProjectFromUpload', inputVars, inputOpts);
+}
+
 export function updateProject(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
@@ -132,6 +138,12 @@ export function createReminder(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeMutation('CreateReminder', inputVars, inputOpts);
 }
 
+export function createTeamReminder(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateTeamReminder', inputVars, inputOpts);
+}
+
 export function updateReminder(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
@@ -142,6 +154,12 @@ export function listDueReminders(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
   return dcInstance.executeQuery('ListDueReminders', inputVars, inputOpts);
+}
+
+export function listDueTeamReminders(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListDueTeamReminders', inputVars, inputOpts);
 }
 
 export function listProjectReminders(dcOrVarsOrOptions, varsOrOptions, options) {

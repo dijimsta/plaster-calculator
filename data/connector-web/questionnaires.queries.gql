@@ -18,6 +18,7 @@ query GetQuestionnaireTemplate($id: UUID!) @auth(level: USER) {
         ) {
         id
         teamId
+        ownerId @retired
         name
         createdAt
         updatedAt
@@ -59,6 +60,7 @@ query GetProjectQuestionnaire($projectId: UUID!) @auth(level: USER) {
         ) {
         id
         teamId
+        ownerId @retired
     }
     projectQuestionnaire(key: { projectId: $projectId }) {
         projectId

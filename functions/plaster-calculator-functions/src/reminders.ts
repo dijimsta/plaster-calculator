@@ -36,7 +36,7 @@ export const listDueReminders = onCall<
     Promise<{ reminders: Reminder[] }>
 >(async (request) => {
     const auth = requireAuth(request);
-    const response = await DataConnector.listDueReminders({
+    const response = await DataConnector.listDueTeamReminders({
         teamId: await requireTeamId(auth.uid),
     });
     return { reminders: response.data.reminders.map(toReminder) };
@@ -77,8 +77,9 @@ export const createReminder = onCall<CreateReminderRequest, Promise<Reminder>>(
         );
 
         const reminderId = randomUUID();
-        await DataConnector.createReminder({
+        await DataConnector.createTeamReminder({
             id: reminderId,
+            ownerId: auth.uid,
             teamId: await requireTeamId(auth.uid),
             projectId: project.id,
             accountId,
