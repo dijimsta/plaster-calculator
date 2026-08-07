@@ -1,0 +1,24 @@
+{
+    "name": "@ui/atoms",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Atomic, framework- and application-agnostic React primitives for web interfaces.",
+    "type": "module",
+    "exports": "./out/index.js",
+    "main": "./out/index.js",
+    "scripts": {
+        "build": "tsc --build tsconfig.build.json"
+    },
+    "dependencies": {
+        "clsx": "^2.1.1"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.17",
+        "@types/react-dom": "^19.2.3",
+        "typescript": "^6.0.3"
+    },
+    "peerDependencies": {
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
+    }
+}
