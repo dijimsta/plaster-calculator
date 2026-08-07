@@ -8,12 +8,12 @@ import { useId, useState } from "react";
 
 import type { ReactElement } from "react";
 
-export interface AddProjectQuestionnaireQuestionModalProps {
+export type AddProjectQuestionnaireQuestionModalProps = {
     readonly open: boolean;
     readonly isSaving: boolean;
     readonly onClose: () => void;
     readonly onAdd: (label: string) => void;
-}
+};
 
 /** A modal for adding a single custom question to a project's questionnaire. */
 export function AddProjectQuestionnaireQuestionModal({

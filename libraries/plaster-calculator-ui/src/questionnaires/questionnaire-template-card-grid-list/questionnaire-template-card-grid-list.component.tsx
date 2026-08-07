@@ -5,12 +5,12 @@ import { QuestionnaireTemplateCard } from "../questionnaire-template-card/index.
 import type { QuestionnaireTemplate } from "../questionnaire-template-card/index.ts";
 import type { ReactElement } from "react";
 
-export interface QuestionnaireTemplateCardGridListProps {
+export type QuestionnaireTemplateCardGridListProps = {
     readonly templates: readonly QuestionnaireTemplate[];
     readonly onOpen: (template: QuestionnaireTemplate) => void;
     readonly onDuplicate: (template: QuestionnaireTemplate) => void;
     readonly onDelete: (template: QuestionnaireTemplate) => void;
-}
+};
 
 /** Renders questionnaire templates as a responsive grid of cards. */
 export function QuestionnaireTemplateCardGridList({

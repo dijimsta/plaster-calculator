@@ -23,13 +23,13 @@ import type { ReactElement } from "react";
 
 export type { QuestionnaireTemplateFormValues };
 
-export interface QuestionnaireTemplateFormProps {
+export type QuestionnaireTemplateFormProps = {
     readonly formId: string;
     readonly initialValues?: QuestionnaireTemplateFormValues;
     readonly submitLabel?: string;
     readonly onCancel: () => void;
     readonly onSubmit: (values: QuestionnaireTemplateFormValues) => void;
-}
+};
 
 /** A form for drafting a questionnaire template's name and questions. */
 export function QuestionnaireTemplateForm({

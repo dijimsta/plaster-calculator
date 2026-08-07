@@ -11,13 +11,13 @@ export type QuestionnaireTemplateDetails = NonNullable<
     DataConnector.GetQuestionnaireTemplateData["questionnaireTemplate"]
 >;
 
-export interface EditQuestionnaireTemplateDrawerProps {
+export type EditQuestionnaireTemplateDrawerProps = {
     readonly open: boolean;
     readonly template: QuestionnaireTemplateDetails | null;
     readonly isLoading: boolean;
     readonly onClose: () => void;
     readonly onSave: (values: QuestionnaireTemplateFormValues) => void;
-}
+};
 
 /** A drawer for editing an existing questionnaire template and its questions. */
 export function EditQuestionnaireTemplateDrawer({
