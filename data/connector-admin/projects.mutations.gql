@@ -1,6 +1,39 @@
 mutation CreateProjectFromUpload(
     $id: UUID!
-    $teamId: String!
+    $ownerId: String!
+    $accountId: UUID
+    $name: String!
+    $address: String
+    $originalFileName: String!
+    $uploadType: String!
+    $originalPath: String!
+    $status: String!
+    $salesStatus: String = "QUOTING"
+    $pageCount: Int!
+) @auth(level: NO_ACCESS) {
+    project_insert(
+        data: {
+            id: $id
+            ownerId: $ownerId
+            accountId: $accountId
+            name: $name
+            address: $address
+            originalFileName: $originalFileName
+            uploadType: $uploadType
+            originalPath: $originalPath
+            status: $status
+            salesStatus: $salesStatus
+            pageCount: $pageCount
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateTeamProjectFromUpload(
+    $id: UUID!
+    $ownerId: String!
+    $teamId: String
     $assignee: String
     $accountId: UUID
     $name: String!
@@ -15,6 +48,7 @@ mutation CreateProjectFromUpload(
     project_insert(
         data: {
             id: $id
+            ownerId: $ownerId
             teamId: $teamId
             assignee: $assignee
             accountId: $accountId

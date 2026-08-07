@@ -139,8 +139,7 @@ export interface CreateProjectFromUploadData {
 
 export interface CreateProjectFromUploadVariables {
   id: UUIDString;
-  teamId: string;
-  assignee?: string | null;
+  ownerId: string;
   accountId?: UUIDString | null;
   name: string;
   address?: string | null;
@@ -158,10 +157,9 @@ export interface CreateReminderData {
 
 export interface CreateReminderVariables {
   id: UUIDString;
-  teamId: string;
+  ownerId: string;
   projectId: UUIDString;
   accountId?: UUIDString | null;
-  assignee?: string | null;
   name: string;
   status: string;
   dueAt: TimestampString;
@@ -179,6 +177,42 @@ export interface CreateTeamMemberVariables {
   teamId: string;
   userId: string;
   role: string;
+}
+
+export interface CreateTeamProjectFromUploadData {
+  project_insert: Project_Key;
+}
+
+export interface CreateTeamProjectFromUploadVariables {
+  id: UUIDString;
+  ownerId: string;
+  teamId?: string | null;
+  assignee?: string | null;
+  accountId?: UUIDString | null;
+  name: string;
+  address?: string | null;
+  originalFileName: string;
+  uploadType: string;
+  originalPath: string;
+  status: string;
+  salesStatus?: string | null;
+  pageCount: number;
+}
+
+export interface CreateTeamReminderData {
+  reminder_insert: Reminder_Key;
+}
+
+export interface CreateTeamReminderVariables {
+  id: UUIDString;
+  ownerId: string;
+  teamId?: string | null;
+  projectId: UUIDString;
+  accountId?: UUIDString | null;
+  assignee?: string | null;
+  name: string;
+  status: string;
+  dueAt: TimestampString;
 }
 
 export interface CreateTeamVariables {
@@ -448,25 +482,45 @@ export interface ListDueRemindersData {
 }
 
 export interface ListDueRemindersVariables {
+  ownerId: string;
+}
+
+export interface ListDueTeamRemindersData {
+  reminders: ({
+    id: UUIDString;
+    teamId?: string | null;
+    assignee?: string | null;
+    projectId: UUIDString;
+    accountId?: UUIDString | null;
+    name: string;
+    status: string;
+    dueAt: TimestampString;
+    completedAt?: TimestampString | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & Reminder_Key)[];
+}
+
+export interface ListDueTeamRemindersVariables {
   teamId: string;
 }
 
 export interface ListLegacyTeamOwnedResourcesData {
   projects: ({
     id: UUIDString;
-    ownerId?: string | null;
+    ownerId: string;
   } & Project_Key)[];
   accounts: ({
     id: UUIDString;
-    ownerId?: string | null;
+    ownerId: string;
   } & Account_Key)[];
   questionnaireTemplates: ({
     id: UUIDString;
-    ownerId?: string | null;
+    ownerId: string;
   } & QuestionnaireTemplate_Key)[];
   reminders: ({
     id: UUIDString;
-    ownerId?: string | null;
+    ownerId: string;
   } & Reminder_Key)[];
   quoteItemTemplates: ({
     id: UUIDString;
@@ -778,6 +832,11 @@ export function createProjectFromUpload(dc: DataConnect, vars: CreateProjectFrom
 /** Generated Node Admin SDK operation action function for the 'CreateProjectFromUpload' Mutation. Allow users to pass in custom DataConnect instances. */
 export function createProjectFromUpload(vars: CreateProjectFromUploadVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectFromUploadData>>;
 
+/** Generated Node Admin SDK operation action function for the 'CreateTeamProjectFromUpload' Mutation. Allow users to execute without passing in DataConnect. */
+export function createTeamProjectFromUpload(dc: DataConnect, vars: CreateTeamProjectFromUploadVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateTeamProjectFromUploadData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateTeamProjectFromUpload' Mutation. Allow users to pass in custom DataConnect instances. */
+export function createTeamProjectFromUpload(vars: CreateTeamProjectFromUploadVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateTeamProjectFromUploadData>>;
+
 /** Generated Node Admin SDK operation action function for the 'UpdateProject' Mutation. Allow users to execute without passing in DataConnect. */
 export function updateProject(dc: DataConnect, vars: UpdateProjectVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateProjectData>>;
 /** Generated Node Admin SDK operation action function for the 'UpdateProject' Mutation. Allow users to pass in custom DataConnect instances. */
@@ -868,6 +927,11 @@ export function createReminder(dc: DataConnect, vars: CreateReminderVariables, o
 /** Generated Node Admin SDK operation action function for the 'CreateReminder' Mutation. Allow users to pass in custom DataConnect instances. */
 export function createReminder(vars: CreateReminderVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateReminderData>>;
 
+/** Generated Node Admin SDK operation action function for the 'CreateTeamReminder' Mutation. Allow users to execute without passing in DataConnect. */
+export function createTeamReminder(dc: DataConnect, vars: CreateTeamReminderVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateTeamReminderData>>;
+/** Generated Node Admin SDK operation action function for the 'CreateTeamReminder' Mutation. Allow users to pass in custom DataConnect instances. */
+export function createTeamReminder(vars: CreateTeamReminderVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateTeamReminderData>>;
+
 /** Generated Node Admin SDK operation action function for the 'UpdateReminder' Mutation. Allow users to execute without passing in DataConnect. */
 export function updateReminder(dc: DataConnect, vars: UpdateReminderVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateReminderData>>;
 /** Generated Node Admin SDK operation action function for the 'UpdateReminder' Mutation. Allow users to pass in custom DataConnect instances. */
@@ -877,6 +941,11 @@ export function updateReminder(vars: UpdateReminderVariables, options?: Operatio
 export function listDueReminders(dc: DataConnect, vars: ListDueRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListDueRemindersData>>;
 /** Generated Node Admin SDK operation action function for the 'ListDueReminders' Query. Allow users to pass in custom DataConnect instances. */
 export function listDueReminders(vars: ListDueRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListDueRemindersData>>;
+
+/** Generated Node Admin SDK operation action function for the 'ListDueTeamReminders' Query. Allow users to execute without passing in DataConnect. */
+export function listDueTeamReminders(dc: DataConnect, vars: ListDueTeamRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListDueTeamRemindersData>>;
+/** Generated Node Admin SDK operation action function for the 'ListDueTeamReminders' Query. Allow users to pass in custom DataConnect instances. */
+export function listDueTeamReminders(vars: ListDueTeamRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListDueTeamRemindersData>>;
 
 /** Generated Node Admin SDK operation action function for the 'ListProjectReminders' Query. Allow users to execute without passing in DataConnect. */
 export function listProjectReminders(dc: DataConnect, vars: ListProjectRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectRemindersData>>;
