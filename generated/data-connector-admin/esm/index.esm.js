@@ -240,16 +240,16 @@ export function listLegacyTeamOwnedResources(dcOrOptions, options) {
   return dcInstance.executeQuery('ListLegacyTeamOwnedResources', undefined, inputOpts);
 }
 
-export function createTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+export function upsertTeam(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateTeam', inputVars, inputOpts);
+  return dcInstance.executeMutation('UpsertTeam', inputVars, inputOpts);
 }
 
-export function createTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
+export function upsertTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeMutation('CreateTeamMember', inputVars, inputOpts);
+  return dcInstance.executeMutation('UpsertTeamMember', inputVars, inputOpts);
 }
 
 export function getTeamMembershipForUser(dcOrVarsOrOptions, varsOrOptions, options) {

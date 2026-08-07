@@ -165,20 +165,6 @@ export interface CreateReminderVariables {
   dueAt: TimestampString;
 }
 
-export interface CreateTeamData {
-  team_insert: Team_Key;
-}
-
-export interface CreateTeamMemberData {
-  teamMember_insert: TeamMember_Key;
-}
-
-export interface CreateTeamMemberVariables {
-  teamId: string;
-  userId: string;
-  role: string;
-}
-
 export interface CreateTeamProjectFromUploadData {
   project_insert: Project_Key;
 }
@@ -213,12 +199,6 @@ export interface CreateTeamReminderVariables {
   name: string;
   status: string;
   dueAt: TimestampString;
-}
-
-export interface CreateTeamVariables {
-  id: string;
-  name: string;
-  createdByUserId: string;
 }
 
 export interface DeleteFloorplanPagesData {
@@ -807,6 +787,26 @@ export interface UpdateReminderVariables {
   completedAt?: TimestampString | null;
 }
 
+export interface UpsertTeamData {
+  team_upsert: Team_Key;
+}
+
+export interface UpsertTeamMemberData {
+  teamMember_upsert: TeamMember_Key;
+}
+
+export interface UpsertTeamMemberVariables {
+  teamId: string;
+  userId: string;
+  role: string;
+}
+
+export interface UpsertTeamVariables {
+  id: string;
+  name: string;
+  createdByUserId: string;
+}
+
 export interface UserSettings_Key {
   ownerId: string;
   __typename?: 'UserSettings_Key';
@@ -1012,15 +1012,15 @@ export function listLegacyTeamOwnedResources(dc: DataConnect, options?: Operatio
 /** Generated Node Admin SDK operation action function for the 'ListLegacyTeamOwnedResources' Query. Allow users to pass in custom DataConnect instances. */
 export function listLegacyTeamOwnedResources(options?: OperationOptions): Promise<ExecuteOperationResponse<ListLegacyTeamOwnedResourcesData>>;
 
-/** Generated Node Admin SDK operation action function for the 'CreateTeam' Mutation. Allow users to execute without passing in DataConnect. */
-export function createTeam(dc: DataConnect, vars: CreateTeamVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateTeamData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateTeam' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createTeam(vars: CreateTeamVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateTeamData>>;
+/** Generated Node Admin SDK operation action function for the 'UpsertTeam' Mutation. Allow users to execute without passing in DataConnect. */
+export function upsertTeam(dc: DataConnect, vars: UpsertTeamVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertTeamData>>;
+/** Generated Node Admin SDK operation action function for the 'UpsertTeam' Mutation. Allow users to pass in custom DataConnect instances. */
+export function upsertTeam(vars: UpsertTeamVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertTeamData>>;
 
-/** Generated Node Admin SDK operation action function for the 'CreateTeamMember' Mutation. Allow users to execute without passing in DataConnect. */
-export function createTeamMember(dc: DataConnect, vars: CreateTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateTeamMemberData>>;
-/** Generated Node Admin SDK operation action function for the 'CreateTeamMember' Mutation. Allow users to pass in custom DataConnect instances. */
-export function createTeamMember(vars: CreateTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateTeamMemberData>>;
+/** Generated Node Admin SDK operation action function for the 'UpsertTeamMember' Mutation. Allow users to execute without passing in DataConnect. */
+export function upsertTeamMember(dc: DataConnect, vars: UpsertTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertTeamMemberData>>;
+/** Generated Node Admin SDK operation action function for the 'UpsertTeamMember' Mutation. Allow users to pass in custom DataConnect instances. */
+export function upsertTeamMember(vars: UpsertTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertTeamMemberData>>;
 
 /** Generated Node Admin SDK operation action function for the 'GetTeamMembershipForUser' Query. Allow users to execute without passing in DataConnect. */
 export function getTeamMembershipForUser(dc: DataConnect, vars: GetTeamMembershipForUserVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetTeamMembershipForUserData>>;
