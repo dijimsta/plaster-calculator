@@ -1,10 +1,10 @@
 query ListMyAccounts @auth(level: USER) {
     accounts(
-        where: { ownerId: { eq_expr: "auth.uid" } }
+        where: { teamId: { eq_expr: "auth.token.teamId" } }
         orderBy: [{ updatedAt: DESC }]
     ) {
         id
-        ownerId
+        teamId
         companyName
         businessNumber
         phoneNumber
@@ -17,11 +17,11 @@ query ListMyAccounts @auth(level: USER) {
 query GetMyAccount($id: UUID!) @auth(level: USER) {
     account(key: { id: $id })
         @check(
-            expr: "this != null && this.ownerId == auth.uid"
-            message: "You do not own this account"
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this account"
         ) {
         id
-        ownerId
+        teamId
         companyName
         businessNumber
         phoneNumber
@@ -45,11 +45,11 @@ query ListMyAccountContacts($accountId: UUID!) @auth(level: USER) {
     account(key: { id: $accountId })
         @redact
         @check(
-            expr: "this != null && this.ownerId == auth.uid"
-            message: "You do not own this account"
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this account"
         ) {
         id
-        ownerId
+        teamId
     }
     accountContacts(
         where: { accountId: { eq: $accountId } }

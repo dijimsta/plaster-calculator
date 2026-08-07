@@ -11,6 +11,7 @@ import {
     requireOwnedAccount,
     requireOwnedProject,
     requireOwnedReminder,
+    requireTeamId,
 } from "./ownership.js";
 import {
     hasField,
@@ -35,7 +36,7 @@ export const listDueReminders = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const response = await DataConnector.listDueReminders({
-        ownerId: auth.uid,
+        teamId: await requireTeamId(auth.uid),
     });
     return { reminders: response.data.reminders.map(toReminder) };
 });
@@ -51,9 +52,7 @@ export const listProjectReminders = onCall<
         projectId,
     });
     return {
-        reminders: response.data.reminders
-            .filter((reminder) => reminder.ownerId === auth.uid)
-            .map(toReminder),
+        reminders: response.data.reminders.map(toReminder),
     };
 });
 
@@ -74,7 +73,7 @@ export const createReminder = onCall<CreateReminderRequest, Promise<Reminder>>(
         const reminderId = randomUUID();
         await DataConnector.createReminder({
             id: reminderId,
-            ownerId: auth.uid,
+            teamId: await requireTeamId(auth.uid),
             projectId: project.id,
             accountId,
             name: readRequiredString(request.data.name, "Reminder name"),

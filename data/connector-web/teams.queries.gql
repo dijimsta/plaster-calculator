@@ -1,0 +1,10 @@
+query GetMyTeam @auth(level: USER) {
+    teamMembers(where: { userId: { eq_expr: "auth.uid" } }) {
+        teamId
+        role
+        team {
+            id
+            name
+        }
+    }
+}

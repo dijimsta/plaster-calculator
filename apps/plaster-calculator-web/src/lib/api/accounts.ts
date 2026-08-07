@@ -179,7 +179,7 @@ export async function setPrimaryAccountContact(
 function toAccountSummary(account: AccountRow): AccountSummary {
     return {
         id: account.id,
-        ownerId: account.ownerId,
+        teamId: account.teamId,
         companyName: account.companyName,
         businessNumber: account.businessNumber ?? null,
         phoneNumber: account.phoneNumber ?? null,

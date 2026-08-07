@@ -5,7 +5,7 @@ import type {
 } from "@libraries/plaster-calculator-common";
 
 export type ProjectListRow =
-    | DataConnector.ListProjectsByOwnerAndSalesStatusData["projects"][number]
+    | DataConnector.ListProjectsByTeamAndSalesStatusData["projects"][number]
     | DataConnector.ListProjectsByAccountData["projects"][number];
 export type ProjectWithPages = NonNullable<
     DataConnector.GetProjectDetailsByIdData["project"]
@@ -38,6 +38,8 @@ export interface ProjectSummary {
     createdAt: string;
     updatedAt: string;
     pageCount: number;
+    teamId?: string | null;
+    assignee?: string | null;
 }
 
 export interface FloorplanPage {
@@ -58,7 +60,6 @@ export interface FloorplanPage {
 }
 
 export interface ProjectDetail extends ProjectSummary {
-    ownerId?: string | null;
     pages: FloorplanPage[];
 }
 
@@ -72,7 +73,7 @@ export interface UserSettings {
 
 export interface Reminder {
     id: string;
-    ownerId?: string | null;
+    teamId?: string | null;
     projectId: string;
     accountId: string | null;
     name: string;
@@ -107,6 +108,7 @@ export interface CreateProjectFromUploadRequest {
     size?: unknown;
     storagePath?: unknown;
     pageCount?: unknown;
+    assignee?: unknown;
 }
 
 export interface ProjectIdRequest {
@@ -126,6 +128,7 @@ export interface UpdateProjectRequest extends ProjectIdRequest {
     accountId?: unknown;
     address?: unknown;
     salesStatus?: unknown;
+    assignee?: unknown;
 }
 
 export interface AccountIdRequest {

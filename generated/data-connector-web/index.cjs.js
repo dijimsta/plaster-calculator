@@ -406,6 +406,21 @@ exports.getProjectQuestionnaire = function getProjectQuestionnaire(dcOrVars, var
 }
 ;
 
+const getMyTeamRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetMyTeam');
+}
+getMyTeamRef.operationName = 'GetMyTeam';
+exports.getMyTeamRef = getMyTeamRef;
+
+exports.getMyTeam = function getMyTeam(dcOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  return executeQuery(getMyTeamRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
 const upsertMyUserSettingsRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();

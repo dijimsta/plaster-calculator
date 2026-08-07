@@ -1,12 +1,16 @@
 type Project
     @table
     @index(
-        fields: ["ownerId", "salesStatus", "updatedAt"]
+        fields: ["teamId", "salesStatus", "updatedAt"]
         order: [ASC, ASC, DESC]
     )
     @index(fields: ["accountId", "updatedAt"], order: [ASC, DESC]) {
     id: UUID! @default(expr: "uuidV4()")
-    ownerId: String!
+    # Temporary legacy source for the team backfill. Remove after migration.
+    ownerId: String
+    team: Team @ref(fields: "teamId", references: "id")
+    teamId: String
+    assignee: String
     account: Account @ref(fields: "accountId", references: "id")
     accountId: UUID
     name: String!

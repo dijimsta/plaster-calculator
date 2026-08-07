@@ -12,7 +12,6 @@ export { answerQuestionnaireWithAI } from "./questionnaire-ai.js";
 export {
     createProjectFromUpload,
     deleteProject,
-    exportProjectCsv,
     getProject,
     getProjectStatus,
     listProjects,
@@ -20,6 +19,7 @@ export {
     renameProject,
     updateProject,
 } from "./projects.js";
+export { exportProjectCsv } from "./project-export.js";
 export {
     cancelReminder,
     completeReminder,
@@ -28,3 +28,5 @@ export {
     listProjectReminders,
     updateReminder,
 } from "./reminders.js";
+export { ensureMyTeam } from "./teams.js";
+export { createPersonalTeamForNewUser } from "./teams.js";

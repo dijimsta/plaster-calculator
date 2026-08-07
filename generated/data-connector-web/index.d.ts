@@ -154,7 +154,7 @@ export interface FloorplanPage_Key {
 export interface GetMyAccountData {
   account?: {
     id: UUIDString;
-    ownerId: string;
+    teamId?: string | null;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -176,6 +176,17 @@ export interface GetMyAccountData {
 
 export interface GetMyAccountVariables {
   id: UUIDString;
+}
+
+export interface GetMyTeamData {
+  teamMembers: ({
+    teamId: string;
+    role: string;
+    team: {
+      id: string;
+      name: string;
+    } & Team_Key;
+  })[];
 }
 
 export interface GetMyUserSettingsData {
@@ -225,7 +236,7 @@ export interface GetProjectQuestionnaireVariables {
 export interface GetQuestionnaireTemplateData {
   questionnaireTemplate?: {
     id: UUIDString;
-    ownerId: string;
+    teamId?: string | null;
     name: string;
     createdAt: TimestampString;
     updatedAt: TimestampString;
@@ -261,7 +272,7 @@ export interface ListMyAccountContactsVariables {
 export interface ListMyAccountsData {
   accounts: ({
     id: UUIDString;
-    ownerId: string;
+    teamId?: string | null;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -368,6 +379,17 @@ export interface SupplierQuoteItemPrice_Key {
 export interface Supplier_Key {
   id: UUIDString;
   __typename?: 'Supplier_Key';
+}
+
+export interface TeamMember_Key {
+  teamId: string;
+  userId: string;
+  __typename?: 'TeamMember_Key';
+}
+
+export interface Team_Key {
+  id: string;
+  __typename?: 'Team_Key';
 }
 
 export interface UpdateMyAccountContactData {
@@ -812,6 +834,18 @@ export const getProjectQuestionnaireRef: GetProjectQuestionnaireRef;
 
 export function getProjectQuestionnaire(vars: GetProjectQuestionnaireVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
 export function getProjectQuestionnaire(dc: DataConnect, vars: GetProjectQuestionnaireVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
+
+interface GetMyTeamRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetMyTeamData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<GetMyTeamData, undefined>;
+  operationName: string;
+}
+export const getMyTeamRef: GetMyTeamRef;
+
+export function getMyTeam(options?: ExecuteQueryOptions): QueryPromise<GetMyTeamData, undefined>;
+export function getMyTeam(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetMyTeamData, undefined>;
 
 interface UpsertMyUserSettingsRef {
   /* Allow users to create refs without passing in DataConnect */

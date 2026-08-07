@@ -6,12 +6,13 @@ export interface ProjectUpdateFields {
     name?: string;
     accountId?: string | null;
     address?: string | null;
+    assignee?: string | null;
     salesStatus?: SalesStatus;
 }
 
 export function nextNullableProjectField(
     updates: ProjectUpdateFields,
-    field: "accountId" | "address",
+    field: "accountId" | "address" | "assignee",
     current: string | null | undefined,
 ) {
     return hasField(updates, field)

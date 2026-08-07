@@ -1,13 +1,12 @@
-query ListProjectsByOwnerAndSalesStatus(
-    $ownerId: String!
-    $salesStatus: String!
-) @auth(level: NO_ACCESS) {
+query ListProjectsByTeamAndSalesStatus($teamId: String!, $salesStatus: String!)
+@auth(level: NO_ACCESS) {
     projects(
-        where: { ownerId: { eq: $ownerId }, salesStatus: { eq: $salesStatus } }
+        where: { teamId: { eq: $teamId }, salesStatus: { eq: $salesStatus } }
         orderBy: [{ updatedAt: DESC }]
     ) {
         id
-        ownerId
+        teamId
+        assignee
         accountId
         name
         address
@@ -29,7 +28,8 @@ query ListProjectsByAccount($accountId: UUID!) @auth(level: NO_ACCESS) {
         orderBy: [{ updatedAt: DESC }]
     ) {
         id
-        ownerId
+        teamId
+        assignee
         accountId
         name
         address
@@ -48,7 +48,8 @@ query ListProjectsByAccount($accountId: UUID!) @auth(level: NO_ACCESS) {
 query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id
-        ownerId
+        teamId
+        assignee
         accountId
         name
         address
@@ -89,7 +90,8 @@ query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
 query GetProjectById($id: UUID!) @auth(level: NO_ACCESS) {
     project(id: $id) {
         id
-        ownerId
+        teamId
+        assignee
         accountId
         name
         address

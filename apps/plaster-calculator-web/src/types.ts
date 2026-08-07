@@ -14,6 +14,8 @@ export type ProjectSummary = {
     createdAt: string;
     updatedAt: string;
     pageCount: number;
+    teamId?: string | null;
+    assignee?: string | null;
 };
 
 export type FloorplanPage = {
@@ -34,7 +36,8 @@ export type FloorplanPage = {
 };
 
 export type ProjectDetail = ProjectSummary & {
-    ownerId?: string | null;
+    teamId?: string | null;
+    assignee?: string | null;
     pages: FloorplanPage[];
 };
 
@@ -58,7 +61,7 @@ export type AccountContact = {
 
 export type AccountSummary = {
     id: string;
-    ownerId?: string | null;
+    teamId?: string | null;
     companyName: string;
     businessNumber: string | null;
     phoneNumber: string | null;
@@ -81,7 +84,7 @@ export type UserSettings = {
 
 export type Reminder = {
     id: string;
-    ownerId?: string | null;
+    teamId?: string | null;
     projectId: string;
     accountId: string | null;
     name: string;

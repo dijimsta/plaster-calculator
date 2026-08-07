@@ -1,6 +1,7 @@
 mutation CreateProjectFromUpload(
     $id: UUID!
-    $ownerId: String!
+    $teamId: String!
+    $assignee: String
     $accountId: UUID
     $name: String!
     $address: String
@@ -14,7 +15,8 @@ mutation CreateProjectFromUpload(
     project_insert(
         data: {
             id: $id
-            ownerId: $ownerId
+            teamId: $teamId
+            assignee: $assignee
             accountId: $accountId
             name: $name
             address: $address
@@ -36,6 +38,7 @@ mutation UpdateProject(
     $accountId: UUID
     $address: String
     $salesStatus: String
+    $assignee: String
 ) @auth(level: NO_ACCESS) {
     project_update(
         id: $id
@@ -44,6 +47,7 @@ mutation UpdateProject(
             accountId: $accountId
             address: $address
             salesStatus: $salesStatus
+            assignee: $assignee
             updatedAt_expr: "request.time"
         }
     )

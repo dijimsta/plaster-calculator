@@ -1,6 +1,6 @@
 mutation CreateReminder(
     $id: UUID!
-    $ownerId: String!
+    $teamId: String!
     $projectId: UUID!
     $accountId: UUID
     $name: String!
@@ -10,7 +10,7 @@ mutation CreateReminder(
     reminder_insert(
         data: {
             id: $id
-            ownerId: $ownerId
+            teamId: $teamId
             projectId: $projectId
             accountId: $accountId
             name: $name
