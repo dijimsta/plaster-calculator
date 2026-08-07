@@ -3,7 +3,6 @@ mutation CreateQuestionnaireTemplate($id: UUID!, $name: String!)
     questionnaireTemplate_insert(
         data: {
             id: $id
-            ownerId_expr: "auth.uid"
             teamId_expr: "auth.token.teamId"
             name: $name
             createdAt_expr: "request.time"
@@ -26,7 +25,6 @@ mutation CreateQuestionnaireTemplateQuestion(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     questionnaireTemplateQuestion_insert(
@@ -52,7 +50,6 @@ mutation UpdateQuestionnaireTemplateName($id: UUID!, $name: String!)
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     questionnaireTemplate_update(
@@ -75,7 +72,6 @@ mutation UpdateQuestionnaireTemplateQuestion(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     questionnaireTemplateQuestion_update(
@@ -99,7 +95,6 @@ mutation DeleteQuestionnaireTemplateQuestion($id: UUID!, $templateId: UUID!)
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     questionnaireTemplateQuestion_delete(id: $id)
@@ -116,7 +111,6 @@ mutation DeleteQuestionnaireTemplate($id: UUID!)
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     questionnaireTemplateQuestion_deleteMany(where: { templateId: { eq: $id } })
@@ -135,7 +129,6 @@ mutation EnsureProjectQuestionnaire($projectId: UUID!)
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     projectQuestionnaire_upsert(
@@ -155,7 +148,6 @@ mutation ApplyQuestionnaireTemplateToProject(
             ) {
             id
             teamId
-            ownerId @retired
         }
         questionnaireTemplate(key: { id: $sourceTemplateId })
             @check(
@@ -164,7 +156,6 @@ mutation ApplyQuestionnaireTemplateToProject(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     projectQuestionnaire_upsert(
@@ -190,7 +181,6 @@ mutation CreateProjectQuestionnaireQuestion(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     projectQuestionnaireQuestion_insert(
@@ -219,7 +209,6 @@ mutation UpdateProjectQuestionnaireQuestion(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     projectQuestionnaireQuestion_update(
@@ -245,7 +234,6 @@ mutation UpdateProjectQuestionnaireQuestionAnswer(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     projectQuestionnaireQuestion_update(
@@ -271,7 +259,6 @@ mutation UpdateProjectQuestionnaireQuestionAnswerSource(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     projectQuestionnaireQuestion_update(
@@ -291,7 +278,6 @@ mutation DeleteProjectQuestionnaireQuestion($id: UUID!, $projectId: UUID!)
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     projectQuestionnaireQuestion_delete(id: $id)

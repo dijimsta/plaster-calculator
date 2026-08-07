@@ -129,7 +129,7 @@ The `data` property is an object of type `ListMyAccountsData`, which is defined 
 export interface ListMyAccountsData {
   accounts: ({
     id: UUIDString;
-    teamId?: string | null;
+    teamId: string;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -235,7 +235,7 @@ The `data` property is an object of type `GetMyAccountData`, which is defined in
 export interface GetMyAccountData {
   account?: {
     id: UUIDString;
-    teamId?: string | null;
+    teamId: string;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -577,7 +577,7 @@ The `data` property is an object of type `GetQuestionnaireTemplateData`, which i
 export interface GetQuestionnaireTemplateData {
   questionnaireTemplate?: {
     id: UUIDString;
-    teamId?: string | null;
+    teamId: string;
     name: string;
     createdAt: TimestampString;
     updatedAt: TimestampString;

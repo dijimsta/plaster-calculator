@@ -165,7 +165,7 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface ListMyAccountsData {
   accounts: ({
     id: UUIDString;
-    teamId?: string | null;
+    teamId: string;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -249,7 +249,7 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface GetMyAccountData {
   account?: {
     id: UUIDString;
-    teamId?: string | null;
+    teamId: string;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -515,7 +515,7 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface GetQuestionnaireTemplateData {
   questionnaireTemplate?: {
     id: UUIDString;
-    teamId?: string | null;
+    teamId: string;
     name: string;
     createdAt: TimestampString;
     updatedAt: TimestampString;

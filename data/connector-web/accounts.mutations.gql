@@ -7,7 +7,6 @@ mutation CreateMyAccount(
     account_insert(
         data: {
             id: $id
-            ownerId_expr: "auth.uid"
             teamId_expr: "auth.token.teamId"
             companyName: $companyName
             businessNumber: $businessNumber
@@ -32,7 +31,6 @@ mutation UpdateMyAccount(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     account_update(
@@ -57,7 +55,6 @@ mutation SetMyAccountPrimaryContact($accountId: UUID!, $contactId: UUID!)
             ) {
             id
             teamId
-            ownerId @retired
         }
         accountContact(
             first: {
@@ -84,7 +81,6 @@ mutation ClearMyAccountPrimaryContact($accountId: UUID!)
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     account_update(
@@ -102,7 +98,6 @@ mutation DeleteMyAccount($id: UUID!) @auth(level: USER) @transaction {
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     accountContact_deleteMany(where: { accountId: { eq: $id } })
@@ -126,7 +121,6 @@ mutation CreateMyAccountContact(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     accountContact_insert(
@@ -159,7 +153,6 @@ mutation UpdateMyAccountContact(
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     accountContact_update(
@@ -187,7 +180,6 @@ mutation DeleteMyAccountContact($accountId: UUID!, $contactId: UUID!)
             ) {
             id
             teamId
-            ownerId @retired
         }
     }
     account_update(
