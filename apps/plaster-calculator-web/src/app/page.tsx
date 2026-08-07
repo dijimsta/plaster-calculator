@@ -2,12 +2,17 @@
 
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import {
+    Alert,
     Button,
     ButtonLink,
     Card,
     Divider,
+    FormLayout,
     GoogleIcon,
+    Input,
+    Paragraph,
 } from "@libraries/uikit-web";
+import { Heading1 } from "@ui/atoms";
 import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
@@ -19,7 +24,7 @@ import {
 import { useRouter } from "next/navigation.js";
 import { useEffect, useState } from "react";
 
-import { activeTheme, cx, ui } from "../lib/styles.js";
+import { activeTheme, cx } from "../lib/styles.js";
 
 const googleProvider = new GoogleAuthProvider();
 const auth = FirebaseService.getAuth();
@@ -33,12 +38,7 @@ const heroClass =
     "flex w-full max-w-[980px] items-center justify-center gap-16 max-[768px]:flex-col max-[768px]:items-stretch max-[768px]:gap-6";
 const brandClass =
     "max-w-[480px] flex-1 max-[768px]:max-w-none max-[768px]:text-center";
-const logoClass = "mb-4 text-5xl font-bold leading-none max-[768px]:text-4xl";
-const taglineClass =
-    "m-0 text-xl leading-relaxed text-slate-600 dark:text-slate-300 max-[768px]:text-lg";
 const cardWrapperClass = "w-full max-w-md shrink-0 max-[768px]:max-w-none";
-const formClass = "flex flex-col gap-3";
-const inputClass = cx(ui.input, "py-3.5");
 
 export default function LoginPage() {
     const router = useRouter();
@@ -100,23 +100,23 @@ export default function LoginPage() {
             <div className={pageClass}>
                 <div className={heroClass}>
                     <div className={brandClass}>
-                        <h1 className={logoClass}>Plaster Calculator</h1>
-                        <p className={taglineClass}>
+                        <Heading1>Plaster Calculator</Heading1>
+                        <Paragraph textSize="xl">
                             Calculate plaster quantities quickly and accurately
                             for any project.
-                        </p>
+                        </Paragraph>
                     </div>
 
                     <div className={cardWrapperClass}>
                         <Card>
-                            <p className="mb-4 mt-0 text-base">
+                            <Paragraph>
                                 Welcome back,{" "}
                                 <strong>
                                     {currentUser.displayName ??
                                         currentUser.email}
                                 </strong>
                                 !
-                            </p>
+                            </Paragraph>
                             <Card.ButtonGroup>
                                 <ButtonLink
                                     href="/app"
@@ -138,35 +138,31 @@ export default function LoginPage() {
         <div className={pageClass}>
             <div className={heroClass}>
                 <div className={brandClass}>
-                    <h1 className={logoClass}>Plaster Calculator</h1>
-                    <p className={taglineClass}>
+                    <Heading1>Plaster Calculator</Heading1>
+                    <Paragraph textSize="xl">
                         Quote your plastering quickly and accurately for any
                         project.
-                    </p>
+                    </Paragraph>
                 </div>
 
                 <div className={cardWrapperClass}>
                     <Card>
                         {error && (
-                            <p className="rounded-md border border-red-300 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+                            <Alert intent="error" variant="light-with-border">
                                 {error}
-                            </p>
+                            </Alert>
                         )}
 
-                        <form
-                            className={formClass}
-                            onSubmit={handleEmailSubmit}
-                        >
-                            <input
+                        <FormLayout onSubmit={handleEmailSubmit}>
+                            <Input
                                 type="email"
                                 required
                                 autoComplete="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className={inputClass}
                                 placeholder="Email address"
                             />
-                            <input
+                            <Input
                                 type="password"
                                 required
                                 autoComplete={
@@ -176,7 +172,6 @@ export default function LoginPage() {
                                 }
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className={inputClass}
                                 placeholder="Password"
                             />
                             <Button
@@ -188,7 +183,7 @@ export default function LoginPage() {
                             >
                                 {loading ? "Please wait…" : "Log in"}
                             </Button>
-                        </form>
+                        </FormLayout>
 
                         <Divider>or</Divider>
 

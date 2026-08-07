@@ -3,6 +3,7 @@ packages:
     - functions/*
     - generated/*
     - libraries/*
+    - ui/*
 allowBuilds:
     "@firebase/util": false
     "@nestjs/core": false

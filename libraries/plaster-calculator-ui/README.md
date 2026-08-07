@@ -2,14 +2,15 @@
 
 `@libraries/plaster-calculator-ui` contains reusable, domain-aware React patterns for Plaster Calculator applications.
 It bridges platform-neutral domain contracts from `plaster-calculator-common` with presentation primitives from
-`uikit-web`.
+`@ui/atoms` and `uikit-web`.
 
 ## Atomic design boundary
 
 This workspace applies atomic design through package responsibilities:
 
-- `uikit-web` owns atoms and application-agnostic compound components.
-- `plaster-calculator-ui` composes those atoms into domain-aware molecules and organisms.
+- `@ui/atoms` owns atoms: the smallest, non-composing presentational primitives.
+- `uikit-web` owns application-agnostic compound components composed from those atoms.
+- `plaster-calculator-ui` composes atoms and UIKit components into domain-aware molecules and organisms.
 - Applications own page templates, routing, infrastructure, and feature orchestration specific to that application.
 
 Components are organised by domain namespace, such as `questionnaires/`, rather than by generic `molecules/` and
@@ -17,15 +18,16 @@ Components are organised by domain namespace, such as `questionnaires/`, rather 
 
 ## Composition and styling
 
-Patterns must be composed entirely from public `@libraries/uikit-web` components. Do not introduce new Tailwind class
-names, CSS files, style maps, CSS modules, or inline styles in this library. Lucide icons may be used as leaf content;
-they must not provide layout or presentation structure.
+Patterns must be composed entirely from public `@ui/atoms` and `@libraries/uikit-web` components. Do not introduce new
+Tailwind class names, CSS files, style maps, CSS modules, or inline styles in this library. Lucide icons may be used
+as leaf content; they must not provide layout or presentation structure.
 
-If UIKit cannot express a required layout or visual treatment, stop and discuss the missing component responsibility
-and proposed API. Add the reusable capability to UIKit before continuing the domain pattern.
+If neither package can express a required layout or visual treatment, stop and discuss the missing component
+responsibility and proposed API. Add the reusable capability to the appropriate package before continuing the domain
+pattern.
 
-Existing consumer class-name workarounds are technical debt and must not be expanded. Migrate them to typed UIKit APIs
-when the affected pattern is changed.
+Existing consumer class-name workarounds are technical debt and must not be expanded. Migrate them to typed
+`@ui/atoms`/UIKit APIs when the affected pattern is changed.
 
 ## Services and React context
 

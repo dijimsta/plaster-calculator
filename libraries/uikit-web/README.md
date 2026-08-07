@@ -1,8 +1,12 @@
 # UIKit Web
 
 `@libraries/uikit-web` is the framework- and application-agnostic React component library for web interfaces in this
-workspace. It provides the atomic design layer: reusable visual primitives such as buttons, badges, text, cards, and
-layout components.
+workspace. It provides framework-agnostic compound components: reusable visual primitives such as buttons, badges,
+cards, and layout components that compose one or more atoms.
+
+Atoms (the smallest, non-composing primitives such as headings) live in `@ui/atoms`. UIKit is migrating its
+atom-level components out to `@ui/atoms` incrementally as each one is touched, rather than as a single rewrite — so
+some existing UIKit components are still atoms in practice until that migration reaches them.
 
 UIKit components own their presentation APIs and Tailwind implementation. Consumers compose those APIs instead of
 adding application CSS or utility classes.
@@ -11,13 +15,14 @@ adding application CSS or utility classes.
 
 UIKit owns:
 
-- Atomic visual components and framework-agnostic compound components.
+- Framework-agnostic compound components that compose one or more atoms.
 - Layout, spacing, colour, state, and responsive presentation APIs.
 - Accessibility behaviour intrinsic to those components.
 - Reusable capabilities required by more than one application or domain pattern.
 
 UIKit does not own:
 
+- Atomic (non-composing) primitives — see `@ui/atoms`.
 - Plaster Calculator domain concepts or schemas.
 - Data fetching, service contexts, or application state.
 - Next.js, Firebase, routing, or other application-framework integrations.

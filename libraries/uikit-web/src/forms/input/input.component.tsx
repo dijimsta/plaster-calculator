@@ -43,6 +43,7 @@ export type InputProps = {
     readonly defaultValue?: string | number;
     readonly name?: string;
     readonly placeholder?: string;
+    readonly autoComplete?: string;
     readonly autoFocus?: boolean;
     readonly disabled?: boolean;
     readonly readOnly?: boolean;
@@ -78,6 +79,7 @@ export function Input({
     defaultValue,
     name,
     placeholder,
+    autoComplete,
     autoFocus,
     disabled,
     readOnly,
@@ -133,6 +135,7 @@ export function Input({
                     defaultValue={defaultValue}
                     name={name}
                     placeholder={placeholder}
+                    autoComplete={autoComplete}
                     autoFocus={autoFocus}
                     aria-invalid={invalidState(invalid)}
                     aria-label={inputLabel(
