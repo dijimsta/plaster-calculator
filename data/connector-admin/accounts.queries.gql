@@ -1,7 +1,7 @@
 query GetAccountById($id: UUID!) @auth(level: NO_ACCESS) {
     account(id: $id) {
         id
-        ownerId
+        teamId
         companyName
         businessNumber
         phoneNumber

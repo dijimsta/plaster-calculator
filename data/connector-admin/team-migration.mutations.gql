@@ -1,0 +1,76 @@
+mutation BackfillProjectTeam($id: UUID!, $teamId: String!)
+@auth(level: NO_ACCESS) {
+    project_update(
+        id: $id
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}
+mutation BackfillAccountTeam($id: UUID!, $teamId: String!)
+@auth(level: NO_ACCESS) {
+    account_update(
+        id: $id
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}
+mutation BackfillQuestionnaireTemplateTeam($id: UUID!, $teamId: String!)
+@auth(level: NO_ACCESS) {
+    questionnaireTemplate_update(
+        id: $id
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}
+mutation BackfillReminderTeam($id: UUID!, $teamId: String!)
+@auth(level: NO_ACCESS) {
+    reminder_update(
+        id: $id
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}
+mutation BackfillQuoteItemTemplateTeam($id: UUID!, $teamId: String!)
+@auth(level: NO_ACCESS) {
+    quoteItemTemplate_update(
+        id: $id
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}
+mutation BackfillQuoteItemTemplateConfigTeam(
+    $ownerId: String!
+    $templateId: UUID!
+    $teamId: String!
+) @auth(level: NO_ACCESS) {
+    quoteItemTemplateConfig_update(
+        key: { ownerId: $ownerId, templateId: $templateId }
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}
+mutation BackfillSupplierTeam($id: UUID!, $teamId: String!)
+@auth(level: NO_ACCESS) {
+    supplier_update(
+        id: $id
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}
+mutation BackfillQuoteTeam($id: UUID!, $teamId: String!)
+@auth(level: NO_ACCESS) {
+    quote_update(
+        id: $id
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}
+mutation BackfillQuoteItemTeam($id: UUID!, $teamId: String!)
+@auth(level: NO_ACCESS) {
+    quoteItem_update(
+        id: $id
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}
+mutation BackfillSupplierQuoteItemPriceTeam(
+    $supplierId: UUID!
+    $templateId: UUID!
+    $teamId: String!
+) @auth(level: NO_ACCESS) {
+    supplierQuoteItemPrice_update(
+        key: { supplierId: $supplierId, templateId: $templateId }
+        data: { teamId: $teamId, updatedAt_expr: "request.time" }
+    )
+}

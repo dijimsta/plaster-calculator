@@ -24,6 +24,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetQuestionnaireTemplate*](#getquestionnairetemplate)
   - [*ListProjectQuestionnaires*](#listprojectquestionnaires)
   - [*GetProjectQuestionnaire*](#getprojectquestionnaire)
+  - [*GetMyTeam*](#getmyteam)
   - [*GetMyUserSettings*](#getmyusersettings)
   - [*GetMyUserSignature*](#getmyusersignature)
 - [**Mutations**](#mutations)
@@ -164,7 +165,7 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface ListMyAccountsData {
   accounts: ({
     id: UUIDString;
-    ownerId: string;
+    teamId?: string | null;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -248,7 +249,7 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface GetMyAccountData {
   account?: {
     id: UUIDString;
-    ownerId: string;
+    teamId?: string | null;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -514,7 +515,7 @@ To access the data returned by a Query, use the `UseQueryResult.data` field. The
 export interface GetQuestionnaireTemplateData {
   questionnaireTemplate?: {
     id: UUIDString;
-    ownerId: string;
+    teamId?: string | null;
     name: string;
     createdAt: TimestampString;
     updatedAt: TimestampString;
@@ -746,6 +747,82 @@ export default function GetProjectQuestionnaireComponent() {
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
     console.log(query.data.projectQuestionnaire);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetMyTeam
+You can execute the `GetMyTeam` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetMyTeam(dc: DataConnect, options?: useDataConnectQueryOptions<GetMyTeamData>): UseDataConnectQueryResult<GetMyTeamData, undefined>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetMyTeam(options?: useDataConnectQueryOptions<GetMyTeamData>): UseDataConnectQueryResult<GetMyTeamData, undefined>;
+```
+
+### Variables
+The `GetMyTeam` Query has no variables.
+### Return Type
+Recall that calling the `GetMyTeam` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetMyTeam` Query is of type `GetMyTeamData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetMyTeamData {
+  teamMembers: ({
+    teamId: string;
+    role: string;
+    team: {
+      id: string;
+      name: string;
+    } & Team_Key;
+  })[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetMyTeam`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig } from '@generated/data-connector-web';
+import { useGetMyTeam } from '@generated/data-connector-web/react'
+
+export default function GetMyTeamComponent() {
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetMyTeam();
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetMyTeam(dataConnect);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetMyTeam(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetMyTeam(dataConnect, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.teamMembers);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }

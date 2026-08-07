@@ -3,7 +3,7 @@ mutation CreateQuestionnaireTemplate($id: UUID!, $name: String!)
     questionnaireTemplate_insert(
         data: {
             id: $id
-            ownerId_expr: "auth.uid"
+            teamId_expr: "auth.token.teamId"
             name: $name
             createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
@@ -20,11 +20,11 @@ mutation CreateQuestionnaireTemplateQuestion(
     query @redact {
         questionnaireTemplate(key: { id: $templateId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this template"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this template"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     questionnaireTemplateQuestion_insert(
@@ -45,11 +45,11 @@ mutation UpdateQuestionnaireTemplateName($id: UUID!, $name: String!)
     query @redact {
         questionnaireTemplate(key: { id: $id })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this template"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this template"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     questionnaireTemplate_update(
@@ -67,11 +67,11 @@ mutation UpdateQuestionnaireTemplateQuestion(
     query @redact {
         questionnaireTemplate(key: { id: $templateId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this template"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this template"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     questionnaireTemplateQuestion_update(
@@ -90,11 +90,11 @@ mutation DeleteQuestionnaireTemplateQuestion($id: UUID!, $templateId: UUID!)
     query @redact {
         questionnaireTemplate(key: { id: $templateId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this template"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this template"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     questionnaireTemplateQuestion_delete(id: $id)
@@ -106,11 +106,11 @@ mutation DeleteQuestionnaireTemplate($id: UUID!)
     query @redact {
         questionnaireTemplate(key: { id: $id })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this template"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this template"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     questionnaireTemplateQuestion_deleteMany(where: { templateId: { eq: $id } })
@@ -124,11 +124,11 @@ mutation EnsureProjectQuestionnaire($projectId: UUID!)
     query @redact {
         project(key: { id: $projectId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this project"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this project"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     projectQuestionnaire_upsert(
@@ -143,19 +143,19 @@ mutation ApplyQuestionnaireTemplateToProject(
     query @redact {
         project(key: { id: $projectId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this project"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this project"
             ) {
             id
-            ownerId
+            teamId
         }
         questionnaireTemplate(key: { id: $sourceTemplateId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this template"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this template"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     projectQuestionnaire_upsert(
@@ -176,11 +176,11 @@ mutation CreateProjectQuestionnaireQuestion(
     query @redact {
         project(key: { id: $projectId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this project"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this project"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     projectQuestionnaireQuestion_insert(
@@ -204,11 +204,11 @@ mutation UpdateProjectQuestionnaireQuestion(
     query @redact {
         project(key: { id: $projectId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this project"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this project"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     projectQuestionnaireQuestion_update(
@@ -229,11 +229,11 @@ mutation UpdateProjectQuestionnaireQuestionAnswer(
     query @redact {
         project(key: { id: $projectId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this project"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this project"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     projectQuestionnaireQuestion_update(
@@ -254,11 +254,11 @@ mutation UpdateProjectQuestionnaireQuestionAnswerSource(
     query @redact {
         project(key: { id: $projectId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this project"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this project"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     projectQuestionnaireQuestion_update(
@@ -273,11 +273,11 @@ mutation DeleteProjectQuestionnaireQuestion($id: UUID!, $projectId: UUID!)
     query @redact {
         project(key: { id: $projectId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this project"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this project"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     projectQuestionnaireQuestion_delete(id: $id)

@@ -17,6 +17,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetQuestionnaireTemplate*](#getquestionnairetemplate)
   - [*ListProjectQuestionnaires*](#listprojectquestionnaires)
   - [*GetProjectQuestionnaire*](#getprojectquestionnaire)
+  - [*GetMyTeam*](#getmyteam)
   - [*GetMyUserSettings*](#getmyusersettings)
   - [*GetMyUserSignature*](#getmyusersignature)
 - [**Mutations**](#mutations)
@@ -128,7 +129,7 @@ The `data` property is an object of type `ListMyAccountsData`, which is defined 
 export interface ListMyAccountsData {
   accounts: ({
     id: UUIDString;
-    ownerId: string;
+    teamId?: string | null;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -234,7 +235,7 @@ The `data` property is an object of type `GetMyAccountData`, which is defined in
 export interface GetMyAccountData {
   account?: {
     id: UUIDString;
-    ownerId: string;
+    teamId?: string | null;
     companyName: string;
     businessNumber?: string | null;
     phoneNumber?: string | null;
@@ -576,7 +577,7 @@ The `data` property is an object of type `GetQuestionnaireTemplateData`, which i
 export interface GetQuestionnaireTemplateData {
   questionnaireTemplate?: {
     id: UUIDString;
-    ownerId: string;
+    teamId?: string | null;
     name: string;
     createdAt: TimestampString;
     updatedAt: TimestampString;
@@ -870,6 +871,104 @@ console.log(data.projectQuestionnaire);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.projectQuestionnaire);
+});
+```
+
+## GetMyTeam
+You can execute the `GetMyTeam` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+getMyTeam(options?: ExecuteQueryOptions): QueryPromise<GetMyTeamData, undefined>;
+
+interface GetMyTeamRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetMyTeamData, undefined>;
+}
+export const getMyTeamRef: GetMyTeamRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getMyTeam(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetMyTeamData, undefined>;
+
+interface GetMyTeamRef {
+  ...
+  (dc: DataConnect): QueryRef<GetMyTeamData, undefined>;
+}
+export const getMyTeamRef: GetMyTeamRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getMyTeamRef:
+```typescript
+const name = getMyTeamRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetMyTeam` query has no variables.
+### Return Type
+Recall that executing the `GetMyTeam` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetMyTeamData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetMyTeamData {
+  teamMembers: ({
+    teamId: string;
+    role: string;
+    team: {
+      id: string;
+      name: string;
+    } & Team_Key;
+  })[];
+}
+```
+### Using `GetMyTeam`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getMyTeam } from '@generated/data-connector-web';
+
+
+// Call the `getMyTeam()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getMyTeam();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getMyTeam(dataConnect);
+
+console.log(data.teamMembers);
+
+// Or, you can use the `Promise` API.
+getMyTeam().then((response) => {
+  const data = response.data;
+  console.log(data.teamMembers);
+});
+```
+
+### Using `GetMyTeam`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getMyTeamRef } from '@generated/data-connector-web';
+
+
+// Call the `getMyTeamRef()` function to get a reference to the query.
+const ref = getMyTeamRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getMyTeamRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.teamMembers);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.teamMembers);
 });
 ```
 

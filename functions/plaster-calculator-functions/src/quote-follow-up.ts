@@ -4,27 +4,31 @@ import { randomUUID } from "node:crypto";
 
 import * as DataConnector from "@generated/data-connector-admin";
 
+import { requireTeamId } from "./ownership.js";
 import { getUserSettingsOrDefault } from "./settings.js";
-import { toReminderStatus } from "./validation.js";
+import { hasField, toReminderStatus } from "./validation.js";
 
+import type { ProjectUpdateFields } from "./project-fields.js";
 import type { ProjectWithPages } from "./types.js";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 const quoteFollowUpReminderPrefix = "Follow up quote for ";
 
 export async function upsertAutoQuoteReminder(
     project: ProjectWithPages,
-    ownerId: string,
+    userId: string,
 ) {
-    const settings = await getUserSettingsOrDefault(ownerId);
+    const settings = await getUserSettingsOrDefault(userId);
     if (!settings.quoteFollowUpEnabled) {
         return;
     }
 
     const dueAt = addDays(new Date(), settings.quoteFollowUpDays).toISOString();
     const name = `${quoteFollowUpReminderPrefix}${project.name}`;
-    const existing = await findOpenProjectReminder(project.id, ownerId);
+    const teamId = await requireTeamId(userId);
+    const existing = await findOpenProjectReminder(project.id, teamId);
 
-    if (existing && existing.ownerId === ownerId) {
+    if (existing) {
         await DataConnector.updateReminder({
             id: existing.id,
             accountId: project.accountId ?? null,
@@ -38,9 +42,10 @@ export async function upsertAutoQuoteReminder(
 
     await DataConnector.createReminder({
         id: randomUUID(),
-        ownerId,
+        teamId,
         projectId: project.id,
         accountId: project.accountId ?? null,
+        assignee: project.assignee ?? null,
         name,
         status: "OPEN",
         dueAt,
@@ -49,9 +54,9 @@ export async function upsertAutoQuoteReminder(
 
 export async function cancelOpenProjectReminder(
     projectId: string,
-    ownerId: string,
+    teamId: string,
 ) {
-    const reminder = await findOpenProjectReminder(projectId, ownerId);
+    const reminder = await findOpenProjectReminder(projectId, teamId);
     if (!reminder) {
         return;
     }
@@ -68,7 +73,7 @@ export async function cancelOpenProjectReminder(
 
 export async function findOpenProjectReminder(
     projectId: string,
-    ownerId: string,
+    teamId: string,
 ) {
     const response = await DataConnector.listProjectReminders({
         projectId,
@@ -76,10 +81,25 @@ export async function findOpenProjectReminder(
     return (
         response.data.reminders.find(
             (reminder) =>
-                reminder.ownerId === ownerId &&
+                reminder.teamId === teamId &&
                 toReminderStatus(reminder.status) === "OPEN",
         ) ?? null
     );
+}
+
+export async function syncQuoteReminderForStatusUpdate(
+    updates: ProjectUpdateFields,
+    salesStatus: SalesStatus,
+    project: ProjectWithPages,
+    projectId: string,
+    userId: string,
+) {
+    if (!hasField(updates, "salesStatus")) return;
+    if (salesStatus === "QUOTE_SUBMITTED") {
+        await upsertAutoQuoteReminder(project, userId);
+    } else if (salesStatus === "WON" || salesStatus === "LOST") {
+        await cancelOpenProjectReminder(projectId, await requireTeamId(userId));
+    }
 }
 
 function addDays(date: Date, days: number) {

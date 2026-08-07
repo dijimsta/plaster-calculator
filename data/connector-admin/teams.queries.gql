@@ -1,0 +1,20 @@
+query GetTeamMembershipForUser($userId: String!) @auth(level: NO_ACCESS) {
+    teamMembers(where: { userId: { eq: $userId } }) {
+        teamId
+        userId
+        role
+        team {
+            id
+            name
+        }
+    }
+}
+
+query GetTeamMember($teamId: String!, $userId: String!)
+@auth(level: NO_ACCESS) {
+    teamMember(key: { teamId: $teamId, userId: $userId }) {
+        teamId
+        userId
+        role
+    }
+}

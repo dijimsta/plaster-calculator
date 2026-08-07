@@ -7,7 +7,7 @@ mutation CreateMyAccount(
     account_insert(
         data: {
             id: $id
-            ownerId_expr: "auth.uid"
+            teamId_expr: "auth.token.teamId"
             companyName: $companyName
             businessNumber: $businessNumber
             phoneNumber: $phoneNumber
@@ -26,11 +26,11 @@ mutation UpdateMyAccount(
     query @redact {
         account(key: { id: $id })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this account"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this account"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     account_update(
@@ -50,11 +50,11 @@ mutation SetMyAccountPrimaryContact($accountId: UUID!, $contactId: UUID!)
     query @redact {
         account(key: { id: $accountId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this account"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this account"
             ) {
             id
-            ownerId
+            teamId
         }
         accountContact(
             first: {
@@ -76,11 +76,11 @@ mutation ClearMyAccountPrimaryContact($accountId: UUID!)
     query @redact {
         account(key: { id: $accountId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this account"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this account"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     account_update(
@@ -93,11 +93,11 @@ mutation DeleteMyAccount($id: UUID!) @auth(level: USER) @transaction {
     query @redact {
         account(key: { id: $id })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this account"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this account"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     accountContact_deleteMany(where: { accountId: { eq: $id } })
@@ -116,11 +116,11 @@ mutation CreateMyAccountContact(
     query @redact {
         account(key: { id: $accountId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this account"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this account"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     accountContact_insert(
@@ -148,11 +148,11 @@ mutation UpdateMyAccountContact(
     query @redact {
         account(key: { id: $accountId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this account"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this account"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     accountContact_update(
@@ -175,11 +175,11 @@ mutation DeleteMyAccountContact($accountId: UUID!, $contactId: UUID!)
     query @redact {
         account(key: { id: $accountId })
             @check(
-                expr: "this != null && this.ownerId == auth.uid"
-                message: "You do not own this account"
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this account"
             ) {
             id
-            ownerId
+            teamId
         }
     }
     account_update(

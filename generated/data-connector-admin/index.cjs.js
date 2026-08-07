@@ -98,12 +98,12 @@ function updateFloorplanPages(dcOrVarsOrOptions, varsOrOptions, options) {
 }
 exports.updateFloorplanPages = updateFloorplanPages;
 
-function listProjectsByOwnerAndSalesStatus(dcOrVarsOrOptions, varsOrOptions, options) {
+function listProjectsByTeamAndSalesStatus(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListProjectsByOwnerAndSalesStatus', inputVars, inputOpts);
+  return dcInstance.executeQuery('ListProjectsByTeamAndSalesStatus', inputVars, inputOpts);
 }
-exports.listProjectsByOwnerAndSalesStatus = listProjectsByOwnerAndSalesStatus;
+exports.listProjectsByTeamAndSalesStatus = listProjectsByTeamAndSalesStatus;
 
 function listProjectsByAccount(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
@@ -181,6 +181,111 @@ function getReminderById(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeQuery('GetReminderById', inputVars, inputOpts);
 }
 exports.getReminderById = getReminderById;
+
+function backfillProjectTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillProjectTeam', inputVars, inputOpts);
+}
+exports.backfillProjectTeam = backfillProjectTeam;
+
+function backfillAccountTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillAccountTeam', inputVars, inputOpts);
+}
+exports.backfillAccountTeam = backfillAccountTeam;
+
+function backfillQuestionnaireTemplateTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillQuestionnaireTemplateTeam', inputVars, inputOpts);
+}
+exports.backfillQuestionnaireTemplateTeam = backfillQuestionnaireTemplateTeam;
+
+function backfillReminderTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillReminderTeam', inputVars, inputOpts);
+}
+exports.backfillReminderTeam = backfillReminderTeam;
+
+function backfillQuoteItemTemplateTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillQuoteItemTemplateTeam', inputVars, inputOpts);
+}
+exports.backfillQuoteItemTemplateTeam = backfillQuoteItemTemplateTeam;
+
+function backfillQuoteItemTemplateConfigTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillQuoteItemTemplateConfigTeam', inputVars, inputOpts);
+}
+exports.backfillQuoteItemTemplateConfigTeam = backfillQuoteItemTemplateConfigTeam;
+
+function backfillSupplierTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillSupplierTeam', inputVars, inputOpts);
+}
+exports.backfillSupplierTeam = backfillSupplierTeam;
+
+function backfillQuoteTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillQuoteTeam', inputVars, inputOpts);
+}
+exports.backfillQuoteTeam = backfillQuoteTeam;
+
+function backfillQuoteItemTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillQuoteItemTeam', inputVars, inputOpts);
+}
+exports.backfillQuoteItemTeam = backfillQuoteItemTeam;
+
+function backfillSupplierQuoteItemPriceTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('BackfillSupplierQuoteItemPriceTeam', inputVars, inputOpts);
+}
+exports.backfillSupplierQuoteItemPriceTeam = backfillSupplierQuoteItemPriceTeam;
+
+function listLegacyTeamOwnedResources(dcOrOptions, options) {
+  const { dc: dcInstance, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrOptions, options, undefined);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListLegacyTeamOwnedResources', undefined, inputOpts);
+}
+exports.listLegacyTeamOwnedResources = listLegacyTeamOwnedResources;
+
+function createTeam(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateTeam', inputVars, inputOpts);
+}
+exports.createTeam = createTeam;
+
+function createTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('CreateTeamMember', inputVars, inputOpts);
+}
+exports.createTeamMember = createTeamMember;
+
+function getTeamMembershipForUser(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetTeamMembershipForUser', inputVars, inputOpts);
+}
+exports.getTeamMembershipForUser = getTeamMembershipForUser;
+
+function getTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetTeamMember', inputVars, inputOpts);
+}
+exports.getTeamMember = getTeamMember;
 
 function getUserSettings(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);

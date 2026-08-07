@@ -5,19 +5,20 @@ import { getStorage } from "firebase-admin/storage";
 import { HttpsError, onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
-import { buildProjectCsv, csvFileNamePart } from "./csv-export.js";
 import { toDetail, toDetailWithDownloadUrls, toSummary } from "./mappers.js";
-import { requireOwnedAccount, requireOwnedProject } from "./ownership.js";
+import {
+    requireOwnedAccount,
+    requireOwnedProject,
+    requireTeamId,
+    requireTeamMember,
+} from "./ownership.js";
 import {
     type ProjectUpdateFields,
     nextNullableProjectField,
     nextSalesStatusFor,
 } from "./project-fields.js";
 import { inferUploadType } from "./project-upload.js";
-import {
-    upsertAutoQuoteReminder,
-    cancelOpenProjectReminder,
-} from "./quote-follow-up.js";
+import { syncQuoteReminderForStatusUpdate } from "./quote-follow-up.js";
 import {
     deleteOwnedProjectStorage,
     ensureFileDownloadUrl,
@@ -35,7 +36,6 @@ import {
 import type {
     AccountIdRequest,
     CreateProjectFromUploadRequest,
-    ExportProjectCsvResponse,
     ListProjectsRequest,
     ProjectDetail,
     ProjectIdRequest,
@@ -44,7 +44,6 @@ import type {
     UpdateProjectRequest,
     UploadResponse,
 } from "./types.js";
-import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 export const listProjects = onCall<
     ListProjectsRequest,
@@ -53,8 +52,8 @@ export const listProjects = onCall<
     const auth = requireAuth(request);
     const data = request.data ?? {};
     const salesStatus = readSalesStatus(data.salesStatus);
-    const response = await DataConnector.listProjectsByOwnerAndSalesStatus({
-        ownerId: auth.uid,
+    const response = await DataConnector.listProjectsByTeamAndSalesStatus({
+        teamId: await requireTeamId(auth.uid),
         salesStatus,
     });
     return { projects: response.data.projects.map(toSummary) };
@@ -120,9 +119,18 @@ export const createProjectFromUpload = onCall<
     const uploadType = inferUploadType(originalFileName, contentType);
     const pageCount =
         uploadType === "PDF" ? readPdfPageCount(request.data.pageCount) : 1;
+    const teamId = await requireTeamId(auth.uid);
+    const assignee = readOptionalNullableString(
+        request.data.assignee,
+        "Assignee",
+    );
+    if (assignee) {
+        await requireTeamMember(teamId, assignee);
+    }
     await DataConnector.createProjectFromUpload({
         id: projectId,
-        ownerId: auth.uid,
+        teamId,
+        assignee,
         accountId,
         name,
         address,
@@ -184,7 +192,7 @@ export const getProjectStatus = onCall<
     });
     const project = response.data.project;
 
-    if (!project || project.ownerId !== auth.uid) {
+    if (!project || project.teamId !== (await requireTeamId(auth.uid))) {
         throw new HttpsError("not-found", "Project was not found.");
     }
 
@@ -230,6 +238,13 @@ export const updateProject = onCall<
         updates.salesStatus = readSalesStatus(data.salesStatus);
     }
 
+    if (hasField(data, "assignee")) {
+        updates.assignee = readOptionalNullableString(
+            data.assignee,
+            "Assignee",
+        );
+    }
+
     if (Object.keys(updates).length === 0) {
         throw new HttpsError(
             "invalid-argument",
@@ -257,29 +272,13 @@ export const deleteProject = onCall<ProjectIdRequest, Promise<{ ok: true }>>(
     },
 );
 
-export const exportProjectCsv = onCall<
-    ProjectIdRequest,
-    Promise<ExportProjectCsvResponse>
->(async (request) => {
-    const auth = requireAuth(request);
-    const project = await requireOwnedProject(
-        readRequiredString(request.data.projectId, "Project ID"),
-        auth.uid,
-    );
-
-    return {
-        fileName: `plaster-estimate-${csvFileNamePart(project.name)}.csv`,
-        mimeType: "text/csv",
-        csv: buildProjectCsv(project),
-    };
-});
-
 async function updateOwnedProject(
     projectId: string,
-    ownerId: string,
+    userId: string,
     updates: ProjectUpdateFields,
 ) {
-    const project = await requireOwnedProject(projectId, ownerId);
+    const project = await requireOwnedProject(projectId, userId);
+    const teamId = await requireTeamId(userId);
     const nextAccountId = nextNullableProjectField(
         updates,
         "accountId",
@@ -287,10 +286,18 @@ async function updateOwnedProject(
     );
 
     if (nextAccountId) {
-        await requireOwnedAccount(nextAccountId, ownerId);
+        await requireOwnedAccount(nextAccountId, userId);
     }
 
     const nextSalesStatus = nextSalesStatusFor(updates, project.salesStatus);
+    const nextAssignee = nextNullableProjectField(
+        updates,
+        "assignee",
+        project.assignee,
+    );
+    if (nextAssignee) {
+        await requireTeamMember(teamId, nextAssignee);
+    }
 
     await DataConnector.updateProject({
         id: projectId,
@@ -298,37 +305,17 @@ async function updateOwnedProject(
         accountId: nextAccountId,
         address: nextNullableProjectField(updates, "address", project.address),
         salesStatus: nextSalesStatus,
+        assignee: nextAssignee,
     });
 
-    const updatedProject = await requireOwnedProject(projectId, ownerId);
+    const updatedProject = await requireOwnedProject(projectId, userId);
     await syncQuoteReminderForStatusUpdate(
         updates,
         nextSalesStatus,
         updatedProject,
         projectId,
-        ownerId,
+        userId,
     );
 
-    return toDetail(await requireOwnedProject(projectId, ownerId));
-}
-
-async function syncQuoteReminderForStatusUpdate(
-    updates: ProjectUpdateFields,
-    salesStatus: SalesStatus,
-    project: Awaited<ReturnType<typeof requireOwnedProject>>,
-    projectId: string,
-    ownerId: string,
-) {
-    if (!hasField(updates, "salesStatus")) {
-        return;
-    }
-
-    if (salesStatus === "QUOTE_SUBMITTED") {
-        await upsertAutoQuoteReminder(project, ownerId);
-        return;
-    }
-
-    if (salesStatus === "WON" || salesStatus === "LOST") {
-        await cancelOpenProjectReminder(projectId, ownerId);
-    }
+    return toDetail(await requireOwnedProject(projectId, userId));
 }

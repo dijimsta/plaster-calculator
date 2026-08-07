@@ -32,13 +32,14 @@ export function toSummary(
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
         pageCount: project.pageCount,
+        teamId: project.teamId,
+        assignee: project.assignee ?? null,
     };
 }
 
 export function toDetail(project: ProjectWithPages): ProjectDetail {
     return {
         ...toSummary(project),
-        ownerId: project.ownerId,
         pages: project.pages.map(toPage),
     };
 }
@@ -81,9 +82,10 @@ export function toReminder(
 ): Reminder {
     return {
         id: reminder.id,
-        ownerId: reminder.ownerId,
+        teamId: reminder.teamId,
         projectId: reminder.projectId,
         accountId: reminder.accountId ?? null,
+        assignee: reminder.assignee ?? null,
         name: reminder.name,
         status: toReminderStatus(reminder.status),
         dueAt: reminder.dueAt,

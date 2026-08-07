@@ -1,8 +1,11 @@
 type QuestionnaireTemplate
     @table
-    @index(fields: ["ownerId", "updatedAt"], order: [ASC, DESC]) {
+    @index(fields: ["teamId", "updatedAt"], order: [ASC, DESC]) {
     id: UUID! @default(expr: "uuidV4()")
-    ownerId: String!
+    # Temporary legacy source for the team backfill. Remove after migration.
+    ownerId: String
+    team: Team @ref(fields: "teamId", references: "id")
+    teamId: String
     name: String!
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")

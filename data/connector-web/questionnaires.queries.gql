@@ -1,6 +1,6 @@
 query ListQuestionnaireTemplates @auth(level: USER) {
     questionnaireTemplates(
-        where: { ownerId: { eq_expr: "auth.uid" } }
+        where: { teamId: { eq_expr: "auth.token.teamId" } }
         orderBy: [{ updatedAt: DESC }]
     ) {
         id
@@ -13,11 +13,11 @@ query ListQuestionnaireTemplates @auth(level: USER) {
 query GetQuestionnaireTemplate($id: UUID!) @auth(level: USER) {
     questionnaireTemplate(key: { id: $id })
         @check(
-            expr: "this != null && this.ownerId == auth.uid"
-            message: "You do not own this template"
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this template"
         ) {
         id
-        ownerId
+        teamId
         name
         createdAt
         updatedAt
@@ -33,7 +33,7 @@ query GetQuestionnaireTemplate($id: UUID!) @auth(level: USER) {
 
 query ListProjectQuestionnaires @auth(level: USER) {
     projectQuestionnaires(
-        where: { project: { ownerId: { eq_expr: "auth.uid" } } }
+        where: { project: { teamId: { eq_expr: "auth.token.teamId" } } }
         orderBy: [{ updatedAt: DESC }]
     ) {
         projectId
@@ -54,11 +54,11 @@ query GetProjectQuestionnaire($projectId: UUID!) @auth(level: USER) {
     project(key: { id: $projectId })
         @redact
         @check(
-            expr: "this != null && this.ownerId == auth.uid"
-            message: "You do not own this project"
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this project"
         ) {
         id
-        ownerId
+        teamId
     }
     projectQuestionnaire(key: { projectId: $projectId }) {
         projectId

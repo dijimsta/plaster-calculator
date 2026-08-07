@@ -1,13 +1,17 @@
 type Reminder
     @table
-    @index(fields: ["ownerId", "status", "dueAt"], order: [ASC, ASC, ASC])
+    @index(fields: ["teamId", "status", "dueAt"], order: [ASC, ASC, ASC])
     @index(fields: ["projectId", "status", "dueAt"], order: [ASC, ASC, ASC]) {
     id: UUID! @default(expr: "uuidV4()")
-    ownerId: String!
+    # Temporary legacy source for the team backfill. Remove after migration.
+    ownerId: String
+    team: Team @ref(fields: "teamId", references: "id")
+    teamId: String
     project: Project! @ref(fields: "projectId", references: "id")
     projectId: UUID!
     account: Account @ref(fields: "accountId", references: "id")
     accountId: UUID
+    assignee: String
     name: String!
     status: String!
     dueAt: Timestamp!

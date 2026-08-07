@@ -1,8 +1,9 @@
 mutation CreateReminder(
     $id: UUID!
-    $ownerId: String!
+    $teamId: String!
     $projectId: UUID!
     $accountId: UUID
+    $assignee: String
     $name: String!
     $status: String!
     $dueAt: Timestamp!
@@ -10,9 +11,10 @@ mutation CreateReminder(
     reminder_insert(
         data: {
             id: $id
-            ownerId: $ownerId
+            teamId: $teamId
             projectId: $projectId
             accountId: $accountId
+            assignee: $assignee
             name: $name
             status: $status
             dueAt: $dueAt
@@ -25,6 +27,7 @@ mutation CreateReminder(
 mutation UpdateReminder(
     $id: UUID!
     $accountId: UUID
+    $assignee: String
     $name: String
     $status: String
     $dueAt: Timestamp
@@ -34,6 +37,7 @@ mutation UpdateReminder(
         id: $id
         data: {
             accountId: $accountId
+            assignee: $assignee
             name: $name
             status: $status
             dueAt: $dueAt

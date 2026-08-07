@@ -1,0 +1,16 @@
+type Team @table(key: "id") {
+    id: String!
+    name: String!
+    createdByUserId: String!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type TeamMember @table(key: ["teamId", "userId"]) @index(fields: ["userId"]) {
+    team: Team! @ref(fields: "teamId", references: "id")
+    teamId: String!
+    userId: String! @unique
+    role: String!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
