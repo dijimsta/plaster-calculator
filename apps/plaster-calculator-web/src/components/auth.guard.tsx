@@ -11,7 +11,7 @@ export function AuthGuard({ children }: PropsWithChildren) {
 
     useEffect(() => {
         if (user === null) {
-            router.replace("/");
+            router.replace("/login");
         }
     }, [user, router]);
 

@@ -79,7 +79,7 @@ export default function ProjectsPage() {
             <PageHeading>
                 <PageHeading.Breadcrumbs>
                     <Breadcrumb>
-                        <RoutedBreadcrumbItem href="/app">
+                        <RoutedBreadcrumbItem href="/">
                             <Home size={16} aria-label="Home" />
                         </RoutedBreadcrumbItem>
                         <Breadcrumb.Item current>Projects</Breadcrumb.Item>
@@ -197,7 +197,7 @@ export default function ProjectsPage() {
                                             />
                                         ) : (
                                             <Link
-                                                href={`/app/projects/${project.id}`}
+                                                href={`/projects/${project.id}`}
                                             >
                                                 <strong>{project.name}</strong>
                                                 {project.address && (

@@ -17,7 +17,7 @@ export function UserPageHeader({ activeTab }: UserPageHeaderProps) {
         <PageHeading>
             <PageHeading.Breadcrumbs>
                 <Breadcrumb>
-                    <RoutedBreadcrumbItem href="/app">
+                    <RoutedBreadcrumbItem href="/">
                         <Home size={16} aria-label="Home" />
                     </RoutedBreadcrumbItem>
                     <Breadcrumb.Item current>User</Breadcrumb.Item>
@@ -32,10 +32,10 @@ export function UserPageHeader({ activeTab }: UserPageHeaderProps) {
             <PageHeading.Navigation>
                 <Tabs>
                     <Tabs.Item current={activeTab === "general"}>
-                        <Link href="/app/user">General</Link>
+                        <Link href="/user">General</Link>
                     </Tabs.Item>
                     <Tabs.Item current={activeTab === "email-signature"}>
-                        <Link href="/app/user/email-signature">
+                        <Link href="/user/email-signature">
                             Email signature
                         </Link>
                     </Tabs.Item>

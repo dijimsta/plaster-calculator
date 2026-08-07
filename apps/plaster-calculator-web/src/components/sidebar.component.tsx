@@ -25,18 +25,18 @@ import type { PropsWithChildren } from "react";
 const Link = LinkModule.default;
 
 const navItems = [
-    { href: "/app" as const, label: "Home", Icon: Icons.Home },
+    { href: "/" as const, label: "Home", Icon: Icons.Home },
     {
-        href: "/app/projects" as const,
+        href: "/projects" as const,
         label: "Projects",
         Icon: Icons.Building2,
     },
     {
-        href: "/app/questionnaires" as const,
+        href: "/questionnaires" as const,
         label: "Questionnaires",
         Icon: Icons.ClipboardList,
     },
-    { href: "/app/accounts" as const, label: "Accounts", Icon: Icons.Users },
+    { href: "/accounts" as const, label: "Accounts", Icon: Icons.Users },
 ];
 
 export default function Sidebar({ children }: PropsWithChildren) {
@@ -47,7 +47,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
 
     async function handleLogout() {
         await signOut(FirebaseService.getAuth());
-        router.replace("/");
+        router.replace("/login");
     }
 
     const displayName = user?.displayName ?? "User";
@@ -57,7 +57,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
             <SidebarLayout.Sidebar>
                 <SidebarNavigation>
                     <SidebarNavigation.Header>
-                        <Link href="/app">
+                        <Link href="/">
                             <Box direction="row" align="center" gap="sm">
                                 <IconTile size="sm" tone="dark">
                                     <Icons.Layers
@@ -97,7 +97,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
                                 size="sm"
                             />
                             <Box grow>
-                                <ButtonLink href="/app/user" variant="ghost">
+                                <ButtonLink href="/user" variant="ghost">
                                     <Box direction="column" align="start">
                                         <Text size="sm">{displayName}</Text>
                                         <Text size="xs" variant="muted">
@@ -122,6 +122,6 @@ export default function Sidebar({ children }: PropsWithChildren) {
 }
 
 function isActivePath(pathname: string, href: string): boolean {
-    if (href === "/app") return pathname === href;
+    if (href === "/") return pathname === href;
     return pathname === href || pathname.startsWith(`${href}/`);
 }

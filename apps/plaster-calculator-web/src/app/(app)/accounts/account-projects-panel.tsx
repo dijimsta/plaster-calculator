@@ -22,7 +22,7 @@ export function AccountProjectsPanel({ projects }: AccountProjectsPanelProps) {
                 <Link
                     key={project.id}
                     className={ui.projectItem}
-                    href={`/app/projects/${project.id}`}
+                    href={`/projects/${project.id}`}
                 >
                     <strong>{project.name}</strong>
                     <Text size="sm" variant="muted" truncate>
