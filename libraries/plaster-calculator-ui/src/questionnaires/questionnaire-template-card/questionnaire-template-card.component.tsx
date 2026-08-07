@@ -8,12 +8,12 @@ import type { ReactElement } from "react";
 export type QuestionnaireTemplate =
     DataConnector.ListQuestionnaireTemplatesData["questionnaireTemplates"][number];
 
-export interface QuestionnaireTemplateCardProps {
+export type QuestionnaireTemplateCardProps = {
     readonly template: QuestionnaireTemplate;
     readonly onOpen: () => void;
     readonly onDuplicate: () => void;
     readonly onDelete: () => void;
-}
+};
 
 interface TemplateHeaderProps {
     readonly template: QuestionnaireTemplateCardProps["template"];

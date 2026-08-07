@@ -6,11 +6,11 @@ import { QuestionnaireTemplateForm } from "../questionnaire-template-form/index.
 import type { QuestionnaireTemplateFormValues } from "../questionnaire-template-form/index.ts";
 import type { ReactElement } from "react";
 
-export interface NewQuestionnaireTemplateDrawerProps {
+export type NewQuestionnaireTemplateDrawerProps = {
     readonly open: boolean;
     readonly onClose: () => void;
     readonly onCreate: (values: QuestionnaireTemplateFormValues) => void;
-}
+};
 
 /** A drawer for drafting and creating a new questionnaire template. */
 export function NewQuestionnaireTemplateDrawer({

@@ -13,13 +13,13 @@ import type { ReactElement } from "react";
 
 const COPIED_LABEL_DURATION_MS = 2000;
 
-export interface GenerateQuestionnaireEmailModalProps {
+export type GenerateQuestionnaireEmailModalProps = {
     readonly open: boolean;
     readonly onClose: () => void;
     readonly subject: string;
     readonly body: string;
     readonly mailtoHref: string;
-}
+};
 
 /** A modal for previewing, copying, and sending a generated scope-of-work email. */
 export function GenerateQuestionnaireEmailModal({

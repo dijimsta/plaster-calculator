@@ -14,7 +14,7 @@ export interface ProjectQuestionnaireQuestion {
     readonly answerSource?: AnswerSource;
 }
 
-export interface ProjectQuestionnaireQuestionListProps {
+export type ProjectQuestionnaireQuestionListProps = {
     readonly questions: readonly ProjectQuestionnaireQuestion[];
     readonly onSaveAnswer: (
         question: ProjectQuestionnaireQuestion,
@@ -22,7 +22,7 @@ export interface ProjectQuestionnaireQuestionListProps {
     ) => void;
     readonly onRemove: (question: ProjectQuestionnaireQuestion) => void;
     readonly onConfirmAnswer?: (question: ProjectQuestionnaireQuestion) => void;
-}
+};
 
 /** Renders a project's questionnaire questions with an answer field for each. */
 export function ProjectQuestionnaireQuestionList({

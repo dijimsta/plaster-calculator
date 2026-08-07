@@ -12,13 +12,13 @@ import { ClipboardList } from "lucide-react";
 import type { QuestionnaireTemplate } from "../questionnaire-template-card/index.ts";
 import type { ReactElement } from "react";
 
-export interface AddQuestionsFromTemplateDrawerProps {
+export type AddQuestionsFromTemplateDrawerProps = {
     readonly open: boolean;
     readonly templates: readonly QuestionnaireTemplate[];
     readonly applyingTemplateId: string | null;
     readonly onClose: () => void;
     readonly onSelectTemplate: (template: QuestionnaireTemplate) => void;
-}
+};
 
 /** A drawer for choosing a questionnaire template to copy questions from into a project. */
 export function AddQuestionsFromTemplateDrawer({
