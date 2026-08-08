@@ -3,7 +3,7 @@ import clsx from "clsx";
 import * as styles from "./grid.styles.ts";
 
 import type { GridTemplateColumns } from "./grid.types.ts";
-import type { Responsive } from "../responsive/responsive.ts";
+import type { Responsive } from "../core/responsive.ts";
 import type { PropsWithChildren, ReactElement } from "react";
 
 export type GridProps = {
