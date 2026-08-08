@@ -67,6 +67,16 @@ export type {
 export { Combobox } from "./forms/combobox/index.ts";
 export type { ComboboxOption, ComboboxProps } from "./forms/combobox/index.ts";
 export { Divider } from "./layout/divider/index.ts";
+export { Grid } from "./layout/grid/index.ts";
+export type { GridProps, GridTemplateColumns } from "./layout/grid/index.ts";
+export {
+    Heading1,
+    Heading2,
+    Heading3,
+    Heading4,
+    Heading5,
+    Heading6,
+} from "./headings/heading/index.ts";
 export { Drawer } from "./overlays/drawer/index.ts";
 export type {
     DrawerPlacement,
