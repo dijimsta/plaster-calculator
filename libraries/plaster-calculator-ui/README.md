@@ -4,30 +4,43 @@
 It bridges platform-neutral domain contracts from `plaster-calculator-common` with presentation primitives from
 `@ui/atoms` and `uikit-web`.
 
+This library is transitional: see [Direction](../../docs/web-ui-guidelines.md#direction) for why it is ultimately
+deprecated in favour of domain-aware molecules and organisms living directly in `apps/plaster-calculator-web`.
+
 ## Atomic design boundary
 
 This workspace applies atomic design through package responsibilities:
 
 - `@ui/atoms` owns atoms: the smallest, non-composing presentational primitives.
-- `uikit-web` owns application-agnostic compound components composed from those atoms.
-- `plaster-calculator-ui` composes atoms and UIKit components into domain-aware molecules and organisms.
-- Applications own page templates, routing, infrastructure, and feature orchestration specific to that application.
+- `@ui/molecules` owns molecules: reusable compounds composed from atoms.
+- `@ui/organisms` owns organisms: composed sections built from atoms and molecules.
+- `@ui/templates` owns templates: framework- and domain-agnostic page-layout skeletons composed from organisms,
+  molecules, and atoms.
+- `uikit-web` owns application-agnostic compound components composed from those layers.
+- `plaster-calculator-ui` composes atoms, molecules, organisms, and UIKit components into domain-aware molecules and
+  organisms.
+- Applications own page composition (including filling in `@ui/templates`), routing, infrastructure, and feature
+  orchestration specific to that application.
 
 Components are organised by domain namespace, such as `questionnaires/`, rather than by generic `molecules/` and
 `organisms/` folders. Atomic design describes the composition boundary, while domain folders preserve discoverability.
 
 ## Composition and styling
 
-Patterns must be composed entirely from public `@ui/atoms` and `@libraries/uikit-web` components. Do not introduce new
-Tailwind class names, CSS files, style maps, CSS modules, or inline styles in this library. Lucide icons may be used
-as leaf content; they must not provide layout or presentation structure.
+Patterns must be composed entirely from public `@ui/atoms`, `@ui/molecules`, `@ui/organisms`, and
+`@libraries/uikit-web` components. Do not introduce new Tailwind class names, CSS files, style maps, CSS modules, or
+inline styles in this library. Lucide icons may be used as leaf content; they must not provide layout or presentation
+structure.
 
-If neither package can express a required layout or visual treatment, stop and discuss the missing component
+If none of those packages can express a required layout or visual treatment, stop and discuss the missing component
 responsibility and proposed API. Add the reusable capability to the appropriate package before continuing the domain
 pattern.
 
 Existing consumer class-name workarounds are technical debt and must not be expanded. Migrate them to typed
 `@ui/atoms`/UIKit APIs when the affected pattern is changed.
+
+`@ui/atoms` and `@ui/molecules` are pure (see [Purity](../../docs/web-ui-guidelines.md#purity)) and accept no
+`react-i18next` dependency, so domain patterns composing them must pass already-translated strings as props.
 
 ## Services and React context
 
