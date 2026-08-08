@@ -1,0 +1,20 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "rootDir": "src",
+        "outDir": "out"
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../atoms/tsconfig.build.json"
+        },
+        {
+            "path": "../molecules/tsconfig.build.json"
+        },
+        {
+            "path": "../organisms/tsconfig.build.json"
+        }
+    ]
+}
