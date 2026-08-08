@@ -1,3 +1,5 @@
+export { Grid } from "./grid/index.ts";
+export type { GridProps } from "./grid/index.ts";
 export {
     Heading1,
     Heading2,
