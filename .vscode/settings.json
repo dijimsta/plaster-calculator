@@ -2,7 +2,24 @@
     "js/ts.tsdk.path": "node_modules/typescript/lib",
     "python.analysis.typeCheckingMode": "standard",
     "python.analysis.autoImportCompletions": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
     "[typescript]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        }
+    },
+    "[typescriptreact]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        }
+    },
+    "[javascript]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        }
+    },
+    "[javascriptreact]": {
         "editor.codeActionsOnSave": {
             "source.fixAll.eslint": "explicit"
         }
