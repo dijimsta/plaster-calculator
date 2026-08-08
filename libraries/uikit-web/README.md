@@ -1,18 +1,8 @@
 # UIKit Web
 
 `@libraries/uikit-web` is the framework- and application-agnostic React component library for web interfaces in this
-workspace. It provides framework-agnostic compound components: reusable visual primitives such as buttons, badges,
-cards, and layout components that compose one or more atoms.
-
-Atoms (the smallest, non-composing primitives such as headings) live in `@ui/atoms`, molecules in `@ui/molecules`,
-and organisms in `@ui/organisms`. UIKit is migrating its atom-, molecule-, and organism-level components out to those
-packages incrementally as each one is touched, rather than as a single rewrite — so some existing UIKit components
-are still atoms, molecules, or organisms in practice until that migration reaches them.
-
-UIKit is transitional: see [Direction](../../docs/web-ui-guidelines.md#direction) for why it is ultimately
-deprecated once that migration is complete. Components that are still atoms or molecules in practice must already
-follow the [Purity](../../docs/web-ui-guidelines.md#purity) rule that applies to `@ui/atoms` and `@ui/molecules`, so
-they migrate out unchanged.
+workspace. It provides the atomic design layer: reusable visual primitives such as buttons, badges, text, cards, and
+layout components.
 
 UIKit components own their presentation APIs and Tailwind implementation. Consumers compose those APIs instead of
 adding application CSS or utility classes.
@@ -21,15 +11,13 @@ adding application CSS or utility classes.
 
 UIKit owns:
 
-- Framework-agnostic compound components that compose one or more atoms.
+- Atomic visual components and framework-agnostic compound components.
 - Layout, spacing, colour, state, and responsive presentation APIs.
 - Accessibility behaviour intrinsic to those components.
 - Reusable capabilities required by more than one application or domain pattern.
 
 UIKit does not own:
 
-- Atomic, molecule-, and organism-level components already split out — see `@ui/atoms`, `@ui/molecules`, and
-  `@ui/organisms`.
 - Plaster Calculator domain concepts or schemas.
 - Data fetching, service contexts, or application state.
 - Next.js, Firebase, routing, or other application-framework integrations.

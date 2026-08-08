@@ -9,10 +9,10 @@ import {
     Divider,
     FormLayout,
     GoogleIcon,
+    Heading1,
     Input,
     Paragraph,
 } from "@libraries/uikit-web";
-import { Heading1 } from "@ui/atoms";
 import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,

@@ -1,17 +1,21 @@
-import { isResponsiveValues } from "./responsive.utils.ts";
-import {
-    type ResponsiveValue,
-    type ResponsiveValues,
-} from "../core/responsive-values.ts";
+import type {
+    ClassName,
+    Responsive,
+    ResponsiveValue,
+    ResponsiveValues,
+} from "./responsive.ts";
 
-import type { ClassName } from "../core/class-name.ts";
-import type { Responsive } from "../core/responsive.ts";
+const CLASS_NAME_SEPARATOR = " ";
 
 export type ClassNameProvider<T extends ResponsiveValue> = (
     value: T,
 ) => ClassName;
 
-export const CLASS_NAME_SEPARATOR = " ";
+export function isResponsiveValues<T extends ResponsiveValue>(
+    value?: T | ResponsiveValues<T>,
+): value is ResponsiveValues<T> {
+    return typeof value === "object";
+}
 
 export function mapResponsiveValuesToClassNames<T extends ResponsiveValue>(
     values: ResponsiveValues<T>,

@@ -27,9 +27,6 @@
         },
         {
             "path": "../../libraries/uikit-web/tsconfig.build.json"
-        },
-        {
-            "path": "../../ui/atoms/tsconfig.build.json"
         }
     ]
 }

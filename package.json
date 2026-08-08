@@ -5,8 +5,7 @@
         "apps/*",
         "functions/*",
         "generated/*",
-        "libraries/*",
-        "ui/*"
+        "libraries/*"
     ],
     "scripts": {
         "build": "tsc --build tsconfig.build.json",

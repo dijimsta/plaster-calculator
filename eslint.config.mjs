@@ -40,7 +40,6 @@ const importSettings = {
                 "./apps/*/tsconfig.json",
                 "./functions/*/tsconfig.json",
                 "./libraries/*/tsconfig.json",
-                "./ui/*/tsconfig.json",
             ],
         },
     },

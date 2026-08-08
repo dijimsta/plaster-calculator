@@ -1,8 +1,0 @@
-{
-    "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "jsx": "react-jsx",
-        "allowImportingTsExtensions": true
-    },
-    "exclude": ["out", "node_modules"]
-}

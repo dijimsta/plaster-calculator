@@ -3,7 +3,6 @@ packages:
     - functions/*
     - generated/*
     - libraries/*
-    - ui/*
 overrides:
     firebase: ^12.17.0
 allowBuilds:
