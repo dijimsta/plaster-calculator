@@ -10,9 +10,9 @@ This README will guide you through the process of using the generated JavaScript
 - [**Accessing the connector**](#accessing-the-connector)
   - [*Connecting to the local Emulator*](#connecting-to-the-local-emulator)
 - [**Queries**](#queries)
-  - [*ListMyAccounts*](#listmyaccounts)
-  - [*GetMyAccount*](#getmyaccount)
-  - [*ListMyAccountContacts*](#listmyaccountcontacts)
+  - [*ListMyCompanies*](#listmycompanies)
+  - [*GetMyCompany*](#getmycompany)
+  - [*ListMyCompanyContacts*](#listmycompanycontacts)
   - [*ListQuestionnaireTemplates*](#listquestionnairetemplates)
   - [*GetQuestionnaireTemplate*](#getquestionnairetemplate)
   - [*ListProjectQuestionnaires*](#listprojectquestionnaires)
@@ -21,14 +21,14 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetMyUserSettings*](#getmyusersettings)
   - [*GetMyUserSignature*](#getmyusersignature)
 - [**Mutations**](#mutations)
-  - [*CreateMyAccount*](#createmyaccount)
-  - [*UpdateMyAccount*](#updatemyaccount)
-  - [*SetMyAccountPrimaryContact*](#setmyaccountprimarycontact)
-  - [*ClearMyAccountPrimaryContact*](#clearmyaccountprimarycontact)
-  - [*DeleteMyAccount*](#deletemyaccount)
-  - [*CreateMyAccountContact*](#createmyaccountcontact)
-  - [*UpdateMyAccountContact*](#updatemyaccountcontact)
-  - [*DeleteMyAccountContact*](#deletemyaccountcontact)
+  - [*CreateMyCompany*](#createmycompany)
+  - [*UpdateMyCompany*](#updatemycompany)
+  - [*SetMyCompanyPrimaryContact*](#setmycompanyprimarycontact)
+  - [*ClearMyCompanyPrimaryContact*](#clearmycompanyprimarycontact)
+  - [*DeleteMyCompany*](#deletemycompany)
+  - [*CreateMyCompanyContact*](#createmycompanycontact)
+  - [*UpdateMyCompanyContact*](#updatemycompanycontact)
+  - [*DeleteMyCompanyContact*](#deletemycompanycontact)
   - [*CreateQuestionnaireTemplate*](#createquestionnairetemplate)
   - [*CreateQuestionnaireTemplateQuestion*](#createquestionnairetemplatequestion)
   - [*UpdateQuestionnaireTemplateName*](#updatequestionnairetemplatename)
@@ -90,44 +90,44 @@ The following is true for both the action shortcut function and the `QueryRef` f
 
 Below are examples of how to use the `data-connector-web` connector's generated functions to execute each query. You can also follow the examples from the [Data Connect documentation](https://firebase.google.com/docs/data-connect/web-sdk#using-queries).
 
-## ListMyAccounts
-You can execute the `ListMyAccounts` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## ListMyCompanies
+You can execute the `ListMyCompanies` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-listMyAccounts(options?: ExecuteQueryOptions): QueryPromise<ListMyAccountsData, undefined>;
+listMyCompanies(options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, undefined>;
 
-interface ListMyAccountsRef {
+interface ListMyCompaniesRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListMyAccountsData, undefined>;
+  (): QueryRef<ListMyCompaniesData, undefined>;
 }
-export const listMyAccountsRef: ListMyAccountsRef;
+export const listMyCompaniesRef: ListMyCompaniesRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
 ```typescript
-listMyAccounts(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListMyAccountsData, undefined>;
+listMyCompanies(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, undefined>;
 
-interface ListMyAccountsRef {
+interface ListMyCompaniesRef {
   ...
-  (dc: DataConnect): QueryRef<ListMyAccountsData, undefined>;
+  (dc: DataConnect): QueryRef<ListMyCompaniesData, undefined>;
 }
-export const listMyAccountsRef: ListMyAccountsRef;
+export const listMyCompaniesRef: ListMyCompaniesRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listMyAccountsRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listMyCompaniesRef:
 ```typescript
-const name = listMyAccountsRef.operationName;
+const name = listMyCompaniesRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `ListMyAccounts` query has no variables.
+The `ListMyCompanies` query has no variables.
 ### Return Type
-Recall that executing the `ListMyAccounts` query returns a `QueryPromise` that resolves to an object with a `data` property.
+Recall that executing the `ListMyCompanies` query returns a `QueryPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `ListMyAccountsData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `ListMyCompaniesData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface ListMyAccountsData {
-  accounts: ({
+export interface ListMyCompaniesData {
+  companies: ({
     id: UUIDString;
     teamId: string;
     companyName: string;
@@ -136,104 +136,104 @@ export interface ListMyAccountsData {
     primaryContactId?: UUIDString | null;
     createdAt: TimestampString;
     updatedAt: TimestampString;
-  } & Account_Key)[];
+  } & Company_Key)[];
 }
 ```
-### Using `ListMyAccounts`'s action shortcut function
+### Using `ListMyCompanies`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, listMyAccounts } from '@generated/data-connector-web';
+import { connectorConfig, listMyCompanies } from '@generated/data-connector-web';
 
 
-// Call the `listMyAccounts()` function to execute the query.
+// Call the `listMyCompanies()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await listMyAccounts();
+const { data } = await listMyCompanies();
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await listMyAccounts(dataConnect);
+const { data } = await listMyCompanies(dataConnect);
 
-console.log(data.accounts);
+console.log(data.companies);
 
 // Or, you can use the `Promise` API.
-listMyAccounts().then((response) => {
+listMyCompanies().then((response) => {
   const data = response.data;
-  console.log(data.accounts);
+  console.log(data.companies);
 });
 ```
 
-### Using `ListMyAccounts`'s `QueryRef` function
+### Using `ListMyCompanies`'s `QueryRef` function
 
 ```typescript
 import { getDataConnect, executeQuery } from 'firebase/data-connect';
-import { connectorConfig, listMyAccountsRef } from '@generated/data-connector-web';
+import { connectorConfig, listMyCompaniesRef } from '@generated/data-connector-web';
 
 
-// Call the `listMyAccountsRef()` function to get a reference to the query.
-const ref = listMyAccountsRef();
+// Call the `listMyCompaniesRef()` function to get a reference to the query.
+const ref = listMyCompaniesRef();
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = listMyAccountsRef(dataConnect);
+const ref = listMyCompaniesRef(dataConnect);
 
 // Call `executeQuery()` on the reference to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeQuery(ref);
 
-console.log(data.accounts);
+console.log(data.companies);
 
 // Or, you can use the `Promise` API.
 executeQuery(ref).then((response) => {
   const data = response.data;
-  console.log(data.accounts);
+  console.log(data.companies);
 });
 ```
 
-## GetMyAccount
-You can execute the `GetMyAccount` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## GetMyCompany
+You can execute the `GetMyCompany` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-getMyAccount(vars: GetMyAccountVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyAccountData, GetMyAccountVariables>;
+getMyCompany(vars: GetMyCompanyVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyCompanyData, GetMyCompanyVariables>;
 
-interface GetMyAccountRef {
+interface GetMyCompanyRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: GetMyAccountVariables): QueryRef<GetMyAccountData, GetMyAccountVariables>;
+  (vars: GetMyCompanyVariables): QueryRef<GetMyCompanyData, GetMyCompanyVariables>;
 }
-export const getMyAccountRef: GetMyAccountRef;
+export const getMyCompanyRef: GetMyCompanyRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
 ```typescript
-getMyAccount(dc: DataConnect, vars: GetMyAccountVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyAccountData, GetMyAccountVariables>;
+getMyCompany(dc: DataConnect, vars: GetMyCompanyVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyCompanyData, GetMyCompanyVariables>;
 
-interface GetMyAccountRef {
+interface GetMyCompanyRef {
   ...
-  (dc: DataConnect, vars: GetMyAccountVariables): QueryRef<GetMyAccountData, GetMyAccountVariables>;
+  (dc: DataConnect, vars: GetMyCompanyVariables): QueryRef<GetMyCompanyData, GetMyCompanyVariables>;
 }
-export const getMyAccountRef: GetMyAccountRef;
+export const getMyCompanyRef: GetMyCompanyRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getMyAccountRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getMyCompanyRef:
 ```typescript
-const name = getMyAccountRef.operationName;
+const name = getMyCompanyRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `GetMyAccount` query requires an argument of type `GetMyAccountVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `GetMyCompany` query requires an argument of type `GetMyCompanyVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface GetMyAccountVariables {
+export interface GetMyCompanyVariables {
   id: UUIDString;
 }
 ```
 ### Return Type
-Recall that executing the `GetMyAccount` query returns a `QueryPromise` that resolves to an object with a `data` property.
+Recall that executing the `GetMyCompany` query returns a `QueryPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `GetMyAccountData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `GetMyCompanyData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface GetMyAccountData {
-  account?: {
+export interface GetMyCompanyData {
+  company?: {
     id: UUIDString;
     teamId: string;
     companyName: string;
@@ -244,195 +244,195 @@ export interface GetMyAccountData {
     updatedAt: TimestampString;
     contacts: ({
       id: UUIDString;
-      accountId: UUIDString;
+      companyId: UUIDString;
       name: string;
       email?: string | null;
       phoneNumber?: string | null;
       role?: string | null;
       createdAt: TimestampString;
       updatedAt: TimestampString;
-    } & AccountContact_Key)[];
-  } & Account_Key;
+    } & CompanyContact_Key)[];
+  } & Company_Key;
 }
 ```
-### Using `GetMyAccount`'s action shortcut function
+### Using `GetMyCompany`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, getMyAccount, GetMyAccountVariables } from '@generated/data-connector-web';
+import { connectorConfig, getMyCompany, GetMyCompanyVariables } from '@generated/data-connector-web';
 
-// The `GetMyAccount` query requires an argument of type `GetMyAccountVariables`:
-const getMyAccountVars: GetMyAccountVariables = {
+// The `GetMyCompany` query requires an argument of type `GetMyCompanyVariables`:
+const getMyCompanyVars: GetMyCompanyVariables = {
   id: ..., 
 };
 
-// Call the `getMyAccount()` function to execute the query.
+// Call the `getMyCompany()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await getMyAccount(getMyAccountVars);
+const { data } = await getMyCompany(getMyCompanyVars);
 // Variables can be defined inline as well.
-const { data } = await getMyAccount({ id: ..., });
+const { data } = await getMyCompany({ id: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await getMyAccount(dataConnect, getMyAccountVars);
+const { data } = await getMyCompany(dataConnect, getMyCompanyVars);
 
-console.log(data.account);
+console.log(data.company);
 
 // Or, you can use the `Promise` API.
-getMyAccount(getMyAccountVars).then((response) => {
+getMyCompany(getMyCompanyVars).then((response) => {
   const data = response.data;
-  console.log(data.account);
+  console.log(data.company);
 });
 ```
 
-### Using `GetMyAccount`'s `QueryRef` function
+### Using `GetMyCompany`'s `QueryRef` function
 
 ```typescript
 import { getDataConnect, executeQuery } from 'firebase/data-connect';
-import { connectorConfig, getMyAccountRef, GetMyAccountVariables } from '@generated/data-connector-web';
+import { connectorConfig, getMyCompanyRef, GetMyCompanyVariables } from '@generated/data-connector-web';
 
-// The `GetMyAccount` query requires an argument of type `GetMyAccountVariables`:
-const getMyAccountVars: GetMyAccountVariables = {
+// The `GetMyCompany` query requires an argument of type `GetMyCompanyVariables`:
+const getMyCompanyVars: GetMyCompanyVariables = {
   id: ..., 
 };
 
-// Call the `getMyAccountRef()` function to get a reference to the query.
-const ref = getMyAccountRef(getMyAccountVars);
+// Call the `getMyCompanyRef()` function to get a reference to the query.
+const ref = getMyCompanyRef(getMyCompanyVars);
 // Variables can be defined inline as well.
-const ref = getMyAccountRef({ id: ..., });
+const ref = getMyCompanyRef({ id: ..., });
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = getMyAccountRef(dataConnect, getMyAccountVars);
+const ref = getMyCompanyRef(dataConnect, getMyCompanyVars);
 
 // Call `executeQuery()` on the reference to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeQuery(ref);
 
-console.log(data.account);
+console.log(data.company);
 
 // Or, you can use the `Promise` API.
 executeQuery(ref).then((response) => {
   const data = response.data;
-  console.log(data.account);
+  console.log(data.company);
 });
 ```
 
-## ListMyAccountContacts
-You can execute the `ListMyAccountContacts` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## ListMyCompanyContacts
+You can execute the `ListMyCompanyContacts` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-listMyAccountContacts(vars: ListMyAccountContactsVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyAccountContactsData, ListMyAccountContactsVariables>;
+listMyCompanyContacts(vars: ListMyCompanyContactsVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
 
-interface ListMyAccountContactsRef {
+interface ListMyCompanyContactsRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: ListMyAccountContactsVariables): QueryRef<ListMyAccountContactsData, ListMyAccountContactsVariables>;
+  (vars: ListMyCompanyContactsVariables): QueryRef<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
 }
-export const listMyAccountContactsRef: ListMyAccountContactsRef;
+export const listMyCompanyContactsRef: ListMyCompanyContactsRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
 ```typescript
-listMyAccountContacts(dc: DataConnect, vars: ListMyAccountContactsVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyAccountContactsData, ListMyAccountContactsVariables>;
+listMyCompanyContacts(dc: DataConnect, vars: ListMyCompanyContactsVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
 
-interface ListMyAccountContactsRef {
+interface ListMyCompanyContactsRef {
   ...
-  (dc: DataConnect, vars: ListMyAccountContactsVariables): QueryRef<ListMyAccountContactsData, ListMyAccountContactsVariables>;
+  (dc: DataConnect, vars: ListMyCompanyContactsVariables): QueryRef<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
 }
-export const listMyAccountContactsRef: ListMyAccountContactsRef;
+export const listMyCompanyContactsRef: ListMyCompanyContactsRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listMyAccountContactsRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listMyCompanyContactsRef:
 ```typescript
-const name = listMyAccountContactsRef.operationName;
+const name = listMyCompanyContactsRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `ListMyAccountContacts` query requires an argument of type `ListMyAccountContactsVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `ListMyCompanyContacts` query requires an argument of type `ListMyCompanyContactsVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface ListMyAccountContactsVariables {
-  accountId: UUIDString;
+export interface ListMyCompanyContactsVariables {
+  companyId: UUIDString;
 }
 ```
 ### Return Type
-Recall that executing the `ListMyAccountContacts` query returns a `QueryPromise` that resolves to an object with a `data` property.
+Recall that executing the `ListMyCompanyContacts` query returns a `QueryPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `ListMyAccountContactsData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `ListMyCompanyContactsData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface ListMyAccountContactsData {
-  accountContacts: ({
+export interface ListMyCompanyContactsData {
+  companyContacts: ({
     id: UUIDString;
-    accountId: UUIDString;
+    companyId: UUIDString;
     name: string;
     email?: string | null;
     phoneNumber?: string | null;
     role?: string | null;
     createdAt: TimestampString;
     updatedAt: TimestampString;
-  } & AccountContact_Key)[];
+  } & CompanyContact_Key)[];
 }
 ```
-### Using `ListMyAccountContacts`'s action shortcut function
+### Using `ListMyCompanyContacts`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, listMyAccountContacts, ListMyAccountContactsVariables } from '@generated/data-connector-web';
+import { connectorConfig, listMyCompanyContacts, ListMyCompanyContactsVariables } from '@generated/data-connector-web';
 
-// The `ListMyAccountContacts` query requires an argument of type `ListMyAccountContactsVariables`:
-const listMyAccountContactsVars: ListMyAccountContactsVariables = {
-  accountId: ..., 
+// The `ListMyCompanyContacts` query requires an argument of type `ListMyCompanyContactsVariables`:
+const listMyCompanyContactsVars: ListMyCompanyContactsVariables = {
+  companyId: ..., 
 };
 
-// Call the `listMyAccountContacts()` function to execute the query.
+// Call the `listMyCompanyContacts()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await listMyAccountContacts(listMyAccountContactsVars);
+const { data } = await listMyCompanyContacts(listMyCompanyContactsVars);
 // Variables can be defined inline as well.
-const { data } = await listMyAccountContacts({ accountId: ..., });
+const { data } = await listMyCompanyContacts({ companyId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await listMyAccountContacts(dataConnect, listMyAccountContactsVars);
+const { data } = await listMyCompanyContacts(dataConnect, listMyCompanyContactsVars);
 
-console.log(data.accountContacts);
+console.log(data.companyContacts);
 
 // Or, you can use the `Promise` API.
-listMyAccountContacts(listMyAccountContactsVars).then((response) => {
+listMyCompanyContacts(listMyCompanyContactsVars).then((response) => {
   const data = response.data;
-  console.log(data.accountContacts);
+  console.log(data.companyContacts);
 });
 ```
 
-### Using `ListMyAccountContacts`'s `QueryRef` function
+### Using `ListMyCompanyContacts`'s `QueryRef` function
 
 ```typescript
 import { getDataConnect, executeQuery } from 'firebase/data-connect';
-import { connectorConfig, listMyAccountContactsRef, ListMyAccountContactsVariables } from '@generated/data-connector-web';
+import { connectorConfig, listMyCompanyContactsRef, ListMyCompanyContactsVariables } from '@generated/data-connector-web';
 
-// The `ListMyAccountContacts` query requires an argument of type `ListMyAccountContactsVariables`:
-const listMyAccountContactsVars: ListMyAccountContactsVariables = {
-  accountId: ..., 
+// The `ListMyCompanyContacts` query requires an argument of type `ListMyCompanyContactsVariables`:
+const listMyCompanyContactsVars: ListMyCompanyContactsVariables = {
+  companyId: ..., 
 };
 
-// Call the `listMyAccountContactsRef()` function to get a reference to the query.
-const ref = listMyAccountContactsRef(listMyAccountContactsVars);
+// Call the `listMyCompanyContactsRef()` function to get a reference to the query.
+const ref = listMyCompanyContactsRef(listMyCompanyContactsVars);
 // Variables can be defined inline as well.
-const ref = listMyAccountContactsRef({ accountId: ..., });
+const ref = listMyCompanyContactsRef({ companyId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = listMyAccountContactsRef(dataConnect, listMyAccountContactsVars);
+const ref = listMyCompanyContactsRef(dataConnect, listMyCompanyContactsVars);
 
 // Call `executeQuery()` on the reference to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeQuery(ref);
 
-console.log(data.accountContacts);
+console.log(data.companyContacts);
 
 // Or, you can use the `Promise` API.
 executeQuery(ref).then((response) => {
   const data = response.data;
-  console.log(data.accountContacts);
+  console.log(data.companyContacts);
 });
 ```
 
@@ -1185,40 +1185,40 @@ The following is true for both the action shortcut function and the `MutationRef
 
 Below are examples of how to use the `data-connector-web` connector's generated functions to execute each mutation. You can also follow the examples from the [Data Connect documentation](https://firebase.google.com/docs/data-connect/web-sdk#using-mutations).
 
-## CreateMyAccount
-You can execute the `CreateMyAccount` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## CreateMyCompany
+You can execute the `CreateMyCompany` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-createMyAccount(vars: CreateMyAccountVariables): MutationPromise<CreateMyAccountData, CreateMyAccountVariables>;
+createMyCompany(vars: CreateMyCompanyVariables): MutationPromise<CreateMyCompanyData, CreateMyCompanyVariables>;
 
-interface CreateMyAccountRef {
+interface CreateMyCompanyRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateMyAccountVariables): MutationRef<CreateMyAccountData, CreateMyAccountVariables>;
+  (vars: CreateMyCompanyVariables): MutationRef<CreateMyCompanyData, CreateMyCompanyVariables>;
 }
-export const createMyAccountRef: CreateMyAccountRef;
+export const createMyCompanyRef: CreateMyCompanyRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-createMyAccount(dc: DataConnect, vars: CreateMyAccountVariables): MutationPromise<CreateMyAccountData, CreateMyAccountVariables>;
+createMyCompany(dc: DataConnect, vars: CreateMyCompanyVariables): MutationPromise<CreateMyCompanyData, CreateMyCompanyVariables>;
 
-interface CreateMyAccountRef {
+interface CreateMyCompanyRef {
   ...
-  (dc: DataConnect, vars: CreateMyAccountVariables): MutationRef<CreateMyAccountData, CreateMyAccountVariables>;
+  (dc: DataConnect, vars: CreateMyCompanyVariables): MutationRef<CreateMyCompanyData, CreateMyCompanyVariables>;
 }
-export const createMyAccountRef: CreateMyAccountRef;
+export const createMyCompanyRef: CreateMyCompanyRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createMyAccountRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createMyCompanyRef:
 ```typescript
-const name = createMyAccountRef.operationName;
+const name = createMyCompanyRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `CreateMyAccount` mutation requires an argument of type `CreateMyAccountVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `CreateMyCompany` mutation requires an argument of type `CreateMyCompanyVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface CreateMyAccountVariables {
+export interface CreateMyCompanyVariables {
   id: UUIDString;
   companyName: string;
   businessNumber?: string | null;
@@ -1226,117 +1226,117 @@ export interface CreateMyAccountVariables {
 }
 ```
 ### Return Type
-Recall that executing the `CreateMyAccount` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `CreateMyCompany` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `CreateMyAccountData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `CreateMyCompanyData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface CreateMyAccountData {
-  account_insert: Account_Key;
+export interface CreateMyCompanyData {
+  company_insert: Company_Key;
 }
 ```
-### Using `CreateMyAccount`'s action shortcut function
+### Using `CreateMyCompany`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, createMyAccount, CreateMyAccountVariables } from '@generated/data-connector-web';
+import { connectorConfig, createMyCompany, CreateMyCompanyVariables } from '@generated/data-connector-web';
 
-// The `CreateMyAccount` mutation requires an argument of type `CreateMyAccountVariables`:
-const createMyAccountVars: CreateMyAccountVariables = {
+// The `CreateMyCompany` mutation requires an argument of type `CreateMyCompanyVariables`:
+const createMyCompanyVars: CreateMyCompanyVariables = {
   id: ..., 
   companyName: ..., 
   businessNumber: ..., // optional
   phoneNumber: ..., // optional
 };
 
-// Call the `createMyAccount()` function to execute the mutation.
+// Call the `createMyCompany()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await createMyAccount(createMyAccountVars);
+const { data } = await createMyCompany(createMyCompanyVars);
 // Variables can be defined inline as well.
-const { data } = await createMyAccount({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
+const { data } = await createMyCompany({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await createMyAccount(dataConnect, createMyAccountVars);
+const { data } = await createMyCompany(dataConnect, createMyCompanyVars);
 
-console.log(data.account_insert);
+console.log(data.company_insert);
 
 // Or, you can use the `Promise` API.
-createMyAccount(createMyAccountVars).then((response) => {
+createMyCompany(createMyCompanyVars).then((response) => {
   const data = response.data;
-  console.log(data.account_insert);
+  console.log(data.company_insert);
 });
 ```
 
-### Using `CreateMyAccount`'s `MutationRef` function
+### Using `CreateMyCompany`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, createMyAccountRef, CreateMyAccountVariables } from '@generated/data-connector-web';
+import { connectorConfig, createMyCompanyRef, CreateMyCompanyVariables } from '@generated/data-connector-web';
 
-// The `CreateMyAccount` mutation requires an argument of type `CreateMyAccountVariables`:
-const createMyAccountVars: CreateMyAccountVariables = {
+// The `CreateMyCompany` mutation requires an argument of type `CreateMyCompanyVariables`:
+const createMyCompanyVars: CreateMyCompanyVariables = {
   id: ..., 
   companyName: ..., 
   businessNumber: ..., // optional
   phoneNumber: ..., // optional
 };
 
-// Call the `createMyAccountRef()` function to get a reference to the mutation.
-const ref = createMyAccountRef(createMyAccountVars);
+// Call the `createMyCompanyRef()` function to get a reference to the mutation.
+const ref = createMyCompanyRef(createMyCompanyVars);
 // Variables can be defined inline as well.
-const ref = createMyAccountRef({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
+const ref = createMyCompanyRef({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = createMyAccountRef(dataConnect, createMyAccountVars);
+const ref = createMyCompanyRef(dataConnect, createMyCompanyVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeMutation(ref);
 
-console.log(data.account_insert);
+console.log(data.company_insert);
 
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
-  console.log(data.account_insert);
+  console.log(data.company_insert);
 });
 ```
 
-## UpdateMyAccount
-You can execute the `UpdateMyAccount` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## UpdateMyCompany
+You can execute the `UpdateMyCompany` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-updateMyAccount(vars: UpdateMyAccountVariables): MutationPromise<UpdateMyAccountData, UpdateMyAccountVariables>;
+updateMyCompany(vars: UpdateMyCompanyVariables): MutationPromise<UpdateMyCompanyData, UpdateMyCompanyVariables>;
 
-interface UpdateMyAccountRef {
+interface UpdateMyCompanyRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: UpdateMyAccountVariables): MutationRef<UpdateMyAccountData, UpdateMyAccountVariables>;
+  (vars: UpdateMyCompanyVariables): MutationRef<UpdateMyCompanyData, UpdateMyCompanyVariables>;
 }
-export const updateMyAccountRef: UpdateMyAccountRef;
+export const updateMyCompanyRef: UpdateMyCompanyRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-updateMyAccount(dc: DataConnect, vars: UpdateMyAccountVariables): MutationPromise<UpdateMyAccountData, UpdateMyAccountVariables>;
+updateMyCompany(dc: DataConnect, vars: UpdateMyCompanyVariables): MutationPromise<UpdateMyCompanyData, UpdateMyCompanyVariables>;
 
-interface UpdateMyAccountRef {
+interface UpdateMyCompanyRef {
   ...
-  (dc: DataConnect, vars: UpdateMyAccountVariables): MutationRef<UpdateMyAccountData, UpdateMyAccountVariables>;
+  (dc: DataConnect, vars: UpdateMyCompanyVariables): MutationRef<UpdateMyCompanyData, UpdateMyCompanyVariables>;
 }
-export const updateMyAccountRef: UpdateMyAccountRef;
+export const updateMyCompanyRef: UpdateMyCompanyRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateMyAccountRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateMyCompanyRef:
 ```typescript
-const name = updateMyAccountRef.operationName;
+const name = updateMyCompanyRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `UpdateMyAccount` mutation requires an argument of type `UpdateMyAccountVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `UpdateMyCompany` mutation requires an argument of type `UpdateMyCompanyVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface UpdateMyAccountVariables {
+export interface UpdateMyCompanyVariables {
   id: UUIDString;
   companyName: string;
   businessNumber?: string | null;
@@ -1344,454 +1344,454 @@ export interface UpdateMyAccountVariables {
 }
 ```
 ### Return Type
-Recall that executing the `UpdateMyAccount` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `UpdateMyCompany` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `UpdateMyAccountData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `UpdateMyCompanyData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface UpdateMyAccountData {
-  account_update?: Account_Key | null;
+export interface UpdateMyCompanyData {
+  company_update?: Company_Key | null;
 }
 ```
-### Using `UpdateMyAccount`'s action shortcut function
+### Using `UpdateMyCompany`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, updateMyAccount, UpdateMyAccountVariables } from '@generated/data-connector-web';
+import { connectorConfig, updateMyCompany, UpdateMyCompanyVariables } from '@generated/data-connector-web';
 
-// The `UpdateMyAccount` mutation requires an argument of type `UpdateMyAccountVariables`:
-const updateMyAccountVars: UpdateMyAccountVariables = {
+// The `UpdateMyCompany` mutation requires an argument of type `UpdateMyCompanyVariables`:
+const updateMyCompanyVars: UpdateMyCompanyVariables = {
   id: ..., 
   companyName: ..., 
   businessNumber: ..., // optional
   phoneNumber: ..., // optional
 };
 
-// Call the `updateMyAccount()` function to execute the mutation.
+// Call the `updateMyCompany()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await updateMyAccount(updateMyAccountVars);
+const { data } = await updateMyCompany(updateMyCompanyVars);
 // Variables can be defined inline as well.
-const { data } = await updateMyAccount({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
+const { data } = await updateMyCompany({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await updateMyAccount(dataConnect, updateMyAccountVars);
+const { data } = await updateMyCompany(dataConnect, updateMyCompanyVars);
 
-console.log(data.account_update);
+console.log(data.company_update);
 
 // Or, you can use the `Promise` API.
-updateMyAccount(updateMyAccountVars).then((response) => {
+updateMyCompany(updateMyCompanyVars).then((response) => {
   const data = response.data;
-  console.log(data.account_update);
+  console.log(data.company_update);
 });
 ```
 
-### Using `UpdateMyAccount`'s `MutationRef` function
+### Using `UpdateMyCompany`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, updateMyAccountRef, UpdateMyAccountVariables } from '@generated/data-connector-web';
+import { connectorConfig, updateMyCompanyRef, UpdateMyCompanyVariables } from '@generated/data-connector-web';
 
-// The `UpdateMyAccount` mutation requires an argument of type `UpdateMyAccountVariables`:
-const updateMyAccountVars: UpdateMyAccountVariables = {
+// The `UpdateMyCompany` mutation requires an argument of type `UpdateMyCompanyVariables`:
+const updateMyCompanyVars: UpdateMyCompanyVariables = {
   id: ..., 
   companyName: ..., 
   businessNumber: ..., // optional
   phoneNumber: ..., // optional
 };
 
-// Call the `updateMyAccountRef()` function to get a reference to the mutation.
-const ref = updateMyAccountRef(updateMyAccountVars);
+// Call the `updateMyCompanyRef()` function to get a reference to the mutation.
+const ref = updateMyCompanyRef(updateMyCompanyVars);
 // Variables can be defined inline as well.
-const ref = updateMyAccountRef({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
+const ref = updateMyCompanyRef({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = updateMyAccountRef(dataConnect, updateMyAccountVars);
+const ref = updateMyCompanyRef(dataConnect, updateMyCompanyVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeMutation(ref);
 
-console.log(data.account_update);
+console.log(data.company_update);
 
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
-  console.log(data.account_update);
+  console.log(data.company_update);
 });
 ```
 
-## SetMyAccountPrimaryContact
-You can execute the `SetMyAccountPrimaryContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## SetMyCompanyPrimaryContact
+You can execute the `SetMyCompanyPrimaryContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-setMyAccountPrimaryContact(vars: SetMyAccountPrimaryContactVariables): MutationPromise<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
+setMyCompanyPrimaryContact(vars: SetMyCompanyPrimaryContactVariables): MutationPromise<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
 
-interface SetMyAccountPrimaryContactRef {
+interface SetMyCompanyPrimaryContactRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: SetMyAccountPrimaryContactVariables): MutationRef<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
+  (vars: SetMyCompanyPrimaryContactVariables): MutationRef<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
 }
-export const setMyAccountPrimaryContactRef: SetMyAccountPrimaryContactRef;
+export const setMyCompanyPrimaryContactRef: SetMyCompanyPrimaryContactRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-setMyAccountPrimaryContact(dc: DataConnect, vars: SetMyAccountPrimaryContactVariables): MutationPromise<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
+setMyCompanyPrimaryContact(dc: DataConnect, vars: SetMyCompanyPrimaryContactVariables): MutationPromise<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
 
-interface SetMyAccountPrimaryContactRef {
+interface SetMyCompanyPrimaryContactRef {
   ...
-  (dc: DataConnect, vars: SetMyAccountPrimaryContactVariables): MutationRef<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
+  (dc: DataConnect, vars: SetMyCompanyPrimaryContactVariables): MutationRef<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
 }
-export const setMyAccountPrimaryContactRef: SetMyAccountPrimaryContactRef;
+export const setMyCompanyPrimaryContactRef: SetMyCompanyPrimaryContactRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the setMyAccountPrimaryContactRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the setMyCompanyPrimaryContactRef:
 ```typescript
-const name = setMyAccountPrimaryContactRef.operationName;
+const name = setMyCompanyPrimaryContactRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `SetMyAccountPrimaryContact` mutation requires an argument of type `SetMyAccountPrimaryContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `SetMyCompanyPrimaryContact` mutation requires an argument of type `SetMyCompanyPrimaryContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface SetMyAccountPrimaryContactVariables {
-  accountId: UUIDString;
+export interface SetMyCompanyPrimaryContactVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
 }
 ```
 ### Return Type
-Recall that executing the `SetMyAccountPrimaryContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `SetMyCompanyPrimaryContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `SetMyAccountPrimaryContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `SetMyCompanyPrimaryContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface SetMyAccountPrimaryContactData {
-  account_update?: Account_Key | null;
+export interface SetMyCompanyPrimaryContactData {
+  company_update?: Company_Key | null;
 }
 ```
-### Using `SetMyAccountPrimaryContact`'s action shortcut function
+### Using `SetMyCompanyPrimaryContact`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, setMyAccountPrimaryContact, SetMyAccountPrimaryContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, setMyCompanyPrimaryContact, SetMyCompanyPrimaryContactVariables } from '@generated/data-connector-web';
 
-// The `SetMyAccountPrimaryContact` mutation requires an argument of type `SetMyAccountPrimaryContactVariables`:
-const setMyAccountPrimaryContactVars: SetMyAccountPrimaryContactVariables = {
-  accountId: ..., 
+// The `SetMyCompanyPrimaryContact` mutation requires an argument of type `SetMyCompanyPrimaryContactVariables`:
+const setMyCompanyPrimaryContactVars: SetMyCompanyPrimaryContactVariables = {
+  companyId: ..., 
   contactId: ..., 
 };
 
-// Call the `setMyAccountPrimaryContact()` function to execute the mutation.
+// Call the `setMyCompanyPrimaryContact()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await setMyAccountPrimaryContact(setMyAccountPrimaryContactVars);
+const { data } = await setMyCompanyPrimaryContact(setMyCompanyPrimaryContactVars);
 // Variables can be defined inline as well.
-const { data } = await setMyAccountPrimaryContact({ accountId: ..., contactId: ..., });
+const { data } = await setMyCompanyPrimaryContact({ companyId: ..., contactId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await setMyAccountPrimaryContact(dataConnect, setMyAccountPrimaryContactVars);
+const { data } = await setMyCompanyPrimaryContact(dataConnect, setMyCompanyPrimaryContactVars);
 
-console.log(data.account_update);
+console.log(data.company_update);
 
 // Or, you can use the `Promise` API.
-setMyAccountPrimaryContact(setMyAccountPrimaryContactVars).then((response) => {
+setMyCompanyPrimaryContact(setMyCompanyPrimaryContactVars).then((response) => {
   const data = response.data;
-  console.log(data.account_update);
+  console.log(data.company_update);
 });
 ```
 
-### Using `SetMyAccountPrimaryContact`'s `MutationRef` function
+### Using `SetMyCompanyPrimaryContact`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, setMyAccountPrimaryContactRef, SetMyAccountPrimaryContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, setMyCompanyPrimaryContactRef, SetMyCompanyPrimaryContactVariables } from '@generated/data-connector-web';
 
-// The `SetMyAccountPrimaryContact` mutation requires an argument of type `SetMyAccountPrimaryContactVariables`:
-const setMyAccountPrimaryContactVars: SetMyAccountPrimaryContactVariables = {
-  accountId: ..., 
+// The `SetMyCompanyPrimaryContact` mutation requires an argument of type `SetMyCompanyPrimaryContactVariables`:
+const setMyCompanyPrimaryContactVars: SetMyCompanyPrimaryContactVariables = {
+  companyId: ..., 
   contactId: ..., 
 };
 
-// Call the `setMyAccountPrimaryContactRef()` function to get a reference to the mutation.
-const ref = setMyAccountPrimaryContactRef(setMyAccountPrimaryContactVars);
+// Call the `setMyCompanyPrimaryContactRef()` function to get a reference to the mutation.
+const ref = setMyCompanyPrimaryContactRef(setMyCompanyPrimaryContactVars);
 // Variables can be defined inline as well.
-const ref = setMyAccountPrimaryContactRef({ accountId: ..., contactId: ..., });
+const ref = setMyCompanyPrimaryContactRef({ companyId: ..., contactId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = setMyAccountPrimaryContactRef(dataConnect, setMyAccountPrimaryContactVars);
+const ref = setMyCompanyPrimaryContactRef(dataConnect, setMyCompanyPrimaryContactVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeMutation(ref);
 
-console.log(data.account_update);
+console.log(data.company_update);
 
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
-  console.log(data.account_update);
+  console.log(data.company_update);
 });
 ```
 
-## ClearMyAccountPrimaryContact
-You can execute the `ClearMyAccountPrimaryContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## ClearMyCompanyPrimaryContact
+You can execute the `ClearMyCompanyPrimaryContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-clearMyAccountPrimaryContact(vars: ClearMyAccountPrimaryContactVariables): MutationPromise<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
+clearMyCompanyPrimaryContact(vars: ClearMyCompanyPrimaryContactVariables): MutationPromise<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
 
-interface ClearMyAccountPrimaryContactRef {
+interface ClearMyCompanyPrimaryContactRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: ClearMyAccountPrimaryContactVariables): MutationRef<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
+  (vars: ClearMyCompanyPrimaryContactVariables): MutationRef<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
 }
-export const clearMyAccountPrimaryContactRef: ClearMyAccountPrimaryContactRef;
+export const clearMyCompanyPrimaryContactRef: ClearMyCompanyPrimaryContactRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-clearMyAccountPrimaryContact(dc: DataConnect, vars: ClearMyAccountPrimaryContactVariables): MutationPromise<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
+clearMyCompanyPrimaryContact(dc: DataConnect, vars: ClearMyCompanyPrimaryContactVariables): MutationPromise<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
 
-interface ClearMyAccountPrimaryContactRef {
+interface ClearMyCompanyPrimaryContactRef {
   ...
-  (dc: DataConnect, vars: ClearMyAccountPrimaryContactVariables): MutationRef<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
+  (dc: DataConnect, vars: ClearMyCompanyPrimaryContactVariables): MutationRef<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
 }
-export const clearMyAccountPrimaryContactRef: ClearMyAccountPrimaryContactRef;
+export const clearMyCompanyPrimaryContactRef: ClearMyCompanyPrimaryContactRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the clearMyAccountPrimaryContactRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the clearMyCompanyPrimaryContactRef:
 ```typescript
-const name = clearMyAccountPrimaryContactRef.operationName;
+const name = clearMyCompanyPrimaryContactRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `ClearMyAccountPrimaryContact` mutation requires an argument of type `ClearMyAccountPrimaryContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `ClearMyCompanyPrimaryContact` mutation requires an argument of type `ClearMyCompanyPrimaryContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface ClearMyAccountPrimaryContactVariables {
-  accountId: UUIDString;
+export interface ClearMyCompanyPrimaryContactVariables {
+  companyId: UUIDString;
 }
 ```
 ### Return Type
-Recall that executing the `ClearMyAccountPrimaryContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `ClearMyCompanyPrimaryContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `ClearMyAccountPrimaryContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `ClearMyCompanyPrimaryContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface ClearMyAccountPrimaryContactData {
-  account_update?: Account_Key | null;
+export interface ClearMyCompanyPrimaryContactData {
+  company_update?: Company_Key | null;
 }
 ```
-### Using `ClearMyAccountPrimaryContact`'s action shortcut function
+### Using `ClearMyCompanyPrimaryContact`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, clearMyAccountPrimaryContact, ClearMyAccountPrimaryContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, clearMyCompanyPrimaryContact, ClearMyCompanyPrimaryContactVariables } from '@generated/data-connector-web';
 
-// The `ClearMyAccountPrimaryContact` mutation requires an argument of type `ClearMyAccountPrimaryContactVariables`:
-const clearMyAccountPrimaryContactVars: ClearMyAccountPrimaryContactVariables = {
-  accountId: ..., 
+// The `ClearMyCompanyPrimaryContact` mutation requires an argument of type `ClearMyCompanyPrimaryContactVariables`:
+const clearMyCompanyPrimaryContactVars: ClearMyCompanyPrimaryContactVariables = {
+  companyId: ..., 
 };
 
-// Call the `clearMyAccountPrimaryContact()` function to execute the mutation.
+// Call the `clearMyCompanyPrimaryContact()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await clearMyAccountPrimaryContact(clearMyAccountPrimaryContactVars);
+const { data } = await clearMyCompanyPrimaryContact(clearMyCompanyPrimaryContactVars);
 // Variables can be defined inline as well.
-const { data } = await clearMyAccountPrimaryContact({ accountId: ..., });
+const { data } = await clearMyCompanyPrimaryContact({ companyId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await clearMyAccountPrimaryContact(dataConnect, clearMyAccountPrimaryContactVars);
+const { data } = await clearMyCompanyPrimaryContact(dataConnect, clearMyCompanyPrimaryContactVars);
 
-console.log(data.account_update);
+console.log(data.company_update);
 
 // Or, you can use the `Promise` API.
-clearMyAccountPrimaryContact(clearMyAccountPrimaryContactVars).then((response) => {
+clearMyCompanyPrimaryContact(clearMyCompanyPrimaryContactVars).then((response) => {
   const data = response.data;
-  console.log(data.account_update);
+  console.log(data.company_update);
 });
 ```
 
-### Using `ClearMyAccountPrimaryContact`'s `MutationRef` function
+### Using `ClearMyCompanyPrimaryContact`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, clearMyAccountPrimaryContactRef, ClearMyAccountPrimaryContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, clearMyCompanyPrimaryContactRef, ClearMyCompanyPrimaryContactVariables } from '@generated/data-connector-web';
 
-// The `ClearMyAccountPrimaryContact` mutation requires an argument of type `ClearMyAccountPrimaryContactVariables`:
-const clearMyAccountPrimaryContactVars: ClearMyAccountPrimaryContactVariables = {
-  accountId: ..., 
+// The `ClearMyCompanyPrimaryContact` mutation requires an argument of type `ClearMyCompanyPrimaryContactVariables`:
+const clearMyCompanyPrimaryContactVars: ClearMyCompanyPrimaryContactVariables = {
+  companyId: ..., 
 };
 
-// Call the `clearMyAccountPrimaryContactRef()` function to get a reference to the mutation.
-const ref = clearMyAccountPrimaryContactRef(clearMyAccountPrimaryContactVars);
+// Call the `clearMyCompanyPrimaryContactRef()` function to get a reference to the mutation.
+const ref = clearMyCompanyPrimaryContactRef(clearMyCompanyPrimaryContactVars);
 // Variables can be defined inline as well.
-const ref = clearMyAccountPrimaryContactRef({ accountId: ..., });
+const ref = clearMyCompanyPrimaryContactRef({ companyId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = clearMyAccountPrimaryContactRef(dataConnect, clearMyAccountPrimaryContactVars);
+const ref = clearMyCompanyPrimaryContactRef(dataConnect, clearMyCompanyPrimaryContactVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeMutation(ref);
 
-console.log(data.account_update);
+console.log(data.company_update);
 
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
-  console.log(data.account_update);
+  console.log(data.company_update);
 });
 ```
 
-## DeleteMyAccount
-You can execute the `DeleteMyAccount` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## DeleteMyCompany
+You can execute the `DeleteMyCompany` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-deleteMyAccount(vars: DeleteMyAccountVariables): MutationPromise<DeleteMyAccountData, DeleteMyAccountVariables>;
+deleteMyCompany(vars: DeleteMyCompanyVariables): MutationPromise<DeleteMyCompanyData, DeleteMyCompanyVariables>;
 
-interface DeleteMyAccountRef {
+interface DeleteMyCompanyRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: DeleteMyAccountVariables): MutationRef<DeleteMyAccountData, DeleteMyAccountVariables>;
+  (vars: DeleteMyCompanyVariables): MutationRef<DeleteMyCompanyData, DeleteMyCompanyVariables>;
 }
-export const deleteMyAccountRef: DeleteMyAccountRef;
+export const deleteMyCompanyRef: DeleteMyCompanyRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-deleteMyAccount(dc: DataConnect, vars: DeleteMyAccountVariables): MutationPromise<DeleteMyAccountData, DeleteMyAccountVariables>;
+deleteMyCompany(dc: DataConnect, vars: DeleteMyCompanyVariables): MutationPromise<DeleteMyCompanyData, DeleteMyCompanyVariables>;
 
-interface DeleteMyAccountRef {
+interface DeleteMyCompanyRef {
   ...
-  (dc: DataConnect, vars: DeleteMyAccountVariables): MutationRef<DeleteMyAccountData, DeleteMyAccountVariables>;
+  (dc: DataConnect, vars: DeleteMyCompanyVariables): MutationRef<DeleteMyCompanyData, DeleteMyCompanyVariables>;
 }
-export const deleteMyAccountRef: DeleteMyAccountRef;
+export const deleteMyCompanyRef: DeleteMyCompanyRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteMyAccountRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteMyCompanyRef:
 ```typescript
-const name = deleteMyAccountRef.operationName;
+const name = deleteMyCompanyRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `DeleteMyAccount` mutation requires an argument of type `DeleteMyAccountVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `DeleteMyCompany` mutation requires an argument of type `DeleteMyCompanyVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface DeleteMyAccountVariables {
+export interface DeleteMyCompanyVariables {
   id: UUIDString;
 }
 ```
 ### Return Type
-Recall that executing the `DeleteMyAccount` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `DeleteMyCompany` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `DeleteMyAccountData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `DeleteMyCompanyData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface DeleteMyAccountData {
-  accountContact_deleteMany: number;
-  account_delete?: Account_Key | null;
+export interface DeleteMyCompanyData {
+  companyContact_deleteMany: number;
+  company_delete?: Company_Key | null;
 }
 ```
-### Using `DeleteMyAccount`'s action shortcut function
+### Using `DeleteMyCompany`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, deleteMyAccount, DeleteMyAccountVariables } from '@generated/data-connector-web';
+import { connectorConfig, deleteMyCompany, DeleteMyCompanyVariables } from '@generated/data-connector-web';
 
-// The `DeleteMyAccount` mutation requires an argument of type `DeleteMyAccountVariables`:
-const deleteMyAccountVars: DeleteMyAccountVariables = {
+// The `DeleteMyCompany` mutation requires an argument of type `DeleteMyCompanyVariables`:
+const deleteMyCompanyVars: DeleteMyCompanyVariables = {
   id: ..., 
 };
 
-// Call the `deleteMyAccount()` function to execute the mutation.
+// Call the `deleteMyCompany()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await deleteMyAccount(deleteMyAccountVars);
+const { data } = await deleteMyCompany(deleteMyCompanyVars);
 // Variables can be defined inline as well.
-const { data } = await deleteMyAccount({ id: ..., });
+const { data } = await deleteMyCompany({ id: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await deleteMyAccount(dataConnect, deleteMyAccountVars);
+const { data } = await deleteMyCompany(dataConnect, deleteMyCompanyVars);
 
-console.log(data.accountContact_deleteMany);
-console.log(data.account_delete);
+console.log(data.companyContact_deleteMany);
+console.log(data.company_delete);
 
 // Or, you can use the `Promise` API.
-deleteMyAccount(deleteMyAccountVars).then((response) => {
+deleteMyCompany(deleteMyCompanyVars).then((response) => {
   const data = response.data;
-  console.log(data.accountContact_deleteMany);
-  console.log(data.account_delete);
+  console.log(data.companyContact_deleteMany);
+  console.log(data.company_delete);
 });
 ```
 
-### Using `DeleteMyAccount`'s `MutationRef` function
+### Using `DeleteMyCompany`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, deleteMyAccountRef, DeleteMyAccountVariables } from '@generated/data-connector-web';
+import { connectorConfig, deleteMyCompanyRef, DeleteMyCompanyVariables } from '@generated/data-connector-web';
 
-// The `DeleteMyAccount` mutation requires an argument of type `DeleteMyAccountVariables`:
-const deleteMyAccountVars: DeleteMyAccountVariables = {
+// The `DeleteMyCompany` mutation requires an argument of type `DeleteMyCompanyVariables`:
+const deleteMyCompanyVars: DeleteMyCompanyVariables = {
   id: ..., 
 };
 
-// Call the `deleteMyAccountRef()` function to get a reference to the mutation.
-const ref = deleteMyAccountRef(deleteMyAccountVars);
+// Call the `deleteMyCompanyRef()` function to get a reference to the mutation.
+const ref = deleteMyCompanyRef(deleteMyCompanyVars);
 // Variables can be defined inline as well.
-const ref = deleteMyAccountRef({ id: ..., });
+const ref = deleteMyCompanyRef({ id: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = deleteMyAccountRef(dataConnect, deleteMyAccountVars);
+const ref = deleteMyCompanyRef(dataConnect, deleteMyCompanyVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeMutation(ref);
 
-console.log(data.accountContact_deleteMany);
-console.log(data.account_delete);
+console.log(data.companyContact_deleteMany);
+console.log(data.company_delete);
 
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
-  console.log(data.accountContact_deleteMany);
-  console.log(data.account_delete);
+  console.log(data.companyContact_deleteMany);
+  console.log(data.company_delete);
 });
 ```
 
-## CreateMyAccountContact
-You can execute the `CreateMyAccountContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## CreateMyCompanyContact
+You can execute the `CreateMyCompanyContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-createMyAccountContact(vars: CreateMyAccountContactVariables): MutationPromise<CreateMyAccountContactData, CreateMyAccountContactVariables>;
+createMyCompanyContact(vars: CreateMyCompanyContactVariables): MutationPromise<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
 
-interface CreateMyAccountContactRef {
+interface CreateMyCompanyContactRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateMyAccountContactVariables): MutationRef<CreateMyAccountContactData, CreateMyAccountContactVariables>;
+  (vars: CreateMyCompanyContactVariables): MutationRef<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
 }
-export const createMyAccountContactRef: CreateMyAccountContactRef;
+export const createMyCompanyContactRef: CreateMyCompanyContactRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-createMyAccountContact(dc: DataConnect, vars: CreateMyAccountContactVariables): MutationPromise<CreateMyAccountContactData, CreateMyAccountContactVariables>;
+createMyCompanyContact(dc: DataConnect, vars: CreateMyCompanyContactVariables): MutationPromise<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
 
-interface CreateMyAccountContactRef {
+interface CreateMyCompanyContactRef {
   ...
-  (dc: DataConnect, vars: CreateMyAccountContactVariables): MutationRef<CreateMyAccountContactData, CreateMyAccountContactVariables>;
+  (dc: DataConnect, vars: CreateMyCompanyContactVariables): MutationRef<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
 }
-export const createMyAccountContactRef: CreateMyAccountContactRef;
+export const createMyCompanyContactRef: CreateMyCompanyContactRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createMyAccountContactRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createMyCompanyContactRef:
 ```typescript
-const name = createMyAccountContactRef.operationName;
+const name = createMyCompanyContactRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `CreateMyAccountContact` mutation requires an argument of type `CreateMyAccountContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `CreateMyCompanyContact` mutation requires an argument of type `CreateMyCompanyContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface CreateMyAccountContactVariables {
+export interface CreateMyCompanyContactVariables {
   id: UUIDString;
-  accountId: UUIDString;
+  companyId: UUIDString;
   name: string;
   email?: string | null;
   phoneNumber?: string | null;
@@ -1799,122 +1799,122 @@ export interface CreateMyAccountContactVariables {
 }
 ```
 ### Return Type
-Recall that executing the `CreateMyAccountContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `CreateMyCompanyContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `CreateMyAccountContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `CreateMyCompanyContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface CreateMyAccountContactData {
-  accountContact_insert: AccountContact_Key;
+export interface CreateMyCompanyContactData {
+  companyContact_insert: CompanyContact_Key;
 }
 ```
-### Using `CreateMyAccountContact`'s action shortcut function
+### Using `CreateMyCompanyContact`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, createMyAccountContact, CreateMyAccountContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, createMyCompanyContact, CreateMyCompanyContactVariables } from '@generated/data-connector-web';
 
-// The `CreateMyAccountContact` mutation requires an argument of type `CreateMyAccountContactVariables`:
-const createMyAccountContactVars: CreateMyAccountContactVariables = {
+// The `CreateMyCompanyContact` mutation requires an argument of type `CreateMyCompanyContactVariables`:
+const createMyCompanyContactVars: CreateMyCompanyContactVariables = {
   id: ..., 
-  accountId: ..., 
+  companyId: ..., 
   name: ..., 
   email: ..., // optional
   phoneNumber: ..., // optional
   role: ..., // optional
 };
 
-// Call the `createMyAccountContact()` function to execute the mutation.
+// Call the `createMyCompanyContact()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await createMyAccountContact(createMyAccountContactVars);
+const { data } = await createMyCompanyContact(createMyCompanyContactVars);
 // Variables can be defined inline as well.
-const { data } = await createMyAccountContact({ id: ..., accountId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
+const { data } = await createMyCompanyContact({ id: ..., companyId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await createMyAccountContact(dataConnect, createMyAccountContactVars);
+const { data } = await createMyCompanyContact(dataConnect, createMyCompanyContactVars);
 
-console.log(data.accountContact_insert);
+console.log(data.companyContact_insert);
 
 // Or, you can use the `Promise` API.
-createMyAccountContact(createMyAccountContactVars).then((response) => {
+createMyCompanyContact(createMyCompanyContactVars).then((response) => {
   const data = response.data;
-  console.log(data.accountContact_insert);
+  console.log(data.companyContact_insert);
 });
 ```
 
-### Using `CreateMyAccountContact`'s `MutationRef` function
+### Using `CreateMyCompanyContact`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, createMyAccountContactRef, CreateMyAccountContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, createMyCompanyContactRef, CreateMyCompanyContactVariables } from '@generated/data-connector-web';
 
-// The `CreateMyAccountContact` mutation requires an argument of type `CreateMyAccountContactVariables`:
-const createMyAccountContactVars: CreateMyAccountContactVariables = {
+// The `CreateMyCompanyContact` mutation requires an argument of type `CreateMyCompanyContactVariables`:
+const createMyCompanyContactVars: CreateMyCompanyContactVariables = {
   id: ..., 
-  accountId: ..., 
+  companyId: ..., 
   name: ..., 
   email: ..., // optional
   phoneNumber: ..., // optional
   role: ..., // optional
 };
 
-// Call the `createMyAccountContactRef()` function to get a reference to the mutation.
-const ref = createMyAccountContactRef(createMyAccountContactVars);
+// Call the `createMyCompanyContactRef()` function to get a reference to the mutation.
+const ref = createMyCompanyContactRef(createMyCompanyContactVars);
 // Variables can be defined inline as well.
-const ref = createMyAccountContactRef({ id: ..., accountId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
+const ref = createMyCompanyContactRef({ id: ..., companyId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = createMyAccountContactRef(dataConnect, createMyAccountContactVars);
+const ref = createMyCompanyContactRef(dataConnect, createMyCompanyContactVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeMutation(ref);
 
-console.log(data.accountContact_insert);
+console.log(data.companyContact_insert);
 
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
-  console.log(data.accountContact_insert);
+  console.log(data.companyContact_insert);
 });
 ```
 
-## UpdateMyAccountContact
-You can execute the `UpdateMyAccountContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## UpdateMyCompanyContact
+You can execute the `UpdateMyCompanyContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-updateMyAccountContact(vars: UpdateMyAccountContactVariables): MutationPromise<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
+updateMyCompanyContact(vars: UpdateMyCompanyContactVariables): MutationPromise<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
 
-interface UpdateMyAccountContactRef {
+interface UpdateMyCompanyContactRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: UpdateMyAccountContactVariables): MutationRef<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
+  (vars: UpdateMyCompanyContactVariables): MutationRef<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
 }
-export const updateMyAccountContactRef: UpdateMyAccountContactRef;
+export const updateMyCompanyContactRef: UpdateMyCompanyContactRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-updateMyAccountContact(dc: DataConnect, vars: UpdateMyAccountContactVariables): MutationPromise<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
+updateMyCompanyContact(dc: DataConnect, vars: UpdateMyCompanyContactVariables): MutationPromise<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
 
-interface UpdateMyAccountContactRef {
+interface UpdateMyCompanyContactRef {
   ...
-  (dc: DataConnect, vars: UpdateMyAccountContactVariables): MutationRef<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
+  (dc: DataConnect, vars: UpdateMyCompanyContactVariables): MutationRef<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
 }
-export const updateMyAccountContactRef: UpdateMyAccountContactRef;
+export const updateMyCompanyContactRef: UpdateMyCompanyContactRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateMyAccountContactRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateMyCompanyContactRef:
 ```typescript
-const name = updateMyAccountContactRef.operationName;
+const name = updateMyCompanyContactRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `UpdateMyAccountContact` mutation requires an argument of type `UpdateMyAccountContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `UpdateMyCompanyContact` mutation requires an argument of type `UpdateMyCompanyContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface UpdateMyAccountContactVariables {
-  accountId: UUIDString;
+export interface UpdateMyCompanyContactVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
   name: string;
   email?: string | null;
@@ -1923,23 +1923,23 @@ export interface UpdateMyAccountContactVariables {
 }
 ```
 ### Return Type
-Recall that executing the `UpdateMyAccountContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `UpdateMyCompanyContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `UpdateMyAccountContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `UpdateMyCompanyContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface UpdateMyAccountContactData {
-  accountContact_update?: AccountContact_Key | null;
+export interface UpdateMyCompanyContactData {
+  companyContact_update?: CompanyContact_Key | null;
 }
 ```
-### Using `UpdateMyAccountContact`'s action shortcut function
+### Using `UpdateMyCompanyContact`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, updateMyAccountContact, UpdateMyAccountContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, updateMyCompanyContact, UpdateMyCompanyContactVariables } from '@generated/data-connector-web';
 
-// The `UpdateMyAccountContact` mutation requires an argument of type `UpdateMyAccountContactVariables`:
-const updateMyAccountContactVars: UpdateMyAccountContactVariables = {
-  accountId: ..., 
+// The `UpdateMyCompanyContact` mutation requires an argument of type `UpdateMyCompanyContactVariables`:
+const updateMyCompanyContactVars: UpdateMyCompanyContactVariables = {
+  companyId: ..., 
   contactId: ..., 
   name: ..., 
   email: ..., // optional
@@ -1947,34 +1947,34 @@ const updateMyAccountContactVars: UpdateMyAccountContactVariables = {
   role: ..., // optional
 };
 
-// Call the `updateMyAccountContact()` function to execute the mutation.
+// Call the `updateMyCompanyContact()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await updateMyAccountContact(updateMyAccountContactVars);
+const { data } = await updateMyCompanyContact(updateMyCompanyContactVars);
 // Variables can be defined inline as well.
-const { data } = await updateMyAccountContact({ accountId: ..., contactId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
+const { data } = await updateMyCompanyContact({ companyId: ..., contactId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await updateMyAccountContact(dataConnect, updateMyAccountContactVars);
+const { data } = await updateMyCompanyContact(dataConnect, updateMyCompanyContactVars);
 
-console.log(data.accountContact_update);
+console.log(data.companyContact_update);
 
 // Or, you can use the `Promise` API.
-updateMyAccountContact(updateMyAccountContactVars).then((response) => {
+updateMyCompanyContact(updateMyCompanyContactVars).then((response) => {
   const data = response.data;
-  console.log(data.accountContact_update);
+  console.log(data.companyContact_update);
 });
 ```
 
-### Using `UpdateMyAccountContact`'s `MutationRef` function
+### Using `UpdateMyCompanyContact`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, updateMyAccountContactRef, UpdateMyAccountContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, updateMyCompanyContactRef, UpdateMyCompanyContactVariables } from '@generated/data-connector-web';
 
-// The `UpdateMyAccountContact` mutation requires an argument of type `UpdateMyAccountContactVariables`:
-const updateMyAccountContactVars: UpdateMyAccountContactVariables = {
-  accountId: ..., 
+// The `UpdateMyCompanyContact` mutation requires an argument of type `UpdateMyCompanyContactVariables`:
+const updateMyCompanyContactVars: UpdateMyCompanyContactVariables = {
+  companyId: ..., 
   contactId: ..., 
   name: ..., 
   email: ..., // optional
@@ -1982,142 +1982,142 @@ const updateMyAccountContactVars: UpdateMyAccountContactVariables = {
   role: ..., // optional
 };
 
-// Call the `updateMyAccountContactRef()` function to get a reference to the mutation.
-const ref = updateMyAccountContactRef(updateMyAccountContactVars);
+// Call the `updateMyCompanyContactRef()` function to get a reference to the mutation.
+const ref = updateMyCompanyContactRef(updateMyCompanyContactVars);
 // Variables can be defined inline as well.
-const ref = updateMyAccountContactRef({ accountId: ..., contactId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
+const ref = updateMyCompanyContactRef({ companyId: ..., contactId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = updateMyAccountContactRef(dataConnect, updateMyAccountContactVars);
+const ref = updateMyCompanyContactRef(dataConnect, updateMyCompanyContactVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeMutation(ref);
 
-console.log(data.accountContact_update);
+console.log(data.companyContact_update);
 
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
-  console.log(data.accountContact_update);
+  console.log(data.companyContact_update);
 });
 ```
 
-## DeleteMyAccountContact
-You can execute the `DeleteMyAccountContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## DeleteMyCompanyContact
+You can execute the `DeleteMyCompanyContact` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-deleteMyAccountContact(vars: DeleteMyAccountContactVariables): MutationPromise<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
+deleteMyCompanyContact(vars: DeleteMyCompanyContactVariables): MutationPromise<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
 
-interface DeleteMyAccountContactRef {
+interface DeleteMyCompanyContactRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: DeleteMyAccountContactVariables): MutationRef<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
+  (vars: DeleteMyCompanyContactVariables): MutationRef<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
 }
-export const deleteMyAccountContactRef: DeleteMyAccountContactRef;
+export const deleteMyCompanyContactRef: DeleteMyCompanyContactRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-deleteMyAccountContact(dc: DataConnect, vars: DeleteMyAccountContactVariables): MutationPromise<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
+deleteMyCompanyContact(dc: DataConnect, vars: DeleteMyCompanyContactVariables): MutationPromise<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
 
-interface DeleteMyAccountContactRef {
+interface DeleteMyCompanyContactRef {
   ...
-  (dc: DataConnect, vars: DeleteMyAccountContactVariables): MutationRef<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
+  (dc: DataConnect, vars: DeleteMyCompanyContactVariables): MutationRef<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
 }
-export const deleteMyAccountContactRef: DeleteMyAccountContactRef;
+export const deleteMyCompanyContactRef: DeleteMyCompanyContactRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteMyAccountContactRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteMyCompanyContactRef:
 ```typescript
-const name = deleteMyAccountContactRef.operationName;
+const name = deleteMyCompanyContactRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `DeleteMyAccountContact` mutation requires an argument of type `DeleteMyAccountContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `DeleteMyCompanyContact` mutation requires an argument of type `DeleteMyCompanyContactVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface DeleteMyAccountContactVariables {
-  accountId: UUIDString;
+export interface DeleteMyCompanyContactVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
 }
 ```
 ### Return Type
-Recall that executing the `DeleteMyAccountContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `DeleteMyCompanyContact` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `DeleteMyAccountContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `DeleteMyCompanyContactData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface DeleteMyAccountContactData {
-  account_update?: Account_Key | null;
-  accountContact_delete?: AccountContact_Key | null;
+export interface DeleteMyCompanyContactData {
+  company_update?: Company_Key | null;
+  companyContact_delete?: CompanyContact_Key | null;
 }
 ```
-### Using `DeleteMyAccountContact`'s action shortcut function
+### Using `DeleteMyCompanyContact`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, deleteMyAccountContact, DeleteMyAccountContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, deleteMyCompanyContact, DeleteMyCompanyContactVariables } from '@generated/data-connector-web';
 
-// The `DeleteMyAccountContact` mutation requires an argument of type `DeleteMyAccountContactVariables`:
-const deleteMyAccountContactVars: DeleteMyAccountContactVariables = {
-  accountId: ..., 
+// The `DeleteMyCompanyContact` mutation requires an argument of type `DeleteMyCompanyContactVariables`:
+const deleteMyCompanyContactVars: DeleteMyCompanyContactVariables = {
+  companyId: ..., 
   contactId: ..., 
 };
 
-// Call the `deleteMyAccountContact()` function to execute the mutation.
+// Call the `deleteMyCompanyContact()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await deleteMyAccountContact(deleteMyAccountContactVars);
+const { data } = await deleteMyCompanyContact(deleteMyCompanyContactVars);
 // Variables can be defined inline as well.
-const { data } = await deleteMyAccountContact({ accountId: ..., contactId: ..., });
+const { data } = await deleteMyCompanyContact({ companyId: ..., contactId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await deleteMyAccountContact(dataConnect, deleteMyAccountContactVars);
+const { data } = await deleteMyCompanyContact(dataConnect, deleteMyCompanyContactVars);
 
-console.log(data.account_update);
-console.log(data.accountContact_delete);
+console.log(data.company_update);
+console.log(data.companyContact_delete);
 
 // Or, you can use the `Promise` API.
-deleteMyAccountContact(deleteMyAccountContactVars).then((response) => {
+deleteMyCompanyContact(deleteMyCompanyContactVars).then((response) => {
   const data = response.data;
-  console.log(data.account_update);
-  console.log(data.accountContact_delete);
+  console.log(data.company_update);
+  console.log(data.companyContact_delete);
 });
 ```
 
-### Using `DeleteMyAccountContact`'s `MutationRef` function
+### Using `DeleteMyCompanyContact`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, deleteMyAccountContactRef, DeleteMyAccountContactVariables } from '@generated/data-connector-web';
+import { connectorConfig, deleteMyCompanyContactRef, DeleteMyCompanyContactVariables } from '@generated/data-connector-web';
 
-// The `DeleteMyAccountContact` mutation requires an argument of type `DeleteMyAccountContactVariables`:
-const deleteMyAccountContactVars: DeleteMyAccountContactVariables = {
-  accountId: ..., 
+// The `DeleteMyCompanyContact` mutation requires an argument of type `DeleteMyCompanyContactVariables`:
+const deleteMyCompanyContactVars: DeleteMyCompanyContactVariables = {
+  companyId: ..., 
   contactId: ..., 
 };
 
-// Call the `deleteMyAccountContactRef()` function to get a reference to the mutation.
-const ref = deleteMyAccountContactRef(deleteMyAccountContactVars);
+// Call the `deleteMyCompanyContactRef()` function to get a reference to the mutation.
+const ref = deleteMyCompanyContactRef(deleteMyCompanyContactVars);
 // Variables can be defined inline as well.
-const ref = deleteMyAccountContactRef({ accountId: ..., contactId: ..., });
+const ref = deleteMyCompanyContactRef({ companyId: ..., contactId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = deleteMyAccountContactRef(dataConnect, deleteMyAccountContactVars);
+const ref = deleteMyCompanyContactRef(dataConnect, deleteMyCompanyContactVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeMutation(ref);
 
-console.log(data.account_update);
-console.log(data.accountContact_delete);
+console.log(data.company_update);
+console.log(data.companyContact_delete);
 
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
-  console.log(data.account_update);
-  console.log(data.accountContact_delete);
+  console.log(data.company_update);
+  console.log(data.companyContact_delete);
 });
 ```
 

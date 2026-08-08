@@ -2,12 +2,12 @@
 
 import { ui } from "../../../lib/styles.js";
 
-import type { AccountDraftFieldsProps } from "./account.types.js";
+import type { CompanyDraftFieldsProps } from "./company.types.js";
 
-export function AccountDraftFields({
+export function CompanyDraftFields({
     draft,
     setDraft,
-}: AccountDraftFieldsProps) {
+}: CompanyDraftFieldsProps) {
     return (
         <>
             <div className={ui.field}>

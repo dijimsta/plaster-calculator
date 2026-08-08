@@ -36,7 +36,7 @@ export function useDashboardUpload({
     const router = useRouter();
     const { notify } = useNotificationsManager();
     const [name, setName] = useState("");
-    const [accountId, setAccountId] = useState<string | null>(null);
+    const [companyId, setCompanyId] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -62,7 +62,7 @@ export function useDashboardUpload({
                 name || file.name,
                 file,
                 preparedPdf.pdfDocument?.numPages,
-                { accountId },
+                { companyId },
             );
             if (upload.uploadType === "PDF") {
                 openPdfPageSelection(upload.projectId, preparedPdf);
@@ -204,7 +204,7 @@ export function useDashboardUpload({
     }
 
     return {
-        accountId,
+        companyId,
         draftProjectId,
         dragActive,
         file,
@@ -218,7 +218,7 @@ export function useDashboardUpload({
         handleDrop,
         handleFileSelection,
         processSelectedPdfPages,
-        setAccountId,
+        setCompanyId,
         setDragActive,
         setName,
         submit,

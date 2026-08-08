@@ -12,28 +12,28 @@ For each operation, there is a wrapper hook that can be used to call the operati
 
 Here are all of the hooks that get generated:
 ```ts
-import { useCreateMyAccount, useUpdateMyAccount, useSetMyAccountPrimaryContact, useClearMyAccountPrimaryContact, useDeleteMyAccount, useCreateMyAccountContact, useUpdateMyAccountContact, useDeleteMyAccountContact, useListMyAccounts, useGetMyAccount } from '@generated/data-connector-web/react';
+import { useCreateMyCompany, useUpdateMyCompany, useSetMyCompanyPrimaryContact, useClearMyCompanyPrimaryContact, useDeleteMyCompany, useCreateMyCompanyContact, useUpdateMyCompanyContact, useDeleteMyCompanyContact, useListMyCompanies, useGetMyCompany } from '@generated/data-connector-web/react';
 // The types of these hooks are available in react/index.d.ts
 
-const { data, isPending, isSuccess, isError, error } = useCreateMyAccount(createMyAccountVars);
+const { data, isPending, isSuccess, isError, error } = useCreateMyCompany(createMyCompanyVars);
 
-const { data, isPending, isSuccess, isError, error } = useUpdateMyAccount(updateMyAccountVars);
+const { data, isPending, isSuccess, isError, error } = useUpdateMyCompany(updateMyCompanyVars);
 
-const { data, isPending, isSuccess, isError, error } = useSetMyAccountPrimaryContact(setMyAccountPrimaryContactVars);
+const { data, isPending, isSuccess, isError, error } = useSetMyCompanyPrimaryContact(setMyCompanyPrimaryContactVars);
 
-const { data, isPending, isSuccess, isError, error } = useClearMyAccountPrimaryContact(clearMyAccountPrimaryContactVars);
+const { data, isPending, isSuccess, isError, error } = useClearMyCompanyPrimaryContact(clearMyCompanyPrimaryContactVars);
 
-const { data, isPending, isSuccess, isError, error } = useDeleteMyAccount(deleteMyAccountVars);
+const { data, isPending, isSuccess, isError, error } = useDeleteMyCompany(deleteMyCompanyVars);
 
-const { data, isPending, isSuccess, isError, error } = useCreateMyAccountContact(createMyAccountContactVars);
+const { data, isPending, isSuccess, isError, error } = useCreateMyCompanyContact(createMyCompanyContactVars);
 
-const { data, isPending, isSuccess, isError, error } = useUpdateMyAccountContact(updateMyAccountContactVars);
+const { data, isPending, isSuccess, isError, error } = useUpdateMyCompanyContact(updateMyCompanyContactVars);
 
-const { data, isPending, isSuccess, isError, error } = useDeleteMyAccountContact(deleteMyAccountContactVars);
+const { data, isPending, isSuccess, isError, error } = useDeleteMyCompanyContact(deleteMyCompanyContactVars);
 
-const { data, isPending, isSuccess, isError, error } = useListMyAccounts();
+const { data, isPending, isSuccess, isError, error } = useListMyCompanies();
 
-const { data, isPending, isSuccess, isError, error } = useGetMyAccount(getMyAccountVars);
+const { data, isPending, isSuccess, isError, error } = useGetMyCompany(getMyCompanyVars);
 
 ```
 
@@ -72,38 +72,38 @@ If a user is not using a supported framework, they can use the generated SDK dir
 Here's an example of how to use it with the first 5 operations:
 
 ```js
-import { createMyAccount, updateMyAccount, setMyAccountPrimaryContact, clearMyAccountPrimaryContact, deleteMyAccount, createMyAccountContact, updateMyAccountContact, deleteMyAccountContact, listMyAccounts, getMyAccount } from '@generated/data-connector-web';
+import { createMyCompany, updateMyCompany, setMyCompanyPrimaryContact, clearMyCompanyPrimaryContact, deleteMyCompany, createMyCompanyContact, updateMyCompanyContact, deleteMyCompanyContact, listMyCompanies, getMyCompany } from '@generated/data-connector-web';
 
 
-// Operation CreateMyAccount:  For variables, look at type CreateMyAccountVars in ../index.d.ts
-const { data } = await CreateMyAccount(dataConnect, createMyAccountVars);
+// Operation CreateMyCompany:  For variables, look at type CreateMyCompanyVars in ../index.d.ts
+const { data } = await CreateMyCompany(dataConnect, createMyCompanyVars);
 
-// Operation UpdateMyAccount:  For variables, look at type UpdateMyAccountVars in ../index.d.ts
-const { data } = await UpdateMyAccount(dataConnect, updateMyAccountVars);
+// Operation UpdateMyCompany:  For variables, look at type UpdateMyCompanyVars in ../index.d.ts
+const { data } = await UpdateMyCompany(dataConnect, updateMyCompanyVars);
 
-// Operation SetMyAccountPrimaryContact:  For variables, look at type SetMyAccountPrimaryContactVars in ../index.d.ts
-const { data } = await SetMyAccountPrimaryContact(dataConnect, setMyAccountPrimaryContactVars);
+// Operation SetMyCompanyPrimaryContact:  For variables, look at type SetMyCompanyPrimaryContactVars in ../index.d.ts
+const { data } = await SetMyCompanyPrimaryContact(dataConnect, setMyCompanyPrimaryContactVars);
 
-// Operation ClearMyAccountPrimaryContact:  For variables, look at type ClearMyAccountPrimaryContactVars in ../index.d.ts
-const { data } = await ClearMyAccountPrimaryContact(dataConnect, clearMyAccountPrimaryContactVars);
+// Operation ClearMyCompanyPrimaryContact:  For variables, look at type ClearMyCompanyPrimaryContactVars in ../index.d.ts
+const { data } = await ClearMyCompanyPrimaryContact(dataConnect, clearMyCompanyPrimaryContactVars);
 
-// Operation DeleteMyAccount:  For variables, look at type DeleteMyAccountVars in ../index.d.ts
-const { data } = await DeleteMyAccount(dataConnect, deleteMyAccountVars);
+// Operation DeleteMyCompany:  For variables, look at type DeleteMyCompanyVars in ../index.d.ts
+const { data } = await DeleteMyCompany(dataConnect, deleteMyCompanyVars);
 
-// Operation CreateMyAccountContact:  For variables, look at type CreateMyAccountContactVars in ../index.d.ts
-const { data } = await CreateMyAccountContact(dataConnect, createMyAccountContactVars);
+// Operation CreateMyCompanyContact:  For variables, look at type CreateMyCompanyContactVars in ../index.d.ts
+const { data } = await CreateMyCompanyContact(dataConnect, createMyCompanyContactVars);
 
-// Operation UpdateMyAccountContact:  For variables, look at type UpdateMyAccountContactVars in ../index.d.ts
-const { data } = await UpdateMyAccountContact(dataConnect, updateMyAccountContactVars);
+// Operation UpdateMyCompanyContact:  For variables, look at type UpdateMyCompanyContactVars in ../index.d.ts
+const { data } = await UpdateMyCompanyContact(dataConnect, updateMyCompanyContactVars);
 
-// Operation DeleteMyAccountContact:  For variables, look at type DeleteMyAccountContactVars in ../index.d.ts
-const { data } = await DeleteMyAccountContact(dataConnect, deleteMyAccountContactVars);
+// Operation DeleteMyCompanyContact:  For variables, look at type DeleteMyCompanyContactVars in ../index.d.ts
+const { data } = await DeleteMyCompanyContact(dataConnect, deleteMyCompanyContactVars);
 
-// Operation ListMyAccounts: 
-const { data } = await ListMyAccounts(dataConnect);
+// Operation ListMyCompanies: 
+const { data } = await ListMyCompanies(dataConnect);
 
-// Operation GetMyAccount:  For variables, look at type GetMyAccountVars in ../index.d.ts
-const { data } = await GetMyAccount(dataConnect, getMyAccountVars);
+// Operation GetMyCompany:  For variables, look at type GetMyCompanyVars in ../index.d.ts
+const { data } = await GetMyCompany(dataConnect, getMyCompanyVars);
 
 
 ```

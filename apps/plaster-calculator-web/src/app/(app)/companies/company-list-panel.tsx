@@ -11,19 +11,19 @@ import {
 import { Building2, LoaderCircle, RefreshCcw, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-import { AccountRow } from "./account-row.js";
-import { filterAccounts } from "./account.utils.js";
-import { listAccounts } from "../../../lib/api.js";
+import { CompanyRow } from "./company-row.js";
+import { filterCompanies } from "./company.utils.js";
+import { listCompanies } from "../../../lib/api.js";
 import { cx, ui } from "../../../lib/styles.js";
 
-import type { AccountSummary } from "../../../types.js";
+import type { CompanySummary } from "../../../types.js";
 
-interface AccountListPanelProps {
+interface CompanyListPanelProps {
     readonly refreshKey: number;
 }
 
-export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
-    const [accounts, setAccounts] = useState<AccountSummary[]>([]);
+export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
+    const [companies, setCompanies] = useState<CompanySummary[]>([]);
     const [query, setQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [message, setMessage] = useState("");
@@ -33,20 +33,20 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
     }, [refreshKey]);
 
     const filtered = useMemo(
-        () => filterAccounts(accounts, query),
-        [accounts, query],
+        () => filterCompanies(companies, query),
+        [companies, query],
     );
     async function refresh(): Promise<void> {
         setIsLoading(true);
         setMessage("");
         try {
-            const nextAccounts = await listAccounts();
-            setAccounts(nextAccounts);
+            const nextCompanies = await listCompanies();
+            setCompanies(nextCompanies);
         } catch (error) {
             setMessage(
                 error instanceof Error
                     ? error.message
-                    : "Unable to load accounts",
+                    : "Unable to load companies",
             );
         } finally {
             setIsLoading(false);
@@ -56,12 +56,12 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
     return (
         <section className={cx(ui.panel, ui.stack)}>
             <div className={ui.editorToolbar}>
-                <h2>Account List</h2>
+                <h2>Company List</h2>
                 <div className={cx(ui.buttonRow, "items-end")}>
                     <div className="grid gap-1.5 min-w-[260px]">
-                        <Label htmlFor="account-search">Search</Label>
+                        <Label htmlFor="company-search">Search</Label>
                         <Input
-                            id="account-search"
+                            id="company-search"
                             leadingIcon={
                                 <Search
                                     size={16}
@@ -75,7 +75,7 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
                     <Button
                         variant="secondary"
                         onClick={() => void refresh()}
-                        title="Refresh account list"
+                        title="Refresh company list"
                         type="button"
                     >
                         <RefreshCcw size={18} /> Refresh
@@ -91,18 +91,18 @@ export function AccountListPanel({ refreshKey }: AccountListPanelProps) {
                 <div className={ui.projectListState}>
                     <LoaderCircle className="animate-spin" size={24} />
                     <Text size="sm" variant="muted">
-                        Loading accounts...
+                        Loading companies...
                     </Text>
                 </div>
             ) : (
                 <div className={ui.projectList}>
-                    {filtered.map((account) => (
-                        <AccountRow key={account.id} account={account} />
+                    {filtered.map((company) => (
+                        <CompanyRow key={company.id} company={company} />
                     ))}
                     {filtered.length === 0 && (
                         <EmptyState
                             icon={<Building2 />}
-                            title="No accounts found"
+                            title="No companies found"
                         />
                     )}
                 </div>

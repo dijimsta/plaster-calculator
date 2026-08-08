@@ -36,7 +36,7 @@ const navItems = [
         label: "Questionnaires",
         Icon: Icons.ClipboardList,
     },
-    { href: "/accounts" as const, label: "Accounts", Icon: Icons.Users },
+    { href: "/companies" as const, label: "Companies", Icon: Icons.Users },
 ];
 
 export default function Sidebar({ children }: PropsWithChildren) {

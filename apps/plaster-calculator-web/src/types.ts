@@ -2,8 +2,8 @@ import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 export type ProjectSummary = {
     id: string;
-    accountId: string | null;
-    accountCompanyName?: string | null;
+    companyId: string | null;
+    companyName?: string | null;
     name: string;
     address: string | null;
     originalFileName: string;
@@ -41,16 +41,16 @@ export type ProjectDetail = ProjectSummary & {
     pages: FloorplanPage[];
 };
 
-export type AccountContactPayload = {
+export type CompanyContactPayload = {
     name?: string;
     email?: string | null;
     phoneNumber?: string | null;
     role?: string | null;
 };
 
-export type AccountContact = {
+export type CompanyContact = {
     id: string;
-    accountId: string;
+    companyId: string;
     name: string;
     email: string | null;
     phoneNumber: string | null;
@@ -59,7 +59,7 @@ export type AccountContact = {
     updatedAt: string;
 };
 
-export type AccountSummary = {
+export type CompanySummary = {
     id: string;
     teamId?: string | null;
     companyName: string;
@@ -70,8 +70,8 @@ export type AccountSummary = {
     updatedAt: string;
 };
 
-export type AccountDetail = AccountSummary & {
-    contacts: AccountContact[];
+export type CompanyDetail = CompanySummary & {
+    contacts: CompanyContact[];
 };
 
 export type UserSettings = {
@@ -86,7 +86,7 @@ export type Reminder = {
     id: string;
     teamId?: string | null;
     projectId: string;
-    accountId: string | null;
+    companyId: string | null;
     assignee: string | null;
     name: string;
     status: "OPEN" | "DONE" | "CANCELLED";

@@ -4,13 +4,13 @@ import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
 import { Home } from "lucide-react";
 import { useState } from "react";
 
-import { AccountListPanel } from "./account-list-panel.js";
-import { NewAccountPanel } from "./new-account-panel.js";
+import { CompanyListPanel } from "./company-list-panel.js";
+import { NewCompanyPanel } from "./new-company-panel.js";
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { cx, ui } from "../../../lib/styles.js";
 
-export default function AccountsPage() {
-    const [accountListRefreshKey, setAccountListRefreshKey] = useState(0);
+export default function CompaniesPage() {
+    const [companyListRefreshKey, setCompanyListRefreshKey] = useState(0);
 
     return (
         <>
@@ -20,25 +20,25 @@ export default function AccountsPage() {
                         <RoutedBreadcrumbItem href="/">
                             <Home size={16} aria-label="Home" />
                         </RoutedBreadcrumbItem>
-                        <Breadcrumb.Item current>Accounts</Breadcrumb.Item>
+                        <Breadcrumb.Item current>Companies</Breadcrumb.Item>
                     </Breadcrumb>
                 </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
-                    <PageHeading.Title>Accounts</PageHeading.Title>
+                    <PageHeading.Title>Companies</PageHeading.Title>
                     <PageHeading.Description>
-                        Manage customer accounts and contacts.
+                        Manage customer companies and contacts.
                     </PageHeading.Description>
                 </PageHeading.Content>
             </PageHeading>
 
             <Box direction="column" padding="md">
                 <section className={cx(ui.layoutGrid, "items-start")}>
-                    <NewAccountPanel
+                    <NewCompanyPanel
                         onCreated={() =>
-                            setAccountListRefreshKey((current) => current + 1)
+                            setCompanyListRefreshKey((current) => current + 1)
                         }
                     />
-                    <AccountListPanel refreshKey={accountListRefreshKey} />
+                    <CompanyListPanel refreshKey={companyListRefreshKey} />
                 </section>
             </Box>
         </>

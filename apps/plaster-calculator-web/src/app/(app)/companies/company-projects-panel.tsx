@@ -10,11 +10,11 @@ import type { ProjectSummary } from "../../../types.js";
 
 const Link = LinkModule.default;
 
-interface AccountProjectsPanelProps {
+interface CompanyProjectsPanelProps {
     readonly projects: readonly ProjectSummary[];
 }
 
-export function AccountProjectsPanel({ projects }: AccountProjectsPanelProps) {
+export function CompanyProjectsPanel({ projects }: CompanyProjectsPanelProps) {
     return (
         <section className={cx(ui.panel, ui.stack)}>
             <h2>Projects</h2>
@@ -34,7 +34,7 @@ export function AccountProjectsPanel({ projects }: AccountProjectsPanelProps) {
             {projects.length === 0 && (
                 <EmptyState
                     icon={<FolderKanban />}
-                    title="No projects are linked to this account"
+                    title="No projects are linked to this company"
                 />
             )}
         </section>

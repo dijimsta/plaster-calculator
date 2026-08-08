@@ -48,8 +48,8 @@ export default function ProjectPage({
     const [switchingPage, setSwitchingPage] = useState(false);
     const [renaming, setRenaming] = useState(false);
     const [renameValue, setRenameValue] = useState("");
-    const [accountId, setAccountId] = useState<string | null>(null);
-    const [savingAccount, setSavingAccount] = useState(false);
+    const [companyId, setCompanyId] = useState<string | null>(null);
+    const [savingCompany, setSavingCompany] = useState(false);
     const [savingSalesStatus, setSavingSalesStatus] = useState(false);
     const [analyzingPage, setAnalyzingPage] = useState(false);
 
@@ -58,7 +58,7 @@ export default function ProjectPage({
             const detail = await getProject(projectId);
             setProject(detail);
             setRenameValue(detail.name);
-            setAccountId(detail.accountId);
+            setCompanyId(detail.companyId);
             setSelectedPageId((current) =>
                 current && detail.pages.some((page) => page.id === current)
                     ? current
@@ -116,24 +116,24 @@ export default function ProjectPage({
         }
     }
 
-    async function saveAccount(): Promise<void> {
-        if (!project || !accountId) return;
-        setSavingAccount(true);
+    async function saveCompany(): Promise<void> {
+        if (!project || !companyId) return;
+        setSavingCompany(true);
         try {
             const updated = await updateProject({
                 projectId: project.id,
-                accountId,
+                companyId,
             });
             setProject(updated);
             setError("");
-            notify({ intent: "success", title: "Account linked to project." });
+            notify({ intent: "success", title: "Company linked to project." });
         } catch (err) {
             setError(
-                err instanceof Error ? err.message : "Unable to link account",
+                err instanceof Error ? err.message : "Unable to link company",
             );
             throw err;
         } finally {
-            setSavingAccount(false);
+            setSavingCompany(false);
         }
     }
 
@@ -155,7 +155,7 @@ export default function ProjectPage({
                 salesStatus: status,
             });
             setProject(updated);
-            setAccountId(updated.accountId);
+            setCompanyId(updated.companyId);
             setError("");
             notify({
                 intent: "success",
@@ -288,7 +288,7 @@ export default function ProjectPage({
                 {error && <p className={ui.error}>{error}</p>}
                 {project && (
                     <ProjectStatusContent
-                        accountId={accountId}
+                        companyId={companyId}
                         project={project}
                         salesStatusPanel={
                             <ProjectSalesStatusControl
@@ -297,12 +297,12 @@ export default function ProjectPage({
                                 onStatusChange={changeSalesStatus}
                             />
                         }
-                        saveAccount={saveAccount}
-                        savingAccount={savingAccount}
+                        saveCompany={saveCompany}
+                        savingCompany={savingCompany}
                         selectedPage={selectedPage}
                         selectedPageId={selectedPageId}
                         selectPage={selectPage}
-                        setAccountId={setAccountId}
+                        setCompanyId={setCompanyId}
                         switchingPage={switchingPage}
                         analyzingPage={analyzingPage}
                         setAnalyzingPage={setAnalyzingPage}

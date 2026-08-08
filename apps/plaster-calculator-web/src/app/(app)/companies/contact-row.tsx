@@ -3,19 +3,19 @@
 import { Button, ButtonLink, Text } from "@libraries/uikit-web";
 import { Mail, Pencil, Trash2, X } from "lucide-react";
 
-import { toContactDraft } from "./account.utils.js";
+import { toContactDraft } from "./company.utils.js";
 import { ContactFormFields } from "./contact-form-fields.js";
 import { ui } from "../../../lib/styles.js";
 
-import type { ContactDraft } from "./account.types.js";
-import type { AccountContact } from "../../../types.js";
+import type { ContactDraft } from "./company.types.js";
+import type { CompanyContact } from "../../../types.js";
 
 interface ContactRowProps {
-    readonly contact: AccountContact;
+    readonly contact: CompanyContact;
     readonly editContactDraft: ContactDraft;
     readonly editContactId: string | null;
     readonly isPrimary: boolean;
-    readonly removeContact: (contact: AccountContact) => Promise<void>;
+    readonly removeContact: (contact: CompanyContact) => Promise<void>;
     readonly saveContact: (contactId: string) => Promise<void>;
     readonly setEditContactDraft: (draft: ContactDraft) => void;
     readonly setEditContactId: (contactId: string | null) => void;
@@ -86,7 +86,7 @@ function ContactSummary({
     contact,
     isPrimary,
 }: {
-    readonly contact: AccountContact;
+    readonly contact: CompanyContact;
     readonly isPrimary: boolean;
 }) {
     return (

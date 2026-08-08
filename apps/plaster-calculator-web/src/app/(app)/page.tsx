@@ -48,7 +48,7 @@ export default function HomePage() {
                 )}
                 <section className={ui.layoutGrid}>
                     <NewProjectForm
-                        accountId={upload.accountId}
+                        companyId={upload.companyId}
                         dragActive={upload.dragActive}
                         file={upload.file}
                         loading={upload.loading}
@@ -56,7 +56,7 @@ export default function HomePage() {
                         name={upload.name}
                         handleDrop={upload.handleDrop}
                         handleFileSelection={upload.handleFileSelection}
-                        setAccountId={upload.setAccountId}
+                        setCompanyId={upload.setCompanyId}
                         setDragActive={upload.setDragActive}
                         setName={upload.setName}
                         submit={upload.submit}

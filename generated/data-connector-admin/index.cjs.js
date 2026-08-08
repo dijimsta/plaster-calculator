@@ -7,19 +7,19 @@ const connectorConfig = {
 };
 exports.connectorConfig = connectorConfig;
 
-function getAccountById(dcOrVarsOrOptions, varsOrOptions, options) {
+function getCompanyById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetAccountById', inputVars, inputOpts);
+  return dcInstance.executeQuery('GetCompanyById', inputVars, inputOpts);
 }
-exports.getAccountById = getAccountById;
+exports.getCompanyById = getCompanyById;
 
-function getAccountContactById(dcOrVarsOrOptions, varsOrOptions, options) {
+function getCompanyContactById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetAccountContactById', inputVars, inputOpts);
+  return dcInstance.executeQuery('GetCompanyContactById', inputVars, inputOpts);
 }
-exports.getAccountContactById = getAccountContactById;
+exports.getCompanyContactById = getCompanyContactById;
 
 function createProjectFromUpload(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
@@ -105,12 +105,12 @@ function listProjectsByTeamAndSalesStatus(dcOrVarsOrOptions, varsOrOptions, opti
 }
 exports.listProjectsByTeamAndSalesStatus = listProjectsByTeamAndSalesStatus;
 
-function listProjectsByAccount(dcOrVarsOrOptions, varsOrOptions, options) {
+function listProjectsByCompany(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListProjectsByAccount', inputVars, inputOpts);
+  return dcInstance.executeQuery('ListProjectsByCompany', inputVars, inputOpts);
 }
-exports.listProjectsByAccount = listProjectsByAccount;
+exports.listProjectsByCompany = listProjectsByCompany;
 
 function getProjectDetailsById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);

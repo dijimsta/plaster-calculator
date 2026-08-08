@@ -29,32 +29,42 @@ export interface ApplyQuestionnaireTemplateToProjectVariables {
   sourceTemplateId: UUIDString;
 }
 
-export interface ClearMyAccountPrimaryContactData {
-  account_update?: Account_Key | null;
+export interface ClearMyCompanyPrimaryContactData {
+  company_update?: Company_Key | null;
 }
 
-export interface ClearMyAccountPrimaryContactVariables {
-  accountId: UUIDString;
+export interface ClearMyCompanyPrimaryContactVariables {
+  companyId: UUIDString;
 }
 
-export interface CreateMyAccountContactData {
-  accountContact_insert: AccountContact_Key;
-}
-
-export interface CreateMyAccountContactVariables {
+export interface CompanyContact_Key {
   id: UUIDString;
-  accountId: UUIDString;
+  __typename?: 'CompanyContact_Key';
+}
+
+export interface Company_Key {
+  id: UUIDString;
+  __typename?: 'Company_Key';
+}
+
+export interface CreateMyCompanyContactData {
+  companyContact_insert: CompanyContact_Key;
+}
+
+export interface CreateMyCompanyContactVariables {
+  id: UUIDString;
+  companyId: UUIDString;
   name: string;
   email?: string | null;
   phoneNumber?: string | null;
   role?: string | null;
 }
 
-export interface CreateMyAccountData {
-  account_insert: Account_Key;
+export interface CreateMyCompanyData {
+  company_insert: Company_Key;
 }
 
-export interface CreateMyAccountVariables {
+export interface CreateMyCompanyVariables {
   id: UUIDString;
   companyName: string;
   businessNumber?: string | null;
@@ -92,22 +102,22 @@ export interface CreateQuestionnaireTemplateVariables {
   name: string;
 }
 
-export interface DeleteMyAccountContactData {
-  account_update?: Account_Key | null;
-  accountContact_delete?: AccountContact_Key | null;
+export interface DeleteMyCompanyContactData {
+  company_update?: Company_Key | null;
+  companyContact_delete?: CompanyContact_Key | null;
 }
 
-export interface DeleteMyAccountContactVariables {
-  accountId: UUIDString;
+export interface DeleteMyCompanyContactVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
 }
 
-export interface DeleteMyAccountData {
-  accountContact_deleteMany: number;
-  account_delete?: Account_Key | null;
+export interface DeleteMyCompanyData {
+  companyContact_deleteMany: number;
+  company_delete?: Company_Key | null;
 }
 
-export interface DeleteMyAccountVariables {
+export interface DeleteMyCompanyVariables {
   id: UUIDString;
 }
 
@@ -151,8 +161,8 @@ export interface FloorplanPage_Key {
   __typename?: 'FloorplanPage_Key';
 }
 
-export interface GetMyAccountData {
-  account?: {
+export interface GetMyCompanyData {
+  company?: {
     id: UUIDString;
     teamId: string;
     companyName: string;
@@ -163,18 +173,18 @@ export interface GetMyAccountData {
     updatedAt: TimestampString;
     contacts: ({
       id: UUIDString;
-      accountId: UUIDString;
+      companyId: UUIDString;
       name: string;
       email?: string | null;
       phoneNumber?: string | null;
       role?: string | null;
       createdAt: TimestampString;
       updatedAt: TimestampString;
-    } & AccountContact_Key)[];
-  } & Account_Key;
+    } & CompanyContact_Key)[];
+  } & Company_Key;
 }
 
-export interface GetMyAccountVariables {
+export interface GetMyCompanyVariables {
   id: UUIDString;
 }
 
@@ -252,25 +262,8 @@ export interface GetQuestionnaireTemplateVariables {
   id: UUIDString;
 }
 
-export interface ListMyAccountContactsData {
-  accountContacts: ({
-    id: UUIDString;
-    accountId: UUIDString;
-    name: string;
-    email?: string | null;
-    phoneNumber?: string | null;
-    role?: string | null;
-    createdAt: TimestampString;
-    updatedAt: TimestampString;
-  } & AccountContact_Key)[];
-}
-
-export interface ListMyAccountContactsVariables {
-  accountId: UUIDString;
-}
-
-export interface ListMyAccountsData {
-  accounts: ({
+export interface ListMyCompaniesData {
+  companies: ({
     id: UUIDString;
     teamId: string;
     companyName: string;
@@ -279,7 +272,24 @@ export interface ListMyAccountsData {
     primaryContactId?: UUIDString | null;
     createdAt: TimestampString;
     updatedAt: TimestampString;
-  } & Account_Key)[];
+  } & Company_Key)[];
+}
+
+export interface ListMyCompanyContactsData {
+  companyContacts: ({
+    id: UUIDString;
+    companyId: UUIDString;
+    name: string;
+    email?: string | null;
+    phoneNumber?: string | null;
+    role?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & CompanyContact_Key)[];
+}
+
+export interface ListMyCompanyContactsVariables {
+  companyId: UUIDString;
 }
 
 export interface ListProjectQuestionnairesData {
@@ -361,12 +371,12 @@ export interface Reminder_Key {
   __typename?: 'Reminder_Key';
 }
 
-export interface SetMyAccountPrimaryContactData {
-  account_update?: Account_Key | null;
+export interface SetMyCompanyPrimaryContactData {
+  company_update?: Company_Key | null;
 }
 
-export interface SetMyAccountPrimaryContactVariables {
-  accountId: UUIDString;
+export interface SetMyCompanyPrimaryContactVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
 }
 
@@ -392,12 +402,12 @@ export interface Team_Key {
   __typename?: 'Team_Key';
 }
 
-export interface UpdateMyAccountContactData {
-  accountContact_update?: AccountContact_Key | null;
+export interface UpdateMyCompanyContactData {
+  companyContact_update?: CompanyContact_Key | null;
 }
 
-export interface UpdateMyAccountContactVariables {
-  accountId: UUIDString;
+export interface UpdateMyCompanyContactVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
   name: string;
   email?: string | null;
@@ -405,11 +415,11 @@ export interface UpdateMyAccountContactVariables {
   role?: string | null;
 }
 
-export interface UpdateMyAccountData {
-  account_update?: Account_Key | null;
+export interface UpdateMyCompanyData {
+  company_update?: Company_Key | null;
 }
 
-export interface UpdateMyAccountVariables {
+export interface UpdateMyCompanyVariables {
   id: UUIDString;
   companyName: string;
   businessNumber?: string | null;
@@ -499,137 +509,137 @@ export interface UserSignature_Key {
   __typename?: 'UserSignature_Key';
 }
 
-interface CreateMyAccountRef {
+interface CreateMyCompanyRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateMyAccountVariables): MutationRef<CreateMyAccountData, CreateMyAccountVariables>;
+  (vars: CreateMyCompanyVariables): MutationRef<CreateMyCompanyData, CreateMyCompanyVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreateMyAccountVariables): MutationRef<CreateMyAccountData, CreateMyAccountVariables>;
+  (dc: DataConnect, vars: CreateMyCompanyVariables): MutationRef<CreateMyCompanyData, CreateMyCompanyVariables>;
   operationName: string;
 }
-export const createMyAccountRef: CreateMyAccountRef;
+export const createMyCompanyRef: CreateMyCompanyRef;
 
-export function createMyAccount(vars: CreateMyAccountVariables): MutationPromise<CreateMyAccountData, CreateMyAccountVariables>;
-export function createMyAccount(dc: DataConnect, vars: CreateMyAccountVariables): MutationPromise<CreateMyAccountData, CreateMyAccountVariables>;
+export function createMyCompany(vars: CreateMyCompanyVariables): MutationPromise<CreateMyCompanyData, CreateMyCompanyVariables>;
+export function createMyCompany(dc: DataConnect, vars: CreateMyCompanyVariables): MutationPromise<CreateMyCompanyData, CreateMyCompanyVariables>;
 
-interface UpdateMyAccountRef {
+interface UpdateMyCompanyRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: UpdateMyAccountVariables): MutationRef<UpdateMyAccountData, UpdateMyAccountVariables>;
+  (vars: UpdateMyCompanyVariables): MutationRef<UpdateMyCompanyData, UpdateMyCompanyVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: UpdateMyAccountVariables): MutationRef<UpdateMyAccountData, UpdateMyAccountVariables>;
+  (dc: DataConnect, vars: UpdateMyCompanyVariables): MutationRef<UpdateMyCompanyData, UpdateMyCompanyVariables>;
   operationName: string;
 }
-export const updateMyAccountRef: UpdateMyAccountRef;
+export const updateMyCompanyRef: UpdateMyCompanyRef;
 
-export function updateMyAccount(vars: UpdateMyAccountVariables): MutationPromise<UpdateMyAccountData, UpdateMyAccountVariables>;
-export function updateMyAccount(dc: DataConnect, vars: UpdateMyAccountVariables): MutationPromise<UpdateMyAccountData, UpdateMyAccountVariables>;
+export function updateMyCompany(vars: UpdateMyCompanyVariables): MutationPromise<UpdateMyCompanyData, UpdateMyCompanyVariables>;
+export function updateMyCompany(dc: DataConnect, vars: UpdateMyCompanyVariables): MutationPromise<UpdateMyCompanyData, UpdateMyCompanyVariables>;
 
-interface SetMyAccountPrimaryContactRef {
+interface SetMyCompanyPrimaryContactRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: SetMyAccountPrimaryContactVariables): MutationRef<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
+  (vars: SetMyCompanyPrimaryContactVariables): MutationRef<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: SetMyAccountPrimaryContactVariables): MutationRef<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
+  (dc: DataConnect, vars: SetMyCompanyPrimaryContactVariables): MutationRef<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
   operationName: string;
 }
-export const setMyAccountPrimaryContactRef: SetMyAccountPrimaryContactRef;
+export const setMyCompanyPrimaryContactRef: SetMyCompanyPrimaryContactRef;
 
-export function setMyAccountPrimaryContact(vars: SetMyAccountPrimaryContactVariables): MutationPromise<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
-export function setMyAccountPrimaryContact(dc: DataConnect, vars: SetMyAccountPrimaryContactVariables): MutationPromise<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
+export function setMyCompanyPrimaryContact(vars: SetMyCompanyPrimaryContactVariables): MutationPromise<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
+export function setMyCompanyPrimaryContact(dc: DataConnect, vars: SetMyCompanyPrimaryContactVariables): MutationPromise<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
 
-interface ClearMyAccountPrimaryContactRef {
+interface ClearMyCompanyPrimaryContactRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: ClearMyAccountPrimaryContactVariables): MutationRef<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
+  (vars: ClearMyCompanyPrimaryContactVariables): MutationRef<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: ClearMyAccountPrimaryContactVariables): MutationRef<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
+  (dc: DataConnect, vars: ClearMyCompanyPrimaryContactVariables): MutationRef<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
   operationName: string;
 }
-export const clearMyAccountPrimaryContactRef: ClearMyAccountPrimaryContactRef;
+export const clearMyCompanyPrimaryContactRef: ClearMyCompanyPrimaryContactRef;
 
-export function clearMyAccountPrimaryContact(vars: ClearMyAccountPrimaryContactVariables): MutationPromise<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
-export function clearMyAccountPrimaryContact(dc: DataConnect, vars: ClearMyAccountPrimaryContactVariables): MutationPromise<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
+export function clearMyCompanyPrimaryContact(vars: ClearMyCompanyPrimaryContactVariables): MutationPromise<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
+export function clearMyCompanyPrimaryContact(dc: DataConnect, vars: ClearMyCompanyPrimaryContactVariables): MutationPromise<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
 
-interface DeleteMyAccountRef {
+interface DeleteMyCompanyRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: DeleteMyAccountVariables): MutationRef<DeleteMyAccountData, DeleteMyAccountVariables>;
+  (vars: DeleteMyCompanyVariables): MutationRef<DeleteMyCompanyData, DeleteMyCompanyVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: DeleteMyAccountVariables): MutationRef<DeleteMyAccountData, DeleteMyAccountVariables>;
+  (dc: DataConnect, vars: DeleteMyCompanyVariables): MutationRef<DeleteMyCompanyData, DeleteMyCompanyVariables>;
   operationName: string;
 }
-export const deleteMyAccountRef: DeleteMyAccountRef;
+export const deleteMyCompanyRef: DeleteMyCompanyRef;
 
-export function deleteMyAccount(vars: DeleteMyAccountVariables): MutationPromise<DeleteMyAccountData, DeleteMyAccountVariables>;
-export function deleteMyAccount(dc: DataConnect, vars: DeleteMyAccountVariables): MutationPromise<DeleteMyAccountData, DeleteMyAccountVariables>;
+export function deleteMyCompany(vars: DeleteMyCompanyVariables): MutationPromise<DeleteMyCompanyData, DeleteMyCompanyVariables>;
+export function deleteMyCompany(dc: DataConnect, vars: DeleteMyCompanyVariables): MutationPromise<DeleteMyCompanyData, DeleteMyCompanyVariables>;
 
-interface CreateMyAccountContactRef {
+interface CreateMyCompanyContactRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateMyAccountContactVariables): MutationRef<CreateMyAccountContactData, CreateMyAccountContactVariables>;
+  (vars: CreateMyCompanyContactVariables): MutationRef<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreateMyAccountContactVariables): MutationRef<CreateMyAccountContactData, CreateMyAccountContactVariables>;
+  (dc: DataConnect, vars: CreateMyCompanyContactVariables): MutationRef<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
   operationName: string;
 }
-export const createMyAccountContactRef: CreateMyAccountContactRef;
+export const createMyCompanyContactRef: CreateMyCompanyContactRef;
 
-export function createMyAccountContact(vars: CreateMyAccountContactVariables): MutationPromise<CreateMyAccountContactData, CreateMyAccountContactVariables>;
-export function createMyAccountContact(dc: DataConnect, vars: CreateMyAccountContactVariables): MutationPromise<CreateMyAccountContactData, CreateMyAccountContactVariables>;
+export function createMyCompanyContact(vars: CreateMyCompanyContactVariables): MutationPromise<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
+export function createMyCompanyContact(dc: DataConnect, vars: CreateMyCompanyContactVariables): MutationPromise<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
 
-interface UpdateMyAccountContactRef {
+interface UpdateMyCompanyContactRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: UpdateMyAccountContactVariables): MutationRef<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
+  (vars: UpdateMyCompanyContactVariables): MutationRef<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: UpdateMyAccountContactVariables): MutationRef<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
+  (dc: DataConnect, vars: UpdateMyCompanyContactVariables): MutationRef<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
   operationName: string;
 }
-export const updateMyAccountContactRef: UpdateMyAccountContactRef;
+export const updateMyCompanyContactRef: UpdateMyCompanyContactRef;
 
-export function updateMyAccountContact(vars: UpdateMyAccountContactVariables): MutationPromise<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
-export function updateMyAccountContact(dc: DataConnect, vars: UpdateMyAccountContactVariables): MutationPromise<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
+export function updateMyCompanyContact(vars: UpdateMyCompanyContactVariables): MutationPromise<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
+export function updateMyCompanyContact(dc: DataConnect, vars: UpdateMyCompanyContactVariables): MutationPromise<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
 
-interface DeleteMyAccountContactRef {
+interface DeleteMyCompanyContactRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: DeleteMyAccountContactVariables): MutationRef<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
+  (vars: DeleteMyCompanyContactVariables): MutationRef<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: DeleteMyAccountContactVariables): MutationRef<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
+  (dc: DataConnect, vars: DeleteMyCompanyContactVariables): MutationRef<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
   operationName: string;
 }
-export const deleteMyAccountContactRef: DeleteMyAccountContactRef;
+export const deleteMyCompanyContactRef: DeleteMyCompanyContactRef;
 
-export function deleteMyAccountContact(vars: DeleteMyAccountContactVariables): MutationPromise<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
-export function deleteMyAccountContact(dc: DataConnect, vars: DeleteMyAccountContactVariables): MutationPromise<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
+export function deleteMyCompanyContact(vars: DeleteMyCompanyContactVariables): MutationPromise<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
+export function deleteMyCompanyContact(dc: DataConnect, vars: DeleteMyCompanyContactVariables): MutationPromise<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
 
-interface ListMyAccountsRef {
+interface ListMyCompaniesRef {
   /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListMyAccountsData, undefined>;
+  (): QueryRef<ListMyCompaniesData, undefined>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListMyAccountsData, undefined>;
+  (dc: DataConnect): QueryRef<ListMyCompaniesData, undefined>;
   operationName: string;
 }
-export const listMyAccountsRef: ListMyAccountsRef;
+export const listMyCompaniesRef: ListMyCompaniesRef;
 
-export function listMyAccounts(options?: ExecuteQueryOptions): QueryPromise<ListMyAccountsData, undefined>;
-export function listMyAccounts(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListMyAccountsData, undefined>;
+export function listMyCompanies(options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, undefined>;
+export function listMyCompanies(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, undefined>;
 
-interface GetMyAccountRef {
+interface GetMyCompanyRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: GetMyAccountVariables): QueryRef<GetMyAccountData, GetMyAccountVariables>;
+  (vars: GetMyCompanyVariables): QueryRef<GetMyCompanyData, GetMyCompanyVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetMyAccountVariables): QueryRef<GetMyAccountData, GetMyAccountVariables>;
+  (dc: DataConnect, vars: GetMyCompanyVariables): QueryRef<GetMyCompanyData, GetMyCompanyVariables>;
   operationName: string;
 }
-export const getMyAccountRef: GetMyAccountRef;
+export const getMyCompanyRef: GetMyCompanyRef;
 
-export function getMyAccount(vars: GetMyAccountVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyAccountData, GetMyAccountVariables>;
-export function getMyAccount(dc: DataConnect, vars: GetMyAccountVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyAccountData, GetMyAccountVariables>;
+export function getMyCompany(vars: GetMyCompanyVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyCompanyData, GetMyCompanyVariables>;
+export function getMyCompany(dc: DataConnect, vars: GetMyCompanyVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyCompanyData, GetMyCompanyVariables>;
 
-interface ListMyAccountContactsRef {
+interface ListMyCompanyContactsRef {
   /* Allow users to create refs without passing in DataConnect */
-  (vars: ListMyAccountContactsVariables): QueryRef<ListMyAccountContactsData, ListMyAccountContactsVariables>;
+  (vars: ListMyCompanyContactsVariables): QueryRef<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: ListMyAccountContactsVariables): QueryRef<ListMyAccountContactsData, ListMyAccountContactsVariables>;
+  (dc: DataConnect, vars: ListMyCompanyContactsVariables): QueryRef<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
   operationName: string;
 }
-export const listMyAccountContactsRef: ListMyAccountContactsRef;
+export const listMyCompanyContactsRef: ListMyCompanyContactsRef;
 
-export function listMyAccountContacts(vars: ListMyAccountContactsVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyAccountContactsData, ListMyAccountContactsVariables>;
-export function listMyAccountContacts(dc: DataConnect, vars: ListMyAccountContactsVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyAccountContactsData, ListMyAccountContactsVariables>;
+export function listMyCompanyContacts(vars: ListMyCompanyContactsVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
+export function listMyCompanyContacts(dc: DataConnect, vars: ListMyCompanyContactsVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
 
 interface CreateQuestionnaireTemplateRef {
   /* Allow users to create refs without passing in DataConnect */

@@ -6,7 +6,7 @@ import type {
 
 export type ProjectListRow =
     | DataConnector.ListProjectsByTeamAndSalesStatusData["projects"][number]
-    | DataConnector.ListProjectsByAccountData["projects"][number];
+    | DataConnector.ListProjectsByCompanyData["projects"][number];
 export type ProjectWithPages = NonNullable<
     DataConnector.GetProjectDetailsByIdData["project"]
 >;
@@ -27,7 +27,7 @@ export type ProjectStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
 
 export interface ProjectSummary {
     id: string;
-    accountId: string | null;
+    companyId: string | null;
     name: string;
     address: string | null;
     originalFileName: string;
@@ -75,7 +75,7 @@ export interface Reminder {
     id: string;
     teamId?: string | null;
     projectId: string;
-    accountId: string | null;
+    companyId: string | null;
     assignee: string | null;
     name: string;
     status: ReminderStatus;
@@ -101,7 +101,7 @@ export interface UploadResponse {
 
 export interface CreateProjectFromUploadRequest {
     projectId?: unknown;
-    accountId?: unknown;
+    companyId?: unknown;
     name?: unknown;
     address?: unknown;
     originalFileName?: unknown;
@@ -126,14 +126,14 @@ export interface RenameProjectRequest extends ProjectIdRequest {
 
 export interface UpdateProjectRequest extends ProjectIdRequest {
     name?: unknown;
-    accountId?: unknown;
+    companyId?: unknown;
     address?: unknown;
     salesStatus?: unknown;
     assignee?: unknown;
 }
 
-export interface AccountIdRequest {
-    accountId?: unknown;
+export interface CompanyIdRequest {
+    companyId?: unknown;
 }
 
 export interface ReminderIdRequest {
@@ -141,14 +141,14 @@ export interface ReminderIdRequest {
 }
 
 export interface CreateReminderRequest extends ProjectIdRequest {
-    accountId?: unknown;
+    companyId?: unknown;
     name?: unknown;
     dueAt?: unknown;
     assignee?: unknown;
 }
 
 export interface UpdateReminderRequest extends ReminderIdRequest {
-    accountId?: unknown;
+    companyId?: unknown;
     name?: unknown;
     dueAt?: unknown;
     status?: unknown;

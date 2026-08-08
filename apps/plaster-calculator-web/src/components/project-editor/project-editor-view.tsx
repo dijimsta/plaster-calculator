@@ -38,7 +38,7 @@ interface ProjectEditorViewProps {
     readonly overlayState: ReturnType<typeof useEditorOverlay>;
     readonly page: ProjectEditorProps["page"];
     readonly persistence: ReturnType<typeof useEditorPersistence>;
-    readonly projectAccountPanel: ProjectEditorProps["projectAccountPanel"];
+    readonly projectCompanyPanel: ProjectEditorProps["projectCompanyPanel"];
     readonly salesStatusPanel: ProjectEditorProps["salesStatusPanel"];
     readonly scrollDragRef: EditorCanvasProps["scrollDragRef"];
     readonly selection: ReturnType<typeof useEditorSelection>;
@@ -73,7 +73,7 @@ export function ProjectEditorView({
     overlayState,
     page,
     persistence,
-    projectAccountPanel,
+    projectCompanyPanel,
     salesStatusPanel,
     scrollDragRef,
     selection,
@@ -192,7 +192,7 @@ export function ProjectEditorView({
                     selectedEdgeOverride={derivedState.selectedEdgeOverride}
                     selectedPointIndexes={selection.selectedPointIndexes}
                     metrics={derivedState.metrics}
-                    projectAccountPanel={projectAccountPanel}
+                    projectCompanyPanel={projectCompanyPanel}
                     salesStatusPanel={salesStatusPanel}
                     areaIssue={validation.areaIssue}
                     applyHeightToAllPages={persistence.applyHeightToAllPages}

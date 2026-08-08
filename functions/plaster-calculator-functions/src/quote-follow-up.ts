@@ -31,7 +31,7 @@ export async function upsertAutoQuoteReminder(
     if (existing) {
         await DataConnector.updateReminder({
             id: existing.id,
-            accountId: project.accountId ?? null,
+            companyId: project.companyId ?? null,
             name,
             status: "OPEN",
             dueAt,
@@ -44,7 +44,7 @@ export async function upsertAutoQuoteReminder(
         id: randomUUID(),
         teamId,
         projectId: project.id,
-        accountId: project.accountId ?? null,
+        companyId: project.companyId ?? null,
         assignee: project.assignee ?? null,
         name,
         status: "OPEN",
@@ -63,7 +63,7 @@ export async function cancelOpenProjectReminder(
 
     await DataConnector.updateReminder({
         id: reminder.id,
-        accountId: reminder.accountId ?? null,
+        companyId: reminder.companyId ?? null,
         name: reminder.name,
         status: "CANCELLED",
         dueAt: reminder.dueAt,

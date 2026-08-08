@@ -5,27 +5,27 @@ import { default as LinkModule } from "next/link.js";
 
 import { ui } from "../../../lib/styles.js";
 
-import type { AccountSummary } from "../../../types.js";
+import type { CompanySummary } from "../../../types.js";
 
 const Link = LinkModule.default;
 
-interface AccountRowProps {
-    readonly account: AccountSummary;
+interface CompanyRowProps {
+    readonly company: CompanySummary;
 }
 
-export function AccountRow({ account }: AccountRowProps) {
+export function CompanyRow({ company }: CompanyRowProps) {
     return (
         <div className={ui.projectItem}>
             <div className="grid min-w-0 gap-2">
-                <Link href={`/accounts/${account.id}`}>
-                    <strong>{account.companyName}</strong>
+                <Link href={`/companies/${company.id}`}>
+                    <strong>{company.companyName}</strong>
                     <Text size="sm" variant="muted" truncate>
-                        {account.businessNumber || "No business number"} /{" "}
-                        {account.phoneNumber || "No phone"} /{" "}
-                        {account.primaryContactId
+                        {company.businessNumber || "No business number"} /{" "}
+                        {company.phoneNumber || "No phone"} /{" "}
+                        {company.primaryContactId
                             ? "Primary contact set"
                             : "No primary contact"}{" "}
-                        / {new Date(account.updatedAt).toLocaleString()}
+                        / {new Date(company.updatedAt).toLocaleString()}
                     </Text>
                 </Link>
             </div>

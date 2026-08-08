@@ -21,7 +21,7 @@ export function toSummary(
 ): ProjectSummary {
     return {
         id: project.id,
-        accountId: project.accountId ?? null,
+        companyId: project.companyId ?? null,
         name: project.name,
         address: project.address ?? null,
         originalFileName: project.originalFileName,
@@ -84,7 +84,7 @@ export function toReminder(
         id: reminder.id,
         teamId: reminder.teamId,
         projectId: reminder.projectId,
-        accountId: reminder.accountId ?? null,
+        companyId: reminder.companyId ?? null,
         assignee: reminder.assignee ?? null,
         name: reminder.name,
         status: toReminderStatus(reminder.status),

@@ -4,7 +4,7 @@ import { createElement, useEffect, useMemo, useState } from "react";
 import {
     deleteProject,
     getProjectStatus,
-    listAccounts,
+    listCompanies,
     listProjects,
     renameProject,
 } from "../../../lib/api.js";
@@ -13,7 +13,7 @@ import type { ProjectSummary } from "../../../types.js";
 
 export type StatusFilter = "ALL" | "QUOTING" | "QUOTE_SUBMITTED";
 
-type EnrichedProject = ProjectSummary & { accountCompanyName: string | null };
+type EnrichedProject = ProjectSummary & { companyName: string | null };
 
 export interface ProjectsListingState {
     readonly statusFilter: StatusFilter;
@@ -42,7 +42,7 @@ export interface ProjectsListingState {
 export function useProjectsListing(): ProjectsListingState {
     const { notify } = useNotificationsManager();
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
-    const [accountCompanyNames, setAccountCompanyNames] = useState<
+    const [companyNames, setCompanyNames] = useState<
         ReadonlyMap<string, string>
     >(new Map());
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
@@ -57,7 +57,7 @@ export function useProjectsListing(): ProjectsListingState {
 
     useEffect(() => {
         void refresh();
-        void loadAccountCompanyNames();
+        void loadCompanyCompanyNames();
     }, []);
 
     useEffect(() => {
@@ -123,21 +123,21 @@ export function useProjectsListing(): ProjectsListingState {
         }
     }
 
-    async function loadAccountCompanyNames() {
+    async function loadCompanyCompanyNames() {
         try {
-            const accounts = await listAccounts();
-            setAccountCompanyNames(
+            const companies = await listCompanies();
+            setCompanyNames(
                 new Map(
-                    accounts.map((account) => [
-                        account.id,
-                        account.companyName,
+                    companies.map((company) => [
+                        company.id,
+                        company.companyName,
                     ]),
                 ),
             );
         } catch (error) {
             notify({
                 intent: "error",
-                title: "Unable to load account names",
+                title: "Unable to load company names",
                 description: error instanceof Error ? error.message : undefined,
             });
         }
@@ -190,11 +190,11 @@ export function useProjectsListing(): ProjectsListingState {
         () =>
             projects.map((project) => ({
                 ...project,
-                accountCompanyName: project.accountId
-                    ? (accountCompanyNames.get(project.accountId) ?? null)
+                companyName: project.companyId
+                    ? (companyNames.get(project.companyId) ?? null)
                     : null,
             })),
-        [accountCompanyNames, projects],
+        [companyNames, projects],
     );
 
     const totalCount = enriched.length;
@@ -219,7 +219,7 @@ export function useProjectsListing(): ProjectsListingState {
             (p) =>
                 p.name.toLowerCase().includes(q) ||
                 p.originalFileName.toLowerCase().includes(q) ||
-                (p.accountCompanyName?.toLowerCase().includes(q) ?? false),
+                (p.companyName?.toLowerCase().includes(q) ?? false),
         );
     }, [enriched, statusFilter, query]);
 

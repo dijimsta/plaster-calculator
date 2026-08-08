@@ -1,12 +1,12 @@
-import type { AccountContact } from "../../../types.js";
+import type { CompanyContact } from "../../../types.js";
 
-export interface AccountDraft {
+export interface CompanyDraft {
     readonly companyName: string;
     readonly businessNumber: string;
     readonly phoneNumber: string;
 }
 
-export interface AccountDetailDraft extends AccountDraft {
+export interface CompanyDetailDraft extends CompanyDraft {
     readonly primaryContactId: string;
 }
 
@@ -18,15 +18,15 @@ export interface ContactDraft {
     readonly makePrimary: boolean;
 }
 
-export interface AccountDraftFieldsProps {
-    readonly draft: AccountDraft;
-    readonly setDraft: (draft: AccountDraft) => void;
+export interface CompanyDraftFieldsProps {
+    readonly draft: CompanyDraft;
+    readonly setDraft: (draft: CompanyDraft) => void;
 }
 
-export interface AccountDetailFieldsProps {
-    readonly contacts: readonly AccountContact[];
-    readonly draft: AccountDetailDraft;
-    readonly setDraft: (draft: AccountDetailDraft) => void;
+export interface CompanyDetailFieldsProps {
+    readonly contacts: readonly CompanyContact[];
+    readonly draft: CompanyDetailDraft;
+    readonly setDraft: (draft: CompanyDetailDraft) => void;
 }
 
 export interface ContactFieldsProps {
@@ -35,7 +35,7 @@ export interface ContactFieldsProps {
     readonly showPrimaryCheckbox?: boolean;
 }
 
-export const EMPTY_ACCOUNT_DRAFT: AccountDraft = {
+export const EMPTY_ACCOUNT_DRAFT: CompanyDraft = {
     companyName: "",
     businessNumber: "",
     phoneNumber: "",

@@ -4,72 +4,72 @@ import { Button, Paragraph, Text } from "@libraries/uikit-web";
 import { LoaderCircle, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { listAccounts } from "../lib/api.js";
+import { listCompanies } from "../lib/api.js";
 import { cx, ui } from "../lib/styles.js";
 
-import type { AccountSummary } from "../types.js";
+import type { CompanySummary } from "../types.js";
 
-interface AccountSelectProps {
-    readonly selectedAccountId: string | null;
-    readonly onChange: (accountId: string | null) => void;
+interface CompanySelectProps {
+    readonly selectedCompanyId: string | null;
+    readonly onChange: (companyId: string | null) => void;
     readonly disabled?: boolean;
     readonly label?: string;
     readonly placeholder?: string;
-    readonly selectedAccountLabel?: string | null;
+    readonly selectedCompanyLabel?: string | null;
 }
 
-interface AccountSelectMenuProps {
+interface CompanySelectMenuProps {
     readonly error: string;
-    readonly filtered: readonly AccountSummary[];
+    readonly filtered: readonly CompanySummary[];
     readonly isLoading: boolean;
-    readonly onSelect: (account: AccountSummary) => void;
+    readonly onSelect: (company: CompanySummary) => void;
 }
 
-export function AccountSelect({
-    selectedAccountId,
+export function CompanySelect({
+    selectedCompanyId,
     onChange,
     disabled = false,
-    label = "Account",
-    placeholder = "Search accounts",
-    selectedAccountLabel = null,
-}: AccountSelectProps) {
-    const [accounts, setAccounts] = useState<AccountSummary[] | null>(null);
+    label = "Company",
+    placeholder = "Search companies",
+    selectedCompanyLabel = null,
+}: CompanySelectProps) {
+    const [companies, setCompanies] = useState<CompanySummary[] | null>(null);
     const [query, setQuery] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const selectedAccount = useMemo(
-        () => accounts?.find((account) => account.id === selectedAccountId),
-        [accounts, selectedAccountId],
+    const selectedCompany = useMemo(
+        () => companies?.find((company) => company.id === selectedCompanyId),
+        [companies, selectedCompanyId],
     );
     const filtered = useMemo(
-        () => filterAccounts(accounts ?? [], query),
-        [accounts, query],
+        () => filterCompanies(companies ?? [], query),
+        [companies, query],
     );
 
     async function ensureLoaded(): Promise<void> {
-        if (accounts || isLoading) return;
+        if (companies || isLoading) return;
         setIsLoading(true);
         setError("");
         try {
-            setAccounts(await listAccounts());
+            setCompanies(await listCompanies());
         } catch (err) {
             setError(
-                err instanceof Error ? err.message : "Unable to load accounts",
+                err instanceof Error ? err.message : "Unable to load companies",
             );
         } finally {
             setIsLoading(false);
         }
     }
 
-    function selectAccount(account: AccountSummary): void {
-        onChange(account.id);
-        setQuery(account.companyName);
+    function selectCompany(company: CompanySummary): void {
+        onChange(company.id);
+        setQuery(company.companyName);
         setIsOpen(false);
     }
 
-    function clearAccount(): void {
+    function clearCompany(): void {
         onChange(null);
         setQuery("");
         setIsOpen(false);
@@ -77,21 +77,21 @@ export function AccountSelect({
 
     return (
         <div className={cx(ui.field, "relative")}>
-            <label htmlFor="account-select">{label}</label>
+            <label htmlFor="company-select">{label}</label>
             <div className="relative">
                 <Search
                     size={16}
                     className="absolute left-[11px] top-[13px] text-slate-500 dark:text-slate-400"
                 />
                 <input
-                    id="account-select"
+                    id="company-select"
                     className={cx(ui.input, "pl-[34px] pr-11")}
                     disabled={disabled}
-                    value={accountInputValue(
+                    value={companyInputValue(
                         isOpen,
                         query,
-                        selectedAccount,
-                        selectedAccountLabel,
+                        selectedCompany,
+                        selectedCompanyLabel,
                     )}
                     onBlur={() => {
                         window.setTimeout(() => setIsOpen(false), 120);
@@ -104,8 +104,8 @@ export function AccountSelect({
                     onFocus={() => {
                         if (!query) {
                             setQuery(
-                                selectedAccount?.companyName ??
-                                    selectedAccountLabel ??
+                                selectedCompany?.companyName ??
+                                    selectedCompanyLabel ??
                                     "",
                             );
                         }
@@ -114,15 +114,15 @@ export function AccountSelect({
                     }}
                     placeholder={placeholder}
                 />
-                {selectedAccountId && (
+                {selectedCompanyId && (
                     <div className="absolute right-1 top-1">
                         <Button
                             variant="secondary"
                             size="small"
                             icon={<X size={14} aria-hidden="true" />}
                             disabled={disabled}
-                            onClick={clearAccount}
-                            label="Clear account"
+                            onClick={clearCompany}
+                            label="Clear company"
                             type="button"
                         />
                     </div>
@@ -132,11 +132,11 @@ export function AccountSelect({
                 <div
                     className={cx(ui.popoverMenu, "left-0 right-0 top-[74px]")}
                 >
-                    <AccountSelectMenu
+                    <CompanySelectMenu
                         error={error}
                         filtered={filtered}
                         isLoading={isLoading}
-                        onSelect={selectAccount}
+                        onSelect={selectCompany}
                     />
                 </div>
             )}
@@ -144,18 +144,18 @@ export function AccountSelect({
     );
 }
 
-function AccountSelectMenu({
+function CompanySelectMenu({
     error,
     filtered,
     isLoading,
     onSelect,
-}: AccountSelectMenuProps) {
+}: CompanySelectMenuProps) {
     if (isLoading) {
         return (
             <div className="flex items-center gap-2">
                 <LoaderCircle className="animate-spin" size={16} />
                 <Text size="sm" variant="muted">
-                    Loading accounts...
+                    Loading companies...
                 </Text>
             </div>
         );
@@ -168,29 +168,29 @@ function AccountSelectMenu({
     if (filtered.length === 0) {
         return (
             <Paragraph textSize="sm" variant="muted">
-                No matching accounts.
+                No matching companies.
             </Paragraph>
         );
     }
 
     return (
         <>
-            {filtered.map((account) => (
+            {filtered.map((company) => (
                 <Button
-                    key={account.id}
+                    key={company.id}
                     variant="secondary"
                     align="start"
                     fullWidth
                     onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => onSelect(account)}
+                    onClick={() => onSelect(company)}
                     type="button"
                 >
                     <span className="grid gap-0.5">
-                        <strong>{account.companyName}</strong>
+                        <strong>{company.companyName}</strong>
                         <Text size="sm" variant="muted">
-                            {account.businessNumber ||
-                                account.phoneNumber ||
-                                "No account details"}
+                            {company.businessNumber ||
+                                company.phoneNumber ||
+                                "No company details"}
                         </Text>
                     </span>
                 </Button>
@@ -199,23 +199,23 @@ function AccountSelectMenu({
     );
 }
 
-function accountInputValue(
+function companyInputValue(
     isOpen: boolean,
     query: string,
-    selectedAccount: AccountSummary | undefined,
-    selectedAccountLabel: string | null,
+    selectedCompany: CompanySummary | undefined,
+    selectedCompanyLabel: string | null,
 ): string {
     if (isOpen) return query;
-    return selectedAccount?.companyName ?? selectedAccountLabel ?? query;
+    return selectedCompany?.companyName ?? selectedCompanyLabel ?? query;
 }
 
-function filterAccounts(
-    accounts: readonly AccountSummary[],
+function filterCompanies(
+    companies: readonly CompanySummary[],
     query: string,
-): AccountSummary[] {
+): CompanySummary[] {
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return [...accounts];
-    return accounts.filter((account) =>
-        account.companyName.toLowerCase().includes(normalizedQuery),
+    if (!normalizedQuery) return [...companies];
+    return companies.filter((company) =>
+        company.companyName.toLowerCase().includes(normalizedQuery),
     );
 }

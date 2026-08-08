@@ -7,7 +7,7 @@ import { HttpsError, onCall } from "firebase-functions/https";
 import { requireAuth } from "./auth.js";
 import { toDetail, toDetailWithDownloadUrls, toSummary } from "./mappers.js";
 import {
-    requireOwnedAccount,
+    requireOwnedCompany,
     requireOwnedProject,
     requireTeamId,
     requireTeamMember,
@@ -34,7 +34,7 @@ import {
 } from "./validation.js";
 
 import type {
-    AccountIdRequest,
+    CompanyIdRequest,
     CreateProjectFromUploadRequest,
     ListProjectsRequest,
     ProjectDetail,
@@ -59,15 +59,15 @@ export const listProjects = onCall<
     return { projects: response.data.projects.map(toSummary) };
 });
 
-export const listProjectsByAccount = onCall<
-    AccountIdRequest,
+export const listProjectsByCompany = onCall<
+    CompanyIdRequest,
     Promise<{ projects: ProjectSummary[] }>
 >(async (request) => {
     const auth = requireAuth(request);
-    const accountId = readRequiredString(request.data.accountId, "Account ID");
-    await requireOwnedAccount(accountId, auth.uid);
-    const response = await DataConnector.listProjectsByAccount({
-        accountId,
+    const companyId = readRequiredString(request.data.companyId, "Company ID");
+    await requireOwnedCompany(companyId, auth.uid);
+    const response = await DataConnector.listProjectsByCompany({
+        companyId,
     });
     return { projects: response.data.projects.map(toSummary) };
 });
@@ -78,9 +78,9 @@ export const createProjectFromUpload = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const projectId = readRequiredString(request.data.projectId, "Project ID");
-    const accountId = readOptionalNullableString(
-        request.data.accountId,
-        "Account ID",
+    const companyId = readOptionalNullableString(
+        request.data.companyId,
+        "Company ID",
     );
     const address = readOptionalNullableString(request.data.address, "Address");
     const name = readRequiredString(request.data.name, "Name");
@@ -105,8 +105,8 @@ export const createProjectFromUpload = onCall<
         );
     }
 
-    if (accountId) {
-        await requireOwnedAccount(accountId, auth.uid);
+    if (companyId) {
+        await requireOwnedCompany(companyId, auth.uid);
     }
 
     const [exists] = await getStorage().bucket().file(storagePath).exists();
@@ -131,7 +131,7 @@ export const createProjectFromUpload = onCall<
         id: projectId,
         teamId,
         assignee,
-        accountId,
+        companyId,
         name,
         address,
         originalFileName,
@@ -223,10 +223,10 @@ export const updateProject = onCall<
         updates.name = readRequiredString(data.name, "Name");
     }
 
-    if (hasField(data, "accountId")) {
-        updates.accountId = readOptionalNullableString(
-            data.accountId,
-            "Account ID",
+    if (hasField(data, "companyId")) {
+        updates.companyId = readOptionalNullableString(
+            data.companyId,
+            "Company ID",
         );
     }
 
@@ -279,14 +279,14 @@ async function updateOwnedProject(
 ) {
     const project = await requireOwnedProject(projectId, userId);
     const teamId = await requireTeamId(userId);
-    const nextAccountId = nextNullableProjectField(
+    const nextCompanyId = nextNullableProjectField(
         updates,
-        "accountId",
-        project.accountId,
+        "companyId",
+        project.companyId,
     );
 
-    if (nextAccountId) {
-        await requireOwnedAccount(nextAccountId, userId);
+    if (nextCompanyId) {
+        await requireOwnedCompany(nextCompanyId, userId);
     }
 
     const nextSalesStatus = nextSalesStatusFor(updates, project.salesStatus);
@@ -302,7 +302,7 @@ async function updateOwnedProject(
     await DataConnector.updateProject({
         id: projectId,
         name: updates.name ?? project.name,
-        accountId: nextAccountId,
+        companyId: nextCompanyId,
         address: nextNullableProjectField(updates, "address", project.address),
         salesStatus: nextSalesStatus,
         assignee: nextAssignee,

@@ -1,5 +1,5 @@
-query GetAccountById($id: UUID!) @auth(level: NO_ACCESS) {
-    account(id: $id) {
+query GetCompanyById($id: UUID!) @auth(level: NO_ACCESS) {
+    company(id: $id) {
         id
         teamId
         companyName
@@ -8,9 +8,9 @@ query GetAccountById($id: UUID!) @auth(level: NO_ACCESS) {
         primaryContactId
         createdAt
         updatedAt
-        contacts: accountContacts_on_account(orderBy: [{ createdAt: ASC }]) {
+        contacts: companyContacts_on_company(orderBy: [{ createdAt: ASC }]) {
             id
-            accountId
+            companyId
             name
             email
             phoneNumber
@@ -21,15 +21,15 @@ query GetAccountById($id: UUID!) @auth(level: NO_ACCESS) {
     }
 }
 
-query GetAccountContactById($accountId: UUID!, $contactId: UUID!)
+query GetCompanyContactById($companyId: UUID!, $contactId: UUID!)
 @auth(level: NO_ACCESS) {
-    accountContact(
+    companyContact(
         first: {
-            where: { id: { eq: $contactId }, accountId: { eq: $accountId } }
+            where: { id: { eq: $contactId }, companyId: { eq: $companyId } }
         }
     ) {
         id
-        accountId
+        companyId
         name
         email
         phoneNumber

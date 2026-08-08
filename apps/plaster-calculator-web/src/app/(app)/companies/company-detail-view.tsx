@@ -10,52 +10,52 @@ import {
 import { Building2, LoaderCircle } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 
-import { AccountDetailHeader } from "./account-detail-header.js";
-import { AccountDetailsPanel } from "./account-details-panel.js";
-import { AccountProjectsPanel } from "./account-projects-panel.js";
+import { CompanyDetailHeader } from "./company-detail-header.js";
+import { CompanyDetailsPanel } from "./company-details-panel.js";
+import { CompanyProjectsPanel } from "./company-projects-panel.js";
 import {
     EMPTY_CONTACT_DRAFT,
-    type AccountDetailDraft,
+    type CompanyDetailDraft,
     type ContactDraft,
-} from "./account.types.js";
+} from "./company.types.js";
 import {
-    isAccountDetailDraftChanged,
+    isCompanyDetailDraftChanged,
     optionalValue,
-    toAccountDetailDraft,
-} from "./account.utils.js";
+    toCompanyDetailDraft,
+} from "./company.utils.js";
 import { ContactsPanel } from "./contacts-panel.js";
 import { NewContactModal } from "./new-contact-modal.js";
 import { BusyOverlay } from "../../../components/busy-overlay.js";
 import {
-    createAccountContact,
-    deleteAccount,
-    deleteAccountContact,
-    getAccount,
-    listProjectsByAccount,
-    updateAccount,
-    updateAccountContact,
+    createCompanyContact,
+    deleteCompany,
+    deleteCompanyContact,
+    getCompany,
+    listProjectsByCompany,
+    updateCompany,
+    updateCompanyContact,
 } from "../../../lib/api.js";
 import { cx, ui } from "../../../lib/styles.js";
 
 import type {
-    AccountContact,
-    AccountDetail,
+    CompanyContact,
+    CompanyDetail,
     ProjectSummary,
 } from "../../../types.js";
 
-interface AccountDetailViewProps {
-    readonly accountId: string;
-    readonly onAccountDeleted: () => void;
+interface CompanyDetailViewProps {
+    readonly companyId: string;
+    readonly onCompanyDeleted: () => void;
 }
 
-export function AccountDetailView({
-    accountId,
-    onAccountDeleted,
-}: AccountDetailViewProps) {
+export function CompanyDetailView({
+    companyId,
+    onCompanyDeleted,
+}: CompanyDetailViewProps) {
     const { notify } = useNotificationsManager();
-    const [account, setAccount] = useState<AccountDetail | null>(null);
+    const [company, setCompany] = useState<CompanyDetail | null>(null);
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
-    const [draft, setDraft] = useState<AccountDetailDraft | null>(null);
+    const [draft, setDraft] = useState<CompanyDetailDraft | null>(null);
     const [contactDraft, setContactDraft] =
         useState<ContactDraft>(EMPTY_CONTACT_DRAFT);
     const [editContactId, setEditContactId] = useState<string | null>(null);
@@ -68,49 +68,49 @@ export function AccountDetailView({
 
     useEffect(() => {
         void load();
-    }, [accountId]);
+    }, [companyId]);
 
-    const accountProjects = projects;
-    const hasAccountChanges =
-        account && draft ? isAccountDetailDraftChanged(account, draft) : false;
+    const companyProjects = projects;
+    const hasCompanyChanges =
+        company && draft ? isCompanyDetailDraftChanged(company, draft) : false;
 
     async function load(): Promise<void> {
         setIsLoading(true);
         setMessage("");
         try {
-            const [nextAccount, nextProjects] = await Promise.all([
-                getAccount(accountId),
-                listProjectsByAccount(accountId),
+            const [nextCompany, nextProjects] = await Promise.all([
+                getCompany(companyId),
+                listProjectsByCompany(companyId),
             ]);
-            setAccount(nextAccount);
-            setDraft(toAccountDetailDraft(nextAccount));
+            setCompany(nextCompany);
+            setDraft(toCompanyDetailDraft(nextCompany));
             setProjects(nextProjects);
         } catch (error) {
             setMessage(
                 error instanceof Error
                     ? error.message
-                    : "Unable to load account",
+                    : "Unable to load company",
             );
         } finally {
             setIsLoading(false);
         }
     }
 
-    async function saveAccount(event: FormEvent): Promise<void> {
+    async function saveCompany(event: FormEvent): Promise<void> {
         event.preventDefault();
         if (!draft) return;
         const companyName = draft.companyName.trim();
         if (!companyName) return;
         try {
-            const updated = await updateAccount(accountId, {
+            const updated = await updateCompany(companyId, {
                 companyName,
                 businessNumber: optionalValue(draft.businessNumber),
                 phoneNumber: optionalValue(draft.phoneNumber),
                 primaryContactId: optionalValue(draft.primaryContactId),
             });
-            updateAccountState(updated);
+            updateCompanyState(updated);
         } catch (error) {
-            setMessage(errorMessage(error, "Unable to save account"));
+            setMessage(errorMessage(error, "Unable to save company"));
         }
     }
 
@@ -119,14 +119,14 @@ export function AccountDetailView({
         const name = contactDraft.name.trim();
         if (!name) return;
         try {
-            const updated = await createAccountContact(accountId, {
+            const updated = await createCompanyContact(companyId, {
                 name,
                 email: optionalValue(contactDraft.email),
                 phoneNumber: optionalValue(contactDraft.phoneNumber),
                 role: optionalValue(contactDraft.role),
                 makePrimary: contactDraft.makePrimary,
             });
-            updateAccountState(updated);
+            updateCompanyState(updated);
             closeContactModal();
             notify({ intent: "success", title: "Contact added." });
         } catch (error) {
@@ -138,26 +138,26 @@ export function AccountDetailView({
         const name = editContactDraft.name.trim();
         if (!name) return;
         try {
-            const updated = await updateAccountContact(accountId, contactId, {
+            const updated = await updateCompanyContact(companyId, contactId, {
                 name,
                 email: optionalValue(editContactDraft.email),
                 phoneNumber: optionalValue(editContactDraft.phoneNumber),
                 role: optionalValue(editContactDraft.role),
             });
-            updateAccountState(updated);
+            updateCompanyState(updated);
             setEditContactId(null);
         } catch (error) {
             setMessage(errorMessage(error, "Unable to save contact"));
         }
     }
 
-    async function removeContact(contact: AccountContact): Promise<void> {
+    async function removeContact(contact: CompanyContact): Promise<void> {
         const confirmed = window.confirm(`Delete contact "${contact.name}"?`);
         if (!confirmed) return;
         setBusyMessage("Deleting contact...");
         try {
-            const updated = await deleteAccountContact(accountId, contact.id);
-            updateAccountState(updated);
+            const updated = await deleteCompanyContact(companyId, contact.id);
+            updateCompanyState(updated);
         } catch (error) {
             setMessage(errorMessage(error, "Unable to delete contact"));
         } finally {
@@ -165,25 +165,25 @@ export function AccountDetailView({
         }
     }
 
-    async function removeAccount(): Promise<void> {
-        if (!account) return;
-        if (accountProjects.length > 0) {
+    async function removeCompany(): Promise<void> {
+        if (!company) return;
+        if (companyProjects.length > 0) {
             window.alert(
-                "Remove or reassign linked projects before deleting this account.",
+                "Remove or reassign linked projects before deleting this company.",
             );
             return;
         }
         const confirmed = window.confirm(
-            `Delete "${account.companyName}" and all contacts?`,
+            `Delete "${company.companyName}" and all contacts?`,
         );
         if (!confirmed) return;
-        setBusyMessage("Deleting account...");
+        setBusyMessage("Deleting company...");
         try {
-            await deleteAccount(account.id);
-            onAccountDeleted();
+            await deleteCompany(company.id);
+            onCompanyDeleted();
         } catch (error) {
             setBusyMessage("");
-            setMessage(errorMessage(error, "Unable to delete account"));
+            setMessage(errorMessage(error, "Unable to delete company"));
         }
     }
 
@@ -192,9 +192,9 @@ export function AccountDetailView({
         setIsContactModalOpen(false);
     }
 
-    function updateAccountState(updated: AccountDetail): void {
-        setAccount(updated);
-        setDraft(toAccountDetailDraft(updated));
+    function updateCompanyState(updated: CompanyDetail): void {
+        setCompany(updated);
+        setDraft(toCompanyDetailDraft(updated));
     }
 
     if (isLoading) {
@@ -204,7 +204,7 @@ export function AccountDetailView({
                     <div className={ui.projectListState}>
                         <LoaderCircle className="animate-spin" size={24} />
                         <Text size="sm" variant="muted">
-                            Loading account...
+                            Loading company...
                         </Text>
                     </div>
                 </Box>
@@ -215,8 +215,8 @@ export function AccountDetailView({
     return (
         <>
             {busyMessage && <BusyOverlay message={busyMessage} />}
-            <AccountDetailHeader
-                account={account}
+            <CompanyDetailHeader
+                company={company}
                 refresh={() => void load()}
             />
             <Box direction="column" gap="lg" padding="md">
@@ -225,23 +225,23 @@ export function AccountDetailView({
                         {message}
                     </Paragraph>
                 )}
-                {account && draft ? (
+                {company && draft ? (
                     <section
                         className={cx(
                             "grid grid-cols-[minmax(520px,0.48fr)_minmax(0,1fr)] items-start gap-[18px] max-[980px]:grid-cols-1",
                         )}
                     >
-                        <AccountDetailsPanel
-                            account={account}
+                        <CompanyDetailsPanel
+                            company={company}
                             draft={draft}
-                            hasAccountChanges={hasAccountChanges}
-                            removeAccount={removeAccount}
-                            saveAccount={saveAccount}
+                            hasCompanyChanges={hasCompanyChanges}
+                            removeCompany={removeCompany}
+                            saveCompany={saveCompany}
                             setDraft={setDraft}
                         />
                         <div className="grid gap-[18px]">
                             <ContactsPanel
-                                account={account}
+                                company={company}
                                 editContactDraft={editContactDraft}
                                 editContactId={editContactId}
                                 openNewContact={() =>
@@ -252,13 +252,13 @@ export function AccountDetailView({
                                 setEditContactDraft={setEditContactDraft}
                                 setEditContactId={setEditContactId}
                             />
-                            <AccountProjectsPanel projects={accountProjects} />
+                            <CompanyProjectsPanel projects={companyProjects} />
                         </div>
                     </section>
                 ) : (
                     <EmptyState
                         icon={<Building2 />}
-                        title="Account not found"
+                        title="Company not found"
                     />
                 )}
                 {isContactModalOpen && (

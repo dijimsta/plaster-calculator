@@ -1,5 +1,5 @@
-query ListMyAccounts @auth(level: USER) {
-    accounts(
+query ListMyCompanies @auth(level: USER) {
+    companies(
         where: { teamId: { eq_expr: "auth.token.teamId" } }
         orderBy: [{ updatedAt: DESC }]
     ) {
@@ -14,11 +14,11 @@ query ListMyAccounts @auth(level: USER) {
     }
 }
 
-query GetMyAccount($id: UUID!) @auth(level: USER) {
-    account(key: { id: $id })
+query GetMyCompany($id: UUID!) @auth(level: USER) {
+    company(key: { id: $id })
         @check(
             expr: "this != null && this.teamId == auth.token.teamId"
-            message: "You do not have access to this account"
+            message: "You do not have access to this company"
         ) {
         id
         teamId
@@ -28,9 +28,9 @@ query GetMyAccount($id: UUID!) @auth(level: USER) {
         primaryContactId
         createdAt
         updatedAt
-        contacts: accountContacts_on_account(orderBy: [{ createdAt: ASC }]) {
+        contacts: companyContacts_on_company(orderBy: [{ createdAt: ASC }]) {
             id
-            accountId
+            companyId
             name
             email
             phoneNumber
@@ -41,22 +41,22 @@ query GetMyAccount($id: UUID!) @auth(level: USER) {
     }
 }
 
-query ListMyAccountContacts($accountId: UUID!) @auth(level: USER) {
-    account(key: { id: $accountId })
+query ListMyCompanyContacts($companyId: UUID!) @auth(level: USER) {
+    company(key: { id: $companyId })
         @redact
         @check(
             expr: "this != null && this.teamId == auth.token.teamId"
-            message: "You do not have access to this account"
+            message: "You do not have access to this company"
         ) {
         id
         teamId
     }
-    accountContacts(
-        where: { accountId: { eq: $accountId } }
+    companyContacts(
+        where: { companyId: { eq: $companyId } }
         orderBy: [{ createdAt: ASC }]
     ) {
         id
-        accountId
+        companyId
         name
         email
         phoneNumber

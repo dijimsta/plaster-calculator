@@ -24,7 +24,7 @@ type UploadResponse = {
 
 type CreateProjectFromUploadRequest = {
     projectId: string;
-    accountId?: string | null;
+    companyId?: string | null;
     name: string;
     address?: string | null;
     originalFileName: string;
@@ -37,7 +37,7 @@ type CreateProjectFromUploadRequest = {
 type UpdateProjectRequest = {
     projectId: string;
     name?: string;
-    accountId?: string | null;
+    companyId?: string | null;
     address?: string | null;
     salesStatus?: SalesStatus;
 };
@@ -82,10 +82,10 @@ const listProjectsCallable = httpsCallable<
     ListProjectsRequest,
     { projects: ProjectSummary[] }
 >(functions, "listProjects");
-const listProjectsByAccountCallable = httpsCallable<
-    { accountId: string },
+const listProjectsByCompanyCallable = httpsCallable<
+    { companyId: string },
     { projects: ProjectSummary[] }
->(functions, "listProjectsByAccount");
+>(functions, "listProjectsByCompany");
 const createProjectFromUploadCallable = httpsCallable<
     CreateProjectFromUploadRequest,
     UploadResponse
@@ -154,8 +154,8 @@ export async function listProjects(options: ListProjectsRequest) {
     return result.data.projects;
 }
 
-export async function listProjectsByAccount(accountId: string) {
-    const result = await listProjectsByAccountCallable({ accountId });
+export async function listProjectsByCompany(companyId: string) {
+    const result = await listProjectsByCompanyCallable({ companyId });
     return result.data.projects;
 }
 
@@ -163,7 +163,7 @@ export async function uploadProject(
     name: string,
     file: File,
     pageCount?: number,
-    options: { accountId?: string | null; address?: string | null } = {},
+    options: { companyId?: string | null; address?: string | null } = {},
 ) {
     const uid = auth.currentUser?.uid;
     if (!uid) {
@@ -178,7 +178,7 @@ export async function uploadProject(
 
     const result = await createProjectFromUploadCallable({
         projectId,
-        accountId: options.accountId ?? null,
+        companyId: options.companyId ?? null,
         name,
         address: options.address ?? null,
         originalFileName: file.name,
