@@ -11,6 +11,10 @@ This package is being introduced to split atoms out of `uikit-web`, which had ac
 components alongside its atoms. Migration out of `uikit-web` happens incrementally as each atom is touched, not as a
 single rewrite.
 
+`@ui/atoms` is the only package in the `@ui/*` stack that owns Tailwind class strings and style maps. Every layer
+above it composes atoms entirely through these typed props instead of styling itself (see
+[Presentation](../../docs/web-ui-guidelines.md#presentation)).
+
 ## Responsibilities
 
 `@ui/atoms` owns:
@@ -33,6 +37,9 @@ single rewrite.
   so no additional tier folder is needed.
 - Keep names kebab-case: `{name}.component.tsx`, `{name}.styles.ts`, and `index.ts` inside the component folder.
 - Keep component types with the component, style unions with the style map, and export public APIs through barrels.
+- Components must be pure (see [Purity](../../docs/web-ui-guidelines.md#purity)): render deterministically from
+  typed props alone, with no `react-i18next` or other ambient context dependency. Accept already-resolved strings as
+  props.
 
 ## Public component APIs
 
