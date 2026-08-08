@@ -10,8 +10,8 @@ import { PackageJsonSchema } from "./schemas/package.json.schema.ts";
 @Injectable()
 export class BundleService {
     public async bundle(directory: string): Promise<void> {
-        const path = resolve(directory, "package.json");
-        const text = await readFile(path, "utf-8");
+        const packageJsonPath = resolve(directory, "package.json");
+        const text = await readFile(packageJsonPath, "utf-8");
         const json = JSON.parse(text);
         const { dependencies = {}, devDependencies = {} } =
             PackageJsonSchema.parse(json);
@@ -40,12 +40,12 @@ export class BundleService {
 
         // Bundle the code using esbuild
         await build({
-            entryPoints: ["src/index.ts"],
+            entryPoints: [resolve(directory, "src", "index.ts")],
             bundle: true,
             platform: "node",
             target: "node24",
             format: "esm",
-            outdir: "dist",
+            outdir: resolve(directory, "dist"),
             sourcemap: true,
             external: [...external],
         });
@@ -65,6 +65,6 @@ export class BundleService {
         });
 
         // Write the modified package.json
-        await writeFile("package.json", JSON.stringify(json, null, TAB_WIDTH));
+        await writeFile(packageJsonPath, JSON.stringify(json, null, TAB_WIDTH));
     }
 }
