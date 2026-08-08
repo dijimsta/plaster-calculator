@@ -8,7 +8,7 @@ It is implemented with NestJS and `nest-commander`.
 The current `bundle` command prepares a TypeScript Firebase Functions package for deployment:
 
 ```bash
-pnpm --filter @functions/plaster-calculator-functions bundle
+pnpm --filter @functions/plaster-calculator-functions run bundle
 ```
 
 The command:
@@ -19,7 +19,8 @@ The command:
 - Rewrites the target package's `main`, `exports`, and workspace dependency entries for deployment.
 
 Because bundling mutates the target `package.json`, use it only as part of the intended deployment workflow and review
-the resulting changes when running it manually.
+the resulting changes when running it manually. The command always rewrites the manifest in the directory passed to
+`--dir`, even when it is invoked from another working directory.
 
 ## Build
 
