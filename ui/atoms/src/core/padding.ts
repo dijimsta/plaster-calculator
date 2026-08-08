@@ -1,0 +1,1 @@
+export type Padding = number;
