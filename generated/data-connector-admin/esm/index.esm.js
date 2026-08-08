@@ -6,16 +6,16 @@ export const connectorConfig = {
   location: 'us-west1'
 };
 
-export function getAccountById(dcOrVarsOrOptions, varsOrOptions, options) {
+export function getCompanyById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetAccountById', inputVars, inputOpts);
+  return dcInstance.executeQuery('GetCompanyById', inputVars, inputOpts);
 }
 
-export function getAccountContactById(dcOrVarsOrOptions, varsOrOptions, options) {
+export function getCompanyContactById(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('GetAccountContactById', inputVars, inputOpts);
+  return dcInstance.executeQuery('GetCompanyContactById', inputVars, inputOpts);
 }
 
 export function createProjectFromUpload(dcOrVarsOrOptions, varsOrOptions, options) {
@@ -90,10 +90,10 @@ export function listProjectsByTeamAndSalesStatus(dcOrVarsOrOptions, varsOrOption
   return dcInstance.executeQuery('ListProjectsByTeamAndSalesStatus', inputVars, inputOpts);
 }
 
-export function listProjectsByAccount(dcOrVarsOrOptions, varsOrOptions, options) {
+export function listProjectsByCompany(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
-  return dcInstance.executeQuery('ListProjectsByAccount', inputVars, inputOpts);
+  return dcInstance.executeQuery('ListProjectsByCompany', inputVars, inputOpts);
 }
 
 export function getProjectDetailsById(dcOrVarsOrOptions, varsOrOptions, options) {

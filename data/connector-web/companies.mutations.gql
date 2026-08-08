@@ -1,10 +1,10 @@
-mutation CreateMyAccount(
+mutation CreateMyCompany(
     $id: UUID!
     $companyName: String!
     $businessNumber: String
     $phoneNumber: String
 ) @auth(level: USER) {
-    account_insert(
+    company_insert(
         data: {
             id: $id
             teamId_expr: "auth.token.teamId"
@@ -17,23 +17,23 @@ mutation CreateMyAccount(
     )
 }
 
-mutation UpdateMyAccount(
+mutation UpdateMyCompany(
     $id: UUID!
     $companyName: String!
     $businessNumber: String
     $phoneNumber: String
 ) @auth(level: USER) @transaction {
     query @redact {
-        account(key: { id: $id })
+        company(key: { id: $id })
             @check(
                 expr: "this != null && this.teamId == auth.token.teamId"
-                message: "You do not have access to this account"
+                message: "You do not have access to this company"
             ) {
             id
             teamId
         }
     }
-    account_update(
+    company_update(
         id: $id
         data: {
             companyName: $companyName
@@ -44,89 +44,89 @@ mutation UpdateMyAccount(
     )
 }
 
-mutation SetMyAccountPrimaryContact($accountId: UUID!, $contactId: UUID!)
+mutation SetMyCompanyPrimaryContact($companyId: UUID!, $contactId: UUID!)
 @auth(level: USER)
 @transaction {
     query @redact {
-        account(key: { id: $accountId })
+        company(key: { id: $companyId })
             @check(
                 expr: "this != null && this.teamId == auth.token.teamId"
-                message: "You do not have access to this account"
+                message: "You do not have access to this company"
             ) {
             id
             teamId
         }
-        accountContact(
+        companyContact(
             first: {
-                where: { id: { eq: $contactId }, accountId: { eq: $accountId } }
+                where: { id: { eq: $contactId }, companyId: { eq: $companyId } }
             }
         ) @check(expr: "this != null", message: "Contact not found") {
             id
         }
     }
-    account_update(
-        id: $accountId
+    company_update(
+        id: $companyId
         data: { primaryContactId: $contactId, updatedAt_expr: "request.time" }
     )
 }
 
-mutation ClearMyAccountPrimaryContact($accountId: UUID!)
+mutation ClearMyCompanyPrimaryContact($companyId: UUID!)
 @auth(level: USER)
 @transaction {
     query @redact {
-        account(key: { id: $accountId })
+        company(key: { id: $companyId })
             @check(
                 expr: "this != null && this.teamId == auth.token.teamId"
-                message: "You do not have access to this account"
+                message: "You do not have access to this company"
             ) {
             id
             teamId
         }
     }
-    account_update(
-        id: $accountId
+    company_update(
+        id: $companyId
         data: { primaryContactId: null, updatedAt_expr: "request.time" }
     )
 }
 
-mutation DeleteMyAccount($id: UUID!) @auth(level: USER) @transaction {
+mutation DeleteMyCompany($id: UUID!) @auth(level: USER) @transaction {
     query @redact {
-        account(key: { id: $id })
+        company(key: { id: $id })
             @check(
                 expr: "this != null && this.teamId == auth.token.teamId"
-                message: "You do not have access to this account"
+                message: "You do not have access to this company"
             ) {
             id
             teamId
         }
     }
-    accountContact_deleteMany(where: { accountId: { eq: $id } })
-    account_delete(id: $id)
-        @check(expr: "this != null", message: "Account not found")
+    companyContact_deleteMany(where: { companyId: { eq: $id } })
+    company_delete(id: $id)
+        @check(expr: "this != null", message: "Company not found")
 }
 
-mutation CreateMyAccountContact(
+mutation CreateMyCompanyContact(
     $id: UUID!
-    $accountId: UUID!
+    $companyId: UUID!
     $name: String!
     $email: String
     $phoneNumber: String
     $role: String
 ) @auth(level: USER) @transaction {
     query @redact {
-        account(key: { id: $accountId })
+        company(key: { id: $companyId })
             @check(
                 expr: "this != null && this.teamId == auth.token.teamId"
-                message: "You do not have access to this account"
+                message: "You do not have access to this company"
             ) {
             id
             teamId
         }
     }
-    accountContact_insert(
+    companyContact_insert(
         data: {
             id: $id
-            accountId: $accountId
+            companyId: $companyId
             name: $name
             email: $email
             phoneNumber: $phoneNumber
@@ -137,8 +137,8 @@ mutation CreateMyAccountContact(
     )
 }
 
-mutation UpdateMyAccountContact(
-    $accountId: UUID!
+mutation UpdateMyCompanyContact(
+    $companyId: UUID!
     $contactId: UUID!
     $name: String!
     $email: String
@@ -146,18 +146,18 @@ mutation UpdateMyAccountContact(
     $role: String
 ) @auth(level: USER) @transaction {
     query @redact {
-        account(key: { id: $accountId })
+        company(key: { id: $companyId })
             @check(
                 expr: "this != null && this.teamId == auth.token.teamId"
-                message: "You do not have access to this account"
+                message: "You do not have access to this company"
             ) {
             id
             teamId
         }
     }
-    accountContact_update(
+    companyContact_update(
         first: {
-            where: { id: { eq: $contactId }, accountId: { eq: $accountId } }
+            where: { id: { eq: $contactId }, companyId: { eq: $companyId } }
         }
         data: {
             name: $name
@@ -169,31 +169,31 @@ mutation UpdateMyAccountContact(
     ) @check(expr: "this != null", message: "Contact not found")
 }
 
-mutation DeleteMyAccountContact($accountId: UUID!, $contactId: UUID!)
+mutation DeleteMyCompanyContact($companyId: UUID!, $contactId: UUID!)
 @auth(level: USER)
 @transaction {
     query @redact {
-        account(key: { id: $accountId })
+        company(key: { id: $companyId })
             @check(
                 expr: "this != null && this.teamId == auth.token.teamId"
-                message: "You do not have access to this account"
+                message: "You do not have access to this company"
             ) {
             id
             teamId
         }
     }
-    account_update(
+    company_update(
         first: {
             where: {
-                id: { eq: $accountId }
+                id: { eq: $companyId }
                 primaryContactId: { eq: $contactId }
             }
         }
         data: { primaryContactId: null, updatedAt_expr: "request.time" }
     )
-    accountContact_delete(
+    companyContact_delete(
         first: {
-            where: { id: { eq: $contactId }, accountId: { eq: $accountId } }
+            where: { id: { eq: $contactId }, companyId: { eq: $companyId } }
         }
     ) @check(expr: "this != null", message: "Contact not found")
 }

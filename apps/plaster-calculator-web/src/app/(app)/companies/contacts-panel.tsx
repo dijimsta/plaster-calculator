@@ -6,22 +6,22 @@ import { Plus, Users } from "lucide-react";
 import { ContactRow } from "./contact-row.js";
 import { cx, ui } from "../../../lib/styles.js";
 
-import type { ContactDraft } from "./account.types.js";
-import type { AccountContact, AccountDetail } from "../../../types.js";
+import type { ContactDraft } from "./company.types.js";
+import type { CompanyContact, CompanyDetail } from "../../../types.js";
 
 interface ContactsPanelProps {
-    readonly account: AccountDetail;
+    readonly company: CompanyDetail;
     readonly editContactDraft: ContactDraft;
     readonly editContactId: string | null;
     readonly openNewContact: () => void;
-    readonly removeContact: (contact: AccountContact) => Promise<void>;
+    readonly removeContact: (contact: CompanyContact) => Promise<void>;
     readonly saveContact: (contactId: string) => Promise<void>;
     readonly setEditContactDraft: (draft: ContactDraft) => void;
     readonly setEditContactId: (contactId: string | null) => void;
 }
 
 export function ContactsPanel({
-    account,
+    company,
     editContactDraft,
     editContactId,
     openNewContact,
@@ -42,20 +42,20 @@ export function ContactsPanel({
                     <Plus size={18} /> Add contact
                 </Button>
             </div>
-            {account.contacts.map((contact) => (
+            {company.contacts.map((contact) => (
                 <ContactRow
                     key={contact.id}
                     contact={contact}
                     editContactDraft={editContactDraft}
                     editContactId={editContactId}
-                    isPrimary={contact.id === account.primaryContactId}
+                    isPrimary={contact.id === company.primaryContactId}
                     removeContact={removeContact}
                     saveContact={saveContact}
                     setEditContactDraft={setEditContactDraft}
                     setEditContactId={setEditContactId}
                 />
             ))}
-            {account.contacts.length === 0 && (
+            {company.contacts.length === 0 && (
                 <EmptyState icon={<Users />} title="No contacts yet" />
             )}
         </section>

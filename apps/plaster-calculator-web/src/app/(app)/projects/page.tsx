@@ -124,7 +124,7 @@ export default function ProjectsPage() {
                                     className="text-gray-400 dark:text-gray-500"
                                 />
                             }
-                            placeholder="Search project, account or plan…"
+                            placeholder="Search project, company or plan…"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                         />
@@ -170,7 +170,7 @@ export default function ProjectsPage() {
                         <Table.Head>
                             <Table.Row>
                                 <Table.Header>Project</Table.Header>
-                                <Table.Header>Account</Table.Header>
+                                <Table.Header>Company</Table.Header>
                                 <Table.Header>Plan</Table.Header>
                                 <Table.Header>Status</Table.Header>
                                 <Table.Header>Updated</Table.Header>
@@ -212,7 +212,7 @@ export default function ProjectsPage() {
                                         )}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {project.accountCompanyName ?? "—"}
+                                        {project.companyName ?? "—"}
                                     </Table.Cell>
                                     <Table.Cell>
                                         {project.originalFileName}

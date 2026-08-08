@@ -28,7 +28,7 @@ export function ProjectEditor({
     page,
     onSaved,
     onAnalyzingChange,
-    projectAccountPanel,
+    projectCompanyPanel,
     salesStatusPanel,
     onDraftChange,
     validationIssues = [],
@@ -216,7 +216,7 @@ export function ProjectEditor({
             overlayState={overlayState}
             page={page}
             persistence={persistence}
-            projectAccountPanel={projectAccountPanel}
+            projectCompanyPanel={projectCompanyPanel}
             salesStatusPanel={salesStatusPanel}
             scrollDragRef={scrollDragRef}
             selection={selection}

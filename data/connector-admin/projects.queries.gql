@@ -7,7 +7,7 @@ query ListProjectsByTeamAndSalesStatus($teamId: String!, $salesStatus: String!)
         id
         teamId
         assignee
-        accountId
+        companyId
         name
         address
         originalFileName
@@ -22,15 +22,15 @@ query ListProjectsByTeamAndSalesStatus($teamId: String!, $salesStatus: String!)
     }
 }
 
-query ListProjectsByAccount($accountId: UUID!) @auth(level: NO_ACCESS) {
+query ListProjectsByCompany($companyId: UUID!) @auth(level: NO_ACCESS) {
     projects(
-        where: { accountId: { eq: $accountId } }
+        where: { companyId: { eq: $companyId } }
         orderBy: [{ updatedAt: DESC }]
     ) {
         id
         teamId
         assignee
-        accountId
+        companyId
         name
         address
         originalFileName
@@ -50,7 +50,7 @@ query GetProjectDetailsById($id: UUID!) @auth(level: NO_ACCESS) {
         id
         teamId
         assignee
-        accountId
+        companyId
         name
         address
         originalFileName
@@ -92,7 +92,7 @@ query GetProjectById($id: UUID!) @auth(level: NO_ACCESS) {
         id
         teamId
         assignee
-        accountId
+        companyId
         name
         address
         originalFileName

@@ -2,10 +2,10 @@ import { EmailTemplateBuilder } from "@libraries/plaster-calculator-common";
 import { useUserSignature } from "@libraries/plaster-calculator-web-core";
 import { useEffect, useState } from "react";
 
-import { getAccount } from "../../../../../lib/api.js";
+import { getCompany } from "../../../../../lib/api.js";
 
 import type { ProjectQuestionnaireQuestion } from "./page.hooks.js";
-import type { AccountContact, AccountDetail } from "../../../../../types.js";
+import type { CompanyContact, CompanyDetail } from "../../../../../types.js";
 import type {
     EmailTemplate,
     UserSignature,
@@ -27,39 +27,39 @@ function getUnansweredQuestions(
     return questions.filter((question) => !question.answer?.trim());
 }
 
-function useAccountForEmail(accountId: string | null): AccountDetail | null {
-    const [account, setAccount] = useState<AccountDetail | null>(null);
+function useCompanyForEmail(companyId: string | null): CompanyDetail | null {
+    const [company, setCompany] = useState<CompanyDetail | null>(null);
 
     useEffect(() => {
-        if (!accountId) {
-            setAccount(null);
+        if (!companyId) {
+            setCompany(null);
             return;
         }
         let cancelled = false;
-        void getAccount(accountId).then((detail) => {
-            if (!cancelled) setAccount(detail);
+        void getCompany(companyId).then((detail) => {
+            if (!cancelled) setCompany(detail);
         });
         return () => {
             cancelled = true;
         };
-    }, [accountId]);
+    }, [companyId]);
 
-    return account;
+    return company;
 }
 
 function findPrimaryContact(
-    account: AccountDetail | null,
-): AccountContact | undefined {
-    if (!account) return undefined;
-    return account.contacts.find(
-        (item) => item.id === account.primaryContactId,
+    company: CompanyDetail | null,
+): CompanyContact | undefined {
+    if (!company) return undefined;
+    return company.contacts.find(
+        (item) => item.id === company.primaryContactId,
     );
 }
 
 function buildEmailContent(
     signature: UserSignature | undefined,
     unansweredQuestions: readonly ProjectQuestionnaireQuestion[],
-    contact: AccountContact | undefined,
+    contact: CompanyContact | undefined,
 ): EmailTemplate | null {
     if (!signature) return null;
     return new EmailTemplateBuilder(signature.signature).build(
@@ -69,7 +69,7 @@ function buildEmailContent(
 }
 
 function buildMailtoHref(
-    contact: AccountContact | undefined,
+    contact: CompanyContact | undefined,
     content: EmailTemplate | null,
 ): string {
     if (!content) return "";
@@ -81,15 +81,15 @@ function buildMailtoHref(
 }
 
 export function useGenerateQuestionnaireEmailModal(
-    accountId: string | null,
+    companyId: string | null,
     questions: readonly ProjectQuestionnaireQuestion[],
 ): GenerateQuestionnaireEmailModalState {
     const [isOpen, setOpen] = useState(false);
-    const account = useAccountForEmail(accountId);
+    const company = useCompanyForEmail(companyId);
     const { signature } = useUserSignature();
 
     const unansweredQuestions = getUnansweredQuestions(questions);
-    const contact = findPrimaryContact(account);
+    const contact = findPrimaryContact(company);
     const content = buildEmailContent(signature, unansweredQuestions, contact);
 
     return {

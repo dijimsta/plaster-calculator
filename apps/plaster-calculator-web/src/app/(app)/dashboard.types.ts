@@ -10,7 +10,7 @@ export interface PageUploadProgress {
 }
 
 export interface NewProjectFormProps {
-    readonly accountId: string | null;
+    readonly companyId: string | null;
     readonly dragActive: boolean;
     readonly file: File | null;
     readonly loading: boolean;
@@ -18,7 +18,7 @@ export interface NewProjectFormProps {
     readonly name: string;
     readonly handleDrop: (event: DragEvent<HTMLLabelElement>) => void;
     readonly handleFileSelection: (file?: File | null) => void;
-    readonly setAccountId: (accountId: string | null) => void;
+    readonly setCompanyId: (companyId: string | null) => void;
     readonly setDragActive: (active: boolean) => void;
     readonly setName: (name: string) => void;
     readonly submit: (event: FormEvent) => void;

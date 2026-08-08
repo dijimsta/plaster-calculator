@@ -4,53 +4,53 @@ import { Button, Paragraph } from "@libraries/uikit-web";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { AccountSelect } from "../../../components/account-select.js";
-import { getAccount } from "../../../lib/api.js";
+import { CompanySelect } from "../../../components/company-select.js";
+import { getCompany } from "../../../lib/api.js";
 import { ui } from "../../../lib/styles.js";
 
-import type { AccountDetail } from "../../../types.js";
+import type { CompanyDetail } from "../../../types.js";
 
-interface ProjectAccountPanelProps {
-    readonly accountId: string | null;
-    readonly draftAccountId: string | null;
+interface ProjectCompanyPanelProps {
+    readonly companyId: string | null;
+    readonly draftCompanyId: string | null;
     readonly isSaving: boolean;
-    readonly saveAccount: () => Promise<void>;
-    readonly setDraftAccountId: (accountId: string | null) => void;
+    readonly saveCompany: () => Promise<void>;
+    readonly setDraftCompanyId: (companyId: string | null) => void;
 }
 
-export function ProjectAccountPanel({
-    accountId,
-    draftAccountId,
+export function ProjectCompanyPanel({
+    companyId,
+    draftCompanyId,
     isSaving,
-    saveAccount,
-    setDraftAccountId,
-}: ProjectAccountPanelProps) {
-    const [account, setAccount] = useState<AccountDetail | null>(null);
-    const [isEditing, setIsEditing] = useState(!accountId);
+    saveCompany,
+    setDraftCompanyId,
+}: ProjectCompanyPanelProps) {
+    const [company, setCompany] = useState<CompanyDetail | null>(null);
+    const [isEditing, setIsEditing] = useState(!companyId);
     const [error, setError] = useState("");
 
     useEffect(() => {
-        setIsEditing(!accountId);
-        setDraftAccountId(accountId);
-        void loadAccount(accountId);
-    }, [accountId]);
+        setIsEditing(!companyId);
+        setDraftCompanyId(companyId);
+        void loadCompany(companyId);
+    }, [companyId]);
 
-    async function loadAccount(nextAccountId: string | null): Promise<void> {
-        setAccount(null);
+    async function loadCompany(nextCompanyId: string | null): Promise<void> {
+        setCompany(null);
         setError("");
-        if (!nextAccountId) return;
+        if (!nextCompanyId) return;
         try {
-            setAccount(await getAccount(nextAccountId));
+            setCompany(await getCompany(nextCompanyId));
         } catch (err) {
             setError(
-                err instanceof Error ? err.message : "Unable to load account",
+                err instanceof Error ? err.message : "Unable to load company",
             );
         }
     }
 
     async function save(): Promise<void> {
         try {
-            await saveAccount();
+            await saveCompany();
             setIsEditing(false);
         } catch {
             // Parent page owns the visible error state.
@@ -58,36 +58,36 @@ export function ProjectAccountPanel({
     }
 
     function cancelEdit(): void {
-        setDraftAccountId(accountId);
-        setIsEditing(!accountId);
+        setDraftCompanyId(companyId);
+        setIsEditing(!companyId);
     }
 
     return (
         <div className={ui.stack}>
             {isEditing ? (
                 <>
-                    <AccountSelect
-                        selectedAccountId={draftAccountId}
-                        onChange={setDraftAccountId}
+                    <CompanySelect
+                        selectedCompanyId={draftCompanyId}
+                        onChange={setDraftCompanyId}
                         disabled={isSaving}
-                        label="Project account"
-                        placeholder="Search account by company name"
-                        selectedAccountLabel={account?.companyName ?? null}
+                        label="Project company"
+                        placeholder="Search company by company name"
+                        selectedCompanyLabel={company?.companyName ?? null}
                     />
                     <div className={ui.buttonRow}>
                         <Button
                             variant="primary"
                             disabled={
-                                !draftAccountId ||
-                                draftAccountId === accountId ||
+                                !draftCompanyId ||
+                                draftCompanyId === companyId ||
                                 isSaving
                             }
                             onClick={() => void save()}
                             type="button"
                         >
-                            Save account
+                            Save company
                         </Button>
-                        {accountId && (
+                        {companyId && (
                             <Button
                                 variant="secondary"
                                 disabled={isSaving}
@@ -101,13 +101,13 @@ export function ProjectAccountPanel({
                 </>
             ) : (
                 <>
-                    <AccountSummary account={account} error={error} />
-                    {accountId && (
+                    <CompanySummary company={company} error={error} />
+                    {companyId && (
                         <Button
                             variant="secondary"
                             icon={<Pencil size={18} aria-hidden="true" />}
                             onClick={() => setIsEditing(true)}
-                            label="Edit project account"
+                            label="Edit project company"
                             type="button"
                         />
                     )}
@@ -117,25 +117,25 @@ export function ProjectAccountPanel({
     );
 }
 
-function AccountSummary({
-    account,
+function CompanySummary({
+    company,
     error,
 }: {
-    readonly account: AccountDetail | null;
+    readonly company: CompanyDetail | null;
     readonly error: string;
 }) {
     if (error) return <p className={ui.error}>{error}</p>;
-    if (!account)
+    if (!company)
         return (
             <Paragraph textSize="sm" variant="muted">
-                Loading account...
+                Loading company...
             </Paragraph>
         );
     return (
         <div className={ui.metric}>
-            <strong>{account.companyName}</strong>
+            <strong>{company.companyName}</strong>
             <Paragraph textSize="sm" variant="muted">
-                {account.businessNumber || account.phoneNumber || "No details"}
+                {company.businessNumber || company.phoneNumber || "No details"}
             </Paragraph>
         </div>
     );

@@ -3,19 +3,19 @@ import { Home, RefreshCcw } from "lucide-react";
 
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 
-import type { AccountDetail } from "../../../types.js";
+import type { CompanyDetail } from "../../../types.js";
 import type { ReactElement } from "react";
 
-interface AccountDetailHeaderProps {
-    readonly account: AccountDetail | null;
+interface CompanyDetailHeaderProps {
+    readonly company: CompanyDetail | null;
     readonly refresh: () => void;
 }
 
-export function AccountDetailHeader({
-    account,
+export function CompanyDetailHeader({
+    company,
     refresh,
-}: AccountDetailHeaderProps): ReactElement {
-    const accountName = account?.companyName ?? "Account";
+}: CompanyDetailHeaderProps): ReactElement {
+    const companyName = company?.companyName ?? "Company";
 
     return (
         <PageHeading>
@@ -24,14 +24,14 @@ export function AccountDetailHeader({
                     <RoutedBreadcrumbItem href="/">
                         <Home size={16} aria-label="Home" />
                     </RoutedBreadcrumbItem>
-                    <RoutedBreadcrumbItem href="/accounts">
-                        Accounts
+                    <RoutedBreadcrumbItem href="/companies">
+                        Companies
                     </RoutedBreadcrumbItem>
-                    <Breadcrumb.Item current>{accountName}</Breadcrumb.Item>
+                    <Breadcrumb.Item current>{companyName}</Breadcrumb.Item>
                 </Breadcrumb>
             </PageHeading.Breadcrumbs>
             <PageHeading.Content>
-                <PageHeading.Title>{accountName}</PageHeading.Title>
+                <PageHeading.Title>{companyName}</PageHeading.Title>
             </PageHeading.Content>
             <PageHeading.Actions>
                 <Button

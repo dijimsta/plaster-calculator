@@ -1,7 +1,7 @@
 import { Button, Input, Label, Text } from "@libraries/uikit-web";
 import { Upload } from "lucide-react";
 
-import { AccountSelect } from "../../components/account-select.js";
+import { CompanySelect } from "../../components/company-select.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type {
@@ -10,7 +10,7 @@ import type {
 } from "./dashboard.types.js";
 
 export function NewProjectForm({
-    accountId,
+    companyId,
     dragActive,
     file,
     loading,
@@ -18,7 +18,7 @@ export function NewProjectForm({
     name,
     handleDrop,
     handleFileSelection,
-    setAccountId,
+    setCompanyId,
     setDragActive,
     setName,
     submit,
@@ -38,12 +38,12 @@ export function NewProjectForm({
                     placeholder="12 Example Street"
                 />
             </div>
-            <AccountSelect
-                selectedAccountId={accountId}
-                onChange={setAccountId}
+            <CompanySelect
+                selectedCompanyId={companyId}
+                onChange={setCompanyId}
                 disabled={loading}
-                label="Account"
-                placeholder="Search account by company name"
+                label="Company"
+                placeholder="Search company by company name"
             />
             <div className={ui.field}>
                 <span className={ui.label}>PDF or image file</span>

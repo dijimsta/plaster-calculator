@@ -17,9 +17,9 @@ You can also follow the instructions from the [Data Connect documentation](https
 - [**Accessing the connector**](#accessing-the-connector)
   - [*Connecting to the local Emulator*](#connecting-to-the-local-emulator)
 - [**Queries**](#queries)
-  - [*ListMyAccounts*](#listmyaccounts)
-  - [*GetMyAccount*](#getmyaccount)
-  - [*ListMyAccountContacts*](#listmyaccountcontacts)
+  - [*ListMyCompanies*](#listmycompanies)
+  - [*GetMyCompany*](#getmycompany)
+  - [*ListMyCompanyContacts*](#listmycompanycontacts)
   - [*ListQuestionnaireTemplates*](#listquestionnairetemplates)
   - [*GetQuestionnaireTemplate*](#getquestionnairetemplate)
   - [*ListProjectQuestionnaires*](#listprojectquestionnaires)
@@ -28,14 +28,14 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetMyUserSettings*](#getmyusersettings)
   - [*GetMyUserSignature*](#getmyusersignature)
 - [**Mutations**](#mutations)
-  - [*CreateMyAccount*](#createmyaccount)
-  - [*UpdateMyAccount*](#updatemyaccount)
-  - [*SetMyAccountPrimaryContact*](#setmyaccountprimarycontact)
-  - [*ClearMyAccountPrimaryContact*](#clearmyaccountprimarycontact)
-  - [*DeleteMyAccount*](#deletemyaccount)
-  - [*CreateMyAccountContact*](#createmyaccountcontact)
-  - [*UpdateMyAccountContact*](#updatemyaccountcontact)
-  - [*DeleteMyAccountContact*](#deletemyaccountcontact)
+  - [*CreateMyCompany*](#createmycompany)
+  - [*UpdateMyCompany*](#updatemycompany)
+  - [*SetMyCompanyPrimaryContact*](#setmycompanyprimarycontact)
+  - [*ClearMyCompanyPrimaryContact*](#clearmycompanyprimarycontact)
+  - [*DeleteMyCompany*](#deletemycompany)
+  - [*CreateMyCompanyContact*](#createmycompanycontact)
+  - [*UpdateMyCompanyContact*](#updatemycompanycontact)
+  - [*DeleteMyCompanyContact*](#deletemycompanycontact)
   - [*CreateQuestionnaireTemplate*](#createquestionnairetemplate)
   - [*CreateQuestionnaireTemplateQuestion*](#createquestionnairetemplatequestion)
   - [*UpdateQuestionnaireTemplateName*](#updatequestionnairetemplatename)
@@ -142,28 +142,28 @@ Here's a general overview of how to use the generated Query hooks in your code:
 
 Below are examples of how to use the `data-connector-web` connector's generated Query hook functions to execute each Query. You can also follow the examples from the [Data Connect documentation](https://firebase.google.com/docs/data-connect/web-sdk#operations-react-angular).
 
-## ListMyAccounts
-You can execute the `ListMyAccounts` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+## ListMyCompanies
+You can execute the `ListMyCompanies` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
 
 ```javascript
-useListMyAccounts(dc: DataConnect, options?: useDataConnectQueryOptions<ListMyAccountsData>): UseDataConnectQueryResult<ListMyAccountsData, undefined>;
+useListMyCompanies(dc: DataConnect, options?: useDataConnectQueryOptions<ListMyCompaniesData>): UseDataConnectQueryResult<ListMyCompaniesData, undefined>;
 ```
 You can also pass in a `DataConnect` instance to the Query hook function.
 ```javascript
-useListMyAccounts(options?: useDataConnectQueryOptions<ListMyAccountsData>): UseDataConnectQueryResult<ListMyAccountsData, undefined>;
+useListMyCompanies(options?: useDataConnectQueryOptions<ListMyCompaniesData>): UseDataConnectQueryResult<ListMyCompaniesData, undefined>;
 ```
 
 ### Variables
-The `ListMyAccounts` Query has no variables.
+The `ListMyCompanies` Query has no variables.
 ### Return Type
-Recall that calling the `ListMyAccounts` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+Recall that calling the `ListMyCompanies` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
 
 To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
 
-To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ListMyAccounts` Query is of type `ListMyAccountsData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ListMyCompanies` Query is of type `ListMyCompaniesData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface ListMyAccountsData {
-  accounts: ({
+export interface ListMyCompaniesData {
+  companies: ({
     id: UUIDString;
     teamId: string;
     companyName: string;
@@ -172,36 +172,36 @@ export interface ListMyAccountsData {
     primaryContactId?: UUIDString | null;
     createdAt: TimestampString;
     updatedAt: TimestampString;
-  } & Account_Key)[];
+  } & Company_Key)[];
 }
 ```
 
 To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
 
-### Using `ListMyAccounts`'s Query hook function
+### Using `ListMyCompanies`'s Query hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
 import { connectorConfig } from '@generated/data-connector-web';
-import { useListMyAccounts } from '@generated/data-connector-web/react'
+import { useListMyCompanies } from '@generated/data-connector-web/react'
 
-export default function ListMyAccountsComponent() {
+export default function ListMyCompaniesComponent() {
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
-  const query = useListMyAccounts();
+  const query = useListMyCompanies();
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const query = useListMyAccounts(dataConnect);
+  const query = useListMyCompanies(dataConnect);
 
   // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
   const options = { staleTime: 5 * 1000 };
-  const query = useListMyAccounts(options);
+  const query = useListMyCompanies(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = { staleTime: 5 * 1000 };
-  const query = useListMyAccounts(dataConnect, options);
+  const query = useListMyCompanies(dataConnect, options);
 
   // Then, you can render your component dynamically based on the status of the Query.
   if (query.isPending) {
@@ -214,40 +214,40 @@ export default function ListMyAccountsComponent() {
 
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
-    console.log(query.data.accounts);
+    console.log(query.data.companies);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
 
-## GetMyAccount
-You can execute the `GetMyAccount` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+## GetMyCompany
+You can execute the `GetMyCompany` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
 
 ```javascript
-useGetMyAccount(dc: DataConnect, vars: GetMyAccountVariables, options?: useDataConnectQueryOptions<GetMyAccountData>): UseDataConnectQueryResult<GetMyAccountData, GetMyAccountVariables>;
+useGetMyCompany(dc: DataConnect, vars: GetMyCompanyVariables, options?: useDataConnectQueryOptions<GetMyCompanyData>): UseDataConnectQueryResult<GetMyCompanyData, GetMyCompanyVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Query hook function.
 ```javascript
-useGetMyAccount(vars: GetMyAccountVariables, options?: useDataConnectQueryOptions<GetMyAccountData>): UseDataConnectQueryResult<GetMyAccountData, GetMyAccountVariables>;
+useGetMyCompany(vars: GetMyCompanyVariables, options?: useDataConnectQueryOptions<GetMyCompanyData>): UseDataConnectQueryResult<GetMyCompanyData, GetMyCompanyVariables>;
 ```
 
 ### Variables
-The `GetMyAccount` Query requires an argument of type `GetMyAccountVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `GetMyCompany` Query requires an argument of type `GetMyCompanyVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface GetMyAccountVariables {
+export interface GetMyCompanyVariables {
   id: UUIDString;
 }
 ```
 ### Return Type
-Recall that calling the `GetMyAccount` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+Recall that calling the `GetMyCompany` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
 
 To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
 
-To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetMyAccount` Query is of type `GetMyAccountData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetMyCompany` Query is of type `GetMyCompanyData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface GetMyAccountData {
-  account?: {
+export interface GetMyCompanyData {
+  company?: {
     id: UUIDString;
     teamId: string;
     companyName: string;
@@ -258,51 +258,51 @@ export interface GetMyAccountData {
     updatedAt: TimestampString;
     contacts: ({
       id: UUIDString;
-      accountId: UUIDString;
+      companyId: UUIDString;
       name: string;
       email?: string | null;
       phoneNumber?: string | null;
       role?: string | null;
       createdAt: TimestampString;
       updatedAt: TimestampString;
-    } & AccountContact_Key)[];
-  } & Account_Key;
+    } & CompanyContact_Key)[];
+  } & Company_Key;
 }
 ```
 
 To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
 
-### Using `GetMyAccount`'s Query hook function
+### Using `GetMyCompany`'s Query hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, GetMyAccountVariables } from '@generated/data-connector-web';
-import { useGetMyAccount } from '@generated/data-connector-web/react'
+import { connectorConfig, GetMyCompanyVariables } from '@generated/data-connector-web';
+import { useGetMyCompany } from '@generated/data-connector-web/react'
 
-export default function GetMyAccountComponent() {
-  // The `useGetMyAccount` Query hook requires an argument of type `GetMyAccountVariables`:
-  const getMyAccountVars: GetMyAccountVariables = {
+export default function GetMyCompanyComponent() {
+  // The `useGetMyCompany` Query hook requires an argument of type `GetMyCompanyVariables`:
+  const getMyCompanyVars: GetMyCompanyVariables = {
     id: ..., 
   };
 
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
-  const query = useGetMyAccount(getMyAccountVars);
+  const query = useGetMyCompany(getMyCompanyVars);
   // Variables can be defined inline as well.
-  const query = useGetMyAccount({ id: ..., });
+  const query = useGetMyCompany({ id: ..., });
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const query = useGetMyAccount(dataConnect, getMyAccountVars);
+  const query = useGetMyCompany(dataConnect, getMyCompanyVars);
 
   // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
   const options = { staleTime: 5 * 1000 };
-  const query = useGetMyAccount(getMyAccountVars, options);
+  const query = useGetMyCompany(getMyCompanyVars, options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = { staleTime: 5 * 1000 };
-  const query = useGetMyAccount(dataConnect, getMyAccountVars, options);
+  const query = useGetMyCompany(dataConnect, getMyCompanyVars, options);
 
   // Then, you can render your component dynamically based on the status of the Query.
   if (query.isPending) {
@@ -315,85 +315,85 @@ export default function GetMyAccountComponent() {
 
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
-    console.log(query.data.account);
+    console.log(query.data.company);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
 
-## ListMyAccountContacts
-You can execute the `ListMyAccountContacts` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+## ListMyCompanyContacts
+You can execute the `ListMyCompanyContacts` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
 
 ```javascript
-useListMyAccountContacts(dc: DataConnect, vars: ListMyAccountContactsVariables, options?: useDataConnectQueryOptions<ListMyAccountContactsData>): UseDataConnectQueryResult<ListMyAccountContactsData, ListMyAccountContactsVariables>;
+useListMyCompanyContacts(dc: DataConnect, vars: ListMyCompanyContactsVariables, options?: useDataConnectQueryOptions<ListMyCompanyContactsData>): UseDataConnectQueryResult<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Query hook function.
 ```javascript
-useListMyAccountContacts(vars: ListMyAccountContactsVariables, options?: useDataConnectQueryOptions<ListMyAccountContactsData>): UseDataConnectQueryResult<ListMyAccountContactsData, ListMyAccountContactsVariables>;
+useListMyCompanyContacts(vars: ListMyCompanyContactsVariables, options?: useDataConnectQueryOptions<ListMyCompanyContactsData>): UseDataConnectQueryResult<ListMyCompanyContactsData, ListMyCompanyContactsVariables>;
 ```
 
 ### Variables
-The `ListMyAccountContacts` Query requires an argument of type `ListMyAccountContactsVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `ListMyCompanyContacts` Query requires an argument of type `ListMyCompanyContactsVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface ListMyAccountContactsVariables {
-  accountId: UUIDString;
+export interface ListMyCompanyContactsVariables {
+  companyId: UUIDString;
 }
 ```
 ### Return Type
-Recall that calling the `ListMyAccountContacts` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+Recall that calling the `ListMyCompanyContacts` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
 
 To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
 
-To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ListMyAccountContacts` Query is of type `ListMyAccountContactsData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ListMyCompanyContacts` Query is of type `ListMyCompanyContactsData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface ListMyAccountContactsData {
-  accountContacts: ({
+export interface ListMyCompanyContactsData {
+  companyContacts: ({
     id: UUIDString;
-    accountId: UUIDString;
+    companyId: UUIDString;
     name: string;
     email?: string | null;
     phoneNumber?: string | null;
     role?: string | null;
     createdAt: TimestampString;
     updatedAt: TimestampString;
-  } & AccountContact_Key)[];
+  } & CompanyContact_Key)[];
 }
 ```
 
 To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
 
-### Using `ListMyAccountContacts`'s Query hook function
+### Using `ListMyCompanyContacts`'s Query hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, ListMyAccountContactsVariables } from '@generated/data-connector-web';
-import { useListMyAccountContacts } from '@generated/data-connector-web/react'
+import { connectorConfig, ListMyCompanyContactsVariables } from '@generated/data-connector-web';
+import { useListMyCompanyContacts } from '@generated/data-connector-web/react'
 
-export default function ListMyAccountContactsComponent() {
-  // The `useListMyAccountContacts` Query hook requires an argument of type `ListMyAccountContactsVariables`:
-  const listMyAccountContactsVars: ListMyAccountContactsVariables = {
-    accountId: ..., 
+export default function ListMyCompanyContactsComponent() {
+  // The `useListMyCompanyContacts` Query hook requires an argument of type `ListMyCompanyContactsVariables`:
+  const listMyCompanyContactsVars: ListMyCompanyContactsVariables = {
+    companyId: ..., 
   };
 
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
-  const query = useListMyAccountContacts(listMyAccountContactsVars);
+  const query = useListMyCompanyContacts(listMyCompanyContactsVars);
   // Variables can be defined inline as well.
-  const query = useListMyAccountContacts({ accountId: ..., });
+  const query = useListMyCompanyContacts({ companyId: ..., });
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const query = useListMyAccountContacts(dataConnect, listMyAccountContactsVars);
+  const query = useListMyCompanyContacts(dataConnect, listMyCompanyContactsVars);
 
   // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
   const options = { staleTime: 5 * 1000 };
-  const query = useListMyAccountContacts(listMyAccountContactsVars, options);
+  const query = useListMyCompanyContacts(listMyCompanyContactsVars, options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = { staleTime: 5 * 1000 };
-  const query = useListMyAccountContacts(dataConnect, listMyAccountContactsVars, options);
+  const query = useListMyCompanyContacts(dataConnect, listMyCompanyContactsVars, options);
 
   // Then, you can render your component dynamically based on the status of the Query.
   if (query.isPending) {
@@ -406,7 +406,7 @@ export default function ListMyAccountContactsComponent() {
 
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
-    console.log(query.data.accountContacts);
+    console.log(query.data.companyContacts);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
@@ -1007,21 +1007,21 @@ Here's a general overview of how to use the generated Mutation hooks in your cod
 
 Below are examples of how to use the `data-connector-web` connector's generated Mutation hook functions to execute each Mutation. You can also follow the examples from the [Data Connect documentation](https://firebase.google.com/docs/data-connect/web-sdk#operations-react-angular).
 
-## CreateMyAccount
-You can execute the `CreateMyAccount` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## CreateMyCompany
+You can execute the `CreateMyCompany` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useCreateMyAccount(options?: useDataConnectMutationOptions<CreateMyAccountData, FirebaseError, CreateMyAccountVariables>): UseDataConnectMutationResult<CreateMyAccountData, CreateMyAccountVariables>;
+useCreateMyCompany(options?: useDataConnectMutationOptions<CreateMyCompanyData, FirebaseError, CreateMyCompanyVariables>): UseDataConnectMutationResult<CreateMyCompanyData, CreateMyCompanyVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useCreateMyAccount(dc: DataConnect, options?: useDataConnectMutationOptions<CreateMyAccountData, FirebaseError, CreateMyAccountVariables>): UseDataConnectMutationResult<CreateMyAccountData, CreateMyAccountVariables>;
+useCreateMyCompany(dc: DataConnect, options?: useDataConnectMutationOptions<CreateMyCompanyData, FirebaseError, CreateMyCompanyVariables>): UseDataConnectMutationResult<CreateMyCompanyData, CreateMyCompanyVariables>;
 ```
 
 ### Variables
-The `CreateMyAccount` Mutation requires an argument of type `CreateMyAccountVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `CreateMyCompany` Mutation requires an argument of type `CreateMyCompanyVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface CreateMyAccountVariables {
+export interface CreateMyCompanyVariables {
   id: UUIDString;
   companyName: string;
   businessNumber?: string | null;
@@ -1029,58 +1029,58 @@ export interface CreateMyAccountVariables {
 }
 ```
 ### Return Type
-Recall that calling the `CreateMyAccount` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `CreateMyCompany` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateMyAccount` Mutation is of type `CreateMyAccountData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateMyCompany` Mutation is of type `CreateMyCompanyData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface CreateMyAccountData {
-  account_insert: Account_Key;
+export interface CreateMyCompanyData {
+  company_insert: Company_Key;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `CreateMyAccount`'s Mutation hook function
+### Using `CreateMyCompany`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, CreateMyAccountVariables } from '@generated/data-connector-web';
-import { useCreateMyAccount } from '@generated/data-connector-web/react'
+import { connectorConfig, CreateMyCompanyVariables } from '@generated/data-connector-web';
+import { useCreateMyCompany } from '@generated/data-connector-web/react'
 
-export default function CreateMyAccountComponent() {
+export default function CreateMyCompanyComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useCreateMyAccount();
+  const mutation = useCreateMyCompany();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useCreateMyAccount(dataConnect);
+  const mutation = useCreateMyCompany(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useCreateMyAccount(options);
+  const mutation = useCreateMyCompany(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useCreateMyAccount(dataConnect, options);
+  const mutation = useCreateMyCompany(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useCreateMyAccount` Mutation requires an argument of type `CreateMyAccountVariables`:
-  const createMyAccountVars: CreateMyAccountVariables = {
+  // The `useCreateMyCompany` Mutation requires an argument of type `CreateMyCompanyVariables`:
+  const createMyCompanyVars: CreateMyCompanyVariables = {
     id: ..., 
     companyName: ..., 
     businessNumber: ..., // optional
     phoneNumber: ..., // optional
   };
-  mutation.mutate(createMyAccountVars);
+  mutation.mutate(createMyCompanyVars);
   // Variables can be defined inline as well.
   mutation.mutate({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
 
@@ -1088,7 +1088,7 @@ export default function CreateMyAccountComponent() {
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(createMyAccountVars, options);
+  mutation.mutate(createMyCompanyVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -1101,27 +1101,27 @@ export default function CreateMyAccountComponent() {
 
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
-    console.log(mutation.data.account_insert);
+    console.log(mutation.data.company_insert);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
 
-## UpdateMyAccount
-You can execute the `UpdateMyAccount` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## UpdateMyCompany
+You can execute the `UpdateMyCompany` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useUpdateMyAccount(options?: useDataConnectMutationOptions<UpdateMyAccountData, FirebaseError, UpdateMyAccountVariables>): UseDataConnectMutationResult<UpdateMyAccountData, UpdateMyAccountVariables>;
+useUpdateMyCompany(options?: useDataConnectMutationOptions<UpdateMyCompanyData, FirebaseError, UpdateMyCompanyVariables>): UseDataConnectMutationResult<UpdateMyCompanyData, UpdateMyCompanyVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useUpdateMyAccount(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateMyAccountData, FirebaseError, UpdateMyAccountVariables>): UseDataConnectMutationResult<UpdateMyAccountData, UpdateMyAccountVariables>;
+useUpdateMyCompany(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateMyCompanyData, FirebaseError, UpdateMyCompanyVariables>): UseDataConnectMutationResult<UpdateMyCompanyData, UpdateMyCompanyVariables>;
 ```
 
 ### Variables
-The `UpdateMyAccount` Mutation requires an argument of type `UpdateMyAccountVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `UpdateMyCompany` Mutation requires an argument of type `UpdateMyCompanyVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface UpdateMyAccountVariables {
+export interface UpdateMyCompanyVariables {
   id: UUIDString;
   companyName: string;
   businessNumber?: string | null;
@@ -1129,58 +1129,58 @@ export interface UpdateMyAccountVariables {
 }
 ```
 ### Return Type
-Recall that calling the `UpdateMyAccount` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `UpdateMyCompany` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateMyAccount` Mutation is of type `UpdateMyAccountData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateMyCompany` Mutation is of type `UpdateMyCompanyData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface UpdateMyAccountData {
-  account_update?: Account_Key | null;
+export interface UpdateMyCompanyData {
+  company_update?: Company_Key | null;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `UpdateMyAccount`'s Mutation hook function
+### Using `UpdateMyCompany`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, UpdateMyAccountVariables } from '@generated/data-connector-web';
-import { useUpdateMyAccount } from '@generated/data-connector-web/react'
+import { connectorConfig, UpdateMyCompanyVariables } from '@generated/data-connector-web';
+import { useUpdateMyCompany } from '@generated/data-connector-web/react'
 
-export default function UpdateMyAccountComponent() {
+export default function UpdateMyCompanyComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useUpdateMyAccount();
+  const mutation = useUpdateMyCompany();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useUpdateMyAccount(dataConnect);
+  const mutation = useUpdateMyCompany(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useUpdateMyAccount(options);
+  const mutation = useUpdateMyCompany(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useUpdateMyAccount(dataConnect, options);
+  const mutation = useUpdateMyCompany(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useUpdateMyAccount` Mutation requires an argument of type `UpdateMyAccountVariables`:
-  const updateMyAccountVars: UpdateMyAccountVariables = {
+  // The `useUpdateMyCompany` Mutation requires an argument of type `UpdateMyCompanyVariables`:
+  const updateMyCompanyVars: UpdateMyCompanyVariables = {
     id: ..., 
     companyName: ..., 
     businessNumber: ..., // optional
     phoneNumber: ..., // optional
   };
-  mutation.mutate(updateMyAccountVars);
+  mutation.mutate(updateMyCompanyVars);
   // Variables can be defined inline as well.
   mutation.mutate({ id: ..., companyName: ..., businessNumber: ..., phoneNumber: ..., });
 
@@ -1188,7 +1188,7 @@ export default function UpdateMyAccountComponent() {
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(updateMyAccountVars, options);
+  mutation.mutate(updateMyCompanyVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -1201,90 +1201,90 @@ export default function UpdateMyAccountComponent() {
 
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
-    console.log(mutation.data.account_update);
+    console.log(mutation.data.company_update);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
 
-## SetMyAccountPrimaryContact
-You can execute the `SetMyAccountPrimaryContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## SetMyCompanyPrimaryContact
+You can execute the `SetMyCompanyPrimaryContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useSetMyAccountPrimaryContact(options?: useDataConnectMutationOptions<SetMyAccountPrimaryContactData, FirebaseError, SetMyAccountPrimaryContactVariables>): UseDataConnectMutationResult<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
+useSetMyCompanyPrimaryContact(options?: useDataConnectMutationOptions<SetMyCompanyPrimaryContactData, FirebaseError, SetMyCompanyPrimaryContactVariables>): UseDataConnectMutationResult<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useSetMyAccountPrimaryContact(dc: DataConnect, options?: useDataConnectMutationOptions<SetMyAccountPrimaryContactData, FirebaseError, SetMyAccountPrimaryContactVariables>): UseDataConnectMutationResult<SetMyAccountPrimaryContactData, SetMyAccountPrimaryContactVariables>;
+useSetMyCompanyPrimaryContact(dc: DataConnect, options?: useDataConnectMutationOptions<SetMyCompanyPrimaryContactData, FirebaseError, SetMyCompanyPrimaryContactVariables>): UseDataConnectMutationResult<SetMyCompanyPrimaryContactData, SetMyCompanyPrimaryContactVariables>;
 ```
 
 ### Variables
-The `SetMyAccountPrimaryContact` Mutation requires an argument of type `SetMyAccountPrimaryContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `SetMyCompanyPrimaryContact` Mutation requires an argument of type `SetMyCompanyPrimaryContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface SetMyAccountPrimaryContactVariables {
-  accountId: UUIDString;
+export interface SetMyCompanyPrimaryContactVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
 }
 ```
 ### Return Type
-Recall that calling the `SetMyAccountPrimaryContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `SetMyCompanyPrimaryContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `SetMyAccountPrimaryContact` Mutation is of type `SetMyAccountPrimaryContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `SetMyCompanyPrimaryContact` Mutation is of type `SetMyCompanyPrimaryContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface SetMyAccountPrimaryContactData {
-  account_update?: Account_Key | null;
+export interface SetMyCompanyPrimaryContactData {
+  company_update?: Company_Key | null;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `SetMyAccountPrimaryContact`'s Mutation hook function
+### Using `SetMyCompanyPrimaryContact`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, SetMyAccountPrimaryContactVariables } from '@generated/data-connector-web';
-import { useSetMyAccountPrimaryContact } from '@generated/data-connector-web/react'
+import { connectorConfig, SetMyCompanyPrimaryContactVariables } from '@generated/data-connector-web';
+import { useSetMyCompanyPrimaryContact } from '@generated/data-connector-web/react'
 
-export default function SetMyAccountPrimaryContactComponent() {
+export default function SetMyCompanyPrimaryContactComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useSetMyAccountPrimaryContact();
+  const mutation = useSetMyCompanyPrimaryContact();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useSetMyAccountPrimaryContact(dataConnect);
+  const mutation = useSetMyCompanyPrimaryContact(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useSetMyAccountPrimaryContact(options);
+  const mutation = useSetMyCompanyPrimaryContact(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useSetMyAccountPrimaryContact(dataConnect, options);
+  const mutation = useSetMyCompanyPrimaryContact(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useSetMyAccountPrimaryContact` Mutation requires an argument of type `SetMyAccountPrimaryContactVariables`:
-  const setMyAccountPrimaryContactVars: SetMyAccountPrimaryContactVariables = {
-    accountId: ..., 
+  // The `useSetMyCompanyPrimaryContact` Mutation requires an argument of type `SetMyCompanyPrimaryContactVariables`:
+  const setMyCompanyPrimaryContactVars: SetMyCompanyPrimaryContactVariables = {
+    companyId: ..., 
     contactId: ..., 
   };
-  mutation.mutate(setMyAccountPrimaryContactVars);
+  mutation.mutate(setMyCompanyPrimaryContactVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ accountId: ..., contactId: ..., });
+  mutation.mutate({ companyId: ..., contactId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(setMyAccountPrimaryContactVars, options);
+  mutation.mutate(setMyCompanyPrimaryContactVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -1297,88 +1297,88 @@ export default function SetMyAccountPrimaryContactComponent() {
 
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
-    console.log(mutation.data.account_update);
+    console.log(mutation.data.company_update);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
 
-## ClearMyAccountPrimaryContact
-You can execute the `ClearMyAccountPrimaryContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## ClearMyCompanyPrimaryContact
+You can execute the `ClearMyCompanyPrimaryContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useClearMyAccountPrimaryContact(options?: useDataConnectMutationOptions<ClearMyAccountPrimaryContactData, FirebaseError, ClearMyAccountPrimaryContactVariables>): UseDataConnectMutationResult<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
+useClearMyCompanyPrimaryContact(options?: useDataConnectMutationOptions<ClearMyCompanyPrimaryContactData, FirebaseError, ClearMyCompanyPrimaryContactVariables>): UseDataConnectMutationResult<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useClearMyAccountPrimaryContact(dc: DataConnect, options?: useDataConnectMutationOptions<ClearMyAccountPrimaryContactData, FirebaseError, ClearMyAccountPrimaryContactVariables>): UseDataConnectMutationResult<ClearMyAccountPrimaryContactData, ClearMyAccountPrimaryContactVariables>;
+useClearMyCompanyPrimaryContact(dc: DataConnect, options?: useDataConnectMutationOptions<ClearMyCompanyPrimaryContactData, FirebaseError, ClearMyCompanyPrimaryContactVariables>): UseDataConnectMutationResult<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
 ```
 
 ### Variables
-The `ClearMyAccountPrimaryContact` Mutation requires an argument of type `ClearMyAccountPrimaryContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `ClearMyCompanyPrimaryContact` Mutation requires an argument of type `ClearMyCompanyPrimaryContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface ClearMyAccountPrimaryContactVariables {
-  accountId: UUIDString;
+export interface ClearMyCompanyPrimaryContactVariables {
+  companyId: UUIDString;
 }
 ```
 ### Return Type
-Recall that calling the `ClearMyAccountPrimaryContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `ClearMyCompanyPrimaryContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `ClearMyAccountPrimaryContact` Mutation is of type `ClearMyAccountPrimaryContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `ClearMyCompanyPrimaryContact` Mutation is of type `ClearMyCompanyPrimaryContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface ClearMyAccountPrimaryContactData {
-  account_update?: Account_Key | null;
+export interface ClearMyCompanyPrimaryContactData {
+  company_update?: Company_Key | null;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `ClearMyAccountPrimaryContact`'s Mutation hook function
+### Using `ClearMyCompanyPrimaryContact`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, ClearMyAccountPrimaryContactVariables } from '@generated/data-connector-web';
-import { useClearMyAccountPrimaryContact } from '@generated/data-connector-web/react'
+import { connectorConfig, ClearMyCompanyPrimaryContactVariables } from '@generated/data-connector-web';
+import { useClearMyCompanyPrimaryContact } from '@generated/data-connector-web/react'
 
-export default function ClearMyAccountPrimaryContactComponent() {
+export default function ClearMyCompanyPrimaryContactComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useClearMyAccountPrimaryContact();
+  const mutation = useClearMyCompanyPrimaryContact();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useClearMyAccountPrimaryContact(dataConnect);
+  const mutation = useClearMyCompanyPrimaryContact(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useClearMyAccountPrimaryContact(options);
+  const mutation = useClearMyCompanyPrimaryContact(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useClearMyAccountPrimaryContact(dataConnect, options);
+  const mutation = useClearMyCompanyPrimaryContact(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useClearMyAccountPrimaryContact` Mutation requires an argument of type `ClearMyAccountPrimaryContactVariables`:
-  const clearMyAccountPrimaryContactVars: ClearMyAccountPrimaryContactVariables = {
-    accountId: ..., 
+  // The `useClearMyCompanyPrimaryContact` Mutation requires an argument of type `ClearMyCompanyPrimaryContactVariables`:
+  const clearMyCompanyPrimaryContactVars: ClearMyCompanyPrimaryContactVariables = {
+    companyId: ..., 
   };
-  mutation.mutate(clearMyAccountPrimaryContactVars);
+  mutation.mutate(clearMyCompanyPrimaryContactVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ accountId: ..., });
+  mutation.mutate({ companyId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(clearMyAccountPrimaryContactVars, options);
+  mutation.mutate(clearMyCompanyPrimaryContactVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -1391,81 +1391,81 @@ export default function ClearMyAccountPrimaryContactComponent() {
 
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
-    console.log(mutation.data.account_update);
+    console.log(mutation.data.company_update);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
 
-## DeleteMyAccount
-You can execute the `DeleteMyAccount` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## DeleteMyCompany
+You can execute the `DeleteMyCompany` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useDeleteMyAccount(options?: useDataConnectMutationOptions<DeleteMyAccountData, FirebaseError, DeleteMyAccountVariables>): UseDataConnectMutationResult<DeleteMyAccountData, DeleteMyAccountVariables>;
+useDeleteMyCompany(options?: useDataConnectMutationOptions<DeleteMyCompanyData, FirebaseError, DeleteMyCompanyVariables>): UseDataConnectMutationResult<DeleteMyCompanyData, DeleteMyCompanyVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useDeleteMyAccount(dc: DataConnect, options?: useDataConnectMutationOptions<DeleteMyAccountData, FirebaseError, DeleteMyAccountVariables>): UseDataConnectMutationResult<DeleteMyAccountData, DeleteMyAccountVariables>;
+useDeleteMyCompany(dc: DataConnect, options?: useDataConnectMutationOptions<DeleteMyCompanyData, FirebaseError, DeleteMyCompanyVariables>): UseDataConnectMutationResult<DeleteMyCompanyData, DeleteMyCompanyVariables>;
 ```
 
 ### Variables
-The `DeleteMyAccount` Mutation requires an argument of type `DeleteMyAccountVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `DeleteMyCompany` Mutation requires an argument of type `DeleteMyCompanyVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface DeleteMyAccountVariables {
+export interface DeleteMyCompanyVariables {
   id: UUIDString;
 }
 ```
 ### Return Type
-Recall that calling the `DeleteMyAccount` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `DeleteMyCompany` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeleteMyAccount` Mutation is of type `DeleteMyAccountData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeleteMyCompany` Mutation is of type `DeleteMyCompanyData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface DeleteMyAccountData {
-  accountContact_deleteMany: number;
-  account_delete?: Account_Key | null;
+export interface DeleteMyCompanyData {
+  companyContact_deleteMany: number;
+  company_delete?: Company_Key | null;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `DeleteMyAccount`'s Mutation hook function
+### Using `DeleteMyCompany`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, DeleteMyAccountVariables } from '@generated/data-connector-web';
-import { useDeleteMyAccount } from '@generated/data-connector-web/react'
+import { connectorConfig, DeleteMyCompanyVariables } from '@generated/data-connector-web';
+import { useDeleteMyCompany } from '@generated/data-connector-web/react'
 
-export default function DeleteMyAccountComponent() {
+export default function DeleteMyCompanyComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useDeleteMyAccount();
+  const mutation = useDeleteMyCompany();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useDeleteMyAccount(dataConnect);
+  const mutation = useDeleteMyCompany(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useDeleteMyAccount(options);
+  const mutation = useDeleteMyCompany(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useDeleteMyAccount(dataConnect, options);
+  const mutation = useDeleteMyCompany(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useDeleteMyAccount` Mutation requires an argument of type `DeleteMyAccountVariables`:
-  const deleteMyAccountVars: DeleteMyAccountVariables = {
+  // The `useDeleteMyCompany` Mutation requires an argument of type `DeleteMyCompanyVariables`:
+  const deleteMyCompanyVars: DeleteMyCompanyVariables = {
     id: ..., 
   };
-  mutation.mutate(deleteMyAccountVars);
+  mutation.mutate(deleteMyCompanyVars);
   // Variables can be defined inline as well.
   mutation.mutate({ id: ..., });
 
@@ -1473,7 +1473,7 @@ export default function DeleteMyAccountComponent() {
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(deleteMyAccountVars, options);
+  mutation.mutate(deleteMyCompanyVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -1486,30 +1486,30 @@ export default function DeleteMyAccountComponent() {
 
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
-    console.log(mutation.data.accountContact_deleteMany);
-    console.log(mutation.data.account_delete);
+    console.log(mutation.data.companyContact_deleteMany);
+    console.log(mutation.data.company_delete);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
 
-## CreateMyAccountContact
-You can execute the `CreateMyAccountContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## CreateMyCompanyContact
+You can execute the `CreateMyCompanyContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useCreateMyAccountContact(options?: useDataConnectMutationOptions<CreateMyAccountContactData, FirebaseError, CreateMyAccountContactVariables>): UseDataConnectMutationResult<CreateMyAccountContactData, CreateMyAccountContactVariables>;
+useCreateMyCompanyContact(options?: useDataConnectMutationOptions<CreateMyCompanyContactData, FirebaseError, CreateMyCompanyContactVariables>): UseDataConnectMutationResult<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useCreateMyAccountContact(dc: DataConnect, options?: useDataConnectMutationOptions<CreateMyAccountContactData, FirebaseError, CreateMyAccountContactVariables>): UseDataConnectMutationResult<CreateMyAccountContactData, CreateMyAccountContactVariables>;
+useCreateMyCompanyContact(dc: DataConnect, options?: useDataConnectMutationOptions<CreateMyCompanyContactData, FirebaseError, CreateMyCompanyContactVariables>): UseDataConnectMutationResult<CreateMyCompanyContactData, CreateMyCompanyContactVariables>;
 ```
 
 ### Variables
-The `CreateMyAccountContact` Mutation requires an argument of type `CreateMyAccountContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `CreateMyCompanyContact` Mutation requires an argument of type `CreateMyCompanyContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface CreateMyAccountContactVariables {
+export interface CreateMyCompanyContactVariables {
   id: UUIDString;
-  accountId: UUIDString;
+  companyId: UUIDString;
   name: string;
   email?: string | null;
   phoneNumber?: string | null;
@@ -1517,68 +1517,68 @@ export interface CreateMyAccountContactVariables {
 }
 ```
 ### Return Type
-Recall that calling the `CreateMyAccountContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `CreateMyCompanyContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateMyAccountContact` Mutation is of type `CreateMyAccountContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateMyCompanyContact` Mutation is of type `CreateMyCompanyContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface CreateMyAccountContactData {
-  accountContact_insert: AccountContact_Key;
+export interface CreateMyCompanyContactData {
+  companyContact_insert: CompanyContact_Key;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `CreateMyAccountContact`'s Mutation hook function
+### Using `CreateMyCompanyContact`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, CreateMyAccountContactVariables } from '@generated/data-connector-web';
-import { useCreateMyAccountContact } from '@generated/data-connector-web/react'
+import { connectorConfig, CreateMyCompanyContactVariables } from '@generated/data-connector-web';
+import { useCreateMyCompanyContact } from '@generated/data-connector-web/react'
 
-export default function CreateMyAccountContactComponent() {
+export default function CreateMyCompanyContactComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useCreateMyAccountContact();
+  const mutation = useCreateMyCompanyContact();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useCreateMyAccountContact(dataConnect);
+  const mutation = useCreateMyCompanyContact(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useCreateMyAccountContact(options);
+  const mutation = useCreateMyCompanyContact(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useCreateMyAccountContact(dataConnect, options);
+  const mutation = useCreateMyCompanyContact(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useCreateMyAccountContact` Mutation requires an argument of type `CreateMyAccountContactVariables`:
-  const createMyAccountContactVars: CreateMyAccountContactVariables = {
+  // The `useCreateMyCompanyContact` Mutation requires an argument of type `CreateMyCompanyContactVariables`:
+  const createMyCompanyContactVars: CreateMyCompanyContactVariables = {
     id: ..., 
-    accountId: ..., 
+    companyId: ..., 
     name: ..., 
     email: ..., // optional
     phoneNumber: ..., // optional
     role: ..., // optional
   };
-  mutation.mutate(createMyAccountContactVars);
+  mutation.mutate(createMyCompanyContactVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ id: ..., accountId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
+  mutation.mutate({ id: ..., companyId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(createMyAccountContactVars, options);
+  mutation.mutate(createMyCompanyContactVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -1591,28 +1591,28 @@ export default function CreateMyAccountContactComponent() {
 
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
-    console.log(mutation.data.accountContact_insert);
+    console.log(mutation.data.companyContact_insert);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
 
-## UpdateMyAccountContact
-You can execute the `UpdateMyAccountContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## UpdateMyCompanyContact
+You can execute the `UpdateMyCompanyContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useUpdateMyAccountContact(options?: useDataConnectMutationOptions<UpdateMyAccountContactData, FirebaseError, UpdateMyAccountContactVariables>): UseDataConnectMutationResult<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
+useUpdateMyCompanyContact(options?: useDataConnectMutationOptions<UpdateMyCompanyContactData, FirebaseError, UpdateMyCompanyContactVariables>): UseDataConnectMutationResult<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useUpdateMyAccountContact(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateMyAccountContactData, FirebaseError, UpdateMyAccountContactVariables>): UseDataConnectMutationResult<UpdateMyAccountContactData, UpdateMyAccountContactVariables>;
+useUpdateMyCompanyContact(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateMyCompanyContactData, FirebaseError, UpdateMyCompanyContactVariables>): UseDataConnectMutationResult<UpdateMyCompanyContactData, UpdateMyCompanyContactVariables>;
 ```
 
 ### Variables
-The `UpdateMyAccountContact` Mutation requires an argument of type `UpdateMyAccountContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `UpdateMyCompanyContact` Mutation requires an argument of type `UpdateMyCompanyContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface UpdateMyAccountContactVariables {
-  accountId: UUIDString;
+export interface UpdateMyCompanyContactVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
   name: string;
   email?: string | null;
@@ -1621,68 +1621,68 @@ export interface UpdateMyAccountContactVariables {
 }
 ```
 ### Return Type
-Recall that calling the `UpdateMyAccountContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `UpdateMyCompanyContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateMyAccountContact` Mutation is of type `UpdateMyAccountContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateMyCompanyContact` Mutation is of type `UpdateMyCompanyContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface UpdateMyAccountContactData {
-  accountContact_update?: AccountContact_Key | null;
+export interface UpdateMyCompanyContactData {
+  companyContact_update?: CompanyContact_Key | null;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `UpdateMyAccountContact`'s Mutation hook function
+### Using `UpdateMyCompanyContact`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, UpdateMyAccountContactVariables } from '@generated/data-connector-web';
-import { useUpdateMyAccountContact } from '@generated/data-connector-web/react'
+import { connectorConfig, UpdateMyCompanyContactVariables } from '@generated/data-connector-web';
+import { useUpdateMyCompanyContact } from '@generated/data-connector-web/react'
 
-export default function UpdateMyAccountContactComponent() {
+export default function UpdateMyCompanyContactComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useUpdateMyAccountContact();
+  const mutation = useUpdateMyCompanyContact();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useUpdateMyAccountContact(dataConnect);
+  const mutation = useUpdateMyCompanyContact(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useUpdateMyAccountContact(options);
+  const mutation = useUpdateMyCompanyContact(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useUpdateMyAccountContact(dataConnect, options);
+  const mutation = useUpdateMyCompanyContact(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useUpdateMyAccountContact` Mutation requires an argument of type `UpdateMyAccountContactVariables`:
-  const updateMyAccountContactVars: UpdateMyAccountContactVariables = {
-    accountId: ..., 
+  // The `useUpdateMyCompanyContact` Mutation requires an argument of type `UpdateMyCompanyContactVariables`:
+  const updateMyCompanyContactVars: UpdateMyCompanyContactVariables = {
+    companyId: ..., 
     contactId: ..., 
     name: ..., 
     email: ..., // optional
     phoneNumber: ..., // optional
     role: ..., // optional
   };
-  mutation.mutate(updateMyAccountContactVars);
+  mutation.mutate(updateMyCompanyContactVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ accountId: ..., contactId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
+  mutation.mutate({ companyId: ..., contactId: ..., name: ..., email: ..., phoneNumber: ..., role: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(updateMyAccountContactVars, options);
+  mutation.mutate(updateMyCompanyContactVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -1695,91 +1695,91 @@ export default function UpdateMyAccountContactComponent() {
 
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
-    console.log(mutation.data.accountContact_update);
+    console.log(mutation.data.companyContact_update);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
 
-## DeleteMyAccountContact
-You can execute the `DeleteMyAccountContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## DeleteMyCompanyContact
+You can execute the `DeleteMyCompanyContact` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useDeleteMyAccountContact(options?: useDataConnectMutationOptions<DeleteMyAccountContactData, FirebaseError, DeleteMyAccountContactVariables>): UseDataConnectMutationResult<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
+useDeleteMyCompanyContact(options?: useDataConnectMutationOptions<DeleteMyCompanyContactData, FirebaseError, DeleteMyCompanyContactVariables>): UseDataConnectMutationResult<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useDeleteMyAccountContact(dc: DataConnect, options?: useDataConnectMutationOptions<DeleteMyAccountContactData, FirebaseError, DeleteMyAccountContactVariables>): UseDataConnectMutationResult<DeleteMyAccountContactData, DeleteMyAccountContactVariables>;
+useDeleteMyCompanyContact(dc: DataConnect, options?: useDataConnectMutationOptions<DeleteMyCompanyContactData, FirebaseError, DeleteMyCompanyContactVariables>): UseDataConnectMutationResult<DeleteMyCompanyContactData, DeleteMyCompanyContactVariables>;
 ```
 
 ### Variables
-The `DeleteMyAccountContact` Mutation requires an argument of type `DeleteMyAccountContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `DeleteMyCompanyContact` Mutation requires an argument of type `DeleteMyCompanyContactVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface DeleteMyAccountContactVariables {
-  accountId: UUIDString;
+export interface DeleteMyCompanyContactVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
 }
 ```
 ### Return Type
-Recall that calling the `DeleteMyAccountContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `DeleteMyCompanyContact` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeleteMyAccountContact` Mutation is of type `DeleteMyAccountContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeleteMyCompanyContact` Mutation is of type `DeleteMyCompanyContactData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface DeleteMyAccountContactData {
-  account_update?: Account_Key | null;
-  accountContact_delete?: AccountContact_Key | null;
+export interface DeleteMyCompanyContactData {
+  company_update?: Company_Key | null;
+  companyContact_delete?: CompanyContact_Key | null;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `DeleteMyAccountContact`'s Mutation hook function
+### Using `DeleteMyCompanyContact`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, DeleteMyAccountContactVariables } from '@generated/data-connector-web';
-import { useDeleteMyAccountContact } from '@generated/data-connector-web/react'
+import { connectorConfig, DeleteMyCompanyContactVariables } from '@generated/data-connector-web';
+import { useDeleteMyCompanyContact } from '@generated/data-connector-web/react'
 
-export default function DeleteMyAccountContactComponent() {
+export default function DeleteMyCompanyContactComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useDeleteMyAccountContact();
+  const mutation = useDeleteMyCompanyContact();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useDeleteMyAccountContact(dataConnect);
+  const mutation = useDeleteMyCompanyContact(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useDeleteMyAccountContact(options);
+  const mutation = useDeleteMyCompanyContact(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useDeleteMyAccountContact(dataConnect, options);
+  const mutation = useDeleteMyCompanyContact(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useDeleteMyAccountContact` Mutation requires an argument of type `DeleteMyAccountContactVariables`:
-  const deleteMyAccountContactVars: DeleteMyAccountContactVariables = {
-    accountId: ..., 
+  // The `useDeleteMyCompanyContact` Mutation requires an argument of type `DeleteMyCompanyContactVariables`:
+  const deleteMyCompanyContactVars: DeleteMyCompanyContactVariables = {
+    companyId: ..., 
     contactId: ..., 
   };
-  mutation.mutate(deleteMyAccountContactVars);
+  mutation.mutate(deleteMyCompanyContactVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ accountId: ..., contactId: ..., });
+  mutation.mutate({ companyId: ..., contactId: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(deleteMyAccountContactVars, options);
+  mutation.mutate(deleteMyCompanyContactVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -1792,8 +1792,8 @@ export default function DeleteMyAccountContactComponent() {
 
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
-    console.log(mutation.data.account_update);
-    console.log(mutation.data.accountContact_delete);
+    console.log(mutation.data.company_update);
+    console.log(mutation.data.companyContact_delete);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }

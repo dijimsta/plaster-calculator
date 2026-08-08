@@ -2,13 +2,13 @@
 
 import { Input, Label, SelectMenu } from "@libraries/uikit-web";
 
-import type { AccountDetailFieldsProps } from "./account.types.js";
+import type { CompanyDetailFieldsProps } from "./company.types.js";
 
-export function AccountDetailFields({
+export function CompanyDetailFields({
     contacts,
     draft,
     setDraft,
-}: AccountDetailFieldsProps) {
+}: CompanyDetailFieldsProps) {
     return (
         <>
             <div className="grid gap-1.5">

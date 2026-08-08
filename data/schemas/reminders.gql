@@ -7,6 +7,10 @@ type Reminder
     teamId: String!
     project: Project! @ref(fields: "projectId", references: "id")
     projectId: UUID!
+    company: Company @ref(fields: "companyId", references: "id")
+    companyId: UUID
+    # RETIRED: Legacy Accounts relationship. Retained for a future cleanup PR;
+    # application code must not read or write this field.
     account: Account @ref(fields: "accountId", references: "id")
     accountId: UUID
     assignee: String

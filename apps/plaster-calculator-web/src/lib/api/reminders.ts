@@ -7,14 +7,14 @@ const functions = FirebaseService.getFunctions();
 
 type ReminderPayload = {
     projectId: string;
-    accountId?: string | null;
+    companyId?: string | null;
     name: string;
     dueAt: string;
 };
 
 type UpdateReminderPayload = {
     reminderId: string;
-    accountId?: string | null;
+    companyId?: string | null;
     name?: string;
     dueAt?: string;
     status?: "OPEN" | "DONE" | "CANCELLED";

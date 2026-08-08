@@ -15,7 +15,7 @@ export {
     getProject,
     getProjectStatus,
     listProjects,
-    listProjectsByAccount,
+    listProjectsByCompany,
     renameProject,
     updateProject,
 } from "./projects.js";

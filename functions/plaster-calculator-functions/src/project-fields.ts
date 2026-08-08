@@ -4,7 +4,7 @@ import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 export interface ProjectUpdateFields {
     name?: string;
-    accountId?: string | null;
+    companyId?: string | null;
     address?: string | null;
     assignee?: string | null;
     salesStatus?: SalesStatus;
@@ -12,7 +12,7 @@ export interface ProjectUpdateFields {
 
 export function nextNullableProjectField(
     updates: ProjectUpdateFields,
-    field: "accountId" | "address" | "assignee",
+    field: "companyId" | "address" | "assignee",
     current: string | null | undefined,
 ) {
     return hasField(updates, field)

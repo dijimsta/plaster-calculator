@@ -93,7 +93,7 @@ export default function ProjectQuestionnairesPage({
         useConfirmProjectQuestionnaireQuestionAnswerCallback(projectId);
     const answerWithAi = useAnswerQuestionnaireWithAiCallback(projectId);
     const emailModal = useGenerateQuestionnaireEmailModal(
-        project?.accountId ?? null,
+        project?.companyId ?? null,
         questions,
     );
 

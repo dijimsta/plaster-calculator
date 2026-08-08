@@ -37,7 +37,7 @@ export interface EditorSidebarProps {
     readonly selectedEdgeOverride: EdgeOverride | undefined | null;
     readonly selectedPointIndexes: number[];
     readonly metrics: SelectionMetrics | null;
-    readonly projectAccountPanel?: ReactNode;
+    readonly projectCompanyPanel?: ReactNode;
     readonly salesStatusPanel?: ReactNode;
     readonly areaIssue: (
         areaId: string,

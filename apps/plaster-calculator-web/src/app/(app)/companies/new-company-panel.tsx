@@ -4,50 +4,50 @@ import { Button, Paragraph } from "@libraries/uikit-web";
 import { Plus } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
-import { AccountDraftFields } from "./account-draft-fields.js";
-import { EMPTY_ACCOUNT_DRAFT } from "./account.types.js";
-import { optionalValue } from "./account.utils.js";
-import { createAccount } from "../../../lib/api.js";
+import { CompanyDraftFields } from "./company-draft-fields.js";
+import { EMPTY_ACCOUNT_DRAFT } from "./company.types.js";
+import { optionalValue } from "./company.utils.js";
+import { createCompany } from "../../../lib/api.js";
 import { cx, ui } from "../../../lib/styles.js";
 
-import type { AccountDraft } from "./account.types.js";
+import type { CompanyDraft } from "./company.types.js";
 
-interface NewAccountPanelProps {
+interface NewCompanyPanelProps {
     readonly onCreated: () => void;
 }
 
-export function NewAccountPanel({ onCreated }: NewAccountPanelProps) {
-    const [draft, setDraft] = useState<AccountDraft>(EMPTY_ACCOUNT_DRAFT);
+export function NewCompanyPanel({ onCreated }: NewCompanyPanelProps) {
+    const [draft, setDraft] = useState<CompanyDraft>(EMPTY_ACCOUNT_DRAFT);
     const [message, setMessage] = useState("");
 
-    async function createNewAccount(event: FormEvent): Promise<void> {
+    async function createNewCompany(event: FormEvent): Promise<void> {
         event.preventDefault();
         const companyName = draft.companyName.trim();
         if (!companyName) return;
         try {
-            await createAccount({
+            await createCompany({
                 companyName,
                 businessNumber: optionalValue(draft.businessNumber),
                 phoneNumber: optionalValue(draft.phoneNumber),
             });
             setDraft(EMPTY_ACCOUNT_DRAFT);
-            setMessage("Account created.");
+            setMessage("Company created.");
             onCreated();
         } catch (error) {
             setMessage(
                 error instanceof Error
                     ? error.message
-                    : "Unable to create account",
+                    : "Unable to create company",
             );
         }
     }
 
     return (
-        <form className={cx(ui.panel, ui.stack)} onSubmit={createNewAccount}>
-            <h2>New Account</h2>
-            <AccountDraftFields draft={draft} setDraft={setDraft} />
+        <form className={cx(ui.panel, ui.stack)} onSubmit={createNewCompany}>
+            <h2>New Company</h2>
+            <CompanyDraftFields draft={draft} setDraft={setDraft} />
             <Button variant="primary">
-                <Plus size={18} /> Create account
+                <Plus size={18} /> Create company
             </Button>
             {message && (
                 <Paragraph textSize="sm" variant="muted">

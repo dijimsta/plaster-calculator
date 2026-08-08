@@ -2,7 +2,7 @@ mutation CreateProjectFromUpload(
     $id: UUID!
     $teamId: String!
     $assignee: String
-    $accountId: UUID
+    $companyId: UUID
     $name: String!
     $address: String
     $originalFileName: String!
@@ -17,7 +17,7 @@ mutation CreateProjectFromUpload(
             id: $id
             teamId: $teamId
             assignee: $assignee
-            accountId: $accountId
+            companyId: $companyId
             name: $name
             address: $address
             originalFileName: $originalFileName
@@ -35,7 +35,7 @@ mutation CreateProjectFromUpload(
 mutation UpdateProject(
     $id: UUID!
     $name: String
-    $accountId: UUID
+    $companyId: UUID
     $address: String
     $salesStatus: String
     $assignee: String
@@ -44,7 +44,7 @@ mutation UpdateProject(
         id: $id
         data: {
             name: $name
-            accountId: $accountId
+            companyId: $companyId
             address: $address
             salesStatus: $salesStatus
             assignee: $assignee

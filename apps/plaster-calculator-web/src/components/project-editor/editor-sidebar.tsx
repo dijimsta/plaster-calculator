@@ -26,7 +26,7 @@ export function EditorSidebar({
     selectedEdgeOverride,
     selectedPointIndexes,
     metrics,
-    projectAccountPanel,
+    projectCompanyPanel,
     salesStatusPanel,
     areaIssue,
     applyHeightToAllPages,
@@ -58,8 +58,8 @@ export function EditorSidebar({
                     {salesStatusPanel}
                 </InspectorSection>
             )}
-            <InspectorSection title="Account" defaultOpen>
-                {projectAccountPanel}
+            <InspectorSection title="Company" defaultOpen>
+                {projectCompanyPanel}
             </InspectorSection>
             <InspectorSection title={`Page ${page.pageNumber}`} defaultOpen>
                 <PageSettingsPanel

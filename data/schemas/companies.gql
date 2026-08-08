@@ -1,7 +1,4 @@
-# RETIRED: Legacy Accounts domain. Keep these tables only until a future
-# database-cleanup PR removes them. New application code must use Company and
-# CompanyContact; existing Account data is intentionally not migrated.
-type Account
+type Company
     @table
     @index(fields: ["teamId", "updatedAt"], order: [ASC, DESC]) {
     id: UUID! @default(expr: "uuidV4()")
@@ -10,19 +7,19 @@ type Account
     companyName: String!
     businessNumber: String
     phoneNumber: String
-    primaryContact: AccountContact
+    primaryContact: CompanyContact
         @ref(fields: "primaryContactId", references: "id")
     primaryContactId: UUID
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
 
-type AccountContact
+type CompanyContact
     @table
-    @index(fields: ["accountId", "createdAt"], order: [ASC, ASC]) {
+    @index(fields: ["companyId", "createdAt"], order: [ASC, ASC]) {
     id: UUID! @default(expr: "uuidV4()")
-    account: Account! @ref(fields: "accountId", references: "id")
-    accountId: UUID!
+    company: Company! @ref(fields: "companyId", references: "id")
+    companyId: UUID!
     name: String!
     email: String
     phoneNumber: String

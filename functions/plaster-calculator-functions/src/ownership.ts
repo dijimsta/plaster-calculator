@@ -39,29 +39,29 @@ export async function requireOwnedProject(projectId: string, userId: string) {
     return project;
 }
 
-export async function requireOwnedAccount(accountId: string, userId: string) {
-    const response = await DataConnector.getAccountById({
-        id: accountId,
+export async function requireOwnedCompany(companyId: string, userId: string) {
+    const response = await DataConnector.getCompanyById({
+        id: companyId,
     });
-    const account = response.data.account;
-    if (!account || account.teamId !== (await requireTeamId(userId))) {
-        throw new HttpsError("not-found", "Account was not found.");
+    const company = response.data.company;
+    if (!company || company.teamId !== (await requireTeamId(userId))) {
+        throw new HttpsError("not-found", "Company was not found.");
     }
 
-    return account;
+    return company;
 }
 
-export async function requireOwnedAccountContact(
-    accountId: string,
+export async function requireOwnedCompanyContact(
+    companyId: string,
     contactId: string,
     userId: string,
 ) {
-    await requireOwnedAccount(accountId, userId);
-    const response = await DataConnector.getAccountContactById({
-        accountId,
+    await requireOwnedCompany(companyId, userId);
+    const response = await DataConnector.getCompanyContactById({
+        companyId,
         contactId,
     });
-    const contact = response.data.accountContact;
+    const contact = response.data.companyContact;
     if (!contact) {
         throw new HttpsError("not-found", "Contact was not found.");
     }

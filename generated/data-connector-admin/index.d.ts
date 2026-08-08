@@ -18,6 +18,16 @@ export interface Account_Key {
   __typename?: 'Account_Key';
 }
 
+export interface CompanyContact_Key {
+  id: UUIDString;
+  __typename?: 'CompanyContact_Key';
+}
+
+export interface Company_Key {
+  id: UUIDString;
+  __typename?: 'Company_Key';
+}
+
 export interface CreateFloorplanPageData {
   floorplanPage_insert: FloorplanPage_Key;
 }
@@ -49,7 +59,7 @@ export interface CreateProjectFromUploadVariables {
   id: UUIDString;
   teamId: string;
   assignee?: string | null;
-  accountId?: UUIDString | null;
+  companyId?: UUIDString | null;
   name: string;
   address?: string | null;
   originalFileName: string;
@@ -68,7 +78,7 @@ export interface CreateReminderVariables {
   id: UUIDString;
   teamId: string;
   projectId: UUIDString;
-  accountId?: UUIDString | null;
+  companyId?: UUIDString | null;
   assignee?: string | null;
   name: string;
   status: string;
@@ -96,8 +106,8 @@ export interface FloorplanPage_Key {
   __typename?: 'FloorplanPage_Key';
 }
 
-export interface GetAccountByIdData {
-  account?: {
+export interface GetCompanyByIdData {
+  company?: {
     id: UUIDString;
     teamId: string;
     companyName: string;
@@ -108,36 +118,36 @@ export interface GetAccountByIdData {
     updatedAt: TimestampString;
     contacts: ({
       id: UUIDString;
-      accountId: UUIDString;
+      companyId: UUIDString;
       name: string;
       email?: string | null;
       phoneNumber?: string | null;
       role?: string | null;
       createdAt: TimestampString;
       updatedAt: TimestampString;
-    } & AccountContact_Key)[];
-  } & Account_Key;
+    } & CompanyContact_Key)[];
+  } & Company_Key;
 }
 
-export interface GetAccountByIdVariables {
+export interface GetCompanyByIdVariables {
   id: UUIDString;
 }
 
-export interface GetAccountContactByIdData {
-  accountContact?: {
+export interface GetCompanyContactByIdData {
+  companyContact?: {
     id: UUIDString;
-    accountId: UUIDString;
+    companyId: UUIDString;
     name: string;
     email?: string | null;
     phoneNumber?: string | null;
     role?: string | null;
     createdAt: TimestampString;
     updatedAt: TimestampString;
-  } & AccountContact_Key;
+  } & CompanyContact_Key;
 }
 
-export interface GetAccountContactByIdVariables {
-  accountId: UUIDString;
+export interface GetCompanyContactByIdVariables {
+  companyId: UUIDString;
   contactId: UUIDString;
 }
 
@@ -174,7 +184,7 @@ export interface GetProjectByIdData {
     id: UUIDString;
     teamId: string;
     assignee?: string | null;
-    accountId?: UUIDString | null;
+    companyId?: UUIDString | null;
     name: string;
     address?: string | null;
     originalFileName: string;
@@ -198,7 +208,7 @@ export interface GetProjectDetailsByIdData {
     id: UUIDString;
     teamId: string;
     assignee?: string | null;
-    accountId?: UUIDString | null;
+    companyId?: UUIDString | null;
     name: string;
     address?: string | null;
     originalFileName: string;
@@ -261,7 +271,7 @@ export interface GetReminderByIdData {
     id: UUIDString;
     teamId: string;
     projectId: UUIDString;
-    accountId?: UUIDString | null;
+    companyId?: UUIDString | null;
     assignee?: string | null;
     name: string;
     status: string;
@@ -325,7 +335,7 @@ export interface ListDueRemindersData {
     teamId: string;
     assignee?: string | null;
     projectId: UUIDString;
-    accountId?: UUIDString | null;
+    companyId?: UUIDString | null;
     name: string;
     status: string;
     dueAt: TimestampString;
@@ -344,7 +354,7 @@ export interface ListProjectRemindersData {
     id: UUIDString;
     teamId: string;
     projectId: UUIDString;
-    accountId?: UUIDString | null;
+    companyId?: UUIDString | null;
     assignee?: string | null;
     name: string;
     status: string;
@@ -359,12 +369,12 @@ export interface ListProjectRemindersVariables {
   projectId: UUIDString;
 }
 
-export interface ListProjectsByAccountData {
+export interface ListProjectsByCompanyData {
   projects: ({
     id: UUIDString;
     teamId: string;
     assignee?: string | null;
-    accountId?: UUIDString | null;
+    companyId?: UUIDString | null;
     name: string;
     address?: string | null;
     originalFileName: string;
@@ -379,8 +389,8 @@ export interface ListProjectsByAccountData {
   } & Project_Key)[];
 }
 
-export interface ListProjectsByAccountVariables {
-  accountId: UUIDString;
+export interface ListProjectsByCompanyVariables {
+  companyId: UUIDString;
 }
 
 export interface ListProjectsByTeamAndSalesStatusData {
@@ -388,7 +398,7 @@ export interface ListProjectsByTeamAndSalesStatusData {
     id: UUIDString;
     teamId: string;
     assignee?: string | null;
-    accountId?: UUIDString | null;
+    companyId?: UUIDString | null;
     name: string;
     address?: string | null;
     originalFileName: string;
@@ -576,7 +586,7 @@ export interface UpdateProjectQuestionnaireQuestionAiAnswerVariables {
 export interface UpdateProjectVariables {
   id: UUIDString;
   name?: string | null;
-  accountId?: UUIDString | null;
+  companyId?: UUIDString | null;
   address?: string | null;
   salesStatus?: string | null;
   assignee?: string | null;
@@ -588,7 +598,7 @@ export interface UpdateReminderData {
 
 export interface UpdateReminderVariables {
   id: UUIDString;
-  accountId?: UUIDString | null;
+  companyId?: UUIDString | null;
   assignee?: string | null;
   name?: string | null;
   status?: string | null;
@@ -626,15 +636,15 @@ export interface UserSignature_Key {
   __typename?: 'UserSignature_Key';
 }
 
-/** Generated Node Admin SDK operation action function for the 'GetAccountById' Query. Allow users to execute without passing in DataConnect. */
-export function getAccountById(dc: DataConnect, vars: GetAccountByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountByIdData>>;
-/** Generated Node Admin SDK operation action function for the 'GetAccountById' Query. Allow users to pass in custom DataConnect instances. */
-export function getAccountById(vars: GetAccountByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetCompanyById' Query. Allow users to execute without passing in DataConnect. */
+export function getCompanyById(dc: DataConnect, vars: GetCompanyByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetCompanyByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetCompanyById' Query. Allow users to pass in custom DataConnect instances. */
+export function getCompanyById(vars: GetCompanyByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetCompanyByIdData>>;
 
-/** Generated Node Admin SDK operation action function for the 'GetAccountContactById' Query. Allow users to execute without passing in DataConnect. */
-export function getAccountContactById(dc: DataConnect, vars: GetAccountContactByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountContactByIdData>>;
-/** Generated Node Admin SDK operation action function for the 'GetAccountContactById' Query. Allow users to pass in custom DataConnect instances. */
-export function getAccountContactById(vars: GetAccountContactByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetAccountContactByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetCompanyContactById' Query. Allow users to execute without passing in DataConnect. */
+export function getCompanyContactById(dc: DataConnect, vars: GetCompanyContactByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetCompanyContactByIdData>>;
+/** Generated Node Admin SDK operation action function for the 'GetCompanyContactById' Query. Allow users to pass in custom DataConnect instances. */
+export function getCompanyContactById(vars: GetCompanyContactByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetCompanyContactByIdData>>;
 
 /** Generated Node Admin SDK operation action function for the 'CreateProjectFromUpload' Mutation. Allow users to execute without passing in DataConnect. */
 export function createProjectFromUpload(dc: DataConnect, vars: CreateProjectFromUploadVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<CreateProjectFromUploadData>>;
@@ -696,10 +706,10 @@ export function listProjectsByTeamAndSalesStatus(dc: DataConnect, vars: ListProj
 /** Generated Node Admin SDK operation action function for the 'ListProjectsByTeamAndSalesStatus' Query. Allow users to pass in custom DataConnect instances. */
 export function listProjectsByTeamAndSalesStatus(vars: ListProjectsByTeamAndSalesStatusVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByTeamAndSalesStatusData>>;
 
-/** Generated Node Admin SDK operation action function for the 'ListProjectsByAccount' Query. Allow users to execute without passing in DataConnect. */
-export function listProjectsByAccount(dc: DataConnect, vars: ListProjectsByAccountVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByAccountData>>;
-/** Generated Node Admin SDK operation action function for the 'ListProjectsByAccount' Query. Allow users to pass in custom DataConnect instances. */
-export function listProjectsByAccount(vars: ListProjectsByAccountVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByAccountData>>;
+/** Generated Node Admin SDK operation action function for the 'ListProjectsByCompany' Query. Allow users to execute without passing in DataConnect. */
+export function listProjectsByCompany(dc: DataConnect, vars: ListProjectsByCompanyVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByCompanyData>>;
+/** Generated Node Admin SDK operation action function for the 'ListProjectsByCompany' Query. Allow users to pass in custom DataConnect instances. */
+export function listProjectsByCompany(vars: ListProjectsByCompanyVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectsByCompanyData>>;
 
 /** Generated Node Admin SDK operation action function for the 'GetProjectDetailsById' Query. Allow users to execute without passing in DataConnect. */
 export function getProjectDetailsById(dc: DataConnect, vars: GetProjectDetailsByIdVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetProjectDetailsByIdData>>;

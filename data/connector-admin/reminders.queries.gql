@@ -11,7 +11,7 @@ query ListDueReminders($teamId: String!) @auth(level: NO_ACCESS) {
         teamId
         assignee
         projectId
-        accountId
+        companyId
         name
         status
         dueAt
@@ -29,7 +29,7 @@ query ListProjectReminders($projectId: UUID!) @auth(level: NO_ACCESS) {
         id
         teamId
         projectId
-        accountId
+        companyId
         assignee
         name
         status
@@ -45,7 +45,7 @@ query GetReminderById($id: UUID!) @auth(level: NO_ACCESS) {
         id
         teamId
         projectId
-        accountId
+        companyId
         assignee
         name
         status

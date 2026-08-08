@@ -5,7 +5,7 @@ import { type FormEvent } from "react";
 
 import { ContactFormFields } from "./contact-form-fields.js";
 
-import type { ContactDraft } from "./account.types.js";
+import type { ContactDraft } from "./company.types.js";
 
 interface NewContactModalProps {
     readonly contactDraft: ContactDraft;

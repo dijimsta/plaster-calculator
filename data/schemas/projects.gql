@@ -4,11 +4,15 @@ type Project
         fields: ["teamId", "salesStatus", "updatedAt"]
         order: [ASC, ASC, DESC]
     )
-    @index(fields: ["accountId", "updatedAt"], order: [ASC, DESC]) {
+    @index(fields: ["companyId", "updatedAt"], order: [ASC, DESC]) {
     id: UUID! @default(expr: "uuidV4()")
     team: Team! @ref(fields: "teamId", references: "id")
     teamId: String!
     assignee: String
+    company: Company @ref(fields: "companyId", references: "id")
+    companyId: UUID
+    # RETIRED: Legacy Accounts relationship. Retained for a future cleanup PR;
+    # application code must not read or write this field.
     account: Account @ref(fields: "accountId", references: "id")
     accountId: UUID
     name: String!

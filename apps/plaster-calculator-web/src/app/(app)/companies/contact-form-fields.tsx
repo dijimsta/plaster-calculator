@@ -2,7 +2,7 @@
 
 import { cx, ui } from "../../../lib/styles.js";
 
-import type { ContactFieldsProps } from "./account.types.js";
+import type { ContactFieldsProps } from "./company.types.js";
 
 export function ContactFormFields({
     draft,

@@ -8,7 +8,7 @@ import {
 import { default as DynamicModule } from "next/dynamic.js";
 
 import { cx, ui } from "../../../../lib/styles.js";
-import { ProjectAccountPanel } from "../project-account-panel.js";
+import { ProjectCompanyPanel } from "../project-company-panel.js";
 import { ProjectPageTabs } from "./project-page-tabs.js";
 
 import type {
@@ -30,17 +30,17 @@ const ProjectEditor = dynamic(
 );
 
 interface ProjectStatusContentProps {
-    readonly accountId: string | null;
+    readonly companyId: string | null;
     readonly analyzingPage: boolean;
     readonly load: () => Promise<void>;
     readonly project: ProjectDetail;
     readonly salesStatusPanel: ReactNode;
-    readonly saveAccount: () => Promise<void>;
-    readonly savingAccount: boolean;
+    readonly saveCompany: () => Promise<void>;
+    readonly savingCompany: boolean;
     readonly selectedPage: ProjectDetail["pages"][number] | null;
     readonly selectedPageId: string | null;
     readonly selectPage: (pageId: string) => Promise<void>;
-    readonly setAccountId: (accountId: string | null) => void;
+    readonly setCompanyId: (companyId: string | null) => void;
     readonly setAnalyzingPage: (analyzing: boolean) => void;
     readonly switchingPage: boolean;
     readonly updateDraft: (pageId: string, draft: PageValidationInput) => void;
@@ -48,29 +48,29 @@ interface ProjectStatusContentProps {
 }
 
 export function ProjectStatusContent({
-    accountId,
+    companyId,
     analyzingPage,
     load,
     project,
     salesStatusPanel,
-    saveAccount,
-    savingAccount,
+    saveCompany,
+    savingCompany,
     selectedPage,
     selectedPageId,
     selectPage,
-    setAccountId,
+    setCompanyId,
     setAnalyzingPage,
     switchingPage,
     updateDraft,
     validationIssues,
 }: ProjectStatusContentProps) {
-    const accountPanel = (
-        <ProjectAccountPanel
-            accountId={project.accountId}
-            draftAccountId={accountId}
-            isSaving={savingAccount}
-            saveAccount={saveAccount}
-            setDraftAccountId={setAccountId}
+    const companyPanel = (
+        <ProjectCompanyPanel
+            companyId={project.companyId}
+            draftCompanyId={companyId}
+            isSaving={savingCompany}
+            saveCompany={saveCompany}
+            setDraftCompanyId={setCompanyId}
         />
     );
 
@@ -79,8 +79,8 @@ export function ProjectStatusContent({
             <InspectorSection title="Status" defaultOpen>
                 {salesStatusPanel}
             </InspectorSection>
-            <InspectorSection title="Account" defaultOpen>
-                {accountPanel}
+            <InspectorSection title="Company" defaultOpen>
+                {companyPanel}
             </InspectorSection>
         </InspectorPanel>
     );
@@ -148,7 +148,7 @@ export function ProjectStatusContent({
                     page={selectedPage}
                     onSaved={load}
                     onAnalyzingChange={setAnalyzingPage}
-                    projectAccountPanel={accountPanel}
+                    projectCompanyPanel={companyPanel}
                     salesStatusPanel={salesStatusPanel}
                     onDraftChange={updateDraft}
                     validationIssues={validationIssues.filter(
