@@ -13,8 +13,7 @@ export class BundleService {
         const packageJsonPath = resolve(directory, "package.json");
         const text = await readFile(packageJsonPath, "utf-8");
         const json = JSON.parse(text);
-        const { dependencies = {}, devDependencies = {} } =
-            PackageJsonSchema.parse(json);
+        const { dependencies = {} } = PackageJsonSchema.parse(json);
 
         const [workspaceDependencies, external] = Object.entries(
             dependencies,
@@ -58,11 +57,9 @@ export class BundleService {
         workspaceDependencies.forEach((dependency) => {
             delete json.dependencies[dependency];
         });
-        Object.entries(devDependencies).forEach(([dependency, version]) => {
-            if (version.startsWith(WORKSPACE_PREFIX)) {
-                delete json.devDependencies[dependency];
-            }
-        });
+
+        // Firebase only needs runtime dependencies after esbuild has produced the deployment artifact.
+        delete json.devDependencies;
 
         // Write the modified package.json
         await writeFile(packageJsonPath, JSON.stringify(json, null, TAB_WIDTH));

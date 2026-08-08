@@ -16,7 +16,8 @@ The command:
 - Bundles `src/index.ts` to `dist/index.js` with esbuild for Node.js 24.
 - Leaves third-party runtime dependencies external.
 - Bundles workspace dependencies that Firebase Cloud Build cannot resolve.
-- Rewrites the target package's `main`, `exports`, and workspace dependency entries for deployment.
+- Removes development dependencies that are not needed by the deployment artifact.
+- Rewrites the target package's `main`, `exports`, and runtime dependency entries for deployment.
 
 Because bundling mutates the target `package.json`, use it only as part of the intended deployment workflow and review
 the resulting changes when running it manually. The command always rewrites the manifest in the directory passed to
