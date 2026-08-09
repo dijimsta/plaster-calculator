@@ -1,5 +1,6 @@
 import {
     CompaniesServiceProvider,
+    NestedComponents,
     ProjectsServiceProvider,
     QuestionnairesServiceProvider,
     RemindersServiceProvider,
@@ -57,26 +58,22 @@ export default function RootLayout({ children }: PropsWithChildren) {
     return (
         <html lang="en">
             <body>
-                <AppCheckProvider>
-                    <AppQueryClientProvider>
-                        <AppNotificationsProvider>
-                            <TeamsServiceProvider>
-                                <CompaniesServiceProvider>
-                                    <ProjectsServiceProvider>
-                                        <QuestionnairesServiceProvider>
-                                            <RemindersServiceProvider>
-                                                <SettingsServiceProvider>
-                                                    <ThemeInitializer />
-                                                    {children}
-                                                </SettingsServiceProvider>
-                                            </RemindersServiceProvider>
-                                        </QuestionnairesServiceProvider>
-                                    </ProjectsServiceProvider>
-                                </CompaniesServiceProvider>
-                            </TeamsServiceProvider>
-                        </AppNotificationsProvider>
-                    </AppQueryClientProvider>
-                </AppCheckProvider>
+                <NestedComponents
+                    components={[
+                        AppCheckProvider,
+                        AppQueryClientProvider,
+                        AppNotificationsProvider,
+                        TeamsServiceProvider,
+                        CompaniesServiceProvider,
+                        ProjectsServiceProvider,
+                        QuestionnairesServiceProvider,
+                        RemindersServiceProvider,
+                        SettingsServiceProvider,
+                    ]}
+                >
+                    <ThemeInitializer />
+                    {children}
+                </NestedComponents>
             </body>
         </html>
     );
