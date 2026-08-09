@@ -9,7 +9,7 @@ export async function requireTeamId(userId: string): Promise<string> {
     const response = await DataConnector.getTeamMembershipForUser({ userId });
     const membership = response.data.teamMembers[0];
     if (!membership) {
-        return ensureTeamForUser(userId);
+        return (await ensureTeamForUser(userId)).teamId;
     }
     if (response.data.teamMembers.length !== 1) {
         throw new HttpsError("failed-precondition", "User has multiple teams.");

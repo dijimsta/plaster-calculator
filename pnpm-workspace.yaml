@@ -5,6 +5,7 @@ packages:
     - libraries/*
 overrides:
     firebase: ^12.17.0
+    firebase-admin: ^14.2.0
 allowBuilds:
     "@firebase/util": false
     "@nestjs/core": false

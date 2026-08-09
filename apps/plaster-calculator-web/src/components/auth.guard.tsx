@@ -17,7 +17,7 @@ export function AuthGuard({ children }: PropsWithChildren) {
 
     if (user) {
         return <>{children}</>;
+    } else {
+        return null;
     }
-
-    return null;
 }

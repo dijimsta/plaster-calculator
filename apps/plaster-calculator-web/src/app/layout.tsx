@@ -1,3 +1,4 @@
+import { TeamsServiceProvider } from "@libraries/plaster-calculator-web-core";
 import { type Metadata } from "next";
 import { type PropsWithChildren } from "react";
 
@@ -52,8 +53,10 @@ export default function RootLayout({ children }: PropsWithChildren) {
                 <AppCheckProvider>
                     <AppQueryClientProvider>
                         <AppNotificationsProvider>
-                            <ThemeInitializer />
-                            {children}
+                            <TeamsServiceProvider>
+                                <ThemeInitializer />
+                                {children}
+                            </TeamsServiceProvider>
                         </AppNotificationsProvider>
                     </AppQueryClientProvider>
                 </AppCheckProvider>
