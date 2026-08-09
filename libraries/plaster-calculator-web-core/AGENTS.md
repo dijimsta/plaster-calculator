@@ -7,6 +7,8 @@ Inherits the [repository guidelines](../../AGENTS.md), [TypeScript guidelines](.
   context, provider, and hook in the same subject folder (e.g. `teams/teams.service.ts`, `teams.context.ts`,
   `teams.provider.tsx`, `teams.hooks.ts`).
 - Do not import Next.js, routing, or app-specific code.
+- The `"use client"` directive is a React Server Components convention, not a Next.js-specific feature — add it to the
+  top of client-only hooks, contexts, and providers here as needed. It does not violate the rule above.
 - Give a provider's injected dependency a constructor default parameter that builds the real implementation, and
   accept an optional override (e.g. a provider prop) for tests and Storybook. Do not export a module-level singleton
   service instance.
