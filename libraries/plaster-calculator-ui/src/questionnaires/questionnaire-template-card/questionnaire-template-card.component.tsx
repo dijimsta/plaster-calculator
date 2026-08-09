@@ -14,9 +14,9 @@ export type QuestionnaireTemplateCardProps = {
     readonly onDelete: () => void;
 };
 
-interface TemplateHeaderProps {
+type TemplateHeaderProps = {
     readonly template: QuestionnaireTemplateCardProps["template"];
-}
+};
 
 /** Renders one questionnaire template and its available actions. */
 export function QuestionnaireTemplateCard({

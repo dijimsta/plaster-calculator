@@ -7,10 +7,10 @@ import {
     ModalDialog,
     Textarea,
 } from "@libraries/uikit-web";
-import { useId, useState } from "react";
+import { useId } from "react";
 import type { ReactElement } from "react";
 
-const COPIED_LABEL_DURATION_MS = 2000;
+import { useCopyQuestionnaireEmailBodyCallback } from "./generate-questionnaire-email-modal.hooks.ts";
 
 export type GenerateQuestionnaireEmailModalProps = {
     readonly open: boolean;
@@ -28,15 +28,9 @@ export function GenerateQuestionnaireEmailModal({
     body,
     mailtoHref,
 }: GenerateQuestionnaireEmailModalProps): ReactElement {
-    const [copied, setCopied] = useState(false);
+    const onCopy = useCopyQuestionnaireEmailBodyCallback(body);
     const subjectId = useId();
     const bodyId = useId();
-
-    async function handleCopy(): Promise<void> {
-        await navigator.clipboard.writeText(body);
-        setCopied(true);
-        setTimeout(() => setCopied(false), COPIED_LABEL_DURATION_MS);
-    }
 
     return (
         <ModalDialog
@@ -47,8 +41,8 @@ export function GenerateQuestionnaireEmailModal({
             description="Review the generated email, then copy it or open it in your email client."
             footer={
                 <>
-                    <Button variant="secondary" onClick={handleCopy}>
-                        {copied ? "Copied!" : "Copy to clipboard"}
+                    <Button variant="secondary" onClick={onCopy}>
+                        Copy to clipboard
                     </Button>
                     <ButtonLink href={mailtoHref}>
                         Open in email client
