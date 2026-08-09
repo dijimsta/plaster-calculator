@@ -1,8 +1,9 @@
 import { EmailTemplateBuilder } from "@libraries/plaster-calculator-common";
-import { useUserSignature } from "@libraries/plaster-calculator-web-core";
+import {
+    useCompaniesService,
+    useUserSignature,
+} from "@libraries/plaster-calculator-web-core";
 import { useEffect, useState } from "react";
-
-import { getCompany } from "../../../../../lib/api.js";
 
 import type { ProjectQuestionnaireQuestion } from "./page.hooks.js";
 import type { CompanyContact, CompanyDetail } from "../../../../../types.js";
@@ -10,6 +11,7 @@ import type {
     EmailTemplate,
     UserSignature,
 } from "@libraries/plaster-calculator-common";
+import type { CompaniesService } from "@libraries/plaster-calculator-web-core";
 
 export interface GenerateQuestionnaireEmailModalState {
     readonly isOpen: boolean;
@@ -27,7 +29,10 @@ function getUnansweredQuestions(
     return questions.filter((question) => !question.answer?.trim());
 }
 
-function useCompanyForEmail(companyId: string | null): CompanyDetail | null {
+function useCompanyForEmail(
+    companyId: string | null,
+    companiesService: CompaniesService,
+): CompanyDetail | null {
     const [company, setCompany] = useState<CompanyDetail | null>(null);
 
     useEffect(() => {
@@ -36,13 +41,13 @@ function useCompanyForEmail(companyId: string | null): CompanyDetail | null {
             return;
         }
         let cancelled = false;
-        void getCompany(companyId).then((detail) => {
+        void companiesService.getCompany(companyId).then((detail) => {
             if (!cancelled) setCompany(detail);
         });
         return () => {
             cancelled = true;
         };
-    }, [companyId]);
+    }, [companyId, companiesService]);
 
     return company;
 }
@@ -84,8 +89,9 @@ export function useGenerateQuestionnaireEmailModal(
     companyId: string | null,
     questions: readonly ProjectQuestionnaireQuestion[],
 ): GenerateQuestionnaireEmailModalState {
+    const companiesService = useCompaniesService();
     const [isOpen, setOpen] = useState(false);
-    const company = useCompanyForEmail(companyId);
+    const company = useCompanyForEmail(companyId, companiesService);
     const { signature } = useUserSignature();
 
     const unansweredQuestions = getUnansweredQuestions(questions);

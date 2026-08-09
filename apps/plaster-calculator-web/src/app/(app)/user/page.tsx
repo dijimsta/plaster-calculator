@@ -1,11 +1,11 @@
 "use client";
 
+import { useUser } from "@libraries/plaster-calculator-web-core";
 import { Box, Paragraph, Text } from "@libraries/uikit-web";
 
 import { userPageStyles as styles } from "./page.styles.js";
 import { UserPageHeader } from "./user-page-header.js";
 import { UserSettingsPanel } from "./user-settings.js";
-import { useUser } from "../../../auth/user.hook.js";
 import { ThemeSettingsControl } from "../../../components/theme-settings-control.js";
 
 export default function UserPage() {

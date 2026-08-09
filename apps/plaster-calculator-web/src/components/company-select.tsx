@@ -1,10 +1,10 @@
 "use client";
 
+import { useCompaniesService } from "@libraries/plaster-calculator-web-core";
 import { Button, Paragraph, Text } from "@libraries/uikit-web";
 import { LoaderCircle, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { listCompanies } from "../lib/api.js";
 import { cx, ui } from "../lib/styles.js";
 
 import type { CompanySummary } from "../types.js";
@@ -33,6 +33,7 @@ export function CompanySelect({
     placeholder = "Search companies",
     selectedCompanyLabel = null,
 }: CompanySelectProps) {
+    const companiesService = useCompaniesService();
     const [companies, setCompanies] = useState<CompanySummary[] | null>(null);
     const [query, setQuery] = useState("");
     const [isOpen, setIsOpen] = useState(false);
@@ -53,7 +54,7 @@ export function CompanySelect({
         setIsLoading(true);
         setError("");
         try {
-            setCompanies(await listCompanies());
+            setCompanies(await companiesService.listCompanies());
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "Unable to load companies",

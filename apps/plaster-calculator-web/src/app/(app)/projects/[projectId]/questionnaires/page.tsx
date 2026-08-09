@@ -6,6 +6,7 @@ import {
     GenerateQuestionnaireEmailModal,
     ProjectQuestionnaireQuestionList,
 } from "@libraries/plaster-calculator-ui";
+import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { Box, Button, EmptyState } from "@libraries/uikit-web";
 import { ClipboardList, Mail, Plus, Sparkles } from "lucide-react";
 import { use, useCallback, useEffect, useState } from "react";
@@ -21,7 +22,6 @@ import {
     useRemoveProjectQuestionnaireQuestionCallback,
     useSaveProjectQuestionnaireQuestionAnswerCallback,
 } from "./page.hooks.js";
-import { getProject, renameProject } from "../../../../../lib/api.js";
 import { ui } from "../../../../../lib/styles.js";
 import { ProjectHeader } from "../project-page-header.js";
 
@@ -34,6 +34,7 @@ export default function ProjectQuestionnairesPage({
     params: Promise<{ projectId: string }>;
 }) {
     const { projectId } = use(params);
+    const projectsService = useProjectsService();
     const [project, setProject] = useState<ProjectDetail | null>(null);
     const [error, setError] = useState("");
     const [renaming, setRenaming] = useState(false);
@@ -48,7 +49,7 @@ export default function ProjectQuestionnairesPage({
 
     const load = useCallback(async (): Promise<void> => {
         try {
-            const detail = await getProject(projectId);
+            const detail = await projectsService.getProject(projectId);
             setProject(detail);
             setRenameValue(detail.name);
         } catch (err) {
@@ -56,7 +57,7 @@ export default function ProjectQuestionnairesPage({
                 err instanceof Error ? err.message : "Unable to load project",
             );
         }
-    }, [projectId]);
+    }, [projectId, projectsService]);
 
     useEffect(() => {
         void load();
@@ -65,7 +66,10 @@ export default function ProjectQuestionnairesPage({
     async function saveRename() {
         if (!project || !renameValue.trim()) return;
         try {
-            const renamed = await renameProject(project.id, renameValue.trim());
+            const renamed = await projectsService.renameProject(
+                project.id,
+                renameValue.trim(),
+            );
             setProject(renamed);
             setRenaming(false);
         } catch (err) {

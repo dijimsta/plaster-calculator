@@ -1,12 +1,8 @@
+import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
 import { useRouter } from "next/navigation.js";
 import { createElement, useState, type DragEvent, type FormEvent } from "react";
 
-import {
-    initializeFloorplanPages,
-    uploadPdfPageSource,
-    uploadProject,
-} from "../../../lib/api.js";
 import {
     loadPdfDocument,
     renderPdfPageSourcePng,
@@ -33,6 +29,7 @@ export function useDashboardUpload({
     refresh,
     setMessage,
 }: DashboardUploadOptions) {
+    const projectsService = useProjectsService();
     const router = useRouter();
     const { notify } = useNotificationsManager();
     const [name, setName] = useState("");
@@ -58,7 +55,7 @@ export function useDashboardUpload({
         let preparedPdf = emptyPreparedPdfUpload();
         try {
             preparedPdf = await preparePdfUpload(file);
-            const upload = await uploadProject(
+            const upload = await projectsService.uploadProject(
                 name || file.name,
                 file,
                 preparedPdf.pdfDocument?.numPages,
@@ -141,11 +138,12 @@ export function useDashboardUpload({
                     total,
                     label: `Uploading page ${pageNumber}...`,
                 });
-                pageImagePaths[pageNumber] = await uploadPdfPageSource(
-                    draftProjectId,
-                    pageNumber,
-                    sourcePng,
-                );
+                pageImagePaths[pageNumber] =
+                    await projectsService.uploadPdfPageSource(
+                        draftProjectId,
+                        pageNumber,
+                        sourcePng,
+                    );
                 setPageUploadProgress({
                     current: index + 1,
                     total,
@@ -154,7 +152,10 @@ export function useDashboardUpload({
             }
             setMessage("Creating editable PDF pages...");
             const projectId = draftProjectId;
-            await initializeFloorplanPages(projectId, pageImagePaths);
+            await projectsService.initializeFloorplanPages(
+                projectId,
+                pageImagePaths,
+            );
             cleanupPdfModal();
             router.push(`/projects/${projectId}`);
         } catch (error) {

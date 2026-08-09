@@ -1,11 +1,7 @@
+import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { useCallback, useState } from "react";
 
 import { useEditorAutosave } from "./use-editor-autosave.js";
-import {
-    applyCeilingHeightToProject,
-    applyScaleToProject,
-    savePageOverlay,
-} from "../lib/api.js";
 
 import type { Overlay, Point } from "@libraries/plaster-calculator-common";
 
@@ -46,6 +42,7 @@ export function useEditorPersistence({
     scaleMmPerPx,
     setDirty,
 }: EditorPersistenceOptions): EditorPersistence {
+    const projectsService = useProjectsService();
     const [saving, setSaving] = useState(false);
     const [autoSaving, setAutoSaving] = useState(false);
     const [status, setStatus] = useState("");
@@ -58,7 +55,7 @@ export function useEditorPersistence({
                 setSaving(true);
             }
             try {
-                await savePageOverlay(projectId, pageId, {
+                await projectsService.savePageOverlay(projectId, pageId, {
                     overlay,
                     scaleMmPerPx,
                     ceilingHeightMm,
@@ -89,6 +86,7 @@ export function useEditorPersistence({
             overlay,
             pageId,
             projectId,
+            projectsService,
             referenceLengthMm,
             referencePoints,
             scaleMmPerPx,
@@ -99,7 +97,10 @@ export function useEditorPersistence({
     const applyHeightToAllPages = useCallback(async () => {
         try {
             if (dirty) await save(false);
-            await applyCeilingHeightToProject(projectId, ceilingHeightMm);
+            await projectsService.applyCeilingHeightToProject(
+                projectId,
+                ceilingHeightMm,
+            );
             setStatus("Ceiling height applied to all pages");
             onSaved();
         } catch (error) {
@@ -109,7 +110,7 @@ export function useEditorPersistence({
                     : "Unable to apply ceiling height",
             );
         }
-    }, [ceilingHeightMm, dirty, onSaved, projectId, save]);
+    }, [ceilingHeightMm, dirty, onSaved, projectId, projectsService, save]);
 
     const applyScaleToAllPages = useCallback(async () => {
         if (!scaleMmPerPx || scaleMmPerPx <= 0) {
@@ -118,7 +119,7 @@ export function useEditorPersistence({
         }
         try {
             if (dirty) await save(false);
-            await applyScaleToProject(projectId, scaleMmPerPx);
+            await projectsService.applyScaleToProject(projectId, scaleMmPerPx);
             setStatus("Scale applied to all pages");
             onSaved();
         } catch (error) {
@@ -128,7 +129,7 @@ export function useEditorPersistence({
                     : "Unable to apply scale",
             );
         }
-    }, [dirty, onSaved, projectId, save, scaleMmPerPx]);
+    }, [dirty, onSaved, projectId, projectsService, save, scaleMmPerPx]);
 
     useEditorAutosave({
         autoSaving,

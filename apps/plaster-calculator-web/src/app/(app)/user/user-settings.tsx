@@ -1,16 +1,17 @@
 "use client";
 
+import { useSettingsService } from "@libraries/plaster-calculator-web-core";
 import { Button, Input, Paragraph, Toggle } from "@libraries/uikit-web";
 import { useEffect, useState } from "react";
 
 import { userPageStyles as styles } from "./page.styles.js";
-import { getSettings, updateSettings } from "../../../lib/api.js";
 
 import type { UserSettings } from "../../../types.js";
 
 const minimumReminderDays = 1;
 
 export function UserSettingsPanel() {
+    const settingsService = useSettingsService();
     const [settings, setSettings] = useState<UserSettings | null>(null);
     const [quoteFollowUpEnabled, setQuoteFollowUpEnabled] = useState(true);
     const [quoteFollowUpDays, setQuoteFollowUpDays] = useState(3);
@@ -20,12 +21,12 @@ export function UserSettingsPanel() {
 
     useEffect(() => {
         void loadSettings();
-    }, []);
+    }, [settingsService]);
 
     async function loadSettings(): Promise<void> {
         setLoading(true);
         try {
-            const nextSettings = await getSettings();
+            const nextSettings = await settingsService.getSettings();
             setSettings(nextSettings);
             setQuoteFollowUpEnabled(nextSettings.quoteFollowUpEnabled);
             setQuoteFollowUpDays(nextSettings.quoteFollowUpDays);
@@ -44,7 +45,7 @@ export function UserSettingsPanel() {
     async function saveSettings(): Promise<void> {
         setSaving(true);
         try {
-            const nextSettings = await updateSettings({
+            const nextSettings = await settingsService.updateSettings({
                 quoteFollowUpEnabled,
                 quoteFollowUpDays: sanitizeReminderDays(quoteFollowUpDays),
             });

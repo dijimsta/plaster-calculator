@@ -1,6 +1,10 @@
 "use client";
 
-import { FirebaseService } from "@libraries/plaster-calculator-web-core";
+import {
+    FirebaseService,
+    useUser,
+    useUserInitials,
+} from "@libraries/plaster-calculator-web-core";
 import {
     Avatar,
     Box,
@@ -16,9 +20,6 @@ import { signOut } from "firebase/auth";
 import * as Icons from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 import { usePathname, useRouter } from "next/navigation.js";
-
-import { useUserInitials } from "../auth/user-initials.hook.js";
-import { useUser } from "../auth/user.hook.js";
 
 import type { PropsWithChildren } from "react";
 

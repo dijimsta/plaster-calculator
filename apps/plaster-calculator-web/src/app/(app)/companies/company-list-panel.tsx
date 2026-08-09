@@ -1,5 +1,6 @@
 "use client";
 
+import { useCompaniesService } from "@libraries/plaster-calculator-web-core";
 import {
     Button,
     EmptyState,
@@ -13,7 +14,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import { CompanyRow } from "./company-row.js";
 import { filterCompanies } from "./company.utils.js";
-import { listCompanies } from "../../../lib/api.js";
 import { cx, ui } from "../../../lib/styles.js";
 
 import type { CompanySummary } from "../../../types.js";
@@ -23,6 +23,7 @@ interface CompanyListPanelProps {
 }
 
 export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
+    const companiesService = useCompaniesService();
     const [companies, setCompanies] = useState<CompanySummary[]>([]);
     const [query, setQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +31,7 @@ export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
 
     useEffect(() => {
         void refresh();
-    }, [refreshKey]);
+    }, [refreshKey, companiesService]);
 
     const filtered = useMemo(
         () => filterCompanies(companies, query),
@@ -40,7 +41,7 @@ export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
         setIsLoading(true);
         setMessage("");
         try {
-            const nextCompanies = await listCompanies();
+            const nextCompanies = await companiesService.listCompanies();
             setCompanies(nextCompanies);
         } catch (error) {
             setMessage(
