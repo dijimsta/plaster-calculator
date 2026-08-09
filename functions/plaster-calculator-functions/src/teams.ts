@@ -1,16 +1,17 @@
 import "./bootstrap.js";
 
 import * as DataConnector from "@generated/data-connector-admin";
+import { EnsureMyTeamResponseSchema } from "@libraries/plaster-calculator-common";
 import { getAuth } from "firebase-admin/auth";
 import { onCall } from "firebase-functions/https";
 import { auth as firebaseAuth } from "firebase-functions/v1";
 
 import { requireAuth } from "./auth.js";
 
-export async function ensureTeamForUser(userId: string): Promise<string> {
+export async function ensureTeamForUser(userId: string) {
     const response = await DataConnector.getTeamMembershipForUser({ userId });
     const existing = response.data.teamMembers[0];
-    if (existing) return existing.teamId;
+    if (existing) return EnsureMyTeamResponseSchema.parse(existing);
 
     const user = await getAuth().getUser(userId);
     const teamId = personalTeamId(userId);
@@ -24,12 +25,12 @@ export async function ensureTeamForUser(userId: string): Promise<string> {
         ...(user.customClaims ?? {}),
         teamId,
     });
-    return teamId;
+    return EnsureMyTeamResponseSchema.parse({ teamId });
 }
 
 export const ensureMyTeam = onCall(async (request) => {
     const auth = requireAuth(request);
-    return { teamId: await ensureTeamForUser(auth.uid) };
+    return ensureTeamForUser(auth.uid);
 });
 
 export const createPersonalTeamForNewUser = firebaseAuth
