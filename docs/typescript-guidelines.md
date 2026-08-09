@@ -6,8 +6,8 @@ Applies to handwritten TypeScript packages that reference this document.
 - Use kebab-case filenames and named, immutable exports. Prefer one primary responsibility per file.
 - Use `import type` for type-only imports, relative imports within a package, and public entry points across packages.
   Never use `require()` in TypeScript source.
-- Give public APIs explicit parameter and return types plus concise JSDoc. Use interfaces for object shapes and type
-  aliases for unions or intersections.
+- Give public APIs explicit parameter and return types plus concise JSDoc. Use `type` aliases for object shapes, unions,
+  and intersections. Reserve `interface` for contracts a class will `implements`.
 - Prefer readonly data, `unknown` over `any`, explicit narrowing over non-null assertions, and `const` over `let`. Never
   use `var`.
 - Keep functions under roughly 30 lines and classes under roughly 150–200 lines. Prefer an options object beyond three
