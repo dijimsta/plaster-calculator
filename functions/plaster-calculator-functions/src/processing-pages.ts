@@ -12,7 +12,6 @@ import {
     storageProjectId,
     uploadStorageBuffer,
 } from "./storage.js";
-
 import type { ProcessingStrategy, ProjectWithPages } from "./types.js";
 
 export interface AnalyzedPageData {

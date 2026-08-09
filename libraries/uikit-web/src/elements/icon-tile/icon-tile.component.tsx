@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactNode, ReactElement } from "react";
 
 import {
     base,
@@ -7,8 +8,6 @@ import {
     type IconTileSize,
     type IconTileTone,
 } from "./icon-tile.styles.ts";
-
-import type { ReactNode, ReactElement } from "react";
 
 export type { IconTileSize, IconTileTone };
 

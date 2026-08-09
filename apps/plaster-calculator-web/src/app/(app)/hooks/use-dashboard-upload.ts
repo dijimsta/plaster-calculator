@@ -1,6 +1,7 @@
 import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
 import { useRouter } from "next/navigation.js";
+import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { createElement, useState, type DragEvent, type FormEvent } from "react";
 
 import {
@@ -10,9 +11,7 @@ import {
     revokePdfPreviews,
     type PdfPagePreview,
 } from "../../../lib/pdf.js";
-
 import type { PageUploadProgress } from "../dashboard.types.js";
-import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 interface PreparedPdfUpload {
     pdfDocument: PDFDocumentProxy | null;

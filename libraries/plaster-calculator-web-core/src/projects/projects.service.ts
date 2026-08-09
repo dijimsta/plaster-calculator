@@ -6,6 +6,7 @@ import {
     ProjectSummarySchema,
     UploadResponseSchema,
 } from "@libraries/plaster-calculator-common";
+import type { Auth } from "firebase/auth";
 import { httpsCallable, type Functions } from "firebase/functions";
 import { ref, uploadBytes, type FirebaseStorage } from "firebase/storage";
 
@@ -22,7 +23,6 @@ import type {
     UpdateProjectRequest,
     UploadResponse,
 } from "./projects.types.ts";
-import type { Auth } from "firebase/auth";
 
 const LONG_RUNNING_CALLABLE_TIMEOUT_MS = 60 * 60 * 1000;
 

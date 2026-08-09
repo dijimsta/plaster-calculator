@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     DEFAULT_TONE,
@@ -7,8 +8,6 @@ import {
     type ProgressBarSize,
     type ProgressBarTone,
 } from "./progress-bar.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type { ProgressBarSize, ProgressBarTone };
 

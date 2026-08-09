@@ -1,7 +1,6 @@
 import { QuestionnaireTemplateCard } from "@libraries/plaster-calculator-ui";
-import { fn } from "storybook/test";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 
 const meta: Meta<typeof QuestionnaireTemplateCard> = {
     title: "Plaster Calculator/Questionnaires/QuestionnaireTemplateCard",

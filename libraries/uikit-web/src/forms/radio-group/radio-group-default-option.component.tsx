@@ -1,4 +1,7 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
+
+import type { CheckableControlProps } from "../form-control.types.ts";
 
 import {
     defaultOption,
@@ -10,10 +13,7 @@ import {
     optionText,
 } from "./radio-group-default-option.styles.ts";
 import { RadioControl } from "./radio.component.tsx";
-
 import type { RadioSize } from "./radio.styles.ts";
-import type { CheckableControlProps } from "../form-control.types.ts";
-import type { ReactElement, ReactNode } from "react";
 
 export type RadioGroupDefaultOptionProps = {
     readonly id: string;

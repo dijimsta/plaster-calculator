@@ -11,18 +11,17 @@ import { analyzePageImage } from "./processing-pages.js";
 import { processingStrategies } from "./processing-strategies.js";
 import { fetchStorageImage } from "./storage.js";
 import { LONG_RUNNING_TIMEOUT_SECONDS } from "./types.js";
+import type {
+    AnalyzeFloorplanPageRequest,
+    FloorplanPageRow,
+    ProjectDetail,
+} from "./types.js";
 import {
     hasField,
     readNullableNumber,
     readOptionalNullableString,
     readRequiredString,
 } from "./validation.js";
-
-import type {
-    AnalyzeFloorplanPageRequest,
-    FloorplanPageRow,
-    ProjectDetail,
-} from "./types.js";
 
 export const analyzeFloorplanPage = onCall<
     AnalyzeFloorplanPageRequest,

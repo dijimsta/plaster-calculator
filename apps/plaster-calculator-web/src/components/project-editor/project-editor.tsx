@@ -1,9 +1,10 @@
 "use client";
 
+import type { Point } from "@libraries/plaster-calculator-common";
 import { useProjectsService } from "@libraries/plaster-calculator-web-core";
+import type { Stage as KonvaStage } from "konva/lib/Stage.js";
 import { useEffect, useRef, useState } from "react";
 
-import { ProjectEditorView } from "./project-editor-view.js";
 import { useEditorActions } from "../../hooks/use-editor-actions.js";
 import { useEditorDerivedState } from "../../hooks/use-editor-derived-state.js";
 import { useEditorHistory } from "../../hooks/use-editor-history.js";
@@ -15,13 +16,12 @@ import { useEditorSelection } from "../../hooks/use-editor-selection.js";
 import { useEditorValidation } from "../../hooks/use-editor-validation.js";
 import { useEditorViewport } from "../../hooks/use-editor-viewport.js";
 
+import { ProjectEditorView } from "./project-editor-view.js";
 import type {
     OverlayMode,
     ProjectEditorProps,
     SnapGuide,
 } from "./project-editor.types.js";
-import type { Point } from "@libraries/plaster-calculator-common";
-import type { Stage as KonvaStage } from "konva/lib/Stage.js";
 
 export function ProjectEditor({
     project,

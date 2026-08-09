@@ -1,4 +1,10 @@
 import clsx from "clsx";
+import type { ReactElement } from "react";
+
+import {
+    checkableInputProps,
+    type CheckableControlProps,
+} from "../form-control.types.ts";
 
 import {
     container,
@@ -8,12 +14,6 @@ import {
     track,
     type ToggleSize,
 } from "./toggle.styles.ts";
-import {
-    checkableInputProps,
-    type CheckableControlProps,
-} from "../form-control.types.ts";
-
-import type { ReactElement } from "react";
 
 export type { ToggleSize };
 

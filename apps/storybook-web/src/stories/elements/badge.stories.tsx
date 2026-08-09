@@ -1,7 +1,6 @@
 import { Badge } from "@libraries/uikit-web";
-import { fn } from "storybook/test";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 
 const meta: Meta<typeof Badge> = {
     title: "UIKit/Elements/Badge",

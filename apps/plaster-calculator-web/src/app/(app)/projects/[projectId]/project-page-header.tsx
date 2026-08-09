@@ -10,7 +10,6 @@ import { default as LinkModule } from "next/link.js";
 
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
 import { ui } from "../../../../lib/styles.js";
-
 import type { ProjectDetail } from "../../../../types.js";
 
 const Link = LinkModule.default;

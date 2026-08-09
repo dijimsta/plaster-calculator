@@ -3,7 +3,6 @@
 import { useContext } from "react";
 
 import { CompaniesServiceContext } from "./companies.context.ts";
-
 import type { CompaniesService } from "./companies.service.ts";
 
 export function useCompaniesService(): CompaniesService {

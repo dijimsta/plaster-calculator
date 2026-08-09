@@ -4,12 +4,6 @@ import {
 } from "@libraries/plaster-calculator-common";
 
 import {
-    createManualArea,
-    pointsRemovedByStraighten,
-    splitAreaPart,
-    viewportCenterInImage,
-} from "./use-editor-area-actions.utils.js";
-import {
     edgeOverridesAfterInsert,
     edgeOverridesAfterRemoveMany,
     rakedAfterPointRemoval,
@@ -19,6 +13,12 @@ import type {
     EditorActionsOptions,
     UpdateArea,
 } from "./use-editor-actions.types.js";
+import {
+    createManualArea,
+    pointsRemovedByStraighten,
+    splitAreaPart,
+    viewportCenterInImage,
+} from "./use-editor-area-actions.utils.js";
 
 interface AreaActionsOptions extends Pick<
     EditorActionsOptions,

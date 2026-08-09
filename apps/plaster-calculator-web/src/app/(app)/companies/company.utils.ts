@@ -1,13 +1,14 @@
 import type {
-    CompanyDetailDraft,
-    CompanyDraft,
-    ContactDraft,
-} from "./company.types.js";
-import type {
     CompanyContact,
     CompanyDetail,
     CompanySummary,
 } from "../../../types.js";
+
+import type {
+    CompanyDetailDraft,
+    CompanyDraft,
+    ContactDraft,
+} from "./company.types.js";
 
 export function optionalValue(value: string): string | null {
     return value.trim() || null;

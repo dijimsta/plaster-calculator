@@ -1,7 +1,6 @@
 import { Tabs } from "@libraries/uikit-web";
 
 import { cx, ui } from "../../../../lib/styles.js";
-
 import type { ProjectDetail } from "../../../../types.js";
 
 interface ProjectPageTabsProps {

@@ -1,6 +1,6 @@
-import { styles } from "./page-heading.styles.ts";
-
 import type { ReactElement, ReactNode } from "react";
+
+import { styles } from "./page-heading.styles.ts";
 
 export type PageHeadingProps = {
     readonly children?: ReactNode;

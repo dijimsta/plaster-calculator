@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     fullWidthStyle,
@@ -7,8 +8,6 @@ import {
     type ButtonSize,
     type ButtonVariant,
 } from "../button/button.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type ButtonLinkProps = {
     readonly variant?: ButtonVariant;

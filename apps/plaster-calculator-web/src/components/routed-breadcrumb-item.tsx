@@ -2,7 +2,6 @@
 
 import { Breadcrumb } from "@libraries/uikit-web";
 import { useRouter } from "next/navigation.js";
-
 import type { PropsWithChildren, ReactElement } from "react";
 
 interface RoutedBreadcrumbItemProps {

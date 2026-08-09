@@ -1,6 +1,6 @@
-import { styles } from "./sidebar-navigation.styles.ts";
-
 import type { ReactElement, ReactNode } from "react";
+
+import { styles } from "./sidebar-navigation.styles.ts";
 
 export type SidebarNavigationProps = {
     readonly children?: ReactNode;

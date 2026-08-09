@@ -1,6 +1,6 @@
-import { styles } from "./description-list.styles.ts";
-
 import type { ReactElement, ReactNode } from "react";
+
+import { styles } from "./description-list.styles.ts";
 
 export type DescriptionListItem = {
     readonly term: ReactNode;

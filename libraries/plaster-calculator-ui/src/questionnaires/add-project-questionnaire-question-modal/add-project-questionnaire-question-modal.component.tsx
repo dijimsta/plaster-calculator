@@ -5,7 +5,6 @@ import {
     preventDefaultEvent,
 } from "@libraries/uikit-web";
 import { useId, useState } from "react";
-
 import type { ReactElement } from "react";
 
 export type AddProjectQuestionnaireQuestionModalProps = {

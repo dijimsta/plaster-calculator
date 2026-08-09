@@ -1,6 +1,6 @@
-import { hasField, toSalesStatus } from "./validation.js";
-
 import type { SalesStatus } from "@libraries/plaster-calculator-common";
+
+import { hasField, toSalesStatus } from "./validation.js";
 
 export interface ProjectUpdateFields {
     name?: string;

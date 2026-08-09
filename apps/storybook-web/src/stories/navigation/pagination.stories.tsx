@@ -1,7 +1,6 @@
 import { Pagination } from "@libraries/uikit-web";
-import { useState } from "react";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
 
 const meta: Meta<typeof Pagination> = {
     title: "UIKit/Navigation/Pagination",

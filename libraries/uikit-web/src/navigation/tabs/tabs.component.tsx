@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { cloneElement, createContext, useContext } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     DEFAULT_VARIANT,
@@ -7,8 +8,6 @@ import {
     variants,
     type TabsVariant,
 } from "./tabs.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type TabsProps = {
     /** Visual treatment applied to every tab. */

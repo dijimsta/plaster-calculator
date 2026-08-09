@@ -1,10 +1,11 @@
-import type { SelectedEdge } from "./use-editor-selection.js";
 import type {
     AreaPolygon,
     Overlay,
     Point,
 } from "@libraries/plaster-calculator-common";
 import type { RefObject } from "react";
+
+import type { SelectedEdge } from "./use-editor-selection.js";
 
 export interface ViewportSize {
     readonly width: number;

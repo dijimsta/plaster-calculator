@@ -1,5 +1,11 @@
 import clsx from "clsx";
 import { useId } from "react";
+import type {
+    ChangeEventHandler,
+    FocusEventHandler,
+    ReactElement,
+    ReactNode,
+} from "react";
 
 import {
     base,
@@ -8,13 +14,6 @@ import {
     wrapper,
     type TextareaResize,
 } from "./textarea.styles.ts";
-
-import type {
-    ChangeEventHandler,
-    FocusEventHandler,
-    ReactElement,
-    ReactNode,
-} from "react";
 
 export type { TextareaResize };
 

@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { Menu, X } from "lucide-react";
 import { useId, useReducer, useRef } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     SidebarLayoutContext,
@@ -17,8 +18,6 @@ import {
     sidebarLayoutReducer,
 } from "./sidebar-layout.reducer.ts";
 import { styles } from "./sidebar-layout.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type SidebarLayoutProps = {
     readonly children?: ReactNode;

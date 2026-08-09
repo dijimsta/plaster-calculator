@@ -1,6 +1,6 @@
-import { styles } from "./backdrop.styles.ts";
-
 import type { MouseEventHandler, ReactElement } from "react";
+
+import { styles } from "./backdrop.styles.ts";
 
 export type BackdropProps = {
     readonly onClick?: MouseEventHandler<HTMLDivElement>;

@@ -6,13 +6,13 @@ import {
 } from "@libraries/plaster-calculator-common";
 import { useMemo } from "react";
 
-import { normalizeCeilingBoardType } from "../lib/editor/board-materials.js";
-
-import type { SelectedEdge } from "./use-editor-selection.js";
 import type {
     EditorSummary,
     SelectionMetrics,
 } from "../components/project-editor/editor-sidebar.types.js";
+import { normalizeCeilingBoardType } from "../lib/editor/board-materials.js";
+
+import type { SelectedEdge } from "./use-editor-selection.js";
 
 interface EditorDerivedStateOptions {
     readonly image: HTMLImageElement | null;

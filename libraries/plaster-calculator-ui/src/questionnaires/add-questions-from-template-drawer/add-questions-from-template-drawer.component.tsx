@@ -8,9 +8,9 @@ import {
     Text,
 } from "@libraries/uikit-web";
 import { ClipboardList } from "lucide-react";
+import type { ReactElement } from "react";
 
 import type { QuestionnaireTemplate } from "../questionnaire-template-card/index.ts";
-import type { ReactElement } from "react";
 
 export type AddQuestionsFromTemplateDrawerProps = {
     readonly open: boolean;

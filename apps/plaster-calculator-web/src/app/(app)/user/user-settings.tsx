@@ -4,9 +4,9 @@ import { useSettingsService } from "@libraries/plaster-calculator-web-core";
 import { Button, Input, Paragraph, Toggle } from "@libraries/uikit-web";
 import { useEffect, useState } from "react";
 
-import { userPageStyles as styles } from "./page.styles.js";
-
 import type { UserSettings } from "../../../types.js";
+
+import { userPageStyles as styles } from "./page.styles.js";
 
 const minimumReminderDays = 1;
 

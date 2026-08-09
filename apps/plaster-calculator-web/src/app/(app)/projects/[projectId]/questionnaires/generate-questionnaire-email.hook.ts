@@ -1,17 +1,18 @@
 import { EmailTemplateBuilder } from "@libraries/plaster-calculator-common";
-import {
-    useCompaniesService,
-    useUserSignature,
-} from "@libraries/plaster-calculator-web-core";
-import { useEffect, useState } from "react";
-
-import type { ProjectQuestionnaireQuestion } from "./page.hooks.js";
-import type { CompanyContact, CompanyDetail } from "../../../../../types.js";
 import type {
     EmailTemplate,
     UserSignature,
 } from "@libraries/plaster-calculator-common";
+import {
+    useCompaniesService,
+    useUserSignature,
+} from "@libraries/plaster-calculator-web-core";
 import type { CompaniesService } from "@libraries/plaster-calculator-web-core";
+import { useEffect, useState } from "react";
+
+import type { CompanyContact, CompanyDetail } from "../../../../../types.js";
+
+import type { ProjectQuestionnaireQuestion } from "./page.hooks.js";
 
 export interface GenerateQuestionnaireEmailModalState {
     readonly isOpen: boolean;

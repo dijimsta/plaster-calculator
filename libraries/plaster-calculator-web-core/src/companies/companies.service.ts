@@ -4,6 +4,7 @@ import {
     CompanyDetailSchema,
     CompanySummarySchema,
 } from "@libraries/plaster-calculator-common";
+import type { DataConnect } from "firebase/data-connect";
 
 import { FirebaseService } from "../firebase/firebase.service.ts";
 
@@ -14,7 +15,6 @@ import type {
     CompanyPayload,
     CompanySummary,
 } from "./companies.types.ts";
-import type { DataConnect } from "firebase/data-connect";
 
 type CompanyRow = DataConnector.ListMyCompaniesData["companies"][number];
 type CompanyDetailRow = NonNullable<DataConnector.GetMyCompanyData["company"]>;

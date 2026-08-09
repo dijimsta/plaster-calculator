@@ -1,7 +1,6 @@
 import { Avatar, Button, Navbar } from "@libraries/uikit-web";
-import { Plus } from "lucide-react";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Plus } from "lucide-react";
 
 const meta: Meta<typeof Navbar> = {
     title: "UIKit/Navigation/Navbar",

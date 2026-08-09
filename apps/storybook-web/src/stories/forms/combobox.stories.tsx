@@ -1,8 +1,7 @@
 import { Combobox, Label } from "@libraries/uikit-web";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { fn } from "storybook/test";
-
-import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const people = [
     { value: "leslie-alexander", label: "Leslie Alexander" },

@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { EmailTemplateBuilder } from "../src/index.ts";
-
 import type { EmailSignature } from "../src/index.ts";
 
 const FULL_SIGNATURE: EmailSignature = {

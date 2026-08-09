@@ -1,10 +1,10 @@
 import { useContext } from "react";
+import type { ReactElement } from "react";
+
+import { Notification } from "../notification/index.ts";
 
 import { NotificationsManagerContext } from "./notifications-manager.context.ts";
 import { styles } from "./notifications-viewport.styles.ts";
-import { Notification } from "../notification/index.ts";
-
-import type { ReactElement } from "react";
 
 export function NotificationsViewport(): ReactElement | null {
     const context = useContext(NotificationsManagerContext);

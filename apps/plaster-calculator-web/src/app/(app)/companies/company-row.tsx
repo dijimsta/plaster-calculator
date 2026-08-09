@@ -4,7 +4,6 @@ import { Text } from "@libraries/uikit-web";
 import { default as LinkModule } from "next/link.js";
 
 import { ui } from "../../../lib/styles.js";
-
 import type { CompanySummary } from "../../../types.js";
 
 const Link = LinkModule.default;

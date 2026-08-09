@@ -1,8 +1,7 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import { styles } from "./stacked-list.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type StackedListProps = {
     readonly bordered?: boolean;

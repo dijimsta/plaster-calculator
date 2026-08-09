@@ -5,9 +5,8 @@ import {
     SidebarNavigation,
     VerticalNavigation,
 } from "@libraries/uikit-web";
-import { House, User, Users } from "lucide-react";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { House, User, Users } from "lucide-react";
 
 const meta: Meta<typeof SidebarLayout> = {
     title: "UIKit/Application Shells/Sidebar Layout",

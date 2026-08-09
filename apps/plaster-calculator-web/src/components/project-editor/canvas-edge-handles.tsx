@@ -1,16 +1,16 @@
 import { OverlayGeometryHelper } from "@libraries/plaster-calculator-common";
-import { useRef, type RefObject } from "react";
-import { Line } from "react-konva";
-
-import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
-
-import type { DragState } from "./project-editor.types.js";
 import type {
     AreaPolygon,
     Overlay,
     Point,
 } from "@libraries/plaster-calculator-common";
 import type { KonvaEventObject } from "konva/lib/Node.js";
+import { useRef, type RefObject } from "react";
+import { Line } from "react-konva";
+
+import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
+
+import type { DragState } from "./project-editor.types.js";
 
 interface CanvasEdgeHandlesProps {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;

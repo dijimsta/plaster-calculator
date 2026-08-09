@@ -1,3 +1,5 @@
+import type { FormEventHandler, ReactElement, ReactNode } from "react";
+
 import {
     DEFAULT_FORM_LAYOUT_VARIANT,
     FormLayoutContext,
@@ -6,8 +8,6 @@ import {
     formLayoutVariants,
     type FormLayoutVariant,
 } from "./form-layout.styles.ts";
-
-import type { FormEventHandler, ReactElement, ReactNode } from "react";
 
 export type { FormLayoutVariant };
 

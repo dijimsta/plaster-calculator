@@ -1,7 +1,6 @@
 import { Badge, VerticalNavigation } from "@libraries/uikit-web";
-import { FolderKanban, House, Settings, Users } from "lucide-react";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { FolderKanban, House, Settings, Users } from "lucide-react";
 
 const meta: Meta<typeof VerticalNavigation> = {
     title: "UIKit/Navigation/Vertical Navigation",

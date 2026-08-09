@@ -1,9 +1,8 @@
 import { Box, Text, useInput } from "ink";
 import { useEffect, useMemo, useState } from "react";
 
-import { formatScopes } from "./user-scopes.js";
-
 import type { AuthUserSummary } from "./firebase-admin.js";
+import { formatScopes } from "./user-scopes.js";
 
 type InkInputHandler = Parameters<typeof useInput>[0];
 type InkInputKey = Parameters<InkInputHandler>[1];

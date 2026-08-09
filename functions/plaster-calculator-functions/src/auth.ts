@@ -1,5 +1,4 @@
 import { HttpsError } from "firebase-functions/https";
-
 import type { CallableRequest } from "firebase-functions/https";
 
 export function requireAuth(

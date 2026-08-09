@@ -1,8 +1,7 @@
 import { Avatar, Box, Button, Notification } from "@libraries/uikit-web";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { fn } from "storybook/test";
-
-import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof Notification> = {
     title: "UIKit/Overlays/Notification",

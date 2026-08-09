@@ -6,17 +6,17 @@ import {
     Paragraph,
 } from "@libraries/uikit-web";
 import { default as DynamicModule } from "next/dynamic.js";
+import type { ReactNode } from "react";
 
 import { cx, ui } from "../../../../lib/styles.js";
-import { ProjectCompanyPanel } from "../project-company-panel.js";
-import { ProjectPageTabs } from "./project-page-tabs.js";
-
 import type {
     PageValidationInput,
     ValidationIssue,
 } from "../../../../lib/validation.js";
 import type { ProjectDetail } from "../../../../types.js";
-import type { ReactNode } from "react";
+import { ProjectCompanyPanel } from "../project-company-panel.js";
+
+import { ProjectPageTabs } from "./project-page-tabs.js";
 
 const dynamic = DynamicModule.default;
 const ProjectEditor = dynamic(

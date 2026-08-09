@@ -1,8 +1,7 @@
 import { Box, Input, Label } from "@libraries/uikit-web";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Search } from "lucide-react";
 import { fn } from "storybook/test";
-
-import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof Input> = {
     title: "UIKit/Forms/Input",

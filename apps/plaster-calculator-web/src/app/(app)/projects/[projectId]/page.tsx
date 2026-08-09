@@ -1,18 +1,18 @@
 "use client";
 
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { Box, useNotificationsManager } from "@libraries/uikit-web";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
+
+import { salesStatusLabel } from "../../../../lib/sales-status.js";
+import { ui } from "../../../../lib/styles.js";
+import type { ProjectDetail } from "../../../../types.js";
 
 import { ProjectHeader } from "./project-page-header.js";
 import { ProjectSalesStatusControl } from "./project-sales-status-control.js";
 import { ProjectStatusContent } from "./project-status-content.js";
 import { useProjectPageExport } from "./use-project-page-export.js";
-import { salesStatusLabel } from "../../../../lib/sales-status.js";
-import { ui } from "../../../../lib/styles.js";
-
-import type { ProjectDetail } from "../../../../types.js";
-import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 export default function ProjectPage({
     params,

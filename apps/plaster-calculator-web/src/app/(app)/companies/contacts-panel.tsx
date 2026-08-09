@@ -3,11 +3,11 @@
 import { Button, EmptyState } from "@libraries/uikit-web";
 import { Plus, Users } from "lucide-react";
 
-import { ContactRow } from "./contact-row.js";
 import { cx, ui } from "../../../lib/styles.js";
+import type { CompanyContact, CompanyDetail } from "../../../types.js";
 
 import type { ContactDraft } from "./company.types.js";
-import type { CompanyContact, CompanyDetail } from "../../../types.js";
+import { ContactRow } from "./contact-row.js";
 
 interface ContactsPanelProps {
     readonly company: CompanyDetail;

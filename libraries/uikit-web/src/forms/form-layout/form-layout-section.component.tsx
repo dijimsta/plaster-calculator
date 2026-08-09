@@ -1,3 +1,5 @@
+import type { ReactElement, ReactNode } from "react";
+
 import {
     sectionBodyVariants,
     sectionDescription,
@@ -6,8 +8,6 @@ import {
     sectionVariants,
 } from "./form-layout-section.styles.ts";
 import { useFormLayoutVariant } from "./form-layout.context.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type FormLayoutSectionProps = {
     readonly title: ReactNode;

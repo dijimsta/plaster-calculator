@@ -4,11 +4,11 @@ import { Button } from "@libraries/uikit-web";
 import { Trash2 } from "lucide-react";
 import { type FormEvent } from "react";
 
-import { CompanyDetailFields } from "./company-detail-fields.js";
 import { cx, ui } from "../../../lib/styles.js";
-
-import type { CompanyDetailDraft } from "./company.types.js";
 import type { CompanyDetail } from "../../../types.js";
+
+import { CompanyDetailFields } from "./company-detail-fields.js";
+import type { CompanyDetailDraft } from "./company.types.js";
 
 interface CompanyDetailsPanelProps {
     readonly company: CompanyDetail;

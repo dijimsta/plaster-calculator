@@ -1,7 +1,6 @@
 import { Badge, StackedList } from "@libraries/uikit-web";
-import { ChevronRight } from "lucide-react";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ChevronRight } from "lucide-react";
 
 const meta: Meta<typeof StackedList> = {
     title: "UIKit/Lists/StackedList",

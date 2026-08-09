@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     DEFAULT_COLOR,
@@ -17,8 +18,6 @@ import {
     type BadgeSize,
     type BadgeVariant,
 } from "./badge.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type BadgeProps = {
     /** Color scheme applied to the badge. */

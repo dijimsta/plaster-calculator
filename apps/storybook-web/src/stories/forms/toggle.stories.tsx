@@ -1,7 +1,6 @@
 import { Box, Label, Toggle } from "@libraries/uikit-web";
-import { fn } from "storybook/test";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 
 const meta: Meta<typeof Toggle> = {
     title: "UIKit/Forms/Toggle",

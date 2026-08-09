@@ -1,11 +1,10 @@
 "use client";
 
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import { InputGroupContext } from "./input-group.context.ts";
 import { orientations, root } from "./input-group.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type InputGroupOrientation = "horizontal" | "vertical";
 

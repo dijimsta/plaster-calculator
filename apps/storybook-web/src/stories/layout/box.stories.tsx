@@ -1,7 +1,6 @@
 import { Avatar, Badge, Box, Button } from "@libraries/uikit-web";
-import { LogOut } from "lucide-react";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { LogOut } from "lucide-react";
 
 const meta: Meta<typeof Box> = {
     title: "UIKit/Layout/Box",

@@ -4,6 +4,8 @@ import {
     AI_CONFIRMED_ANSWER_SOURCE,
     AnswerSourceSchema,
 } from "@libraries/plaster-calculator-common";
+import type { AnswerSource } from "@libraries/plaster-calculator-common";
+import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
 import {
     FirebaseService,
     useQuestionnairesService,
@@ -12,9 +14,6 @@ import { useNotificationsManager } from "@libraries/uikit-web";
 import { useQueryClient } from "@tanstack/react-query";
 import { QueryFetchPolicy } from "firebase/data-connect";
 import { useCallback } from "react";
-
-import type { AnswerSource } from "@libraries/plaster-calculator-common";
-import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,

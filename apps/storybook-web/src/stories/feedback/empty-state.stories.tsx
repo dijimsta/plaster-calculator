@@ -1,8 +1,7 @@
 import { Button, EmptyState } from "@libraries/uikit-web";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FolderOpen, Plus } from "lucide-react";
 import { fn } from "storybook/test";
-
-import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof EmptyState> = {
     title: "UIKit/Feedback/EmptyState",

@@ -1,4 +1,7 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
+
+import type { CheckableControlProps } from "../form-control.types.ts";
 
 import {
     panelDescription,
@@ -10,12 +13,9 @@ import {
     panelOption,
     panelOptionLayout,
 } from "./radio-group-panel-option.styles.ts";
-import { RadioControl } from "./radio.component.tsx";
-
 import type { RadioGroupVariant } from "./radio-group.styles.ts";
+import { RadioControl } from "./radio.component.tsx";
 import type { RadioSize } from "./radio.styles.ts";
-import type { CheckableControlProps } from "../form-control.types.ts";
-import type { ReactElement, ReactNode } from "react";
 
 export type RadioGroupPanelOptionVariant = Extract<
     RadioGroupVariant,

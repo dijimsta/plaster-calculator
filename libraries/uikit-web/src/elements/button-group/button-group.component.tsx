@@ -1,6 +1,6 @@
-import { root } from "./button-group.styles.ts";
-
 import type { ReactElement, ReactNode } from "react";
+
+import { root } from "./button-group.styles.ts";
 
 export type ButtonGroupProps = {
     readonly label?: string;

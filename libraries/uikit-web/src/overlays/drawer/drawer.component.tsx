@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import { X } from "lucide-react";
 import { useEffect, useId, useRef } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-import { drawerSizes, styles } from "./drawer.styles.ts";
 import { Backdrop } from "../backdrop/index.ts";
 
+import { drawerSizes, styles } from "./drawer.styles.ts";
 import type { DrawerSize } from "./drawer.styles.ts";
-import type { ReactElement, ReactNode } from "react";
 
 export type DrawerPlacement = "left" | "right";
 

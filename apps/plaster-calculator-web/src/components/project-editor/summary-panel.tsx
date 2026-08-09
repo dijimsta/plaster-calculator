@@ -2,9 +2,9 @@ import { Button, Paragraph } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
 
 import { ui } from "../../lib/styles.js";
+import type { ValidationIssue } from "../../lib/validation.js";
 
 import type { EditorSummary } from "./editor-sidebar.types.js";
-import type { ValidationIssue } from "../../lib/validation.js";
 
 interface SummaryPanelProps {
     readonly summary: EditorSummary | null;

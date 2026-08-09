@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import { X } from "lucide-react";
 import { useEffect, useId, useRef } from "react";
+import type { ReactElement, ReactNode } from "react";
 
-import { modalDialogSizes, styles } from "./modal-dialog.styles.ts";
 import { Backdrop } from "../backdrop/index.ts";
 
+import { modalDialogSizes, styles } from "./modal-dialog.styles.ts";
 import type { ModalDialogSize } from "./modal-dialog.styles.ts";
-import type { ReactElement, ReactNode } from "react";
 
 export type ModalDialogProps = {
     readonly open: boolean;

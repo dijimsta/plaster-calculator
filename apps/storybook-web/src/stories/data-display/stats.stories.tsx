@@ -1,7 +1,6 @@
 import { Stats } from "@libraries/uikit-web";
-import { Banknote, Calculator, ClipboardCheck } from "lucide-react";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Banknote, Calculator, ClipboardCheck } from "lucide-react";
 
 const meta: Meta<typeof Stats> = {
     title: "UIKit/Data Display/Stats",

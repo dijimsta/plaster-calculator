@@ -1,10 +1,9 @@
 import clsx from "clsx";
 import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
+import type { ReactElement, ReactNode } from "react";
 
 import { iconColors, styles } from "./notification.styles.ts";
-
 import type { NotificationIntent } from "./notification.styles.ts";
-import type { ReactElement, ReactNode } from "react";
 
 export type NotificationProps = {
     readonly title: ReactNode;

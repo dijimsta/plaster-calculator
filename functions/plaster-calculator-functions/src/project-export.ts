@@ -5,9 +5,8 @@ import { onCall } from "firebase-functions/https";
 import { requireAuth } from "./auth.js";
 import { buildProjectCsv, csvFileNamePart } from "./csv-export.js";
 import { requireOwnedProject } from "./ownership.js";
-import { readRequiredString } from "./validation.js";
-
 import type { ExportProjectCsvResponse, ProjectIdRequest } from "./types.js";
+import { readRequiredString } from "./validation.js";
 
 export const exportProjectCsv = onCall<
     ProjectIdRequest,

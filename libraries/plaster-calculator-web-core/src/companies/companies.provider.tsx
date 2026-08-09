@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 
 import { CompaniesServiceContext } from "./companies.context.ts";
 import { CompaniesService } from "./companies.service.ts";
-
-import type { PropsWithChildren, ReactElement } from "react";
 
 export interface CompaniesServiceProviderProps extends PropsWithChildren {
     readonly companiesService?: CompaniesService;

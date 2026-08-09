@@ -1,6 +1,6 @@
-import { cx, ui } from "../../lib/styles.js";
-
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
+
+import { cx, ui } from "../../lib/styles.js";
 
 interface AreasPanelProps {
     readonly selectedAreaIds: string[];

@@ -3,7 +3,6 @@
 import { useContext } from "react";
 
 import { ProjectsServiceContext } from "./projects.context.ts";
-
 import type { ProjectsService } from "./projects.service.ts";
 
 export function useProjectsService(): ProjectsService {

@@ -3,17 +3,16 @@ import {
     WALL_BOARD_PROFILES,
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
+import type { ReactNode } from "react";
 
+import type { MaterialField } from "../../hooks/use-editor-material-actions.js";
 import {
     CEILING_BOARD_TYPES,
     normalizeCeilingBoardType,
 } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
-
-import type { MaterialField } from "../../hooks/use-editor-material-actions.js";
 import type { ValidationIssue } from "../../lib/validation.js";
-import type { AreaPolygon } from "@libraries/plaster-calculator-common";
-import type { ReactNode } from "react";
 
 interface BoardControlsProps {
     readonly areaIssue: (

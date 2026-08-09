@@ -3,7 +3,6 @@
 import { useContext } from "react";
 
 import { RemindersServiceContext } from "./reminders.context.ts";
-
 import type { RemindersService } from "./reminders.service.ts";
 
 export function useRemindersService(): RemindersService {

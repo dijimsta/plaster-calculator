@@ -1,9 +1,8 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import { base, paddings, sizes } from "./container.styles.ts";
-
 import type { ContainerPadding, ContainerSize } from "./container.styles.ts";
-import type { ReactElement, ReactNode } from "react";
 
 export type ContainerProps = {
     readonly padding?: ContainerPadding;

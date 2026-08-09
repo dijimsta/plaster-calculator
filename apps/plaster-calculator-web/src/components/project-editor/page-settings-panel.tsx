@@ -1,8 +1,7 @@
 import { Button, Text } from "@libraries/uikit-web";
+import type { ReactNode } from "react";
 
 import { cx, ui } from "../../lib/styles.js";
-
-import type { ReactNode } from "react";
 
 interface PageSettingsPanelProps {
     readonly ceilingHeightMm: number | null;

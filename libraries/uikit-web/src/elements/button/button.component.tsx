@@ -1,16 +1,16 @@
-import {
-    buttonClassName,
-    type ButtonSize,
-    type ButtonContentAlignment,
-    type ButtonVariant,
-} from "./button.styles.ts";
-
 import type {
     MouseEventHandler,
     MouseEvent as ReactMouseEvent,
     ReactElement,
     ReactNode,
 } from "react";
+
+import {
+    buttonClassName,
+    type ButtonSize,
+    type ButtonContentAlignment,
+    type ButtonVariant,
+} from "./button.styles.ts";
 
 export type { ButtonSize };
 export type ButtonIconPosition = "left" | "right";

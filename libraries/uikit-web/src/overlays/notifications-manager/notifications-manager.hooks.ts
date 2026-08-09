@@ -1,7 +1,6 @@
 import { useContext } from "react";
 
 import { NotificationsManagerContext } from "./notifications-manager.context.ts";
-
 import type { NotificationsManagerContextValue } from "./notifications-manager.types.ts";
 
 export function useNotificationsManager(): Pick<

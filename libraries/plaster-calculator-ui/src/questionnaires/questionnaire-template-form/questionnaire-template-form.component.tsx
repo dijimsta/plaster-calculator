@@ -12,14 +12,13 @@ import {
 } from "@libraries/uikit-web";
 import { Plus, Trash2 } from "lucide-react";
 import { useReducer } from "react";
+import type { ReactElement } from "react";
 
 import {
     createInitialQuestionnaireTemplateFormState,
     questionnaireTemplateFormReducer,
 } from "./questionnaire-template-form.reducer.ts";
-
 import type { QuestionnaireTemplateFormValues } from "./questionnaire-template-form.reducer.ts";
-import type { ReactElement } from "react";
 
 export type { QuestionnaireTemplateFormValues };
 

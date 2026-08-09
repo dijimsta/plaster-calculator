@@ -1,11 +1,10 @@
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 import { useId, useState } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 import { statusTones, styles } from "./inspector-panel.styles.ts";
-
 import type { InspectorStatusTone } from "./inspector-panel.styles.ts";
-import type { ReactElement, ReactNode } from "react";
 
 export type InspectorPanelProps = {
     readonly fullHeight?: boolean;

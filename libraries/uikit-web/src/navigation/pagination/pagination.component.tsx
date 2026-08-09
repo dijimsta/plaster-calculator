@@ -1,9 +1,8 @@
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react";
+import type { ReactElement } from "react";
 
 import { styles } from "./pagination.styles.ts";
-
-import type { ReactElement } from "react";
 
 const EDGE_PAGE_COUNT = 2;
 const SURROUNDING_PAGE_COUNT = 1;

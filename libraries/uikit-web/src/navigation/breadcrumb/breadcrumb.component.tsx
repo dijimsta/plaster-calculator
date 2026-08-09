@@ -1,9 +1,8 @@
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
+import type { MouseEventHandler, ReactElement, ReactNode } from "react";
 
 import { styles } from "./breadcrumb.styles.ts";
-
-import type { MouseEventHandler, ReactElement, ReactNode } from "react";
 
 export type BreadcrumbProps = {
     readonly label?: string;

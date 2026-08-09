@@ -1,8 +1,7 @@
+import type { Overlay } from "@libraries/plaster-calculator-common";
 import { useState } from "react";
 
 import { cloneOverlay } from "../lib/editor/overlay-serialization.js";
-
-import type { Overlay } from "@libraries/plaster-calculator-common";
 
 interface EditorHistoryState {
     readonly future: Overlay[];
