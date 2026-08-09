@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 type KeyboardShortcutAction = "cancel" | "clear" | "delete" | "redo" | "undo";
 
@@ -13,18 +13,25 @@ interface EditorKeyboardShortcutsOptions {
     readonly hasSelection: () => boolean;
 }
 
-export function useEditorKeyboardShortcuts({
-    isDrawingFreeShape,
-    disabled,
-    onCancelFreeShape,
-    onClearSelection,
-    onDeleteSelection,
-    onRedo,
-    onUndo,
-    hasSelection,
-}: EditorKeyboardShortcutsOptions): void {
+export function useEditorKeyboardShortcuts(
+    options: EditorKeyboardShortcutsOptions,
+): void {
+    const optionsRef = useRef(options);
+    optionsRef.current = options;
+
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
+            const {
+                disabled,
+                isDrawingFreeShape,
+                hasSelection,
+                onCancelFreeShape,
+                onClearSelection,
+                onDeleteSelection,
+                onRedo,
+                onUndo,
+            } = optionsRef.current;
+
             if (disabled) return;
             if (isFormTarget(event.target)) {
                 return;
@@ -52,16 +59,7 @@ export function useEditorKeyboardShortcuts({
 
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [
-        isDrawingFreeShape,
-        onCancelFreeShape,
-        onClearSelection,
-        onDeleteSelection,
-        onRedo,
-        onUndo,
-        hasSelection,
-        disabled,
-    ]);
+    }, []);
 }
 
 function isFormTarget(target: EventTarget | null): boolean {
