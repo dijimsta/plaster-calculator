@@ -12,11 +12,14 @@
     "dependencies": {
         "@generated/data-connector-web": "workspace:*",
         "@libraries/plaster-calculator-common": "workspace:*",
+        "@libraries/plaster-calculator-web-core": "workspace:*",
         "@libraries/uikit-web": "workspace:*",
         "@tanstack-query-firebase/react": "^2.1.1",
         "firebase": "^12.17.0",
+        "i18next": "^26.3.6",
         "lucide-react": "^1.28.0",
-        "react-hook-form": "^7.84.0"
+        "react-hook-form": "^7.84.0",
+        "react-i18next": "^17.0.11"
     },
     "devDependencies": {
         "@types/react": "^19.2.18",

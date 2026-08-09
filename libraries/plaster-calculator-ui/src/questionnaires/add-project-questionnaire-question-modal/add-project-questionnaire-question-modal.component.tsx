@@ -3,6 +3,8 @@ import { useId } from "react";
 import type { ReactElement } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+
 import type { AddProjectQuestionnaireQuestionModalFormValues } from "./add-project-questionnaire-question-modal.types.ts";
 
 export type AddProjectQuestionnaireQuestionModalProps = {
@@ -19,6 +21,7 @@ export function AddProjectQuestionnaireQuestionModal({
     onClose,
     onAdd,
 }: AddProjectQuestionnaireQuestionModalProps): ReactElement {
+    const { t } = useQuestionnairesTranslation();
     const {
         control,
         handleSubmit,
@@ -43,8 +46,8 @@ export function AddProjectQuestionnaireQuestionModal({
             open={open}
             onClose={onClose}
             size="sm"
-            title="Add question"
-            description="Add a custom question to this project's questionnaire."
+            title={t("addProjectQuestionnaireQuestionModal.title")}
+            description={t("addProjectQuestionnaireQuestionModal.description")}
             footer={
                 <>
                     <Button
@@ -52,14 +55,14 @@ export function AddProjectQuestionnaireQuestionModal({
                         disabled={isSaving}
                         onClick={onClose}
                     >
-                        Cancel
+                        {t("common.cancel")}
                     </Button>
                     <Button
                         type="submit"
                         form={formId}
                         disabled={isSaving || !isValid}
                     >
-                        {isSaving ? "Adding..." : "Add"}
+                        {isSaving ? t("common.adding") : t("common.add")}
                     </Button>
                 </>
             }
@@ -75,8 +78,12 @@ export function AddProjectQuestionnaireQuestionModal({
                             value={field.value}
                             onChange={field.onChange}
                             onBlur={field.onBlur}
-                            placeholder="Question"
-                            label="Question"
+                            placeholder={t(
+                                "addProjectQuestionnaireQuestionModal.questionLabel",
+                            )}
+                            label={t(
+                                "addProjectQuestionnaireQuestionModal.questionLabel",
+                            )}
                             autoFocus
                             required
                         />

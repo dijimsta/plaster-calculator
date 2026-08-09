@@ -1,17 +1,20 @@
 import { useNotificationsManager } from "@libraries/uikit-web";
 import { useCallback } from "react";
 
+import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+
 export function useCopyQuestionnaireEmailBodyCallback(
     body: string,
 ): () => Promise<void> {
     const { notify } = useNotificationsManager();
+    const { t } = useQuestionnairesTranslation();
 
     return useCallback(async () => {
         await navigator.clipboard.writeText(body);
         notify({
             intent: "success",
-            title: "Copied to clipboard",
-            description: "The email body has been copied.",
+            title: t("generateQuestionnaireEmailModal.copiedTitle"),
+            description: t("generateQuestionnaireEmailModal.copiedDescription"),
         });
-    }, [body, notify]);
+    }, [body, notify, t]);
 }

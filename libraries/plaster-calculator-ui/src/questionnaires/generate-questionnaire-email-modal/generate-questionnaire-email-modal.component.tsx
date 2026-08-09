@@ -10,6 +10,8 @@ import {
 import { useId } from "react";
 import type { ReactElement } from "react";
 
+import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+
 import { useCopyQuestionnaireEmailBodyCallback } from "./generate-questionnaire-email-modal.hooks.ts";
 
 export type GenerateQuestionnaireEmailModalProps = {
@@ -28,6 +30,7 @@ export function GenerateQuestionnaireEmailModal({
     body,
     mailtoHref,
 }: GenerateQuestionnaireEmailModalProps): ReactElement {
+    const { t } = useQuestionnairesTranslation();
     const onCopy = useCopyQuestionnaireEmailBodyCallback(body);
     const subjectId = useId();
     const bodyId = useId();
@@ -37,24 +40,30 @@ export function GenerateQuestionnaireEmailModal({
             open={open}
             onClose={onClose}
             size="lg"
-            title="Generate scope of work email"
-            description="Review the generated email, then copy it or open it in your email client."
+            title={t("generateQuestionnaireEmailModal.title")}
+            description={t("generateQuestionnaireEmailModal.description")}
             footer={
                 <>
                     <Button variant="secondary" onClick={onCopy}>
-                        Copy to clipboard
+                        {t("generateQuestionnaireEmailModal.copyToClipboard")}
                     </Button>
                     <ButtonLink href={mailtoHref}>
-                        Open in email client
+                        {t("generateQuestionnaireEmailModal.openInEmailClient")}
                     </ButtonLink>
                 </>
             }
         >
             <Box direction="column" gap="lg">
-                <FormLayoutField label="Subject" htmlFor={subjectId}>
+                <FormLayoutField
+                    label={t("generateQuestionnaireEmailModal.subjectLabel")}
+                    htmlFor={subjectId}
+                >
                     <Input id={subjectId} value={subject} readOnly />
                 </FormLayoutField>
-                <FormLayoutField label="Body" htmlFor={bodyId}>
+                <FormLayoutField
+                    label={t("generateQuestionnaireEmailModal.bodyLabel")}
+                    htmlFor={bodyId}
+                >
                     <Textarea id={bodyId} value={body} readOnly rows={10} />
                 </FormLayoutField>
             </Box>

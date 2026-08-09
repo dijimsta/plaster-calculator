@@ -3,6 +3,7 @@ import { Drawer, Text } from "@libraries/uikit-web";
 import { useId, useMemo } from "react";
 import type { ReactElement } from "react";
 
+import { useQuestionnairesTranslation } from "../../i18n/index.ts";
 import { QuestionnaireTemplateForm } from "../questionnaire-template-form/index.ts";
 import type { QuestionnaireTemplateFormValues } from "../questionnaire-template-form/index.ts";
 
@@ -26,6 +27,7 @@ export function EditQuestionnaireTemplateDrawer({
     onClose,
     onSave,
 }: EditQuestionnaireTemplateDrawerProps): ReactElement {
+    const { t } = useQuestionnairesTranslation();
     const formId = useId();
     const initialValues = useMemo(
         (): QuestionnaireTemplateFormValues | undefined =>
@@ -45,18 +47,22 @@ export function EditQuestionnaireTemplateDrawer({
         <Drawer
             open={open}
             onClose={onClose}
-            title="Edit template"
-            description="Update the template's name and questions."
+            title={t("editQuestionnaireTemplateDrawer.title")}
+            description={t("editQuestionnaireTemplateDrawer.description")}
         >
             {initialValues === undefined ? (
                 <Text variant="muted">
-                    {isLoading ? "Loading template…" : ""}
+                    {isLoading
+                        ? t("editQuestionnaireTemplateDrawer.loading")
+                        : ""}
                 </Text>
             ) : (
                 <QuestionnaireTemplateForm
                     formId={formId}
                     initialValues={initialValues}
-                    submitLabel="Save changes"
+                    submitLabel={t(
+                        "editQuestionnaireTemplateDrawer.saveChanges",
+                    )}
                     onCancel={onClose}
                     onSubmit={onSave}
                 />
