@@ -18,3 +18,52 @@ query GetTeamMember($teamId: String!, $userId: String!)
         role
     }
 }
+
+query ListPendingTeamInvitations($teamId: String!, $now: Timestamp!)
+@auth(level: NO_ACCESS) {
+    teamInvitations(
+        where: {
+            teamId: { eq: $teamId }
+            acceptedAt: { isNull: true }
+            expiresAt: { gt: $now }
+        }
+        orderBy: [{ createdAt: DESC }]
+    ) {
+        teamId
+        email
+        invitedByUserId
+        expiresAt
+        createdAt
+        updatedAt
+    }
+}
+
+query FindPendingTeamInvitationsForEmail($email: String!, $now: Timestamp!)
+@auth(level: NO_ACCESS) {
+    teamInvitations(
+        where: {
+            email: { eq: $email }
+            acceptedAt: { isNull: true }
+            expiresAt: { gt: $now }
+        }
+    ) {
+        teamId
+        email
+        expiresAt
+    }
+}
+
+query GetTeamInvitationByTokenHash($tokenHash: String!)
+@auth(level: NO_ACCESS) {
+    teamInvitation(first: { where: { tokenHash: { eq: $tokenHash } } }) {
+        teamId
+        email
+        tokenHash
+        invitedByUserId
+        expiresAt
+        acceptedAt
+        acceptedByUserId
+        createdAt
+        updatedAt
+    }
+}

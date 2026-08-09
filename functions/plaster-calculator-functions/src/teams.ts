@@ -6,6 +6,7 @@ import { onCall } from "firebase-functions/https";
 import { auth as firebaseAuth } from "firebase-functions/v1";
 
 import { requireAuth } from "./auth.js";
+import { shouldCreatePersonalTeamForNewUser } from "./team-invitations.js";
 
 export async function ensureTeamForUser(userId: string): Promise<string> {
     const response = await DataConnector.getTeamMembershipForUser({ userId });
@@ -35,6 +36,9 @@ export const ensureMyTeam = onCall(async (request) => {
 export const createPersonalTeamForNewUser = firebaseAuth
     .user()
     .onCreate(async (user) => {
+        if (!(await shouldCreatePersonalTeamForNewUser(user.email))) {
+            return;
+        }
         await ensureTeamForUser(user.uid);
     });
 

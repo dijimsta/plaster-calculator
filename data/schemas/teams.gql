@@ -14,3 +14,19 @@ type TeamMember @table(key: ["teamId", "userId"]) @index(fields: ["userId"]) {
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
+
+type TeamInvitation
+    @table(key: ["teamId", "email"])
+    @index(fields: ["email", "acceptedAt", "expiresAt"])
+    @index(fields: ["teamId", "acceptedAt", "expiresAt"]) {
+    team: Team! @ref(fields: "teamId", references: "id")
+    teamId: String!
+    email: String!
+    tokenHash: String! @unique
+    invitedByUserId: String!
+    expiresAt: Timestamp!
+    acceptedAt: Timestamp
+    acceptedByUserId: String
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}

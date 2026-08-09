@@ -30,3 +30,8 @@ export {
 } from "./reminders.js";
 export { ensureMyTeam } from "./teams.js";
 export { createPersonalTeamForNewUser } from "./teams.js";
+export {
+    acceptTeamInvitation,
+    createTeamInvitation,
+    listPendingTeamInvitations,
+} from "./team-invitations.js";
