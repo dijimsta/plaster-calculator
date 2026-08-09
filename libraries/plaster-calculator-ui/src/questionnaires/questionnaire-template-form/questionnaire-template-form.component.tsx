@@ -7,18 +7,13 @@ import {
     FormLayoutField,
     FormLayoutSection,
     Input,
-    preventDefaultEvent,
     Text,
 } from "@libraries/uikit-web";
 import { Plus, Trash2 } from "lucide-react";
-import { useReducer } from "react";
 import type { ReactElement } from "react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 
-import {
-    createInitialQuestionnaireTemplateFormState,
-    questionnaireTemplateFormReducer,
-} from "./questionnaire-template-form.reducer.ts";
-import type { QuestionnaireTemplateFormValues } from "./questionnaire-template-form.reducer.ts";
+import type { QuestionnaireTemplateFormValues } from "./questionnaire-template-form.types.ts";
 
 export type { QuestionnaireTemplateFormValues };
 
@@ -30,6 +25,11 @@ export type QuestionnaireTemplateFormProps = {
     readonly onSubmit: (values: QuestionnaireTemplateFormValues) => void;
 };
 
+const EMPTY_FORM_VALUES: QuestionnaireTemplateFormValues = {
+    name: "",
+    questions: [],
+};
+
 /** A form for drafting a questionnaire template's name and questions. */
 export function QuestionnaireTemplateForm({
     formId,
@@ -38,26 +38,31 @@ export function QuestionnaireTemplateForm({
     onCancel,
     onSubmit,
 }: QuestionnaireTemplateFormProps): ReactElement {
-    const [{ name, questions }, dispatch] = useReducer(
-        questionnaireTemplateFormReducer,
-        initialValues,
-        createInitialQuestionnaireTemplateFormState,
-    );
+    const { control, handleSubmit } = useForm<QuestionnaireTemplateFormValues>({
+        defaultValues: initialValues ?? EMPTY_FORM_VALUES,
+    });
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "questions",
+        keyName: "fieldKey",
+    });
 
     return (
-        <FormLayout
-            id={formId}
-            onSubmit={preventDefaultEvent(() => onSubmit({ name, questions }))}
-        >
-            <Input
-                id={`${formId}-name`}
-                value={name}
-                onChange={(event) =>
-                    dispatch({ type: "setName", name: event.target.value })
-                }
-                placeholder="Template name"
-                label="Template name"
-                required
+        <FormLayout id={formId} onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                    <Input
+                        id={`${formId}-name`}
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        placeholder="Template name"
+                        label="Template name"
+                        required
+                    />
+                )}
             />
             <FormLayoutSection
                 title="Questions"
@@ -65,8 +70,8 @@ export function QuestionnaireTemplateForm({
             >
                 <FormLayoutField label="" span="full">
                     <Box direction="column" gap="sm">
-                        {questions.map((question, index) => (
-                            <Card key={question.draftId}>
+                        {fields.map((question, index) => (
+                            <Card key={question.fieldKey}>
                                 <Box direction="column" gap="sm">
                                     <Box
                                         direction="row"
@@ -86,29 +91,25 @@ export function QuestionnaireTemplateForm({
                                                 />
                                             }
                                             label={`Remove question ${index + 1}`}
-                                            onClick={() =>
-                                                dispatch({
-                                                    type: "removeQuestion",
-                                                    draftId: question.draftId,
-                                                })
-                                            }
+                                            onClick={() => remove(index)}
                                         />
                                     </Box>
                                     <FormLayoutField
                                         label="Label"
-                                        htmlFor={`${formId}-question-${question.draftId}-label`}
+                                        htmlFor={`${formId}-question-${question.fieldKey}-label`}
                                     >
-                                        <Input
-                                            id={`${formId}-question-${question.draftId}-label`}
-                                            value={question.label}
-                                            onChange={(event) =>
-                                                dispatch({
-                                                    type: "updateQuestionLabel",
-                                                    draftId: question.draftId,
-                                                    label: event.target.value,
-                                                })
-                                            }
-                                            required
+                                        <Controller
+                                            name={`questions.${index}.label`}
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    id={`${formId}-question-${question.fieldKey}-label`}
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                    onBlur={field.onBlur}
+                                                    required
+                                                />
+                                            )}
                                         />
                                     </FormLayoutField>
                                 </Box>
@@ -119,9 +120,7 @@ export function QuestionnaireTemplateForm({
                                 type="button"
                                 variant="secondary"
                                 icon={<Plus size={16} aria-hidden="true" />}
-                                onClick={() =>
-                                    dispatch({ type: "addQuestion" })
-                                }
+                                onClick={() => append({ label: "" })}
                             >
                                 Add question
                             </Button>

@@ -5,13 +5,13 @@ import { Trash2 } from "lucide-react";
 import { useId, useState } from "react";
 import type { ReactElement } from "react";
 
-export interface ProjectQuestionnaireQuestion {
+export type ProjectQuestionnaireQuestion = {
     readonly id: string;
     readonly label: string;
     readonly position: number;
     readonly answer?: string | null;
     readonly answerSource?: AnswerSource;
-}
+};
 
 export type ProjectQuestionnaireQuestionListProps = {
     readonly questions: readonly ProjectQuestionnaireQuestion[];
