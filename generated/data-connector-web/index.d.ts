@@ -391,6 +391,12 @@ export interface Supplier_Key {
   __typename?: 'Supplier_Key';
 }
 
+export interface TeamInvitation_Key {
+  teamId: string;
+  email: string;
+  __typename?: 'TeamInvitation_Key';
+}
+
 export interface TeamMember_Key {
   teamId: string;
   userId: string;

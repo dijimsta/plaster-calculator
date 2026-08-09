@@ -168,6 +168,18 @@ export function upsertTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeMutation('UpsertTeamMember', inputVars, inputOpts);
 }
 
+export function rotateTeamInvitation(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('RotateTeamInvitation', inputVars, inputOpts);
+}
+
+export function acceptTeamInvitation(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('AcceptTeamInvitation', inputVars, inputOpts);
+}
+
 export function getTeamMembershipForUser(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
@@ -178,6 +190,24 @@ export function getTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
   return dcInstance.executeQuery('GetTeamMember', inputVars, inputOpts);
+}
+
+export function listPendingTeamInvitations(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListPendingTeamInvitations', inputVars, inputOpts);
+}
+
+export function findPendingTeamInvitationsForEmail(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('FindPendingTeamInvitationsForEmail', inputVars, inputOpts);
+}
+
+export function getTeamInvitationByTokenHash(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('GetTeamInvitationByTokenHash', inputVars, inputOpts);
 }
 
 export function getUserSettings(dcOrVarsOrOptions, varsOrOptions, options) {

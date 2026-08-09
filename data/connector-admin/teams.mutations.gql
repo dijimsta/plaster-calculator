@@ -21,3 +21,60 @@ mutation UpsertTeamMember($teamId: String!, $userId: String!, $role: String!)
         }
     )
 }
+
+mutation RotateTeamInvitation(
+    $teamId: String!
+    $email: String!
+    $tokenHash: String!
+    $invitedByUserId: String!
+    $expiresAt: Timestamp!
+) @auth(level: NO_ACCESS) {
+    teamInvitation_upsert(
+        data: {
+            teamId: $teamId
+            email: $email
+            tokenHash: $tokenHash
+            invitedByUserId: $invitedByUserId
+            expiresAt: $expiresAt
+            acceptedAt: null
+            acceptedByUserId: null
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation AcceptTeamInvitation(
+    $teamId: String!
+    $email: String!
+    $tokenHash: String!
+    $userId: String!
+) @auth(level: NO_ACCESS) @transaction {
+    query @redact {
+        teamInvitation(key: { teamId: $teamId, email: $email })
+            @check(expr: "this != null", message: "Invitation not found") {
+            tokenHash
+                @check(expr: "this == vars.tokenHash", message: "Invalid token")
+            acceptedAt
+                @check(
+                    expr: "this == null"
+                    message: "Invitation already accepted"
+                )
+            expiresAt
+                @check(
+                    expr: "this > request.time"
+                    message: "Invitation expired"
+                )
+        }
+    }
+    teamMember_insert(
+        data: { teamId: $teamId, userId: $userId, role: "MEMBER" }
+    )
+    teamInvitation_update(
+        key: { teamId: $teamId, email: $email }
+        data: {
+            acceptedAt_expr: "request.time"
+            acceptedByUserId: $userId
+            updatedAt_expr: "request.time"
+        }
+    )
+}
