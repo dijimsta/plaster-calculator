@@ -1,6 +1,7 @@
 export * from "./auth/index.ts";
 export * from "./companies/index.ts";
 export * from "./firebase/index.ts";
+export * from "./i18n/index.ts";
 export * from "./projects/index.ts";
 export * from "./questionnaires/index.ts";
 export * from "./reminders/index.ts";

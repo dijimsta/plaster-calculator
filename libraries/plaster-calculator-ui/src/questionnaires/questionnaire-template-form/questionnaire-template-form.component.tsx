@@ -13,6 +13,8 @@ import { Plus, Trash2 } from "lucide-react";
 import type { ReactElement } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
+import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+
 import type { QuestionnaireTemplateFormValues } from "./questionnaire-template-form.types.ts";
 
 export type { QuestionnaireTemplateFormValues };
@@ -34,10 +36,11 @@ const EMPTY_FORM_VALUES: QuestionnaireTemplateFormValues = {
 export function QuestionnaireTemplateForm({
     formId,
     initialValues,
-    submitLabel = "Create template",
+    submitLabel,
     onCancel,
     onSubmit,
 }: QuestionnaireTemplateFormProps): ReactElement {
+    const { t } = useQuestionnairesTranslation();
     const { control, handleSubmit } = useForm<QuestionnaireTemplateFormValues>({
         defaultValues: initialValues ?? EMPTY_FORM_VALUES,
     });
@@ -46,6 +49,8 @@ export function QuestionnaireTemplateForm({
         name: "questions",
         keyName: "fieldKey",
     });
+    const resolvedSubmitLabel =
+        submitLabel ?? t("questionnaireTemplateForm.createTemplate");
 
     return (
         <FormLayout id={formId} onSubmit={handleSubmit(onSubmit)}>
@@ -58,15 +63,19 @@ export function QuestionnaireTemplateForm({
                         value={field.value}
                         onChange={field.onChange}
                         onBlur={field.onBlur}
-                        placeholder="Template name"
-                        label="Template name"
+                        placeholder={t(
+                            "questionnaireTemplateForm.templateNameLabel",
+                        )}
+                        label={t("questionnaireTemplateForm.templateNameLabel")}
                         required
                     />
                 )}
             />
             <FormLayoutSection
-                title="Questions"
-                description="Add the questions this template asks."
+                title={t("questionnaireTemplateForm.questionsTitle")}
+                description={t(
+                    "questionnaireTemplateForm.questionsDescription",
+                )}
             >
                 <FormLayoutField label="" span="full">
                     <Box direction="column" gap="sm">
@@ -79,7 +88,10 @@ export function QuestionnaireTemplateForm({
                                         align="center"
                                     >
                                         <Text size="base">
-                                            Question {index + 1}
+                                            {t(
+                                                "questionnaireTemplateForm.question",
+                                                { number: index + 1 },
+                                            )}
                                         </Text>
                                         <Button
                                             type="button"
@@ -90,12 +102,16 @@ export function QuestionnaireTemplateForm({
                                                     aria-hidden="true"
                                                 />
                                             }
-                                            label={`Remove question ${index + 1}`}
+                                            label={t("common.removeQuestion", {
+                                                number: index + 1,
+                                            })}
                                             onClick={() => remove(index)}
                                         />
                                     </Box>
                                     <FormLayoutField
-                                        label="Label"
+                                        label={t(
+                                            "questionnaireTemplateForm.questionLabelFieldLabel",
+                                        )}
                                         htmlFor={`${formId}-question-${question.fieldKey}-label`}
                                     >
                                         <Controller
@@ -122,7 +138,7 @@ export function QuestionnaireTemplateForm({
                                 icon={<Plus size={16} aria-hidden="true" />}
                                 onClick={() => append({ label: "" })}
                             >
-                                Add question
+                                {t("questionnaireTemplateForm.addQuestion")}
                             </Button>
                         </Box>
                     </Box>
@@ -130,9 +146,9 @@ export function QuestionnaireTemplateForm({
             </FormLayoutSection>
             <FormLayoutActions>
                 <Button type="button" variant="secondary" onClick={onCancel}>
-                    Cancel
+                    {t("common.cancel")}
                 </Button>
-                <Button type="submit">{submitLabel}</Button>
+                <Button type="submit">{resolvedSubmitLabel}</Button>
             </FormLayoutActions>
         </FormLayout>
     );

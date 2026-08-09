@@ -10,6 +10,7 @@ import {
 import { ClipboardList } from "lucide-react";
 import type { ReactElement } from "react";
 
+import { useQuestionnairesTranslation } from "../../i18n/index.ts";
 import type { QuestionnaireTemplate } from "../questionnaire-template-card/index.ts";
 
 export type AddQuestionsFromTemplateDrawerProps = {
@@ -28,18 +29,21 @@ export function AddQuestionsFromTemplateDrawer({
     onClose,
     onSelectTemplate,
 }: AddQuestionsFromTemplateDrawerProps): ReactElement {
+    const { t } = useQuestionnairesTranslation();
     return (
         <Drawer
             open={open}
             onClose={onClose}
-            title="Add from template"
-            description="Copy a template's questions into this project's questionnaire."
+            title={t("addQuestionsFromTemplateDrawer.title")}
+            description={t("addQuestionsFromTemplateDrawer.description")}
         >
             {templates.length === 0 ? (
                 <EmptyState
                     icon={<ClipboardList />}
-                    title="No templates yet"
-                    description="Create a questionnaire template first to copy questions from it."
+                    title={t("addQuestionsFromTemplateDrawer.emptyStateTitle")}
+                    description={t(
+                        "addQuestionsFromTemplateDrawer.emptyStateDescription",
+                    )}
                 />
             ) : (
                 <Box direction="column" gap="sm">
@@ -58,10 +62,13 @@ export function AddQuestionsFromTemplateDrawer({
                                             {template.name}
                                         </Text>
                                         <Text size="sm" variant="muted">
-                                            Updated{" "}
-                                            {formatRelativeTime(
-                                                new Date(template.updatedAt),
-                                            )}
+                                            {t("common.updatedAt", {
+                                                time: formatRelativeTime(
+                                                    new Date(
+                                                        template.updatedAt,
+                                                    ),
+                                                ),
+                                            })}
                                         </Text>
                                     </Box>
                                     <Button
@@ -71,7 +78,9 @@ export function AddQuestionsFromTemplateDrawer({
                                             onSelectTemplate(template)
                                         }
                                     >
-                                        {isApplying ? "Adding..." : "Add"}
+                                        {isApplying
+                                            ? t("common.adding")
+                                            : t("common.add")}
                                     </Button>
                                 </Box>
                             </Card>

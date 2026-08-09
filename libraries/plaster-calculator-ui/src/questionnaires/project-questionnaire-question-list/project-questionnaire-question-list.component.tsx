@@ -5,6 +5,8 @@ import { Trash2 } from "lucide-react";
 import { useId, useState } from "react";
 import type { ReactElement } from "react";
 
+import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+
 export type ProjectQuestionnaireQuestion = {
     readonly id: string;
     readonly label: string;
@@ -68,6 +70,7 @@ function ProjectQuestionnaireQuestionRow({
     }
     const answerId = useId();
     const isAiSuggested = question.answerSource === AI_SUGGESTED_ANSWER_SOURCE;
+    const { t } = useQuestionnairesTranslation();
 
     return (
         <Card>
@@ -79,7 +82,9 @@ function ProjectQuestionnaireQuestionRow({
                         </Text>
                         {isAiSuggested && (
                             <Badge color="purple" size="xs">
-                                AI suggested
+                                {t(
+                                    "projectQuestionnaireQuestionList.aiSuggested",
+                                )}
                             </Badge>
                         )}
                     </Box>
@@ -91,14 +96,16 @@ function ProjectQuestionnaireQuestionRow({
                                 size="small"
                                 onClick={() => onConfirmAnswer(question)}
                             >
-                                Confirm
+                                {t("projectQuestionnaireQuestionList.confirm")}
                             </Button>
                         )}
                         <Button
                             type="button"
                             variant="ghost"
                             icon={<Trash2 size={16} aria-hidden="true" />}
-                            label={`Remove question ${index + 1}`}
+                            label={t("common.removeQuestion", {
+                                number: index + 1,
+                            })}
                             onClick={() => onRemove(question)}
                         />
                     </Box>
@@ -107,8 +114,12 @@ function ProjectQuestionnaireQuestionRow({
                     id={answerId}
                     rows={2}
                     value={answer}
-                    placeholder="Answer"
-                    label={`Answer for question ${index + 1}`}
+                    placeholder={t(
+                        "projectQuestionnaireQuestionList.answerPlaceholder",
+                    )}
+                    label={t("projectQuestionnaireQuestionList.answerLabel", {
+                        number: index + 1,
+                    })}
                     onChange={(event) => setAnswer(event.target.value)}
                     onBlur={() => {
                         if (answer !== normalizedAnswer) {
