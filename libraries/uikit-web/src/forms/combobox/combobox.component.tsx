@@ -2,7 +2,6 @@
 
 import clsx from "clsx";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-
 import type { ReactElement } from "react";
 
 export type ComboboxOption = {

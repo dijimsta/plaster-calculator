@@ -1,10 +1,9 @@
 import { Breadcrumb, Button, PageHeading } from "@libraries/uikit-web";
 import { Home, RefreshCcw } from "lucide-react";
+import type { ReactElement } from "react";
 
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
-
 import type { CompanyDetail } from "../../../types.js";
-import type { ReactElement } from "react";
 
 interface CompanyDetailHeaderProps {
     readonly company: CompanyDetail | null;

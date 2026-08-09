@@ -6,7 +6,6 @@ import { LoaderCircle, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { cx, ui } from "../lib/styles.js";
-
 import type { CompanySummary } from "../types.js";
 
 interface CompanySelectProps {

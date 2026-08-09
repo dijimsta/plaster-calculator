@@ -14,6 +14,13 @@ import {
     requireTeamId,
     requireTeamMember,
 } from "./ownership.js";
+import type {
+    CreateReminderRequest,
+    ProjectIdRequest,
+    Reminder,
+    ReminderIdRequest,
+    UpdateReminderRequest,
+} from "./types.js";
 import {
     hasField,
     readDueAt,
@@ -22,14 +29,6 @@ import {
     readRequiredString,
     toReminderStatus,
 } from "./validation.js";
-
-import type {
-    CreateReminderRequest,
-    ProjectIdRequest,
-    Reminder,
-    ReminderIdRequest,
-    UpdateReminderRequest,
-} from "./types.js";
 
 export const listDueReminders = onCall<
     unknown,

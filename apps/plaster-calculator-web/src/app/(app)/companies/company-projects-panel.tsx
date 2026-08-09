@@ -5,7 +5,6 @@ import { FolderKanban } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
 import { cx, ui } from "../../../lib/styles.js";
-
 import type { ProjectSummary } from "../../../types.js";
 
 const Link = LinkModule.default;

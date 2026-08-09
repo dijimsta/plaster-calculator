@@ -2,12 +2,11 @@ import {
     BoardMaterialsHelper,
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import { Box, Text } from "@libraries/uikit-web";
 
 import { BOARD_SWATCH_CLASSES } from "../../lib/editor/board-materials.js";
 import { cx, ui } from "../../lib/styles.js";
-
-import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 
 interface EditorLegendProps {
     readonly visibleAreas: AreaPolygon[];

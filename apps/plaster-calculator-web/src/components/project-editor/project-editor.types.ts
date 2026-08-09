@@ -1,10 +1,11 @@
+import type { Overlay } from "@libraries/plaster-calculator-common";
+import type { ReactNode } from "react";
+
 import type {
     PageValidationInput,
     ValidationIssue,
 } from "../../lib/validation.js";
 import type { ProjectDetail, FloorplanPage } from "../../types.js";
-import type { Overlay } from "@libraries/plaster-calculator-common";
-import type { ReactNode } from "react";
 
 export interface ProjectEditorProps {
     readonly project: ProjectDetail;

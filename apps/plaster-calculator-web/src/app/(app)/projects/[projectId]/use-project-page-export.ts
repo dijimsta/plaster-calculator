@@ -1,5 +1,7 @@
 "use client";
 
+import type { ProjectsService } from "@libraries/plaster-calculator-web-core";
+import type { useNotificationsManager } from "@libraries/uikit-web";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -9,10 +11,7 @@ import {
     type PageValidationInput,
     type ValidationIssue,
 } from "../../../../lib/validation.js";
-
 import type { ProjectDetail } from "../../../../types.js";
-import type { ProjectsService } from "@libraries/plaster-calculator-web-core";
-import type { useNotificationsManager } from "@libraries/uikit-web";
 
 type Notifications = ReturnType<typeof useNotificationsManager>;
 

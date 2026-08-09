@@ -1,11 +1,11 @@
 import * as DataConnector from "@generated/data-connector-web";
 import { UserSettingsSchema } from "@libraries/plaster-calculator-common";
+import type { Auth } from "firebase/auth";
 import { QueryFetchPolicy, type DataConnect } from "firebase/data-connect";
 
 import { FirebaseService } from "../firebase/firebase.service.ts";
 
 import type { UserSettings } from "./settings.types.ts";
-import type { Auth } from "firebase/auth";
 
 const DEFAULT_QUOTE_FOLLOW_UP_ENABLED = true;
 const DEFAULT_QUOTE_FOLLOW_UP_DAYS = 3;

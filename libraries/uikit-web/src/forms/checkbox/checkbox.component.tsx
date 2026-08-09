@@ -1,4 +1,10 @@
 import clsx from "clsx";
+import type { ReactElement } from "react";
+
+import {
+    checkableInputProps,
+    type CheckableControlProps,
+} from "../form-control.types.ts";
 
 import {
     checkmark,
@@ -7,12 +13,6 @@ import {
     sizes,
     type CheckboxSize,
 } from "./checkbox.styles.ts";
-import {
-    checkableInputProps,
-    type CheckableControlProps,
-} from "../form-control.types.ts";
-
-import type { ReactElement } from "react";
 
 export type { CheckboxSize };
 

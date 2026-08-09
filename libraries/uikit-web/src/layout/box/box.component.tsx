@@ -1,3 +1,5 @@
+import type { ReactElement, ReactNode } from "react";
+
 import {
     boxClassName,
     type BoxAlign,
@@ -6,8 +8,6 @@ import {
     type BoxJustify,
     type BoxPadding,
 } from "./box.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type { BoxAlign, BoxDirection, BoxGap, BoxJustify, BoxPadding };
 

@@ -24,15 +24,6 @@ import {
     ensureFileDownloadUrl,
     isOwnedUploadPath,
 } from "./storage.js";
-import {
-    hasField,
-    readOptionalNullableString,
-    readPdfPageCount,
-    readRequiredNumber,
-    readRequiredString,
-    readSalesStatus,
-} from "./validation.js";
-
 import type {
     CompanyIdRequest,
     CreateProjectFromUploadRequest,
@@ -44,6 +35,14 @@ import type {
     UpdateProjectRequest,
     UploadResponse,
 } from "./types.js";
+import {
+    hasField,
+    readOptionalNullableString,
+    readPdfPageCount,
+    readRequiredNumber,
+    readRequiredString,
+    readSalesStatus,
+} from "./validation.js";
 
 export const listProjects = onCall<
     ListProjectsRequest,

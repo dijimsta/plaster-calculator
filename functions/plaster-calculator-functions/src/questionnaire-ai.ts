@@ -12,9 +12,8 @@ import { requireOwnedProject } from "./ownership.js";
 import { analyzeFloorplanPageCore } from "./page-analysis.js";
 import { extractPdfText } from "./pdf-text-extraction.js";
 import { LONG_RUNNING_TIMEOUT_SECONDS } from "./types.js";
-import { readRequiredString } from "./validation.js";
-
 import type { ProjectIdRequest, ProjectWithPages } from "./types.js";
+import { readRequiredString } from "./validation.js";
 
 // Bounds the OCR/PDF text sent to the model per call. Large multi-page spec
 // PDFs could otherwise blow context/cost; exact budget to tune empirically.

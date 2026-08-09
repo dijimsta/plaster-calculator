@@ -1,7 +1,7 @@
+import type { Responsive } from "../../utils/responsive.ts";
 import { mapResponsiveToClassNames } from "../../utils/responsive.utils.ts";
 
 import type { GridTemplateColumns } from "./grid.types.ts";
-import type { Responsive } from "../../utils/responsive.ts";
 
 export const base = "grid";
 

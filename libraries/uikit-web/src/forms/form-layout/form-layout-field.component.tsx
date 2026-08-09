@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     fieldContent,
@@ -12,8 +13,6 @@ import {
     type FormLayoutFieldLabelPlacement,
 } from "./form-layout-field.styles.ts";
 import { useFormLayoutVariant } from "./form-layout.context.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type { FormLayoutFieldLabelPlacement, FormLayoutFieldSpan };
 

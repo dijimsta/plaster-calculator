@@ -3,17 +3,17 @@ import {
     WALL_BOARD_PROFILES,
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
-import { Button } from "@libraries/uikit-web";
-
-import { MaterialSelect } from "./selection-board-controls.js";
-import { cx, ui } from "../../lib/styles.js";
-
-import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type {
     AreaPolygon,
     EdgeOverride,
 } from "@libraries/plaster-calculator-common";
+import { Button } from "@libraries/uikit-web";
 import type { ReactNode } from "react";
+
+import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import { cx, ui } from "../../lib/styles.js";
+
+import { MaterialSelect } from "./selection-board-controls.js";
 
 interface SelectedEdgeControlsProps {
     readonly clearSelectedEdgeOverride: () => void;

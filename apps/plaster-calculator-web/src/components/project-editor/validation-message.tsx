@@ -1,6 +1,6 @@
-import { ui } from "../../lib/styles.js";
-
 import type { ReactNode } from "react";
+
+import { ui } from "../../lib/styles.js";
 
 export function ValidationMessage({
     message,

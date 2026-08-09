@@ -1,12 +1,11 @@
 import clsx from "clsx";
 import { Check } from "lucide-react";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     styles,
     type MultiStepStatus,
 } from "./multi-step-navigation.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type MultiStepNavigationStep = {
     readonly id: string;

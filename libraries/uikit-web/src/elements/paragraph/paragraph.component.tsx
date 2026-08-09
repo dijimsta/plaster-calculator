@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     measures,
@@ -8,8 +9,6 @@ import {
     type ParagraphMeasure,
     type ParagraphVariant,
 } from "./paragraph.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type { ParagraphMeasure, ParagraphSize, ParagraphVariant };
 

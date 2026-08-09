@@ -1,6 +1,4 @@
 import { ensureFileDownloadUrl, storagePathToUrl } from "./storage.js";
-import { toReminderStatus, toSalesStatus } from "./validation.js";
-
 import type {
     FloorplanPage,
     FloorplanPageRow,
@@ -15,6 +13,7 @@ import type {
     UploadType,
     ProjectReminderRow,
 } from "./types.js";
+import { toReminderStatus, toSalesStatus } from "./validation.js";
 
 export function toSummary(
     project: ProjectListRow | ProjectWithPages | ProjectDetailsRow,

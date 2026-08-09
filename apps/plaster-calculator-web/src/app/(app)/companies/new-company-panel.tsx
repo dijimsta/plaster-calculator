@@ -5,12 +5,12 @@ import { Button, Paragraph } from "@libraries/uikit-web";
 import { Plus } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
-import { CompanyDraftFields } from "./company-draft-fields.js";
-import { EMPTY_ACCOUNT_DRAFT } from "./company.types.js";
-import { optionalValue } from "./company.utils.js";
 import { cx, ui } from "../../../lib/styles.js";
 
+import { CompanyDraftFields } from "./company-draft-fields.js";
+import { EMPTY_ACCOUNT_DRAFT } from "./company.types.js";
 import type { CompanyDraft } from "./company.types.js";
+import { optionalValue } from "./company.utils.js";
 
 interface NewCompanyPanelProps {
     readonly onCreated: () => void;

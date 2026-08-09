@@ -1,11 +1,10 @@
+import type { Point } from "@libraries/plaster-calculator-common";
 import { Button, Paragraph } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
+import type { ReactNode } from "react";
 
 import { cx, ui } from "../../lib/styles.js";
-
 import type { ValidationIssue } from "../../lib/validation.js";
-import type { Point } from "@libraries/plaster-calculator-common";
-import type { ReactNode } from "react";
 
 interface ScalePanelProps {
     readonly isSettingReference: boolean;

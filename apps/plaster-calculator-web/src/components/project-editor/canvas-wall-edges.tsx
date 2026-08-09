@@ -2,17 +2,17 @@ import {
     BoardMaterialsHelper,
     OverlayGeometryHelper,
 } from "@libraries/plaster-calculator-common";
-import { Line } from "react-konva";
-
-import { colorFor } from "../../lib/editor/board-materials.js";
-import { activeTheme } from "../../lib/styles.js";
-
-import type { OverlayMode } from "./project-editor.types.js";
-import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type {
     AreaPolygon,
     EdgeOverride,
 } from "@libraries/plaster-calculator-common";
+import { Line } from "react-konva";
+
+import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import { colorFor } from "../../lib/editor/board-materials.js";
+import { activeTheme } from "../../lib/styles.js";
+
+import type { OverlayMode } from "./project-editor.types.js";
 
 const SELECTED_COLOR = activeTheme.editor.selected;
 const LOW_EDGE_COLOR = activeTheme.editor.lowEdge;

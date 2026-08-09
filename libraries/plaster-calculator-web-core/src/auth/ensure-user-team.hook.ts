@@ -1,10 +1,9 @@
 "use client";
 
+import type { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 
 import { useTeamsService } from "../teams/teams.hooks.ts";
-
-import type { User } from "firebase/auth";
 
 export function useEnsureUserTeam(user: User | null | undefined): boolean {
     const teamsService = useTeamsService();

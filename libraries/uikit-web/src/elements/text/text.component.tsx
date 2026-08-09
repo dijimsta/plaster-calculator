@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     sizes,
@@ -7,8 +8,6 @@ import {
     type TextSize,
     type TextVariant,
 } from "./text.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type { TextSize, TextVariant };
 

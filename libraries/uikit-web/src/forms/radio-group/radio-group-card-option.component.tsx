@@ -1,4 +1,10 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
+
+import {
+    checkableInputProps,
+    type CheckableControlProps,
+} from "../form-control.types.ts";
 
 import {
     card,
@@ -10,13 +16,7 @@ import {
     segmentedOption,
     smallCard,
 } from "./radio-group-card-option.styles.ts";
-import {
-    checkableInputProps,
-    type CheckableControlProps,
-} from "../form-control.types.ts";
-
 import type { RadioGroupVariant } from "./radio-group.styles.ts";
-import type { ReactElement, ReactNode } from "react";
 
 export type RadioGroupCardOptionVariant = Extract<
     RadioGroupVariant,

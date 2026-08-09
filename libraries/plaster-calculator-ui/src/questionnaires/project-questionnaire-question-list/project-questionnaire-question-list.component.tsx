@@ -1,9 +1,8 @@
 import { AI_SUGGESTED_ANSWER_SOURCE } from "@libraries/plaster-calculator-common";
+import type { AnswerSource } from "@libraries/plaster-calculator-common";
 import { Badge, Box, Button, Card, Text, Textarea } from "@libraries/uikit-web";
 import { Trash2 } from "lucide-react";
 import { useId, useState } from "react";
-
-import type { AnswerSource } from "@libraries/plaster-calculator-common";
 import type { ReactElement } from "react";
 
 export interface ProjectQuestionnaireQuestion {

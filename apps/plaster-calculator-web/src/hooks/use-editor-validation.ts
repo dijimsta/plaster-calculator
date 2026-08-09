@@ -1,12 +1,12 @@
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import { createElement, useCallback } from "react";
+import type { ReactNode } from "react";
 
 import { CeilingControls } from "../components/project-editor/ceiling-controls.js";
 import { ValidationMessage } from "../components/project-editor/validation-message.js";
+import type { ValidationIssue } from "../lib/validation.js";
 
 import type { SelectedEdge } from "./use-editor-selection.js";
-import type { ValidationIssue } from "../lib/validation.js";
-import type { AreaPolygon } from "@libraries/plaster-calculator-common";
-import type { ReactNode } from "react";
 
 interface EditorValidationOptions {
     readonly ceilingHeightMm: number | null;

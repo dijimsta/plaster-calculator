@@ -15,7 +15,6 @@ import {
     LONG_RUNNING_TIMEOUT_SECONDS,
     FLOORPLAN_ANALYZER_REGION,
 } from "./types.js";
-
 import type {
     AnalyzerPolygon,
     AnalyzerResult,

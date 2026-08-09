@@ -1,7 +1,6 @@
+import type { Decorator } from "@storybook/react-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { initializeApp } from "firebase/app";
-
-import type { Decorator } from "@storybook/react-vite";
 import type { ReactElement, ReactNode } from "react";
 
 initializeApp({

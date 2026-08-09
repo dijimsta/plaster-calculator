@@ -2,6 +2,16 @@
 
 import clsx from "clsx";
 import { useId } from "react";
+import type {
+    ChangeEventHandler,
+    FocusEventHandler,
+    HTMLInputTypeAttribute,
+    KeyboardEventHandler,
+    ReactElement,
+    ReactNode,
+} from "react";
+
+import { useInputGroup } from "../input-group/input-group.context.ts";
 
 import {
     addon,
@@ -16,16 +26,6 @@ import {
     type InputShape,
     type InputVariant,
 } from "./input.styles.ts";
-import { useInputGroup } from "../input-group/input-group.context.ts";
-
-import type {
-    ChangeEventHandler,
-    FocusEventHandler,
-    HTMLInputTypeAttribute,
-    KeyboardEventHandler,
-    ReactElement,
-    ReactNode,
-} from "react";
 
 export type { InputShape, InputVariant };
 

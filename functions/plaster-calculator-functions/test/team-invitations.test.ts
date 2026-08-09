@@ -9,7 +9,6 @@ import {
     selectOwnerTeamId,
     shouldCreatePersonalTeamForNewUser,
 } from "../src/team-invitation-domain.ts";
-
 import type { TeamInvitationDependencies } from "../src/team-invitation-domain.ts";
 
 const NOW = new Date("2026-08-09T00:00:00.000Z");

@@ -1,10 +1,12 @@
-import type { SnapGuide } from "./project-editor.types.js";
-import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type {
     AreaPolygon,
     Overlay,
 } from "@libraries/plaster-calculator-common";
 import type { RefObject } from "react";
+
+import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+
+import type { SnapGuide } from "./project-editor.types.js";
 
 export interface CanvasPointHandlesProps {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;

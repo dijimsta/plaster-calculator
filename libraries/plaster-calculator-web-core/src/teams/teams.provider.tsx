@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 
 import { TeamsServiceContext } from "./teams.context.ts";
 import { TeamsService } from "./teams.service.ts";
-
-import type { PropsWithChildren, ReactElement } from "react";
 
 export interface TeamsServiceProviderProps extends PropsWithChildren {
     readonly teamsService?: TeamsService;

@@ -1,10 +1,10 @@
 import clsx from "clsx";
+import type { PropsWithChildren, ReactElement } from "react";
+
+import type { Responsive } from "../../utils/responsive.ts";
 
 import * as styles from "./grid.styles.ts";
-
 import type { GridTemplateColumns } from "./grid.types.ts";
-import type { Responsive } from "../../utils/responsive.ts";
-import type { PropsWithChildren, ReactElement } from "react";
 
 export type GridProps = {
     readonly columns?: Responsive<GridTemplateColumns>;

@@ -12,11 +12,11 @@ import {
 import { Building2, LoaderCircle, RefreshCcw, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import { cx, ui } from "../../../lib/styles.js";
+import type { CompanySummary } from "../../../types.js";
+
 import { CompanyRow } from "./company-row.js";
 import { filterCompanies } from "./company.utils.js";
-import { cx, ui } from "../../../lib/styles.js";
-
-import type { CompanySummary } from "../../../types.js";
 
 interface CompanyListPanelProps {
     readonly refreshKey: number;

@@ -1,11 +1,11 @@
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import { Button, Input, Label, SelectMenu } from "@libraries/uikit-web";
 
-import { ValidationMessage } from "./validation-message.js";
-import { ui } from "../../lib/styles.js";
-
 import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import { ui } from "../../lib/styles.js";
 import type { ValidationIssue } from "../../lib/validation.js";
-import type { AreaPolygon } from "@libraries/plaster-calculator-common";
+
+import { ValidationMessage } from "./validation-message.js";
 
 interface CeilingControlsProps {
     readonly area: AreaPolygon;

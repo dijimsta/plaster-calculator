@@ -1,5 +1,8 @@
 import clsx from "clsx";
 import { createContext, useContext, useId } from "react";
+import type { ChangeEventHandler, ReactElement, ReactNode } from "react";
+
+import type { CheckableControlProps } from "../form-control.types.ts";
 
 import { RadioGroupCardOption } from "./radio-group-card-option.component.tsx";
 import { RadioGroupDefaultOption } from "./radio-group-default-option.component.tsx";
@@ -13,10 +16,7 @@ import {
     segmentedDisplayClassName,
     type RadioGroupVariant,
 } from "./radio-group.styles.ts";
-
-import type { CheckableControlProps } from "../form-control.types.ts";
 import type { RadioSize } from "./radio.styles.ts";
-import type { ChangeEventHandler, ReactElement, ReactNode } from "react";
 
 export { Radio } from "./radio.component.tsx";
 export type { RadioProps } from "./radio.component.tsx";

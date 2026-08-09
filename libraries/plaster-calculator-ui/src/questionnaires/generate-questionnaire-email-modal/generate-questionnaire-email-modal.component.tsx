@@ -8,7 +8,6 @@ import {
     Textarea,
 } from "@libraries/uikit-web";
 import { useId, useState } from "react";
-
 import type { ReactElement } from "react";
 
 const COPIED_LABEL_DURATION_MS = 2000;

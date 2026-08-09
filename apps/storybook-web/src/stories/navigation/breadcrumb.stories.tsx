@@ -1,7 +1,6 @@
 import { Breadcrumb } from "@libraries/uikit-web";
-import { Home } from "lucide-react";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Home } from "lucide-react";
 
 const meta: Meta<typeof Breadcrumb> = {
     title: "UIKit/Navigation/Breadcrumb",

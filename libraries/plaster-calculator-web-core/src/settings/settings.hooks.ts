@@ -3,7 +3,6 @@
 import { useContext } from "react";
 
 import { SettingsServiceContext } from "./settings.context.ts";
-
 import type { SettingsService } from "./settings.service.ts";
 
 export function useSettingsService(): SettingsService {

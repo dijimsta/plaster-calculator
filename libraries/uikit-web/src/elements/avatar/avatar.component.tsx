@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactElement } from "react";
 
 import {
     DEFAULT_COLOR,
@@ -22,8 +23,6 @@ import {
     type AvatarSize,
     type AvatarStatus,
 } from "./avatar.styles.ts";
-
-import type { ReactElement } from "react";
 
 export type { AvatarColor, AvatarShape, AvatarSize, AvatarStatus };
 

@@ -3,9 +3,8 @@
 import { Button, ModalDialog } from "@libraries/uikit-web";
 import { type FormEvent } from "react";
 
-import { ContactFormFields } from "./contact-form-fields.js";
-
 import type { ContactDraft } from "./company.types.js";
+import { ContactFormFields } from "./contact-form-fields.js";
 
 interface NewContactModalProps {
     readonly contactDraft: ContactDraft;

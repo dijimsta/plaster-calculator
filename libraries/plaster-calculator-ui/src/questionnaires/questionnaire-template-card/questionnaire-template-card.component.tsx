@@ -1,8 +1,7 @@
+import type * as DataConnector from "@generated/data-connector-web";
 import { formatRelativeTime } from "@libraries/plaster-calculator-common";
 import { Box, Button, Card, IconTile, Text } from "@libraries/uikit-web";
 import { ClipboardList, Copy, Pencil, Trash2 } from "lucide-react";
-
-import type * as DataConnector from "@generated/data-connector-web";
 import type { ReactElement } from "react";
 
 export type QuestionnaireTemplate =

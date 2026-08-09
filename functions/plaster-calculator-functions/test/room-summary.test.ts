@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { buildRoomSummary } from "../src/ai/room-summary.ts";
-
-import type { RoomSummary } from "../src/ai/room-summary.ts";
 import type {
     AreaPolygon,
     Overlay,
 } from "@libraries/plaster-calculator-common";
+
+import { buildRoomSummary } from "../src/ai/room-summary.ts";
+import type { RoomSummary } from "../src/ai/room-summary.ts";
 
 function area(overrides: Partial<AreaPolygon> = {}): AreaPolygon {
     return {

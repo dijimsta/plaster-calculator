@@ -1,18 +1,18 @@
 import * as DataConnector from "@generated/data-connector-web";
 import * as DataConnectorReact from "@generated/data-connector-web/react";
-import { FirebaseService } from "@libraries/plaster-calculator-web-core";
-import { useNotificationsManager } from "@libraries/uikit-web";
-import { useQueryClient } from "@tanstack/react-query";
-import { QueryFetchPolicy } from "firebase/data-connect";
-import { useCallback } from "react";
-
-import type { QuestionnaireTemplatesPageAction } from "./page.reducer.js";
 import type {
     QuestionnaireTemplate,
     QuestionnaireTemplateDetails,
     QuestionnaireTemplateFormValues,
 } from "@libraries/plaster-calculator-ui";
+import { FirebaseService } from "@libraries/plaster-calculator-web-core";
+import { useNotificationsManager } from "@libraries/uikit-web";
+import { useQueryClient } from "@tanstack/react-query";
+import { QueryFetchPolicy } from "firebase/data-connect";
+import { useCallback } from "react";
 import type { Dispatch } from "react";
+
+import type { QuestionnaireTemplatesPageAction } from "./page.reducer.js";
 
 type RefreshTemplates = () => Promise<void>;
 type DeleteTemplate = (template: QuestionnaireTemplate) => Promise<void>;

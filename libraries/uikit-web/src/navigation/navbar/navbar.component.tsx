@@ -7,6 +7,7 @@ import {
     useId,
     useState,
 } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     DEFAULT_TONE,
@@ -14,8 +15,6 @@ import {
     tones,
     type NavbarTone,
 } from "./navbar.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type { NavbarTone };
 

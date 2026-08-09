@@ -5,9 +5,8 @@ import {
     IN_PROGRESS_COMPLETION_STATE,
     QuestionnaireCompletionStateHelper,
 } from "@libraries/plaster-calculator-common";
-import { FirebaseService } from "@libraries/plaster-calculator-web-core";
-
 import type { QuestionnaireCompletionState } from "@libraries/plaster-calculator-common";
+import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,

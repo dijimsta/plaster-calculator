@@ -2,7 +2,6 @@
 
 import clsx from "clsx";
 import { useId } from "react";
-
 import type { ChangeEventHandler, ReactElement } from "react";
 
 export type SelectMenuOption = {

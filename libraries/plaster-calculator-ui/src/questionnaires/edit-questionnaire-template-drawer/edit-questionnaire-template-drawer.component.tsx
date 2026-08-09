@@ -1,11 +1,10 @@
+import type * as DataConnector from "@generated/data-connector-web";
 import { Drawer, Text } from "@libraries/uikit-web";
 import { useId, useMemo } from "react";
+import type { ReactElement } from "react";
 
 import { QuestionnaireTemplateForm } from "../questionnaire-template-form/index.ts";
-
 import type { QuestionnaireTemplateFormValues } from "../questionnaire-template-form/index.ts";
-import type * as DataConnector from "@generated/data-connector-web";
-import type { ReactElement } from "react";
 
 export type QuestionnaireTemplateDetails = NonNullable<
     DataConnector.GetQuestionnaireTemplateData["questionnaireTemplate"]

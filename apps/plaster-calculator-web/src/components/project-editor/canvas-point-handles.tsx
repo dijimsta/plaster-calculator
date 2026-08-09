@@ -1,20 +1,20 @@
 import { OverlayGeometryHelper } from "@libraries/plaster-calculator-common";
-import { useRef } from "react";
-import { Circle } from "react-konva";
-
-import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
-import { snapToReferences } from "../../lib/editor/snap-guides.js";
-import { activeTheme } from "../../lib/styles.js";
-
-import type { CanvasPointHandlesProps } from "./canvas-point-handles.types.js";
-import type { DragState, SnapGuide } from "./project-editor.types.js";
-import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
 import type {
     AreaPolygon,
     Overlay,
     Point,
 } from "@libraries/plaster-calculator-common";
 import type { KonvaEventObject } from "konva/lib/Node.js";
+import { useRef } from "react";
+import { Circle } from "react-konva";
+
+import type { SelectedEdge } from "../../hooks/use-editor-selection.js";
+import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
+import { snapToReferences } from "../../lib/editor/snap-guides.js";
+import { activeTheme } from "../../lib/styles.js";
+
+import type { CanvasPointHandlesProps } from "./canvas-point-handles.types.js";
+import type { DragState, SnapGuide } from "./project-editor.types.js";
 
 const SELECTED_COLOR = activeTheme.editor.selected;
 const SELECTED_POINT_COLOR = activeTheme.editor.selectedPoint;

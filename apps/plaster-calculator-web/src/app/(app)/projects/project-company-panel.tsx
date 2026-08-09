@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 
 import { CompanySelect } from "../../../components/company-select.js";
 import { ui } from "../../../lib/styles.js";
-
 import type { CompanyDetail } from "../../../types.js";
 
 interface ProjectCompanyPanelProps {

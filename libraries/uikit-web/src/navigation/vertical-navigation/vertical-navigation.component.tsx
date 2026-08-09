@@ -1,9 +1,8 @@
 import clsx from "clsx";
 import { cloneElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 import { styles } from "./vertical-navigation.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type VerticalNavigationProps = {
     readonly label?: string;

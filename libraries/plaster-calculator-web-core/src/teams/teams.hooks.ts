@@ -3,7 +3,6 @@
 import { useContext } from "react";
 
 import { TeamsServiceContext } from "./teams.context.ts";
-
 import type { TeamsService } from "./teams.service.ts";
 
 export function useTeamsService(): TeamsService {

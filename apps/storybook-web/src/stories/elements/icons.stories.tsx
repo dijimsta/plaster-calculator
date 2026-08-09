@@ -1,5 +1,4 @@
 import { GitHubIcon, GoogleIcon } from "@libraries/uikit-web";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof GitHubIcon> = {

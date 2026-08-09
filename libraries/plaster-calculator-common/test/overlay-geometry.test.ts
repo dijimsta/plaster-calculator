@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { OverlayGeometryHelper } from "../src/index.ts";
-
 import type { AreaPolygon, Point } from "../src/index.ts";
 
 const SQUARE_100PX: Point[] = [

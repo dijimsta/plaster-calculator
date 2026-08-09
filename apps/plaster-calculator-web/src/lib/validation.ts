@@ -3,10 +3,10 @@ import {
     type AreaPolygon,
 } from "@libraries/plaster-calculator-common";
 
+import type { FloorplanPage } from "../types.js";
+
 import { normalizeCeilingBoardType } from "./editor/board-materials.js";
 import { parseOverlay } from "./editor/overlay-serialization.js";
-
-import type { FloorplanPage } from "../types.js";
 
 export {
     parseOverlay,

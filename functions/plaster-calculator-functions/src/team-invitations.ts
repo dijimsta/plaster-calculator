@@ -11,9 +11,8 @@ import {
     createTeamInvitationService,
     shouldCreatePersonalTeamForNewUser as shouldCreatePersonalTeam,
 } from "./team-invitation-domain.js";
-import { isRecord } from "./validation.js";
-
 import type { TeamInvitationDependencies } from "./team-invitation-domain.js";
+import { isRecord } from "./validation.js";
 
 const defaultDependencies: TeamInvitationDependencies = {
     now: () => new Date(),

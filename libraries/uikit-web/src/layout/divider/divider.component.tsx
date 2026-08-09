@@ -1,5 +1,4 @@
 import clsx from "clsx";
-
 import type { PropsWithChildren, ReactElement } from "react";
 
 export function Divider({ children }: PropsWithChildren): ReactElement {

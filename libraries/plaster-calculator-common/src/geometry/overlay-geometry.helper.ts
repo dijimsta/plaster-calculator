@@ -1,5 +1,4 @@
 import { BoardMaterialsHelper } from "./board-materials.helper.ts";
-
 import type { AreaPolygon, EdgeOverride, Point } from "./schemas/index.ts";
 
 export class OverlayGeometryHelper {

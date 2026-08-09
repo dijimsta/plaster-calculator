@@ -1,8 +1,7 @@
 import { Button, ButtonGroup } from "@libraries/uikit-web";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { fn } from "storybook/test";
-
-import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof ButtonGroup> = {
     title: "UIKit/Elements/Button Group",

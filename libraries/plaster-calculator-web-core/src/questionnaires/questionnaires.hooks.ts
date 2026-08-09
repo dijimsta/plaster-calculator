@@ -3,7 +3,6 @@
 import { useContext } from "react";
 
 import { QuestionnairesServiceContext } from "./questionnaires.context.ts";
-
 import type { QuestionnairesService } from "./questionnaires.service.ts";
 
 export function useQuestionnairesService(): QuestionnairesService {

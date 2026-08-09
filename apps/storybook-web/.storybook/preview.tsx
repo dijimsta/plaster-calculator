@@ -1,8 +1,7 @@
 import "../src/styles.css";
 
-import { INITIAL_VIEWPORTS } from "storybook/viewport";
-
 import type { Preview } from "@storybook/react-vite";
+import { INITIAL_VIEWPORTS } from "storybook/viewport";
 
 const preview: Preview = {
     decorators: [(Story) => <Story />],

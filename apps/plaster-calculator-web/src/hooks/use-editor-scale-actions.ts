@@ -2,9 +2,9 @@ import {
     OverlayGeometryHelper,
     type Point,
 } from "@libraries/plaster-calculator-common";
+import type { RefObject } from "react";
 
 import type { ViewportSize } from "./use-editor-actions.types.js";
-import type { RefObject } from "react";
 
 interface ScaleActionsOptions {
     readonly canvasWrapRef: RefObject<HTMLDivElement | null>;

@@ -1,3 +1,4 @@
+import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import { Button, RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
 import {
     AlignHorizontalJustifyCenter,
@@ -19,7 +20,6 @@ import {
 import { ui } from "../../lib/styles.js";
 
 import type { OverlayMode } from "./project-editor.types.js";
-import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 
 interface EditorToolbarProps {
     readonly addMenuOpen: boolean;

@@ -1,3 +1,4 @@
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import {
     useCompaniesService,
     useProjectsService,
@@ -6,7 +7,6 @@ import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
 import { createElement, useEffect, useMemo, useState } from "react";
 
 import type { ProjectSummary } from "../../../types.js";
-import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 type ActiveProjectSalesStatus = Extract<
     SalesStatus,

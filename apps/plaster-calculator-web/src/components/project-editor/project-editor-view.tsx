@@ -1,17 +1,6 @@
+import type { Point } from "@libraries/plaster-calculator-common";
 import { Paragraph } from "@libraries/uikit-web";
 
-import { EditorCanvas } from "./editor-canvas.js";
-import { EditorLegend } from "./editor-legend.js";
-import { EditorSidebar } from "./editor-sidebar.js";
-import { EditorToolbar } from "./editor-toolbar.js";
-import { ui } from "../../lib/styles.js";
-
-import type { EditorCanvasProps } from "./editor-canvas.types.js";
-import type {
-    OverlayMode,
-    ProjectEditorProps,
-    SnapGuide,
-} from "./project-editor.types.js";
 import type { useEditorActions } from "../../hooks/use-editor-actions.js";
 import type { useEditorDerivedState } from "../../hooks/use-editor-derived-state.js";
 import type { useEditorHistory } from "../../hooks/use-editor-history.js";
@@ -20,7 +9,18 @@ import type { useEditorOverlay } from "../../hooks/use-editor-overlay.js";
 import type { useEditorPersistence } from "../../hooks/use-editor-persistence.js";
 import type { useEditorSelection } from "../../hooks/use-editor-selection.js";
 import type { useEditorValidation } from "../../hooks/use-editor-validation.js";
-import type { Point } from "@libraries/plaster-calculator-common";
+import { ui } from "../../lib/styles.js";
+
+import { EditorCanvas } from "./editor-canvas.js";
+import type { EditorCanvasProps } from "./editor-canvas.types.js";
+import { EditorLegend } from "./editor-legend.js";
+import { EditorSidebar } from "./editor-sidebar.js";
+import { EditorToolbar } from "./editor-toolbar.js";
+import type {
+    OverlayMode,
+    ProjectEditorProps,
+    SnapGuide,
+} from "./project-editor.types.js";
 
 interface ProjectEditorViewProps {
     readonly actions: ReturnType<typeof useEditorActions>;

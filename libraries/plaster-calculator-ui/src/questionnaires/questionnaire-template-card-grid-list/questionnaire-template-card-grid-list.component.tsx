@@ -1,9 +1,8 @@
 import { GridList } from "@libraries/uikit-web";
+import type { ReactElement } from "react";
 
 import { QuestionnaireTemplateCard } from "../questionnaire-template-card/index.ts";
-
 import type { QuestionnaireTemplate } from "../questionnaire-template-card/index.ts";
-import type { ReactElement } from "react";
 
 export type QuestionnaireTemplateCardGridListProps = {
     readonly templates: readonly QuestionnaireTemplate[];

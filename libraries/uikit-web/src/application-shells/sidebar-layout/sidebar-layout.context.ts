@@ -1,12 +1,12 @@
 "use client";
 
 import { createContext, useContext } from "react";
+import type { Dispatch } from "react";
 
 import type {
     SidebarLayoutAction,
     SidebarLayoutReducerState,
 } from "./sidebar-layout.reducer.ts";
-import type { Dispatch } from "react";
 
 export interface SidebarLayoutContextValue {
     readonly dispatch: Dispatch<SidebarLayoutAction>;

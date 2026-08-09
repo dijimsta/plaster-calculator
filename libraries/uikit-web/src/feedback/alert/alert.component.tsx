@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     DEFAULT_INTENT,
@@ -15,8 +16,6 @@ import {
     type AlertIntent,
     type AlertVariant,
 } from "./alert.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type AlertProps = {
     readonly intent?: AlertIntent;

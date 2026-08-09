@@ -1,9 +1,8 @@
 import { useEffect } from "react";
+import type { Dispatch, RefObject } from "react";
 
 import { useSidebarLayoutContext } from "./sidebar-layout.context.ts";
-
 import type { SidebarLayoutAction } from "./sidebar-layout.reducer.ts";
-import type { Dispatch, RefObject } from "react";
 
 const focusableSelector = [
     "a[href]",

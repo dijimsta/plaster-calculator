@@ -3,14 +3,13 @@ import "./bootstrap.js";
 import { randomUUID } from "node:crypto";
 
 import * as DataConnector from "@generated/data-connector-admin";
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 import { requireTeamId } from "./ownership.js";
-import { getUserSettingsOrDefault } from "./settings.js";
-import { hasField, toReminderStatus } from "./validation.js";
-
 import type { ProjectUpdateFields } from "./project-fields.js";
+import { getUserSettingsOrDefault } from "./settings.js";
 import type { ProjectWithPages } from "./types.js";
-import type { SalesStatus } from "@libraries/plaster-calculator-common";
+import { hasField, toReminderStatus } from "./validation.js";
 
 const quoteFollowUpReminderPrefix = "Follow up quote for ";
 

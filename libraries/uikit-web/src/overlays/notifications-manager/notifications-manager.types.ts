@@ -1,5 +1,6 @@
-import type { NotificationIntent } from "../notification/index.ts";
 import type { ReactNode } from "react";
+
+import type { NotificationIntent } from "../notification/index.ts";
 
 export interface NotifyOptions {
     readonly title: ReactNode;

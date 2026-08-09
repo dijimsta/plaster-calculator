@@ -1,4 +1,10 @@
 import clsx from "clsx";
+import type { ReactElement } from "react";
+
+import {
+    checkableInputProps,
+    type CheckableControlProps,
+} from "../form-control.types.ts";
 
 import {
     radioContainer,
@@ -6,12 +12,6 @@ import {
     radioSizes,
     type RadioSize,
 } from "./radio.styles.ts";
-import {
-    checkableInputProps,
-    type CheckableControlProps,
-} from "../form-control.types.ts";
-
-import type { ReactElement } from "react";
 
 export type RadioProps = {
     readonly size?: RadioSize;

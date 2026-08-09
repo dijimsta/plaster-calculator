@@ -3,12 +3,12 @@
 import { Button, ButtonLink, Text } from "@libraries/uikit-web";
 import { Mail, Pencil, Trash2, X } from "lucide-react";
 
-import { toContactDraft } from "./company.utils.js";
-import { ContactFormFields } from "./contact-form-fields.js";
 import { ui } from "../../../lib/styles.js";
+import type { CompanyContact } from "../../../types.js";
 
 import type { ContactDraft } from "./company.types.js";
-import type { CompanyContact } from "../../../types.js";
+import { toContactDraft } from "./company.utils.js";
+import { ContactFormFields } from "./contact-form-fields.js";
 
 interface ContactRowProps {
     readonly contact: CompanyContact;

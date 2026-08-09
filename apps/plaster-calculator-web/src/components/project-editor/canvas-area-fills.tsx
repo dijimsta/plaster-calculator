@@ -1,3 +1,9 @@
+import type {
+    AreaPolygon,
+    Overlay,
+    Point,
+} from "@libraries/plaster-calculator-common";
+import type { KonvaEventObject } from "konva/lib/Node.js";
 import { useRef, type RefObject } from "react";
 import { Line } from "react-konva";
 
@@ -8,12 +14,6 @@ import {
 import { cloneOverlay } from "../../lib/editor/overlay-serialization.js";
 
 import type { DragState, OverlayMode } from "./project-editor.types.js";
-import type {
-    AreaPolygon,
-    Overlay,
-    Point,
-} from "@libraries/plaster-calculator-common";
-import type { KonvaEventObject } from "konva/lib/Node.js";
 
 interface CanvasAreaFillsProps {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;

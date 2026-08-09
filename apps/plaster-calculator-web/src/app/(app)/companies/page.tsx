@@ -4,10 +4,11 @@ import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
 import { Home } from "lucide-react";
 import { useState } from "react";
 
-import { CompanyListPanel } from "./company-list-panel.js";
-import { NewCompanyPanel } from "./new-company-panel.js";
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { cx, ui } from "../../../lib/styles.js";
+
+import { CompanyListPanel } from "./company-list-panel.js";
+import { NewCompanyPanel } from "./new-company-panel.js";
 
 export default function CompaniesPage() {
     const [companyListRefreshKey, setCompanyListRefreshKey] = useState(0);

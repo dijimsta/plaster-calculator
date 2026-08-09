@@ -1,8 +1,7 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import { styles, type EmptyStateVariant } from "./empty-state.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type { EmptyStateVariant };
 

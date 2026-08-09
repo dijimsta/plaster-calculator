@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     DEFAULT_COLUMNS,
@@ -9,8 +10,6 @@ import {
     type GridListColumnCount,
     type GridListGap,
 } from "./grid-list.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type GridListProps = {
     /** Maximum number of columns shown at large viewports. */

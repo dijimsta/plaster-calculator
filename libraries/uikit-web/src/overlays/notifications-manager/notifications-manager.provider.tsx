@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 
 import { NotificationsManagerContext } from "./notifications-manager.context.ts";
-import { NotificationsViewport } from "./notifications-viewport.component.tsx";
-
 import type {
     ActiveNotification,
     NotifyOptions,
 } from "./notifications-manager.types.ts";
-import type { PropsWithChildren, ReactElement } from "react";
+import { NotificationsViewport } from "./notifications-viewport.component.tsx";
 
 export function NotificationsProvider({
     children,

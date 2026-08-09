@@ -1,8 +1,7 @@
 import clsx from "clsx";
+import type { ReactElement, ReactNode } from "react";
 
 import { styles } from "./table.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type TableProps = {
     readonly bordered?: boolean;

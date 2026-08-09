@@ -20,7 +20,6 @@ import { signOut } from "firebase/auth";
 import * as Icons from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 import { usePathname, useRouter } from "next/navigation.js";
-
 import type { PropsWithChildren } from "react";
 
 const Link = LinkModule.default;

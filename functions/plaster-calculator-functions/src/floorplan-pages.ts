@@ -12,13 +12,6 @@ import {
     requireStorageImage,
 } from "./storage.js";
 import { LONG_RUNNING_TIMEOUT_SECONDS } from "./types.js";
-import {
-    hasField,
-    isRecord,
-    readNullableNumber,
-    readRequiredString,
-} from "./validation.js";
-
 import type {
     FloorplanPage,
     FloorplanPageRow,
@@ -27,6 +20,12 @@ import type {
     UpdateFloorplanPageRequest,
     UpdateFloorplanPagesRequest,
 } from "./types.js";
+import {
+    hasField,
+    isRecord,
+    readNullableNumber,
+    readRequiredString,
+} from "./validation.js";
 
 export const getFloorplanPage = onCall<
     UpdateFloorplanPageRequest,

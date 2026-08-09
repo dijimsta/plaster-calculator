@@ -1,5 +1,4 @@
 import { Avatar } from "@libraries/uikit-web";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const SAMPLE_IMAGE =

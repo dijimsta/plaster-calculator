@@ -1,6 +1,5 @@
 import { normalizeCeilingBoardType } from "./board-materials.js";
 import { wallBreakdown } from "./csv-wall-breakdown.js";
-
 import type { ProjectWithPages } from "./types.js";
 
 export function buildProjectCsv(project: ProjectWithPages) {

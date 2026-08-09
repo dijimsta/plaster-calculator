@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
+import type { PropsWithChildren, ReactElement } from "react";
 
 import { RemindersServiceContext } from "./reminders.context.ts";
 import { RemindersService } from "./reminders.service.ts";
-
-import type { PropsWithChildren, ReactElement } from "react";
 
 export interface RemindersServiceProviderProps extends PropsWithChildren {
     readonly remindersService?: RemindersService;

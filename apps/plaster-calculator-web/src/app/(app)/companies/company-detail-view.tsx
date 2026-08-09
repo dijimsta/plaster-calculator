@@ -14,6 +14,14 @@ import {
 import { Building2, LoaderCircle } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 
+import { BusyOverlay } from "../../../components/busy-overlay.js";
+import { cx, ui } from "../../../lib/styles.js";
+import type {
+    CompanyContact,
+    CompanyDetail,
+    ProjectSummary,
+} from "../../../types.js";
+
 import { CompanyDetailHeader } from "./company-detail-header.js";
 import { CompanyDetailsPanel } from "./company-details-panel.js";
 import { CompanyProjectsPanel } from "./company-projects-panel.js";
@@ -29,14 +37,6 @@ import {
 } from "./company.utils.js";
 import { ContactsPanel } from "./contacts-panel.js";
 import { NewContactModal } from "./new-contact-modal.js";
-import { BusyOverlay } from "../../../components/busy-overlay.js";
-import { cx, ui } from "../../../lib/styles.js";
-
-import type {
-    CompanyContact,
-    CompanyDetail,
-    ProjectSummary,
-} from "../../../types.js";
 
 interface CompanyDetailViewProps {
     readonly companyId: string;

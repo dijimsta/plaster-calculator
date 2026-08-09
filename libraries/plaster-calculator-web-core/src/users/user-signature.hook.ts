@@ -1,13 +1,12 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-import { userSignaturesService } from "./user-signatures.service.ts";
-
 import type {
     EmailSignature,
     UserSignature,
 } from "@libraries/plaster-calculator-common";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { userSignaturesService } from "./user-signatures.service.ts";
 
 const userSignatureQueryKey = ["user-signature"] as const;
 

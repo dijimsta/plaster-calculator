@@ -1,9 +1,8 @@
+import type { Overlay, Point } from "@libraries/plaster-calculator-common";
 import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { useCallback, useState } from "react";
 
 import { useEditorAutosave } from "./use-editor-autosave.js";
-
-import type { Overlay, Point } from "@libraries/plaster-calculator-common";
 
 interface EditorPersistenceOptions {
     readonly ceilingHeightMm: number | null;

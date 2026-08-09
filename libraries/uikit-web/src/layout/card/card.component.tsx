@@ -1,6 +1,6 @@
-import { styles } from "./card.styles.ts";
-
 import type { ReactElement, ReactNode } from "react";
+
+import { styles } from "./card.styles.ts";
 
 export type CardProps = {
     readonly children?: ReactNode;

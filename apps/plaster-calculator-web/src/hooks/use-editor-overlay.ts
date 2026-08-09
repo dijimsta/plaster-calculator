@@ -1,13 +1,12 @@
+import type { Overlay, Point } from "@libraries/plaster-calculator-common";
 import { useEffect, useRef, useState, type RefObject } from "react";
 
 import {
     parseOverlay,
     parseReferencePoints,
 } from "../lib/editor/overlay-serialization.js";
-
 import type { PageValidationInput } from "../lib/validation.js";
 import type { FloorplanPage } from "../types.js";
-import type { Overlay, Point } from "@libraries/plaster-calculator-common";
 
 interface EditorOverlayState {
     readonly ceilingHeightMm: number | null;

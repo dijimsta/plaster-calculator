@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
+import type { ReactElement, ReactNode } from "react";
 
 import {
     DEFAULT_COLUMNS,
@@ -19,8 +20,6 @@ import {
     type StatsValueTone,
     type StatsVariant,
 } from "./stats.styles.ts";
-
-import type { ReactElement, ReactNode } from "react";
 
 export type {
     StatsColumnCount,
