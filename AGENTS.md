@@ -33,6 +33,12 @@ Never commit directly to `main`. All work must be done on a feature branch and m
 
 Branch names should be descriptive and follow the conventions in the Jira section below when a ticket exists.
 
+Commit and push to the feature branch freely, but do not open a pull request (e.g. `gh pr create`) until the user
+explicitly asks for it in that turn. Once they do ask, treat that as sufficient approval — proceed straight to
+pushing and opening the PR without a separate confirmation round-trip, even if the underlying commits were made in
+an earlier turn. If code changes were just made in the same turn, commit them and stop there — let the user see the
+commit before it's pushed, unless they've already asked for a PR in that same turn.
+
 ## Configuration Guardrails
 
 Do not loosen, disable, or override TypeScript, ESLint, formatting, or styling configuration to make errors disappear.
