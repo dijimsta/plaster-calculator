@@ -1,13 +1,9 @@
+import {
+    useCompaniesService,
+    useProjectsService,
+} from "@libraries/plaster-calculator-web-core";
 import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
 import { createElement, useEffect, useMemo, useState } from "react";
-
-import {
-    deleteProject,
-    getProjectStatus,
-    listCompanies,
-    listProjects,
-    renameProject,
-} from "../../../lib/api.js";
 
 import type { ProjectSummary } from "../../../types.js";
 import type { SalesStatus } from "@libraries/plaster-calculator-common";
@@ -39,6 +35,8 @@ interface DashboardProjectsState {
 }
 
 export function useDashboardProjects(): DashboardProjectsState {
+    const projectsService = useProjectsService();
+    const companiesService = useCompaniesService();
     const { notify } = useNotificationsManager();
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [companyNames, setCompanyNames] = useState<
@@ -68,7 +66,8 @@ export function useDashboardProjects(): DashboardProjectsState {
         if (!processingProjectId) return;
         const timer = window.setInterval(async () => {
             try {
-                const project = await getProjectStatus(processingProjectId);
+                const project =
+                    await projectsService.getProjectStatus(processingProjectId);
                 setProjects((current) => upsertProject(current, project));
                 if (project.status === "READY") {
                     notify({
@@ -105,12 +104,16 @@ export function useDashboardProjects(): DashboardProjectsState {
             }
         }, 10_000);
         return () => window.clearInterval(timer);
-    }, [notify, processingProjectId]);
+    }, [notify, processingProjectId, projectsService]);
 
     async function refresh() {
         setProjectsLoading(true);
         try {
-            setProjects(await listProjects({ salesStatus: activeSalesStatus }));
+            setProjects(
+                await projectsService.listProjects({
+                    salesStatus: activeSalesStatus,
+                }),
+            );
         } catch (error) {
             setMessage(
                 error instanceof Error
@@ -124,7 +127,7 @@ export function useDashboardProjects(): DashboardProjectsState {
 
     async function loadCompanyCompanyNames() {
         try {
-            const companies = await listCompanies();
+            const companies = await companiesService.listCompanies();
             setCompanyNames(
                 new Map(
                     companies.map((company) => [
@@ -149,7 +152,7 @@ export function useDashboardProjects(): DashboardProjectsState {
         if (!confirmed) return;
         setBusyMessage("Deleting project...");
         try {
-            await deleteProject(project.id);
+            await projectsService.deleteProject(project.id);
             await refresh();
             setMessage("Project deleted.");
         } catch (error) {
@@ -165,7 +168,7 @@ export function useDashboardProjects(): DashboardProjectsState {
         const trimmed = renameValue.trim();
         if (!trimmed) return;
         try {
-            await renameProject(projectId, trimmed);
+            await projectsService.renameProject(projectId, trimmed);
             setRenamingId(null);
             notify({ intent: "success", title: "Project renamed" });
             await refresh();

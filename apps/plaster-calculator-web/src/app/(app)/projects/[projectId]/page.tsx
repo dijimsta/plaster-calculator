@@ -1,27 +1,15 @@
 "use client";
 
+import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { Box, useNotificationsManager } from "@libraries/uikit-web";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
 import { ProjectHeader } from "./project-page-header.js";
 import { ProjectSalesStatusControl } from "./project-sales-status-control.js";
 import { ProjectStatusContent } from "./project-status-content.js";
-import {
-    exportProjectCsv,
-    getProject,
-    renameProject,
-    savePageOverlay,
-    updateProject,
-} from "../../../../lib/api.js";
+import { useProjectPageExport } from "./use-project-page-export.js";
 import { salesStatusLabel } from "../../../../lib/sales-status.js";
 import { ui } from "../../../../lib/styles.js";
-import {
-    type PageValidationInput,
-    parseOverlay,
-    parseReferencePoints,
-    validatePageForExport,
-    type ValidationIssue,
-} from "../../../../lib/validation.js";
 
 import type { ProjectDetail } from "../../../../types.js";
 import type { SalesStatus } from "@libraries/plaster-calculator-common";
@@ -32,30 +20,38 @@ export default function ProjectPage({
     params: Promise<{ projectId: string }>;
 }) {
     const { projectId } = use(params);
+    const projectsService = useProjectsService();
     const { notify, dismiss } = useNotificationsManager();
     const [project, setProject] = useState<ProjectDetail | null>(null);
     const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
     const [error, setError] = useState("");
-    const [exportNotificationId, setExportNotificationId] = useState<
-        string | null
-    >(null);
-    const [validationIssues, setValidationIssues] = useState<ValidationIssue[]>(
-        [],
-    );
-    const [pageDrafts, setPageDrafts] = useState<
-        Record<string, PageValidationInput>
-    >({});
-    const [switchingPage, setSwitchingPage] = useState(false);
     const [renaming, setRenaming] = useState(false);
     const [renameValue, setRenameValue] = useState("");
     const [companyId, setCompanyId] = useState<string | null>(null);
     const [savingCompany, setSavingCompany] = useState(false);
     const [savingSalesStatus, setSavingSalesStatus] = useState(false);
     const [analyzingPage, setAnalyzingPage] = useState(false);
+    const {
+        switchingPage,
+        validationIssues,
+        updateDraft,
+        selectPage,
+        validateAndExport,
+        resetForProjectLoad,
+    } = useProjectPageExport({
+        project,
+        setProject,
+        selectedPageId,
+        setSelectedPageId,
+        setError,
+        projectsService,
+        notify,
+        dismiss,
+    });
 
     const load = useCallback(async (): Promise<void> => {
         try {
-            const detail = await getProject(projectId);
+            const detail = await projectsService.getProject(projectId);
             setProject(detail);
             setRenameValue(detail.name);
             setCompanyId(detail.companyId);
@@ -64,14 +60,13 @@ export default function ProjectPage({
                     ? current
                     : (detail.pages[0]?.id ?? null),
             );
-            setPageDrafts({});
-            setValidationIssues([]);
+            resetForProjectLoad();
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "Unable to load project",
             );
         }
-    }, [projectId]);
+    }, [projectId, projectsService, resetForProjectLoad]);
 
     useEffect(() => {
         void load();
@@ -86,18 +81,6 @@ export default function ProjectPage({
         return () => window.clearInterval(timer);
     }, [hasProcessingPage, load]);
 
-    useEffect(() => {
-        if (!project || validationIssues.length === 0) return;
-        const issues = project.pages.flatMap((page) =>
-            validatePageForExport(pageDrafts[page.id] ?? page),
-        );
-        setValidationIssues(issues);
-        if (issues.length === 0 && exportNotificationId) {
-            dismiss(exportNotificationId);
-            setExportNotificationId(null);
-        }
-    }, [pageDrafts]);
-
     const selectedPage = useMemo(
         () => project?.pages.find((page) => page.id === selectedPageId) ?? null,
         [project, selectedPageId],
@@ -106,7 +89,10 @@ export default function ProjectPage({
     async function saveRename() {
         if (!project || !renameValue.trim()) return;
         try {
-            const renamed = await renameProject(project.id, renameValue.trim());
+            const renamed = await projectsService.renameProject(
+                project.id,
+                renameValue.trim(),
+            );
             setProject(renamed);
             setRenaming(false);
         } catch (err) {
@@ -120,7 +106,7 @@ export default function ProjectPage({
         if (!project || !companyId) return;
         setSavingCompany(true);
         try {
-            const updated = await updateProject({
+            const updated = await projectsService.updateProject({
                 projectId: project.id,
                 companyId,
             });
@@ -150,7 +136,7 @@ export default function ProjectPage({
         if (!project) return;
         setSavingSalesStatus(true);
         try {
-            const updated = await updateProject({
+            const updated = await projectsService.updateProject({
                 projectId: project.id,
                 salesStatus: status,
             });
@@ -169,102 +155,6 @@ export default function ProjectPage({
             );
         } finally {
             setSavingSalesStatus(false);
-        }
-    }
-
-    const updateDraft = useCallback(
-        (pageId: string, draft: PageValidationInput) => {
-            setPageDrafts((current) => ({ ...current, [pageId]: draft }));
-        },
-        [],
-    );
-
-    async function saveDraftBeforeLeavingPage() {
-        if (!project || !selectedPageId) return;
-        const draft = pageDrafts[selectedPageId];
-        if (!draft) return;
-        const savedPage = await savePageOverlay(project.id, selectedPageId, {
-            overlay: parseOverlay(draft.overlay),
-            scaleMmPerPx: draft.scaleMmPerPx,
-            ceilingHeightMm: draft.ceilingHeightMm,
-            referencePoints: draft.referencePoints
-                ? parseReferencePoints(draft.referencePoints)
-                : null,
-            referenceLengthMm: draft.referenceLengthMm,
-        });
-        setProject((current) =>
-            current
-                ? {
-                      ...current,
-                      pages: current.pages.map((page) =>
-                          page.id === savedPage.id ? savedPage : page,
-                      ),
-                  }
-                : current,
-        );
-        setPageDrafts((current) => {
-            const next = { ...current };
-            delete next[selectedPageId];
-            return next;
-        });
-    }
-
-    async function selectPage(pageId: string) {
-        if (pageId === selectedPageId || switchingPage) return;
-        setSwitchingPage(true);
-        try {
-            await saveDraftBeforeLeavingPage();
-            setSelectedPageId(pageId);
-            setError("");
-        } catch (err) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : "Unable to save current page before switching",
-            );
-        } finally {
-            setSwitchingPage(false);
-        }
-    }
-
-    async function validateAndExport() {
-        if (!project) return;
-        const issues = project.pages.flatMap((page) =>
-            validatePageForExport(pageDrafts[page.id] ?? page),
-        );
-        setValidationIssues(issues);
-        if (issues.length > 0) {
-            setExportNotificationId(
-                notify({
-                    intent: "error",
-                    title: "A few details need attention before export",
-                    description: "I've highlighted the first one for you.",
-                }),
-            );
-            setError("");
-            const firstIssue = issues[0];
-            if (firstIssue) setSelectedPageId(firstIssue.pageId);
-            return;
-        }
-        try {
-            await saveDraftBeforeLeavingPage();
-            setError("");
-            const exportFile = await exportProjectCsv(project.id);
-            const blob = new Blob([exportFile.csv], {
-                type: exportFile.mimeType,
-            });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = exportFile.fileName;
-            link.click();
-            URL.revokeObjectURL(url);
-        } catch (err) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : "Unable to save current page before exporting",
-            );
         }
     }
 

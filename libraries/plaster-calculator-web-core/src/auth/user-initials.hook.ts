@@ -1,4 +1,6 @@
-import { useUser } from "./user.hook.js";
+"use client";
+
+import { useUser } from "./user.hook.ts";
 
 export function useUserInitials(): string {
     const user = useUser();

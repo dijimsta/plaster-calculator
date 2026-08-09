@@ -1,6 +1,10 @@
 "use client";
 
 import {
+    useCompaniesService,
+    useProjectsService,
+} from "@libraries/plaster-calculator-web-core";
+import {
     Box,
     EmptyState,
     Paragraph,
@@ -26,15 +30,6 @@ import {
 import { ContactsPanel } from "./contacts-panel.js";
 import { NewContactModal } from "./new-contact-modal.js";
 import { BusyOverlay } from "../../../components/busy-overlay.js";
-import {
-    createCompanyContact,
-    deleteCompany,
-    deleteCompanyContact,
-    getCompany,
-    listProjectsByCompany,
-    updateCompany,
-    updateCompanyContact,
-} from "../../../lib/api.js";
 import { cx, ui } from "../../../lib/styles.js";
 
 import type {
@@ -52,6 +47,8 @@ export function CompanyDetailView({
     companyId,
     onCompanyDeleted,
 }: CompanyDetailViewProps) {
+    const companiesService = useCompaniesService();
+    const projectsService = useProjectsService();
     const { notify } = useNotificationsManager();
     const [company, setCompany] = useState<CompanyDetail | null>(null);
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
@@ -68,7 +65,7 @@ export function CompanyDetailView({
 
     useEffect(() => {
         void load();
-    }, [companyId]);
+    }, [companyId, companiesService, projectsService]);
 
     const companyProjects = projects;
     const hasCompanyChanges =
@@ -79,8 +76,8 @@ export function CompanyDetailView({
         setMessage("");
         try {
             const [nextCompany, nextProjects] = await Promise.all([
-                getCompany(companyId),
-                listProjectsByCompany(companyId),
+                companiesService.getCompany(companyId),
+                projectsService.listProjectsByCompany(companyId),
             ]);
             setCompany(nextCompany);
             setDraft(toCompanyDetailDraft(nextCompany));
@@ -102,7 +99,7 @@ export function CompanyDetailView({
         const companyName = draft.companyName.trim();
         if (!companyName) return;
         try {
-            const updated = await updateCompany(companyId, {
+            const updated = await companiesService.updateCompany(companyId, {
                 companyName,
                 businessNumber: optionalValue(draft.businessNumber),
                 phoneNumber: optionalValue(draft.phoneNumber),
@@ -119,13 +116,16 @@ export function CompanyDetailView({
         const name = contactDraft.name.trim();
         if (!name) return;
         try {
-            const updated = await createCompanyContact(companyId, {
-                name,
-                email: optionalValue(contactDraft.email),
-                phoneNumber: optionalValue(contactDraft.phoneNumber),
-                role: optionalValue(contactDraft.role),
-                makePrimary: contactDraft.makePrimary,
-            });
+            const updated = await companiesService.createCompanyContact(
+                companyId,
+                {
+                    name,
+                    email: optionalValue(contactDraft.email),
+                    phoneNumber: optionalValue(contactDraft.phoneNumber),
+                    role: optionalValue(contactDraft.role),
+                    makePrimary: contactDraft.makePrimary,
+                },
+            );
             updateCompanyState(updated);
             closeContactModal();
             notify({ intent: "success", title: "Contact added." });
@@ -138,12 +138,16 @@ export function CompanyDetailView({
         const name = editContactDraft.name.trim();
         if (!name) return;
         try {
-            const updated = await updateCompanyContact(companyId, contactId, {
-                name,
-                email: optionalValue(editContactDraft.email),
-                phoneNumber: optionalValue(editContactDraft.phoneNumber),
-                role: optionalValue(editContactDraft.role),
-            });
+            const updated = await companiesService.updateCompanyContact(
+                companyId,
+                contactId,
+                {
+                    name,
+                    email: optionalValue(editContactDraft.email),
+                    phoneNumber: optionalValue(editContactDraft.phoneNumber),
+                    role: optionalValue(editContactDraft.role),
+                },
+            );
             updateCompanyState(updated);
             setEditContactId(null);
         } catch (error) {
@@ -156,7 +160,10 @@ export function CompanyDetailView({
         if (!confirmed) return;
         setBusyMessage("Deleting contact...");
         try {
-            const updated = await deleteCompanyContact(companyId, contact.id);
+            const updated = await companiesService.deleteCompanyContact(
+                companyId,
+                contact.id,
+            );
             updateCompanyState(updated);
         } catch (error) {
             setMessage(errorMessage(error, "Unable to delete contact"));
@@ -179,7 +186,7 @@ export function CompanyDetailView({
         if (!confirmed) return;
         setBusyMessage("Deleting company...");
         try {
-            await deleteCompany(company.id);
+            await companiesService.deleteCompany(company.id);
             onCompanyDeleted();
         } catch (error) {
             setBusyMessage("");

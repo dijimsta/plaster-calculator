@@ -4,13 +4,14 @@ import {
     AI_CONFIRMED_ANSWER_SOURCE,
     AnswerSourceSchema,
 } from "@libraries/plaster-calculator-common";
-import { FirebaseService } from "@libraries/plaster-calculator-web-core";
+import {
+    FirebaseService,
+    useQuestionnairesService,
+} from "@libraries/plaster-calculator-web-core";
 import { useNotificationsManager } from "@libraries/uikit-web";
 import { useQueryClient } from "@tanstack/react-query";
 import { QueryFetchPolicy } from "firebase/data-connect";
 import { useCallback } from "react";
-
-import { answerQuestionnaireWithAI } from "../../../../../lib/api.js";
 
 import type { AnswerSource } from "@libraries/plaster-calculator-common";
 import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
@@ -254,12 +255,16 @@ export function useConfirmProjectQuestionnaireQuestionAnswerCallback(
 export function useAnswerQuestionnaireWithAiCallback(
     projectId: string,
 ): () => Promise<void> {
+    const questionnairesService = useQuestionnairesService();
     const refresh = useRefreshProjectQuestionnaireCallback(projectId);
     const { notify } = useNotificationsManager();
 
     return useCallback(async (): Promise<void> => {
         try {
-            const { updatedCount } = await answerQuestionnaireWithAI(projectId);
+            const { updatedCount } =
+                await questionnairesService.answerQuestionnaireWithAI(
+                    projectId,
+                );
             await refresh();
             notify({
                 intent: updatedCount > 0 ? "success" : "info",
@@ -280,7 +285,7 @@ export function useAnswerQuestionnaireWithAiCallback(
                     "Something went wrong while auto-filling. Please try again.",
             });
         }
-    }, [notify, projectId, refresh]);
+    }, [notify, projectId, questionnairesService, refresh]);
 }
 
 export function useRemoveProjectQuestionnaireQuestionCallback(

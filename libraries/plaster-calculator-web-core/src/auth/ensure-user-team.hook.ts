@@ -1,7 +1,8 @@
 "use client";
 
-import { useTeamsService } from "@libraries/plaster-calculator-web-core";
 import { useEffect, useState } from "react";
+
+import { useTeamsService } from "../teams/teams.hooks.ts";
 
 import type { User } from "firebase/auth";
 

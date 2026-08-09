@@ -1,5 +1,6 @@
 "use client";
 
+import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { useEffect, useRef, useState } from "react";
 
 import { ProjectEditorView } from "./project-editor-view.js";
@@ -13,7 +14,6 @@ import { useEditorPersistence } from "../../hooks/use-editor-persistence.js";
 import { useEditorSelection } from "../../hooks/use-editor-selection.js";
 import { useEditorValidation } from "../../hooks/use-editor-validation.js";
 import { useEditorViewport } from "../../hooks/use-editor-viewport.js";
-import { analyzeFloorplanPage } from "../../lib/api.js";
 
 import type {
     OverlayMode,
@@ -33,6 +33,7 @@ export function ProjectEditor({
     onDraftChange,
     validationIssues = [],
 }: ProjectEditorProps) {
+    const projectsService = useProjectsService();
     const imageState = useEditorImage(page.imageUrl);
     const [analysisRequested, setAnalysisRequested] = useState(false);
     const analyzing = analysisRequested || page.status === "PROCESSING";
@@ -174,7 +175,7 @@ export function ProjectEditor({
         onAnalyzingChange?.(true);
         persistence.setStatus("Analyzing floorplan...");
         try {
-            await analyzeFloorplanPage({
+            await projectsService.analyzeFloorplanPage({
                 projectId: project.id,
                 pageId: page.id,
                 scaleMmPerPx: overlayState.scaleMmPerPx,

@@ -1,9 +1,10 @@
 "use client";
 
+import {
+    useEnsureUserTeam,
+    useUser,
+} from "@libraries/plaster-calculator-web-core";
 import { type PropsWithChildren } from "react";
-
-import { useEnsureUserTeam } from "../auth/ensure-user-team.hook.js";
-import { useUser } from "../auth/user.hook.js";
 
 export function UserInitializedGuard({ children }: PropsWithChildren) {
     const user = useUser();

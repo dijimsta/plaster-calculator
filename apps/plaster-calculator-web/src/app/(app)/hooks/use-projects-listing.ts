@@ -1,13 +1,9 @@
+import {
+    useCompaniesService,
+    useProjectsService,
+} from "@libraries/plaster-calculator-web-core";
 import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
 import { createElement, useEffect, useMemo, useState } from "react";
-
-import {
-    deleteProject,
-    getProjectStatus,
-    listCompanies,
-    listProjects,
-    renameProject,
-} from "../../../lib/api.js";
 
 import type { ProjectSummary } from "../../../types.js";
 
@@ -40,6 +36,8 @@ export interface ProjectsListingState {
 }
 
 export function useProjectsListing(): ProjectsListingState {
+    const projectsService = useProjectsService();
+    const companiesService = useCompaniesService();
     const { notify } = useNotificationsManager();
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [companyNames, setCompanyNames] = useState<
@@ -64,7 +62,8 @@ export function useProjectsListing(): ProjectsListingState {
         if (!processingProjectId) return;
         const timer = window.setInterval(async () => {
             try {
-                const project = await getProjectStatus(processingProjectId);
+                const project =
+                    await projectsService.getProjectStatus(processingProjectId);
                 setProjects((current) => upsertProject(current, project));
                 if (project.status === "READY") {
                     notify({
@@ -101,14 +100,16 @@ export function useProjectsListing(): ProjectsListingState {
             }
         }, 10_000);
         return () => window.clearInterval(timer);
-    }, [notify, processingProjectId]);
+    }, [notify, processingProjectId, projectsService]);
 
     async function refresh() {
         setProjectsLoading(true);
         try {
             const [quoting, submitted] = await Promise.all([
-                listProjects({ salesStatus: "QUOTING" }),
-                listProjects({ salesStatus: "QUOTE_SUBMITTED" }),
+                projectsService.listProjects({ salesStatus: "QUOTING" }),
+                projectsService.listProjects({
+                    salesStatus: "QUOTE_SUBMITTED",
+                }),
             ]);
             const merged = mergeProjects(quoting, submitted);
             setProjects(merged);
@@ -125,7 +126,7 @@ export function useProjectsListing(): ProjectsListingState {
 
     async function loadCompanyCompanyNames() {
         try {
-            const companies = await listCompanies();
+            const companies = await companiesService.listCompanies();
             setCompanyNames(
                 new Map(
                     companies.map((company) => [
@@ -150,7 +151,7 @@ export function useProjectsListing(): ProjectsListingState {
         if (!confirmed) return;
         setBusyMessage("Deleting project...");
         try {
-            await deleteProject(project.id);
+            await projectsService.deleteProject(project.id);
             await refresh();
             notify({ intent: "success", title: "Project deleted" });
         } catch (error) {
@@ -168,7 +169,7 @@ export function useProjectsListing(): ProjectsListingState {
         const trimmed = renameValue.trim();
         if (!trimmed) return;
         try {
-            await renameProject(projectId, trimmed);
+            await projectsService.renameProject(projectId, trimmed);
             setRenamingId(null);
             notify({ intent: "success", title: "Project renamed" });
             await refresh();

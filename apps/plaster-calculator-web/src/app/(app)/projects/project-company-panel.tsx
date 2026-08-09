@@ -1,11 +1,11 @@
 "use client";
 
+import { useCompaniesService } from "@libraries/plaster-calculator-web-core";
 import { Button, Paragraph } from "@libraries/uikit-web";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { CompanySelect } from "../../../components/company-select.js";
-import { getCompany } from "../../../lib/api.js";
 import { ui } from "../../../lib/styles.js";
 
 import type { CompanyDetail } from "../../../types.js";
@@ -25,6 +25,7 @@ export function ProjectCompanyPanel({
     saveCompany,
     setDraftCompanyId,
 }: ProjectCompanyPanelProps) {
+    const companiesService = useCompaniesService();
     const [company, setCompany] = useState<CompanyDetail | null>(null);
     const [isEditing, setIsEditing] = useState(!companyId);
     const [error, setError] = useState("");
@@ -33,14 +34,14 @@ export function ProjectCompanyPanel({
         setIsEditing(!companyId);
         setDraftCompanyId(companyId);
         void loadCompany(companyId);
-    }, [companyId]);
+    }, [companyId, companiesService]);
 
     async function loadCompany(nextCompanyId: string | null): Promise<void> {
         setCompany(null);
         setError("");
         if (!nextCompanyId) return;
         try {
-            setCompany(await getCompany(nextCompanyId));
+            setCompany(await companiesService.getCompany(nextCompanyId));
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "Unable to load company",
