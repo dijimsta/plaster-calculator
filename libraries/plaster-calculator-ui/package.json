@@ -15,11 +15,11 @@
         "@libraries/plaster-calculator-web-core": "workspace:*",
         "@libraries/uikit-web": "workspace:*",
         "@tanstack-query-firebase/react": "^2.1.1",
+        "@ui/internationalization": "workspace:*",
         "firebase": "^12.17.0",
         "i18next": "^26.3.6",
         "lucide-react": "^1.28.0",
-        "react-hook-form": "^7.84.0",
-        "react-i18next": "^17.0.11"
+        "react-hook-form": "^7.84.0"
     },
     "devDependencies": {
         "@types/react": "^19.2.18",
