@@ -11,7 +11,7 @@ import { type Metadata } from "next";
 import { type PropsWithChildren } from "react";
 
 import "./globals.css";
-import { LanguageInitializer } from "../components/language-initializer.js";
+import { AppTranslationsProvider } from "../components/app-translations-provider.js";
 import { AppNotificationsProvider } from "../components/notifications-manager.provider.js";
 import { AppQueryClientProvider } from "../components/query-client.provider.js";
 import { ThemeInitializer } from "../components/theme-initializer.js";
@@ -59,23 +59,24 @@ export default function RootLayout({ children }: PropsWithChildren) {
     return (
         <html lang="en">
             <body>
-                <NestedComponents
-                    components={[
-                        AppCheckProvider,
-                        AppQueryClientProvider,
-                        AppNotificationsProvider,
-                        TeamsServiceProvider,
-                        CompaniesServiceProvider,
-                        ProjectsServiceProvider,
-                        QuestionnairesServiceProvider,
-                        RemindersServiceProvider,
-                        SettingsServiceProvider,
-                    ]}
-                >
-                    <ThemeInitializer />
-                    <LanguageInitializer />
-                    {children}
-                </NestedComponents>
+                <AppTranslationsProvider>
+                    <NestedComponents
+                        components={[
+                            AppCheckProvider,
+                            AppQueryClientProvider,
+                            AppNotificationsProvider,
+                            TeamsServiceProvider,
+                            CompaniesServiceProvider,
+                            ProjectsServiceProvider,
+                            QuestionnairesServiceProvider,
+                            RemindersServiceProvider,
+                            SettingsServiceProvider,
+                        ]}
+                    >
+                        <ThemeInitializer />
+                        {children}
+                    </NestedComponents>
+                </AppTranslationsProvider>
             </body>
         </html>
     );

@@ -198,6 +198,9 @@ importers:
       '@libraries/plaster-calculator-ui':
         specifier: workspace:*
         version: link:../../libraries/plaster-calculator-ui
+      '@libraries/plaster-calculator-web-core':
+        specifier: workspace:*
+        version: link:../../libraries/plaster-calculator-web-core
       '@libraries/uikit-web':
         specifier: workspace:*
         version: link:../../libraries/uikit-web
@@ -207,6 +210,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.101.4
         version: 5.101.4(react@19.2.8)
+      '@ui/internationalization':
+        specifier: workspace:*
+        version: link:../../ui/internationalization
       firebase:
         specifier: ^12.17.0
         version: 12.17.0
@@ -360,9 +366,6 @@ importers:
       '@libraries/plaster-calculator-common':
         specifier: workspace:*
         version: link:../plaster-calculator-common
-      '@libraries/plaster-calculator-web-core':
-        specifier: workspace:*
-        version: link:../plaster-calculator-web-core
       '@libraries/uikit-web':
         specifier: workspace:*
         version: link:../uikit-web
@@ -390,6 +393,9 @@ importers:
       react-hook-form:
         specifier: ^7.84.0
         version: 7.84.0(react@19.2.8)
+      react-i18next:
+        specifier: ^17.0.11
+        version: 17.0.11(i18next@26.3.6(typescript@6.0.3))(react-dom@19.2.6(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
     devDependencies:
       '@types/react':
         specifier: ^19.2.18
@@ -16677,6 +16683,17 @@ snapshots:
   react-hook-form@7.84.0(react@19.2.8):
     dependencies:
       react: 19.2.8
+
+  react-i18next@17.0.11(i18next@26.3.6(typescript@6.0.3))(react-dom@19.2.6(react@19.2.8))(react@19.2.8)(typescript@6.0.3):
+    dependencies:
+      '@babel/runtime': 7.29.7
+      html-parse-stringify: 4.0.1
+      i18next: 26.3.6(typescript@6.0.3)
+      react: 19.2.8
+      use-sync-external-store: 1.6.0(react@19.2.8)
+    optionalDependencies:
+      react-dom: 19.2.6(react@19.2.8)
+      typescript: 6.0.3
 
   react-i18next@17.0.11(i18next@26.3.6(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3):
     dependencies:

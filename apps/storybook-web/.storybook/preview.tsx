@@ -1,15 +1,24 @@
 import "../src/styles.css";
 
+import {
+    questionnairesTranslations,
+    quotesTranslations,
+} from "@libraries/plaster-calculator-ui";
 import { NotificationsProvider } from "@libraries/uikit-web";
 import type { Preview } from "@storybook/react-vite";
+import { I18nProvider } from "@ui/internationalization";
 import { INITIAL_VIEWPORTS } from "storybook/viewport";
 
 const preview: Preview = {
     decorators: [
         (Story) => (
-            <NotificationsProvider>
-                <Story />
-            </NotificationsProvider>
+            <I18nProvider
+                translations={[questionnairesTranslations, quotesTranslations]}
+            >
+                <NotificationsProvider>
+                    <Story />
+                </NotificationsProvider>
+            </I18nProvider>
         ),
     ],
     parameters: {

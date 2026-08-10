@@ -13,7 +13,7 @@ import { Plus, Trash2 } from "lucide-react";
 import type { ReactElement } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
-import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+import { useQuestionnairesTranslation } from "../i18n/index.ts";
 
 import type { QuestionnaireTemplateFormValues } from "./questionnaire-template-form.types.ts";
 

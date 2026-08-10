@@ -10,7 +10,7 @@ import {
 import { ClipboardList } from "lucide-react";
 import type { ReactElement } from "react";
 
-import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+import { useQuestionnairesTranslation } from "../i18n/index.ts";
 import type { QuestionnaireTemplate } from "../questionnaire-template-card/index.ts";
 
 export type AddQuestionsFromTemplateDrawerProps = {

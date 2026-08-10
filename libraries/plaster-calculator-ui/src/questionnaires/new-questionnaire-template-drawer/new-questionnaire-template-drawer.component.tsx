@@ -2,7 +2,7 @@ import { Drawer } from "@libraries/uikit-web";
 import { useId } from "react";
 import type { ReactElement } from "react";
 
-import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+import { useQuestionnairesTranslation } from "../i18n/index.ts";
 import { QuestionnaireTemplateForm } from "../questionnaire-template-form/index.ts";
 import type { QuestionnaireTemplateFormValues } from "../questionnaire-template-form/index.ts";
 

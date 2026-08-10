@@ -10,7 +10,7 @@ import {
 import { useId } from "react";
 import type { ReactElement } from "react";
 
-import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+import { useQuestionnairesTranslation } from "../i18n/index.ts";
 
 import { useCopyQuestionnaireEmailBodyCallback } from "./generate-questionnaire-email-modal.hooks.ts";
 

@@ -3,7 +3,7 @@ import { useId } from "react";
 import type { ReactElement } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+import { useQuestionnairesTranslation } from "../i18n/index.ts";
 
 import type { AddProjectQuestionnaireQuestionModalFormValues } from "./add-project-questionnaire-question-modal.types.ts";
 
