@@ -24,11 +24,23 @@ type QuoteItemTemplate @table {
     updatedAt: Timestamp! @default(expr: "request.time")
 }
 
-type QuoteItemTemplateConfig @table(key: ["teamId", "templateId"]) {
+type QuoteTemplate @table {
+    id: UUID! @default(expr: "uuidV4()")
     team: Team! @ref(fields: "teamId", references: "id")
     teamId: String!
-    template: QuoteItemTemplate! @ref(fields: "templateId", references: "id")
-    templateId: UUID!
+    name: String!
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type QuoteItemTemplateConfig
+    @table(key: ["quoteTemplateId", "itemTemplateId"]) {
+    quoteTemplate: QuoteTemplate!
+        @ref(fields: "quoteTemplateId", references: "id")
+    quoteTemplateId: UUID!
+    itemTemplate: QuoteItemTemplate!
+        @ref(fields: "itemTemplateId", references: "id")
+    itemTemplateId: UUID!
     enabled: Boolean! @default(value: true)
     unitPriceCents: Int!
     materialUnitPriceCents: Int!
