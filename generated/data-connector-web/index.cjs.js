@@ -406,6 +406,104 @@ exports.getProjectQuestionnaire = function getProjectQuestionnaire(dcOrVars, var
 }
 ;
 
+const ensureSystemQuoteItemTemplatesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'EnsureSystemQuoteItemTemplates');
+}
+ensureSystemQuoteItemTemplatesRef.operationName = 'EnsureSystemQuoteItemTemplates';
+exports.ensureSystemQuoteItemTemplatesRef = ensureSystemQuoteItemTemplatesRef;
+
+exports.ensureSystemQuoteItemTemplates = function ensureSystemQuoteItemTemplates(dc) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dc, undefined);
+  return executeMutation(ensureSystemQuoteItemTemplatesRef(dcInstance, inputVars));
+}
+;
+
+const createQuoteTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuoteTemplate', inputVars);
+}
+createQuoteTemplateRef.operationName = 'CreateQuoteTemplate';
+exports.createQuoteTemplateRef = createQuoteTemplateRef;
+
+exports.createQuoteTemplate = function createQuoteTemplate(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createQuoteTemplateRef(dcInstance, inputVars));
+}
+;
+
+const createQuoteItemTemplateConfigRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuoteItemTemplateConfig', inputVars);
+}
+createQuoteItemTemplateConfigRef.operationName = 'CreateQuoteItemTemplateConfig';
+exports.createQuoteItemTemplateConfigRef = createQuoteItemTemplateConfigRef;
+
+exports.createQuoteItemTemplateConfig = function createQuoteItemTemplateConfig(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createQuoteItemTemplateConfigRef(dcInstance, inputVars));
+}
+;
+
+const updateQuoteItemTemplateConfigRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuoteItemTemplateConfig', inputVars);
+}
+updateQuoteItemTemplateConfigRef.operationName = 'UpdateQuoteItemTemplateConfig';
+exports.updateQuoteItemTemplateConfigRef = updateQuoteItemTemplateConfigRef;
+
+exports.updateQuoteItemTemplateConfig = function updateQuoteItemTemplateConfig(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateQuoteItemTemplateConfigRef(dcInstance, inputVars));
+}
+;
+
+const createQuoteItemTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuoteItemTemplate', inputVars);
+}
+createQuoteItemTemplateRef.operationName = 'CreateQuoteItemTemplate';
+exports.createQuoteItemTemplateRef = createQuoteItemTemplateRef;
+
+exports.createQuoteItemTemplate = function createQuoteItemTemplate(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createQuoteItemTemplateRef(dcInstance, inputVars));
+}
+;
+
+const updateQuoteItemTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuoteItemTemplate', inputVars);
+}
+updateQuoteItemTemplateRef.operationName = 'UpdateQuoteItemTemplate';
+exports.updateQuoteItemTemplateRef = updateQuoteItemTemplateRef;
+
+exports.updateQuoteItemTemplate = function updateQuoteItemTemplate(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateQuoteItemTemplateRef(dcInstance, inputVars));
+}
+;
+
+const deleteQuoteItemTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteQuoteItemTemplate', inputVars);
+}
+deleteQuoteItemTemplateRef.operationName = 'DeleteQuoteItemTemplate';
+exports.deleteQuoteItemTemplateRef = deleteQuoteItemTemplateRef;
+
+exports.deleteQuoteItemTemplate = function deleteQuoteItemTemplate(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteQuoteItemTemplateRef(dcInstance, inputVars));
+}
+;
+
 const listQuoteItemTemplatesRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
