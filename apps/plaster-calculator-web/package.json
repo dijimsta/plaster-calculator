@@ -20,12 +20,14 @@
         "@tanstack/react-query": "^5.101.4",
         "@ui/internationalization": "workspace:*",
         "firebase": "^12.17.0",
+        "i18next": "^26.3.6",
         "konva": "^10.3.0",
         "lucide-react": "^1.28.0",
         "next": "16.2.12",
         "pdfjs-dist": "^6.2.108",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
+        "react-i18next": "^17.0.11",
         "react-konva": "^19.2.5"
     },
     "devDependencies": {

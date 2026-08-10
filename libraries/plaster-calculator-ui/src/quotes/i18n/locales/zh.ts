@@ -5,6 +5,9 @@ import { en } from "./en.ts";
 export const zh = createTranslationResource(
     en,
     Object.freeze({
+        common: Object.freeze({
+            cancel: "取消",
+        }),
         quoteTemplateForm: Object.freeze({
             defaultItemsTitle: "默认项目",
             defaultItemsDescription:

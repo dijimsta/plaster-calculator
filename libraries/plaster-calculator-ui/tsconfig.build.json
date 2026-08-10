@@ -17,6 +17,9 @@
             "path": "../../libraries/plaster-calculator-web-core/tsconfig.build.json"
         },
         {
+            "path": "../../libraries/utilities/tsconfig.build.json"
+        },
+        {
             "path": "../../ui/internationalization/tsconfig.build.json"
         }
     ]
