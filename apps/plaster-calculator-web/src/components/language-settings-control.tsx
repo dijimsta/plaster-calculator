@@ -1,7 +1,7 @@
 "use client";
 
-import { questionnairesI18n } from "@libraries/plaster-calculator-ui";
 import { RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
+import { useAppI18n } from "@ui/internationalization";
 import { useEffect, useState } from "react";
 
 import {
@@ -12,6 +12,7 @@ import {
 } from "./language-cookie.js";
 
 export function LanguageSettingsControl() {
+    const i18n = useAppI18n();
     const [language, setLanguage] = useState<AppLanguage>("en");
     const [languageLoaded, setLanguageLoaded] = useState(false);
 
@@ -23,9 +24,9 @@ export function LanguageSettingsControl() {
     useEffect(() => {
         if (!languageLoaded) return;
 
-        void questionnairesI18n.changeLanguage(language);
+        void i18n.changeLanguage(language);
         writeLanguageCookie(language);
-    }, [languageLoaded, language]);
+    }, [languageLoaded, language, i18n]);
 
     return (
         <RadioGroup

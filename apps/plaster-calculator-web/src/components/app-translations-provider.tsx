@@ -1,0 +1,23 @@
+"use client";
+
+import {
+    questionnairesTranslations,
+    quotesTranslations,
+} from "@libraries/plaster-calculator-ui";
+import { I18nProvider } from "@ui/internationalization";
+import type { PropsWithChildren, ReactElement } from "react";
+
+import { languageCookie } from "./language-cookie.js";
+
+export function AppTranslationsProvider({
+    children,
+}: PropsWithChildren): ReactElement {
+    return (
+        <I18nProvider
+            translations={[questionnairesTranslations, quotesTranslations]}
+            languageCookie={languageCookie}
+        >
+            {children}
+        </I18nProvider>
+    );
+}
