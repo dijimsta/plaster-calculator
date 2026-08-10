@@ -36,6 +36,7 @@ const navItems = [
         label: "Questionnaires",
         Icon: Icons.ClipboardList,
     },
+    { href: "/quotes" as const, label: "Quotes", Icon: Icons.FileText },
     { href: "/companies" as const, label: "Companies", Icon: Icons.Users },
 ];
 
