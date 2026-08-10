@@ -1,0 +1,25 @@
+{
+    "name": "@ui/internationalization",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Framework- and application-agnostic internationalization primitives for web interfaces.",
+    "type": "module",
+    "exports": "./out/index.js",
+    "main": "./out/index.js",
+    "scripts": {
+        "build": "tsc --build tsconfig.build.json"
+    },
+    "dependencies": {
+        "i18next": "^26.3.6",
+        "react-i18next": "^17.0.11"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.18",
+        "@types/react-dom": "^19.2.4",
+        "typescript": "^6.0.3"
+    },
+    "peerDependencies": {
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
+    }
+}

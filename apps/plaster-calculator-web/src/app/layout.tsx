@@ -11,6 +11,7 @@ import { type Metadata } from "next";
 import { type PropsWithChildren } from "react";
 
 import "./globals.css";
+import { LanguageInitializer } from "../components/language-initializer.js";
 import { AppNotificationsProvider } from "../components/notifications-manager.provider.js";
 import { AppQueryClientProvider } from "../components/query-client.provider.js";
 import { ThemeInitializer } from "../components/theme-initializer.js";
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
                     ]}
                 >
                     <ThemeInitializer />
+                    <LanguageInitializer />
                     {children}
                 </NestedComponents>
             </body>
