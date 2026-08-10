@@ -406,6 +406,51 @@ exports.getProjectQuestionnaire = function getProjectQuestionnaire(dcOrVars, var
 }
 ;
 
+const listQuoteItemTemplatesRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListQuoteItemTemplates');
+}
+listQuoteItemTemplatesRef.operationName = 'ListQuoteItemTemplates';
+exports.listQuoteItemTemplatesRef = listQuoteItemTemplatesRef;
+
+exports.listQuoteItemTemplates = function listQuoteItemTemplates(dcOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  return executeQuery(listQuoteItemTemplatesRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
+const listQuoteTemplatesForTeamRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListQuoteTemplatesForTeam');
+}
+listQuoteTemplatesForTeamRef.operationName = 'ListQuoteTemplatesForTeam';
+exports.listQuoteTemplatesForTeamRef = listQuoteTemplatesForTeamRef;
+
+exports.listQuoteTemplatesForTeam = function listQuoteTemplatesForTeam(dcOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  return executeQuery(listQuoteTemplatesForTeamRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
+const listQuoteItemTemplateConfigsForQuoteTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListQuoteItemTemplateConfigsForQuoteTemplate', inputVars);
+}
+listQuoteItemTemplateConfigsForQuoteTemplateRef.operationName = 'ListQuoteItemTemplateConfigsForQuoteTemplate';
+exports.listQuoteItemTemplateConfigsForQuoteTemplateRef = listQuoteItemTemplateConfigsForQuoteTemplateRef;
+
+exports.listQuoteItemTemplateConfigsForQuoteTemplate = function listQuoteItemTemplateConfigsForQuoteTemplate(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
+  return executeQuery(listQuoteItemTemplateConfigsForQuoteTemplateRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
 const getMyTeamRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
