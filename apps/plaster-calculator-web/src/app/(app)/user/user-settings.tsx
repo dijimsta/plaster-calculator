@@ -1,12 +1,20 @@
 "use client";
 
 import { useSettingsService } from "@libraries/plaster-calculator-web-core";
-import { Button, Input, Paragraph, Toggle } from "@libraries/uikit-web";
+import {
+    Button,
+    Card,
+    FormLayout,
+    FormLayoutActions,
+    FormLayoutField,
+    Input,
+    Paragraph,
+    Toggle,
+} from "@libraries/uikit-web";
 import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 
 import type { UserSettings } from "../../../types.js";
-
-import { userPageStyles as styles } from "./page.styles.js";
 
 const minimumReminderDays = 1;
 
@@ -64,41 +72,33 @@ export function UserSettingsPanel() {
         }
     }
 
+    function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+        event.preventDefault();
+        void saveSettings();
+    }
+
     return (
-        <section className={styles.section}>
-            <div className={styles.sectionCopy}>
-                <h2 className={styles.sectionTitle}>Reminder settings</h2>
-                <Paragraph measure="narrow" textSize="sm" variant="muted">
-                    Control how quote follow-up reminders are created for new
-                    work.
+        <Card>
+            <Card.Title>Reminder settings</Card.Title>
+            <Paragraph measure="narrow" textSize="sm" variant="muted">
+                Control how quote follow-up reminders are created for new work.
+            </Paragraph>
+            {loading && (
+                <Paragraph textSize="sm" variant="muted">
+                    Loading settings...
                 </Paragraph>
-                <div className={styles.statusText}>
-                    {loading && (
-                        <Paragraph textSize="sm" variant="muted">
-                            Loading settings...
-                        </Paragraph>
-                    )}
-                    {message && (
-                        <Paragraph textSize="sm" variant="muted">
-                            {message}
-                        </Paragraph>
-                    )}
-                </div>
-            </div>
-            <div className={styles.settingsPanel}>
-                <div className={styles.settingRow}>
-                    <div className={styles.settingText}>
-                        <label
-                            className={styles.fieldLabel}
-                            htmlFor="quoteFollowUpEnabled"
-                        >
-                            Quote follow-up reminders
-                        </label>
-                        <Paragraph textSize="sm" variant="muted">
-                            Automatically create reminders to follow up on
-                            quotes.
-                        </Paragraph>
-                    </div>
+            )}
+            {message && (
+                <Paragraph textSize="sm" variant="muted" status>
+                    {message}
+                </Paragraph>
+            )}
+            <FormLayout onSubmit={handleSubmit}>
+                <FormLayoutField
+                    label="Quote follow-up reminders"
+                    htmlFor="quoteFollowUpEnabled"
+                    description="Automatically create reminders to follow up on quotes."
+                >
                     <Toggle
                         id="quoteFollowUpEnabled"
                         checked={quoteFollowUpEnabled}
@@ -107,15 +107,12 @@ export function UserSettingsPanel() {
                             setQuoteFollowUpEnabled(event.target.checked)
                         }
                     />
-                </div>
+                </FormLayoutField>
                 {quoteFollowUpEnabled && (
-                    <div className={styles.fieldGroup}>
-                        <label
-                            className={styles.fieldLabel}
-                            htmlFor="quoteFollowUpDays"
-                        >
-                            Due in days
-                        </label>
+                    <FormLayoutField
+                        label="Due in days"
+                        htmlFor="quoteFollowUpDays"
+                    >
                         <Input
                             id="quoteFollowUpDays"
                             disabled={loading || saving}
@@ -131,19 +128,19 @@ export function UserSettingsPanel() {
                                 )
                             }
                         />
-                    </div>
+                    </FormLayoutField>
                 )}
-                <div className={styles.actionRow}>
+                <FormLayoutActions>
                     <Button
+                        type="submit"
                         variant="primary"
                         disabled={loading || saving || !settings}
-                        onClick={() => void saveSettings()}
                     >
                         {saving ? "Saving..." : "Save reminder settings"}
                     </Button>
-                </div>
-            </div>
-        </section>
+                </FormLayoutActions>
+            </FormLayout>
+        </Card>
     );
 }
 

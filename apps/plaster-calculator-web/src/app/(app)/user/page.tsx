@@ -1,11 +1,22 @@
 "use client";
 
 import { useUser } from "@libraries/plaster-calculator-web-core";
-import { Box, Paragraph, Text } from "@libraries/uikit-web";
+import {
+    Avatar,
+    Box,
+    Card,
+    Container,
+    DescriptionList,
+    Heading5,
+    Heading6,
+    Paragraph,
+    StackedList,
+    Text,
+} from "@libraries/uikit-web";
 
+import { LanguageSettingsControl } from "../../../components/language-settings-control.js";
 import { ThemeSettingsControl } from "../../../components/theme-settings-control.js";
 
-import { userPageStyles as styles } from "./page.styles.js";
 import { UserPageHeader } from "./user-page-header.js";
 import { UserSettingsPanel } from "./user-settings.js";
 
@@ -17,119 +28,122 @@ export default function UserPage() {
     return (
         <>
             <UserPageHeader activeTab="general" />
-            <Box direction="column" padding="md">
-                <div className={styles.settingsStack}>
-                    <section className={styles.section}>
-                        <div className={styles.sectionCopy}>
-                            <h2 className={styles.sectionTitle}>Profile</h2>
-                            <Paragraph
-                                measure="narrow"
-                                textSize="sm"
-                                variant="muted"
-                            >
-                                Account details from your signed-in profile and
-                                connected login providers.
-                            </Paragraph>
-                        </div>
-                        <div className={styles.settingsPanel}>
-                            <div className={styles.profileHeader}>
-                                {user.photoURL ? (
-                                    <img
-                                        alt=""
-                                        className={styles.avatar}
-                                        src={user.photoURL}
-                                    />
-                                ) : (
-                                    <div className={styles.avatarFallback}>
-                                        {getInitial(
-                                            user.displayName,
-                                            user.email,
-                                        )}
-                                    </div>
-                                )}
-                                <div className={styles.profileText}>
-                                    <h3 className={styles.profileName}>
+            <Container size="wide" padding="always">
+                <Box direction="column" gap="lg">
+                    <Card>
+                        <Card.Title>Profile</Card.Title>
+                        <Paragraph
+                            measure="narrow"
+                            textSize="sm"
+                            variant="muted"
+                        >
+                            Account details from your signed-in profile and
+                            connected login providers.
+                        </Paragraph>
+                        <Card.Body>
+                            <Box align="center" gap="lg">
+                                <Avatar
+                                    src={user.photoURL ?? undefined}
+                                    initials={
+                                        user.photoURL
+                                            ? undefined
+                                            : getInitial(
+                                                  user.displayName,
+                                                  user.email,
+                                              )
+                                    }
+                                    size="xl"
+                                />
+                                <Box direction="column">
+                                    <Heading5>
                                         {user.displayName || "Signed in user"}
-                                    </h3>
+                                    </Heading5>
                                     <Paragraph textSize="sm" variant="muted">
                                         {user.email || "No email address"}
                                     </Paragraph>
-                                </div>
-                            </div>
-                            <dl className={styles.metaList}>
-                                <ProfileRow
-                                    label="Name"
-                                    value={user.displayName}
-                                />
-                                <ProfileRow label="Email" value={user.email} />
-                            </dl>
-                            <div className={styles.providerSection}>
-                                <h3 className={styles.sectionTitle}>
-                                    Connected logins
-                                </h3>
+                                </Box>
+                            </Box>
+                            <DescriptionList
+                                items={[
+                                    {
+                                        term: "Name",
+                                        details:
+                                            user.displayName || "Not provided",
+                                    },
+                                    {
+                                        term: "Email",
+                                        details: user.email || "Not provided",
+                                    },
+                                ]}
+                            />
+                            <Box direction="column" gap="md">
+                                <Heading6>Connected logins</Heading6>
                                 {user.providerData.length > 0 ? (
-                                    <div className={styles.providerList}>
+                                    <StackedList bordered>
                                         {user.providerData.map((provider) => (
-                                            <div
-                                                className={styles.providerItem}
+                                            <StackedList.Item
                                                 key={`${provider.providerId}-${provider.uid}`}
                                             >
-                                                <strong>
-                                                    {formatProviderId(
-                                                        provider.providerId,
-                                                    )}
-                                                </strong>
-                                                <Text size="sm" variant="muted">
-                                                    {provider.email ||
-                                                        provider.phoneNumber ||
-                                                        provider.uid}
-                                                </Text>
-                                            </div>
+                                                <Box
+                                                    direction="column"
+                                                    gap="xs"
+                                                >
+                                                    <strong>
+                                                        {formatProviderId(
+                                                            provider.providerId,
+                                                        )}
+                                                    </strong>
+                                                    <Text
+                                                        size="sm"
+                                                        variant="muted"
+                                                    >
+                                                        {provider.email ||
+                                                            provider.phoneNumber ||
+                                                            provider.uid}
+                                                    </Text>
+                                                </Box>
+                                            </StackedList.Item>
                                         ))}
-                                    </div>
+                                    </StackedList>
                                 ) : (
                                     <Paragraph textSize="sm" variant="muted">
                                         No connected social logins.
                                     </Paragraph>
                                 )}
-                            </div>
-                        </div>
-                    </section>
-                    <section className={styles.section}>
-                        <div className={styles.sectionCopy}>
-                            <h2 className={styles.sectionTitle}>Appearance</h2>
-                            <Paragraph
-                                measure="narrow"
-                                textSize="sm"
-                                variant="muted"
-                            >
-                                Choose the colour mode used across the
-                                calculator workspace.
-                            </Paragraph>
-                        </div>
-                        <div className={styles.settingsPanel}>
+                            </Box>
+                        </Card.Body>
+                    </Card>
+                    <Card>
+                        <Card.Title>Appearance</Card.Title>
+                        <Paragraph
+                            measure="narrow"
+                            textSize="sm"
+                            variant="muted"
+                        >
+                            Choose the colour mode used across the calculator
+                            workspace.
+                        </Paragraph>
+                        <Card.Body>
                             <ThemeSettingsControl />
-                        </div>
-                    </section>
+                        </Card.Body>
+                    </Card>
+                    <Card>
+                        <Card.Title>Language</Card.Title>
+                        <Paragraph
+                            measure="narrow"
+                            textSize="sm"
+                            variant="muted"
+                        >
+                            Choose the language used for questionnaire forms.
+                        </Paragraph>
+                        <Card.Body>
+                            <LanguageSettingsControl />
+                        </Card.Body>
+                    </Card>
                     <UserSettingsPanel />
-                </div>
-            </Box>
+                </Box>
+            </Container>
         </>
-    );
-}
-
-function ProfileRow({
-    label,
-    value,
-}: {
-    readonly label: string;
-    readonly value: string | null | undefined;
-}) {
-    return (
-        <div className={styles.metaRow}>
-            <dt className={styles.fieldLabel}>{label}</dt>
-            <dd className={styles.value}>{value || "Not provided"}</dd>
-        </div>
     );
 }
 
