@@ -346,8 +346,8 @@ export interface QuestionnaireTemplate_Key {
 }
 
 export interface QuoteItemTemplateConfig_Key {
-  teamId: string;
-  templateId: UUIDString;
+  quoteTemplateId: UUIDString;
+  itemTemplateId: UUIDString;
   __typename?: 'QuoteItemTemplateConfig_Key';
 }
 
@@ -359,6 +359,11 @@ export interface QuoteItemTemplate_Key {
 export interface QuoteItem_Key {
   id: UUIDString;
   __typename?: 'QuoteItem_Key';
+}
+
+export interface QuoteTemplate_Key {
+  id: UUIDString;
+  __typename?: 'QuoteTemplate_Key';
 }
 
 export interface Quote_Key {
