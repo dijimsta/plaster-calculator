@@ -17,6 +17,9 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetQuestionnaireTemplate*](#getquestionnairetemplate)
   - [*ListProjectQuestionnaires*](#listprojectquestionnaires)
   - [*GetProjectQuestionnaire*](#getprojectquestionnaire)
+  - [*ListQuoteItemTemplates*](#listquoteitemtemplates)
+  - [*ListQuoteTemplatesForTeam*](#listquotetemplatesforteam)
+  - [*ListQuoteItemTemplateConfigsForQuoteTemplate*](#listquoteitemtemplateconfigsforquotetemplate)
   - [*GetMyTeam*](#getmyteam)
   - [*GetMyUserSettings*](#getmyusersettings)
   - [*GetMyUserSignature*](#getmyusersignature)
@@ -871,6 +874,330 @@ console.log(data.projectQuestionnaire);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.projectQuestionnaire);
+});
+```
+
+## ListQuoteItemTemplates
+You can execute the `ListQuoteItemTemplates` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+listQuoteItemTemplates(options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplatesData, undefined>;
+
+interface ListQuoteItemTemplatesRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListQuoteItemTemplatesData, undefined>;
+}
+export const listQuoteItemTemplatesRef: ListQuoteItemTemplatesRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listQuoteItemTemplates(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplatesData, undefined>;
+
+interface ListQuoteItemTemplatesRef {
+  ...
+  (dc: DataConnect): QueryRef<ListQuoteItemTemplatesData, undefined>;
+}
+export const listQuoteItemTemplatesRef: ListQuoteItemTemplatesRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listQuoteItemTemplatesRef:
+```typescript
+const name = listQuoteItemTemplatesRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListQuoteItemTemplates` query has no variables.
+### Return Type
+Recall that executing the `ListQuoteItemTemplates` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListQuoteItemTemplatesData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListQuoteItemTemplatesData {
+  quoteItemTemplates: ({
+    id: UUIDString;
+    teamId?: string | null;
+    scope: string;
+    systemKey?: string | null;
+    name: string;
+    hasKeywords: boolean;
+    keywords: string[];
+    quantitySourceId?: UUIDString | null;
+    sortOrder: number;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteItemTemplate_Key)[];
+}
+```
+### Using `ListQuoteItemTemplates`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listQuoteItemTemplates } from '@generated/data-connector-web';
+
+
+// Call the `listQuoteItemTemplates()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listQuoteItemTemplates();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listQuoteItemTemplates(dataConnect);
+
+console.log(data.quoteItemTemplates);
+
+// Or, you can use the `Promise` API.
+listQuoteItemTemplates().then((response) => {
+  const data = response.data;
+  console.log(data.quoteItemTemplates);
+});
+```
+
+### Using `ListQuoteItemTemplates`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listQuoteItemTemplatesRef } from '@generated/data-connector-web';
+
+
+// Call the `listQuoteItemTemplatesRef()` function to get a reference to the query.
+const ref = listQuoteItemTemplatesRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listQuoteItemTemplatesRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.quoteItemTemplates);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteItemTemplates);
+});
+```
+
+## ListQuoteTemplatesForTeam
+You can execute the `ListQuoteTemplatesForTeam` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+listQuoteTemplatesForTeam(options?: ExecuteQueryOptions): QueryPromise<ListQuoteTemplatesForTeamData, undefined>;
+
+interface ListQuoteTemplatesForTeamRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListQuoteTemplatesForTeamData, undefined>;
+}
+export const listQuoteTemplatesForTeamRef: ListQuoteTemplatesForTeamRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listQuoteTemplatesForTeam(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuoteTemplatesForTeamData, undefined>;
+
+interface ListQuoteTemplatesForTeamRef {
+  ...
+  (dc: DataConnect): QueryRef<ListQuoteTemplatesForTeamData, undefined>;
+}
+export const listQuoteTemplatesForTeamRef: ListQuoteTemplatesForTeamRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listQuoteTemplatesForTeamRef:
+```typescript
+const name = listQuoteTemplatesForTeamRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListQuoteTemplatesForTeam` query has no variables.
+### Return Type
+Recall that executing the `ListQuoteTemplatesForTeam` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListQuoteTemplatesForTeamData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListQuoteTemplatesForTeamData {
+  quoteTemplates: ({
+    id: UUIDString;
+    name: string;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteTemplate_Key)[];
+}
+```
+### Using `ListQuoteTemplatesForTeam`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listQuoteTemplatesForTeam } from '@generated/data-connector-web';
+
+
+// Call the `listQuoteTemplatesForTeam()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listQuoteTemplatesForTeam();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listQuoteTemplatesForTeam(dataConnect);
+
+console.log(data.quoteTemplates);
+
+// Or, you can use the `Promise` API.
+listQuoteTemplatesForTeam().then((response) => {
+  const data = response.data;
+  console.log(data.quoteTemplates);
+});
+```
+
+### Using `ListQuoteTemplatesForTeam`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listQuoteTemplatesForTeamRef } from '@generated/data-connector-web';
+
+
+// Call the `listQuoteTemplatesForTeamRef()` function to get a reference to the query.
+const ref = listQuoteTemplatesForTeamRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listQuoteTemplatesForTeamRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.quoteTemplates);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteTemplates);
+});
+```
+
+## ListQuoteItemTemplateConfigsForQuoteTemplate
+You can execute the `ListQuoteItemTemplateConfigsForQuoteTemplate` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+listQuoteItemTemplateConfigsForQuoteTemplate(vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
+
+interface ListQuoteItemTemplateConfigsForQuoteTemplateRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables): QueryRef<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
+}
+export const listQuoteItemTemplateConfigsForQuoteTemplateRef: ListQuoteItemTemplateConfigsForQuoteTemplateRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listQuoteItemTemplateConfigsForQuoteTemplate(dc: DataConnect, vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
+
+interface ListQuoteItemTemplateConfigsForQuoteTemplateRef {
+  ...
+  (dc: DataConnect, vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables): QueryRef<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
+}
+export const listQuoteItemTemplateConfigsForQuoteTemplateRef: ListQuoteItemTemplateConfigsForQuoteTemplateRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listQuoteItemTemplateConfigsForQuoteTemplateRef:
+```typescript
+const name = listQuoteItemTemplateConfigsForQuoteTemplateRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListQuoteItemTemplateConfigsForQuoteTemplate` query requires an argument of type `ListQuoteItemTemplateConfigsForQuoteTemplateVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ListQuoteItemTemplateConfigsForQuoteTemplateVariables {
+  quoteTemplateId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `ListQuoteItemTemplateConfigsForQuoteTemplate` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListQuoteItemTemplateConfigsForQuoteTemplateData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListQuoteItemTemplateConfigsForQuoteTemplateData {
+  quoteItemTemplateConfigs: ({
+    quoteTemplateId: UUIDString;
+    itemTemplateId: UUIDString;
+    enabled: boolean;
+    unitPriceCents: number;
+    materialUnitPriceCents: number;
+    labourUnitPriceCents: number;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    itemTemplate: {
+      id: UUIDString;
+      name: string;
+      hasKeywords: boolean;
+      keywords: string[];
+      sortOrder: number;
+    } & QuoteItemTemplate_Key;
+  } & QuoteItemTemplateConfig_Key)[];
+}
+```
+### Using `ListQuoteItemTemplateConfigsForQuoteTemplate`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listQuoteItemTemplateConfigsForQuoteTemplate, ListQuoteItemTemplateConfigsForQuoteTemplateVariables } from '@generated/data-connector-web';
+
+// The `ListQuoteItemTemplateConfigsForQuoteTemplate` query requires an argument of type `ListQuoteItemTemplateConfigsForQuoteTemplateVariables`:
+const listQuoteItemTemplateConfigsForQuoteTemplateVars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables = {
+  quoteTemplateId: ..., 
+};
+
+// Call the `listQuoteItemTemplateConfigsForQuoteTemplate()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listQuoteItemTemplateConfigsForQuoteTemplate(listQuoteItemTemplateConfigsForQuoteTemplateVars);
+// Variables can be defined inline as well.
+const { data } = await listQuoteItemTemplateConfigsForQuoteTemplate({ quoteTemplateId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listQuoteItemTemplateConfigsForQuoteTemplate(dataConnect, listQuoteItemTemplateConfigsForQuoteTemplateVars);
+
+console.log(data.quoteItemTemplateConfigs);
+
+// Or, you can use the `Promise` API.
+listQuoteItemTemplateConfigsForQuoteTemplate(listQuoteItemTemplateConfigsForQuoteTemplateVars).then((response) => {
+  const data = response.data;
+  console.log(data.quoteItemTemplateConfigs);
+});
+```
+
+### Using `ListQuoteItemTemplateConfigsForQuoteTemplate`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listQuoteItemTemplateConfigsForQuoteTemplateRef, ListQuoteItemTemplateConfigsForQuoteTemplateVariables } from '@generated/data-connector-web';
+
+// The `ListQuoteItemTemplateConfigsForQuoteTemplate` query requires an argument of type `ListQuoteItemTemplateConfigsForQuoteTemplateVariables`:
+const listQuoteItemTemplateConfigsForQuoteTemplateVars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables = {
+  quoteTemplateId: ..., 
+};
+
+// Call the `listQuoteItemTemplateConfigsForQuoteTemplateRef()` function to get a reference to the query.
+const ref = listQuoteItemTemplateConfigsForQuoteTemplateRef(listQuoteItemTemplateConfigsForQuoteTemplateVars);
+// Variables can be defined inline as well.
+const ref = listQuoteItemTemplateConfigsForQuoteTemplateRef({ quoteTemplateId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listQuoteItemTemplateConfigsForQuoteTemplateRef(dataConnect, listQuoteItemTemplateConfigsForQuoteTemplateVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.quoteItemTemplateConfigs);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteItemTemplateConfigs);
 });
 ```
 

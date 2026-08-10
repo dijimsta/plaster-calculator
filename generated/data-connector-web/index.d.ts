@@ -315,6 +315,55 @@ export interface ListQuestionnaireTemplatesData {
   } & QuestionnaireTemplate_Key)[];
 }
 
+export interface ListQuoteItemTemplateConfigsForQuoteTemplateData {
+  quoteItemTemplateConfigs: ({
+    quoteTemplateId: UUIDString;
+    itemTemplateId: UUIDString;
+    enabled: boolean;
+    unitPriceCents: number;
+    materialUnitPriceCents: number;
+    labourUnitPriceCents: number;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    itemTemplate: {
+      id: UUIDString;
+      name: string;
+      hasKeywords: boolean;
+      keywords: string[];
+      sortOrder: number;
+    } & QuoteItemTemplate_Key;
+  } & QuoteItemTemplateConfig_Key)[];
+}
+
+export interface ListQuoteItemTemplateConfigsForQuoteTemplateVariables {
+  quoteTemplateId: UUIDString;
+}
+
+export interface ListQuoteItemTemplatesData {
+  quoteItemTemplates: ({
+    id: UUIDString;
+    teamId?: string | null;
+    scope: string;
+    systemKey?: string | null;
+    name: string;
+    hasKeywords: boolean;
+    keywords: string[];
+    quantitySourceId?: UUIDString | null;
+    sortOrder: number;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteItemTemplate_Key)[];
+}
+
+export interface ListQuoteTemplatesForTeamData {
+  quoteTemplates: ({
+    id: UUIDString;
+    name: string;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteTemplate_Key)[];
+}
+
 export interface ProjectQuestionnaireQuestion_Key {
   id: UUIDString;
   __typename?: 'ProjectQuestionnaireQuestion_Key';
@@ -855,6 +904,42 @@ export const getProjectQuestionnaireRef: GetProjectQuestionnaireRef;
 
 export function getProjectQuestionnaire(vars: GetProjectQuestionnaireVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
 export function getProjectQuestionnaire(dc: DataConnect, vars: GetProjectQuestionnaireVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
+
+interface ListQuoteItemTemplatesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListQuoteItemTemplatesData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListQuoteItemTemplatesData, undefined>;
+  operationName: string;
+}
+export const listQuoteItemTemplatesRef: ListQuoteItemTemplatesRef;
+
+export function listQuoteItemTemplates(options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplatesData, undefined>;
+export function listQuoteItemTemplates(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplatesData, undefined>;
+
+interface ListQuoteTemplatesForTeamRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListQuoteTemplatesForTeamData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListQuoteTemplatesForTeamData, undefined>;
+  operationName: string;
+}
+export const listQuoteTemplatesForTeamRef: ListQuoteTemplatesForTeamRef;
+
+export function listQuoteTemplatesForTeam(options?: ExecuteQueryOptions): QueryPromise<ListQuoteTemplatesForTeamData, undefined>;
+export function listQuoteTemplatesForTeam(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuoteTemplatesForTeamData, undefined>;
+
+interface ListQuoteItemTemplateConfigsForQuoteTemplateRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables): QueryRef<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables): QueryRef<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
+  operationName: string;
+}
+export const listQuoteItemTemplateConfigsForQuoteTemplateRef: ListQuoteItemTemplateConfigsForQuoteTemplateRef;
+
+export function listQuoteItemTemplateConfigsForQuoteTemplate(vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
+export function listQuoteItemTemplateConfigsForQuoteTemplate(dc: DataConnect, vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
 
 interface GetMyTeamRef {
   /* Allow users to create refs without passing in DataConnect */

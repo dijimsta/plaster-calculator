@@ -1,0 +1,68 @@
+query ListQuoteItemTemplates @auth(level: USER) {
+    quoteItemTemplates(
+        where: {
+            _or: [
+                { scope: { eq: "SYSTEM" } }
+                { teamId: { eq_expr: "auth.token.teamId" } }
+            ]
+        }
+        orderBy: [{ sortOrder: ASC }]
+    ) {
+        id
+        teamId
+        scope
+        systemKey
+        name
+        hasKeywords
+        keywords
+        quantitySourceId
+        sortOrder
+        createdAt
+        updatedAt
+    }
+}
+
+query ListQuoteTemplatesForTeam @auth(level: USER) {
+    quoteTemplates(
+        where: { teamId: { eq_expr: "auth.token.teamId" } }
+        orderBy: [{ updatedAt: DESC }]
+    ) {
+        id
+        name
+        createdAt
+        updatedAt
+    }
+}
+
+query ListQuoteItemTemplateConfigsForQuoteTemplate($quoteTemplateId: UUID!)
+@auth(level: USER) {
+    quoteTemplate(key: { id: $quoteTemplateId })
+        @redact
+        @check(
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this quote template"
+        ) {
+        id
+        teamId
+    }
+    quoteItemTemplateConfigs(
+        where: { quoteTemplateId: { eq: $quoteTemplateId } }
+        orderBy: [{ createdAt: ASC }]
+    ) {
+        quoteTemplateId
+        itemTemplateId
+        enabled
+        unitPriceCents
+        materialUnitPriceCents
+        labourUnitPriceCents
+        createdAt
+        updatedAt
+        itemTemplate {
+            id
+            name
+            hasKeywords
+            keywords
+            sortOrder
+        }
+    }
+}
