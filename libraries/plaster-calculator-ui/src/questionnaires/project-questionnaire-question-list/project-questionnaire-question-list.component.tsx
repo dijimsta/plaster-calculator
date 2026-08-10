@@ -5,7 +5,7 @@ import { Trash2 } from "lucide-react";
 import { useId, useState } from "react";
 import type { ReactElement } from "react";
 
-import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+import { useQuestionnairesTranslation } from "../i18n/index.ts";
 
 export type ProjectQuestionnaireQuestion = {
     readonly id: string;

@@ -4,7 +4,7 @@ import { Box, Button, Card, IconTile, Text } from "@libraries/uikit-web";
 import { ClipboardList, Copy, Pencil, Trash2 } from "lucide-react";
 import type { ReactElement } from "react";
 
-import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+import { useQuestionnairesTranslation } from "../i18n/index.ts";
 
 export type QuestionnaireTemplate =
     DataConnector.ListQuestionnaireTemplatesData["questionnaireTemplates"][number];

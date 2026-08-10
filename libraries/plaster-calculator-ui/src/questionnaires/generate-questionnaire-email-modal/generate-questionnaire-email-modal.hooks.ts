@@ -1,7 +1,7 @@
 import { useNotificationsManager } from "@libraries/uikit-web";
 import { useCallback } from "react";
 
-import { useQuestionnairesTranslation } from "../../i18n/index.ts";
+import { useQuestionnairesTranslation } from "../i18n/index.ts";
 
 export function useCopyQuestionnaireEmailBodyCallback(
     body: string,
