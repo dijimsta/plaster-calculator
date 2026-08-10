@@ -137,6 +137,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.101.4
         version: 5.101.4(react@19.2.8)
+      '@ui/internationalization':
+        specifier: workspace:*
+        version: link:../../ui/internationalization
       firebase:
         specifier: ^12.17.0
         version: 12.17.0
@@ -366,6 +369,9 @@ importers:
       '@tanstack-query-firebase/react':
         specifier: ^2.1.1
         version: 2.1.1(@tanstack/react-query@5.101.4(react@19.2.8))(firebase@12.17.0)
+      '@ui/internationalization':
+        specifier: workspace:*
+        version: link:../../ui/internationalization
       firebase:
         specifier: ^12.17.0
         version: 12.17.0
@@ -384,9 +390,6 @@ importers:
       react-hook-form:
         specifier: ^7.84.0
         version: 7.84.0(react@19.2.8)
-      react-i18next:
-        specifier: ^17.0.11
-        version: 17.0.11(i18next@26.3.6(typescript@6.0.3))(react-dom@19.2.6(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
     devDependencies:
       '@types/react':
         specifier: ^19.2.18
@@ -437,6 +440,31 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.6(react@19.2.8)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.18
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: ^19.2.4
+        version: 19.2.4(@types/react@19.2.18)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ui/internationalization:
+    dependencies:
+      i18next:
+        specifier: ^26.3.6
+        version: 26.3.6(typescript@6.0.3)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.8(react@19.2.8)
+      react-i18next:
+        specifier: ^17.0.11
+        version: 17.0.11(i18next@26.3.6(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
     devDependencies:
       '@types/react':
         specifier: ^19.2.18
@@ -16650,7 +16678,7 @@ snapshots:
     dependencies:
       react: 19.2.8
 
-  react-i18next@17.0.11(i18next@26.3.6(typescript@6.0.3))(react-dom@19.2.6(react@19.2.8))(react@19.2.8)(typescript@6.0.3):
+  react-i18next@17.0.11(i18next@26.3.6(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3):
     dependencies:
       '@babel/runtime': 7.29.7
       html-parse-stringify: 4.0.1
@@ -16658,7 +16686,7 @@ snapshots:
       react: 19.2.8
       use-sync-external-store: 1.6.0(react@19.2.8)
     optionalDependencies:
-      react-dom: 19.2.6(react@19.2.8)
+      react-dom: 19.2.8(react@19.2.8)
       typescript: 6.0.3
 
   react-is@17.0.2: {}
