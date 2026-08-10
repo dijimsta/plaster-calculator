@@ -1,4 +1,7 @@
 export const en = Object.freeze({
+    common: Object.freeze({
+        cancel: "Cancel",
+    }),
     quoteTemplateForm: Object.freeze({
         defaultItemsTitle: "Default items",
         defaultItemsDescription:
