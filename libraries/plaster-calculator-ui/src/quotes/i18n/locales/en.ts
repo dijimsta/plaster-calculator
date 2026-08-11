@@ -116,5 +116,10 @@ export const en = Object.freeze({
         confirmAccessibleLabelWithLocation:
             'Confirm {{label}} "{{value}}" for {{location}}',
         confirmAccessibleLabel: 'Confirm {{label}} "{{value}}"',
+        floorplanDeepLink: Object.freeze({
+            setScale: "Set scale",
+            drawRooms: "Draw rooms",
+            actionWithPage: "{{action}} on page {{pageNumber}}",
+        }),
     }),
 });

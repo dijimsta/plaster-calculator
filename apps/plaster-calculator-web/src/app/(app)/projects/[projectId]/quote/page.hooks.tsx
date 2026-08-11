@@ -9,6 +9,8 @@ import {
     CEILING_HEIGHT_SET_CHECK_ID,
     DEFAULT_WALL_BOARD_TYPE,
     INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
+    ROOMS_MEASURED_CHECK_ID,
+    SCALE_APPLIED_CHECK_ID,
     TEMPLATE_PRICED_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
 } from "@libraries/plaster-calculator-common";
@@ -16,12 +18,15 @@ import type { ReadinessCheckListRenderFixControl } from "@libraries/plaster-calc
 import {
     CeilingHeightFixControl,
     ConfirmFixControl,
+    FloorplanDeepLinkFixControl,
     UnitPriceFixControl,
     useQuotesTranslation,
     WallBoardTypeFixControl,
 } from "@libraries/plaster-calculator-ui";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
+
+import { FloorplanDeepLinkUtils } from "../floorplan-deep-link.utils.js";
 
 /**
  * Builds the `renderFixControl` passed to `ReadinessCheckList`. This wires
@@ -36,18 +41,46 @@ import { useCallback } from "react";
  * query response.
  *
  * `SCALE_APPLIED` and `ROOMS_MEASURED` are `DEEP_LINK` checks — their fix
- * targets are the floorplan editor, which WORK-139 wires up. Returning
- * `null` for them (the registry's `default` case here) renders nothing for
- * that slot rather than a broken link, matching
- * `ReadinessCheckListRenderFixControl`'s documented "falsy renders nothing"
- * contract.
+ * is a link straight to the floorplan editor, on the flagged page, with
+ * the relevant tool pre-selected (WORK-139), rather than a control that
+ * submits a value here.
  */
-export function useQuoteReadinessFixControlRenderer(): ReadinessCheckListRenderFixControl {
+export function useQuoteReadinessFixControlRenderer(
+    projectId: string,
+): ReadinessCheckListRenderFixControl {
     const { t } = useQuotesTranslation();
 
     return useCallback(
         (item: ReadinessAffectedItem, check: ReadinessCheck): ReactNode => {
             switch (check.id) {
+                case SCALE_APPLIED_CHECK_ID:
+                    return (
+                        <FloorplanDeepLinkFixControl
+                            item={item}
+                            href={FloorplanDeepLinkUtils.buildHref(
+                                projectId,
+                                item.pageNumber,
+                                "scale",
+                            )}
+                            actionLabel={t(
+                                "readinessFixControls.floorplanDeepLink.setScale",
+                            )}
+                        />
+                    );
+                case ROOMS_MEASURED_CHECK_ID:
+                    return (
+                        <FloorplanDeepLinkFixControl
+                            item={item}
+                            href={FloorplanDeepLinkUtils.buildHref(
+                                projectId,
+                                item.pageNumber,
+                                "draw-room",
+                            )}
+                            actionLabel={t(
+                                "readinessFixControls.floorplanDeepLink.drawRooms",
+                            )}
+                        />
+                    );
                 case WALL_TYPE_SET_CHECK_ID:
                     return (
                         <WallBoardTypeFixControl
@@ -106,6 +139,6 @@ export function useQuoteReadinessFixControlRenderer(): ReadinessCheckListRenderF
                     return null;
             }
         },
-        [t],
+        [projectId, t],
     );
 }

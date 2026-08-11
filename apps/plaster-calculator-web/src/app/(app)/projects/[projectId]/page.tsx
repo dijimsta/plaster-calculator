@@ -3,6 +3,7 @@
 import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { Box, useNotificationsManager } from "@libraries/uikit-web";
+import { useSearchParams } from "next/navigation.js";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
 import { useAppTranslation } from "../../../../i18n/index.ts";
@@ -10,6 +11,7 @@ import { useSalesStatusLabel } from "../../../../lib/sales-status.js";
 import { ui } from "../../../../lib/styles.js";
 import type { ProjectDetail } from "../../../../types.js";
 
+import { FloorplanDeepLinkUtils } from "./floorplan-deep-link.utils.js";
 import { ProjectHeader } from "./project-page-header.js";
 import { ProjectSalesStatusControl } from "./project-sales-status-control.js";
 import { ProjectStatusContent } from "./project-status-content.js";
@@ -25,6 +27,17 @@ export default function ProjectPage({
     const salesStatusLabel = useSalesStatusLabel();
     const projectsService = useProjectsService();
     const { notify, dismiss } = useNotificationsManager();
+    const searchParams = useSearchParams();
+    // Read once, on mount: a WORK-139 deep link (`?page=2&tool=scale`)
+    // should pick the initial page/tool and then get out of the way, not
+    // keep re-applying itself if the URL is inspected again later or the
+    // user navigates within the editor.
+    const [deepLinkPageNumber] = useState(() =>
+        FloorplanDeepLinkUtils.parsePageNumber(searchParams),
+    );
+    const [deepLinkTool] = useState(() =>
+        FloorplanDeepLinkUtils.parseTool(searchParams),
+    );
     const [project, setProject] = useState<ProjectDetail | null>(null);
     const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
     const [error, setError] = useState("");
@@ -58,18 +71,33 @@ export default function ProjectPage({
             setProject(detail);
             setRenameValue(detail.name);
             setCompanyId(detail.companyId);
-            setSelectedPageId((current) =>
-                current && detail.pages.some((page) => page.id === current)
-                    ? current
-                    : (detail.pages[0]?.id ?? null),
-            );
+            setSelectedPageId((current) => {
+                if (
+                    current &&
+                    detail.pages.some((page) => page.id === current)
+                ) {
+                    return current;
+                }
+                // Only reachable on the very first successful load (nothing
+                // selected yet) — a later reload (e.g. the PROCESSING poll
+                // below) always has a `current` that still exists, so the
+                // deep-linked page never overrides a page the user has
+                // since switched to.
+                const deepLinkPage =
+                    deepLinkPageNumber != null
+                        ? detail.pages.find(
+                              (page) => page.pageNumber === deepLinkPageNumber,
+                          )
+                        : undefined;
+                return deepLinkPage?.id ?? detail.pages[0]?.id ?? null;
+            });
             resetForProjectLoad();
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "Unable to load project",
             );
         }
-    }, [projectId, projectsService, resetForProjectLoad]);
+    }, [deepLinkPageNumber, projectId, projectsService, resetForProjectLoad]);
 
     useEffect(() => {
         void load();
@@ -186,6 +214,7 @@ export default function ProjectPage({
                 {project && (
                     <ProjectStatusContent
                         companyId={companyId}
+                        initialTool={deepLinkTool}
                         project={project}
                         salesStatusPanel={
                             <ProjectSalesStatusControl

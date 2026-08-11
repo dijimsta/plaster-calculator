@@ -33,6 +33,7 @@ export function ProjectEditor({
     salesStatusPanel,
     onDraftChange,
     validationIssues = [],
+    initialTool,
 }: ProjectEditorProps) {
     const { t } = useEditorTranslation();
     const projectsService = useProjectsService();
@@ -139,6 +140,21 @@ export function ProjectEditor({
         setStatus: persistence.setStatus,
         setZoom,
     });
+
+    const appliedInitialToolRef = useRef(false);
+    useEffect(() => {
+        if (appliedInitialToolRef.current) return;
+        appliedInitialToolRef.current = true;
+        if (initialTool === "scale") {
+            actions.startReferenceMode();
+        } else if (initialTool === "draw-room") {
+            actions.startFreeShape();
+        }
+        // Deliberately runs once, keyed off nothing but mount: a deep link
+        // should set the initial tool and then get out of the way, not
+        // fight the user (or a page switch) for control afterward.
+    }, []);
+
     const validation = useEditorValidation({
         ceilingHeightMm: overlayState.ceilingHeightMm,
         selectedEdge: selection.selectedEdge,
