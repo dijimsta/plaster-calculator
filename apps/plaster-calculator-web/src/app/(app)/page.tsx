@@ -4,6 +4,7 @@ import { Alert, Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
 import { Home } from "lucide-react";
 
 import { BusyOverlay } from "../../components/busy-overlay.js";
+import { useAppTranslation } from "../../i18n/index.ts";
 import { ui } from "../../lib/styles.js";
 
 import { useDashboardProjects } from "./hooks/use-dashboard-projects.js";
@@ -13,6 +14,7 @@ import { PdfPageModal } from "./pdf-page-modal.js";
 import { ProjectHistory } from "./project-history.js";
 
 export default function HomePage() {
+    const { t } = useAppTranslation();
     const projects = useDashboardProjects();
     const upload = useDashboardUpload({
         refresh: projects.refresh,
@@ -34,7 +36,7 @@ export default function HomePage() {
                     </Breadcrumb>
                 </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
-                    <PageHeading.Title>Home</PageHeading.Title>
+                    <PageHeading.Title>{t("home.title")}</PageHeading.Title>
                     <PageHeading.Description>
                         Create a project or continue working on a recent one.
                     </PageHeading.Description>
@@ -42,9 +44,11 @@ export default function HomePage() {
             </PageHeading>
             <Box direction="column" gap="lg" padding="md">
                 {projects.processingProjectId && (
-                    <Alert intent="info" title="Project processing">
-                        This list will update automatically when processing is
-                        complete.
+                    <Alert
+                        intent="info"
+                        title={t("home.projectProcessingAlert.title")}
+                    >
+                        {t("home.projectProcessingAlert.description")}
                     </Alert>
                 )}
                 <section className={ui.layoutGrid}>

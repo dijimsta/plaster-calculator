@@ -25,6 +25,7 @@ import { default as LinkModule } from "next/link.js";
 
 import { BusyOverlay } from "../../../components/busy-overlay.js";
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { salesStatusLabel } from "../../../lib/sales-status.js";
 import {
     useProjectsListing,
@@ -34,6 +35,7 @@ import {
 const Link = LinkModule.default;
 
 export default function ProjectsPage() {
+    const { t } = useAppTranslation();
     const {
         statusFilter,
         query,
@@ -58,9 +60,22 @@ export default function ProjectsPage() {
 
     const filtersActive = statusFilter !== "ALL" || query !== "";
 
+    const tableHeaders = [
+        t("projects.tableHeaders.project"),
+        t("projects.tableHeaders.company"),
+        t("projects.tableHeaders.plan"),
+        t("projects.tableHeaders.status"),
+        t("projects.tableHeaders.updated"),
+        t("projects.tableHeaders.actions"),
+    ];
+
     const statusTabs: { value: StatusFilter; label: string; count: number }[] =
         [
-            { value: "ALL", label: "All", count: totalCount },
+            {
+                value: "ALL",
+                label: t("projects.statusTabs.all"),
+                count: totalCount,
+            },
             {
                 value: "QUOTING",
                 label: salesStatusLabel("QUOTING"),
@@ -82,11 +97,13 @@ export default function ProjectsPage() {
                         <RoutedBreadcrumbItem href="/">
                             <Home size={16} aria-label="Home" />
                         </RoutedBreadcrumbItem>
-                        <Breadcrumb.Item current>Projects</Breadcrumb.Item>
+                        <Breadcrumb.Item current>
+                            {t("projects.breadcrumb")}
+                        </Breadcrumb.Item>
                     </Breadcrumb>
                 </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
-                    <PageHeading.Title>Projects</PageHeading.Title>
+                    <PageHeading.Title>{t("projects.title")}</PageHeading.Title>
                     <PageHeading.Description>
                         Every plan you&apos;re quoting for your builders. Open a
                         project to review its floorplan, scope questionnaire and
@@ -131,9 +148,9 @@ export default function ProjectsPage() {
                         <Button
                             variant="secondary"
                             onClick={() => void refresh()}
-                            title="Refresh projects"
+                            title={t("projects.refreshTitle")}
                         >
-                            <RefreshCcw size={18} /> Refresh
+                            <RefreshCcw size={18} /> {t("projects.refresh")}
                         </Button>
                         {filtersActive && (
                             <Button variant="secondary" onClick={clearFilters}>
@@ -148,12 +165,14 @@ export default function ProjectsPage() {
                 {projectsLoading ? (
                     <Box align="center" justify="center" gap="sm" status>
                         <LoaderCircle className="animate-spin" size={24} />
-                        <Text variant="muted">Loading projects...</Text>
+                        <Text variant="muted">
+                            {t("projects.loadingProjects")}
+                        </Text>
                     </Box>
                 ) : filtered.length === 0 ? (
                     <EmptyState
                         icon={<FolderKanban />}
-                        title="No projects match your filters"
+                        title={t("projects.emptyStateTitle")}
                         actions={
                             filtersActive ? (
                                 <Button
@@ -169,12 +188,11 @@ export default function ProjectsPage() {
                     <Table bordered>
                         <Table.Head>
                             <Table.Row>
-                                <Table.Header>Project</Table.Header>
-                                <Table.Header>Company</Table.Header>
-                                <Table.Header>Plan</Table.Header>
-                                <Table.Header>Status</Table.Header>
-                                <Table.Header>Updated</Table.Header>
-                                <Table.Header>Actions</Table.Header>
+                                {tableHeaders.map((header) => (
+                                    <Table.Header key={header}>
+                                        {header}
+                                    </Table.Header>
+                                ))}
                             </Table.Row>
                         </Table.Head>
                         <Table.Body>

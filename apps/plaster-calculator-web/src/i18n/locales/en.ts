@@ -35,4 +35,34 @@ export const en = Object.freeze({
             zh: "中文",
         }),
     }),
+    home: Object.freeze({
+        title: "Home",
+        projectProcessingAlert: Object.freeze({
+            title: "Project processing",
+            description:
+                "This list will update automatically when processing is complete.",
+        }),
+    }),
+    projects: Object.freeze({
+        breadcrumb: "Projects",
+        title: "Projects",
+        statusTabs: Object.freeze({
+            all: "All",
+        }),
+        loadingProjects: "Loading projects...",
+        refresh: "Refresh",
+        refreshTitle: "Refresh projects",
+        emptyStateTitle: "No projects match your filters",
+        tableHeaders: Object.freeze({
+            project: "Project",
+            company: "Company",
+            plan: "Plan",
+            status: "Status",
+            updated: "Updated",
+            actions: "Actions",
+        }),
+    }),
+    projectHistory: Object.freeze({
+        noStatusProjects: "No {{status}} projects",
+    }),
 });
