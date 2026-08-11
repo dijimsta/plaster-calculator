@@ -13,6 +13,10 @@ import { UserPlus } from "lucide-react";
 import { useState } from "react";
 import type { FormEvent, ReactElement } from "react";
 
+import {
+    buildInvitationMailtoHref,
+    buildInvitationUrl,
+} from "./team-invitation-links.js";
 import type { UseTeamInvitationsResult } from "./use-team-invitations.js";
 
 const INVITATION_ROLE = TEAM_MEMBER_ROLE;
@@ -29,11 +33,21 @@ export function InviteUserPanel({
 
     async function submitInvitation(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        const wasInvited = await invitations.invite({
+        const response = await invitations.invite({
             email: email.trim().toLowerCase(),
             role: INVITATION_ROLE,
         });
-        if (wasInvited) setEmail("");
+        if (response === null) return;
+
+        const invitationUrl = buildInvitationUrl(
+            response.path,
+            window.location.origin,
+        );
+        window.location.href = buildInvitationMailtoHref(
+            response.invitation.email,
+            invitationUrl,
+        );
+        setEmail("");
     }
 
     return (
@@ -57,7 +71,7 @@ export function InviteUserPanel({
                             placeholder="name@example.com"
                             value={email}
                             required
-                            disabled={invitations.isInviting}
+                            disabled={isActionPending(invitations)}
                             onChange={(event) => setEmail(event.target.value)}
                         />
                     </FormLayoutField>
@@ -66,7 +80,8 @@ export function InviteUserPanel({
                         fullWidth
                         icon={<UserPlus size={16} aria-hidden="true" />}
                         disabled={
-                            invitations.isInviting || email.trim().length === 0
+                            isActionPending(invitations) ||
+                            email.trim().length === 0
                         }
                     >
                         {invitations.isInviting
@@ -76,5 +91,13 @@ export function InviteUserPanel({
                 </Card.Body>
             </Card>
         </FormLayout>
+    );
+}
+
+function isActionPending(invitations: UseTeamInvitationsResult): boolean {
+    return (
+        invitations.isInviting ||
+        invitations.copyingEmail !== null ||
+        invitations.revokingEmail !== null
     );
 }

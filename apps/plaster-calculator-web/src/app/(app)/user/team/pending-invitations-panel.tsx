@@ -9,11 +9,12 @@ import {
     Badge,
     Box,
     Button,
+    ButtonGroup,
     Card,
     Table,
     Text,
 } from "@libraries/uikit-web";
-import { Mail } from "lucide-react";
+import { Copy, Mail } from "lucide-react";
 import type { ReactElement } from "react";
 
 import type { UseTeamInvitationsResult } from "./use-team-invitations.js";
@@ -32,6 +33,10 @@ export function PendingInvitationsPanel({
     return (
         <Card>
             <Card.Title>Pending invitations</Card.Title>
+            <Text size="sm" variant="muted">
+                Copying creates a fresh seven-day link and replaces any link
+                shared previously.
+            </Text>
             <Card.Body>
                 <PendingInvitationsContent invitations={invitations} />
             </Card.Body>
@@ -86,7 +91,12 @@ function PendingInvitationsContent({
                     <PendingInvitationRow
                         key={invitation.email}
                         invitation={invitation}
+                        copyingEmail={invitations.copyingEmail}
                         revokingEmail={invitations.revokingEmail}
+                        isInviting={invitations.isInviting}
+                        onCopy={(pendingInvitation) =>
+                            void invitations.copyLink(pendingInvitation)
+                        }
                         onRevoke={(email) => void invitations.revoke(email)}
                     />
                 ))}
@@ -97,16 +107,25 @@ function PendingInvitationsContent({
 
 type PendingInvitationRowProps = Readonly<{
     invitation: PendingTeamInvitation;
+    copyingEmail: string | null;
     revokingEmail: string | null;
+    isInviting: boolean;
+    onCopy(invitation: PendingTeamInvitation): void;
     onRevoke(email: string): void;
 }>;
 
 function PendingInvitationRow({
     invitation,
+    copyingEmail,
     revokingEmail,
+    isInviting,
+    onCopy,
     onRevoke,
 }: PendingInvitationRowProps): ReactElement {
+    const isCopying = copyingEmail === invitation.email;
     const isRevoking = revokingEmail === invitation.email;
+    const isActionPending =
+        isInviting || copyingEmail !== null || revokingEmail !== null;
     return (
         <Table.Row>
             <Table.Cell>
@@ -129,14 +148,25 @@ function PendingInvitationRow({
                 <InvitationTime value={invitation.expiresAt} />
             </Table.Cell>
             <Table.Cell fit>
-                <Button
-                    variant="secondary"
-                    size="small"
-                    disabled={revokingEmail !== null}
-                    onClick={() => onRevoke(invitation.email)}
-                >
-                    {isRevoking ? "Revoking..." : "Revoke"}
-                </Button>
+                <ButtonGroup label={`Actions for ${invitation.email}`}>
+                    <Button
+                        variant="secondary"
+                        size="small"
+                        icon={<Copy size={16} aria-hidden="true" />}
+                        disabled={isActionPending}
+                        onClick={() => onCopy(invitation)}
+                    >
+                        {isCopying ? "Copying..." : "Copy link"}
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        size="small"
+                        disabled={isActionPending}
+                        onClick={() => onRevoke(invitation.email)}
+                    >
+                        {isRevoking ? "Revoking..." : "Revoke"}
+                    </Button>
+                </ButtonGroup>
             </Table.Cell>
         </Table.Row>
     );
