@@ -1,5 +1,27 @@
+import { appMetadataByLanguage } from "../language.ts";
+
 export const en = Object.freeze({
     common: Object.freeze({}),
+    appMetadata: appMetadataByLanguage.en,
+    loginPage: Object.freeze({
+        brandName: "Plaster Calculator",
+        signedInDescription:
+            "Calculate plaster quantities quickly and accurately for any project.",
+        welcomeBack: "Welcome back, <strong>{{name}}</strong>!",
+        goToApp: "Go to App",
+        description:
+            "Quote your plastering quickly and accurately for any project.",
+        emailPlaceholder: "Email address",
+        passwordPlaceholder: "Password",
+        loading: "Please wait…",
+        logIn: "Log in",
+        or: "or",
+        continueWithGoogle: "Continue with Google",
+        backToLogin: "Back to log in",
+        createNewAccount: "Create new account",
+        authenticationFailed: "Authentication failed.",
+        googleSignInFailed: "Google sign-in failed.",
+    }),
     sidebar: Object.freeze({
         navigationLabel: "Application navigation",
         workspaceSectionTitle: "Workspace",

@@ -1,11 +1,31 @@
 import { createTranslationResource } from "@ui/internationalization";
 
+import { appMetadataByLanguage } from "../language.ts";
+
 import { en } from "./en.ts";
 
 export const zh = createTranslationResource(
     en,
     Object.freeze({
         common: Object.freeze({}),
+        appMetadata: appMetadataByLanguage.zh,
+        loginPage: Object.freeze({
+            brandName: "石膏计算器",
+            signedInDescription: "快速准确地计算任何项目所需的石膏用量。",
+            welcomeBack: "欢迎回来，<strong>{{name}}</strong>！",
+            goToApp: "进入应用",
+            description: "快速准确地为任何项目估算抹灰工程。",
+            emailPlaceholder: "电子邮箱地址",
+            passwordPlaceholder: "密码",
+            loading: "请稍候…",
+            logIn: "登录",
+            or: "或",
+            continueWithGoogle: "使用 Google 继续",
+            backToLogin: "返回登录",
+            createNewAccount: "创建新账户",
+            authenticationFailed: "身份验证失败。",
+            googleSignInFailed: "Google 登录失败。",
+        }),
         sidebar: Object.freeze({
             navigationLabel: "应用导航",
             workspaceSectionTitle: "工作区",
