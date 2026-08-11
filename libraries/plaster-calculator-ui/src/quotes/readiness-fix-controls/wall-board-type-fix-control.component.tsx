@@ -8,6 +8,8 @@ import type { SelectMenuOption } from "@libraries/uikit-web";
 import { useId } from "react";
 import type { ReactElement } from "react";
 
+import { useQuotesTranslation } from "../i18n/index.ts";
+
 import { useFixControlSubmission } from "./use-fix-control-submission.hook.ts";
 
 const WALL_BOARD_TYPE_OPTIONS: readonly SelectMenuOption[] =
@@ -44,12 +46,15 @@ export function WallBoardTypeFixControl({
     onChange,
 }: WallBoardTypeFixControlProps): ReactElement {
     const id = useId();
+    const { t } = useQuotesTranslation();
     const { isPending, error, run } = useFixControlSubmission(
-        "Couldn't update the wall board type. Try again.",
+        t("readinessFixControls.wallBoardType.error"),
     );
     const label = item.areaLabel
-        ? `Wall board type — ${item.areaLabel}`
-        : "Wall board type";
+        ? t("readinessFixControls.wallBoardType.labelWithArea", {
+              area: item.areaLabel,
+          })
+        : t("readinessFixControls.wallBoardType.label");
 
     return (
         <Box direction="column" gap="xs">

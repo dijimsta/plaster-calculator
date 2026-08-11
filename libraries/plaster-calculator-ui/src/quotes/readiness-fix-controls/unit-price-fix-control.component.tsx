@@ -4,6 +4,8 @@ import { CurrencyUtils } from "@libraries/utilities";
 import { useId, useState } from "react";
 import type { ReactElement } from "react";
 
+import { useQuotesTranslation } from "../i18n/index.ts";
+
 import { useFixControlSubmission } from "./use-fix-control-submission.hook.ts";
 
 const DOLLARS_TEXT_PATTERN = /^\d+(\.\d{1,2})?$/;
@@ -34,15 +36,18 @@ export function UnitPriceFixControl({
     onChange,
 }: UnitPriceFixControlProps): ReactElement {
     const id = useId();
+    const { t } = useQuotesTranslation();
     const [text, setText] = useState(() =>
         CurrencyUtils.centsToDollarsText(valueCents),
     );
     const { isPending, error, run } = useFixControlSubmission(
-        "Couldn't update the unit price. Try again.",
+        t("readinessFixControls.unitPrice.error"),
     );
     const label = item.quoteItemTemplateLabel
-        ? `Unit price — ${item.quoteItemTemplateLabel}`
-        : "Unit price";
+        ? t("readinessFixControls.unitPrice.labelWithTemplate", {
+              template: item.quoteItemTemplateLabel,
+          })
+        : t("readinessFixControls.unitPrice.label");
     const isValid = DOLLARS_TEXT_PATTERN.test(text.trim());
 
     return (
@@ -70,7 +75,9 @@ export function UnitPriceFixControl({
                         )
                     }
                 >
-                    {isPending ? "Saving…" : "Save"}
+                    {isPending
+                        ? t("readinessFixControls.saving")
+                        : t("readinessFixControls.save")}
                 </Button>
             </Box>
             {error && (

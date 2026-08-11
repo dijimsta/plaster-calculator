@@ -2,6 +2,8 @@ import type { ReadinessAffectedItem } from "@libraries/plaster-calculator-common
 import { Badge, Box, Button, Text } from "@libraries/uikit-web";
 import type { ReactElement } from "react";
 
+import { useQuotesTranslation } from "../i18n/index.ts";
+
 import { useFixControlSubmission } from "./use-fix-control-submission.hook.ts";
 
 export type ConfirmFixControlProps = {
@@ -35,13 +37,18 @@ export function ConfirmFixControl({
     value,
     onConfirm,
 }: ConfirmFixControlProps): ReactElement {
+    const { t } = useQuotesTranslation();
     const { isPending, error, run } = useFixControlSubmission(
-        "Couldn't confirm. Try again.",
+        t("readinessFixControls.confirmError"),
     );
     const location = item.questionLabel ?? item.areaLabel;
     const accessibleLabel = location
-        ? `Confirm ${label} "${value}" for ${location}`
-        : `Confirm ${label} "${value}"`;
+        ? t("readinessFixControls.confirmAccessibleLabelWithLocation", {
+              label,
+              value,
+              location,
+          })
+        : t("readinessFixControls.confirmAccessibleLabel", { label, value });
 
     return (
         <Box direction="column" gap="xs">
@@ -60,7 +67,9 @@ export function ConfirmFixControl({
                     disabled={isPending}
                     onClick={() => void run(() => onConfirm())}
                 >
-                    {isPending ? "Confirming…" : "Confirm"}
+                    {isPending
+                        ? t("readinessFixControls.confirming")
+                        : t("readinessFixControls.confirm")}
                 </Button>
             </Box>
             {error && (
