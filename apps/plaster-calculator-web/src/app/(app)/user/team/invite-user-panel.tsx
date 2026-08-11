@@ -97,8 +97,8 @@ export function InviteUserPanel({
                         }
                     >
                         {invitations.isInviting
-                            ? "Sending invitation..."
-                            : "Send invitation"}
+                            ? "Creating invitation..."
+                            : "Create invitation"}
                     </Button>
                     {emailDraftHref !== null && (
                         <ButtonLink
