@@ -3,13 +3,14 @@
 import { TEAM_MEMBER_ROLE } from "@libraries/plaster-calculator-common";
 import {
     Button,
+    ButtonLink,
     Card,
     FormLayout,
     FormLayoutField,
     Input,
     Text,
 } from "@libraries/uikit-web";
-import { UserPlus } from "lucide-react";
+import { Mail, UserPlus } from "lucide-react";
 import { useState } from "react";
 import type { FormEvent, ReactElement } from "react";
 
@@ -30,23 +31,31 @@ export function InviteUserPanel({
     invitations,
 }: InviteUserPanelProps): ReactElement {
     const [email, setEmail] = useState("");
+    const [emailDraftHref, setEmailDraftHref] = useState<string | null>(null);
 
     async function submitInvitation(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        setEmailDraftHref(null);
+        const reservedEmailWindow = window.open("", "_blank");
         const response = await invitations.invite({
             email: email.trim().toLowerCase(),
             role: INVITATION_ROLE,
         });
-        if (response === null) return;
+        if (response === null) {
+            reservedEmailWindow?.close();
+            return;
+        }
 
         const invitationUrl = buildInvitationUrl(
             response.path,
             window.location.origin,
         );
-        window.location.href = buildInvitationMailtoHref(
+        const mailtoHref = buildInvitationMailtoHref(
             response.invitation.email,
             invitationUrl,
         );
+        setEmailDraftHref(mailtoHref);
+        openEmailDraft(mailtoHref, reservedEmailWindow);
         setEmail("");
     }
 
@@ -72,7 +81,10 @@ export function InviteUserPanel({
                             value={email}
                             required
                             disabled={isActionPending(invitations)}
-                            onChange={(event) => setEmail(event.target.value)}
+                            onChange={(event) => {
+                                setEmail(event.target.value);
+                                setEmailDraftHref(null);
+                            }}
                         />
                     </FormLayoutField>
                     <Button
@@ -88,10 +100,31 @@ export function InviteUserPanel({
                             ? "Sending invitation..."
                             : "Send invitation"}
                     </Button>
+                    {emailDraftHref !== null && (
+                        <ButtonLink
+                            href={emailDraftHref}
+                            variant="secondary"
+                            fullWidth
+                        >
+                            <Mail size={16} aria-hidden="true" />
+                            Open email draft
+                        </ButtonLink>
+                    )}
                 </Card.Body>
             </Card>
         </FormLayout>
     );
+}
+
+function openEmailDraft(
+    mailtoHref: string,
+    reservedEmailWindow: Window | null,
+): void {
+    if (reservedEmailWindow === null) {
+        window.location.href = mailtoHref;
+    } else {
+        reservedEmailWindow.location.href = mailtoHref;
+    }
 }
 
 function isActionPending(invitations: UseTeamInvitationsResult): boolean {

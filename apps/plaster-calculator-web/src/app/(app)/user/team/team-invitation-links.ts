@@ -12,7 +12,7 @@ export function buildInvitationMailtoHref(
         subject: INVITATION_EMAIL_SUBJECT,
         body: invitationEmailBody(invitationUrl),
     });
-    return `mailto:${encodeURIComponent(email)}?${query.toString()}`;
+    return `mailto:${email}?${query.toString()}`;
 }
 
 function invitationEmailBody(invitationUrl: string): string {
