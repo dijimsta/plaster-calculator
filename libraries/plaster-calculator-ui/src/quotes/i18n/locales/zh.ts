@@ -121,6 +121,11 @@ export const zh = createTranslationResource(
             confirmAccessibleLabelWithLocation:
                 "确认{{location}}的{{label}}“{{value}}”",
             confirmAccessibleLabel: "确认{{label}}“{{value}}”",
+            floorplanDeepLink: Object.freeze({
+                setScale: "设置比例",
+                drawRooms: "绘制房间",
+                actionWithPage: "在第 {{pageNumber}} 页{{action}}",
+            }),
         }),
     }),
 );

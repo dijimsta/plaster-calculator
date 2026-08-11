@@ -1,5 +1,9 @@
 export { ProjectEditor } from "./project-editor.js";
-export type { ProjectEditorProps } from "./project-editor.types.js";
+export { EDITOR_INITIAL_TOOLS } from "./project-editor.types.js";
+export type {
+    EditorInitialTool,
+    ProjectEditorProps,
+} from "./project-editor.types.js";
 export {
     parseOverlay,
     parseReferencePoints,

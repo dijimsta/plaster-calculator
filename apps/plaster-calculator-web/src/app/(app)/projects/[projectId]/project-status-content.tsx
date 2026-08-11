@@ -1,6 +1,7 @@
 "use client";
 
 import type {
+    EditorInitialTool,
     PageValidationInput,
     ValidationIssue,
 } from "@libraries/plaster-calculator-ui";
@@ -33,6 +34,12 @@ const ProjectEditor = dynamic(
 interface ProjectStatusContentProps {
     readonly companyId: string | null;
     readonly analyzingPage: boolean;
+    /**
+     * A WORK-139 quote-readiness deep link's tool, applied once on the
+     * editor's mount. `null`/`undefined` leaves tool selection at its
+     * normal default.
+     */
+    readonly initialTool?: EditorInitialTool | null;
     readonly load: () => Promise<void>;
     readonly project: ProjectDetail;
     readonly salesStatusPanel: ReactNode;
@@ -51,6 +58,7 @@ interface ProjectStatusContentProps {
 export function ProjectStatusContent({
     companyId,
     analyzingPage,
+    initialTool,
     load,
     project,
     salesStatusPanel,
@@ -163,6 +171,7 @@ export function ProjectStatusContent({
                     validationIssues={validationIssues.filter(
                         (issue) => issue.pageId === selectedPage.id,
                     )}
+                    initialTool={initialTool}
                 />
             )}
             {selectedPage?.processingError && (
