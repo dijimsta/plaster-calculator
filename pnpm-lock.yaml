@@ -146,9 +146,6 @@ importers:
       i18next:
         specifier: ^26.3.6
         version: 26.3.6(typescript@6.0.3)
-      konva:
-        specifier: ^10.3.0
-        version: 10.3.0
       lucide-react:
         specifier: ^1.28.0
         version: 1.28.0(react@19.2.8)
@@ -167,9 +164,6 @@ importers:
       react-i18next:
         specifier: ^17.0.11
         version: 17.0.11(i18next@26.3.6(typescript@6.0.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
-      react-konva:
-        specifier: ^19.2.5
-        version: 19.2.5(@types/react@19.2.18)(konva@10.3.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.3.3
@@ -399,6 +393,9 @@ importers:
       firebase:
         specifier: ^12.17.0
         version: 12.17.0
+      konva:
+        specifier: ^10.3.0
+        version: 10.3.0
       lucide-react:
         specifier: ^1.28.0
         version: 1.28.0(react@19.2.8)
@@ -411,6 +408,9 @@ importers:
       react-hook-form:
         specifier: ^7.84.0
         version: 7.84.0(react@19.2.8)
+      react-konva:
+        specifier: ^19.2.5
+        version: 19.2.5(@types/react@19.2.18)(konva@10.3.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
       '@types/react':
         specifier: ^19.2.18

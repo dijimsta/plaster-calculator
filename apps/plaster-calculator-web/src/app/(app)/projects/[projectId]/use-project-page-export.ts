@@ -1,16 +1,16 @@
 "use client";
 
-import type { ProjectsService } from "@libraries/plaster-calculator-web-core";
-import type { useNotificationsManager } from "@libraries/uikit-web";
-import { useCallback, useEffect, useState } from "react";
-
 import {
     parseOverlay,
     parseReferencePoints,
     validatePageForExport,
     type PageValidationInput,
     type ValidationIssue,
-} from "../../../../lib/validation.js";
+} from "@libraries/plaster-calculator-ui";
+import type { ProjectsService } from "@libraries/plaster-calculator-web-core";
+import type { useNotificationsManager } from "@libraries/uikit-web";
+import { useCallback, useEffect, useState } from "react";
+
 import type { ProjectDetail } from "../../../../types.js";
 
 type Notifications = ReturnType<typeof useNotificationsManager>;
