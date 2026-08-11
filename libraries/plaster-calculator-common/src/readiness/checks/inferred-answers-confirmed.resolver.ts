@@ -10,10 +10,9 @@ import type {
  * `AI_CONFIRMED` — so "inferred and not yet confirmed" is exactly
  * `answerSource === AI_SUGGESTED`; `AI_CONFIRMED` answers have already been
  * through this same confirmation step and are met, same as `MANUAL` ones.
- * No question-level identity is set on the result: `ReadinessResult` only
- * carries `pageId`/`areaId`/`quoteItemTemplateId`, none of which identify a
- * questionnaire question, so the fix control targets the questionnaire as a
- * whole via `affectedItemCount`.
+ * Each unconfirmed answer becomes one `ReadinessAffectedItem`, identified by
+ * `questionId` and named by `questionLabel` (there's no page/room for a
+ * questionnaire question to be named by).
  */
 export const INFERRED_ANSWERS_CONFIRMED_CHECK_ID = "INFERRED_ANSWERS_CONFIRMED";
 
@@ -29,5 +28,9 @@ export function resolveInferredAnswersConfirmed(
         checkId: INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
         isMet: unconfirmed.length === 0,
         affectedItemCount: unconfirmed.length,
+        affectedItems: unconfirmed.map((question) => ({
+            questionId: question.questionId,
+            questionLabel: question.label,
+        })),
     };
 }

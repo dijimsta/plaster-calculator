@@ -16,6 +16,9 @@ export function resolveScaleApplied(
         checkId: SCALE_APPLIED_CHECK_ID,
         isMet: unscaledPages.length === 0,
         affectedItemCount: unscaledPages.length,
-        ...(unscaledPages[0] ? { pageId: unscaledPages[0].id } : {}),
+        affectedItems: unscaledPages.map((page) => ({
+            pageId: page.id,
+            pageNumber: page.pageNumber,
+        })),
     };
 }

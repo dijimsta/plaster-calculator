@@ -14,11 +14,16 @@ test("resolveRoomsMeasured is met when every page has a non-deleted area", () =>
 });
 
 test("resolveRoomsMeasured is unmet when a page's only area is deleted", () => {
-    const emptyPage = page({ overlay: overlayJson([area({ deleted: true })]) });
+    const emptyPage = page({
+        overlay: overlayJson([area({ deleted: true })]),
+        pageNumber: 3,
+    });
     const result = resolveRoomsMeasured({ project: project([emptyPage]) });
     assert.equal(result.isMet, false);
     assert.equal(result.affectedItemCount, 1);
-    assert.equal(result.pageId, emptyPage.id);
+    assert.deepEqual(result.affectedItems, [
+        { pageId: emptyPage.id, pageNumber: 3 },
+    ]);
 });
 
 test("resolveRoomsMeasured rolls up per page: page 1 complete, page 2 unscaled/unmeasured", () => {
@@ -32,5 +37,5 @@ test("resolveRoomsMeasured rolls up per page: page 1 complete, page 2 unscaled/u
     });
     assert.equal(result.isMet, false);
     assert.equal(result.affectedItemCount, 1);
-    assert.equal(result.pageId, unmeasuredPage.id);
+    assert.equal(result.affectedItems[0]?.pageId, unmeasuredPage.id);
 });

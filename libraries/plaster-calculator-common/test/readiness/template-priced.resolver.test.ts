@@ -19,14 +19,22 @@ test("resolveTemplatePriced is met when every enabled, quantity-sourced item has
 });
 
 test("resolveTemplatePriced is unmet for an enabled, quantity-sourced item with no price", () => {
-    const unpriced = quoteItemTemplateConfig({ unitPriceCents: 0 });
+    const unpriced = quoteItemTemplateConfig({
+        unitPriceCents: 0,
+        label: "Cornice",
+    });
     const result = resolveTemplatePriced({
         project: project([page()]),
         quoteItemTemplateConfigs: [unpriced],
     });
     assert.equal(result.isMet, false);
     assert.equal(result.affectedItemCount, 1);
-    assert.equal(result.quoteItemTemplateId, unpriced.quoteItemTemplateId);
+    assert.deepEqual(result.affectedItems, [
+        {
+            quoteItemTemplateId: unpriced.quoteItemTemplateId,
+            quoteItemTemplateLabel: "Cornice",
+        },
+    ]);
 });
 
 test("resolveTemplatePriced ignores disabled items and items with no quantity source", () => {

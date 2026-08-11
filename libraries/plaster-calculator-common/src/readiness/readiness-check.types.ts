@@ -32,10 +32,14 @@ export type ReadinessCheckId = string;
  * responsible for mapping their Data Connect query results onto it.
  * `quantitySourceId` is the id of the `QuoteItemTemplate` this config prices;
  * `null` for a template with no wired automatic quantity source (e.g. a
- * purely manual/custom line item).
+ * purely manual/custom line item). `label` is the template's display name
+ * (e.g. `QuoteItemTemplate.name`), carried alongside the id so a resolver
+ * can populate `ReadinessAffectedItem.quoteItemTemplateLabel` without a
+ * separate lookup.
  */
 export type ReadinessQuoteItemTemplateConfig = {
     readonly quoteItemTemplateId: string;
+    readonly label: string;
     readonly enabled: boolean;
     readonly unitPriceCents: number;
     readonly quantitySourceId: string | null;
@@ -45,10 +49,13 @@ export type ReadinessQuoteItemTemplateConfig = {
  * A single questionnaire question's answer state, as needed by the
  * "inferred answers confirmed" readiness check. See the note on
  * `ReadinessQuoteItemTemplateConfig` about why this isn't
- * `ProjectQuestionnaireQuestion` from the generated SDK.
+ * `ProjectQuestionnaireQuestion` from the generated SDK. `label` is the
+ * question's display text, carried alongside the id so the resolver can
+ * populate `ReadinessAffectedItem.questionLabel` without a separate lookup.
  */
 export type ReadinessQuestionnaireAnswer = {
     readonly questionId: string;
+    readonly label: string;
     readonly answer: string | null;
     readonly answerSource: string;
 };
@@ -67,19 +74,39 @@ export type ReadinessCheckInput = {
 };
 
 /**
- * The outcome of running a single `ReadinessCheck` resolver against a
- * project. `pageId`, `areaId`, and `quoteItemTemplateId` are optional
+ * One item affected by an unmet `ReadinessCheck` — e.g. one room missing a
+ * wall type, or one unpriced quote item template. Every field is optional
  * because different checks affect different entity types; a resolver
- * populates whichever field identifies the item its fix control should
- * target.
+ * populates whichever fields identify the item and, wherever possible, name
+ * it in human-readable terms (a page number and room label, not raw ids) so
+ * a UI can render it without a separate lookup.
+ */
+export type ReadinessAffectedItem = {
+    readonly pageId?: string;
+    readonly pageNumber?: number;
+    readonly areaId?: string;
+    readonly areaLabel?: string;
+    readonly quoteItemTemplateId?: string;
+    readonly quoteItemTemplateLabel?: string;
+    readonly questionId?: string;
+    readonly questionLabel?: string;
+};
+
+/**
+ * The outcome of running a single `ReadinessCheck` resolver against a
+ * project. `affectedItems` holds one `ReadinessAffectedItem` per item the
+ * check found unmet, in the same order counted by `affectedItemCount` (so
+ * `affectedItems.length === affectedItemCount` whenever `isMet` is
+ * `false`) — a check can affect several rooms or pages at once (e.g. four
+ * rooms missing a wall type), and a UI needs all of them, not just the
+ * first, to let a row expand into per-item fixes. `affectedItems` is empty
+ * when `isMet` is `true`.
  */
 export type ReadinessResult = {
     readonly checkId: ReadinessCheckId;
     readonly isMet: boolean;
     readonly affectedItemCount: number;
-    readonly pageId?: string;
-    readonly areaId?: string;
-    readonly quoteItemTemplateId?: string;
+    readonly affectedItems: readonly ReadinessAffectedItem[];
 };
 
 /** Evaluates a `ReadinessCheck` against a project's readiness-gate input. */
