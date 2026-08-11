@@ -6,6 +6,8 @@ import {
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import type { ReactNode } from "react";
 
+import { useEditorTranslation } from "../i18n/index.js";
+
 import {
     CEILING_BOARD_TYPES,
     normalizeCeilingBoardType,
@@ -30,13 +32,14 @@ export function BoardControls({
     selectedArea,
     setMaterial,
 }: BoardControlsProps) {
+    const { t } = useEditorTranslation();
     return (
         <>
             {!selectedArea.isOutdoor && (
                 <>
                     <MaterialSelect
                         error={areaIssue(selectedArea.id, "wallBoardProfile")}
-                        label="Wall profile"
+                        label={t("selectionBoardControls.wallProfileLabel")}
                         options={WALL_BOARD_PROFILES}
                         value={BoardMaterialsHelper.normalizeWallBoardProfile(
                             selectedArea.wallBoardProfile,
@@ -48,7 +51,7 @@ export function BoardControls({
                     />
                     <MaterialSelect
                         error={areaIssue(selectedArea.id, "wallBoardType")}
-                        label="Wall board"
+                        label={t("selectionBoardControls.wallBoardLabel")}
                         options={WALL_BOARD_TYPES}
                         value={BoardMaterialsHelper.normalizeWallBoardType(
                             selectedArea.wallBoardType,
@@ -63,7 +66,7 @@ export function BoardControls({
             )}
             <MaterialSelect
                 error={areaIssue(selectedArea.id, "ceilingPlasterType")}
-                label="Ceiling board"
+                label={t("selectionBoardControls.ceilingBoardLabel")}
                 options={CEILING_BOARD_TYPES}
                 value={normalizeCeilingBoardType(
                     selectedArea.ceilingPlasterType,

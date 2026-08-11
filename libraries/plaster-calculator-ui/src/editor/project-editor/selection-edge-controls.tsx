@@ -10,6 +10,8 @@ import type {
 import { Button } from "@libraries/uikit-web";
 import type { ReactNode } from "react";
 
+import { useEditorTranslation } from "../i18n/index.js";
+
 import { cx, ui } from "./project-editor.styles.js";
 import { MaterialSelect } from "./selection-board-controls.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
@@ -40,6 +42,7 @@ export function SelectedEdgeControls({
     setSelectedEdgeMaterial,
     setSelectedEdgeNoPlaster,
 }: SelectedEdgeControlsProps) {
+    const { t } = useEditorTranslation();
     return (
         <>
             <div className={ui.metric}>
@@ -76,7 +79,7 @@ export function SelectedEdgeControls({
                 )}
             >
                 <MaterialSelect
-                    label="Wall profile"
+                    label={t("selectionBoardControls.wallProfileLabel")}
                     options={WALL_BOARD_PROFILES}
                     value={selectedEdgeWallProfile(
                         selectedEdgeOverride,
@@ -87,7 +90,7 @@ export function SelectedEdgeControls({
                     }
                 />
                 <MaterialSelect
-                    label="Wall board"
+                    label={t("selectionBoardControls.wallBoardLabel")}
                     options={WALL_BOARD_TYPES}
                     value={selectedEdgeWallType(
                         selectedEdgeOverride,

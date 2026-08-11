@@ -1,6 +1,8 @@
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import { Button, Input, Label, SelectMenu } from "@libraries/uikit-web";
 
+import { useEditorTranslation } from "../i18n/index.js";
+
 import { ui } from "./project-editor.styles.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 import { ValidationMessage } from "./validation-message.js";
@@ -33,6 +35,7 @@ export function CeilingControls({
     setRakedHeight,
     setSelectedAreaHeight,
 }: CeilingControlsProps) {
+    const { t } = useEditorTranslation();
     const mode = area.ceilingMode ?? "flat";
     const raked = area.rakedCeiling;
     const roomHeightError = areaIssue(area.id, "ceilingHeightMm");
@@ -44,11 +47,19 @@ export function CeilingControls({
     return (
         <>
             <div className={ui.field}>
-                <Label>Room ceiling</Label>
+                <Label>{t("ceilingControls.roomCeilingLabel")}</Label>
                 <SelectMenu
                     options={[
-                        { value: "flat", label: "Flat" },
-                        { value: "raked", label: "Raked" },
+                        {
+                            value: "flat",
+                            label: t("ceilingControls.ceilingModeOptions.flat"),
+                        },
+                        {
+                            value: "raked",
+                            label: t(
+                                "ceilingControls.ceilingModeOptions.raked",
+                            ),
+                        },
                     ]}
                     value={mode}
                     onChange={(event) =>
@@ -94,14 +105,15 @@ function FlatCeilingHeightField({
     value,
     setSelectedAreaHeight,
 }: FlatCeilingHeightFieldProps) {
+    const { t } = useEditorTranslation();
     const placeholder =
         ceilingHeightMm == null
-            ? "Page height not set"
+            ? t("ceilingControls.pageHeightNotSet")
             : String(ceilingHeightMm);
 
     return (
         <div className={ui.field}>
-            <Label>Room height override mm</Label>
+            <Label>{t("ceilingControls.roomHeightOverrideLabel")}</Label>
             <Input
                 type="number"
                 invalid={Boolean(error)}
@@ -140,6 +152,7 @@ function RakedCeilingFields({
     setRakedEdge,
     setRakedHeight,
 }: RakedCeilingFieldsProps) {
+    const { t } = useEditorTranslation();
     const edgeError = lowEdgeError || highEdgeError;
     const edgeSelectionDisabled =
         !selectedEdge || selectedEdge.areaId !== areaId;
@@ -168,14 +181,14 @@ function RakedCeilingFields({
                 {edgeLabel(raked?.highEdgeIndex)}
             </div>
             <RakedHeightField
-                label="Low height mm"
+                label={t("ceilingControls.lowHeightLabel")}
                 field="lowHeightMm"
                 error={lowHeightError}
                 value={raked?.lowHeightMm}
                 setRakedHeight={setRakedHeight}
             />
             <RakedHeightField
-                label="High height mm"
+                label={t("ceilingControls.highHeightLabel")}
                 field="highHeightMm"
                 error={highHeightError}
                 value={raked?.highHeightMm}

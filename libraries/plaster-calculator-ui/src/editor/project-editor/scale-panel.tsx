@@ -3,6 +3,8 @@ import { Button, Paragraph } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { useEditorTranslation } from "../i18n/index.js";
+
 import { cx, ui } from "./project-editor.styles.js";
 import type { ValidationIssue } from "./validation.js";
 
@@ -37,6 +39,7 @@ export function ScalePanel({
     setReferencePoints,
     startReferenceMode,
 }: ScalePanelProps) {
+    const { t } = useEditorTranslation();
     return (
         <div className={ui.stack}>
             <div className={ui.buttonRow}>
@@ -49,7 +52,9 @@ export function ScalePanel({
                     }
                 >
                     <MousePointer2 size={18} />{" "}
-                    {isSettingReference ? "Cancel reference" : "Set reference"}
+                    {isSettingReference
+                        ? t("scalePanel.cancelReference")
+                        : t("scalePanel.setReference")}
                 </Button>
                 <Button
                     variant="secondary"
@@ -63,11 +68,13 @@ export function ScalePanel({
             </div>
             <Paragraph textSize="sm" variant="muted">
                 {isSettingReference
-                    ? "Click two points on the image."
-                    : `${referencePoints.length}/2 reference points set.`}
+                    ? t("scalePanel.clickTwoPoints")
+                    : t("scalePanel.referencePointsSet", {
+                          points: referencePoints.length,
+                      })}
             </Paragraph>
             <div className={ui.field}>
-                <label>Reference length mm</label>
+                <label>{t("scalePanel.referenceLengthLabel")}</label>
                 <input
                     className={cx(
                         ui.input,

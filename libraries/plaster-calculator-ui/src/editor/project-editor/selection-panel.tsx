@@ -9,6 +9,8 @@ import type {
 import { Paragraph } from "@libraries/uikit-web";
 import type { ReactNode } from "react";
 
+import { useEditorTranslation } from "../i18n/index.js";
+
 import { CEILING_BOARD_TYPES } from "./board-materials.js";
 import type { SelectionMetrics } from "./editor-sidebar.types.js";
 import { cx, ui } from "./project-editor.styles.js";
@@ -168,6 +170,7 @@ function MultiAreaControls({
     SelectionPanelProps,
     "commonMaterialValue" | "selectedAreaIds" | "setMaterial"
 >) {
+    const { t } = useEditorTranslation();
     return (
         <>
             <div className={ui.metric}>
@@ -175,21 +178,21 @@ function MultiAreaControls({
                 to all selected areas.
             </div>
             <MaterialSelect
-                label="Wall profile"
+                label={t("selectionBoardControls.wallProfileLabel")}
                 options={WALL_BOARD_PROFILES}
                 showMixedOption
                 value={commonMaterialValue("wallBoardProfile")}
                 onChange={(value) => setMaterial("wallBoardProfile", value)}
             />
             <MaterialSelect
-                label="Wall board"
+                label={t("selectionBoardControls.wallBoardLabel")}
                 options={WALL_BOARD_TYPES}
                 showMixedOption
                 value={commonMaterialValue("wallBoardType")}
                 onChange={(value) => setMaterial("wallBoardType", value)}
             />
             <MaterialSelect
-                label="Ceiling board"
+                label={t("selectionBoardControls.ceilingBoardLabel")}
                 options={CEILING_BOARD_TYPES}
                 showMixedOption
                 value={commonMaterialValue("ceilingPlasterType")}
@@ -221,11 +224,12 @@ function SingleAreaControls({
     | "toggleOutdoor"
     | "updateArea"
 >) {
+    const { t } = useEditorTranslation();
     if (!selectedArea) return null;
     return (
         <>
             <div className={ui.field}>
-                <label>Area label</label>
+                <label>{t("selectionPanel.areaLabelField")}</label>
                 <input
                     className={cx(
                         ui.input,
