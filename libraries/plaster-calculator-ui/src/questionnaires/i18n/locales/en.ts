@@ -46,6 +46,55 @@ export const en = Object.freeze({
         answerPlaceholder: "Answer",
         answerLabel: "Answer for question {{number}}",
     }),
+    projectQuestionnairesPage: Object.freeze({
+        unableToLoadProject: "Unable to load project",
+        unableToRenameProject: "Unable to rename project",
+        autoFilling: "Auto-filling…",
+        autoFill: "Auto-fill",
+        generateEmail: "Generate email",
+        emptyStateTitle: "No questionnaire yet",
+        emptyStateDescription:
+            "Add a question or copy them in from a template.",
+    }),
+    questionnairesPage: Object.freeze({
+        description:
+            "Every project's scope questionnaire in one place. Open one to auto-fill, confirm answers and chase the builder for what's missing.",
+        statusLabels: Object.freeze({
+            NOT_STARTED: "Not started",
+            IN_PROGRESS: "In progress",
+            COMPLETED: "Completed",
+        }),
+        stats: Object.freeze({
+            total: "Total questionnaires",
+            inProgress: "In progress",
+            completed: "Completed",
+        }),
+        loading: "Loading questionnaires...",
+        emptyStateTitle: "No questionnaires yet",
+        tableHeaders: Object.freeze({
+            project: "Project",
+            progress: "Progress",
+            status: "Status",
+            updated: "Updated",
+        }),
+        answeredSummary: "{{answeredCount}} of {{totalQuestions}} confirmed",
+        answeredSummaryWithOpen:
+            "{{answeredCount}} of {{totalQuestions}} confirmed – {{openCount}} open",
+        answeredProgress: "{{projectName}} answered",
+    }),
+    questionnaireTemplatesPage: Object.freeze({
+        description:
+            "The question sets the AI fills in when you auto-fill a project. Use the built-in standards or duplicate a template to make your own.",
+        newTemplate: "New Template",
+        emptyStateTitle: "No templates yet",
+        emptyStateDescription:
+            "Create a template to define the questions the AI fills in when auto-filling a project.",
+        deleteDialogTitle: "Delete template?",
+        deleteDialogDescription: "This action cannot be undone.",
+        delete: "Delete",
+        deleting: "Deleting...",
+        deleteConfirmation: "“{{templateName}}” will be permanently deleted.",
+    }),
     questionnaireTemplateCard: Object.freeze({
         edit: "Edit",
         duplicateTemplate: "Duplicate template",
