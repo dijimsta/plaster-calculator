@@ -18,7 +18,7 @@ const Link = LinkModule.default;
 export interface ProjectHeaderProps {
     readonly project: ProjectDetail | null;
     readonly projectId: string;
-    readonly activeTab: "floorplan" | "questionnaires";
+    readonly activeTab: "floorplan" | "questionnaires" | "quote";
     readonly renaming?: boolean;
     readonly renameValue?: string;
     readonly load: () => void;
@@ -92,6 +92,9 @@ export function ProjectHeader({
                         <Link href={`/projects/${projectId}/questionnaires`}>
                             Questionnaire
                         </Link>
+                    </Tabs.Item>
+                    <Tabs.Item current={activeTab === "quote"}>
+                        <Link href={`/projects/${projectId}/quote`}>Quote</Link>
                     </Tabs.Item>
                 </Tabs>
             </PageHeading.Navigation>
