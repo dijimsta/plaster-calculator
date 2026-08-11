@@ -1,7 +1,10 @@
+"use client";
+
 import { Button, Input, Label, Text } from "@libraries/uikit-web";
 import { Upload } from "lucide-react";
 
 import { CompanySelect } from "../../components/company-select.js";
+import { useAppTranslation } from "../../i18n/index.ts";
 import { cx, ui } from "../../lib/styles.js";
 
 import type {
@@ -23,30 +26,36 @@ export function NewProjectForm({
     setName,
     submit,
 }: NewProjectFormProps) {
+    const { t } = useAppTranslation();
+
     return (
         <form
             className={cx(ui.panel, ui.stack, "self-start")}
             onSubmit={submit}
         >
-            <h2>New Project</h2>
+            <h2>{t("newProjectForm.title")}</h2>
             <div className={ui.field}>
-                <Label htmlFor="name">Address or project name</Label>
+                <Label htmlFor="name">
+                    {t("newProjectForm.projectNameLabel")}
+                </Label>
                 <Input
                     id="name"
                     value={name}
                     onChange={(event) => setName(event.target.value)}
-                    placeholder="12 Example Street"
+                    placeholder={t("newProjectForm.projectNamePlaceholder")}
                 />
             </div>
             <CompanySelect
                 selectedCompanyId={companyId}
                 onChange={setCompanyId}
                 disabled={loading}
-                label="Company"
-                placeholder="Search company by company name"
+                label={t("newProjectForm.companyLabel")}
+                placeholder={t("newProjectForm.companyPlaceholder")}
             />
             <div className={ui.field}>
-                <span className={ui.label}>PDF or image file</span>
+                <span className={ui.label}>
+                    {t("newProjectForm.fileLabel")}
+                </span>
                 <label
                     className={cx(
                         ui.fileDropzone,
@@ -75,17 +84,19 @@ export function NewProjectForm({
                     />
                     <Upload size={28} />
                     <strong>
-                        {file ? file.name : "Drop a PDF or image here"}
+                        {file
+                            ? file.name
+                            : t("newProjectForm.dropFileInstruction")}
                     </strong>
                     <Text size="sm" variant="muted">
                         {file
-                            ? "Click to choose a different file"
-                            : "Click to browse from your computer"}
+                            ? t("newProjectForm.chooseDifferentFile")
+                            : t("newProjectForm.browseFileInstruction")}
                     </Text>
                 </label>
             </div>
             <Button variant="primary" disabled={!file || loading}>
-                <Upload size={18} /> Upload
+                <Upload size={18} /> {t("newProjectForm.upload")}
             </Button>
             {message && (
                 <p
