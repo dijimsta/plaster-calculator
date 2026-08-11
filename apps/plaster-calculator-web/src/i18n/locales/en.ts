@@ -163,6 +163,63 @@ export const en = Object.freeze({
             add: "Add contact",
         }),
     }),
+    userPage: Object.freeze({
+        profile: Object.freeze({
+            title: "Profile",
+            description:
+                "Account details from your signed-in profile and connected login providers.",
+            signedInUser: "Signed in user",
+            noEmailAddress: "No email address",
+            notProvided: "Not provided",
+            fields: Object.freeze({
+                name: "Name",
+                email: "Email",
+            }),
+            connectedLogins: "Connected logins",
+            noConnectedSocialLogins: "No connected social logins.",
+        }),
+        appearance: Object.freeze({
+            title: "Appearance",
+            description:
+                "Choose the colour mode used across the calculator workspace.",
+        }),
+        language: Object.freeze({
+            title: "Language",
+            description: "Choose the language used for questionnaire forms.",
+        }),
+    }),
+    userSettings: Object.freeze({
+        title: "Reminder settings",
+        description:
+            "Control how quote follow-up reminders are created for new work.",
+        loading: "Loading settings...",
+        unableToLoad: "Unable to load settings.",
+        quoteFollowUpReminders: "Quote follow-up reminders",
+        quoteFollowUpDescription:
+            "Automatically create reminders to follow up on quotes.",
+        dueInDays: "Due in days",
+        saving: "Saving...",
+        save: "Save reminder settings",
+        saved: "Settings saved.",
+        unableToSave: "Unable to save settings.",
+    }),
+    emailSignature: Object.freeze({
+        title: "Email signature",
+        description:
+            "These details are used to build the signature appended to outgoing emails.",
+        loading: "Loading email signature...",
+        fields: Object.freeze({
+            name: "Name",
+            companyName: "Company name",
+            address: "Address",
+            mobile: "Mobile",
+            phone: "Phone",
+            email: "Email",
+        }),
+        saving: "Saving...",
+        save: "Save email signature",
+        saved: "Email signature saved.",
+    }),
     projectHistory: Object.freeze({
         noStatusProjects: "No {{status}} projects",
     }),
