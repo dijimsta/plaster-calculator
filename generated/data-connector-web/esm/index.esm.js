@@ -471,6 +471,19 @@ export function listQuoteItemTemplateConfigsForQuoteTemplate(dcOrVars, varsOrOpt
   return executeQuery(listQuoteItemTemplateConfigsForQuoteTemplateRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 
+export const getQuoteReadinessRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuoteReadiness', inputVars);
+}
+getQuoteReadinessRef.operationName = 'GetQuoteReadiness';
+
+export function getQuoteReadiness(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
+  return executeQuery(getQuoteReadinessRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+
 export const getMyTeamRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
