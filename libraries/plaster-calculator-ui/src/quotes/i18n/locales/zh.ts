@@ -54,6 +54,11 @@ export const zh = createTranslationResource(
                 EZY_JAMB_DOOR_SETS: "根据门套数量计算",
             }),
         }),
+        projectQuoteReadinessPage: Object.freeze({
+            unableToLoadProject: "无法加载项目",
+            loadingReadiness: "正在检查报价就绪状态…",
+            unableToLoadReadiness: "无法加载报价就绪状态，请尝试刷新。",
+        }),
         readinessSummaryHeader: Object.freeze({
             readyTitle: "可以生成报价",
             notReadyTitle: "尚不能生成报价",
