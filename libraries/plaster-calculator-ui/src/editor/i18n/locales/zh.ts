@@ -62,5 +62,11 @@ export const zh = createTranslationResource(
             wallLength: "墙面长度",
             ceilingArea: "天花板面积",
         }),
+        projectEditor: Object.freeze({
+            confirmReanalyze: "要分析此页面吗？现有多边形将被替换。",
+            analyzingStatus: "正在分析平面图...",
+            analysisCompleteStatus: "分析完成",
+            analysisFailedStatus: "分析失败",
+        }),
     }),
 );

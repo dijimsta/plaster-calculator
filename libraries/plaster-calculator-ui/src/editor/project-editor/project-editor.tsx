@@ -5,6 +5,8 @@ import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import type { Stage as KonvaStage } from "konva/lib/Stage.js";
 import { useEffect, useRef, useState } from "react";
 
+import { useEditorTranslation } from "../i18n/index.js";
+
 import { ProjectEditorView } from "./project-editor-view.js";
 import type {
     OverlayMode,
@@ -32,6 +34,7 @@ export function ProjectEditor({
     onDraftChange,
     validationIssues = [],
 }: ProjectEditorProps) {
+    const { t } = useEditorTranslation();
     const projectsService = useProjectsService();
     const imageState = useEditorImage(page.imageUrl);
     const [analysisRequested, setAnalysisRequested] = useState(false);
@@ -163,16 +166,14 @@ export function ProjectEditor({
         );
         if (
             hasPolygons &&
-            !window.confirm(
-                "Analyze this page? Existing polygons will be replaced.",
-            )
+            !window.confirm(t("projectEditor.confirmReanalyze"))
         ) {
             return;
         }
 
         setAnalysisRequested(true);
         onAnalyzingChange?.(true);
-        persistence.setStatus("Analyzing floorplan...");
+        persistence.setStatus(t("projectEditor.analyzingStatus"));
         try {
             await projectsService.analyzeFloorplanPage({
                 projectId: project.id,
@@ -187,11 +188,13 @@ export function ProjectEditor({
                     ? Number(overlayState.referenceLengthMm)
                     : null,
             });
-            persistence.setStatus("Analysis complete");
+            persistence.setStatus(t("projectEditor.analysisCompleteStatus"));
             await onSaved();
         } catch (error) {
             persistence.setStatus(
-                error instanceof Error ? error.message : "Analysis failed",
+                error instanceof Error
+                    ? error.message
+                    : t("projectEditor.analysisFailedStatus"),
             );
         } finally {
             setAnalysisRequested(false);
