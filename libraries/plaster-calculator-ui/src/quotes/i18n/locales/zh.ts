@@ -8,6 +8,14 @@ export const zh = createTranslationResource(
         common: Object.freeze({
             cancel: "取消",
         }),
+        quotesPage: Object.freeze({
+            description: "价格设置完成后，可在此查看根据项目生成的所有报价。",
+            emptyStateTitle: "暂无报价",
+            emptyStateDescription: "价格设置完成后，系统将根据项目生成报价。",
+        }),
+        quoteTemplatePage: Object.freeze({
+            description: "生成项目报价时使用的默认项目和价格。",
+        }),
         quoteTemplatePanel: Object.freeze({
             title: "报价模板",
             description:

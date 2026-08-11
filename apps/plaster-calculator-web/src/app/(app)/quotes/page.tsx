@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuotesTranslation } from "@libraries/plaster-calculator-ui";
 import {
     Box,
     Breadcrumb,
@@ -11,35 +12,49 @@ import { FileText, Home } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
+import { useAppTranslation } from "../../../i18n/index.ts";
 
 const Link = LinkModule.default;
 
 export default function QuotesPage() {
+    const { t } = useQuotesTranslation();
+    const { t: tApp } = useAppTranslation();
+
     return (
         <>
             <PageHeading>
                 <PageHeading.Breadcrumbs>
                     <Breadcrumb>
                         <RoutedBreadcrumbItem href="/">
-                            <Home size={16} aria-label="Home" />
+                            <Home
+                                size={16}
+                                aria-label={tApp("sidebar.navLabels.home")}
+                            />
                         </RoutedBreadcrumbItem>
-                        <Breadcrumb.Item current>Quotes</Breadcrumb.Item>
+                        <Breadcrumb.Item current>
+                            {tApp("quotes.title")}
+                        </Breadcrumb.Item>
                     </Breadcrumb>
                 </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
-                    <PageHeading.Title>Quotes</PageHeading.Title>
+                    <PageHeading.Title>
+                        {tApp("quotes.title")}
+                    </PageHeading.Title>
                     <PageHeading.Description>
-                        All quotes generated from your projects, once pricing is
-                        set up.
+                        {t("quotesPage.description")}
                     </PageHeading.Description>
                 </PageHeading.Content>
                 <PageHeading.Navigation>
                     <Tabs>
                         <Tabs.Item current>
-                            <Link href="/quotes">All quotes</Link>
+                            <Link href="/quotes">
+                                {tApp("quotes.allQuotesTab")}
+                            </Link>
                         </Tabs.Item>
                         <Tabs.Item>
-                            <Link href="/quotes/template">Quote template</Link>
+                            <Link href="/quotes/template">
+                                {tApp("quotes.templateTab")}
+                            </Link>
                         </Tabs.Item>
                     </Tabs>
                 </PageHeading.Navigation>
@@ -47,8 +62,8 @@ export default function QuotesPage() {
             <Box direction="column" gap="lg" padding="md">
                 <EmptyState
                     icon={<FileText />}
-                    title="No quotes yet"
-                    description="Quotes are generated from a project once pricing is set up."
+                    title={t("quotesPage.emptyStateTitle")}
+                    description={t("quotesPage.emptyStateDescription")}
                 />
             </Box>
         </>
