@@ -1,4 +1,11 @@
-import { EnsureMyTeamResponseSchema } from "@libraries/plaster-calculator-common";
+import {
+    EnsureMyTeamResponseSchema,
+    ListMyTeamMembersResponseSchema,
+    RemoveTeamMemberRequestSchema,
+    RemoveTeamMemberResponseSchema,
+    type ListMyTeamMembersResponse,
+    type RemoveTeamMemberResponse,
+} from "@libraries/plaster-calculator-common";
 import { httpsCallable, type Functions } from "firebase/functions";
 
 import { FirebaseService } from "../firebase/firebase.service.ts";
@@ -15,5 +22,20 @@ export class TeamsService {
         );
         const { data } = await ensureMyTeamCallable();
         return EnsureMyTeamResponseSchema.parse(data).teamId;
+    }
+
+    public async listMyTeamMembers(): Promise<ListMyTeamMembersResponse> {
+        const callable = httpsCallable(this.functions, "listMyTeamMembers");
+        const { data } = await callable();
+        return ListMyTeamMembersResponseSchema.parse(data);
+    }
+
+    public async removeTeamMember(
+        userId: string,
+    ): Promise<RemoveTeamMemberResponse> {
+        const request = RemoveTeamMemberRequestSchema.parse({ userId });
+        const callable = httpsCallable(this.functions, "removeTeamMember");
+        const { data } = await callable(request);
+        return RemoveTeamMemberResponseSchema.parse(data);
     }
 }
