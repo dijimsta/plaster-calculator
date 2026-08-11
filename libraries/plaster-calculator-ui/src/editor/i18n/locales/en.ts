@@ -57,4 +57,11 @@ export const en = Object.freeze({
         wallLength: "Wall length",
         ceilingArea: "Ceiling area",
     }),
+    projectEditor: Object.freeze({
+        confirmReanalyze:
+            "Analyze this page? Existing polygons will be replaced.",
+        analyzingStatus: "Analyzing floorplan...",
+        analysisCompleteStatus: "Analysis complete",
+        analysisFailedStatus: "Analysis failed",
+    }),
 });
