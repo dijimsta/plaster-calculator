@@ -67,6 +67,11 @@ export const zh = createTranslationResource(
                 actions: "操作",
             }),
         }),
+        questionnaires: Object.freeze({
+            title: "问卷",
+            projectsTab: "项目",
+            templatesTab: "模板",
+        }),
         projectHistory: Object.freeze({
             noStatusProjects: "没有{{status}}的项目",
         }),

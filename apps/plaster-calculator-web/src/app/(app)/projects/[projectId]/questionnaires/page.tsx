@@ -5,6 +5,7 @@ import {
     AddQuestionsFromTemplateDrawer,
     GenerateQuestionnaireEmailModal,
     ProjectQuestionnaireQuestionList,
+    useQuestionnairesTranslation,
 } from "@libraries/plaster-calculator-ui";
 import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
 import { useProjectsService } from "@libraries/plaster-calculator-web-core";
@@ -34,6 +35,7 @@ export default function ProjectQuestionnairesPage({
     params: Promise<{ projectId: string }>;
 }) {
     const { projectId } = use(params);
+    const { t } = useQuestionnairesTranslation();
     const projectsService = useProjectsService();
     const [project, setProject] = useState<ProjectDetail | null>(null);
     const [error, setError] = useState("");
@@ -54,10 +56,12 @@ export default function ProjectQuestionnairesPage({
             setRenameValue(detail.name);
         } catch (err) {
             setError(
-                err instanceof Error ? err.message : "Unable to load project",
+                err instanceof Error
+                    ? err.message
+                    : t("projectQuestionnairesPage.unableToLoadProject"),
             );
         }
-    }, [projectId, projectsService]);
+    }, [projectId, projectsService, t]);
 
     useEffect(() => {
         void load();
@@ -74,7 +78,9 @@ export default function ProjectQuestionnairesPage({
             setRenaming(false);
         } catch (err) {
             setError(
-                err instanceof Error ? err.message : "Unable to rename project",
+                err instanceof Error
+                    ? err.message
+                    : t("projectQuestionnairesPage.unableToRenameProject"),
             );
         }
     }
@@ -145,7 +151,9 @@ export default function ProjectQuestionnairesPage({
                         disabled={isAutoFilling || questions.length === 0}
                         onClick={() => void handleAutoFill()}
                     >
-                        {isAutoFilling ? "Auto-filling…" : "Auto-fill"}
+                        {isAutoFilling
+                            ? t("projectQuestionnairesPage.autoFilling")
+                            : t("projectQuestionnairesPage.autoFill")}
                     </Button>
                     <Button
                         variant="secondary"
@@ -153,26 +161,28 @@ export default function ProjectQuestionnairesPage({
                         disabled={emailModal.disabled}
                         onClick={emailModal.openModal}
                     >
-                        Generate email
+                        {t("projectQuestionnairesPage.generateEmail")}
                     </Button>
                     <Button
                         variant="secondary"
                         onClick={() => setTemplateDrawerOpen(true)}
                     >
-                        Add from template
+                        {t("addQuestionsFromTemplateDrawer.title")}
                     </Button>
                     <Button
                         icon={<Plus size={18} aria-hidden="true" />}
                         onClick={() => setAddQuestionModalOpen(true)}
                     >
-                        Add question
+                        {t("addProjectQuestionnaireQuestionModal.title")}
                     </Button>
                 </Box>
                 {questions.length === 0 ? (
                     <EmptyState
                         icon={<ClipboardList />}
-                        title="No questionnaire yet"
-                        description="Add a question or copy them in from a template."
+                        title={t("projectQuestionnairesPage.emptyStateTitle")}
+                        description={t(
+                            "projectQuestionnairesPage.emptyStateDescription",
+                        )}
                     />
                 ) : (
                     <ProjectQuestionnaireQuestionList

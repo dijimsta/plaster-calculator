@@ -62,6 +62,11 @@ export const en = Object.freeze({
             actions: "Actions",
         }),
     }),
+    questionnaires: Object.freeze({
+        title: "Questionnaires",
+        projectsTab: "Projects",
+        templatesTab: "Templates",
+    }),
     projectHistory: Object.freeze({
         noStatusProjects: "No {{status}} projects",
     }),

@@ -2,6 +2,7 @@
 
 import { formatRelativeTime } from "@libraries/plaster-calculator-common";
 import type { QuestionnaireCompletionState } from "@libraries/plaster-calculator-common";
+import { useQuestionnairesTranslation } from "@libraries/plaster-calculator-ui";
 import {
     Badge,
     Box,
@@ -19,35 +20,40 @@ import { ClipboardList, Home, LoaderCircle } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
+import { useAppTranslation } from "../../../i18n/index.ts";
 
 import { useQuestionnaireStats } from "./page.hooks.js";
 import type { QuestionnaireListItem } from "./page.hooks.js";
 
 const Link = LinkModule.default;
 
-const completionStateBadges: Record<
+const completionStateBadgeColors: Record<
     QuestionnaireCompletionState,
-    { readonly label: string; readonly color: BadgeColor }
+    BadgeColor
 > = {
-    NOT_STARTED: { label: "Not started", color: "gray" },
-    IN_PROGRESS: { label: "In progress", color: "blue" },
-    COMPLETED: { label: "Completed", color: "green" },
+    NOT_STARTED: "gray",
+    IN_PROGRESS: "blue",
+    COMPLETED: "green",
 };
 
-function answeredSummary(
-    questionnaire: Pick<
-        QuestionnaireListItem,
-        "answeredCount" | "totalQuestions"
-    >,
-): string {
-    const { answeredCount, totalQuestions } = questionnaire;
-    const openCount = totalQuestions - answeredCount;
-    const confirmed = `${answeredCount} of ${totalQuestions} confirmed`;
-    return openCount > 0 ? `${confirmed} – ${openCount} open` : confirmed;
-}
-
 export default function QuestionnairesPage() {
+    const { t } = useQuestionnairesTranslation();
+    const { t: tApp } = useAppTranslation();
     const stats = useQuestionnaireStats();
+
+    function answeredSummary(
+        questionnaire: Pick<
+            QuestionnaireListItem,
+            "answeredCount" | "totalQuestions"
+        >,
+    ): string {
+        const { answeredCount, totalQuestions } = questionnaire;
+        const openCount = totalQuestions - answeredCount;
+        const values = { answeredCount, totalQuestions, openCount };
+        return openCount > 0
+            ? t("questionnairesPage.answeredSummaryWithOpen", values)
+            : t("questionnairesPage.answeredSummary", values);
+    }
 
     return (
         <>
@@ -55,29 +61,34 @@ export default function QuestionnairesPage() {
                 <PageHeading.Breadcrumbs>
                     <Breadcrumb>
                         <RoutedBreadcrumbItem href="/">
-                            <Home size={16} aria-label="Home" />
+                            <Home
+                                size={16}
+                                aria-label={tApp("sidebar.navLabels.home")}
+                            />
                         </RoutedBreadcrumbItem>
                         <Breadcrumb.Item current>
-                            Questionnaires
+                            {tApp("questionnaires.title")}
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
-                    <PageHeading.Title>Questionnaires</PageHeading.Title>
+                    <PageHeading.Title>
+                        {tApp("questionnaires.title")}
+                    </PageHeading.Title>
                     <PageHeading.Description>
-                        Every project&apos;s scope questionnaire in one place.
-                        Open one to auto-fill, confirm answers and chase the
-                        builder for what&apos;s missing.
+                        {t("questionnairesPage.description")}
                     </PageHeading.Description>
                 </PageHeading.Content>
                 <PageHeading.Navigation>
                     <Tabs>
                         <Tabs.Item current>
-                            <Link href="/questionnaires">Projects</Link>
+                            <Link href="/questionnaires">
+                                {tApp("questionnaires.projectsTab")}
+                            </Link>
                         </Tabs.Item>
                         <Tabs.Item>
                             <Link href="/questionnaires/templates">
-                                Templates
+                                {tApp("questionnaires.templatesTab")}
                             </Link>
                         </Tabs.Item>
                     </Tabs>
@@ -89,12 +100,12 @@ export default function QuestionnairesPage() {
                     items={[
                         {
                             id: "total",
-                            label: "Total questionnaires",
+                            label: t("questionnairesPage.stats.total"),
                             value: stats.isLoading ? "—" : stats.total,
                         },
                         {
                             id: "in-progress",
-                            label: "In progress",
+                            label: t("questionnairesPage.stats.inProgress"),
                             value: stats.isLoading
                                 ? "—"
                                 : stats.inProgressCount,
@@ -102,7 +113,7 @@ export default function QuestionnairesPage() {
                         },
                         {
                             id: "completed",
-                            label: "Completed",
+                            label: t("questionnairesPage.stats.completed"),
                             value: stats.isLoading ? "—" : stats.completedCount,
                             valueTone: "success",
                         },
@@ -111,27 +122,45 @@ export default function QuestionnairesPage() {
                 {stats.isLoading ? (
                     <Box align="center" justify="center" gap="sm" status>
                         <LoaderCircle className="animate-spin" size={24} />
-                        <Text variant="muted">Loading questionnaires...</Text>
+                        <Text variant="muted">
+                            {t("questionnairesPage.loading")}
+                        </Text>
                     </Box>
                 ) : stats.questionnaires.length === 0 ? (
                     <EmptyState
                         icon={<ClipboardList />}
-                        title="No questionnaires yet"
+                        title={t("questionnairesPage.emptyStateTitle")}
                     />
                 ) : (
                     <Table bordered>
                         <Table.Head>
                             <Table.Row>
-                                <Table.Header>Project</Table.Header>
-                                <Table.Header>Progress</Table.Header>
-                                <Table.Header fit>Status</Table.Header>
-                                <Table.Header fit>Updated</Table.Header>
+                                <Table.Header>
+                                    {t(
+                                        "questionnairesPage.tableHeaders.project",
+                                    )}
+                                </Table.Header>
+                                <Table.Header>
+                                    {t(
+                                        "questionnairesPage.tableHeaders.progress",
+                                    )}
+                                </Table.Header>
+                                <Table.Header fit>
+                                    {t(
+                                        "questionnairesPage.tableHeaders.status",
+                                    )}
+                                </Table.Header>
+                                <Table.Header fit>
+                                    {t(
+                                        "questionnairesPage.tableHeaders.updated",
+                                    )}
+                                </Table.Header>
                             </Table.Row>
                         </Table.Head>
                         <Table.Body>
                             {stats.questionnaires.map((questionnaire) => {
-                                const badge =
-                                    completionStateBadges[
+                                const badgeColor =
+                                    completionStateBadgeColors[
                                         questionnaire.completionState
                                     ];
                                 return (
@@ -160,7 +189,13 @@ export default function QuestionnairesPage() {
                                                             ? "success"
                                                             : "info"
                                                     }
-                                                    name={`${questionnaire.projectName} answered`}
+                                                    name={t(
+                                                        "questionnairesPage.answeredProgress",
+                                                        {
+                                                            projectName:
+                                                                questionnaire.projectName,
+                                                        },
+                                                    )}
                                                 />
                                                 <Text size="xs" variant="muted">
                                                     {answeredSummary(
@@ -172,10 +207,12 @@ export default function QuestionnairesPage() {
                                         <Table.Cell fit>
                                             <Badge
                                                 dot
-                                                color={badge.color}
+                                                color={badgeColor}
                                                 size="xs"
                                             >
-                                                {badge.label}
+                                                {t(
+                                                    `questionnairesPage.statusLabels.${questionnaire.completionState}`,
+                                                )}
                                             </Badge>
                                         </Table.Cell>
                                         <Table.Cell fit>

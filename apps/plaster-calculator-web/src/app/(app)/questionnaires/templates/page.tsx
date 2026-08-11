@@ -4,6 +4,7 @@ import {
     EditQuestionnaireTemplateDrawer,
     NewQuestionnaireTemplateDrawer,
     QuestionnaireTemplateCardGridList,
+    useQuestionnairesTranslation,
 } from "@libraries/plaster-calculator-ui";
 import {
     Breadcrumb,
@@ -19,6 +20,7 @@ import { default as LinkModule } from "next/link.js";
 import { useReducer } from "react";
 
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
+import { useAppTranslation } from "../../../../i18n/index.ts";
 
 import {
     useConfirmDeleteCallback,
@@ -37,6 +39,8 @@ import {
 const Link = LinkModule.default;
 
 export default function QuestionnaireTemplatesPage() {
+    const { t } = useQuestionnairesTranslation();
+    const { t: tApp } = useAppTranslation();
     const [state, dispatch] = useReducer(
         questionnaireTemplatesPageReducer,
         undefined,
@@ -71,20 +75,25 @@ export default function QuestionnaireTemplatesPage() {
                 <PageHeading.Breadcrumbs>
                     <Breadcrumb>
                         <RoutedBreadcrumbItem href="/">
-                            <Home size={16} aria-label="Home" />
+                            <Home
+                                size={16}
+                                aria-label={tApp("sidebar.navLabels.home")}
+                            />
                         </RoutedBreadcrumbItem>
                         <RoutedBreadcrumbItem href="/questionnaires">
-                            Questionnaires
+                            {tApp("questionnaires.title")}
                         </RoutedBreadcrumbItem>
-                        <Breadcrumb.Item current>Templates</Breadcrumb.Item>
+                        <Breadcrumb.Item current>
+                            {tApp("questionnaires.templatesTab")}
+                        </Breadcrumb.Item>
                     </Breadcrumb>
                 </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
-                    <PageHeading.Title>Questionnaires</PageHeading.Title>
+                    <PageHeading.Title>
+                        {tApp("questionnaires.title")}
+                    </PageHeading.Title>
                     <PageHeading.Description>
-                        The question sets the AI fills in when you auto-fill a
-                        project. Use the built-in standards or duplicate a
-                        template to make your own.
+                        {t("questionnaireTemplatesPage.description")}
                     </PageHeading.Description>
                 </PageHeading.Content>
                 <PageHeading.Actions>
@@ -92,17 +101,19 @@ export default function QuestionnaireTemplatesPage() {
                         icon={<Plus size={18} />}
                         onClick={() => dispatch({ type: "openDrawer" })}
                     >
-                        New Template
+                        {t("questionnaireTemplatesPage.newTemplate")}
                     </Button>
                 </PageHeading.Actions>
                 <PageHeading.Navigation>
                     <Tabs>
                         <Tabs.Item>
-                            <Link href="/questionnaires">Projects</Link>
+                            <Link href="/questionnaires">
+                                {tApp("questionnaires.projectsTab")}
+                            </Link>
                         </Tabs.Item>
                         <Tabs.Item current>
                             <Link href="/questionnaires/templates">
-                                Templates
+                                {tApp("questionnaires.templatesTab")}
                             </Link>
                         </Tabs.Item>
                     </Tabs>
@@ -111,14 +122,16 @@ export default function QuestionnaireTemplatesPage() {
             {templates.length === 0 ? (
                 <EmptyState
                     icon={<ClipboardList />}
-                    title="No templates yet"
-                    description="Create a template to define the questions the AI fills in when auto-filling a project."
+                    title={t("questionnaireTemplatesPage.emptyStateTitle")}
+                    description={t(
+                        "questionnaireTemplatesPage.emptyStateDescription",
+                    )}
                     actions={
                         <Button
                             icon={<Plus size={18} />}
                             onClick={() => dispatch({ type: "openDrawer" })}
                         >
-                            New Template
+                            {t("questionnaireTemplatesPage.newTemplate")}
                         </Button>
                     }
                 />
@@ -154,8 +167,10 @@ export default function QuestionnaireTemplatesPage() {
                 open={state.templatePendingDeletion !== null}
                 onClose={() => dispatch({ type: "cancelDelete" })}
                 size="sm"
-                title="Delete template?"
-                description="This action cannot be undone."
+                title={t("questionnaireTemplatesPage.deleteDialogTitle")}
+                description={t(
+                    "questionnaireTemplatesPage.deleteDialogDescription",
+                )}
                 showCloseButton={false}
                 footer={
                     <>
@@ -164,14 +179,16 @@ export default function QuestionnaireTemplatesPage() {
                             disabled={state.isDeleting}
                             onClick={() => dispatch({ type: "cancelDelete" })}
                         >
-                            Cancel
+                            {t("common.cancel")}
                         </Button>
                         <Button
                             variant="danger"
                             disabled={state.isDeleting}
                             onClick={confirmDelete}
                         >
-                            {state.isDeleting ? "Deleting..." : "Delete"}
+                            {state.isDeleting
+                                ? t("questionnaireTemplatesPage.deleting")
+                                : t("questionnaireTemplatesPage.delete")}
                         </Button>
                     </>
                 }
@@ -179,7 +196,9 @@ export default function QuestionnaireTemplatesPage() {
                 <Text variant="muted">
                     {state.templatePendingDeletion === null
                         ? ""
-                        : `“${state.templatePendingDeletion.name}” will be permanently deleted.`}
+                        : t("questionnaireTemplatesPage.deleteConfirmation", {
+                              templateName: state.templatePendingDeletion.name,
+                          })}
                 </Text>
             </ModalDialog>
         </>
