@@ -22,22 +22,32 @@ import { default as LinkModule } from "next/link.js";
 import { usePathname, useRouter } from "next/navigation.js";
 import type { PropsWithChildren } from "react";
 
+import { useAppTranslation } from "../i18n/index.ts";
+
 const Link = LinkModule.default;
 
 const navItems = [
-    { href: "/" as const, label: "Home", Icon: Icons.Home },
+    { href: "/" as const, labelKey: "home" as const, Icon: Icons.Home },
     {
         href: "/projects" as const,
-        label: "Projects",
+        labelKey: "projects" as const,
         Icon: Icons.Building2,
     },
     {
         href: "/questionnaires" as const,
-        label: "Questionnaires",
+        labelKey: "questionnaires" as const,
         Icon: Icons.ClipboardList,
     },
-    { href: "/quotes" as const, label: "Quotes", Icon: Icons.FileText },
-    { href: "/companies" as const, label: "Companies", Icon: Icons.Users },
+    {
+        href: "/quotes" as const,
+        labelKey: "quotes" as const,
+        Icon: Icons.FileText,
+    },
+    {
+        href: "/companies" as const,
+        labelKey: "companies" as const,
+        Icon: Icons.Users,
+    },
 ];
 
 export default function Sidebar({ children }: PropsWithChildren) {
@@ -45,13 +55,22 @@ export default function Sidebar({ children }: PropsWithChildren) {
     const router = useRouter();
     const user = useUser();
     const initials = useUserInitials();
+    const { t } = useAppTranslation();
 
     async function handleLogout() {
         await signOut(FirebaseService.getAuth());
         router.replace("/login");
     }
 
-    const displayName = user?.displayName ?? "User";
+    const userFallback = t("sidebar.userFallback");
+    const displayName = user?.displayName ?? userFallback;
+    const navLabels: Record<(typeof navItems)[number]["labelKey"], string> = {
+        home: t("sidebar.navLabels.home"),
+        projects: t("sidebar.navLabels.projects"),
+        questionnaires: t("sidebar.navLabels.questionnaires"),
+        quotes: t("sidebar.navLabels.quotes"),
+        companies: t("sidebar.navLabels.companies"),
+    };
 
     return (
         <SidebarLayout>
@@ -71,8 +90,12 @@ export default function Sidebar({ children }: PropsWithChildren) {
                         </Link>
                     </SidebarNavigation.Header>
                     <SidebarNavigation.Body>
-                        <VerticalNavigation label="Application navigation">
-                            <VerticalNavigation.Section title="Workspace">
+                        <VerticalNavigation
+                            label={t("sidebar.navigationLabel")}
+                        >
+                            <VerticalNavigation.Section
+                                title={t("sidebar.workspaceSectionTitle")}
+                            >
                                 {navItems.map((item) => (
                                     <VerticalNavigation.Item
                                         key={item.href}
@@ -83,7 +106,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
                                     >
                                         <Link href={item.href}>
                                             <item.Icon aria-hidden="true" />
-                                            {item.label}
+                                            {navLabels[item.labelKey]}
                                         </Link>
                                     </VerticalNavigation.Item>
                                 ))}
@@ -102,7 +125,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
                                     <Box direction="column" align="start">
                                         <Text size="sm">{displayName}</Text>
                                         <Text size="xs" variant="muted">
-                                            User
+                                            {userFallback}
                                         </Text>
                                     </Box>
                                 </ButtonLink>
@@ -110,7 +133,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
                             <Button
                                 variant="secondary"
                                 icon={<Icons.LogOut aria-hidden="true" />}
-                                label="Log out"
+                                label={t("sidebar.logOut")}
                                 onClick={handleLogout}
                             />
                         </Box>
