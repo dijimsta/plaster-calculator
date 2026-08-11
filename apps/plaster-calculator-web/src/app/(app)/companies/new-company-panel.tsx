@@ -5,6 +5,7 @@ import { Button, Paragraph } from "@libraries/uikit-web";
 import { Plus } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
 
 import { CompanyDraftFields } from "./company-draft-fields.js";
@@ -18,6 +19,7 @@ interface NewCompanyPanelProps {
 
 export function NewCompanyPanel({ onCreated }: NewCompanyPanelProps) {
     const companiesService = useCompaniesService();
+    const { t } = useAppTranslation();
     const [draft, setDraft] = useState<CompanyDraft>(EMPTY_ACCOUNT_DRAFT);
     const [message, setMessage] = useState("");
 
@@ -32,23 +34,23 @@ export function NewCompanyPanel({ onCreated }: NewCompanyPanelProps) {
                 phoneNumber: optionalValue(draft.phoneNumber),
             });
             setDraft(EMPTY_ACCOUNT_DRAFT);
-            setMessage("Company created.");
+            setMessage(t("companies.newCompany.created"));
             onCreated();
         } catch (error) {
             setMessage(
                 error instanceof Error
                     ? error.message
-                    : "Unable to create company",
+                    : t("companies.newCompany.unableToCreate"),
             );
         }
     }
 
     return (
         <form className={cx(ui.panel, ui.stack)} onSubmit={createNewCompany}>
-            <h2>New Company</h2>
+            <h2>{t("companies.newCompany.title")}</h2>
             <CompanyDraftFields draft={draft} setDraft={setDraft} />
             <Button variant="primary">
-                <Plus size={18} /> Create company
+                <Plus size={18} /> {t("companies.newCompany.create")}
             </Button>
             {message && (
                 <Paragraph textSize="sm" variant="muted">

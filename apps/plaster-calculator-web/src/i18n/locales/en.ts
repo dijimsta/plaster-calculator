@@ -1,3 +1,256 @@
 export const en = Object.freeze({
     common: Object.freeze({}),
+    sidebar: Object.freeze({
+        navigationLabel: "Application navigation",
+        workspaceSectionTitle: "Workspace",
+        navLabels: Object.freeze({
+            home: "Home",
+            projects: "Projects",
+            questionnaires: "Questionnaires",
+            quotes: "Quotes",
+            companies: "Companies",
+        }),
+        userFallback: "User",
+        roleLabels: Object.freeze({
+            owner: "Owner",
+            member: "Member",
+        }),
+        logOut: "Log out",
+    }),
+    companySelect: Object.freeze({
+        label: "Company",
+        placeholder: "Search companies",
+        unableToLoadCompanies: "Unable to load companies",
+        clearCompany: "Clear company",
+        noCompanyDetails: "No company details",
+    }),
+    themeSettingsControl: Object.freeze({
+        legend: "Colour theme",
+        modeLabels: Object.freeze({
+            system: "System",
+            light: "Light",
+            dark: "Dark",
+        }),
+    }),
+    languageSettingsControl: Object.freeze({
+        legend: "Language",
+        languageLabels: Object.freeze({
+            en: "English",
+            zh: "中文",
+        }),
+    }),
+    home: Object.freeze({
+        title: "Home",
+        projectProcessingAlert: Object.freeze({
+            title: "Project processing",
+            description:
+                "This list will update automatically when processing is complete.",
+        }),
+    }),
+    projects: Object.freeze({
+        breadcrumb: "Projects",
+        title: "Projects",
+        statusTabs: Object.freeze({
+            all: "All",
+        }),
+        loadingProjects: "Loading projects...",
+        refresh: "Refresh",
+        refreshTitle: "Refresh projects",
+        emptyStateTitle: "No projects match your filters",
+        tableHeaders: Object.freeze({
+            project: "Project",
+            company: "Company",
+            plan: "Plan",
+            status: "Status",
+            updated: "Updated",
+            actions: "Actions",
+        }),
+    }),
+    questionnaires: Object.freeze({
+        title: "Questionnaires",
+        projectsTab: "Projects",
+        templatesTab: "Templates",
+    }),
+    quotes: Object.freeze({
+        title: "Quotes",
+        allQuotesTab: "All quotes",
+        templateTab: "Quote template",
+    }),
+    companies: Object.freeze({
+        title: "Companies",
+        description: "Manage customer companies and contacts.",
+        fields: Object.freeze({
+            companyName: "Company name",
+            businessNumber: "ACN/ABN",
+            phoneNumber: "Phone number",
+            primaryContact: "Primary contact",
+            noPrimaryContact: "No primary contact",
+        }),
+        contactFields: Object.freeze({
+            name: "Name",
+            email: "Email",
+            phoneNumber: "Phone number",
+            role: "Role",
+            makePrimary: "Make this contact the primary contact",
+        }),
+        list: Object.freeze({
+            title: "Company List",
+            search: "Search",
+            refreshTitle: "Refresh company list",
+            refresh: "Refresh",
+            loading: "Loading companies...",
+            emptyStateTitle: "No companies found",
+            unableToLoad: "Unable to load companies",
+        }),
+        newCompany: Object.freeze({
+            title: "New Company",
+            created: "Company created.",
+            unableToCreate: "Unable to create company",
+            create: "Create company",
+        }),
+        detailHeader: Object.freeze({
+            companyFallback: "Company",
+            refresh: "Refresh",
+        }),
+        detail: Object.freeze({
+            unableToLoad: "Unable to load company",
+            unableToSave: "Unable to save company",
+            contactAdded: "Contact added.",
+            unableToAddContact: "Unable to add contact",
+            unableToSaveContact: "Unable to save contact",
+            deleteContactConfirmation: 'Delete contact "{{name}}"?',
+            deletingContact: "Deleting contact...",
+            unableToDeleteContact: "Unable to delete contact",
+            linkedProjectsWarning:
+                "Remove or reassign linked projects before deleting this company.",
+            deleteCompanyConfirmation: 'Delete "{{name}}" and all contacts?',
+            deletingCompany: "Deleting company...",
+            unableToDeleteCompany: "Unable to delete company",
+            loading: "Loading company...",
+            notFound: "Company not found",
+        }),
+        detailsPanel: Object.freeze({
+            title: "Company Details",
+            save: "Save company",
+            deleteTitle: "Delete company",
+            delete: "Delete",
+        }),
+        projectsPanel: Object.freeze({
+            title: "Projects",
+            emptyStateTitle: "No projects are linked to this company",
+        }),
+        companyRow: Object.freeze({
+            noBusinessNumber: "No business number",
+            noPhone: "No phone",
+            primaryContactSet: "Primary contact set",
+            noPrimaryContact: "No primary contact",
+        }),
+        contactsPanel: Object.freeze({
+            title: "Contacts",
+            add: "Add contact",
+            emptyStateTitle: "No contacts yet",
+        }),
+        contactRow: Object.freeze({
+            edit: "Edit contact",
+            email: "Email {{name}}",
+            delete: "Delete contact",
+            primarySuffix: " (Primary)",
+            noEmail: "No email",
+            noPhone: "No phone",
+            noRole: "No role",
+            save: "Save",
+            cancelEdit: "Cancel edit",
+        }),
+        newContact: Object.freeze({
+            title: "New Contact",
+            cancel: "Cancel",
+            add: "Add contact",
+        }),
+    }),
+    userPage: Object.freeze({
+        profile: Object.freeze({
+            title: "Profile",
+            description:
+                "Account details from your signed-in profile and connected login providers.",
+            signedInUser: "Signed in user",
+            noEmailAddress: "No email address",
+            notProvided: "Not provided",
+            fields: Object.freeze({
+                name: "Name",
+                email: "Email",
+            }),
+            connectedLogins: "Connected logins",
+            noConnectedSocialLogins: "No connected social logins.",
+        }),
+        appearance: Object.freeze({
+            title: "Appearance",
+            description:
+                "Choose the colour mode used across the calculator workspace.",
+        }),
+        language: Object.freeze({
+            title: "Language",
+            description: "Choose the language used for questionnaire forms.",
+        }),
+    }),
+    userSettings: Object.freeze({
+        title: "Reminder settings",
+        description:
+            "Control how quote follow-up reminders are created for new work.",
+        loading: "Loading settings...",
+        unableToLoad: "Unable to load settings.",
+        quoteFollowUpReminders: "Quote follow-up reminders",
+        quoteFollowUpDescription:
+            "Automatically create reminders to follow up on quotes.",
+        dueInDays: "Due in days",
+        saving: "Saving...",
+        save: "Save reminder settings",
+        saved: "Settings saved.",
+        unableToSave: "Unable to save settings.",
+    }),
+    emailSignature: Object.freeze({
+        title: "Email signature",
+        description:
+            "These details are used to build the signature appended to outgoing emails.",
+        loading: "Loading email signature...",
+        fields: Object.freeze({
+            name: "Name",
+            companyName: "Company name",
+            address: "Address",
+            mobile: "Mobile",
+            phone: "Phone",
+            email: "Email",
+        }),
+        saving: "Saving...",
+        save: "Save email signature",
+        saved: "Email signature saved.",
+    }),
+    projectHistory: Object.freeze({
+        noStatusProjects: "No {{status}} projects",
+    }),
+    projectPage: Object.freeze({
+        confirmStatusChange: "Change status to {{status}}?",
+        statusChanged: "Status changed to {{status}}.",
+    }),
+    projectHeader: Object.freeze({
+        projectFallback: "Project",
+        detailsAriaLabel: "Project details",
+        loading: "Loading...",
+        floorplanTab: "Floorplan",
+        renameProject: "Rename project",
+    }),
+    projectStatusContent: Object.freeze({
+        statusSectionTitle: "Status",
+        companySectionTitle: "Company",
+        projectWon: "Project won",
+        projectLost: "Project lost",
+    }),
+    salesStatus: Object.freeze({
+        label: "Sales status",
+        statusLabels: Object.freeze({
+            QUOTING: "Quoting",
+            QUOTE_SUBMITTED: "Quote Submitted",
+            WON: "Won",
+            LOST: "Lost",
+        }),
+    }),
 });

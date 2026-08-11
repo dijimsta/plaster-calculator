@@ -14,7 +14,10 @@ import {
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
+
 export function EmailSignaturePanel() {
+    const { t } = useAppTranslation();
     const { signature, loading, saving, error, saveSignature } =
         useUserSignature();
 
@@ -46,7 +49,7 @@ export function EmailSignaturePanel() {
                 phone: phone || null,
                 email: email || null,
             });
-            setSaveMessage("Email signature saved.");
+            setSaveMessage(t("emailSignature.saved"));
         } catch {
             setSaveMessage("");
         }
@@ -62,14 +65,13 @@ export function EmailSignaturePanel() {
 
     return (
         <Card>
-            <Card.Title>Email signature</Card.Title>
+            <Card.Title>{t("emailSignature.title")}</Card.Title>
             <Paragraph measure="narrow" textSize="sm" variant="muted">
-                These details are used to build the signature appended to
-                outgoing emails.
+                {t("emailSignature.description")}
             </Paragraph>
             {loading && (
                 <Paragraph textSize="sm" variant="muted">
-                    Loading email signature...
+                    {t("emailSignature.loading")}
                 </Paragraph>
             )}
             {statusMessage && (
@@ -78,7 +80,10 @@ export function EmailSignaturePanel() {
                 </Paragraph>
             )}
             <FormLayout onSubmit={handleSubmit}>
-                <FormLayoutField label="Name" htmlFor="signature-name">
+                <FormLayoutField
+                    label={t("emailSignature.fields.name")}
+                    htmlFor="signature-name"
+                >
                     <Input
                         id="signature-name"
                         disabled={disabled}
@@ -87,7 +92,7 @@ export function EmailSignaturePanel() {
                     />
                 </FormLayoutField>
                 <FormLayoutField
-                    label="Company name"
+                    label={t("emailSignature.fields.companyName")}
                     htmlFor="signature-company-name"
                 >
                     <Input
@@ -97,7 +102,10 @@ export function EmailSignaturePanel() {
                         onChange={(event) => setCompanyName(event.target.value)}
                     />
                 </FormLayoutField>
-                <FormLayoutField label="Address" htmlFor="signature-address">
+                <FormLayoutField
+                    label={t("emailSignature.fields.address")}
+                    htmlFor="signature-address"
+                >
                     <Textarea
                         id="signature-address"
                         disabled={disabled}
@@ -106,7 +114,10 @@ export function EmailSignaturePanel() {
                         onChange={(event) => setAddress(event.target.value)}
                     />
                 </FormLayoutField>
-                <FormLayoutField label="Mobile" htmlFor="signature-mobile">
+                <FormLayoutField
+                    label={t("emailSignature.fields.mobile")}
+                    htmlFor="signature-mobile"
+                >
                     <Input
                         id="signature-mobile"
                         disabled={disabled}
@@ -114,7 +125,10 @@ export function EmailSignaturePanel() {
                         onChange={(event) => setMobile(event.target.value)}
                     />
                 </FormLayoutField>
-                <FormLayoutField label="Phone" htmlFor="signature-phone">
+                <FormLayoutField
+                    label={t("emailSignature.fields.phone")}
+                    htmlFor="signature-phone"
+                >
                     <Input
                         id="signature-phone"
                         disabled={disabled}
@@ -122,7 +136,10 @@ export function EmailSignaturePanel() {
                         onChange={(event) => setPhone(event.target.value)}
                     />
                 </FormLayoutField>
-                <FormLayoutField label="Email" htmlFor="signature-email">
+                <FormLayoutField
+                    label={t("emailSignature.fields.email")}
+                    htmlFor="signature-email"
+                >
                     <Input
                         id="signature-email"
                         disabled={disabled}
@@ -137,7 +154,9 @@ export function EmailSignaturePanel() {
                         variant="primary"
                         disabled={disabled || !signature}
                     >
-                        {saving ? "Saving..." : "Save email signature"}
+                        {saving
+                            ? t("emailSignature.saving")
+                            : t("emailSignature.save")}
                     </Button>
                 </FormLayoutActions>
             </FormLayout>

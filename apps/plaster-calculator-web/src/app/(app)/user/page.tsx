@@ -16,11 +16,13 @@ import {
 
 import { LanguageSettingsControl } from "../../../components/language-settings-control.js";
 import { ThemeSettingsControl } from "../../../components/theme-settings-control.js";
+import { useAppTranslation } from "../../../i18n/index.ts";
 
 import { UserPageHeader } from "./user-page-header.js";
 import { UserSettingsPanel } from "./user-settings.js";
 
 export default function UserPage() {
+    const { t } = useAppTranslation();
     const user = useUser();
 
     if (!user) return null;
@@ -31,14 +33,13 @@ export default function UserPage() {
             <Container size="wide" padding="always">
                 <Box direction="column" gap="lg">
                     <Card>
-                        <Card.Title>Profile</Card.Title>
+                        <Card.Title>{t("userPage.profile.title")}</Card.Title>
                         <Paragraph
                             measure="narrow"
                             textSize="sm"
                             variant="muted"
                         >
-                            Account details from your signed-in profile and
-                            connected login providers.
+                            {t("userPage.profile.description")}
                         </Paragraph>
                         <Card.Body>
                             <Box align="center" gap="lg">
@@ -56,28 +57,39 @@ export default function UserPage() {
                                 />
                                 <Box direction="column">
                                     <Heading5>
-                                        {user.displayName || "Signed in user"}
+                                        {user.displayName ||
+                                            t("userPage.profile.signedInUser")}
                                     </Heading5>
                                     <Paragraph textSize="sm" variant="muted">
-                                        {user.email || "No email address"}
+                                        {user.email ||
+                                            t(
+                                                "userPage.profile.noEmailAddress",
+                                            )}
                                     </Paragraph>
                                 </Box>
                             </Box>
                             <DescriptionList
                                 items={[
                                     {
-                                        term: "Name",
+                                        term: t("userPage.profile.fields.name"),
                                         details:
-                                            user.displayName || "Not provided",
+                                            user.displayName ||
+                                            t("userPage.profile.notProvided"),
                                     },
                                     {
-                                        term: "Email",
-                                        details: user.email || "Not provided",
+                                        term: t(
+                                            "userPage.profile.fields.email",
+                                        ),
+                                        details:
+                                            user.email ||
+                                            t("userPage.profile.notProvided"),
                                     },
                                 ]}
                             />
                             <Box direction="column" gap="md">
-                                <Heading6>Connected logins</Heading6>
+                                <Heading6>
+                                    {t("userPage.profile.connectedLogins")}
+                                </Heading6>
                                 {user.providerData.length > 0 ? (
                                     <StackedList bordered>
                                         {user.providerData.map((provider) => (
@@ -107,34 +119,37 @@ export default function UserPage() {
                                     </StackedList>
                                 ) : (
                                     <Paragraph textSize="sm" variant="muted">
-                                        No connected social logins.
+                                        {t(
+                                            "userPage.profile.noConnectedSocialLogins",
+                                        )}
                                     </Paragraph>
                                 )}
                             </Box>
                         </Card.Body>
                     </Card>
                     <Card>
-                        <Card.Title>Appearance</Card.Title>
+                        <Card.Title>
+                            {t("userPage.appearance.title")}
+                        </Card.Title>
                         <Paragraph
                             measure="narrow"
                             textSize="sm"
                             variant="muted"
                         >
-                            Choose the colour mode used across the calculator
-                            workspace.
+                            {t("userPage.appearance.description")}
                         </Paragraph>
                         <Card.Body>
                             <ThemeSettingsControl />
                         </Card.Body>
                     </Card>
                     <Card>
-                        <Card.Title>Language</Card.Title>
+                        <Card.Title>{t("userPage.language.title")}</Card.Title>
                         <Paragraph
                             measure="narrow"
                             textSize="sm"
                             variant="muted"
                         >
-                            Choose the language used for questionnaire forms.
+                            {t("userPage.language.description")}
                         </Paragraph>
                         <Card.Body>
                             <LanguageSettingsControl />

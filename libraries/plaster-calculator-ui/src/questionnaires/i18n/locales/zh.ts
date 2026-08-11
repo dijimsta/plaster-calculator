@@ -49,6 +49,54 @@ export const zh = createTranslationResource(
             answerPlaceholder: "答案",
             answerLabel: "问题 {{number}} 的答案",
         }),
+        projectQuestionnairesPage: Object.freeze({
+            unableToLoadProject: "无法加载项目",
+            unableToRenameProject: "无法重命名项目",
+            autoFilling: "正在自动填写…",
+            autoFill: "自动填写",
+            generateEmail: "生成邮件",
+            emptyStateTitle: "暂无问卷",
+            emptyStateDescription: "添加问题或从模板复制问题。",
+        }),
+        questionnairesPage: Object.freeze({
+            description:
+                "集中查看每个项目的范围问卷。打开问卷即可自动填写、确认答案，并向施工方追问缺失信息。",
+            statusLabels: Object.freeze({
+                NOT_STARTED: "未开始",
+                IN_PROGRESS: "进行中",
+                COMPLETED: "已完成",
+            }),
+            stats: Object.freeze({
+                total: "问卷总数",
+                inProgress: "进行中",
+                completed: "已完成",
+            }),
+            loading: "正在加载问卷...",
+            emptyStateTitle: "暂无问卷",
+            tableHeaders: Object.freeze({
+                project: "项目",
+                progress: "进度",
+                status: "状态",
+                updated: "更新时间",
+            }),
+            answeredSummary: "已确认 {{answeredCount}}/{{totalQuestions}}",
+            answeredSummaryWithOpen:
+                "已确认 {{answeredCount}}/{{totalQuestions}} – {{openCount}} 个待处理",
+            answeredProgress: "{{projectName}} 已回答",
+        }),
+        questionnaireTemplatesPage: Object.freeze({
+            description:
+                "AI 自动填写项目时使用的问题集。您可以使用内置标准，也可以复制模板并进行自定义。",
+            newTemplate: "新建模板",
+            emptyStateTitle: "暂无模板",
+            emptyStateDescription:
+                "创建模板，以定义 AI 自动填写项目时所使用的问题。",
+            deleteDialogTitle: "删除模板？",
+            deleteDialogDescription: "此操作无法撤销。",
+            delete: "删除",
+            deleting: "正在删除...",
+            deleteConfirmation: "“{{templateName}}”将被永久删除。",
+        }),
         questionnaireTemplateCard: Object.freeze({
             edit: "编辑",
             duplicateTemplate: "复制模板",

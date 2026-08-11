@@ -3,6 +3,8 @@
 import { RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
 import { useEffect, useState } from "react";
 
+import { useAppTranslation } from "../i18n/index.ts";
+
 import {
     readThemeCookie,
     resolveThemeMode,
@@ -13,6 +15,7 @@ import {
 const themeModes: readonly ThemeMode[] = ["system", "light", "dark"];
 
 export function ThemeSettingsControl() {
+    const { t } = useAppTranslation();
     const [themeMode, setThemeMode] = useState<ThemeMode>("system");
     const [themeLoaded, setThemeLoaded] = useState(false);
 
@@ -38,10 +41,16 @@ export function ThemeSettingsControl() {
         return () => media.removeEventListener("change", applyTheme);
     }, [themeLoaded, themeMode]);
 
+    const themeModeLabels: Record<ThemeMode, string> = {
+        system: t("themeSettingsControl.modeLabels.system"),
+        light: t("themeSettingsControl.modeLabels.light"),
+        dark: t("themeSettingsControl.modeLabels.dark"),
+    };
+
     return (
         <RadioGroup
             name="theme-mode"
-            legend="Colour theme"
+            legend={t("themeSettingsControl.legend")}
             variant="segmented"
             fullWidth
         >
@@ -49,17 +58,11 @@ export function ThemeSettingsControl() {
                 <RadioGroupOption
                     key={mode}
                     value={mode}
-                    label={getThemeLabel(mode)}
+                    label={themeModeLabels[mode]}
                     checked={themeMode === mode}
                     onChange={() => setThemeMode(mode)}
                 />
             ))}
         </RadioGroup>
     );
-}
-
-function getThemeLabel(themeMode: ThemeMode): string {
-    if (themeMode === "system") return "System";
-    if (themeMode === "light") return "Light";
-    return "Dark";
 }

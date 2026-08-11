@@ -5,6 +5,7 @@ import { Button, Paragraph, Text } from "@libraries/uikit-web";
 import { LoaderCircle, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { useAppTranslation } from "../i18n/index.ts";
 import { cx, ui } from "../lib/styles.js";
 import type { CompanySummary } from "../types.js";
 
@@ -28,10 +29,13 @@ export function CompanySelect({
     selectedCompanyId,
     onChange,
     disabled = false,
-    label = "Company",
-    placeholder = "Search companies",
+    label,
+    placeholder,
     selectedCompanyLabel = null,
 }: CompanySelectProps) {
+    const { t } = useAppTranslation();
+    const resolvedLabel = label ?? t("companySelect.label");
+    const resolvedPlaceholder = placeholder ?? t("companySelect.placeholder");
     const companiesService = useCompaniesService();
     const [companies, setCompanies] = useState<CompanySummary[] | null>(null);
     const [query, setQuery] = useState("");
@@ -56,7 +60,9 @@ export function CompanySelect({
             setCompanies(await companiesService.listCompanies());
         } catch (err) {
             setError(
-                err instanceof Error ? err.message : "Unable to load companies",
+                err instanceof Error
+                    ? err.message
+                    : t("companySelect.unableToLoadCompanies"),
             );
         } finally {
             setIsLoading(false);
@@ -77,7 +83,7 @@ export function CompanySelect({
 
     return (
         <div className={cx(ui.field, "relative")}>
-            <label htmlFor="company-select">{label}</label>
+            <label htmlFor="company-select">{resolvedLabel}</label>
             <div className="relative">
                 <Search
                     size={16}
@@ -112,7 +118,7 @@ export function CompanySelect({
                         setIsOpen(true);
                         void ensureLoaded();
                     }}
-                    placeholder={placeholder}
+                    placeholder={resolvedPlaceholder}
                 />
                 {selectedCompanyId && (
                     <div className="absolute right-1 top-1">
@@ -122,7 +128,7 @@ export function CompanySelect({
                             icon={<X size={14} aria-hidden="true" />}
                             disabled={disabled}
                             onClick={clearCompany}
-                            label="Clear company"
+                            label={t("companySelect.clearCompany")}
                             type="button"
                         />
                     </div>
@@ -150,6 +156,8 @@ function CompanySelectMenu({
     isLoading,
     onSelect,
 }: CompanySelectMenuProps) {
+    const { t } = useAppTranslation();
+
     if (isLoading) {
         return (
             <div className="flex items-center gap-2">
@@ -190,7 +198,7 @@ function CompanySelectMenu({
                         <Text size="sm" variant="muted">
                             {company.businessNumber ||
                                 company.phoneNumber ||
-                                "No company details"}
+                                t("companySelect.noCompanyDetails")}
                         </Text>
                     </span>
                 </Button>

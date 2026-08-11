@@ -12,6 +12,7 @@ import {
 import { default as DynamicModule } from "next/dynamic.js";
 import type { ReactNode } from "react";
 
+import { useAppTranslation } from "../../../../i18n/index.ts";
 import { cx, ui } from "../../../../lib/styles.js";
 import type { ProjectDetail } from "../../../../types.js";
 import { ProjectCompanyPanel } from "../project-company-panel.js";
@@ -64,6 +65,8 @@ export function ProjectStatusContent({
     updateDraft,
     validationIssues,
 }: ProjectStatusContentProps) {
+    const { t } = useAppTranslation();
+
     const companyPanel = (
         <ProjectCompanyPanel
             companyId={project.companyId}
@@ -76,10 +79,16 @@ export function ProjectStatusContent({
 
     const inspectorPanel = (
         <InspectorPanel>
-            <InspectorSection title="Status" defaultOpen>
+            <InspectorSection
+                title={t("projectStatusContent.statusSectionTitle")}
+                defaultOpen
+            >
                 {salesStatusPanel}
             </InspectorSection>
-            <InspectorSection title="Company" defaultOpen>
+            <InspectorSection
+                title={t("projectStatusContent.companySectionTitle")}
+                defaultOpen
+            >
                 {companyPanel}
             </InspectorSection>
         </InspectorPanel>
@@ -104,7 +113,7 @@ export function ProjectStatusContent({
         return (
             <section className={cx(ui.editorShell, "items-start")}>
                 <div className={cx(ui.panel, ui.stack)}>
-                    <h2>Project won</h2>
+                    <h2>{t("projectStatusContent.projectWon")}</h2>
                     <Paragraph textSize="sm" variant="muted">
                         Won project workflow placeholder. The next steps for
                         accepted work will be added here later.
@@ -119,7 +128,7 @@ export function ProjectStatusContent({
         return (
             <section className={cx(ui.editorShell, "items-start")}>
                 <div className={cx(ui.panel, ui.stack)}>
-                    <h2>Project lost</h2>
+                    <h2>{t("projectStatusContent.projectLost")}</h2>
                     <Paragraph textSize="sm" variant="muted">
                         Lost project workflow placeholder. Loss reasons can be
                         captured here later.
