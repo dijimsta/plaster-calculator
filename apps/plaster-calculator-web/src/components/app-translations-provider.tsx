@@ -8,6 +8,8 @@ import {
 import { I18nProvider } from "@ui/internationalization";
 import type { PropsWithChildren, ReactElement } from "react";
 
+import { appTranslations } from "../i18n/index.ts";
+
 import { languageCookie } from "./language-cookie.js";
 
 export function AppTranslationsProvider({
@@ -16,6 +18,7 @@ export function AppTranslationsProvider({
     return (
         <I18nProvider
             translations={[
+                appTranslations,
                 editorTranslations,
                 questionnairesTranslations,
                 quotesTranslations,
