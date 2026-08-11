@@ -6,5 +6,40 @@ export const zh = createTranslationResource(
     en,
     Object.freeze({
         common: Object.freeze({}),
+        sidebar: Object.freeze({
+            navigationLabel: "应用导航",
+            workspaceSectionTitle: "工作区",
+            navLabels: Object.freeze({
+                home: "首页",
+                projects: "项目",
+                questionnaires: "问卷",
+                quotes: "报价",
+                companies: "公司",
+            }),
+            userFallback: "用户",
+            logOut: "退出登录",
+        }),
+        companySelect: Object.freeze({
+            label: "公司",
+            placeholder: "搜索公司",
+            unableToLoadCompanies: "无法加载公司",
+            clearCompany: "清除公司",
+            noCompanyDetails: "暂无公司详情",
+        }),
+        themeSettingsControl: Object.freeze({
+            legend: "颜色主题",
+            modeLabels: Object.freeze({
+                system: "系统",
+                light: "浅色",
+                dark: "深色",
+            }),
+        }),
+        languageSettingsControl: Object.freeze({
+            legend: "语言",
+            languageLabels: Object.freeze({
+                en: "English",
+                zh: "中文",
+            }),
+        }),
     }),
 );
