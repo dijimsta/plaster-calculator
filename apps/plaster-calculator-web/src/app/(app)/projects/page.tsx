@@ -26,7 +26,7 @@ import { default as LinkModule } from "next/link.js";
 import { BusyOverlay } from "../../../components/busy-overlay.js";
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../i18n/index.ts";
-import { salesStatusLabel } from "../../../lib/sales-status.js";
+import { useSalesStatusLabel } from "../../../lib/sales-status.js";
 import {
     useProjectsListing,
     type StatusFilter,
@@ -36,6 +36,7 @@ const Link = LinkModule.default;
 
 export default function ProjectsPage() {
     const { t } = useAppTranslation();
+    const salesStatusLabel = useSalesStatusLabel();
     const {
         statusFilter,
         query,

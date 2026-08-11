@@ -4,14 +4,8 @@ import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import { SelectMenu } from "@libraries/uikit-web";
 import type { SelectMenuOption } from "@libraries/uikit-web";
 
-import { salesStatusLabels } from "../../../../lib/sales-status.js";
-
-const STATUS_OPTIONS: SelectMenuOption[] = [
-    { value: "QUOTING", label: salesStatusLabels.QUOTING },
-    { value: "QUOTE_SUBMITTED", label: salesStatusLabels.QUOTE_SUBMITTED },
-    { value: "WON", label: salesStatusLabels.WON },
-    { value: "LOST", label: salesStatusLabels.LOST },
-];
+import { useAppTranslation } from "../../../../i18n/index.ts";
+import { useSalesStatusLabel } from "../../../../lib/sales-status.js";
 
 interface ProjectSalesStatusControlProps {
     readonly currentStatus: SalesStatus;
@@ -24,11 +18,24 @@ export function ProjectSalesStatusControl({
     disabled,
     onStatusChange,
 }: ProjectSalesStatusControlProps) {
+    const { t } = useAppTranslation();
+    const salesStatusLabel = useSalesStatusLabel();
+
+    const statusOptions: SelectMenuOption[] = [
+        { value: "QUOTING", label: salesStatusLabel("QUOTING") },
+        {
+            value: "QUOTE_SUBMITTED",
+            label: salesStatusLabel("QUOTE_SUBMITTED"),
+        },
+        { value: "WON", label: salesStatusLabel("WON") },
+        { value: "LOST", label: salesStatusLabel("LOST") },
+    ];
+
     return (
         <SelectMenu
-            label="Sales status"
+            label={t("salesStatus.label")}
             disabled={disabled}
-            options={STATUS_OPTIONS}
+            options={statusOptions}
             value={currentStatus}
             onChange={(event) => {
                 void onStatusChange(event.target.value as SalesStatus);

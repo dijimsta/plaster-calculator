@@ -70,5 +70,31 @@ export const zh = createTranslationResource(
         projectHistory: Object.freeze({
             noStatusProjects: "没有{{status}}的项目",
         }),
+        projectPage: Object.freeze({
+            confirmStatusChange: "将状态更改为{{status}}？",
+            statusChanged: "状态已更改为{{status}}。",
+        }),
+        projectHeader: Object.freeze({
+            projectFallback: "项目",
+            detailsAriaLabel: "项目详情",
+            loading: "加载中...",
+            floorplanTab: "平面图",
+            renameProject: "重命名项目",
+        }),
+        projectStatusContent: Object.freeze({
+            statusSectionTitle: "状态",
+            companySectionTitle: "公司",
+            projectWon: "项目已成交",
+            projectLost: "项目已流失",
+        }),
+        salesStatus: Object.freeze({
+            label: "销售状态",
+            statusLabels: Object.freeze({
+                QUOTING: "报价中",
+                QUOTE_SUBMITTED: "已提交报价",
+                WON: "已成交",
+                LOST: "已流失",
+            }),
+        }),
     }),
 );

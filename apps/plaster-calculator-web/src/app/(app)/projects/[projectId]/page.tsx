@@ -5,7 +5,8 @@ import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { Box, useNotificationsManager } from "@libraries/uikit-web";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
-import { salesStatusLabel } from "../../../../lib/sales-status.js";
+import { useAppTranslation } from "../../../../i18n/index.ts";
+import { useSalesStatusLabel } from "../../../../lib/sales-status.js";
 import { ui } from "../../../../lib/styles.js";
 import type { ProjectDetail } from "../../../../types.js";
 
@@ -20,6 +21,8 @@ export default function ProjectPage({
     params: Promise<{ projectId: string }>;
 }) {
     const { projectId } = use(params);
+    const { t } = useAppTranslation();
+    const salesStatusLabel = useSalesStatusLabel();
     const projectsService = useProjectsService();
     const { notify, dismiss } = useNotificationsManager();
     const [project, setProject] = useState<ProjectDetail | null>(null);
@@ -126,7 +129,9 @@ export default function ProjectPage({
     async function changeSalesStatus(status: SalesStatus): Promise<void> {
         if (!project || project.salesStatus === status) return;
         const confirmed = window.confirm(
-            `Change status to ${salesStatusLabel(status)}?`,
+            t("projectPage.confirmStatusChange", {
+                status: salesStatusLabel(status),
+            }),
         );
         if (!confirmed) return;
         await saveSalesStatus(status);
@@ -145,7 +150,9 @@ export default function ProjectPage({
             setError("");
             notify({
                 intent: "success",
-                title: `Status changed to ${salesStatusLabel(status)}.`,
+                title: t("projectPage.statusChanged", {
+                    status: salesStatusLabel(status),
+                }),
             });
         } catch (err) {
             setError(
