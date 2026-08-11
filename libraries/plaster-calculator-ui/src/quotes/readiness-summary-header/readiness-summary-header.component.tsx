@@ -42,7 +42,7 @@ export function ReadinessSummaryHeader({
                         <Paragraph textSize="sm" variant="muted">
                             {isReady
                                 ? "This plan is ready to quote."
-                                : `${unmetCount} ${unmetCount === 1 ? "check" : "checks"} need attention before this plan can be quoted.`}
+                                : `${unmetCount} ${unmetCount === 1 ? "check needs" : "checks need"} attention before this plan can be quoted.`}
                         </Paragraph>
                     </Box>
                     <Badge
