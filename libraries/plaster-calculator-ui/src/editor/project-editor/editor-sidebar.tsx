@@ -1,5 +1,7 @@
 import { InspectorPanel, InspectorSection } from "@libraries/uikit-web";
 
+import { useEditorTranslation } from "../i18n/index.js";
+
 import { AreasPanel } from "./areas-panel.js";
 import type { EditorSidebarProps } from "./editor-sidebar.types.js";
 import { PageSettingsPanel } from "./page-settings-panel.js";
@@ -50,14 +52,22 @@ export function EditorSidebar({
     toggleOutdoor,
     updateArea,
 }: EditorSidebarProps) {
+    const { t } = useEditorTranslation();
+
     return (
         <InspectorPanel fullHeight>
             {salesStatusPanel && (
-                <InspectorSection title="Status" defaultOpen>
+                <InspectorSection
+                    title={t("editorSidebar.statusTitle")}
+                    defaultOpen
+                >
                     {salesStatusPanel}
                 </InspectorSection>
             )}
-            <InspectorSection title="Company" defaultOpen>
+            <InspectorSection
+                title={t("editorSidebar.companyTitle")}
+                defaultOpen
+            >
                 {projectCompanyPanel}
             </InspectorSection>
             <InspectorSection title={`Page ${page.pageNumber}`} defaultOpen>
@@ -72,7 +82,7 @@ export function EditorSidebar({
                     setDirty={setDirty}
                 />
             </InspectorSection>
-            <InspectorSection title="Scale" defaultOpen>
+            <InspectorSection title={t("editorSidebar.scaleTitle")} defaultOpen>
                 <ScalePanel
                     isSettingReference={isSettingReference}
                     referenceLengthMm={referenceLengthMm}
@@ -89,21 +99,27 @@ export function EditorSidebar({
                     startReferenceMode={startReferenceMode}
                 />
             </InspectorSection>
-            <InspectorSection title="Summary" defaultOpen>
+            <InspectorSection
+                title={t("editorSidebar.summaryTitle")}
+                defaultOpen
+            >
                 <SummaryPanel
                     summary={summary}
                     pageIssue={pageIssue}
                     startReferenceMode={startReferenceMode}
                 />
             </InspectorSection>
-            <InspectorSection title="Areas" defaultOpen>
+            <InspectorSection title={t("editorSidebar.areasTitle")} defaultOpen>
                 <AreasPanel
                     selectedAreaIds={selectedAreaIds}
                     visibleAreas={visibleAreas}
                     selectArea={selectArea}
                 />
             </InspectorSection>
-            <InspectorSection title="Selection" defaultOpen>
+            <InspectorSection
+                title={t("editorSidebar.selectionTitle")}
+                defaultOpen
+            >
                 <SelectionPanel
                     areaIssue={areaIssue}
                     clearSelectedEdgeOverride={clearSelectedEdgeOverride}
