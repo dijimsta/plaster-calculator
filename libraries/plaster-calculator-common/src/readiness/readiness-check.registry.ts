@@ -23,10 +23,10 @@ import type { ReadinessCheck } from "./readiness-check.types.ts";
  * registry.
  *
  * Every v1 check (WORK-129) is `severity: "BLOCK"` per the ticket. `fixMode`
- * reflects where each check's fix control sends the user: page/template
- * checks deep-link to the floorplan editor or quote template where the fix
- * lives; the two confirmation checks (inferred answers, assumed wall types)
- * are inline because confirming is a single action available directly in
+ * reflects where each check's fix control sends the user: the two
+ * floorplan-editor checks (scale applied, rooms measured) deep-link to the
+ * floorplan editor, where WORK-139 builds their fix targets; the remaining
+ * checks are inline because their fix controls (WORK-134) act directly in
  * the gate, with no separate screen to navigate to.
  */
 export const READINESS_CHECKS: readonly ReadinessCheck[] = [
@@ -45,19 +45,19 @@ export const READINESS_CHECKS: readonly ReadinessCheck[] = [
     {
         id: WALL_TYPE_SET_CHECK_ID,
         severity: "BLOCK",
-        fixMode: "DEEP_LINK",
+        fixMode: "INLINE",
         resolve: resolveWallTypeSet,
     },
     {
         id: CEILING_HEIGHT_SET_CHECK_ID,
         severity: "BLOCK",
-        fixMode: "DEEP_LINK",
+        fixMode: "INLINE",
         resolve: resolveCeilingHeightSet,
     },
     {
         id: TEMPLATE_PRICED_CHECK_ID,
         severity: "BLOCK",
-        fixMode: "DEEP_LINK",
+        fixMode: "INLINE",
         resolve: resolveTemplatePriced,
     },
     {
