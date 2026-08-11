@@ -3,6 +3,7 @@
 import { Text } from "@libraries/uikit-web";
 import { default as LinkModule } from "next/link.js";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { ui } from "../../../lib/styles.js";
 import type { CompanySummary } from "../../../types.js";
 
@@ -13,17 +14,23 @@ interface CompanyRowProps {
 }
 
 export function CompanyRow({ company }: CompanyRowProps) {
+    const { t } = useAppTranslation();
+
     return (
         <div className={ui.projectItem}>
             <div className="grid min-w-0 gap-2">
                 <Link href={`/companies/${company.id}`}>
                     <strong>{company.companyName}</strong>
                     <Text size="sm" variant="muted" truncate>
-                        {company.businessNumber || "No business number"} /{" "}
-                        {company.phoneNumber || "No phone"} /{" "}
+                        {company.businessNumber ||
+                            t("companies.companyRow.noBusinessNumber")}{" "}
+                        /{" "}
+                        {company.phoneNumber ||
+                            t("companies.companyRow.noPhone")}{" "}
+                        /{" "}
                         {company.primaryContactId
-                            ? "Primary contact set"
-                            : "No primary contact"}{" "}
+                            ? t("companies.companyRow.primaryContactSet")
+                            : t("companies.companyRow.noPrimaryContact")}{" "}
                         / {new Date(company.updatedAt).toLocaleString()}
                     </Text>
                 </Link>

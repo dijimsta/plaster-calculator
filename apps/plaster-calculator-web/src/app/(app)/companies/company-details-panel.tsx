@@ -4,6 +4,7 @@ import { Button } from "@libraries/uikit-web";
 import { Trash2 } from "lucide-react";
 import { type FormEvent } from "react";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
 import type { CompanyDetail } from "../../../types.js";
 
@@ -27,25 +28,27 @@ export function CompanyDetailsPanel({
     saveCompany,
     setDraft,
 }: CompanyDetailsPanelProps) {
+    const { t } = useAppTranslation();
+
     return (
         <form
             className={cx(ui.panel, ui.stack, "min-w-0")}
             onSubmit={saveCompany}
         >
             <div className={ui.editorToolbar}>
-                <h2>Company Details</h2>
+                <h2>{t("companies.detailsPanel.title")}</h2>
                 <div className={ui.buttonRow}>
                     <Button variant="primary" disabled={!hasCompanyChanges}>
-                        Save company
+                        {t("companies.detailsPanel.save")}
                     </Button>
                     <Button
                         variant="secondary"
                         icon={<Trash2 size={18} aria-hidden="true" />}
                         onClick={() => void removeCompany()}
-                        title="Delete company"
+                        title={t("companies.detailsPanel.deleteTitle")}
                         type="button"
                     >
-                        Delete
+                        {t("companies.detailsPanel.delete")}
                     </Button>
                 </div>
             </div>

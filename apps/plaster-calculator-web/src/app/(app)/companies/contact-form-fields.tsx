@@ -1,5 +1,6 @@
 "use client";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
 
 import type { ContactFieldsProps } from "./company.types.js";
@@ -9,10 +10,14 @@ export function ContactFormFields({
     setDraft,
     showPrimaryCheckbox = false,
 }: ContactFieldsProps) {
+    const { t } = useAppTranslation();
+
     return (
         <>
             <div className={ui.field}>
-                <label htmlFor="contact-name">Name</label>
+                <label htmlFor="contact-name">
+                    {t("companies.contactFields.name")}
+                </label>
                 <input
                     id="contact-name"
                     className={ui.input}
@@ -23,7 +28,9 @@ export function ContactFormFields({
                 />
             </div>
             <div className={ui.field}>
-                <label htmlFor="contact-email">Email</label>
+                <label htmlFor="contact-email">
+                    {t("companies.contactFields.email")}
+                </label>
                 <input
                     id="contact-email"
                     className={ui.input}
@@ -35,7 +42,9 @@ export function ContactFormFields({
                 />
             </div>
             <div className={ui.field}>
-                <label htmlFor="contact-phone">Phone number</label>
+                <label htmlFor="contact-phone">
+                    {t("companies.contactFields.phoneNumber")}
+                </label>
                 <input
                     id="contact-phone"
                     className={ui.input}
@@ -46,7 +55,9 @@ export function ContactFormFields({
                 />
             </div>
             <div className={ui.field}>
-                <label htmlFor="contact-role">Role</label>
+                <label htmlFor="contact-role">
+                    {t("companies.contactFields.role")}
+                </label>
                 <input
                     id="contact-role"
                     className={ui.input}
@@ -68,7 +79,7 @@ export function ContactFormFields({
                         }
                         type="checkbox"
                     />
-                    Make this contact the primary contact
+                    {t("companies.contactFields.makePrimary")}
                 </label>
             )}
         </>
