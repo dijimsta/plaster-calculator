@@ -3,6 +3,8 @@
 import { Button, ModalDialog } from "@libraries/uikit-web";
 import { type FormEvent } from "react";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
+
 import type { ContactDraft } from "./company.types.js";
 import { ContactFormFields } from "./contact-form-fields.js";
 
@@ -21,18 +23,20 @@ export function NewContactModal({
     save,
     setContactDraft,
 }: NewContactModalProps) {
+    const { t } = useAppTranslation();
+
     return (
         <ModalDialog
             open
             onClose={close}
-            title="New Contact"
+            title={t("companies.newContact.title")}
             footer={
                 <>
                     <Button variant="secondary" onClick={close} type="button">
-                        Cancel
+                        {t("companies.newContact.cancel")}
                     </Button>
                     <Button variant="primary" type="submit" form={FORM_ID}>
-                        Add contact
+                        {t("companies.newContact.add")}
                     </Button>
                 </>
             }

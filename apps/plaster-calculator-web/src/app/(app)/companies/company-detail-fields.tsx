@@ -2,6 +2,8 @@
 
 import { Input, Label, SelectMenu } from "@libraries/uikit-web";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
+
 import type { CompanyDetailFieldsProps } from "./company.types.js";
 
 export function CompanyDetailFields({
@@ -9,10 +11,14 @@ export function CompanyDetailFields({
     draft,
     setDraft,
 }: CompanyDetailFieldsProps) {
+    const { t } = useAppTranslation();
+
     return (
         <>
             <div className="grid gap-1.5">
-                <Label htmlFor="company-name">Company name</Label>
+                <Label htmlFor="company-name">
+                    {t("companies.fields.companyName")}
+                </Label>
                 <Input
                     id="company-name"
                     value={draft.companyName}
@@ -22,7 +28,9 @@ export function CompanyDetailFields({
                 />
             </div>
             <div className="grid gap-1.5">
-                <Label htmlFor="business-number">ACN/ABN</Label>
+                <Label htmlFor="business-number">
+                    {t("companies.fields.businessNumber")}
+                </Label>
                 <Input
                     id="business-number"
                     value={draft.businessNumber}
@@ -32,7 +40,9 @@ export function CompanyDetailFields({
                 />
             </div>
             <div className="grid gap-1.5">
-                <Label htmlFor="phone-number">Phone number</Label>
+                <Label htmlFor="phone-number">
+                    {t("companies.fields.phoneNumber")}
+                </Label>
                 <Input
                     id="phone-number"
                     value={draft.phoneNumber}
@@ -42,12 +52,17 @@ export function CompanyDetailFields({
                 />
             </div>
             <div className="grid gap-1.5">
-                <Label htmlFor="primary-contact">Primary contact</Label>
+                <Label htmlFor="primary-contact">
+                    {t("companies.fields.primaryContact")}
+                </Label>
                 <SelectMenu
                     id="primary-contact"
                     value={draft.primaryContactId}
                     options={[
-                        { value: "", label: "No primary contact" },
+                        {
+                            value: "",
+                            label: t("companies.fields.noPrimaryContact"),
+                        },
                         ...contacts.map((c) => ({
                             value: c.id,
                             label: c.name,

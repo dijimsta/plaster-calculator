@@ -1,5 +1,6 @@
 "use client";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { ui } from "../../../lib/styles.js";
 
 import type { CompanyDraftFieldsProps } from "./company.types.js";
@@ -8,10 +9,14 @@ export function CompanyDraftFields({
     draft,
     setDraft,
 }: CompanyDraftFieldsProps) {
+    const { t } = useAppTranslation();
+
     return (
         <>
             <div className={ui.field}>
-                <label htmlFor="company-name">Company name</label>
+                <label htmlFor="company-name">
+                    {t("companies.fields.companyName")}
+                </label>
                 <input
                     id="company-name"
                     className={ui.input}
@@ -22,7 +27,9 @@ export function CompanyDraftFields({
                 />
             </div>
             <div className={ui.field}>
-                <label htmlFor="business-number">ACN/ABN</label>
+                <label htmlFor="business-number">
+                    {t("companies.fields.businessNumber")}
+                </label>
                 <input
                     id="business-number"
                     className={ui.input}
@@ -36,7 +43,9 @@ export function CompanyDraftFields({
                 />
             </div>
             <div className={ui.field}>
-                <label htmlFor="phone-number">Phone number</label>
+                <label htmlFor="phone-number">
+                    {t("companies.fields.phoneNumber")}
+                </label>
                 <input
                     id="phone-number"
                     className={ui.input}

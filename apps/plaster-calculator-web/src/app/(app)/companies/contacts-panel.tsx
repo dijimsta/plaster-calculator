@@ -3,6 +3,7 @@
 import { Button, EmptyState } from "@libraries/uikit-web";
 import { Plus, Users } from "lucide-react";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
 import type { CompanyContact, CompanyDetail } from "../../../types.js";
 
@@ -30,16 +31,18 @@ export function ContactsPanel({
     setEditContactDraft,
     setEditContactId,
 }: ContactsPanelProps) {
+    const { t } = useAppTranslation();
+
     return (
         <section className={cx(ui.panel, ui.stack)}>
             <div className={ui.editorToolbar}>
-                <h2>Contacts</h2>
+                <h2>{t("companies.contactsPanel.title")}</h2>
                 <Button
                     variant="secondary"
                     onClick={openNewContact}
                     type="button"
                 >
-                    <Plus size={18} /> Add contact
+                    <Plus size={18} /> {t("companies.contactsPanel.add")}
                 </Button>
             </div>
             {company.contacts.map((contact) => (
@@ -56,7 +59,10 @@ export function ContactsPanel({
                 />
             ))}
             {company.contacts.length === 0 && (
-                <EmptyState icon={<Users />} title="No contacts yet" />
+                <EmptyState
+                    icon={<Users />}
+                    title={t("companies.contactsPanel.emptyStateTitle")}
+                />
             )}
         </section>
     );

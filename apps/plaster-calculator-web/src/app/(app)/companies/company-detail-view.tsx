@@ -15,6 +15,7 @@ import { Building2, LoaderCircle } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 
 import { BusyOverlay } from "../../../components/busy-overlay.js";
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
 import type {
     CompanyContact,
@@ -50,6 +51,7 @@ export function CompanyDetailView({
     const companiesService = useCompaniesService();
     const projectsService = useProjectsService();
     const { notify } = useNotificationsManager();
+    const { t } = useAppTranslation();
     const [company, setCompany] = useState<CompanyDetail | null>(null);
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [draft, setDraft] = useState<CompanyDetailDraft | null>(null);
@@ -86,7 +88,7 @@ export function CompanyDetailView({
             setMessage(
                 error instanceof Error
                     ? error.message
-                    : "Unable to load company",
+                    : t("companies.detail.unableToLoad"),
             );
         } finally {
             setIsLoading(false);
@@ -107,7 +109,7 @@ export function CompanyDetailView({
             });
             updateCompanyState(updated);
         } catch (error) {
-            setMessage(errorMessage(error, "Unable to save company"));
+            setMessage(errorMessage(error, t("companies.detail.unableToSave")));
         }
     }
 
@@ -128,9 +130,14 @@ export function CompanyDetailView({
             );
             updateCompanyState(updated);
             closeContactModal();
-            notify({ intent: "success", title: "Contact added." });
+            notify({
+                intent: "success",
+                title: t("companies.detail.contactAdded"),
+            });
         } catch (error) {
-            setMessage(errorMessage(error, "Unable to add contact"));
+            setMessage(
+                errorMessage(error, t("companies.detail.unableToAddContact")),
+            );
         }
     }
 
@@ -151,14 +158,20 @@ export function CompanyDetailView({
             updateCompanyState(updated);
             setEditContactId(null);
         } catch (error) {
-            setMessage(errorMessage(error, "Unable to save contact"));
+            setMessage(
+                errorMessage(error, t("companies.detail.unableToSaveContact")),
+            );
         }
     }
 
     async function removeContact(contact: CompanyContact): Promise<void> {
-        const confirmed = window.confirm(`Delete contact "${contact.name}"?`);
+        const confirmed = window.confirm(
+            t("companies.detail.deleteContactConfirmation", {
+                name: contact.name,
+            }),
+        );
         if (!confirmed) return;
-        setBusyMessage("Deleting contact...");
+        setBusyMessage(t("companies.detail.deletingContact"));
         try {
             const updated = await companiesService.deleteCompanyContact(
                 companyId,
@@ -166,7 +179,12 @@ export function CompanyDetailView({
             );
             updateCompanyState(updated);
         } catch (error) {
-            setMessage(errorMessage(error, "Unable to delete contact"));
+            setMessage(
+                errorMessage(
+                    error,
+                    t("companies.detail.unableToDeleteContact"),
+                ),
+            );
         } finally {
             setBusyMessage("");
         }
@@ -175,22 +193,27 @@ export function CompanyDetailView({
     async function removeCompany(): Promise<void> {
         if (!company) return;
         if (companyProjects.length > 0) {
-            window.alert(
-                "Remove or reassign linked projects before deleting this company.",
-            );
+            window.alert(t("companies.detail.linkedProjectsWarning"));
             return;
         }
         const confirmed = window.confirm(
-            `Delete "${company.companyName}" and all contacts?`,
+            t("companies.detail.deleteCompanyConfirmation", {
+                name: company.companyName,
+            }),
         );
         if (!confirmed) return;
-        setBusyMessage("Deleting company...");
+        setBusyMessage(t("companies.detail.deletingCompany"));
         try {
             await companiesService.deleteCompany(company.id);
             onCompanyDeleted();
         } catch (error) {
             setBusyMessage("");
-            setMessage(errorMessage(error, "Unable to delete company"));
+            setMessage(
+                errorMessage(
+                    error,
+                    t("companies.detail.unableToDeleteCompany"),
+                ),
+            );
         }
     }
 
@@ -211,7 +234,7 @@ export function CompanyDetailView({
                     <div className={ui.projectListState}>
                         <LoaderCircle className="animate-spin" size={24} />
                         <Text size="sm" variant="muted">
-                            Loading company...
+                            {t("companies.detail.loading")}
                         </Text>
                     </div>
                 </Box>
@@ -265,7 +288,7 @@ export function CompanyDetailView({
                 ) : (
                     <EmptyState
                         icon={<Building2 />}
-                        title="Company not found"
+                        title={t("companies.detail.notFound")}
                     />
                 )}
                 {isContactModalOpen && (

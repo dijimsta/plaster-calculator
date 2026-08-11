@@ -12,6 +12,7 @@ import {
 import { Building2, LoaderCircle, RefreshCcw, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
 import type { CompanySummary } from "../../../types.js";
 
@@ -24,6 +25,7 @@ interface CompanyListPanelProps {
 
 export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
     const companiesService = useCompaniesService();
+    const { t } = useAppTranslation();
     const [companies, setCompanies] = useState<CompanySummary[]>([]);
     const [query, setQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
@@ -47,7 +49,7 @@ export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
             setMessage(
                 error instanceof Error
                     ? error.message
-                    : "Unable to load companies",
+                    : t("companies.list.unableToLoad"),
             );
         } finally {
             setIsLoading(false);
@@ -57,10 +59,12 @@ export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
     return (
         <section className={cx(ui.panel, ui.stack)}>
             <div className={ui.editorToolbar}>
-                <h2>Company List</h2>
+                <h2>{t("companies.list.title")}</h2>
                 <div className={cx(ui.buttonRow, "items-end")}>
                     <div className="grid gap-1.5 min-w-[260px]">
-                        <Label htmlFor="company-search">Search</Label>
+                        <Label htmlFor="company-search">
+                            {t("companies.list.search")}
+                        </Label>
                         <Input
                             id="company-search"
                             leadingIcon={
@@ -76,10 +80,10 @@ export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
                     <Button
                         variant="secondary"
                         onClick={() => void refresh()}
-                        title="Refresh company list"
+                        title={t("companies.list.refreshTitle")}
                         type="button"
                     >
-                        <RefreshCcw size={18} /> Refresh
+                        <RefreshCcw size={18} /> {t("companies.list.refresh")}
                     </Button>
                 </div>
             </div>
@@ -92,7 +96,7 @@ export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
                 <div className={ui.projectListState}>
                     <LoaderCircle className="animate-spin" size={24} />
                     <Text size="sm" variant="muted">
-                        Loading companies...
+                        {t("companies.list.loading")}
                     </Text>
                 </div>
             ) : (
@@ -103,7 +107,7 @@ export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
                     {filtered.length === 0 && (
                         <EmptyState
                             icon={<Building2 />}
-                            title="No companies found"
+                            title={t("companies.list.emptyStateTitle")}
                         />
                     )}
                 </div>

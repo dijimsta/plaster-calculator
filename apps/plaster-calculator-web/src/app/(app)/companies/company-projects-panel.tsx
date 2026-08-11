@@ -4,6 +4,7 @@ import { EmptyState, Text } from "@libraries/uikit-web";
 import { FolderKanban } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
 import type { ProjectSummary } from "../../../types.js";
 
@@ -14,9 +15,11 @@ interface CompanyProjectsPanelProps {
 }
 
 export function CompanyProjectsPanel({ projects }: CompanyProjectsPanelProps) {
+    const { t } = useAppTranslation();
+
     return (
         <section className={cx(ui.panel, ui.stack)}>
-            <h2>Projects</h2>
+            <h2>{t("companies.projectsPanel.title")}</h2>
             {projects.map((project) => (
                 <Link
                     key={project.id}
@@ -33,7 +36,7 @@ export function CompanyProjectsPanel({ projects }: CompanyProjectsPanelProps) {
             {projects.length === 0 && (
                 <EmptyState
                     icon={<FolderKanban />}
-                    title="No projects are linked to this company"
+                    title={t("companies.projectsPanel.emptyStateTitle")}
                 />
             )}
         </section>
