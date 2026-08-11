@@ -9,6 +9,8 @@ import {
 } from "@libraries/uikit-web";
 import type { ReactElement } from "react";
 
+import { useQuotesTranslation } from "../i18n/index.ts";
+
 export type ReadinessSummaryHeaderProps = {
     readonly results: readonly ReadinessResult[];
     readonly onGenerateQuote: () => void;
@@ -28,6 +30,7 @@ export function ReadinessSummaryHeader({
     results,
     onGenerateQuote,
 }: ReadinessSummaryHeaderProps): ReactElement {
+    const { t } = useQuotesTranslation();
     const unmetCount = results.filter((result) => !result.isMet).length;
     const isReady = results.length > 0 && unmetCount === 0;
 
@@ -37,19 +40,28 @@ export function ReadinessSummaryHeader({
                 <Box direction="row" justify="between" align="center" wrap>
                     <Box direction="column" gap="xs">
                         <Card.Title>
-                            {isReady ? "Ready to quote" : "Not ready to quote"}
+                            {isReady
+                                ? t("readinessSummaryHeader.readyTitle")
+                                : t("readinessSummaryHeader.notReadyTitle")}
                         </Card.Title>
                         <Paragraph textSize="sm" variant="muted">
                             {isReady
-                                ? "This plan is ready to quote."
-                                : `${unmetCount} ${unmetCount === 1 ? "check needs" : "checks need"} attention before this plan can be quoted.`}
+                                ? t("readinessSummaryHeader.readyDescription")
+                                : t(
+                                      "readinessSummaryHeader.notReadyDescription",
+                                      { count: unmetCount },
+                                  )}
                         </Paragraph>
                     </Box>
                     <Badge
                         color={isReady ? "green" : "red"}
                         variant="pill-with-border"
                     >
-                        {isReady ? "Ready" : `${unmetCount} unmet`}
+                        {isReady
+                            ? t("readinessSummaryHeader.readyBadge")
+                            : t("readinessSummaryHeader.unmetBadge", {
+                                  count: unmetCount,
+                              })}
                     </Badge>
                 </Box>
                 <Box direction="row" gap="sm" align="center" wrap>
@@ -58,11 +70,11 @@ export function ReadinessSummaryHeader({
                         disabled={!isReady}
                         onClick={onGenerateQuote}
                     >
-                        Generate quote
+                        {t("readinessSummaryHeader.generateQuote")}
                     </Button>
                     {!isReady && (
                         <Text size="sm" variant="muted">
-                            Resolve the checks below to enable this.
+                            {t("readinessSummaryHeader.disabledReason")}
                         </Text>
                     )}
                 </Box>

@@ -277,6 +277,7 @@ export const zh = createTranslationResource(
             detailsAriaLabel: "项目详情",
             loading: "加载中...",
             floorplanTab: "平面图",
+            quoteTab: "报价",
             renameProject: "重命名项目",
         }),
         projectStatusContent: Object.freeze({

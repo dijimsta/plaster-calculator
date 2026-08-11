@@ -3,6 +3,8 @@ import { Badge, Box, Button, Input } from "@libraries/uikit-web";
 import { useId, useState } from "react";
 import type { ReactElement } from "react";
 
+import { useQuotesTranslation } from "../i18n/index.ts";
+
 import { useFixControlSubmission } from "./use-fix-control-submission.hook.ts";
 
 export type CeilingHeightFixControlProps = {
@@ -35,15 +37,18 @@ export function CeilingHeightFixControl({
     onChange,
 }: CeilingHeightFixControlProps): ReactElement {
     const id = useId();
+    const { t } = useQuotesTranslation();
     const [text, setText] = useState(() =>
         String(value ?? pageDefaultHeightMm),
     );
     const { isPending, error, run } = useFixControlSubmission(
-        "Couldn't update the ceiling height. Try again.",
+        t("readinessFixControls.ceilingHeight.error"),
     );
     const label = item.areaLabel
-        ? `Ceiling height — ${item.areaLabel}`
-        : "Ceiling height";
+        ? t("readinessFixControls.ceilingHeight.labelWithArea", {
+              area: item.areaLabel,
+          })
+        : t("readinessFixControls.ceilingHeight.label");
     const parsedHeightMm = Number.parseInt(text, 10);
     const isValid = Number.isInteger(parsedHeightMm) && parsedHeightMm > 0;
 
@@ -71,7 +76,9 @@ export function CeilingHeightFixControl({
                     disabled={isPending || !isValid}
                     onClick={() => void run(() => onChange(parsedHeightMm))}
                 >
-                    {isPending ? "Saving…" : "Save"}
+                    {isPending
+                        ? t("readinessFixControls.saving")
+                        : t("readinessFixControls.save")}
                 </Button>
             </Box>
             {error && (

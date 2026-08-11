@@ -279,6 +279,7 @@ export const en = Object.freeze({
         detailsAriaLabel: "Project details",
         loading: "Loading...",
         floorplanTab: "Floorplan",
+        quoteTab: "Quote",
         renameProject: "Rename project",
     }),
     projectStatusContent: Object.freeze({

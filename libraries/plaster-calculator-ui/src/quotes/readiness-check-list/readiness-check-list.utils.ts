@@ -2,6 +2,19 @@ import type {
     ReadinessAffectedItem,
     ReadinessCheckId,
 } from "@libraries/plaster-calculator-common";
+import {
+    ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID,
+    CEILING_HEIGHT_SET_CHECK_ID,
+    INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
+    ROOMS_MEASURED_CHECK_ID,
+    SCALE_APPLIED_CHECK_ID,
+    TEMPLATE_PRICED_CHECK_ID,
+    WALL_TYPE_SET_CHECK_ID,
+} from "@libraries/plaster-calculator-common";
+
+import type { useQuotesTranslation } from "../i18n/index.ts";
+
+type QuotesTFunction = ReturnType<typeof useQuotesTranslation>["t"];
 
 /**
  * Presentation helpers for `ReadinessCheckList`. Kept as static methods
@@ -10,18 +23,41 @@ import type {
  */
 export class ReadinessCheckListUtils {
     /**
-     * Derives a human-readable row title from a check id, e.g.
-     * `"WALL_TYPE_SET"` -> `"Wall type set"`. The registry has no separate
-     * title field, and deriving one this way means a new `READINESS_CHECKS`
-     * entry gets a reasonable title with no change to this component.
+     * Looks up a check's translated row title by id, e.g.
+     * `SCALE_APPLIED_CHECK_ID` -> "Scale applied". `ReadinessCheckId` is a
+     * bare `string` (the registry has no literal-union id type), so this is
+     * a `switch` over the known v1 check ids rather than a template-literal
+     * translation key — the latter can't be typed against an arbitrary
+     * `string`. A check id with no case here falls back to the raw id so a
+     * future `READINESS_CHECKS` entry degrades to something readable rather
+     * than crashing before its translation key is added.
      */
-    public static checkTitle(checkId: ReadinessCheckId): string {
-        return checkId
-            .toLowerCase()
-            .split("_")
-            .filter((word) => word.length > 0)
-            .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
-            .join(" ");
+    public static checkTitle(
+        checkId: ReadinessCheckId,
+        t: QuotesTFunction,
+    ): string {
+        switch (checkId) {
+            case SCALE_APPLIED_CHECK_ID:
+                return t("readinessCheckList.checkLabels.SCALE_APPLIED");
+            case ROOMS_MEASURED_CHECK_ID:
+                return t("readinessCheckList.checkLabels.ROOMS_MEASURED");
+            case WALL_TYPE_SET_CHECK_ID:
+                return t("readinessCheckList.checkLabels.WALL_TYPE_SET");
+            case CEILING_HEIGHT_SET_CHECK_ID:
+                return t("readinessCheckList.checkLabels.CEILING_HEIGHT_SET");
+            case TEMPLATE_PRICED_CHECK_ID:
+                return t("readinessCheckList.checkLabels.TEMPLATE_PRICED");
+            case INFERRED_ANSWERS_CONFIRMED_CHECK_ID:
+                return t(
+                    "readinessCheckList.checkLabels.INFERRED_ANSWERS_CONFIRMED",
+                );
+            case ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID:
+                return t(
+                    "readinessCheckList.checkLabels.ASSUMED_WALL_TYPES_CONFIRMED",
+                );
+            default:
+                return checkId;
+        }
     }
 
     /**
@@ -29,17 +65,25 @@ export class ReadinessCheckListUtils {
      * `"Page 2 — Living Room"`, never a raw id. Falls back through the
      * entity types a `ReadinessAffectedItem` can describe — page/room,
      * quote item template, questionnaire question — and finally to a
-     * generic label for a check with no location to report.
+     * translated generic label for a check with no location to report.
      */
-    public static affectedItemLocation(item: ReadinessAffectedItem): string {
+    public static affectedItemLocation(
+        item: ReadinessAffectedItem,
+        t: QuotesTFunction,
+    ): string {
         if (item.pageNumber != null) {
             return item.areaLabel
-                ? `Page ${item.pageNumber} — ${item.areaLabel}`
-                : `Page ${item.pageNumber}`;
+                ? t("readinessCheckList.pageLocationWithArea", {
+                      pageNumber: item.pageNumber,
+                      areaLabel: item.areaLabel,
+                  })
+                : t("readinessCheckList.pageLocation", {
+                      pageNumber: item.pageNumber,
+                  });
         }
         if (item.quoteItemTemplateLabel) return item.quoteItemTemplateLabel;
         if (item.questionLabel) return item.questionLabel;
-        return "This project";
+        return t("readinessCheckList.defaultAffectedItemLocation");
     }
 
     /**
