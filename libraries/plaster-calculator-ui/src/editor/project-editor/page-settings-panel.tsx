@@ -1,6 +1,8 @@
 import { Button, Text } from "@libraries/uikit-web";
 import type { ReactNode } from "react";
 
+import { useEditorTranslation } from "../i18n/index.js";
+
 import { cx, ui } from "./project-editor.styles.js";
 
 interface PageSettingsPanelProps {
@@ -24,14 +26,15 @@ export function PageSettingsPanel({
     setCeilingHeightMm,
     setDirty,
 }: PageSettingsPanelProps) {
+    const { t } = useEditorTranslation();
     return (
         <div className={ui.stack}>
             <Text size="sm" variant="muted">
-                {status || "Ready"}{" "}
+                {status || t("pageSettingsPanel.readyStatus")}{" "}
                 {dirty ? "- autosaves every 15 seconds" : ""}
             </Text>
             <div className={ui.field}>
-                <label>Ceiling height mm</label>
+                <label>{t("pageSettingsPanel.ceilingHeightLabel")}</label>
                 <input
                     className={cx(
                         ui.input,
@@ -49,7 +52,7 @@ export function PageSettingsPanel({
                     }}
                 />
                 {hasPageHeightIssue() &&
-                    fieldError("Ceiling height is required")}
+                    fieldError(t("pageSettingsPanel.ceilingHeightRequired"))}
             </div>
             <Button variant="secondary" onClick={applyHeightToAllPages}>
                 Apply height to all pages

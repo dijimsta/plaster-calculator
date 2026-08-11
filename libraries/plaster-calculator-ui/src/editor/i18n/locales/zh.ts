@@ -26,5 +26,41 @@ export const zh = createTranslationResource(
             areasTitle: "区域",
             selectionTitle: "选择",
         }),
+        ceilingControls: Object.freeze({
+            roomCeilingLabel: "房间天花板",
+            ceilingModeOptions: Object.freeze({
+                flat: "平面",
+                raked: "斜面",
+            }),
+            roomHeightOverrideLabel: "房间高度覆盖（毫米）",
+            pageHeightNotSet: "未设置页面高度",
+            lowHeightLabel: "低点高度（毫米）",
+            highHeightLabel: "高点高度（毫米）",
+        }),
+        pageSettingsPanel: Object.freeze({
+            readyStatus: "就绪",
+            ceilingHeightLabel: "天花板高度（毫米）",
+            ceilingHeightRequired: "天花板高度为必填项",
+        }),
+        scalePanel: Object.freeze({
+            cancelReference: "取消参考",
+            setReference: "设置参考",
+            clickTwoPoints: "在图像上点击两个点。",
+            referencePointsSet: "已设置 {{points}}/2 个参考点。",
+            referenceLengthLabel: "参考长度（毫米）",
+        }),
+        selectionBoardControls: Object.freeze({
+            wallProfileLabel: "墙面轮廓",
+            wallBoardLabel: "墙板",
+            ceilingBoardLabel: "天花板板材",
+        }),
+        selectionPanel: Object.freeze({
+            areaLabelField: "区域标签",
+        }),
+        summaryPanel: Object.freeze({
+            unavailable: "由于尚未设置参考，摘要不可用。",
+            wallLength: "墙面长度",
+            ceilingArea: "天花板面积",
+        }),
     }),
 );
