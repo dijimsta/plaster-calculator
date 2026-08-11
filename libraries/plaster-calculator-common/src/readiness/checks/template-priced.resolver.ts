@@ -28,8 +28,9 @@ export function resolveTemplatePriced(
         checkId: TEMPLATE_PRICED_CHECK_ID,
         isMet: unpriced.length === 0,
         affectedItemCount: unpriced.length,
-        ...(unpriced[0]
-            ? { quoteItemTemplateId: unpriced[0].quoteItemTemplateId }
-            : {}),
+        affectedItems: unpriced.map((config) => ({
+            quoteItemTemplateId: config.quoteItemTemplateId,
+            quoteItemTemplateLabel: config.label,
+        })),
     };
 }

@@ -18,15 +18,25 @@ test("resolveAssumedWallTypesConfirmed is unmet for a detected room with a defau
         source: "detected",
         wallBoardType: undefined,
         wallBoardTypeConfirmedAt: null,
+        label: "Living Room",
     });
-    const withAssumedType = page({ overlay: overlayJson([assumedArea]) });
+    const withAssumedType = page({
+        overlay: overlayJson([assumedArea]),
+        pageNumber: 2,
+    });
     const result = resolveAssumedWallTypesConfirmed({
         project: project([withAssumedType]),
     });
     assert.equal(result.isMet, false);
     assert.equal(result.affectedItemCount, 1);
-    assert.equal(result.pageId, withAssumedType.id);
-    assert.equal(result.areaId, assumedArea.id);
+    assert.deepEqual(result.affectedItems, [
+        {
+            pageId: withAssumedType.id,
+            pageNumber: 2,
+            areaId: assumedArea.id,
+            areaLabel: "Living Room",
+        },
+    ]);
 });
 
 test("resolveAssumedWallTypesConfirmed is met once the defaulted wall type is confirmed", () => {

@@ -84,6 +84,7 @@ export function quoteItemTemplateConfig(
 ): ReadinessQuoteItemTemplateConfig {
     return {
         quoteItemTemplateId: uniqueId("template"),
+        label: "Skim coat",
         enabled: true,
         unitPriceCents: 1000,
         quantitySourceId: "WALL_AREA",
@@ -96,6 +97,7 @@ export function questionnaireAnswer(
 ): ReadinessQuestionnaireAnswer {
     return {
         questionId: uniqueId("question"),
+        label: "Is the ceiling raked?",
         answer: "Yes",
         answerSource: MANUAL_ANSWER_SOURCE,
         ...overrides,

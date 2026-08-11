@@ -20,6 +20,9 @@ export function resolveRoomsMeasured(
         checkId: ROOMS_MEASURED_CHECK_ID,
         isMet: unmeasuredPages.length === 0,
         affectedItemCount: unmeasuredPages.length,
-        ...(unmeasuredPages[0] ? { pageId: unmeasuredPages[0].id } : {}),
+        affectedItems: unmeasuredPages.map((page) => ({
+            pageId: page.id,
+            pageNumber: page.pageNumber,
+        })),
     };
 }

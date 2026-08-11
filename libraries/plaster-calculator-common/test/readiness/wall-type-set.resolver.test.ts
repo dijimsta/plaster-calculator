@@ -12,15 +12,40 @@ test("resolveWallTypeSet is met when every room has an explicit wall board type"
 });
 
 test("resolveWallTypeSet is unmet when a room's wall board type is unset", () => {
-    const unsetArea = area({ wallBoardType: undefined });
-    const withUnsetType = page({ overlay: overlayJson([unsetArea]) });
+    const unsetArea = area({ wallBoardType: undefined, label: "Kitchen" });
+    const withUnsetType = page({
+        overlay: overlayJson([unsetArea]),
+        pageNumber: 4,
+    });
     const result = resolveWallTypeSet({
         project: project([withUnsetType]),
     });
     assert.equal(result.isMet, false);
     assert.equal(result.affectedItemCount, 1);
-    assert.equal(result.pageId, withUnsetType.id);
-    assert.equal(result.areaId, unsetArea.id);
+    assert.deepEqual(result.affectedItems, [
+        {
+            pageId: withUnsetType.id,
+            pageNumber: 4,
+            areaId: unsetArea.id,
+            areaLabel: "Kitchen",
+        },
+    ]);
+});
+
+test("resolveWallTypeSet reports every unset room, not just the first", () => {
+    const firstUnset = area({ wallBoardType: undefined, label: "Kitchen" });
+    const secondUnset = area({ wallBoardType: undefined, label: "Bathroom" });
+    const withUnsetTypes = page({
+        overlay: overlayJson([firstUnset, secondUnset]),
+    });
+    const result = resolveWallTypeSet({
+        project: project([withUnsetTypes]),
+    });
+    assert.equal(result.affectedItemCount, 2);
+    assert.deepEqual(
+        result.affectedItems.map((item) => item.areaLabel),
+        ["Kitchen", "Bathroom"],
+    );
 });
 
 test("resolveWallTypeSet exempts outdoor areas with no wall board type", () => {

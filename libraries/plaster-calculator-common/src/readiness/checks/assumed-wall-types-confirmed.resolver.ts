@@ -39,8 +39,11 @@ export function resolveAssumedWallTypesConfirmed(
         checkId: ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID,
         isMet: unconfirmed.length === 0,
         affectedItemCount: unconfirmed.length,
-        ...(unconfirmed[0]
-            ? { pageId: unconfirmed[0].page.id, areaId: unconfirmed[0].area.id }
-            : {}),
+        affectedItems: unconfirmed.map(({ page, area }) => ({
+            pageId: page.id,
+            pageNumber: page.pageNumber,
+            areaId: area.id,
+            areaLabel: area.label,
+        })),
     };
 }

@@ -63,6 +63,7 @@ export class QuoteReadinessUtils {
             quoteItemTemplateConfigs: data.quoteItemTemplateConfigs.map(
                 (config) => ({
                     quoteItemTemplateId: config.itemTemplateId,
+                    label: config.itemTemplate.name,
                     enabled: config.enabled,
                     unitPriceCents: config.unitPriceCents,
                     quantitySourceId:
@@ -72,6 +73,7 @@ export class QuoteReadinessUtils {
             questionnaireAnswers: data.projectQuestionnaireQuestions.map(
                 (question) => ({
                     questionId: question.id,
+                    label: question.label,
                     answer: question.answer ?? null,
                     answerSource: question.answerSource,
                 }),

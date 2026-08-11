@@ -11,15 +11,17 @@ test("resolveScaleApplied is met when every page has a scale", () => {
     });
     assert.equal(result.isMet, true);
     assert.equal(result.affectedItemCount, 0);
-    assert.equal(result.pageId, undefined);
+    assert.deepEqual(result.affectedItems, []);
 });
 
 test("resolveScaleApplied is unmet for a page with no scale", () => {
-    const unscaled = page({ scaleMmPerPx: null });
+    const unscaled = page({ scaleMmPerPx: null, pageNumber: 2 });
     const result = resolveScaleApplied({ project: project([unscaled]) });
     assert.equal(result.isMet, false);
     assert.equal(result.affectedItemCount, 1);
-    assert.equal(result.pageId, unscaled.id);
+    assert.deepEqual(result.affectedItems, [
+        { pageId: unscaled.id, pageNumber: 2 },
+    ]);
 });
 
 test("resolveScaleApplied rolls up per page: page 1 complete, page 2 unscaled", () => {
@@ -30,5 +32,18 @@ test("resolveScaleApplied rolls up per page: page 1 complete, page 2 unscaled", 
     });
     assert.equal(result.isMet, false);
     assert.equal(result.affectedItemCount, 1);
-    assert.equal(result.pageId, unscaledPage.id);
+    assert.equal(result.affectedItems[0]?.pageId, unscaledPage.id);
+});
+
+test("resolveScaleApplied reports every unscaled page, not just the first", () => {
+    const firstUnscaled = page({ scaleMmPerPx: null, pageNumber: 1 });
+    const secondUnscaled = page({ scaleMmPerPx: null, pageNumber: 2 });
+    const result = resolveScaleApplied({
+        project: project([firstUnscaled, secondUnscaled]),
+    });
+    assert.equal(result.affectedItemCount, 2);
+    assert.deepEqual(
+        result.affectedItems.map((item) => item.pageId),
+        [firstUnscaled.id, secondUnscaled.id],
+    );
 });
