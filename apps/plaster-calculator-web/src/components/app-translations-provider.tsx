@@ -1,6 +1,7 @@
 "use client";
 
 import {
+    editorTranslations,
     questionnairesTranslations,
     quotesTranslations,
 } from "@libraries/plaster-calculator-ui";
@@ -14,7 +15,11 @@ export function AppTranslationsProvider({
 }: PropsWithChildren): ReactElement {
     return (
         <I18nProvider
-            translations={[questionnairesTranslations, quotesTranslations]}
+            translations={[
+                editorTranslations,
+                questionnairesTranslations,
+                quotesTranslations,
+            ]}
             languageCookie={languageCookie}
         >
             {children}
