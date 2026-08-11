@@ -1,13 +1,18 @@
 import { createLanguageCookie } from "@ui/internationalization";
 
-export type AppLanguage = "en" | "zh";
+import {
+    fallbackLanguage,
+    languageCookieName,
+    supportedLanguages,
+    type AppLanguage,
+} from "../i18n/language.ts";
 
-export const supportedLanguages: readonly AppLanguage[] = ["en", "zh"];
+export { supportedLanguages, type AppLanguage } from "../i18n/language.ts";
 
 export const languageCookie = createLanguageCookie<AppLanguage>(
-    "plaster-language",
+    languageCookieName,
     supportedLanguages,
-    "en",
+    fallbackLanguage,
 );
 
 export const { read: readLanguageCookie, write: writeLanguageCookie } =

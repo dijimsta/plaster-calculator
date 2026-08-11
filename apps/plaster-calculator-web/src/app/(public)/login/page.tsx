@@ -23,7 +23,9 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/navigation.js";
 import { useEffect, useState } from "react";
+import { Trans } from "react-i18next";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { activeTheme, cx } from "../../../lib/styles.js";
 
 const googleProvider = new GoogleAuthProvider();
@@ -42,6 +44,7 @@ const cardWrapperClass = "w-full max-w-md shrink-0 max-[768px]:max-w-none";
 
 export default function LoginPage() {
     const router = useRouter();
+    const { t } = useAppTranslation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
@@ -70,7 +73,9 @@ export default function LoginPage() {
             router.push("/");
         } catch (err: unknown) {
             setError(
-                err instanceof Error ? err.message : "Authentication failed.",
+                err instanceof Error
+                    ? err.message
+                    : t("loginPage.authenticationFailed"),
             );
         } finally {
             setLoading(false);
@@ -85,7 +90,9 @@ export default function LoginPage() {
             router.push("/");
         } catch (err: unknown) {
             setError(
-                err instanceof Error ? err.message : "Google sign-in failed.",
+                err instanceof Error
+                    ? err.message
+                    : t("loginPage.googleSignInFailed"),
             );
             setLoading(false);
         }
@@ -100,22 +107,26 @@ export default function LoginPage() {
             <div className={pageClass}>
                 <div className={heroClass}>
                     <div className={brandClass}>
-                        <Heading1>Plaster Calculator</Heading1>
+                        <Heading1>{t("loginPage.brandName")}</Heading1>
                         <Paragraph textSize="xl">
-                            Calculate plaster quantities quickly and accurately
-                            for any project.
+                            {t("loginPage.signedInDescription")}
                         </Paragraph>
                     </div>
 
                     <div className={cardWrapperClass}>
                         <Card>
                             <Paragraph>
-                                Welcome back,{" "}
-                                <strong>
-                                    {currentUser.displayName ??
-                                        currentUser.email}
-                                </strong>
-                                !
+                                <Trans
+                                    t={t}
+                                    i18nKey="loginPage.welcomeBack"
+                                    values={{
+                                        name:
+                                            currentUser.displayName ??
+                                            currentUser.email ??
+                                            t("sidebar.userFallback"),
+                                    }}
+                                    components={{ strong: <strong /> }}
+                                />
                             </Paragraph>
                             <Card.ButtonGroup>
                                 <ButtonLink
@@ -124,7 +135,7 @@ export default function LoginPage() {
                                     fullWidth
                                     size="large"
                                 >
-                                    Go to App
+                                    {t("loginPage.goToApp")}
                                 </ButtonLink>
                             </Card.ButtonGroup>
                         </Card>
@@ -138,10 +149,9 @@ export default function LoginPage() {
         <div className={pageClass}>
             <div className={heroClass}>
                 <div className={brandClass}>
-                    <Heading1>Plaster Calculator</Heading1>
+                    <Heading1>{t("loginPage.brandName")}</Heading1>
                     <Paragraph textSize="xl">
-                        Quote your plastering quickly and accurately for any
-                        project.
+                        {t("loginPage.description")}
                     </Paragraph>
                 </div>
 
@@ -160,7 +170,7 @@ export default function LoginPage() {
                                 autoComplete="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Email address"
+                                placeholder={t("loginPage.emailPlaceholder")}
                             />
                             <Input
                                 type="password"
@@ -172,7 +182,7 @@ export default function LoginPage() {
                                 }
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Password"
+                                placeholder={t("loginPage.passwordPlaceholder")}
                             />
                             <Button
                                 type="submit"
@@ -181,11 +191,13 @@ export default function LoginPage() {
                                 fullWidth
                                 size="large"
                             >
-                                {loading ? "Please wait…" : "Log in"}
+                                {loading
+                                    ? t("loginPage.loading")
+                                    : t("loginPage.logIn")}
                             </Button>
                         </FormLayout>
 
-                        <Divider>or</Divider>
+                        <Divider>{t("loginPage.or")}</Divider>
 
                         <Button
                             type="button"
@@ -196,7 +208,7 @@ export default function LoginPage() {
                             size="large"
                             icon={<GoogleIcon />}
                         >
-                            Continue with Google
+                            {t("loginPage.continueWithGoogle")}
                         </Button>
 
                         <Card.Footer>
@@ -209,8 +221,8 @@ export default function LoginPage() {
                                 }}
                             >
                                 {isRegistering
-                                    ? "Back to log in"
-                                    : "Create new account"}
+                                    ? t("loginPage.backToLogin")
+                                    : t("loginPage.createNewAccount")}
                             </Button>
                         </Card.Footer>
                     </Card>
