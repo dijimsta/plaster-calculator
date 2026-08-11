@@ -26,6 +26,7 @@ export type QuoteTemplateFormProps = {
     readonly formId: string;
     readonly initialValues?: QuoteTemplateFormValues;
     readonly submitLabel?: string;
+    readonly disabled?: boolean;
     readonly onCancel: () => void;
     readonly onSubmit: (values: QuoteTemplateFormValues) => void;
 };
@@ -48,6 +49,7 @@ export function QuoteTemplateForm({
     formId,
     initialValues,
     submitLabel,
+    disabled = false,
     onCancel,
     onSubmit,
 }: QuoteTemplateFormProps): ReactElement {
@@ -62,8 +64,9 @@ export function QuoteTemplateForm({
     });
     const defaultItems =
         initialValues?.defaultItems ?? EMPTY_FORM_VALUES.defaultItems;
-    const resolvedSubmitLabel =
-        submitLabel ?? t("quoteTemplateForm.saveChanges");
+    const resolvedSubmitLabel = disabled
+        ? t("quoteTemplateForm.saving")
+        : (submitLabel ?? t("quoteTemplateForm.saveChanges"));
 
     return (
         <FormLayout id={formId} onSubmit={handleSubmit(onSubmit)}>
@@ -140,6 +143,7 @@ export function QuoteTemplateForm({
                             <Button
                                 type="button"
                                 variant="secondary"
+                                disabled={disabled}
                                 icon={<Plus size={16} aria-hidden="true" />}
                                 onClick={() => append(EMPTY_CUSTOM_ITEM)}
                             >
@@ -150,10 +154,17 @@ export function QuoteTemplateForm({
                 </FormLayoutField>
             </FormLayoutSection>
             <FormLayoutActions>
-                <Button type="button" variant="secondary" onClick={onCancel}>
+                <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={disabled}
+                    onClick={onCancel}
+                >
                     {t("common.cancel")}
                 </Button>
-                <Button type="submit">{resolvedSubmitLabel}</Button>
+                <Button type="submit" disabled={disabled}>
+                    {resolvedSubmitLabel}
+                </Button>
             </FormLayoutActions>
         </FormLayout>
     );

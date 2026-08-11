@@ -1,7 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        // generated/data-connector-web's react/index.d.ts imports @tanstack/react-query
+        // directly but its package.json doesn't declare it as a peer dependency, so pnpm's
+        // strict linking can't resolve it; re-enable skipLibCheck for this project only.
+        "skipLibCheck": true
     },
     "exclude": ["out", "node_modules"]
 }
