@@ -186,7 +186,7 @@ export type {
 export { StackedList } from "./lists/stacked-list/index.ts";
 export type { StackedListProps } from "./lists/stacked-list/index.ts";
 export { Table } from "./lists/table/index.ts";
-export type { TableProps } from "./lists/table/index.ts";
+export type { TableCellAlign, TableProps } from "./lists/table/index.ts";
 export { ButtonLink } from "./elements/link/index.ts";
 export type { ButtonLinkProps } from "./elements/link/index.ts";
 export { Breadcrumb } from "./navigation/breadcrumb/index.ts";
