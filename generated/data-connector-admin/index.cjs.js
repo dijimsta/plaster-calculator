@@ -196,6 +196,13 @@ function upsertTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
 }
 exports.upsertTeamMember = upsertTeamMember;
 
+function deleteTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteTeamMember', inputVars, inputOpts);
+}
+exports.deleteTeamMember = deleteTeamMember;
+
 function rotateTeamInvitation(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
@@ -223,6 +230,13 @@ function getTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeQuery('GetTeamMember', inputVars, inputOpts);
 }
 exports.getTeamMember = getTeamMember;
+
+function listTeamMembers(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListTeamMembers', inputVars, inputOpts);
+}
+exports.listTeamMembers = listTeamMembers;
 
 function listPendingTeamInvitations(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
