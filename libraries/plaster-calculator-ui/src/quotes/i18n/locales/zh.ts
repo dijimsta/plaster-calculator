@@ -8,6 +8,16 @@ export const zh = createTranslationResource(
         common: Object.freeze({
             cancel: "取消",
         }),
+        quoteTemplatePanel: Object.freeze({
+            title: "报价模板",
+            description:
+                "调整默认项目价格，并添加应出现在每份报价单中的自定义项目。",
+            loading: "正在加载报价模板...",
+            saveSuccessTitle: "报价模板已保存",
+            saveSuccessDescription: "您的更改已保存。",
+            saveErrorTitle: "无法保存报价模板",
+            saveErrorDescription: "保存时出现问题，请重试。",
+        }),
         quoteTemplateForm: Object.freeze({
             defaultItemsTitle: "默认项目",
             defaultItemsDescription:
@@ -26,6 +36,7 @@ export const zh = createTranslationResource(
             addItem: "添加项目",
             removeItem: "移除项目 {{number}}",
             saveChanges: "保存更改",
+            saving: "正在保存...",
             quantitySourceDescription: Object.freeze({
                 PLASTERBOARD_10MM_WALLS: "根据墙面面积计算",
                 VILLABOARD_6MM_WET_WALLS: "根据湿区墙面面积计算",

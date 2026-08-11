@@ -378,6 +378,9 @@ importers:
       '@libraries/plaster-calculator-common':
         specifier: workspace:*
         version: link:../plaster-calculator-common
+      '@libraries/plaster-calculator-web-core':
+        specifier: workspace:*
+        version: link:../plaster-calculator-web-core
       '@libraries/uikit-web':
         specifier: workspace:*
         version: link:../uikit-web
@@ -387,6 +390,9 @@ importers:
       '@tanstack-query-firebase/react':
         specifier: ^2.1.1
         version: 2.1.1(@tanstack/react-query@5.101.4(react@19.2.8))(firebase@12.17.0)
+      '@tanstack/react-query':
+        specifier: ^5.101.4
+        version: 5.101.4(react@19.2.8)
       '@ui/internationalization':
         specifier: workspace:*
         version: link:../../ui/internationalization

@@ -2,6 +2,17 @@ export const en = Object.freeze({
     common: Object.freeze({
         cancel: "Cancel",
     }),
+    quoteTemplatePanel: Object.freeze({
+        title: "Quote template",
+        description:
+            "Adjust the default item prices and add custom items that should appear on every quote.",
+        loading: "Loading quote template...",
+        saveSuccessTitle: "Quote template saved",
+        saveSuccessDescription: "Your changes have been saved.",
+        saveErrorTitle: "Couldn't save quote template",
+        saveErrorDescription:
+            "Something went wrong while saving. Please try again.",
+    }),
     quoteTemplateForm: Object.freeze({
         defaultItemsTitle: "Default items",
         defaultItemsDescription:
@@ -20,6 +31,7 @@ export const en = Object.freeze({
         addItem: "Add item",
         removeItem: "Remove item {{number}}",
         saveChanges: "Save changes",
+        saving: "Saving...",
         quantitySourceDescription: Object.freeze({
             PLASTERBOARD_10MM_WALLS: "Measured from wall area",
             VILLABOARD_6MM_WET_WALLS: "Measured from wet-area wall area",
