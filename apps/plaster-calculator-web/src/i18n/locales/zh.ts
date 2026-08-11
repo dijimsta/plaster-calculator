@@ -41,5 +41,34 @@ export const zh = createTranslationResource(
                 zh: "中文",
             }),
         }),
+        home: Object.freeze({
+            title: "首页",
+            projectProcessingAlert: Object.freeze({
+                title: "项目处理中",
+                description: "处理完成后此列表将自动更新。",
+            }),
+        }),
+        projects: Object.freeze({
+            breadcrumb: "项目",
+            title: "项目",
+            statusTabs: Object.freeze({
+                all: "全部",
+            }),
+            loadingProjects: "正在加载项目...",
+            refresh: "刷新",
+            refreshTitle: "刷新项目",
+            emptyStateTitle: "没有符合筛选条件的项目",
+            tableHeaders: Object.freeze({
+                project: "项目",
+                company: "公司",
+                plan: "平面图",
+                status: "状态",
+                updated: "更新时间",
+                actions: "操作",
+            }),
+        }),
+        projectHistory: Object.freeze({
+            noStatusProjects: "没有{{status}}的项目",
+        }),
     }),
 );

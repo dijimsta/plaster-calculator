@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
+import { useAppTranslation } from "../../i18n/index.ts";
 import { salesStatusLabel } from "../../lib/sales-status.js";
 import { cx, ui } from "../../lib/styles.js";
 
@@ -38,6 +39,8 @@ export function ProjectHistory({
     setRenamingId,
     setRenameValue,
 }: ProjectHistoryProps) {
+    const { t } = useAppTranslation();
+
     return (
         <section className={cx(ui.panel, ui.stack, "self-start")}>
             <div className={ui.editorToolbar}>
@@ -187,7 +190,9 @@ export function ProjectHistory({
                         {filtered.length === 0 && (
                             <EmptyState
                                 icon={<FolderKanban />}
-                                title={`No ${salesStatusLabel(activeSalesStatus)} projects`}
+                                title={t("projectHistory.noStatusProjects", {
+                                    status: salesStatusLabel(activeSalesStatus),
+                                })}
                             />
                         )}
                     </>
