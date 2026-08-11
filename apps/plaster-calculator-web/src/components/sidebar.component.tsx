@@ -2,6 +2,7 @@
 
 import {
     FirebaseService,
+    useMyTeamSummary,
     useUser,
     useUserInitials,
 } from "@libraries/plaster-calculator-web-core";
@@ -45,6 +46,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
     const router = useRouter();
     const user = useUser();
     const initials = useUserInitials();
+    const team = useMyTeamSummary();
 
     async function handleLogout() {
         await signOut(FirebaseService.getAuth());
@@ -102,7 +104,9 @@ export default function Sidebar({ children }: PropsWithChildren) {
                                     <Box direction="column" align="start">
                                         <Text size="sm">{displayName}</Text>
                                         <Text size="xs" variant="muted">
-                                            User
+                                            {team === undefined
+                                                ? "User"
+                                                : `${formatTeamRole(team.role)} · ${team.name}`}
                                         </Text>
                                     </Box>
                                 </ButtonLink>
@@ -120,6 +124,10 @@ export default function Sidebar({ children }: PropsWithChildren) {
             <SidebarLayout.Main>{children}</SidebarLayout.Main>
         </SidebarLayout>
     );
+}
+
+function formatTeamRole(role: "OWNER" | "MEMBER"): string {
+    return role === "OWNER" ? "Owner" : "Member";
 }
 
 function isActivePath(pathname: string, href: string): boolean {
