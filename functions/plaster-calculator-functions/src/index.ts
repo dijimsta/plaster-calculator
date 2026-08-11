@@ -35,4 +35,5 @@ export {
     acceptTeamInvitation,
     createTeamInvitation,
     listPendingTeamInvitations,
+    revokeTeamInvitation,
 } from "./team-invitations.js";

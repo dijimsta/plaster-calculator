@@ -39,6 +39,9 @@ const defaultDependencies: TeamInvitationDependencies = {
     rotateInvitation: async (input) => {
         await DataConnector.rotateTeamInvitation(input);
     },
+    revokeInvitation: async (teamId, email, now) => {
+        await DataConnector.revokeTeamInvitation({ teamId, email, now });
+    },
     listPendingInvitations: async (teamId, now) => {
         const response = await DataConnector.listPendingTeamInvitations({
             teamId,
@@ -71,12 +74,18 @@ const teamInvitationService = createTeamInvitationService(defaultDependencies);
 export const createTeamInvitation = onCall(async (request) => {
     const auth = requireAuth(request);
     const data = isRecord(request.data) ? request.data : {};
-    return teamInvitationService.create(auth.uid, data["email"]);
+    return teamInvitationService.create(auth.uid, data["email"], data["role"]);
 });
 
 export const listPendingTeamInvitations = onCall(async (request) => {
     const auth = requireAuth(request);
     return teamInvitationService.listPending(auth.uid);
+});
+
+export const revokeTeamInvitation = onCall(async (request) => {
+    const auth = requireAuth(request);
+    const data = isRecord(request.data) ? request.data : {};
+    return teamInvitationService.revoke(auth.uid, data["email"]);
 });
 
 export const acceptTeamInvitation = onCall(async (request) => {

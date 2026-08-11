@@ -48,6 +48,23 @@ mutation RotateTeamInvitation(
     )
 }
 
+mutation RevokeTeamInvitation(
+    $teamId: String!
+    $email: String!
+    $now: Timestamp!
+) @auth(level: NO_ACCESS) {
+    teamInvitation_delete(
+        first: {
+            where: {
+                teamId: { eq: $teamId }
+                email: { eq: $email }
+                acceptedAt: { isNull: true }
+                expiresAt: { gt: $now }
+            }
+        }
+    )
+}
+
 mutation AcceptTeamInvitation(
     $teamId: String!
     $email: String!
