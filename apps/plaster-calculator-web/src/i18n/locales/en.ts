@@ -65,4 +65,30 @@ export const en = Object.freeze({
     projectHistory: Object.freeze({
         noStatusProjects: "No {{status}} projects",
     }),
+    projectPage: Object.freeze({
+        confirmStatusChange: "Change status to {{status}}?",
+        statusChanged: "Status changed to {{status}}.",
+    }),
+    projectHeader: Object.freeze({
+        projectFallback: "Project",
+        detailsAriaLabel: "Project details",
+        loading: "Loading...",
+        floorplanTab: "Floorplan",
+        renameProject: "Rename project",
+    }),
+    projectStatusContent: Object.freeze({
+        statusSectionTitle: "Status",
+        companySectionTitle: "Company",
+        projectWon: "Project won",
+        projectLost: "Project lost",
+    }),
+    salesStatus: Object.freeze({
+        label: "Sales status",
+        statusLabels: Object.freeze({
+            QUOTING: "Quoting",
+            QUOTE_SUBMITTED: "Quote Submitted",
+            WON: "Won",
+            LOST: "Lost",
+        }),
+    }),
 });

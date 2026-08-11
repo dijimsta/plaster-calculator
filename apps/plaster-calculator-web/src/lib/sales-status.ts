@@ -1,12 +1,8 @@
 import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
-export const salesStatusLabels: Record<SalesStatus, string> = {
-    QUOTING: "Quoting",
-    QUOTE_SUBMITTED: "Quote Submitted",
-    WON: "Won",
-    LOST: "Lost",
-};
+import { useAppTranslation } from "../i18n/index.ts";
 
-export function salesStatusLabel(status: SalesStatus): string {
-    return salesStatusLabels[status];
+export function useSalesStatusLabel(): (status: SalesStatus) => string {
+    const { t } = useAppTranslation();
+    return (status: SalesStatus) => t(`salesStatus.statusLabels.${status}`);
 }

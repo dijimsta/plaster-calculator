@@ -9,6 +9,7 @@ import { Download, File, Home, Pencil, RefreshCcw } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
+import { useAppTranslation } from "../../../../i18n/index.ts";
 import { ui } from "../../../../lib/styles.js";
 import type { ProjectDetail } from "../../../../types.js";
 
@@ -39,6 +40,8 @@ export function ProjectHeader({
     setRenameValue,
     validateAndExport,
 }: ProjectHeaderProps) {
+    const { t } = useAppTranslation();
+
     return (
         <PageHeading>
             <PageHeading.Breadcrumbs>
@@ -50,7 +53,7 @@ export function ProjectHeader({
                         Projects
                     </RoutedBreadcrumbItem>
                     <Breadcrumb.Item current>
-                        {project?.name ?? "Project"}
+                        {project?.name ?? t("projectHeader.projectFallback")}
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </PageHeading.Breadcrumbs>
@@ -63,10 +66,13 @@ export function ProjectHeader({
                     setRenaming={setRenaming}
                     setRenameValue={setRenameValue}
                 />
-                <PageHeading.Meta aria-label="Project details">
+                <PageHeading.Meta
+                    aria-label={t("projectHeader.detailsAriaLabel")}
+                >
                     <PageHeading.Meta.Item>
                         <File aria-hidden="true" />
-                        {project?.originalFileName ?? "Loading..."}
+                        {project?.originalFileName ??
+                            t("projectHeader.loading")}
                     </PageHeading.Meta.Item>
                 </PageHeading.Meta>
             </PageHeading.Content>
@@ -78,7 +84,9 @@ export function ProjectHeader({
             <PageHeading.Navigation>
                 <Tabs>
                     <Tabs.Item current={activeTab === "floorplan"}>
-                        <Link href={`/projects/${projectId}`}>Floorplan</Link>
+                        <Link href={`/projects/${projectId}`}>
+                            {t("projectHeader.floorplanTab")}
+                        </Link>
                     </Tabs.Item>
                     <Tabs.Item current={activeTab === "questionnaires"}>
                         <Link href={`/projects/${projectId}/questionnaires`}>
@@ -176,12 +184,16 @@ function ProjectTitle({
     project,
     setRenaming,
 }: Pick<ProjectHeaderProps, "project" | "setRenaming">) {
+    const { t } = useAppTranslation();
+
     return (
         <Box align="center" gap="sm">
-            <PageHeading.Title>{project?.name ?? "Project"}</PageHeading.Title>
+            <PageHeading.Title>
+                {project?.name ?? t("projectHeader.projectFallback")}
+            </PageHeading.Title>
             {project && setRenaming && (
                 <Button
-                    label="Rename project"
+                    label={t("projectHeader.renameProject")}
                     icon={<Pencil size={14} aria-hidden="true" />}
                     onClick={() => setRenaming(true)}
                     variant="secondary"

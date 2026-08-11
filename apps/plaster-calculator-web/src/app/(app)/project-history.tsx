@@ -17,7 +17,7 @@ import {
 import { default as LinkModule } from "next/link.js";
 
 import { useAppTranslation } from "../../i18n/index.ts";
-import { salesStatusLabel } from "../../lib/sales-status.js";
+import { useSalesStatusLabel } from "../../lib/sales-status.js";
 import { cx, ui } from "../../lib/styles.js";
 
 import type { ProjectHistoryProps } from "./dashboard.types.js";
@@ -40,6 +40,7 @@ export function ProjectHistory({
     setRenameValue,
 }: ProjectHistoryProps) {
     const { t } = useAppTranslation();
+    const salesStatusLabel = useSalesStatusLabel();
 
     return (
         <section className={cx(ui.panel, ui.stack, "self-start")}>
