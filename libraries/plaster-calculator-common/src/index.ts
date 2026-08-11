@@ -5,5 +5,6 @@ export * from "./geometry/index.ts";
 export * from "./projects/index.ts";
 export * from "./questionnaires/index.ts";
 export * from "./quotes/index.ts";
+export * from "./readiness/index.ts";
 export * from "./teams/index.ts";
 export * from "./users/index.ts";
