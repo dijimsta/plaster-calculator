@@ -33,8 +33,11 @@ export function resolveCeilingHeightSet(
         checkId: CEILING_HEIGHT_SET_CHECK_ID,
         isMet: unset.length === 0,
         affectedItemCount: unset.length,
-        ...(unset[0]
-            ? { pageId: unset[0].page.id, areaId: unset[0].area.id }
-            : {}),
+        affectedItems: unset.map(({ page, area }) => ({
+            pageId: page.id,
+            pageNumber: page.pageNumber,
+            areaId: area.id,
+            areaLabel: area.label,
+        })),
     };
 }

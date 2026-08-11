@@ -25,16 +25,23 @@ test("resolveCeilingHeightSet is met when only the page's ceiling height is set"
 });
 
 test("resolveCeilingHeightSet is unmet when neither the area nor the page has a ceiling height", () => {
-    const roomHeightUnset = area({ ceilingHeightMm: null });
+    const roomHeightUnset = area({ ceilingHeightMm: null, label: "Bedroom" });
     const noHeightAnywhere = page({
         overlay: overlayJson([roomHeightUnset]),
         ceilingHeightMm: null,
+        pageNumber: 5,
     });
     const result = resolveCeilingHeightSet({
         project: project([noHeightAnywhere]),
     });
     assert.equal(result.isMet, false);
     assert.equal(result.affectedItemCount, 1);
-    assert.equal(result.pageId, noHeightAnywhere.id);
-    assert.equal(result.areaId, roomHeightUnset.id);
+    assert.deepEqual(result.affectedItems, [
+        {
+            pageId: noHeightAnywhere.id,
+            pageNumber: 5,
+            areaId: roomHeightUnset.id,
+            areaLabel: "Bedroom",
+        },
+    ]);
 });
