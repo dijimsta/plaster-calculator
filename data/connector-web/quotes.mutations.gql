@@ -271,23 +271,40 @@ mutation DeleteQuoteItemTemplate($id: UUID!) @auth(level: USER) @transaction {
         @check(expr: "this != null", message: "Item not found")
 }
 
-# Sets `status` and stamps the timestamp matching the status the caller is
-# transitioning to, following the increment-style pattern Data Connect
-# supports for `_expr` fields (e.g. `likeCount_expr: "this + 1"`): inside a
-# given field's own `_expr`, bare `this` refers to that field's prior value,
-# so `sentAt_expr`/`acceptedAt_expr` below read as "request.time if the new
-# status is sent/accepted, otherwise leave the existing value alone" rather
-# than unconditionally overwriting whichever timestamp was already set by an
-# earlier transition. `$status` is available to those expressions as
-# `vars.status`, the same way `AcceptTeamInvitation` (connector-admin,
-# teams.mutations.gql) reads a mutation variable inside a `@check` expr via
-# `vars.tokenHash`.
+# Sets `status`, stamping `updatedAt` the same way every other mutation in
+# this file does.
 #
-# This mutation does not itself enforce that draft -> sent -> accepted is
-# followed in order — a `@check` here could only compare against the
-# quote's *current* status, not walk a full state machine, and doing that
-# via string-matched CEL conditions would be more fragile than useful.
-# Transition-order enforcement belongs to the web app layer (WORK-123).
+# This does not also conditionally stamp `sentAt`/`acceptedAt` in the same
+# call. That was tried — `sentAt_expr`/`acceptedAt_expr` set to
+# `"vars.status == 'sent' ? request.time : this"` (reading `$status` via
+# `vars.status`, the same way `AcceptTeamInvitation` in
+# connector-admin/teams.mutations.gql reads a mutation variable inside a
+# `@check` expr via `vars.tokenHash`) — on the theory that Data Connect
+# supports an increment-style self-reference in `_expr` fields (as in
+# `count_expr: "this + 1"`). `firebase dataconnect:sdk:generate` rejects it:
+# `this` is not declared in the CEL environment for an `_update` mutation's
+# `Timestamp_Expr` fields, only in `@check` contexts. Without a working
+# self-reference there is no schema-valid way for a single static mutation
+# document to conditionally write exactly one of two fields while leaving
+# the other untouched: the `data` field set is fixed at author time, so a
+# `sent`-transition call and an `accepted`-transition call both evaluate
+# every expression in this document, and any non-matching branch has to
+# produce *some* Timestamp value — `null` would silently erase a
+# previously-set `sentAt` the next time this mutation runs for the
+# `accepted` transition.
+#
+# The schema-valid way to stamp a single field unconditionally with
+# `request.time` is a dedicated mutation per transition — exactly what
+# `AcceptTeamInvitation` already does for `acceptedAt`. That's deliberately
+# not added here: this ticket's scope is the status write, and per-status
+# timestamp stamping can follow later (e.g. alongside WORK-123, when the web
+# app layer's actual needs are known) as `MarkQuoteSent`/`MarkQuoteAccepted`
+# mutations shaped like `AcceptTeamInvitation` rather than guessed at now.
+#
+# Similarly, this mutation does not enforce that draft -> sent -> accepted
+# is followed in order — a `@check` here could only compare against the
+# quote's *current* status, not walk a full state machine. Transition-order
+# enforcement belongs to the web app layer (WORK-123).
 mutation UpdateQuoteStatus($id: UUID!, $status: String!)
 @auth(level: USER)
 @transaction {
@@ -303,11 +320,6 @@ mutation UpdateQuoteStatus($id: UUID!, $status: String!)
     }
     quote_update(
         id: $id
-        data: {
-            status: $status
-            sentAt_expr: "vars.status == 'sent' ? request.time : this"
-            acceptedAt_expr: "vars.status == 'accepted' ? request.time : this"
-            updatedAt_expr: "request.time"
-        }
+        data: { status: $status, updatedAt_expr: "request.time" }
     )
 }
