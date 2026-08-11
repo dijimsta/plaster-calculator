@@ -52,4 +52,63 @@ export const en = Object.freeze({
             EZY_JAMB_DOOR_SETS: "Measured from door count",
         }),
     }),
+    readinessSummaryHeader: Object.freeze({
+        readyTitle: "Ready to quote",
+        notReadyTitle: "Not ready to quote",
+        readyDescription: "This plan is ready to quote.",
+        notReadyDescription_one:
+            "{{count}} check needs attention before this plan can be quoted.",
+        notReadyDescription_other:
+            "{{count}} checks need attention before this plan can be quoted.",
+        readyBadge: "Ready",
+        unmetBadge: "{{count}} unmet",
+        generateQuote: "Generate quote",
+        disabledReason: "Resolve the checks below to enable this.",
+    }),
+    readinessCheckList: Object.freeze({
+        metBadge: "Met",
+        unmetBadge: "{{count}} unmet",
+        fixInline: "Fix this directly below.",
+        fixDeepLink: "Fix this from the linked page, then come back here.",
+        hideAffectedItems: "Hide affected items",
+        showAffectedItems_one: "Show {{count}} affected item",
+        showAffectedItems_other: "Show {{count}} affected items",
+        defaultAffectedItemLocation: "This project",
+        pageLocation: "Page {{pageNumber}}",
+        pageLocationWithArea: "Page {{pageNumber}} — {{areaLabel}}",
+        checkLabels: Object.freeze({
+            SCALE_APPLIED: "Scale applied",
+            ROOMS_MEASURED: "Rooms measured",
+            WALL_TYPE_SET: "Wall type set",
+            CEILING_HEIGHT_SET: "Ceiling height set",
+            TEMPLATE_PRICED: "Template priced",
+            INFERRED_ANSWERS_CONFIRMED: "Inferred answers confirmed",
+            ASSUMED_WALL_TYPES_CONFIRMED: "Assumed wall types confirmed",
+        }),
+    }),
+    readinessFixControls: Object.freeze({
+        save: "Save",
+        saving: "Saving…",
+        confirm: "Confirm",
+        confirming: "Confirming…",
+        wallBoardType: Object.freeze({
+            label: "Wall board type",
+            labelWithArea: "Wall board type — {{area}}",
+            error: "Couldn't update the wall board type. Try again.",
+        }),
+        ceilingHeight: Object.freeze({
+            label: "Ceiling height",
+            labelWithArea: "Ceiling height — {{area}}",
+            error: "Couldn't update the ceiling height. Try again.",
+        }),
+        unitPrice: Object.freeze({
+            label: "Unit price",
+            labelWithTemplate: "Unit price — {{template}}",
+            error: "Couldn't update the unit price. Try again.",
+        }),
+        confirmError: "Couldn't confirm. Try again.",
+        confirmAccessibleLabelWithLocation:
+            'Confirm {{label}} "{{value}}" for {{location}}',
+        confirmAccessibleLabel: 'Confirm {{label}} "{{value}}"',
+    }),
 });

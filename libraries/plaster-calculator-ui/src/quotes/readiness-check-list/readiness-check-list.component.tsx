@@ -7,6 +7,8 @@ import { Badge, Box, Button, StackedList, Text } from "@libraries/uikit-web";
 import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
 
+import { useQuotesTranslation } from "../i18n/index.ts";
+
 import { ReadinessCheckListUtils } from "./readiness-check-list.utils.ts";
 
 /**
@@ -110,22 +112,28 @@ function ReadinessCheckRowHeader({
     isMet,
     affectedItemCount,
 }: ReadinessCheckRowHeaderProps): ReactElement {
+    const { t } = useQuotesTranslation();
+
     return (
         <Box direction="row" justify="between" align="center" wrap>
             <Box direction="column" gap="xs">
                 <Text size="base">
-                    {ReadinessCheckListUtils.checkTitle(check.id)}
+                    {ReadinessCheckListUtils.checkTitle(check.id, t)}
                 </Text>
                 {!isMet && (
                     <Text size="sm" variant="muted">
                         {check.fixMode === "INLINE"
-                            ? "Fix this directly below."
-                            : "Fix this from the linked page, then come back here."}
+                            ? t("readinessCheckList.fixInline")
+                            : t("readinessCheckList.fixDeepLink")}
                     </Text>
                 )}
             </Box>
             <Badge color={isMet ? "green" : "red"} variant="pill-with-border">
-                {isMet ? "Met" : `${affectedItemCount} unmet`}
+                {isMet
+                    ? t("readinessCheckList.metBadge")
+                    : t("readinessCheckList.unmetBadge", {
+                          count: affectedItemCount,
+                      })}
             </Badge>
         </Box>
     );
@@ -153,6 +161,8 @@ function ReadinessCheckRowItems({
     onToggleExpanded,
     renderFixControl,
 }: ReadinessCheckRowItemsProps): ReactNode {
+    const { t } = useQuotesTranslation();
+
     if (isMet) return null;
 
     const hasMultipleAffectedItems = affectedItems.length > 1;
@@ -168,8 +178,10 @@ function ReadinessCheckRowItems({
                     onClick={onToggleExpanded}
                 >
                     {isExpanded
-                        ? "Hide affected items"
-                        : `Show ${affectedItems.length} affected items`}
+                        ? t("readinessCheckList.hideAffectedItems")
+                        : t("readinessCheckList.showAffectedItems", {
+                              count: affectedItems.length,
+                          })}
                 </Button>
             )}
             {(!hasMultipleAffectedItems || isExpanded) && (
@@ -202,10 +214,12 @@ function ReadinessAffectedItemRow({
     check,
     renderFixControl,
 }: ReadinessAffectedItemRowProps): ReactElement {
+    const { t } = useQuotesTranslation();
+
     return (
         <Box direction="row" justify="between" align="center" gap="sm" wrap>
             <Text size="sm">
-                {ReadinessCheckListUtils.affectedItemLocation(item)}
+                {ReadinessCheckListUtils.affectedItemLocation(item, t)}
             </Text>
             {renderFixControl?.(item, check)}
         </Box>

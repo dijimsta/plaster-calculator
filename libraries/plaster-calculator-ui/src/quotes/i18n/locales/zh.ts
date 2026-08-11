@@ -54,5 +54,68 @@ export const zh = createTranslationResource(
                 EZY_JAMB_DOOR_SETS: "根据门套数量计算",
             }),
         }),
+        readinessSummaryHeader: Object.freeze({
+            readyTitle: "可以生成报价",
+            notReadyTitle: "尚不能生成报价",
+            readyDescription: "该方案已可以生成报价。",
+            // zh has a single plural form (CLDR "other"); `_one` mirrors
+            // `_other` verbatim rather than being left as an English
+            // fallback, since i18next still requires the key to exist.
+            notReadyDescription_one:
+                "还有 {{count}} 项检查需要处理才能生成报价。",
+            notReadyDescription_other:
+                "还有 {{count}} 项检查需要处理才能生成报价。",
+            readyBadge: "已就绪",
+            unmetBadge: "{{count}} 项未通过",
+            generateQuote: "生成报价",
+            disabledReason: "请先解决下方的检查项以启用此操作。",
+        }),
+        readinessCheckList: Object.freeze({
+            metBadge: "已通过",
+            unmetBadge: "{{count}} 项未通过",
+            fixInline: "请在下方直接处理。",
+            fixDeepLink: "请前往关联页面处理，然后返回此处。",
+            hideAffectedItems: "隐藏受影响项目",
+            // Same single-plural-form note as notReadyDescription above.
+            showAffectedItems_one: "显示 {{count}} 个受影响项目",
+            showAffectedItems_other: "显示 {{count}} 个受影响项目",
+            defaultAffectedItemLocation: "该项目",
+            pageLocation: "第 {{pageNumber}} 页",
+            pageLocationWithArea: "第 {{pageNumber}} 页 — {{areaLabel}}",
+            checkLabels: Object.freeze({
+                SCALE_APPLIED: "已设置比例",
+                ROOMS_MEASURED: "房间已测量",
+                WALL_TYPE_SET: "已设置墙板类型",
+                CEILING_HEIGHT_SET: "已设置天花板高度",
+                TEMPLATE_PRICED: "模板已定价",
+                INFERRED_ANSWERS_CONFIRMED: "已确认推断答案",
+                ASSUMED_WALL_TYPES_CONFIRMED: "已确认假定墙板类型",
+            }),
+        }),
+        readinessFixControls: Object.freeze({
+            save: "保存",
+            saving: "正在保存…",
+            confirm: "确认",
+            confirming: "正在确认…",
+            wallBoardType: Object.freeze({
+                label: "墙板类型",
+                labelWithArea: "墙板类型 — {{area}}",
+                error: "无法更新墙板类型，请重试。",
+            }),
+            ceilingHeight: Object.freeze({
+                label: "天花板高度",
+                labelWithArea: "天花板高度 — {{area}}",
+                error: "无法更新天花板高度，请重试。",
+            }),
+            unitPrice: Object.freeze({
+                label: "单价",
+                labelWithTemplate: "单价 — {{template}}",
+                error: "无法更新单价，请重试。",
+            }),
+            confirmError: "无法确认，请重试。",
+            confirmAccessibleLabelWithLocation:
+                "确认{{location}}的{{label}}“{{value}}”",
+            confirmAccessibleLabel: "确认{{label}}“{{value}}”",
+        }),
     }),
 );
