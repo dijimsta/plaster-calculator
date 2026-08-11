@@ -6,7 +6,7 @@ import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item
 
 const Link = LinkModule.default;
 
-export type UserPageTab = "general" | "email-signature";
+export type UserPageTab = "general" | "email-signature" | "team";
 
 export interface UserPageHeaderProps {
     readonly activeTab: UserPageTab;
@@ -38,6 +38,9 @@ export function UserPageHeader({ activeTab }: UserPageHeaderProps) {
                         <Link href="/user/email-signature">
                             Email signature
                         </Link>
+                    </Tabs.Item>
+                    <Tabs.Item current={activeTab === "team"}>
+                        <Link href="/user/team">Team</Link>
                     </Tabs.Item>
                 </Tabs>
             </PageHeading.Navigation>

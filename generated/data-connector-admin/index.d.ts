@@ -113,6 +113,15 @@ export interface DeleteProjectVariables {
   id: UUIDString;
 }
 
+export interface DeleteTeamMemberData {
+  teamMember_delete?: TeamMember_Key | null;
+}
+
+export interface DeleteTeamMemberVariables {
+  teamId: string;
+  userId: string;
+}
+
 export interface FindPendingTeamInvitationsForEmailData {
   teamInvitations: ({
     teamId: string;
@@ -475,6 +484,18 @@ export interface ListProjectsByTeamAndSalesStatusData {
 export interface ListProjectsByTeamAndSalesStatusVariables {
   teamId: string;
   salesStatus: string;
+}
+
+export interface ListTeamMembersData {
+  teamMembers: ({
+    teamId: string;
+    userId: string;
+    role: string;
+  } & TeamMember_Key)[];
+}
+
+export interface ListTeamMembersVariables {
+  teamId: string;
 }
 
 export interface ProjectQuestionnaireQuestion_Key {
@@ -853,6 +874,11 @@ export function upsertTeamMember(dc: DataConnect, vars: UpsertTeamMemberVariable
 /** Generated Node Admin SDK operation action function for the 'UpsertTeamMember' Mutation. Allow users to pass in custom DataConnect instances. */
 export function upsertTeamMember(vars: UpsertTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertTeamMemberData>>;
 
+/** Generated Node Admin SDK operation action function for the 'DeleteTeamMember' Mutation. Allow users to execute without passing in DataConnect. */
+export function deleteTeamMember(dc: DataConnect, vars: DeleteTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteTeamMemberData>>;
+/** Generated Node Admin SDK operation action function for the 'DeleteTeamMember' Mutation. Allow users to pass in custom DataConnect instances. */
+export function deleteTeamMember(vars: DeleteTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<DeleteTeamMemberData>>;
+
 /** Generated Node Admin SDK operation action function for the 'RotateTeamInvitation' Mutation. Allow users to execute without passing in DataConnect. */
 export function rotateTeamInvitation(dc: DataConnect, vars: RotateTeamInvitationVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<RotateTeamInvitationData>>;
 /** Generated Node Admin SDK operation action function for the 'RotateTeamInvitation' Mutation. Allow users to pass in custom DataConnect instances. */
@@ -872,6 +898,11 @@ export function getTeamMembershipForUser(vars: GetTeamMembershipForUserVariables
 export function getTeamMember(dc: DataConnect, vars: GetTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetTeamMemberData>>;
 /** Generated Node Admin SDK operation action function for the 'GetTeamMember' Query. Allow users to pass in custom DataConnect instances. */
 export function getTeamMember(vars: GetTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<GetTeamMemberData>>;
+
+/** Generated Node Admin SDK operation action function for the 'ListTeamMembers' Query. Allow users to execute without passing in DataConnect. */
+export function listTeamMembers(dc: DataConnect, vars: ListTeamMembersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListTeamMembersData>>;
+/** Generated Node Admin SDK operation action function for the 'ListTeamMembers' Query. Allow users to pass in custom DataConnect instances. */
+export function listTeamMembers(vars: ListTeamMembersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListTeamMembersData>>;
 
 /** Generated Node Admin SDK operation action function for the 'ListPendingTeamInvitations' Query. Allow users to execute without passing in DataConnect. */
 export function listPendingTeamInvitations(dc: DataConnect, vars: ListPendingTeamInvitationsVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListPendingTeamInvitationsData>>;

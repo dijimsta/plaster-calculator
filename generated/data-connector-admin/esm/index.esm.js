@@ -168,6 +168,12 @@ export function upsertTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeMutation('UpsertTeamMember', inputVars, inputOpts);
 }
 
+export function deleteTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('DeleteTeamMember', inputVars, inputOpts);
+}
+
 export function rotateTeamInvitation(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
@@ -190,6 +196,12 @@ export function getTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);
   return dcInstance.executeQuery('GetTeamMember', inputVars, inputOpts);
+}
+
+export function listTeamMembers(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListTeamMembers', inputVars, inputOpts);
 }
 
 export function listPendingTeamInvitations(dcOrVarsOrOptions, varsOrOptions, options) {

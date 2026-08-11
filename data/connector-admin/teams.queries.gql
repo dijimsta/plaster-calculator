@@ -19,6 +19,14 @@ query GetTeamMember($teamId: String!, $userId: String!)
     }
 }
 
+query ListTeamMembers($teamId: String!) @auth(level: NO_ACCESS) {
+    teamMembers(where: { teamId: { eq: $teamId } }) {
+        teamId
+        userId
+        role
+    }
+}
+
 query ListPendingTeamInvitations($teamId: String!, $now: Timestamp!)
 @auth(level: NO_ACCESS) {
     teamInvitations(

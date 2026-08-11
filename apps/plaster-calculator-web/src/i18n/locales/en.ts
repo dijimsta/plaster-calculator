@@ -11,6 +11,10 @@ export const en = Object.freeze({
             companies: "Companies",
         }),
         userFallback: "User",
+        roleLabels: Object.freeze({
+            owner: "Owner",
+            member: "Member",
+        }),
         logOut: "Log out",
     }),
     companySelect: Object.freeze({

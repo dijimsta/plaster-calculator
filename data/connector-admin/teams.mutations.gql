@@ -22,6 +22,11 @@ mutation UpsertTeamMember($teamId: String!, $userId: String!, $role: String!)
     )
 }
 
+mutation DeleteTeamMember($teamId: String!, $userId: String!)
+@auth(level: NO_ACCESS) {
+    teamMember_delete(key: { teamId: $teamId, userId: $userId })
+}
+
 mutation RotateTeamInvitation(
     $teamId: String!
     $email: String!

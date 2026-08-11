@@ -17,6 +17,10 @@ export const zh = createTranslationResource(
                 companies: "公司",
             }),
             userFallback: "用户",
+            roleLabels: Object.freeze({
+                owner: "所有者",
+                member: "成员",
+            }),
             logOut: "退出登录",
         }),
         companySelect: Object.freeze({
