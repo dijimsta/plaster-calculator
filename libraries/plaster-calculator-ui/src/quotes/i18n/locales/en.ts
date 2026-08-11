@@ -52,6 +52,12 @@ export const en = Object.freeze({
             EZY_JAMB_DOOR_SETS: "Measured from door count",
         }),
     }),
+    projectQuoteReadinessPage: Object.freeze({
+        unableToLoadProject: "Unable to load project",
+        loadingReadiness: "Checking quote readiness…",
+        unableToLoadReadiness:
+            "Unable to load quote readiness. Try refreshing.",
+    }),
     readinessSummaryHeader: Object.freeze({
         readyTitle: "Ready to quote",
         notReadyTitle: "Not ready to quote",
