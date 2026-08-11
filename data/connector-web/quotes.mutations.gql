@@ -270,3 +270,44 @@ mutation DeleteQuoteItemTemplate($id: UUID!) @auth(level: USER) @transaction {
     quoteItemTemplate_delete(id: $id)
         @check(expr: "this != null", message: "Item not found")
 }
+
+# Sets `status` and stamps the timestamp matching the status the caller is
+# transitioning to, following the increment-style pattern Data Connect
+# supports for `_expr` fields (e.g. `likeCount_expr: "this + 1"`): inside a
+# given field's own `_expr`, bare `this` refers to that field's prior value,
+# so `sentAt_expr`/`acceptedAt_expr` below read as "request.time if the new
+# status is sent/accepted, otherwise leave the existing value alone" rather
+# than unconditionally overwriting whichever timestamp was already set by an
+# earlier transition. `$status` is available to those expressions as
+# `vars.status`, the same way `AcceptTeamInvitation` (connector-admin,
+# teams.mutations.gql) reads a mutation variable inside a `@check` expr via
+# `vars.tokenHash`.
+#
+# This mutation does not itself enforce that draft -> sent -> accepted is
+# followed in order — a `@check` here could only compare against the
+# quote's *current* status, not walk a full state machine, and doing that
+# via string-matched CEL conditions would be more fragile than useful.
+# Transition-order enforcement belongs to the web app layer (WORK-123).
+mutation UpdateQuoteStatus($id: UUID!, $status: String!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        quote(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote"
+            ) {
+            id
+            teamId
+        }
+    }
+    quote_update(
+        id: $id
+        data: {
+            status: $status
+            sentAt_expr: "vars.status == 'sent' ? request.time : this"
+            acceptedAt_expr: "vars.status == 'accepted' ? request.time : this"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
