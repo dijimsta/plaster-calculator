@@ -1,5 +1,9 @@
 "use client";
 
+import type {
+    PageValidationInput,
+    ValidationIssue,
+} from "@libraries/plaster-calculator-ui";
 import {
     InspectorPanel,
     InspectorSection,
@@ -9,10 +13,6 @@ import { default as DynamicModule } from "next/dynamic.js";
 import type { ReactNode } from "react";
 
 import { cx, ui } from "../../../../lib/styles.js";
-import type {
-    PageValidationInput,
-    ValidationIssue,
-} from "../../../../lib/validation.js";
 import type { ProjectDetail } from "../../../../types.js";
 import { ProjectCompanyPanel } from "../project-company-panel.js";
 
@@ -21,7 +21,7 @@ import { ProjectPageTabs } from "./project-page-tabs.js";
 const dynamic = DynamicModule.default;
 const ProjectEditor = dynamic(
     () =>
-        import("../../../../components/project-editor/index.js").then(
+        import("@libraries/plaster-calculator-ui").then(
             (module) => module.ProjectEditor,
         ),
     {
