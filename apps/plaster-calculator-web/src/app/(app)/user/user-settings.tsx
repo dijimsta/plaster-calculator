@@ -14,12 +14,14 @@ import {
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import type { UserSettings } from "../../../types.js";
 
 const minimumReminderDays = 1;
 
 export function UserSettingsPanel() {
     const settingsService = useSettingsService();
+    const { t } = useAppTranslation();
     const [settings, setSettings] = useState<UserSettings | null>(null);
     const [quoteFollowUpEnabled, setQuoteFollowUpEnabled] = useState(true);
     const [quoteFollowUpDays, setQuoteFollowUpDays] = useState(3);
@@ -43,7 +45,7 @@ export function UserSettingsPanel() {
             setMessage(
                 error instanceof Error
                     ? error.message
-                    : "Unable to load settings.",
+                    : t("userSettings.unableToLoad"),
             );
         } finally {
             setLoading(false);
@@ -60,12 +62,12 @@ export function UserSettingsPanel() {
             setSettings(nextSettings);
             setQuoteFollowUpEnabled(nextSettings.quoteFollowUpEnabled);
             setQuoteFollowUpDays(nextSettings.quoteFollowUpDays);
-            setMessage("Settings saved.");
+            setMessage(t("userSettings.saved"));
         } catch (error) {
             setMessage(
                 error instanceof Error
                     ? error.message
-                    : "Unable to save settings.",
+                    : t("userSettings.unableToSave"),
             );
         } finally {
             setSaving(false);
@@ -79,13 +81,13 @@ export function UserSettingsPanel() {
 
     return (
         <Card>
-            <Card.Title>Reminder settings</Card.Title>
+            <Card.Title>{t("userSettings.title")}</Card.Title>
             <Paragraph measure="narrow" textSize="sm" variant="muted">
-                Control how quote follow-up reminders are created for new work.
+                {t("userSettings.description")}
             </Paragraph>
             {loading && (
                 <Paragraph textSize="sm" variant="muted">
-                    Loading settings...
+                    {t("userSettings.loading")}
                 </Paragraph>
             )}
             {message && (
@@ -95,9 +97,9 @@ export function UserSettingsPanel() {
             )}
             <FormLayout onSubmit={handleSubmit}>
                 <FormLayoutField
-                    label="Quote follow-up reminders"
+                    label={t("userSettings.quoteFollowUpReminders")}
                     htmlFor="quoteFollowUpEnabled"
-                    description="Automatically create reminders to follow up on quotes."
+                    description={t("userSettings.quoteFollowUpDescription")}
                 >
                     <Toggle
                         id="quoteFollowUpEnabled"
@@ -110,7 +112,7 @@ export function UserSettingsPanel() {
                 </FormLayoutField>
                 {quoteFollowUpEnabled && (
                     <FormLayoutField
-                        label="Due in days"
+                        label={t("userSettings.dueInDays")}
                         htmlFor="quoteFollowUpDays"
                     >
                         <Input
@@ -136,7 +138,9 @@ export function UserSettingsPanel() {
                         variant="primary"
                         disabled={loading || saving || !settings}
                     >
-                        {saving ? "Saving..." : "Save reminder settings"}
+                        {saving
+                            ? t("userSettings.saving")
+                            : t("userSettings.save")}
                     </Button>
                 </FormLayoutActions>
             </FormLayout>
