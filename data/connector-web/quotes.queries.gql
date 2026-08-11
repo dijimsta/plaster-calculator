@@ -66,3 +66,68 @@ query ListQuoteItemTemplateConfigsForQuoteTemplate($quoteTemplateId: UUID!)
         }
     }
 }
+
+# Feeds the quote readiness gate (WORK-124) in a single round trip: the
+# project header, its floorplan pages, its questionnaire answers, and the
+# team's enabled pricing configs. `project` uses the same `@check` guard
+# expression against `auth.token.teamId` as `ListQuoteItemTemplateConfigsForQuoteTemplate`
+# guards `quoteTemplate` above, so a project from another team can't be read;
+# the whole request fails before any data is returned if the check fails.
+# Unlike that query's `quoteTemplate`, `project` is not `@redact`ed, because
+# the caller needs its fields (not just its validated existence) back in the
+# response. `floorplanPages` and `projectQuestionnaireQuestions` are filtered
+# by `$projectId`, which is only reachable once the `project` check has
+# passed. `quoteItemTemplateConfigs` has no relationship to a project, so
+# it's scoped directly by team using the same `auth.token.teamId` guard,
+# matching `ListQuoteItemTemplates` and `ListProjectQuestionnaires`.
+query GetQuoteReadiness($projectId: UUID!) @auth(level: USER) {
+    project(key: { id: $projectId })
+        @check(
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this project"
+        ) {
+        id
+        teamId
+        name
+        salesStatus
+        pageCount
+    }
+    floorplanPages(
+        where: { projectId: { eq: $projectId } }
+        orderBy: [{ pageNumber: ASC }]
+    ) {
+        id
+        pageNumber
+        scaleMmPerPx
+        ceilingHeightMm
+        overlayJson
+    }
+    projectQuestionnaireQuestions(
+        where: { projectQuestionnaire: { projectId: { eq: $projectId } } }
+        orderBy: [{ position: ASC }]
+    ) {
+        id
+        label
+        answer
+        answerSource
+    }
+    quoteItemTemplateConfigs(
+        where: {
+            enabled: { eq: true }
+            quoteTemplate: { teamId: { eq_expr: "auth.token.teamId" } }
+        }
+        orderBy: [{ createdAt: ASC }]
+    ) {
+        itemTemplateId
+        enabled
+        unitPriceCents
+        itemTemplate {
+            id
+            name
+            hasKeywords
+            keywords
+            sortOrder
+            quantitySourceId
+        }
+    }
+}
