@@ -25,13 +25,45 @@ export type ReadinessCheckFixMode = (typeof READINESS_CHECK_FIX_MODES)[number];
 export type ReadinessCheckId = string;
 
 /**
+ * A quote item template's per-team pricing configuration, as needed by the
+ * "template priced" readiness check. This package has no dependency on the
+ * generated Data Connect SDK, so this is a minimal local shape rather than
+ * `QuoteItemTemplateConfig` from `generated/data-connector-*` — callers are
+ * responsible for mapping their Data Connect query results onto it.
+ * `quantitySourceId` is the id of the `QuoteItemTemplate` this config prices;
+ * `null` for a template with no wired automatic quantity source (e.g. a
+ * purely manual/custom line item).
+ */
+export type ReadinessQuoteItemTemplateConfig = {
+    readonly quoteItemTemplateId: string;
+    readonly enabled: boolean;
+    readonly unitPriceCents: number;
+    readonly quantitySourceId: string | null;
+};
+
+/**
+ * A single questionnaire question's answer state, as needed by the
+ * "inferred answers confirmed" readiness check. See the note on
+ * `ReadinessQuoteItemTemplateConfig` about why this isn't
+ * `ProjectQuestionnaireQuestion` from the generated SDK.
+ */
+export type ReadinessQuestionnaireAnswer = {
+    readonly questionId: string;
+    readonly answer: string | null;
+    readonly answerSource: string;
+};
+
+/**
  * Data a `ReadinessCheck` resolver needs to evaluate whether a project is
- * ready to be quoted. Deliberately minimal for now: WORK-129 implements the
- * concrete resolvers and can extend this shape as each check's data needs
- * become concrete, without changing the registry or its consumers.
+ * ready to be quoted. `quoteItemTemplateConfigs` and `questionnaireAnswers`
+ * were added by WORK-129 alongside the concrete resolvers that need them;
+ * this shape can keep growing the same way as future checks need more data,
+ * without changing the registry or its consumers.
  */
 export type ReadinessCheckInput = {
     readonly project: ProjectDetail;
+    readonly quoteItemTemplateConfigs?: readonly ReadinessQuoteItemTemplateConfig[];
+    readonly questionnaireAnswers?: readonly ReadinessQuestionnaireAnswer[];
 };
 
 /**
