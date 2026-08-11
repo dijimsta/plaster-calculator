@@ -9,10 +9,8 @@ import {
     Alert,
     Box,
     Button,
-    Card,
     Container,
     ModalDialog,
-    Paragraph,
     Text,
 } from "@libraries/uikit-web";
 import { useState } from "react";
@@ -44,21 +42,12 @@ export default function UserTeamPage() {
         <>
             <UserPageHeader activeTab="team" />
             <Container size="wide" padding="always">
-                <Card>
-                    <Card.Title>Team members</Card.Title>
-                    <Paragraph measure="narrow" textSize="sm" variant="muted">
-                        People with access to your team workspace. Only the
-                        owner can remove members.
-                    </Paragraph>
-                    <Card.Body>
-                        <TeamContent
-                            userId={user.uid}
-                            team={team}
-                            canRemoveMembers={canRemoveMembers}
-                            onRequestRemove={setMemberPendingRemoval}
-                        />
-                    </Card.Body>
-                </Card>
+                <TeamContent
+                    userId={user.uid}
+                    team={team}
+                    canRemoveMembers={canRemoveMembers}
+                    onRequestRemove={setMemberPendingRemoval}
+                />
             </Container>
             <RemoveMemberDialog
                 member={memberPendingRemoval}
