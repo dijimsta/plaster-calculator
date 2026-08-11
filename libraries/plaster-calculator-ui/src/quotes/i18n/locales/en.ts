@@ -2,6 +2,17 @@ export const en = Object.freeze({
     common: Object.freeze({
         cancel: "Cancel",
     }),
+    quotesPage: Object.freeze({
+        description:
+            "All quotes generated from your projects, once pricing is set up.",
+        emptyStateTitle: "No quotes yet",
+        emptyStateDescription:
+            "Quotes are generated from a project once pricing is set up.",
+    }),
+    quoteTemplatePage: Object.freeze({
+        description:
+            "The default items and pricing used when quotes are generated from a project.",
+    }),
     quoteTemplatePanel: Object.freeze({
         title: "Quote template",
         description:

@@ -72,6 +72,11 @@ export const zh = createTranslationResource(
             projectsTab: "项目",
             templatesTab: "模板",
         }),
+        quotes: Object.freeze({
+            title: "报价",
+            allQuotesTab: "全部报价",
+            templateTab: "报价模板",
+        }),
         projectHistory: Object.freeze({
             noStatusProjects: "没有{{status}}的项目",
         }),
