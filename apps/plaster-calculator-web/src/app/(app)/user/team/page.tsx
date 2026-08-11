@@ -18,7 +18,10 @@ import type { ReactElement } from "react";
 
 import { UserPageHeader } from "../user-page-header.js";
 
+import { InviteUserPanel } from "./invite-user-panel.js";
+import { PendingInvitationsPanel } from "./pending-invitations-panel.js";
 import { TeamMembersTable } from "./team-members-table.js";
+import { useTeamInvitations } from "./use-team-invitations.js";
 import { useTeamMembers } from "./use-team-members.js";
 
 export default function UserTeamPage() {
@@ -26,10 +29,10 @@ export default function UserTeamPage() {
     const team = useTeamMembers();
     const [memberPendingRemoval, setMemberPendingRemoval] =
         useState<TeamMember | null>(null);
+    const isTeamOwner = team.data?.currentUserRole === TEAM_OWNER_ROLE;
+    const invitations = useTeamInvitations(isTeamOwner);
 
     if (!user) return null;
-
-    const canRemoveMembers = team.data?.currentUserRole === TEAM_OWNER_ROLE;
 
     async function confirmRemoval(): Promise<void> {
         if (memberPendingRemoval === null) return;
@@ -45,7 +48,8 @@ export default function UserTeamPage() {
                 <TeamContent
                     userId={user.uid}
                     team={team}
-                    canRemoveMembers={canRemoveMembers}
+                    isTeamOwner={isTeamOwner}
+                    invitations={invitations}
                     onRequestRemove={setMemberPendingRemoval}
                 />
             </Container>
@@ -62,14 +66,16 @@ export default function UserTeamPage() {
 type TeamContentProps = Readonly<{
     userId: string;
     team: ReturnType<typeof useTeamMembers>;
-    canRemoveMembers: boolean;
+    invitations: ReturnType<typeof useTeamInvitations>;
+    isTeamOwner: boolean;
     onRequestRemove(member: TeamMember): void;
 }>;
 
 function TeamContent({
     userId,
     team,
-    canRemoveMembers,
+    invitations,
+    isTeamOwner,
     onRequestRemove,
 }: TeamContentProps): ReactElement | null {
     if (team.isLoading) {
@@ -99,12 +105,20 @@ function TeamContent({
     if (team.data === null) return null;
 
     return (
-        <TeamMembersTable
-            currentUserId={userId}
-            canRemoveMembers={canRemoveMembers}
-            members={team.data.members}
-            onRequestRemove={onRequestRemove}
-        />
+        <Box direction="column" gap="lg">
+            <TeamMembersTable
+                currentUserId={userId}
+                canRemoveMembers={isTeamOwner}
+                members={team.data.members}
+                onRequestRemove={onRequestRemove}
+            />
+            {isTeamOwner && (
+                <>
+                    <PendingInvitationsPanel invitations={invitations} />
+                    <InviteUserPanel invitations={invitations} />
+                </>
+            )}
+        </Box>
     );
 }
 

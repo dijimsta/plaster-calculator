@@ -1,13 +1,22 @@
 import * as DataConnector from "@generated/data-connector-web";
 import {
     EnsureMyTeamResponseSchema,
+    CreateTeamInvitationRequestSchema,
+    CreateTeamInvitationResponseSchema,
+    ListPendingTeamInvitationsResponseSchema,
     ListMyTeamMembersResponseSchema,
     MyTeamSummarySchema,
     RemoveTeamMemberRequestSchema,
     RemoveTeamMemberResponseSchema,
+    RevokeTeamInvitationRequestSchema,
+    RevokeTeamInvitationResponseSchema,
+    type CreateTeamInvitationRequest,
+    type CreateTeamInvitationResponse,
+    type ListPendingTeamInvitationsResponse,
     type ListMyTeamMembersResponse,
     type MyTeamSummary,
     type RemoveTeamMemberResponse,
+    type RevokeTeamInvitationResponse,
 } from "@libraries/plaster-calculator-common";
 import type { DataConnect } from "firebase/data-connect";
 import { httpsCallable, type Functions } from "firebase/functions";
@@ -57,5 +66,32 @@ export class TeamsService {
         const callable = httpsCallable(this.functions, "removeTeamMember");
         const { data } = await callable(request);
         return RemoveTeamMemberResponseSchema.parse(data);
+    }
+
+    public async listPendingTeamInvitations(): Promise<ListPendingTeamInvitationsResponse> {
+        const callable = httpsCallable(
+            this.functions,
+            "listPendingTeamInvitations",
+        );
+        const { data } = await callable();
+        return ListPendingTeamInvitationsResponseSchema.parse(data);
+    }
+
+    public async createTeamInvitation(
+        input: CreateTeamInvitationRequest,
+    ): Promise<CreateTeamInvitationResponse> {
+        const request = CreateTeamInvitationRequestSchema.parse(input);
+        const callable = httpsCallable(this.functions, "createTeamInvitation");
+        const { data } = await callable(request);
+        return CreateTeamInvitationResponseSchema.parse(data);
+    }
+
+    public async revokeTeamInvitation(
+        email: string,
+    ): Promise<RevokeTeamInvitationResponse> {
+        const request = RevokeTeamInvitationRequestSchema.parse({ email });
+        const callable = httpsCallable(this.functions, "revokeTeamInvitation");
+        const { data } = await callable(request);
+        return RevokeTeamInvitationResponseSchema.parse(data);
     }
 }
