@@ -94,7 +94,9 @@ export function ProjectHeader({
                         </Link>
                     </Tabs.Item>
                     <Tabs.Item current={activeTab === "quote"}>
-                        <Link href={`/projects/${projectId}/quote`}>Quote</Link>
+                        <Link href={`/projects/${projectId}/quote`}>
+                            {t("projectHeader.quoteTab")}
+                        </Link>
                     </Tabs.Item>
                 </Tabs>
             </PageHeading.Navigation>
