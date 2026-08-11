@@ -1,5 +1,5 @@
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
-import { Button, RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
+import { Button } from "@libraries/uikit-web";
 import {
     AlignHorizontalJustifyCenter,
     CopyPlus,
@@ -17,6 +17,9 @@ import {
     ZoomIn,
 } from "lucide-react";
 
+import { useEditorTranslation } from "../i18n/index.js";
+
+import { OverlayModeSelector } from "./overlay-mode-selector.js";
 import { ui } from "./project-editor.styles.js";
 import type { OverlayMode } from "./project-editor.types.js";
 
@@ -50,13 +53,6 @@ interface EditorToolbarProps {
     readonly hasSelection: () => boolean;
 }
 
-const OVERLAY_MODES: OverlayMode[] = ["walls", "ceilings", "both"];
-const OVERLAY_MODE_LABELS: Record<OverlayMode, string> = {
-    both: "Both",
-    ceilings: "Ceilings",
-    walls: "Walls",
-};
-
 export function EditorToolbar({
     addMenuOpen,
     autoSaving,
@@ -86,6 +82,8 @@ export function EditorToolbar({
     onUndo,
     hasSelection,
 }: EditorToolbarProps) {
+    const { t } = useEditorTranslation();
+
     return (
         <div className={ui.editorToolbar}>
             <fieldset className="contents" disabled={analyzing}>
@@ -95,21 +93,21 @@ export function EditorToolbar({
                         icon={<Undo2 size={18} aria-hidden="true" />}
                         onClick={onUndo}
                         disabled={historyCount === 0}
-                        label="Undo"
+                        label={t("editorToolbar.undo")}
                     />
                     <Button
                         variant="secondary"
                         icon={<Redo2 size={18} aria-hidden="true" />}
                         onClick={onRedo}
                         disabled={futureCount === 0}
-                        label="Redo"
+                        label={t("editorToolbar.redo")}
                     />
                     <Button
                         variant="secondary"
                         icon={<MousePointer2 size={18} aria-hidden="true" />}
                         onClick={onClearSelection}
                         disabled={!hasSelection()}
-                        label="Deselect all"
+                        label={t("editorToolbar.deselectAll")}
                     />
                     <AddAreaControls
                         addMenuOpen={addMenuOpen}
@@ -122,7 +120,7 @@ export function EditorToolbar({
                         icon={<CopyPlus size={18} aria-hidden="true" />}
                         onClick={onAddPoint}
                         disabled={!selectedArea}
-                        label="Add point"
+                        label={t("editorToolbar.addPoint")}
                     />
                     <Button
                         variant="secondary"
@@ -134,7 +132,7 @@ export function EditorToolbar({
                         }
                         onClick={onStraightenSelectedPoints}
                         disabled={!selectedArea || selectedPointCount !== 2}
-                        label="Straighten between selected points"
+                        label={t("editorToolbar.straightenSelectedPoints")}
                     />
                     <Button
                         variant="secondary"
@@ -249,30 +247,6 @@ function DeleteSelectionButton({
             disabled={!selectedArea}
             label={label}
         />
-    );
-}
-
-function OverlayModeSelector({
-    overlayMode,
-    onSetOverlayMode,
-}: Pick<EditorToolbarProps, "overlayMode" | "onSetOverlayMode">) {
-    return (
-        <RadioGroup
-            name="overlay-mode"
-            legend="Overlay mode"
-            variant="segmented"
-            hideLegend
-        >
-            {OVERLAY_MODES.map((mode) => (
-                <RadioGroupOption
-                    key={mode}
-                    value={mode}
-                    label={OVERLAY_MODE_LABELS[mode]}
-                    checked={overlayMode === mode}
-                    onChange={() => onSetOverlayMode(mode)}
-                />
-            ))}
-        </RadioGroup>
     );
 }
 
