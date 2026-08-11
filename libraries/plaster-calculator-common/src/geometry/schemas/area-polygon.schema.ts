@@ -11,6 +11,7 @@ export const AreaPolygonSchema = z
         points: z.array(PointSchema),
         wallBoardProfile: z.string().optional(),
         wallBoardType: z.string().optional(),
+        wallBoardTypeConfirmedAt: z.string().nullable().optional(),
         wallPlasterType: z.string().optional(),
         ceilingPlasterType: z.string(),
         edgeOverrides: z.record(z.string(), EdgeOverrideSchema).optional(),
