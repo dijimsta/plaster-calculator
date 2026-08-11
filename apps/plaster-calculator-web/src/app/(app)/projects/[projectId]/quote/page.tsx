@@ -70,7 +70,7 @@ export default function ProjectQuoteReadinessPage({
     }
 
     const readiness = useQuoteReadiness(projectId);
-    const renderFixControl = useQuoteReadinessFixControlRenderer();
+    const renderFixControl = useQuoteReadinessFixControlRenderer(projectId);
 
     // Quote generation itself belongs to the take-off/generation epic, not
     // WORK-124 (Quote readiness gate) — the epic's scope guard explicitly
