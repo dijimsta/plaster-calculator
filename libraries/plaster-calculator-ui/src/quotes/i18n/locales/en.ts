@@ -9,6 +9,11 @@ export const en = Object.freeze({
         emptyStateDescription:
             "Quotes are generated from a project once pricing is set up.",
     }),
+    quoteStatusBadge: Object.freeze({
+        draft: "Draft",
+        sent: "Sent",
+        accepted: "Accepted",
+    }),
     quoteTemplatePage: Object.freeze({
         description:
             "The default items and pricing used when quotes are generated from a project.",

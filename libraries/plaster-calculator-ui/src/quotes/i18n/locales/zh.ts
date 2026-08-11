@@ -13,6 +13,11 @@ export const zh = createTranslationResource(
             emptyStateTitle: "暂无报价",
             emptyStateDescription: "价格设置完成后，系统将根据项目生成报价。",
         }),
+        quoteStatusBadge: Object.freeze({
+            draft: "草稿",
+            sent: "已发送",
+            accepted: "已接受",
+        }),
         quoteTemplatePage: Object.freeze({
             description: "生成项目报价时使用的默认项目和价格。",
         }),
