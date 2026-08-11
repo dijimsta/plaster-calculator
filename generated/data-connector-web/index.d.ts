@@ -318,6 +318,53 @@ export interface GetQuestionnaireTemplateVariables {
   id: UUIDString;
 }
 
+export interface GetQuoteByIdData {
+  quote?: {
+    id: UUIDString;
+    teamId: string;
+    projectId: UUIDString;
+    supplierId?: UUIDString | null;
+    status: string;
+    reference?: string | null;
+    issuedAt?: TimestampString | null;
+    sentAt?: TimestampString | null;
+    acceptedAt?: TimestampString | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    project: {
+      id: UUIDString;
+      name: string;
+      company?: {
+        id: UUIDString;
+        companyName: string;
+      } & Company_Key;
+    } & Project_Key;
+    items: ({
+      id: UUIDString;
+      displayOrder: number;
+      name: string;
+      quantity: number;
+      unitPriceCents: number;
+      materialUnitPriceCents: number;
+      labourUnitPriceCents: number;
+      matchedKeywords: string[];
+      sourceTemplateId?: UUIDString | null;
+      quantitySourceId?: UUIDString | null;
+      quantitySource?: {
+        id: UUIDString;
+        measurementSource: string;
+        measurementPlasterType?: string | null;
+      } & QuantitySource_Key;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+    } & QuoteItem_Key)[];
+  } & Quote_Key;
+}
+
+export interface GetQuoteByIdVariables {
+  id: UUIDString;
+}
+
 export interface GetQuoteReadinessData {
   project?: {
     id: UUIDString;
@@ -458,6 +505,27 @@ export interface ListQuoteTemplatesForTeamData {
     createdAt: TimestampString;
     updatedAt: TimestampString;
   } & QuoteTemplate_Key)[];
+}
+
+export interface ListQuotesForTeamData {
+  quotes: ({
+    id: UUIDString;
+    reference?: string | null;
+    status: string;
+    createdAt: TimestampString;
+    project: {
+      id: UUIDString;
+      name: string;
+      company?: {
+        id: UUIDString;
+        companyName: string;
+      } & Company_Key;
+    } & Project_Key;
+    items: ({
+      quantity: number;
+      unitPriceCents: number;
+    })[];
+  } & Quote_Key)[];
 }
 
 export interface ProjectQuestionnaireQuestion_Key {
@@ -655,6 +723,15 @@ export interface UpdateQuoteItemTemplateVariables {
   name: string;
   hasKeywords: boolean;
   keywords: string[];
+}
+
+export interface UpdateQuoteStatusData {
+  quote_update?: Quote_Key | null;
+}
+
+export interface UpdateQuoteStatusVariables {
+  id: UUIDString;
+  status: string;
 }
 
 export interface UpsertMyUserSettingsData {
@@ -1109,6 +1186,18 @@ export const deleteQuoteItemTemplateRef: DeleteQuoteItemTemplateRef;
 export function deleteQuoteItemTemplate(vars: DeleteQuoteItemTemplateVariables): MutationPromise<DeleteQuoteItemTemplateData, DeleteQuoteItemTemplateVariables>;
 export function deleteQuoteItemTemplate(dc: DataConnect, vars: DeleteQuoteItemTemplateVariables): MutationPromise<DeleteQuoteItemTemplateData, DeleteQuoteItemTemplateVariables>;
 
+interface UpdateQuoteStatusRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuoteStatusVariables): MutationRef<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateQuoteStatusVariables): MutationRef<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+  operationName: string;
+}
+export const updateQuoteStatusRef: UpdateQuoteStatusRef;
+
+export function updateQuoteStatus(vars: UpdateQuoteStatusVariables): MutationPromise<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+export function updateQuoteStatus(dc: DataConnect, vars: UpdateQuoteStatusVariables): MutationPromise<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+
 interface ListQuoteItemTemplatesRef {
   /* Allow users to create refs without passing in DataConnect */
   (): QueryRef<ListQuoteItemTemplatesData, undefined>;
@@ -1144,6 +1233,30 @@ export const listQuoteItemTemplateConfigsForQuoteTemplateRef: ListQuoteItemTempl
 
 export function listQuoteItemTemplateConfigsForQuoteTemplate(vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
 export function listQuoteItemTemplateConfigsForQuoteTemplate(dc: DataConnect, vars: ListQuoteItemTemplateConfigsForQuoteTemplateVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuoteItemTemplateConfigsForQuoteTemplateData, ListQuoteItemTemplateConfigsForQuoteTemplateVariables>;
+
+interface ListQuotesForTeamRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListQuotesForTeamData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<ListQuotesForTeamData, undefined>;
+  operationName: string;
+}
+export const listQuotesForTeamRef: ListQuotesForTeamRef;
+
+export function listQuotesForTeam(options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, undefined>;
+export function listQuotesForTeam(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, undefined>;
+
+interface GetQuoteByIdRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuoteByIdVariables): QueryRef<GetQuoteByIdData, GetQuoteByIdVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetQuoteByIdVariables): QueryRef<GetQuoteByIdData, GetQuoteByIdVariables>;
+  operationName: string;
+}
+export const getQuoteByIdRef: GetQuoteByIdRef;
+
+export function getQuoteById(vars: GetQuoteByIdVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuoteByIdData, GetQuoteByIdVariables>;
+export function getQuoteById(dc: DataConnect, vars: GetQuoteByIdVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuoteByIdData, GetQuoteByIdVariables>;
 
 interface GetQuoteReadinessRef {
   /* Allow users to create refs without passing in DataConnect */

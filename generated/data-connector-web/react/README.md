@@ -27,6 +27,8 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*ListQuoteItemTemplates*](#listquoteitemtemplates)
   - [*ListQuoteTemplatesForTeam*](#listquotetemplatesforteam)
   - [*ListQuoteItemTemplateConfigsForQuoteTemplate*](#listquoteitemtemplateconfigsforquotetemplate)
+  - [*ListQuotesForTeam*](#listquotesforteam)
+  - [*GetQuoteById*](#getquotebyid)
   - [*GetQuoteReadiness*](#getquotereadiness)
   - [*GetMyTeam*](#getmyteam)
   - [*GetMyUserSettings*](#getmyusersettings)
@@ -60,6 +62,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*CreateQuoteItemTemplate*](#createquoteitemtemplate)
   - [*UpdateQuoteItemTemplate*](#updatequoteitemtemplate)
   - [*DeleteQuoteItemTemplate*](#deletequoteitemtemplate)
+  - [*UpdateQuoteStatus*](#updatequotestatus)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
   - [*UpsertMyUserSignature*](#upsertmyusersignature)
 
@@ -1011,6 +1014,213 @@ export default function ListQuoteItemTemplateConfigsForQuoteTemplateComponent() 
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
     console.log(query.data.quoteItemTemplateConfigs);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## ListQuotesForTeam
+You can execute the `ListQuotesForTeam` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useListQuotesForTeam(dc: DataConnect, options?: useDataConnectQueryOptions<ListQuotesForTeamData>): UseDataConnectQueryResult<ListQuotesForTeamData, undefined>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useListQuotesForTeam(options?: useDataConnectQueryOptions<ListQuotesForTeamData>): UseDataConnectQueryResult<ListQuotesForTeamData, undefined>;
+```
+
+### Variables
+The `ListQuotesForTeam` Query has no variables.
+### Return Type
+Recall that calling the `ListQuotesForTeam` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ListQuotesForTeam` Query is of type `ListQuotesForTeamData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ListQuotesForTeamData {
+  quotes: ({
+    id: UUIDString;
+    reference?: string | null;
+    status: string;
+    createdAt: TimestampString;
+    project: {
+      id: UUIDString;
+      name: string;
+      company?: {
+        id: UUIDString;
+        companyName: string;
+      } & Company_Key;
+    } & Project_Key;
+    items: ({
+      quantity: number;
+      unitPriceCents: number;
+    })[];
+  } & Quote_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `ListQuotesForTeam`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig } from '@generated/data-connector-web';
+import { useListQuotesForTeam } from '@generated/data-connector-web/react'
+
+export default function ListQuotesForTeamComponent() {
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useListQuotesForTeam();
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useListQuotesForTeam(dataConnect);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useListQuotesForTeam(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useListQuotesForTeam(dataConnect, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.quotes);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetQuoteById
+You can execute the `GetQuoteById` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetQuoteById(dc: DataConnect, vars: GetQuoteByIdVariables, options?: useDataConnectQueryOptions<GetQuoteByIdData>): UseDataConnectQueryResult<GetQuoteByIdData, GetQuoteByIdVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetQuoteById(vars: GetQuoteByIdVariables, options?: useDataConnectQueryOptions<GetQuoteByIdData>): UseDataConnectQueryResult<GetQuoteByIdData, GetQuoteByIdVariables>;
+```
+
+### Variables
+The `GetQuoteById` Query requires an argument of type `GetQuoteByIdVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetQuoteByIdVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetQuoteById` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetQuoteById` Query is of type `GetQuoteByIdData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetQuoteByIdData {
+  quote?: {
+    id: UUIDString;
+    teamId: string;
+    projectId: UUIDString;
+    supplierId?: UUIDString | null;
+    status: string;
+    reference?: string | null;
+    issuedAt?: TimestampString | null;
+    sentAt?: TimestampString | null;
+    acceptedAt?: TimestampString | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    project: {
+      id: UUIDString;
+      name: string;
+      company?: {
+        id: UUIDString;
+        companyName: string;
+      } & Company_Key;
+    } & Project_Key;
+    items: ({
+      id: UUIDString;
+      displayOrder: number;
+      name: string;
+      quantity: number;
+      unitPriceCents: number;
+      materialUnitPriceCents: number;
+      labourUnitPriceCents: number;
+      matchedKeywords: string[];
+      sourceTemplateId?: UUIDString | null;
+      quantitySourceId?: UUIDString | null;
+      quantitySource?: {
+        id: UUIDString;
+        measurementSource: string;
+        measurementPlasterType?: string | null;
+      } & QuantitySource_Key;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+    } & QuoteItem_Key)[];
+  } & Quote_Key;
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetQuoteById`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetQuoteByIdVariables } from '@generated/data-connector-web';
+import { useGetQuoteById } from '@generated/data-connector-web/react'
+
+export default function GetQuoteByIdComponent() {
+  // The `useGetQuoteById` Query hook requires an argument of type `GetQuoteByIdVariables`:
+  const getQuoteByIdVars: GetQuoteByIdVariables = {
+    id: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetQuoteById(getQuoteByIdVars);
+  // Variables can be defined inline as well.
+  const query = useGetQuoteById({ id: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetQuoteById(dataConnect, getQuoteByIdVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetQuoteById(getQuoteByIdVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetQuoteById(dataConnect, getQuoteByIdVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.quote);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
@@ -4144,6 +4354,102 @@ export default function DeleteQuoteItemTemplateComponent() {
   if (mutation.isSuccess) {
     console.log(mutation.data.quoteItemTemplateConfig_deleteMany);
     console.log(mutation.data.quoteItemTemplate_delete);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpdateQuoteStatus
+You can execute the `UpdateQuoteStatus` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpdateQuoteStatus(options?: useDataConnectMutationOptions<UpdateQuoteStatusData, FirebaseError, UpdateQuoteStatusVariables>): UseDataConnectMutationResult<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpdateQuoteStatus(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateQuoteStatusData, FirebaseError, UpdateQuoteStatusVariables>): UseDataConnectMutationResult<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+```
+
+### Variables
+The `UpdateQuoteStatus` Mutation requires an argument of type `UpdateQuoteStatusVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpdateQuoteStatusVariables {
+  id: UUIDString;
+  status: string;
+}
+```
+### Return Type
+Recall that calling the `UpdateQuoteStatus` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateQuoteStatus` Mutation is of type `UpdateQuoteStatusData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpdateQuoteStatusData {
+  quote_update?: Quote_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpdateQuoteStatus`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpdateQuoteStatusVariables } from '@generated/data-connector-web';
+import { useUpdateQuoteStatus } from '@generated/data-connector-web/react'
+
+export default function UpdateQuoteStatusComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpdateQuoteStatus();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpdateQuoteStatus(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateQuoteStatus(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateQuoteStatus(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpdateQuoteStatus` Mutation requires an argument of type `UpdateQuoteStatusVariables`:
+  const updateQuoteStatusVars: UpdateQuoteStatusVariables = {
+    id: ..., 
+    status: ..., 
+  };
+  mutation.mutate(updateQuoteStatusVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ id: ..., status: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(updateQuoteStatusVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.quote_update);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
