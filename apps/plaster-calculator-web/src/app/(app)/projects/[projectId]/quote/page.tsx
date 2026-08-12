@@ -53,7 +53,6 @@ export default function ProjectQuoteReadinessPage({
                 activeTab="quote"
                 renaming={projectState.renaming}
                 renameValue={projectState.renameValue}
-                load={projectState.load}
                 saveRename={projectState.saveRename}
                 setRenaming={projectState.setRenaming}
                 setRenameValue={projectState.setRenameValue}

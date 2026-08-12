@@ -22,7 +22,7 @@ export interface ProjectHeaderProps {
     readonly activeTab: "floorplan" | "questionnaires" | "quote";
     readonly renaming?: boolean;
     readonly renameValue?: string;
-    readonly load: () => void;
+    readonly load?: () => void;
     readonly saveRename?: () => Promise<void>;
     readonly setRenaming?: (renaming: boolean) => void;
     readonly setRenameValue?: (value: string) => void;
@@ -157,13 +157,15 @@ function ProjectHeaderActions({
                 </Button>
             )}
             {additionalActions}
-            <Button
-                icon={<RefreshCcw aria-hidden="true" />}
-                variant="secondary"
-                onClick={load}
-            >
-                Refresh
-            </Button>
+            {load && (
+                <Button
+                    icon={<RefreshCcw aria-hidden="true" />}
+                    variant="secondary"
+                    onClick={load}
+                >
+                    Refresh
+                </Button>
+            )}
         </PageHeading.Actions>
     );
 }
