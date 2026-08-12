@@ -59,6 +59,7 @@ export type InputProps = {
         | "search";
     readonly min?: string | number;
     readonly max?: string | number;
+    readonly maxLength?: number;
     readonly step?: string | number;
     readonly onBlur?: FocusEventHandler<HTMLInputElement>;
     readonly onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -87,6 +88,7 @@ export function Input({
     inputMode,
     min,
     max,
+    maxLength,
     step,
     onBlur,
     onChange,
@@ -149,6 +151,7 @@ export function Input({
                     inputMode={inputMode}
                     min={min}
                     max={max}
+                    maxLength={maxLength}
                     step={step}
                     onBlur={onBlur}
                     onChange={onChange}
