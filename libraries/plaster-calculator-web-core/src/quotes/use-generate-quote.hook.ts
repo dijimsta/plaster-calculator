@@ -19,6 +19,17 @@ const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
 );
 
+function buildProjectSearchText(
+    data: DataConnector.GetQuoteReadinessData | undefined,
+): string {
+    return ProjectPlanTextCorpusUtils.buildSearchableCorpus({
+        extractedTextJson: data?.project?.extractedTextJson ?? null,
+        pages: (data?.floorplanPages ?? []).map((page) => ({
+            ocrTextContent: page.ocrTextContent ?? null,
+        })),
+    });
+}
+
 /**
  * The Quote tab's take-off -> match -> price -> persist entry point (a
  * later ticket wires the tab itself to this hook). Reuses `GetQuoteReadiness`
@@ -58,20 +69,7 @@ export function useGenerateQuote(projectId: string): UseGenerateQuoteResult {
                 templateConfigs: GenerateQuoteUtils.buildTemplateConfigs(
                     data?.quoteItemTemplateConfigs ?? [],
                 ),
-                // WORK-147 known limitation: `GetQuoteReadiness` doesn't
-                // select `Project.extractedTextJson` or `FloorplanPage.
-                // ocrTextContent` — no connector-web query exposes either
-                // field today (only connector-admin does), so there is
-                // nothing in this package's scope to build a real corpus
-                // from. `ProjectPlanTextCorpusUtils.buildSearchableCorpus()`
-                // is still called (rather than hard-coding `""` below) so
-                // every `hasKeywords: true` template starts matching for
-                // real the moment a future ticket extends a connector-web
-                // query with these fields, with no change needed here.
-                searchText: ProjectPlanTextCorpusUtils.buildSearchableCorpus({
-                    extractedTextJson: null,
-                    pages: [],
-                }),
+                searchText: buildProjectSearchText(data),
             });
 
             if (!result.ok) {

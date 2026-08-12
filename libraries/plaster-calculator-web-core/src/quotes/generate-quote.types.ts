@@ -69,12 +69,15 @@ export type GenerateQuoteInput = {
  * produce mutation variables:
  * - `NOT_READY`: the quote readiness gate (`useQuoteReadiness()`) is not
  *   met, so `generate()` must not call `CreateQuoteWithItems` at all.
+ * - `NO_ITEMS`: matching and take-off produced no billable lines, so an
+ *   empty `$0.00` quote must not be persisted.
  * - `TOO_MANY_ITEMS`: matching + quantity resolution produced more lines
  *   than `CreateQuoteWithItems`'s 20 fixed slots can hold. See
  *   `buildMutationVariables()`'s doc comment for why this fails loudly
  *   rather than silently truncating a customer-facing quote.
  */
-export type GenerateQuoteFailureReason = "NOT_READY" | "TOO_MANY_ITEMS";
+export type GenerateQuoteFailureReason =
+    "NOT_READY" | "NO_ITEMS" | "TOO_MANY_ITEMS";
 
 /** The outcome of `GenerateQuoteUtils.build()`/`buildMutationVariables()`. */
 export type GenerateQuoteResult =

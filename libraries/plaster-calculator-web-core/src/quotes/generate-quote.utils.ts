@@ -47,37 +47,40 @@ export class GenerateQuoteUtils {
      * `id`/`measurementSource`/`measurementPlasterType` triples
      * `EnsureSystemQuoteItemTemplates` seeds, by hand. If a future ticket
      * lets a team seed its own `QuantitySource` rows, this list — and the
-     * assumption above — need to be revisited.
+     * assumption above — need to be revisited. The IDs use Data Connect's
+     * compact UUID representation (without hyphens), matching the generated
+     * query values compared in `resolveQuantityFor()`; the seed mutation's
+     * hyphenated literals identify the same UUID rows.
      */
     private static readonly KNOWN_QUANTITY_SOURCES: readonly QuantitySourceDefinition[] =
         [
             {
-                id: "c1b8d7b7-bfda-4400-99d6-64a366c02f62",
+                id: "c1b8d7b7bfda440099d664a366c02f62",
                 measurementSource: "WALL_AREA",
                 measurementPlasterType: "STANDARD",
             },
             {
-                id: "9f8704f9-9c21-406b-99ab-7e30eec761ff",
+                id: "9f8704f99c21406b99ab7e30eec761ff",
                 measurementSource: "WALL_AREA",
                 measurementPlasterType: "WET_AREA",
             },
             {
-                id: "c3c91574-33c5-40bf-bc6d-caab40b7da22",
+                id: "c3c9157433c540bfbc6dcaab40b7da22",
                 measurementSource: "CEILING_AREA",
                 measurementPlasterType: "STANDARD",
             },
             {
-                id: "c8b59f22-fa5a-467d-995e-7d261e86dc52",
+                id: "c8b59f22fa5a467d995e7d261e86dc52",
                 measurementSource: "CORNICE_LENGTH",
                 measurementPlasterType: null,
             },
             {
-                id: "a8c9d27b-6e1e-4834-8a12-a2b6bf811ac1",
+                id: "a8c9d27b6e1e48348a12a2b6bf811ac1",
                 measurementSource: "FLOOR_AREA",
                 measurementPlasterType: "WET_AREA",
             },
             {
-                id: "84caa96a-9e65-4176-ab64-c9360081caf8",
+                id: "84caa96a9e654176ab64c9360081caf8",
                 measurementSource: "DOOR_COUNT",
                 measurementPlasterType: null,
             },
@@ -160,6 +163,15 @@ export class GenerateQuoteUtils {
         quoteId: string,
         items: readonly ResolvedQuoteItem[],
     ): GenerateQuoteResult {
+        if (items.length === 0) {
+            return {
+                ok: false,
+                reason: "NO_ITEMS",
+                message:
+                    "No billable quote items resolved from the project take-off and template.",
+            };
+        }
+
         if (items.length > MAX_QUOTE_ITEMS) {
             return {
                 ok: false,
@@ -272,17 +284,12 @@ export class GenerateQuoteUtils {
      * rollup — `0` when the rollup has no entry for that source, e.g. a
      * plan with no wet-area walls.
      *
-     * A template with no `quantitySourceId` has nothing to measure: for an
-     * unconditional (`hasKeywords: false`) template that means it can never
-     * legitimately belong on a quote, so it resolves to `0` (and is dropped
-     * by `resolveQuoteItem()`'s zero-quantity filter). For a
-     * keyword-matched (`hasKeywords: true`) template, though, matching a
-     * keyword already answered "does this belong on the quote?" — the
-     * template represents a flat-fee line (e.g. "scaffold hire") rather
-     * than a per-unit one, and `QuoteItemTemplate`'s schema (`data/schemas/
-     * quotes.gql`) has no separate fixed-quantity/unit-convention field to
-     * consult — so this resolves it to a quantity of `1`, matching
-     * `unitPriceCents`'s cents-per-item convention for a one-off charge.
+     * A template with no `quantitySourceId` represents a flat-fee line. By
+     * the time this method runs, keyword matching has already decided whether
+     * a conditional line belongs on the quote, while an unconditional line
+     * was explicitly configured as "Include by default". Both therefore
+     * resolve to a quantity of `1`, matching `unitPriceCents`'s cents-per-item
+     * convention for a one-off charge.
      */
     private static resolveQuantityFor(
         config: GenerateQuoteTemplateConfig,
@@ -296,7 +303,7 @@ export class GenerateQuoteUtils {
                 )?.quantity ?? 0
             );
         }
-        return config.hasKeywords ? 1 : 0;
+        return 1;
     }
 
     private static assignSlot(

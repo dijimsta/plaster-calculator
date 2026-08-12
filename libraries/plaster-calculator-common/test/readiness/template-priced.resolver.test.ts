@@ -9,7 +9,7 @@ import {
     quoteItemTemplateConfig,
 } from "./readiness-test-fixtures.ts";
 
-test("resolveTemplatePriced is met when every enabled, quantity-sourced item has a price", () => {
+test("resolveTemplatePriced is met when every enabled item has a price", () => {
     const result = resolveTemplatePriced({
         project: project([page()]),
         quoteItemTemplateConfigs: [quoteItemTemplateConfig()],
@@ -18,7 +18,7 @@ test("resolveTemplatePriced is met when every enabled, quantity-sourced item has
     assert.equal(result.affectedItemCount, 0);
 });
 
-test("resolveTemplatePriced is unmet for an enabled, quantity-sourced item with no price", () => {
+test("resolveTemplatePriced is unmet for an enabled item with no price", () => {
     const unpriced = quoteItemTemplateConfig({
         unitPriceCents: 0,
         label: "Cornice",
@@ -37,7 +37,7 @@ test("resolveTemplatePriced is unmet for an enabled, quantity-sourced item with 
     ]);
 });
 
-test("resolveTemplatePriced ignores disabled items and items with no quantity source", () => {
+test("resolveTemplatePriced checks flat-fee items with no quantity source", () => {
     const disabledUnpriced = quoteItemTemplateConfig({
         enabled: false,
         unitPriceCents: 0,
@@ -50,6 +50,12 @@ test("resolveTemplatePriced ignores disabled items and items with no quantity so
         project: project([page()]),
         quoteItemTemplateConfigs: [disabledUnpriced, manualUnpriced],
     });
-    assert.equal(result.isMet, true);
-    assert.equal(result.affectedItemCount, 0);
+    assert.equal(result.isMet, false);
+    assert.equal(result.affectedItemCount, 1);
+    assert.deepEqual(result.affectedItems, [
+        {
+            quoteItemTemplateId: manualUnpriced.quoteItemTemplateId,
+            quoteItemTemplateLabel: manualUnpriced.label,
+        },
+    ]);
 });
