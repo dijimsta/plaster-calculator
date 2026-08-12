@@ -12,4 +12,7 @@ export type {
     FormLayoutFieldSpan,
 } from "./form-layout-field.component.tsx";
 export { FormLayoutSection } from "./form-layout-section.component.tsx";
-export type { FormLayoutSectionProps } from "./form-layout-section.component.tsx";
+export type {
+    FormLayoutSectionBodySpacing,
+    FormLayoutSectionProps,
+} from "./form-layout-section.component.tsx";

@@ -102,6 +102,7 @@ export function EditableQuoteForm({
             <FormLayoutSection
                 title={t("editableQuoteForm.lineItemsTitle")}
                 description={t("editableQuoteForm.lineItemsDescription")}
+                bodySpacing="compact"
             >
                 <FormLayoutField label="" span="full">
                     <Box direction="column" gap="md">
@@ -248,7 +249,7 @@ export function EditableQuoteForm({
                     </Box>
                 </FormLayoutField>
             </FormLayoutSection>
-            <FormLayoutActions>
+            <FormLayoutActions divided={false}>
                 {onCancel && (
                     <Button
                         type="button"
