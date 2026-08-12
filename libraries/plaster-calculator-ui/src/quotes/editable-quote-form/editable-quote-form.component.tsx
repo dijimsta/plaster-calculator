@@ -79,6 +79,7 @@ export function EditableQuoteForm({
             <FormLayoutSection
                 title={t("editableQuoteForm.quoteDetailsTitle")}
                 description={t("editableQuoteForm.quoteDetailsDescription")}
+                bodySpacing="compact"
             >
                 <FormLayoutField
                     label={t("editableQuoteForm.referenceLabel")}
@@ -102,10 +103,14 @@ export function EditableQuoteForm({
             <FormLayoutSection
                 title={t("editableQuoteForm.lineItemsTitle")}
                 description={t("editableQuoteForm.lineItemsDescription")}
+                bodySpacing="compact"
             >
                 <FormLayoutField label="" span="full">
                     <Box direction="column" gap="md">
-                        <Table label={t("editableQuoteForm.lineItemsTitle")}>
+                        <Table
+                            bordered
+                            label={t("editableQuoteForm.lineItemsTitle")}
+                        >
                             <Table.Head>
                                 <Table.Row>
                                     <Table.Header>
@@ -245,7 +250,7 @@ export function EditableQuoteForm({
                     </Box>
                 </FormLayoutField>
             </FormLayoutSection>
-            <FormLayoutActions>
+            <FormLayoutActions divided={false}>
                 {onCancel && (
                     <Button
                         type="button"

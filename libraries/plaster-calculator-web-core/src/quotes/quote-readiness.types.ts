@@ -15,5 +15,5 @@ export type UseQuoteReadinessResult = {
     readonly isReady: boolean;
     readonly loading: boolean;
     readonly error: FirebaseError | null;
-    readonly refresh: () => void;
+    readonly refresh: () => Promise<void>;
 };

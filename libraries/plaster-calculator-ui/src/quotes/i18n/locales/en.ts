@@ -163,6 +163,8 @@ export const en = Object.freeze({
     readinessCheckList: Object.freeze({
         metBadge: "Met",
         unmetBadge: "{{count}} unmet",
+        showCompletedChecks: "Show completed checks ({{count}})",
+        hideCompletedChecks: "Hide completed checks",
         fixInline: "Fix this directly below.",
         fixDeepLink: "Fix this from the linked page, then come back here.",
         hideAffectedItems: "Hide affected items",
@@ -194,6 +196,8 @@ export const en = Object.freeze({
         ceilingHeight: Object.freeze({
             label: "Ceiling height",
             labelWithArea: "Ceiling height — {{area}}",
+            suggestion:
+                "Suggested ceiling height: {{height}} mm. Review and save to apply it.",
             error: "Couldn't update the ceiling height. Try again.",
         }),
         unitPrice: Object.freeze({

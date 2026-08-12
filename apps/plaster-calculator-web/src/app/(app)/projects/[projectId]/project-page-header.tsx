@@ -5,7 +5,7 @@ import {
     PageHeading,
     Tabs,
 } from "@libraries/uikit-web";
-import { Download, File, Home, Pencil, RefreshCcw } from "lucide-react";
+import { Download, File, Home, Pencil } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 import type { ReactNode } from "react";
 
@@ -22,7 +22,6 @@ export interface ProjectHeaderProps {
     readonly activeTab: "floorplan" | "questionnaires" | "quote";
     readonly renaming?: boolean;
     readonly renameValue?: string;
-    readonly load: () => void;
     readonly saveRename?: () => Promise<void>;
     readonly setRenaming?: (renaming: boolean) => void;
     readonly setRenameValue?: (value: string) => void;
@@ -36,7 +35,6 @@ export function ProjectHeader({
     activeTab,
     renaming,
     renameValue,
-    load,
     saveRename,
     setRenaming,
     setRenameValue,
@@ -81,7 +79,6 @@ export function ProjectHeader({
             </PageHeading.Content>
             <ProjectHeaderActions
                 project={project}
-                load={load}
                 validateAndExport={validateAndExport}
                 additionalActions={additionalActions}
             />
@@ -138,12 +135,11 @@ function ProjectHeaderTitle({
 
 function ProjectHeaderActions({
     project,
-    load,
     validateAndExport,
     additionalActions,
 }: Pick<
     ProjectHeaderProps,
-    "project" | "load" | "validateAndExport" | "additionalActions"
+    "project" | "validateAndExport" | "additionalActions"
 >) {
     return (
         <PageHeading.Actions>
@@ -157,13 +153,6 @@ function ProjectHeaderActions({
                 </Button>
             )}
             {additionalActions}
-            <Button
-                icon={<RefreshCcw aria-hidden="true" />}
-                variant="secondary"
-                onClick={load}
-            >
-                Refresh
-            </Button>
         </PageHeading.Actions>
     );
 }

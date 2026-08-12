@@ -16,7 +16,6 @@ export type ProjectQuotePageProjectState = {
     readonly error: string;
     readonly renaming: boolean;
     readonly renameValue: string;
-    readonly load: () => void;
     readonly saveRename: () => Promise<void>;
     readonly setRenaming: Dispatch<SetStateAction<boolean>>;
     readonly setRenameValue: Dispatch<SetStateAction<string>>;
@@ -73,7 +72,6 @@ export function useProjectQuotePageProject(
         error,
         renaming,
         renameValue,
-        load,
         saveRename,
         setRenaming,
         setRenameValue,

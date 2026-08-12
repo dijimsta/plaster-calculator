@@ -137,7 +137,6 @@ export default function ProjectQuestionnairesPage({
                 activeTab="questionnaires"
                 renaming={renaming}
                 renameValue={renameValue}
-                load={load}
                 saveRename={saveRename}
                 setRenaming={setRenaming}
                 setRenameValue={setRenameValue}

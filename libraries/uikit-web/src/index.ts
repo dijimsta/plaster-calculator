@@ -110,6 +110,7 @@ export type {
     FormLayoutFieldProps,
     FormLayoutFieldSpan,
     FormLayoutProps,
+    FormLayoutSectionBodySpacing,
     FormLayoutSectionProps,
     FormLayoutVariant,
 } from "./forms/form-layout/index.ts";

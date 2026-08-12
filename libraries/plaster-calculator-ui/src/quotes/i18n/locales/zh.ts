@@ -169,6 +169,8 @@ export const zh = createTranslationResource(
         readinessCheckList: Object.freeze({
             metBadge: "已通过",
             unmetBadge: "{{count}} 项未通过",
+            showCompletedChecks: "显示已完成的检查（{{count}} 项）",
+            hideCompletedChecks: "隐藏已完成的检查",
             fixInline: "请在下方直接处理。",
             fixDeepLink: "请前往关联页面处理，然后返回此处。",
             hideAffectedItems: "隐藏受影响项目",
@@ -201,6 +203,8 @@ export const zh = createTranslationResource(
             ceilingHeight: Object.freeze({
                 label: "天花板高度",
                 labelWithArea: "天花板高度 — {{area}}",
+                suggestion:
+                    "建议的天花板高度：{{height}} 毫米。请检查后保存以应用此值。",
                 error: "无法更新天花板高度，请重试。",
             }),
             unitPrice: Object.freeze({
