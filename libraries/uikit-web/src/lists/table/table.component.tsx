@@ -1,7 +1,9 @@
 import clsx from "clsx";
-import type { ReactElement, ReactNode } from "react";
+import type { KeyboardEvent, ReactElement, ReactNode } from "react";
 
-import { styles } from "./table.styles.ts";
+import { cellAligns, styles, type TableCellAlign } from "./table.styles.ts";
+
+export type { TableCellAlign };
 
 export type TableProps = {
     readonly bordered?: boolean;
@@ -54,15 +56,43 @@ export namespace Table {
         return <tbody className={styles.body}>{children}</tbody>;
     }
 
-    export type RowProps = HeadProps;
+    export type RowProps = HeadProps & {
+        /**
+         * When provided, the whole row becomes an activation target (click
+         * or Enter/Space while focused) in addition to any interactive
+         * elements nested inside it — e.g. a table of records that opens a
+         * detail view on row click but still has its own per-cell action
+         * buttons.
+         */
+        readonly onClick?: () => void;
+    };
 
-    export function Row({ children }: RowProps): ReactElement {
-        return <tr>{children}</tr>;
+    export function Row({ onClick, children }: RowProps): ReactElement {
+        const handleKeyDown = (event: KeyboardEvent<HTMLTableRowElement>) => {
+            if (event.key !== "Enter" && event.key !== " ") {
+                return;
+            }
+            event.preventDefault();
+            onClick?.();
+        };
+
+        return (
+            <tr
+                tabIndex={onClick ? 0 : undefined}
+                className={clsx(onClick && styles.interactiveRow)}
+                onClick={onClick}
+                onKeyDown={onClick ? handleKeyDown : undefined}
+            >
+                {children}
+            </tr>
+        );
     }
 
     export type HeaderProps = HeadProps & {
         /** Shrinks the column to the width of its content instead of stretching. */
         readonly fit?: boolean;
+        /** Text alignment within the header cell. Defaults to `"start"`. */
+        readonly align?: TableCellAlign;
         readonly scope?: "col" | "colgroup" | "row" | "rowgroup";
         readonly colSpan?: number;
         readonly rowSpan?: number;
@@ -71,6 +101,7 @@ export namespace Table {
     export function Header({
         scope = "col",
         fit = false,
+        align,
         colSpan,
         rowSpan,
         children,
@@ -80,7 +111,11 @@ export namespace Table {
                 scope={scope}
                 colSpan={colSpan}
                 rowSpan={rowSpan}
-                className={clsx(styles.header, fit && styles.fitWidth)}
+                className={clsx(
+                    styles.header,
+                    fit && styles.fitWidth,
+                    align !== undefined && cellAligns[align],
+                )}
             >
                 {children}
             </th>
@@ -90,12 +125,15 @@ export namespace Table {
     export type CellProps = HeadProps & {
         /** Shrinks the column to the width of its content instead of stretching. */
         readonly fit?: boolean;
+        /** Text alignment within the cell. Defaults to `"start"`. */
+        readonly align?: TableCellAlign;
         readonly colSpan?: number;
         readonly rowSpan?: number;
     };
 
     export function Cell({
         fit = false,
+        align,
         colSpan,
         rowSpan,
         children,
@@ -104,7 +142,11 @@ export namespace Table {
             <td
                 colSpan={colSpan}
                 rowSpan={rowSpan}
-                className={clsx(styles.cell, fit && styles.fitWidth)}
+                className={clsx(
+                    styles.cell,
+                    fit && styles.fitWidth,
+                    align !== undefined && cellAligns[align],
+                )}
             >
                 {children}
             </td>

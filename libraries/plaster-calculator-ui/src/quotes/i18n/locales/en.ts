@@ -14,6 +14,18 @@ export const en = Object.freeze({
         sent: "Sent",
         accepted: "Accepted",
     }),
+    quotesTable: Object.freeze({
+        tableLabel: "Quotes",
+        quoteCount_one: "{{count}} quote",
+        quoteCount_other: "{{count}} quotes",
+        columnQuote: "Quote",
+        columnProject: "Project",
+        columnCompany: "Company",
+        columnStatus: "Status",
+        columnTotal: "Total inc. GST",
+        columnDate: "Date",
+        downloadAction: "Download {{reference}}",
+    }),
     quoteTemplatePage: Object.freeze({
         description:
             "The default items and pricing used when quotes are generated from a project.",

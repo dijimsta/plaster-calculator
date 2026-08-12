@@ -1,3 +1,10 @@
+export type TableCellAlign = "start" | "end";
+
+export const cellAligns = Object.freeze({
+    start: "text-left",
+    end: "text-right",
+}) satisfies Readonly<Record<TableCellAlign, string>>;
+
 export const styles = Object.freeze({
     container: "overflow-x-auto",
     borderedContainer:
@@ -9,6 +16,8 @@ export const styles = Object.freeze({
         "[&_tbody>tr:nth-child(even)]:bg-gray-50 dark:[&_tbody>tr:nth-child(even)]:bg-white/5",
     head: "bg-white dark:bg-slate-900",
     body: "divide-y divide-gray-200 bg-white dark:divide-white/10 dark:bg-slate-900",
+    interactiveRow:
+        "cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-600",
     header: "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 first:pl-4 last:pr-4 sm:first:pl-6 sm:last:pr-6 dark:text-white",
     cell: "whitespace-nowrap px-3 py-4 text-sm text-gray-500 first:pl-4 last:pr-4 sm:first:pl-6 sm:last:pr-6 dark:text-gray-400",
     fitWidth: "w-px whitespace-nowrap",

@@ -18,6 +18,21 @@ export const zh = createTranslationResource(
             sent: "已发送",
             accepted: "已接受",
         }),
+        quotesTable: Object.freeze({
+            tableLabel: "报价单",
+            // zh has a single plural form (CLDR "other"); `_one` mirrors
+            // `_other` verbatim, matching the note on notReadyDescription
+            // above.
+            quoteCount_one: "{{count}} 份报价",
+            quoteCount_other: "{{count}} 份报价",
+            columnQuote: "报价单",
+            columnProject: "项目",
+            columnCompany: "公司",
+            columnStatus: "状态",
+            columnTotal: "含税总额",
+            columnDate: "日期",
+            downloadAction: "下载 {{reference}}",
+        }),
         quoteTemplatePage: Object.freeze({
             description: "生成项目报价时使用的默认项目和价格。",
         }),
