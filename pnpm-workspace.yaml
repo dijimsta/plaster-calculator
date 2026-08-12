@@ -7,6 +7,10 @@ packages:
 overrides:
     firebase: ^12.17.0
     firebase-admin: ^14.2.0
+packageExtensions:
+    "@generated/data-connector-web@*":
+        peerDependencies:
+            "@tanstack/react-query": ^5.0.0
 allowBuilds:
     "@firebase/util": false
     "@nestjs/core": false
