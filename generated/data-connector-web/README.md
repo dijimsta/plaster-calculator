@@ -23,6 +23,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*ListQuotesForTeam*](#listquotesforteam)
   - [*GetQuoteById*](#getquotebyid)
   - [*GetQuoteReadiness*](#getquotereadiness)
+  - [*GetProjectQuote*](#getprojectquote)
   - [*GetMyTeam*](#getmyteam)
   - [*GetMyUserSettings*](#getmyusersettings)
   - [*GetMyUserSignature*](#getmyusersignature)
@@ -1619,6 +1620,156 @@ executeQuery(ref).then((response) => {
   console.log(data.floorplanPages);
   console.log(data.projectQuestionnaireQuestions);
   console.log(data.quoteItemTemplateConfigs);
+});
+```
+
+## GetProjectQuote
+You can execute the `GetProjectQuote` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+getProjectQuote(vars: GetProjectQuoteVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuoteData, GetProjectQuoteVariables>;
+
+interface GetProjectQuoteRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetProjectQuoteVariables): QueryRef<GetProjectQuoteData, GetProjectQuoteVariables>;
+}
+export const getProjectQuoteRef: GetProjectQuoteRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getProjectQuote(dc: DataConnect, vars: GetProjectQuoteVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuoteData, GetProjectQuoteVariables>;
+
+interface GetProjectQuoteRef {
+  ...
+  (dc: DataConnect, vars: GetProjectQuoteVariables): QueryRef<GetProjectQuoteData, GetProjectQuoteVariables>;
+}
+export const getProjectQuoteRef: GetProjectQuoteRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getProjectQuoteRef:
+```typescript
+const name = getProjectQuoteRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetProjectQuote` query requires an argument of type `GetProjectQuoteVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetProjectQuoteVariables {
+  projectId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `GetProjectQuote` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetProjectQuoteData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetProjectQuoteData {
+  project?: {
+    id: UUIDString;
+    teamId: string;
+    quote?: {
+      id: UUIDString;
+      teamId: string;
+      projectId: UUIDString;
+      supplierId?: UUIDString | null;
+      status: string;
+      reference?: string | null;
+      issuedAt?: TimestampString | null;
+      sentAt?: TimestampString | null;
+      acceptedAt?: TimestampString | null;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+      items: ({
+        id: UUIDString;
+        displayOrder: number;
+        name: string;
+        quantity: number;
+        unitPriceCents: number;
+        materialUnitPriceCents: number;
+        labourUnitPriceCents: number;
+        matchedKeywords: string[];
+        sourceTemplateId?: UUIDString | null;
+        quantitySourceId?: UUIDString | null;
+        sourceTemplate?: {
+          id: UUIDString;
+          name: string;
+          scope: string;
+          systemKey?: string | null;
+        } & QuoteItemTemplate_Key;
+        quantitySource?: {
+          id: UUIDString;
+          measurementSource: string;
+          measurementPlasterType?: string | null;
+        } & QuantitySource_Key;
+        createdAt: TimestampString;
+        updatedAt: TimestampString;
+      } & QuoteItem_Key)[];
+    } & Quote_Key;
+  } & Project_Key;
+}
+```
+### Using `GetProjectQuote`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getProjectQuote, GetProjectQuoteVariables } from '@generated/data-connector-web';
+
+// The `GetProjectQuote` query requires an argument of type `GetProjectQuoteVariables`:
+const getProjectQuoteVars: GetProjectQuoteVariables = {
+  projectId: ..., 
+};
+
+// Call the `getProjectQuote()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getProjectQuote(getProjectQuoteVars);
+// Variables can be defined inline as well.
+const { data } = await getProjectQuote({ projectId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getProjectQuote(dataConnect, getProjectQuoteVars);
+
+console.log(data.project);
+
+// Or, you can use the `Promise` API.
+getProjectQuote(getProjectQuoteVars).then((response) => {
+  const data = response.data;
+  console.log(data.project);
+});
+```
+
+### Using `GetProjectQuote`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getProjectQuoteRef, GetProjectQuoteVariables } from '@generated/data-connector-web';
+
+// The `GetProjectQuote` query requires an argument of type `GetProjectQuoteVariables`:
+const getProjectQuoteVars: GetProjectQuoteVariables = {
+  projectId: ..., 
+};
+
+// Call the `getProjectQuoteRef()` function to get a reference to the query.
+const ref = getProjectQuoteRef(getProjectQuoteVars);
+// Variables can be defined inline as well.
+const ref = getProjectQuoteRef({ projectId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getProjectQuoteRef(dataConnect, getProjectQuoteVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.project);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.project);
 });
 ```
 

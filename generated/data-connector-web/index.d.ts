@@ -530,6 +530,55 @@ export interface GetProjectQuestionnaireVariables {
   projectId: UUIDString;
 }
 
+export interface GetProjectQuoteData {
+  project?: {
+    id: UUIDString;
+    teamId: string;
+    quote?: {
+      id: UUIDString;
+      teamId: string;
+      projectId: UUIDString;
+      supplierId?: UUIDString | null;
+      status: string;
+      reference?: string | null;
+      issuedAt?: TimestampString | null;
+      sentAt?: TimestampString | null;
+      acceptedAt?: TimestampString | null;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+      items: ({
+        id: UUIDString;
+        displayOrder: number;
+        name: string;
+        quantity: number;
+        unitPriceCents: number;
+        materialUnitPriceCents: number;
+        labourUnitPriceCents: number;
+        matchedKeywords: string[];
+        sourceTemplateId?: UUIDString | null;
+        quantitySourceId?: UUIDString | null;
+        sourceTemplate?: {
+          id: UUIDString;
+          name: string;
+          scope: string;
+          systemKey?: string | null;
+        } & QuoteItemTemplate_Key;
+        quantitySource?: {
+          id: UUIDString;
+          measurementSource: string;
+          measurementPlasterType?: string | null;
+        } & QuantitySource_Key;
+        createdAt: TimestampString;
+        updatedAt: TimestampString;
+      } & QuoteItem_Key)[];
+    } & Quote_Key;
+  } & Project_Key;
+}
+
+export interface GetProjectQuoteVariables {
+  projectId: UUIDString;
+}
+
 export interface GetQuestionnaireTemplateData {
   questionnaireTemplate?: {
     id: UUIDString;
@@ -1512,6 +1561,18 @@ export const getQuoteReadinessRef: GetQuoteReadinessRef;
 
 export function getQuoteReadiness(vars: GetQuoteReadinessVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuoteReadinessData, GetQuoteReadinessVariables>;
 export function getQuoteReadiness(dc: DataConnect, vars: GetQuoteReadinessVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuoteReadinessData, GetQuoteReadinessVariables>;
+
+interface GetProjectQuoteRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetProjectQuoteVariables): QueryRef<GetProjectQuoteData, GetProjectQuoteVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetProjectQuoteVariables): QueryRef<GetProjectQuoteData, GetProjectQuoteVariables>;
+  operationName: string;
+}
+export const getProjectQuoteRef: GetProjectQuoteRef;
+
+export function getProjectQuote(vars: GetProjectQuoteVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuoteData, GetProjectQuoteVariables>;
+export function getProjectQuote(dc: DataConnect, vars: GetProjectQuoteVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuoteData, GetProjectQuoteVariables>;
 
 interface GetMyTeamRef {
   /* Allow users to create refs without passing in DataConnect */

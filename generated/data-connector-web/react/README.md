@@ -30,6 +30,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*ListQuotesForTeam*](#listquotesforteam)
   - [*GetQuoteById*](#getquotebyid)
   - [*GetQuoteReadiness*](#getquotereadiness)
+  - [*GetProjectQuote*](#getprojectquote)
   - [*GetMyTeam*](#getmyteam)
   - [*GetMyUserSettings*](#getmyusersettings)
   - [*GetMyUserSignature*](#getmyusersignature)
@@ -1339,6 +1340,129 @@ export default function GetQuoteReadinessComponent() {
     console.log(query.data.floorplanPages);
     console.log(query.data.projectQuestionnaireQuestions);
     console.log(query.data.quoteItemTemplateConfigs);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetProjectQuote
+You can execute the `GetProjectQuote` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetProjectQuote(dc: DataConnect, vars: GetProjectQuoteVariables, options?: useDataConnectQueryOptions<GetProjectQuoteData>): UseDataConnectQueryResult<GetProjectQuoteData, GetProjectQuoteVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetProjectQuote(vars: GetProjectQuoteVariables, options?: useDataConnectQueryOptions<GetProjectQuoteData>): UseDataConnectQueryResult<GetProjectQuoteData, GetProjectQuoteVariables>;
+```
+
+### Variables
+The `GetProjectQuote` Query requires an argument of type `GetProjectQuoteVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetProjectQuoteVariables {
+  projectId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetProjectQuote` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetProjectQuote` Query is of type `GetProjectQuoteData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetProjectQuoteData {
+  project?: {
+    id: UUIDString;
+    teamId: string;
+    quote?: {
+      id: UUIDString;
+      teamId: string;
+      projectId: UUIDString;
+      supplierId?: UUIDString | null;
+      status: string;
+      reference?: string | null;
+      issuedAt?: TimestampString | null;
+      sentAt?: TimestampString | null;
+      acceptedAt?: TimestampString | null;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+      items: ({
+        id: UUIDString;
+        displayOrder: number;
+        name: string;
+        quantity: number;
+        unitPriceCents: number;
+        materialUnitPriceCents: number;
+        labourUnitPriceCents: number;
+        matchedKeywords: string[];
+        sourceTemplateId?: UUIDString | null;
+        quantitySourceId?: UUIDString | null;
+        sourceTemplate?: {
+          id: UUIDString;
+          name: string;
+          scope: string;
+          systemKey?: string | null;
+        } & QuoteItemTemplate_Key;
+        quantitySource?: {
+          id: UUIDString;
+          measurementSource: string;
+          measurementPlasterType?: string | null;
+        } & QuantitySource_Key;
+        createdAt: TimestampString;
+        updatedAt: TimestampString;
+      } & QuoteItem_Key)[];
+    } & Quote_Key;
+  } & Project_Key;
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetProjectQuote`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetProjectQuoteVariables } from '@generated/data-connector-web';
+import { useGetProjectQuote } from '@generated/data-connector-web/react'
+
+export default function GetProjectQuoteComponent() {
+  // The `useGetProjectQuote` Query hook requires an argument of type `GetProjectQuoteVariables`:
+  const getProjectQuoteVars: GetProjectQuoteVariables = {
+    projectId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetProjectQuote(getProjectQuoteVars);
+  // Variables can be defined inline as well.
+  const query = useGetProjectQuote({ projectId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetProjectQuote(dataConnect, getProjectQuoteVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetProjectQuote(getProjectQuoteVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetProjectQuote(dataConnect, getProjectQuoteVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.project);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }

@@ -622,6 +622,21 @@ exports.getQuoteReadiness = function getQuoteReadiness(dcOrVars, varsOrOptions, 
 }
 ;
 
+const getProjectQuoteRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetProjectQuote', inputVars);
+}
+getProjectQuoteRef.operationName = 'GetProjectQuote';
+exports.getProjectQuoteRef = getProjectQuoteRef;
+
+exports.getProjectQuote = function getProjectQuote(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
+  return executeQuery(getProjectQuoteRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
 const getMyTeamRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
