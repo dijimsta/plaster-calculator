@@ -180,6 +180,12 @@ export function rotateTeamInvitation(dcOrVarsOrOptions, varsOrOptions, options) 
   return dcInstance.executeMutation('RotateTeamInvitation', inputVars, inputOpts);
 }
 
+export function revokeTeamInvitation(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('RevokeTeamInvitation', inputVars, inputOpts);
+}
+
 export function acceptTeamInvitation(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

@@ -6,6 +6,7 @@ import {
     createTeamInvitationService,
     hashInvitationToken,
     normalizeInvitationEmail,
+    readInvitationRole,
     selectOwnerTeamId,
     shouldCreatePersonalTeamForNewUser,
 } from "../src/team-invitation-domain.ts";
@@ -26,6 +27,7 @@ function createDependencies(
         getAuthUser: async () => ({ email: "member@example.com" }),
         setCustomUserClaims: async () => undefined,
         rotateInvitation: async () => undefined,
+        revokeInvitation: async () => undefined,
         listPendingInvitations: async () => [],
         findPendingInvitations: async () => [],
         getInvitationByTokenHash: async () => undefined,
@@ -56,6 +58,15 @@ test("normalizes invitation emails and rejects invalid input", () => {
     );
     assert.throws(
         () => normalizeInvitationEmail("not-an-email"),
+        hasErrorCode("invalid-argument"),
+    );
+});
+
+test("defaults invitations to member and rejects unsupported roles", () => {
+    assert.equal(readInvitationRole(undefined), "MEMBER");
+    assert.equal(readInvitationRole("MEMBER"), "MEMBER");
+    assert.throws(
+        () => readInvitationRole("OWNER"),
         hasErrorCode("invalid-argument"),
     );
 });
@@ -118,6 +129,40 @@ test("does not create invitations for existing Auth users", async () => {
     await assert.rejects(
         service.create("owner-1", "member@example.com"),
         hasErrorCode("already-exists"),
+    );
+});
+
+test("allows only an owner to revoke a normalized invitation", async () => {
+    const revoked: unknown[] = [];
+    const service = createTeamInvitationService(
+        createDependencies({
+            getMemberships: async () => [{ teamId: "team-1", role: "OWNER" }],
+            revokeInvitation: async (teamId, email, now) => {
+                revoked.push({ teamId, email, now });
+            },
+        }),
+    );
+
+    const result = await service.revoke("owner-1", " MEMBER@example.com ");
+
+    assert.deepEqual(result, { revokedEmail: "member@example.com" });
+    assert.deepEqual(revoked, [
+        {
+            teamId: "team-1",
+            email: "member@example.com",
+            now: NOW.toISOString(),
+        },
+    ]);
+
+    await assert.rejects(
+        createTeamInvitationService(
+            createDependencies({
+                getMemberships: async () => [
+                    { teamId: "team-1", role: "MEMBER" },
+                ],
+            }),
+        ).revoke("member-1", "member@example.com"),
+        hasErrorCode("permission-denied"),
     );
 });
 

@@ -568,6 +568,16 @@ export interface RenameProjectVariables {
   name: string;
 }
 
+export interface RevokeTeamInvitationData {
+  teamInvitation_delete?: TeamInvitation_Key | null;
+}
+
+export interface RevokeTeamInvitationVariables {
+  teamId: string;
+  email: string;
+  now: TimestampString;
+}
+
 export interface RotateTeamInvitationData {
   teamInvitation_upsert: TeamInvitation_Key;
 }
@@ -883,6 +893,11 @@ export function deleteTeamMember(vars: DeleteTeamMemberVariables, options?: Oper
 export function rotateTeamInvitation(dc: DataConnect, vars: RotateTeamInvitationVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<RotateTeamInvitationData>>;
 /** Generated Node Admin SDK operation action function for the 'RotateTeamInvitation' Mutation. Allow users to pass in custom DataConnect instances. */
 export function rotateTeamInvitation(vars: RotateTeamInvitationVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<RotateTeamInvitationData>>;
+
+/** Generated Node Admin SDK operation action function for the 'RevokeTeamInvitation' Mutation. Allow users to execute without passing in DataConnect. */
+export function revokeTeamInvitation(dc: DataConnect, vars: RevokeTeamInvitationVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<RevokeTeamInvitationData>>;
+/** Generated Node Admin SDK operation action function for the 'RevokeTeamInvitation' Mutation. Allow users to pass in custom DataConnect instances. */
+export function revokeTeamInvitation(vars: RevokeTeamInvitationVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<RevokeTeamInvitationData>>;
 
 /** Generated Node Admin SDK operation action function for the 'AcceptTeamInvitation' Mutation. Allow users to execute without passing in DataConnect. */
 export function acceptTeamInvitation(dc: DataConnect, vars: AcceptTeamInvitationVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<AcceptTeamInvitationData>>;

@@ -1,5 +1,9 @@
 import { createHash } from "node:crypto";
 
+import {
+    TEAM_MEMBER_ROLE,
+    type TeamInvitationRole,
+} from "@libraries/plaster-calculator-common";
 import { HttpsError } from "firebase-functions/https";
 
 const INVITATION_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
@@ -60,6 +64,7 @@ export interface TeamInvitationDependencies {
         invitedByUserId: string;
         expiresAt: string;
     }): Promise<void>;
+    revokeInvitation(teamId: string, email: string, now: string): Promise<void>;
     listPendingInvitations(
         teamId: string,
         now: string,
@@ -90,6 +95,17 @@ export function normalizeInvitationEmail(value: unknown): string {
     }
 
     return email;
+}
+
+export function readInvitationRole(value: unknown): TeamInvitationRole {
+    if (value === undefined || value === TEAM_MEMBER_ROLE) {
+        return TEAM_MEMBER_ROLE;
+    }
+
+    throw new HttpsError(
+        "invalid-argument",
+        "Invitations currently support the member role only.",
+    );
 }
 
 export function hashInvitationToken(token: string): string {
@@ -123,8 +139,13 @@ export function createTeamInvitationService(
     dependencies: TeamInvitationDependencies,
 ) {
     return {
-        create: async (userId: string, emailValue: unknown) => {
+        create: async (
+            userId: string,
+            emailValue: unknown,
+            roleValue?: unknown,
+        ) => {
             const email = normalizeInvitationEmail(emailValue);
+            const role = readInvitationRole(roleValue);
             const teamId = selectOwnerTeamId(
                 await dependencies.getMemberships(userId),
             );
@@ -149,7 +170,7 @@ export function createTeamInvitationService(
             });
 
             return {
-                invitation: { teamId, email, expiresAt },
+                invitation: { teamId, email, role, expiresAt },
                 token,
                 path: buildInvitationPath(token),
             };
@@ -162,7 +183,24 @@ export function createTeamInvitationService(
                 teamId,
                 dependencies.now().toISOString(),
             );
-            return { invitations };
+            return {
+                invitations: invitations.map((invitation) => ({
+                    ...invitation,
+                    role: TEAM_MEMBER_ROLE,
+                })),
+            };
+        },
+        revoke: async (userId: string, emailValue: unknown) => {
+            const email = normalizeInvitationEmail(emailValue);
+            const teamId = selectOwnerTeamId(
+                await dependencies.getMemberships(userId),
+            );
+            await dependencies.revokeInvitation(
+                teamId,
+                email,
+                dependencies.now().toISOString(),
+            );
+            return { revokedEmail: email };
         },
         accept: async (userId: string, tokenValue: unknown) => {
             const token = readInvitationToken(tokenValue);
@@ -195,7 +233,7 @@ export function createTeamInvitationService(
                     authUser,
                     invitation.teamId,
                 );
-                return { teamId: invitation.teamId, role: "MEMBER" as const };
+                return { teamId: invitation.teamId, role: TEAM_MEMBER_ROLE };
             }
 
             if (
@@ -234,7 +272,7 @@ export function createTeamInvitationService(
                 authUser,
                 invitation.teamId,
             );
-            return { teamId: invitation.teamId, role: "MEMBER" as const };
+            return { teamId: invitation.teamId, role: TEAM_MEMBER_ROLE };
         },
         hasPendingForEmail: async (emailValue: unknown) => {
             const email = normalizeInvitationEmail(emailValue);
