@@ -1,5 +1,16 @@
-import { BoardMaterialsHelper } from "./board-materials.helper.ts";
-import type { AreaPolygon, EdgeOverride, Point } from "./schemas/index.ts";
+import {
+    BoardMaterialsHelper,
+    type WallPlasterCategory,
+} from "./board-materials.helper.ts";
+import type { WallBoardProfile, WallBoardType } from "./geometry.constants.ts";
+import type { AreaPolygon, Point } from "./schemas/index.ts";
+
+/** One wall edge's resolved board type and pixel length, before grouping. */
+type WallEdgeLength = {
+    readonly boardType: WallBoardType;
+    readonly profile: WallBoardProfile;
+    readonly lengthPx: number;
+};
 
 export class OverlayGeometryHelper {
     public static pointDistance(a: Point, b: Point): number {
@@ -37,30 +48,102 @@ export class OverlayGeometryHelper {
     public static wallLengthByType(
         area: AreaPolygon,
     ): { type: string; lengthPx: number }[] {
+        const totals = new Map<string, number>();
+        OverlayGeometryHelper.wallEdgeLengths(area).forEach(
+            ({ profile, boardType, lengthPx }) => {
+                const type = BoardMaterialsHelper.wallMaterialLabel({
+                    wallBoardProfile: profile,
+                    wallBoardType: boardType,
+                });
+                totals.set(type, (totals.get(type) ?? 0) + lengthPx);
+            },
+        );
+        return Array.from(totals.entries()).map(([type, lengthPx]) => ({
+            type,
+            lengthPx,
+        }));
+    }
+
+    /**
+     * Wall edge lengths grouped by `WallPlasterCategory` (`STANDARD` vs
+     * `WET_AREA`) instead of by the full material label `wallLengthByType()`
+     * groups by — the split `QuantityTakeoffCalculatorUtils` needs for the
+     * `WALL_AREA` quantity source, without re-walking the polygon's edges a
+     * second time.
+     */
+    public static wallLengthPxByCategory(
+        area: AreaPolygon,
+    ): { category: WallPlasterCategory; lengthPx: number }[] {
+        const totals = new Map<WallPlasterCategory, number>();
+        OverlayGeometryHelper.wallEdgeLengths(area).forEach(
+            ({ boardType, lengthPx }) => {
+                const category =
+                    BoardMaterialsHelper.wallPlasterCategory(boardType);
+                totals.set(category, (totals.get(category) ?? 0) + lengthPx);
+            },
+        );
+        return Array.from(totals.entries()).map(([category, lengthPx]) => ({
+            category,
+            lengthPx,
+        }));
+    }
+
+    /**
+     * Wall area in m², by `WallPlasterCategory`, for one area: each
+     * category's total edge length (`wallLengthPxByCategory()`) converted to
+     * metres and multiplied by `effectiveFlatHeight()`. Modeled on
+     * `ceilingAreaM2ForArea()` for the px-to-m² conversion, so callers never
+     * need to repeat the `scaleMmPerPx` arithmetic themselves. Returns `[]`
+     * when the area's height is unknown (no `ceilingHeightMm` and no
+     * `pageHeightMm` fallback) rather than guessing a height.
+     */
+    public static wallAreaM2ForArea(
+        area: AreaPolygon,
+        scaleMmPerPx: number,
+        pageHeightMm: number | null,
+    ): { category: WallPlasterCategory; areaM2: number }[] {
+        const heightMm = OverlayGeometryHelper.effectiveFlatHeight(
+            area,
+            pageHeightMm,
+        );
+        if (heightMm == null) return [];
+        const heightM = heightMm / 1000;
+        return OverlayGeometryHelper.wallLengthPxByCategory(area).map(
+            ({ category, lengthPx }) => ({
+                category,
+                areaM2: ((lengthPx * scaleMmPerPx) / 1000) * heightM,
+            }),
+        );
+    }
+
+    /**
+     * Every wall edge's resolved board type/profile and pixel length, for
+     * one area — the shared per-edge walk that both `wallLengthByType()` and
+     * `wallLengthPxByCategory()` group differently. Outdoor areas have no
+     * plastered walls (matching the existing `wallLengthByType()` contract
+     * exercised by its "returns nothing for outdoor areas" test), and edges
+     * flagged `noPlaster` are skipped the same way.
+     */
+    private static wallEdgeLengths(area: AreaPolygon): WallEdgeLength[] {
         if (area.isOutdoor) return [];
         if (area.points.length < 2) return [];
-        const totals = new Map<string, number>();
-        area.points.forEach((point, index) => {
+        return area.points.flatMap((point, index) => {
             const override = area.edgeOverrides?.[String(index)];
-            if (override?.noPlaster) return;
-            const type = OverlayGeometryHelper.effectiveWallMaterialLabel(
-                area,
-                override,
+            if (override?.noPlaster) return [];
+            const boardType = BoardMaterialsHelper.normalizeWallBoardType(
+                override?.wallBoardType ?? area.wallBoardType,
+                override?.wallPlasterType ?? area.wallPlasterType,
+            );
+            const profile = BoardMaterialsHelper.normalizeWallBoardProfile(
+                override?.wallBoardProfile ?? area.wallBoardProfile,
             );
             const next = OverlayGeometryHelper.pointAt(
                 area.points,
                 (index + 1) % area.points.length,
             );
-            totals.set(
-                type,
-                (totals.get(type) ?? 0) +
-                    OverlayGeometryHelper.pointDistance(point, next),
-            );
+            const lengthPx = OverlayGeometryHelper.pointDistance(point, next);
+            return [{ boardType, profile, lengthPx }];
         });
-        return Array.from(totals.entries()).map(([type, lengthPx]) => ({
-            type,
-            lengthPx,
-        }));
     }
 
     public static polygonArea(points: Point[]): number {
@@ -79,9 +162,10 @@ export class OverlayGeometryHelper {
         area: AreaPolygon,
         scaleMmPerPx: number,
     ): number {
-        const flatM2 =
-            OverlayGeometryHelper.polygonArea(area.points) *
-            Math.pow(scaleMmPerPx / 1000, 2);
+        const flatM2 = OverlayGeometryHelper.flatAreaM2(
+            area.points,
+            scaleMmPerPx,
+        );
         const raked = area.ceilingMode === "raked" ? area.rakedCeiling : null;
         if (
             !raked ||
@@ -133,15 +217,58 @@ export class OverlayGeometryHelper {
         return Math.min(max, Math.max(min, value));
     }
 
-    private static effectiveWallMaterialLabel(
+    /**
+     * Floor area in m² for one area: the same flat-footprint math
+     * `ceilingAreaM2ForArea()` uses before its raked-ceiling adjustment,
+     * exposed directly. A floor is always flat — unlike a raked ceiling, it
+     * never gains area from a rising roofline — so this intentionally
+     * doesn't apply `ceilingAreaM2ForArea()`'s raked-ceiling slope factor.
+     */
+    public static floorAreaM2ForArea(
         area: AreaPolygon,
-        override: EdgeOverride | undefined,
-    ) {
-        return BoardMaterialsHelper.wallMaterialLabel({
-            wallBoardProfile:
-                override?.wallBoardProfile ?? area.wallBoardProfile,
-            wallBoardType: override?.wallBoardType ?? area.wallBoardType,
-            wallPlasterType: override?.wallPlasterType ?? area.wallPlasterType,
-        });
+        scaleMmPerPx: number,
+    ): number {
+        return OverlayGeometryHelper.flatAreaM2(area.points, scaleMmPerPx);
+    }
+
+    /**
+     * Total perimeter length in px for a closed polygon: every edge,
+     * including the edge that closes the loop from the last point back to
+     * the first. Modeled on `polygonArea()`'s reduce-over-edges shape.
+     */
+    public static perimeterLengthPx(points: Point[]): number {
+        if (points.length < 2) return 0;
+        return points.reduce((total, point, index) => {
+            const next = OverlayGeometryHelper.pointAt(
+                points,
+                (index + 1) % points.length,
+            );
+            return total + OverlayGeometryHelper.pointDistance(point, next);
+        }, 0);
+    }
+
+    /**
+     * `perimeterLengthPx()` converted to metres via `scaleMmPerPx` — the
+     * `CORNICE_LENGTH` quantity source measures the full perimeter of a
+     * room with no `WallPlasterCategory` split (cove cornice is one product
+     * regardless of the wall board behind it).
+     */
+    public static perimeterLengthMForArea(
+        area: AreaPolygon,
+        scaleMmPerPx: number,
+    ): number {
+        return (
+            (OverlayGeometryHelper.perimeterLengthPx(area.points) *
+                scaleMmPerPx) /
+            1000
+        );
+    }
+
+    /** Shoelace polygon area converted to m² via `scaleMmPerPx`, with no height/slope factor applied. */
+    private static flatAreaM2(points: Point[], scaleMmPerPx: number): number {
+        return (
+            OverlayGeometryHelper.polygonArea(points) *
+            Math.pow(scaleMmPerPx / 1000, 2)
+        );
     }
 }

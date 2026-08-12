@@ -17,6 +17,15 @@ import {
  */
 export type WallBoardTypeSource = "explicit" | "legacy" | "defaulted";
 
+/**
+ * The two `QuantitySource.measurementPlasterType` values seeded for
+ * `WALL_AREA` (see `data/connector-web/quotes.mutations.gql`'s
+ * `EnsureSystemQuoteItemTemplates`): `STANDARD` plasterboard vs a
+ * `WET_AREA` board (villaboard, water-resistant, or wet-area fire-resistant
+ * sheeting).
+ */
+export type WallPlasterCategory = "STANDARD" | "WET_AREA";
+
 export class BoardMaterialsHelper {
     public static normalizeWallBoardProfile(
         value: string | null | undefined,
@@ -49,6 +58,34 @@ export class BoardMaterialsHelper {
 
         return "defaulted";
     }
+
+    /**
+     * Classifies a resolved `WallBoardType` (from `normalizeWallBoardType()`)
+     * as `STANDARD` or `WET_AREA`, for splitting `QuantitySource.WALL_AREA`
+     * quantities the same way `EnsureSystemQuoteItemTemplates` splits the
+     * wall quote item templates: one for `10mm Plasterboard` walls, one for
+     * `6mm Villaboard` wet-area walls. There is no existing field that
+     * stores this classification directly, so it is derived here from
+     * `WALL_BOARD_TYPES`'s board names rather than invented on a schema that
+     * is out of scope for this change.
+     */
+    public static wallPlasterCategory(
+        wallBoardType: WallBoardType,
+    ): WallPlasterCategory {
+        return BoardMaterialsHelper.WET_AREA_WALL_BOARD_TYPES.has(wallBoardType)
+            ? "WET_AREA"
+            : "STANDARD";
+    }
+
+    private static readonly WET_AREA_WALL_BOARD_TYPES: ReadonlySet<WallBoardType> =
+        new Set<WallBoardType>([
+            "9mm Villaboard",
+            "6mm Villaboard",
+            "10mm Water Resistant",
+            "13mm Water Resistant",
+            "13mm Fire Resistant - wet area",
+            "16mm Fire Resistant - wet area",
+        ]);
 
     public static wallMaterialLabel({
         wallBoardProfile,
