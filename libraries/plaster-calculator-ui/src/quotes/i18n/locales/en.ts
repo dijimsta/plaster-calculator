@@ -39,6 +39,18 @@ export const en = Object.freeze({
         gst: "GST (10%)",
         totalIncGst: "Total inc. GST",
     }),
+    quoteLineItemsTable: Object.freeze({
+        tableLabel: "Line items",
+        columnItem: "Item",
+        columnQuantity: "Quantity",
+        columnUnitPrice: "Unit price",
+        columnAmount: "Amount",
+        provenanceFromSource: "From {{source}}",
+        provenanceFromSourceWithPlasterType:
+            "From {{source}} — {{plasterType}}",
+        provenanceMatchedKeywords: "Matched {{keywords}}",
+        unknownProvenance: "Provenance unknown",
+    }),
     quotesTable: Object.freeze({
         tableLabel: "Quotes",
         quoteCount_one: "{{count}} quote",

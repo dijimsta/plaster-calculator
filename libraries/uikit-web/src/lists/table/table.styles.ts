@@ -22,4 +22,5 @@ export const styles = Object.freeze({
     header: "px-3 py-3.5 text-left text-sm font-semibold text-gray-900 first:pl-4 last:pr-4 sm:first:pl-6 sm:last:pr-6 dark:text-white",
     cell: "whitespace-nowrap px-3 py-4 text-sm text-gray-500 first:pl-4 last:pr-4 sm:first:pl-6 sm:last:pr-6 dark:text-gray-400",
     fitWidth: "w-px whitespace-nowrap",
+    wrapCell: "whitespace-normal align-top",
 });
