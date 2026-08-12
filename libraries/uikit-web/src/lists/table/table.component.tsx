@@ -65,9 +65,21 @@ export namespace Table {
          * buttons.
          */
         readonly onClick?: () => void;
+        /**
+         * Prevents this row from being split across a page (or column)
+         * break when printed. Apply per-row on tables whose content can run
+         * long — e.g. a quote's line items — rather than on the table as a
+         * whole, so a table too tall for one page still paginates instead
+         * of being pushed onto a single following page in one block.
+         */
+        readonly avoidBreakInside?: boolean;
     };
 
-    export function Row({ onClick, children }: RowProps): ReactElement {
+    export function Row({
+        onClick,
+        avoidBreakInside = false,
+        children,
+    }: RowProps): ReactElement {
         const handleKeyDown = (event: KeyboardEvent<HTMLTableRowElement>) => {
             if (event.key !== "Enter" && event.key !== " ") {
                 return;
@@ -79,7 +91,10 @@ export namespace Table {
         return (
             <tr
                 tabIndex={onClick ? 0 : undefined}
-                className={clsx(onClick && styles.interactiveRow)}
+                className={clsx(
+                    onClick && styles.interactiveRow,
+                    avoidBreakInside && styles.avoidBreakInsideRow,
+                )}
                 onClick={onClick}
                 onKeyDown={onClick ? handleKeyDown : undefined}
             >
