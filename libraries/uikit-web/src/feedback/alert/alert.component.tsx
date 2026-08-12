@@ -71,7 +71,7 @@ function containerClass(
     return clsx(
         accent ? styles.accentContainer : styles.container,
         !isLight && containerColors[intent],
-        isLight && "bg-white",
+        isLight && "bg-white dark:bg-white/5",
         hasBorder && ringColors[intent],
         accent && accentBorderColors[intent],
     );
