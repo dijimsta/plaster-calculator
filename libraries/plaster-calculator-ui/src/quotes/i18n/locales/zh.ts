@@ -15,13 +15,14 @@ export const zh = createTranslationResource(
             loading: "正在加载报价…",
             unableToLoad: "无法加载报价，请尝试刷新。",
         }),
-        // Same note as en.ts: not consumed by any component in this batch,
-        // added ahead of the route that will use them.
         quoteDetailPage: Object.freeze({
             breadcrumb: "报价单",
             downloadPdf: "下载 PDF",
             markAsSent: "标记为已发送",
             markAccepted: "标记为已接受",
+            loading: "正在加载报价单…",
+            notFoundTitle: "未找到报价单",
+            notFoundDescription: "该报价单不存在，或您无权访问。",
         }),
         quoteStatusBadge: Object.freeze({
             draft: "草稿",

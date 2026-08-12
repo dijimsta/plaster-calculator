@@ -11,16 +11,15 @@ export const en = Object.freeze({
         loading: "Loading quotes…",
         unableToLoad: "Unable to load quotes. Try refreshing.",
     }),
-    // Not consumed by any component in this batch — quoteDetailDocument is
-    // presentational-only (no action buttons or breadcrumb by design) and
-    // the route that hosts it, with its breadcrumb and action buttons,
-    // belongs to plaster-calculator-web (a later group). Added here now so
-    // that later work doesn't hardcode English strings for them.
     quoteDetailPage: Object.freeze({
         breadcrumb: "Quote",
         downloadPdf: "Download PDF",
         markAsSent: "Mark as sent",
         markAccepted: "Mark accepted",
+        loading: "Loading quote…",
+        notFoundTitle: "Quote not found",
+        notFoundDescription:
+            "This quote doesn't exist or you don't have access to it.",
     }),
     quoteStatusBadge: Object.freeze({
         draft: "Draft",
