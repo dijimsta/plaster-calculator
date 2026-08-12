@@ -78,7 +78,7 @@ export function QuoteDetailDocument({
                     </Table.Head>
                     <Table.Body>
                         {lineItems.map((item) => (
-                            <Table.Row key={item.id}>
+                            <Table.Row key={item.id} avoidBreakInside>
                                 <Table.Cell>
                                     <Box direction="column" gap="xs">
                                         <Text size="base">{item.name}</Text>
