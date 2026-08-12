@@ -3,13 +3,13 @@ import "./bootstrap.js";
 import * as DataConnector from "@generated/data-connector-admin";
 import { HttpsError } from "firebase-functions/https";
 
-import { ensureTeamForUser } from "./teams.js";
+import { initializeTeamForUser } from "./teams.js";
 
 export async function requireTeamId(userId: string): Promise<string> {
     const response = await DataConnector.getTeamMembershipForUser({ userId });
     const membership = response.data.teamMembers[0];
     if (!membership) {
-        return (await ensureTeamForUser(userId)).teamId;
+        return (await initializeTeamForUser(userId)).teamId;
     }
     if (response.data.teamMembers.length !== 1) {
         throw new HttpsError("failed-precondition", "User has multiple teams.");

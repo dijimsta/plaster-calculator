@@ -6,16 +6,21 @@ import {
 } from "@libraries/plaster-calculator-common";
 import { HttpsError } from "firebase-functions/https";
 
+import {
+    recoverConcurrentAcceptance,
+    recoverExistingMembership,
+} from "./team-invitation-acceptance.js";
+
 const INVITATION_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/u;
 
-interface Membership {
+export interface Membership {
     teamId: string;
     role: string;
 }
 
-interface Invitation {
+export interface Invitation {
     teamId: string;
     email: string;
     tokenHash: string;
@@ -36,13 +41,7 @@ export interface PendingInvitation {
     updatedAt: string;
 }
 
-interface InvitationMatch {
-    teamId: string;
-    email: string;
-    expiresAt: string;
-}
-
-interface AuthUser {
+export interface AuthUser {
     email?: string;
     customClaims?: Record<string, unknown>;
 }
@@ -69,10 +68,6 @@ export interface TeamInvitationDependencies {
         teamId: string,
         now: string,
     ): Promise<PendingInvitation[]>;
-    findPendingInvitations(
-        email: string,
-        now: string,
-    ): Promise<InvitationMatch[]>;
     getInvitationByTokenHash(
         tokenHash: string,
     ): Promise<Invitation | undefined>;
@@ -245,10 +240,14 @@ export function createTeamInvitationService(
                 );
             }
 
-            if ((await dependencies.getMemberships(userId)).length > 0) {
-                throw new HttpsError(
-                    "failed-precondition",
-                    "User already belongs to a team.",
+            const memberships = await dependencies.getMemberships(userId);
+            if (memberships.length > 0) {
+                return recoverExistingMembership(
+                    dependencies,
+                    userId,
+                    authUser,
+                    invitation,
+                    memberships,
                 );
             }
 
@@ -260,9 +259,11 @@ export function createTeamInvitationService(
                     userId,
                 });
             } catch {
-                throw new HttpsError(
-                    "failed-precondition",
-                    "Invitation could not be accepted.",
+                return recoverConcurrentAcceptance(
+                    dependencies,
+                    userId,
+                    authUser,
+                    invitation,
                 );
             }
 
@@ -274,22 +275,7 @@ export function createTeamInvitationService(
             );
             return { teamId: invitation.teamId, role: TEAM_MEMBER_ROLE };
         },
-        hasPendingForEmail: async (emailValue: unknown) => {
-            const email = normalizeInvitationEmail(emailValue);
-            const invitations = await dependencies.findPendingInvitations(
-                email,
-                dependencies.now().toISOString(),
-            );
-            return invitations.length > 0;
-        },
     };
-}
-
-export async function shouldCreatePersonalTeamForNewUser(
-    email: string | undefined,
-    hasPendingInvitation: (value: string) => Promise<boolean>,
-) {
-    return !email || !(await hasPendingInvitation(email));
 }
 
 async function setTeamClaim(

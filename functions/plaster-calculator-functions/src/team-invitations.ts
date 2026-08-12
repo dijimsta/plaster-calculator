@@ -7,10 +7,7 @@ import { getAuth } from "firebase-admin/auth";
 import { onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
-import {
-    createTeamInvitationService,
-    shouldCreatePersonalTeamForNewUser as shouldCreatePersonalTeam,
-} from "./team-invitation-domain.js";
+import { createTeamInvitationService } from "./team-invitation-domain.js";
 import type { TeamInvitationDependencies } from "./team-invitation-domain.js";
 import { isRecord } from "./validation.js";
 
@@ -49,15 +46,6 @@ const defaultDependencies: TeamInvitationDependencies = {
         });
         return response.data.teamInvitations;
     },
-    findPendingInvitations: async (email, now) => {
-        const response = await DataConnector.findPendingTeamInvitationsForEmail(
-            {
-                email,
-                now,
-            },
-        );
-        return response.data.teamInvitations;
-    },
     getInvitationByTokenHash: async (tokenHash) => {
         const response = await DataConnector.getTeamInvitationByTokenHash({
             tokenHash,
@@ -94,14 +82,11 @@ export const acceptTeamInvitation = onCall(async (request) => {
     return teamInvitationService.accept(auth.uid, data["token"]);
 });
 
-export async function hasPendingTeamInvitationForEmail(email: string) {
-    return teamInvitationService.hasPendingForEmail(email);
-}
-
-export async function shouldCreatePersonalTeamForNewUser(
-    email: string | undefined,
+export async function acceptTeamInvitationForUser(
+    userId: string,
+    token: unknown,
 ) {
-    return shouldCreatePersonalTeam(email, hasPendingTeamInvitationForEmail);
+    return teamInvitationService.accept(userId, token);
 }
 
 function isFirebaseUserNotFound(error: unknown) {

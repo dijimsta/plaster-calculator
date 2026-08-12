@@ -1,28 +1,64 @@
 "use client";
 
 import type { User } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useTeamsService } from "../teams/teams.hooks.ts";
 
-export function useEnsureUserTeam(user: User | null | undefined): boolean {
+import { initializeUserTeam } from "./initialize-user-team.ts";
+
+interface InitializationState {
+    uid?: string;
+    status: "idle" | "loading" | "ready" | "error";
+    error?: unknown;
+}
+
+export interface EnsureUserTeamResult {
+    initialized: boolean;
+    error: unknown;
+    retry(): void;
+}
+
+export function useEnsureUserTeam(
+    user: User | null | undefined,
+): EnsureUserTeamResult {
     const teamsService = useTeamsService();
-    const [teamEnsuredForUid, setTeamEnsuredForUid] = useState<string>();
+    const [attempt, setAttempt] = useState(0);
+    const [state, setState] = useState<InitializationState>({ status: "idle" });
 
     useEffect(() => {
-        if (user) {
+        let isActive = true;
+        if (user !== null && user !== undefined) {
+            setState({ uid: user.uid, status: "loading" });
             void (async () => {
                 try {
-                    await teamsService.ensureMyTeam();
-                    await user.getIdToken(true);
-                } finally {
-                    setTeamEnsuredForUid(user.uid);
+                    await initializeUserTeam(user, teamsService);
+                    if (isActive) {
+                        setState({ uid: user.uid, status: "ready" });
+                    }
+                } catch (error: unknown) {
+                    if (isActive) {
+                        setState({ uid: user.uid, status: "error", error });
+                    }
                 }
             })();
         }
-    }, [user, teamsService]);
 
-    return (
-        user !== null && user !== undefined && teamEnsuredForUid === user.uid
-    );
+        return () => {
+            isActive = false;
+        };
+    }, [attempt, user, teamsService]);
+
+    const retry = useCallback(() => {
+        setAttempt((value) => value + 1);
+    }, []);
+
+    const isCurrentUser =
+        user !== null && user !== undefined && state.uid === user.uid;
+
+    return {
+        initialized: isCurrentUser && state.status === "ready",
+        error: isCurrentUser && state.status === "error" ? state.error : null,
+        retry,
+    };
 }
