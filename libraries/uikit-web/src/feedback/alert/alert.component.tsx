@@ -47,9 +47,9 @@ export function Alert({
                         </h3>
                     )}
                     {children !== undefined && (
-                        <p className={clsx(styles.body, bodyColors[intent])}>
+                        <div className={clsx(styles.body, bodyColors[intent])}>
                             {children}
-                        </p>
+                        </div>
                     )}
                 </div>
                 {onDismiss !== undefined && (

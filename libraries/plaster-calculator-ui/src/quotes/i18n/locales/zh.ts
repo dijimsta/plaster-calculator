@@ -24,6 +24,25 @@ export const zh = createTranslationResource(
             notFoundTitle: "未找到报价单",
             notFoundDescription: "该报价单不存在，或您无权访问。",
         }),
+        editableQuoteForm: Object.freeze({
+            quoteDetailsTitle: "报价详情",
+            quoteDetailsDescription:
+                "此报价单为独立副本，此处的更改不会影响模板。",
+            referenceLabel: "报价编号",
+            lineItemsTitle: "项目明细",
+            lineItemsDescription:
+                "可编辑描述、数量和价格，也可添加或删除项目。",
+            addItem: "添加项目",
+            removeItem: "删除第 {{number}} 项",
+            save: "保存报价",
+            saving: "正在保存…",
+            edit: "编辑报价",
+            saveSuccessTitle: "报价已保存",
+            saveSuccessDescription: "您的报价更改已更新。",
+            saveErrorTitle: "无法保存报价",
+            saveErrorDescription:
+                "部分更改可能未保存。请检查刷新后的报价并重试。",
+        }),
         quoteStatusBadge: Object.freeze({
             draft: "草稿",
             sent: "已发送",
@@ -129,6 +148,7 @@ export const zh = createTranslationResource(
             unableToLoadProject: "无法加载项目",
             loadingReadiness: "正在检查报价就绪状态…",
             unableToLoadReadiness: "无法加载报价就绪状态，请尝试刷新。",
+            unableToLoadQuote: "无法加载报价单，请尝试刷新。",
         }),
         readinessSummaryHeader: Object.freeze({
             readyTitle: "可以生成报价",

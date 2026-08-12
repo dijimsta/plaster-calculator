@@ -1,5 +1,6 @@
 export const formLayoutVariants = Object.freeze({
     "stacked": "space-y-12",
+    "stacked-wide": "space-y-12",
     "two-column": "space-y-12",
     "cards": "space-y-12",
     "labels-left": "space-y-12",

@@ -21,6 +21,25 @@ export const en = Object.freeze({
         notFoundDescription:
             "This quote doesn't exist or you don't have access to it.",
     }),
+    editableQuoteForm: Object.freeze({
+        quoteDetailsTitle: "Quote details",
+        quoteDetailsDescription:
+            "This quote is an independent copy. Changes here won't alter the template.",
+        referenceLabel: "Quote reference",
+        lineItemsTitle: "Line items",
+        lineItemsDescription:
+            "Edit descriptions, quantities and prices, or add and remove items.",
+        addItem: "Add item",
+        removeItem: "Remove item {{number}}",
+        save: "Save quote",
+        saving: "Saving…",
+        edit: "Edit quote",
+        saveSuccessTitle: "Quote saved",
+        saveSuccessDescription: "Your quote changes are now up to date.",
+        saveErrorTitle: "Couldn't save quote",
+        saveErrorDescription:
+            "Some changes may not have been saved. Review the refreshed quote and try again.",
+    }),
     quoteStatusBadge: Object.freeze({
         draft: "Draft",
         sent: "Sent",
@@ -126,6 +145,7 @@ export const en = Object.freeze({
         loadingReadiness: "Checking quote readiness…",
         unableToLoadReadiness:
             "Unable to load quote readiness. Try refreshing.",
+        unableToLoadQuote: "Unable to load the quote. Try refreshing.",
     }),
     readinessSummaryHeader: Object.freeze({
         readyTitle: "Ready to quote",

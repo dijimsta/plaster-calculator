@@ -9,7 +9,7 @@ export const styles = Object.freeze({
     accentContainer: "border-l-4 p-4",
     inner: "flex",
     iconWrapper: "shrink-0",
-    contentWrapper: "ml-3",
+    contentWrapper: "ml-3 min-w-0 flex-1",
     title: "text-sm font-medium [&:not(:last-child)]:mb-2",
     body: "text-sm",
     icon: "size-5",

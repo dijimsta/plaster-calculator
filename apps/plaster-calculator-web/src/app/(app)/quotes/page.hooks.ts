@@ -30,19 +30,19 @@ export function useQuotesListState(): QuotesListState {
     };
 }
 
-export function useOpenQuoteCallback(): (quoteId: string) => void {
+export function useOpenQuoteCallback(): (projectId: string) => void {
     const router = useRouter();
 
     return useCallback(
-        (quoteId: string) => {
-            router.push(`/quotes/${quoteId}`);
+        (projectId: string) => {
+            router.push(`/projects/${projectId}/quote`);
         },
         [router],
     );
 }
 
 /**
- * Opens the quote detail route in a *new* tab with `?print=1` instead of
+ * Opens the project's quote tab in a *new* tab with `?print=1` instead of
  * navigating the current /quotes tab there. Printing needs the full
  * `QuoteDetailDocument` rendered with real line-item data, which
  * `ListQuotesForTeam` doesn't fetch — duplicating a hidden
@@ -52,10 +52,10 @@ export function useOpenQuoteCallback(): (quoteId: string) => void {
  * present, so the browser's print dialog opens on the new tab while /quotes
  * itself never navigates away.
  */
-export function useDownloadQuoteCallback(): (quoteId: string) => void {
-    return useCallback((quoteId: string) => {
+export function useDownloadQuoteCallback(): (projectId: string) => void {
+    return useCallback((projectId: string) => {
         window.open(
-            `/quotes/${quoteId}?print=1`,
+            `/projects/${projectId}/quote?print=1`,
             "_blank",
             "noopener,noreferrer",
         );

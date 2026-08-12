@@ -2,6 +2,7 @@ import type { FormLayoutVariant } from "./form-layout.styles.ts";
 
 export const sectionVariants = Object.freeze({
     "stacked": "border-b border-gray-900/10 pb-12 dark:border-white/10",
+    "stacked-wide": "border-b border-gray-900/10 pb-12 dark:border-white/10",
     "two-column":
         "grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10",
     "cards": "grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3",
@@ -17,6 +18,8 @@ export const sectionDescription =
 export const sectionBodyVariants = Object.freeze({
     "stacked":
         "mt-10 grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6",
+    "stacked-wide":
+        "mt-10 grid w-full grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6",
     "two-column":
         "grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2",
     "cards":

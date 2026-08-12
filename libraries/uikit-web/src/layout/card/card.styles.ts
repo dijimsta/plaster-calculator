@@ -1,5 +1,14 @@
 export const styles = Object.freeze({
-    root: "overflow-hidden rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-slate-900 dark:ring-white/10",
+    root: "overflow-hidden rounded-lg ring-1",
+    variants: Object.freeze({
+        default:
+            "bg-white p-6 shadow-sm ring-gray-900/5 dark:bg-slate-900 dark:ring-white/10",
+        subtle: "bg-gray-50 p-4 ring-gray-200 dark:bg-white/5 dark:ring-white/10",
+    }),
+    visibility: Object.freeze({
+        "visible": "",
+        "print-only": "hidden print:block",
+    }),
     header: "flex items-center justify-between",
     body: "mt-4 flex flex-col gap-3",
     title: "mb-2 text-base font-semibold text-gray-900 dark:text-white",

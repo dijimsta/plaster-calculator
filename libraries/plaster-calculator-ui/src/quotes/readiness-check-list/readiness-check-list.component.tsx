@@ -3,7 +3,14 @@ import type {
     ReadinessCheck,
     ReadinessResult,
 } from "@libraries/plaster-calculator-common";
-import { Badge, Box, Button, StackedList, Text } from "@libraries/uikit-web";
+import {
+    Alert,
+    Badge,
+    Box,
+    Button,
+    StackedList,
+    Text,
+} from "@libraries/uikit-web";
 import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
 
@@ -27,6 +34,7 @@ export type ReadinessCheckListProps = {
     readonly checks: readonly ReadinessCheck[];
     readonly results: readonly ReadinessResult[];
     readonly renderFixControl?: ReadinessCheckListRenderFixControl;
+    readonly variant?: "stacked" | "alerts";
 };
 
 /**
@@ -42,7 +50,25 @@ export function ReadinessCheckList({
     checks,
     results,
     renderFixControl,
+    variant = "stacked",
 }: ReadinessCheckListProps): ReactElement {
+    if (variant === "alerts") {
+        return (
+            <Box direction="column" gap="sm">
+                {checks.map((check) => (
+                    <ReadinessCheckAlert
+                        key={check.id}
+                        check={check}
+                        result={results.find(
+                            (result) => result.checkId === check.id,
+                        )}
+                        renderFixControl={renderFixControl}
+                    />
+                ))}
+            </Box>
+        );
+    }
+
     return (
         <StackedList bordered>
             {checks.map((check) => (
@@ -65,6 +91,25 @@ type ReadinessCheckRowProps = {
     readonly result: ReadinessResult | undefined;
     readonly renderFixControl: ReadinessCheckListRenderFixControl | undefined;
 };
+
+function ReadinessCheckAlert({
+    check,
+    result,
+    renderFixControl,
+}: ReadinessCheckRowProps): ReactElement {
+    return (
+        <Alert
+            intent={result?.isMet ? "success" : "error"}
+            variant="light-with-border"
+        >
+            <ReadinessCheckRow
+                check={check}
+                result={result}
+                renderFixControl={renderFixControl}
+            />
+        </Alert>
+    );
+}
 
 /**
  * One check's row. An unmet check with more than one affected item starts

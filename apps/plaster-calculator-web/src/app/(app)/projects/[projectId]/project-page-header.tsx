@@ -7,6 +7,7 @@ import {
 } from "@libraries/uikit-web";
 import { Download, File, Home, Pencil, RefreshCcw } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
+import type { ReactNode } from "react";
 
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../../i18n/index.ts";
@@ -26,6 +27,7 @@ export interface ProjectHeaderProps {
     readonly setRenaming?: (renaming: boolean) => void;
     readonly setRenameValue?: (value: string) => void;
     readonly validateAndExport?: () => Promise<void>;
+    readonly additionalActions?: ReactNode;
 }
 
 export function ProjectHeader({
@@ -39,6 +41,7 @@ export function ProjectHeader({
     setRenaming,
     setRenameValue,
     validateAndExport,
+    additionalActions,
 }: ProjectHeaderProps) {
     const { t } = useAppTranslation();
 
@@ -80,6 +83,7 @@ export function ProjectHeader({
                 project={project}
                 load={load}
                 validateAndExport={validateAndExport}
+                additionalActions={additionalActions}
             />
             <PageHeading.Navigation>
                 <Tabs>
@@ -136,7 +140,11 @@ function ProjectHeaderActions({
     project,
     load,
     validateAndExport,
-}: Pick<ProjectHeaderProps, "project" | "load" | "validateAndExport">) {
+    additionalActions,
+}: Pick<
+    ProjectHeaderProps,
+    "project" | "load" | "validateAndExport" | "additionalActions"
+>) {
     return (
         <PageHeading.Actions>
             {project && validateAndExport && (
@@ -148,6 +156,7 @@ function ProjectHeaderActions({
                     CSV
                 </Button>
             )}
+            {additionalActions}
             <Button
                 icon={<RefreshCcw aria-hidden="true" />}
                 variant="secondary"

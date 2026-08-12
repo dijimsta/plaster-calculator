@@ -444,6 +444,54 @@ export function updateQuoteStatus(dcOrVars, vars) {
   return executeMutation(updateQuoteStatusRef(dcInstance, inputVars));
 }
 
+export const updateQuoteDetailsRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuoteDetails', inputVars);
+}
+updateQuoteDetailsRef.operationName = 'UpdateQuoteDetails';
+
+export function updateQuoteDetails(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateQuoteDetailsRef(dcInstance, inputVars));
+}
+
+export const updateQuoteItemRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuoteItem', inputVars);
+}
+updateQuoteItemRef.operationName = 'UpdateQuoteItem';
+
+export function updateQuoteItem(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateQuoteItemRef(dcInstance, inputVars));
+}
+
+export const createQuoteItemRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuoteItem', inputVars);
+}
+createQuoteItemRef.operationName = 'CreateQuoteItem';
+
+export function createQuoteItem(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createQuoteItemRef(dcInstance, inputVars));
+}
+
+export const deleteQuoteItemRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteQuoteItem', inputVars);
+}
+deleteQuoteItemRef.operationName = 'DeleteQuoteItem';
+
+export function deleteQuoteItem(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteQuoteItemRef(dcInstance, inputVars));
+}
+
 export const createQuoteWithItemsRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
