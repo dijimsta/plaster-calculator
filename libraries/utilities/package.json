@@ -7,12 +7,14 @@
     "exports": "./out/index.js",
     "main": "./out/index.js",
     "scripts": {
-        "build": "tsc --build tsconfig.build.json"
+        "build": "tsc --build tsconfig.build.json",
+        "test": "node --test"
     },
     "dependencies": {
         "decimal.js": "^10.6.0"
     },
     "devDependencies": {
+        "@types/node": "^26.1.2",
         "typescript": "^6.0.3"
     }
 }
