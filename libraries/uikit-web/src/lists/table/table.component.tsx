@@ -140,6 +140,14 @@ export namespace Table {
     export type CellProps = HeadProps & {
         /** Shrinks the column to the width of its content instead of stretching. */
         readonly fit?: boolean;
+        /**
+         * Lets long content wrap onto multiple lines instead of the default
+         * single-line `whitespace-nowrap` cell, e.g. a line-item name too
+         * long to fit one line. Also top-aligns the cell's content, since a
+         * wrapped multi-line cell next to single-line cells in the same row
+         * otherwise centers awkwardly.
+         */
+        readonly wrap?: boolean;
         /** Text alignment within the cell. Defaults to `"start"`. */
         readonly align?: TableCellAlign;
         readonly colSpan?: number;
@@ -148,6 +156,7 @@ export namespace Table {
 
     export function Cell({
         fit = false,
+        wrap = false,
         align,
         colSpan,
         rowSpan,
@@ -160,6 +169,7 @@ export namespace Table {
                 className={clsx(
                     styles.cell,
                     fit && styles.fitWidth,
+                    wrap && styles.wrapCell,
                     align !== undefined && cellAligns[align],
                 )}
             >
