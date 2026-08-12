@@ -518,6 +518,20 @@ exports.updateQuoteStatus = function updateQuoteStatus(dcOrVars, vars) {
 }
 ;
 
+const createQuoteWithItemsRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuoteWithItems', inputVars);
+}
+createQuoteWithItemsRef.operationName = 'CreateQuoteWithItems';
+exports.createQuoteWithItemsRef = createQuoteWithItemsRef;
+
+exports.createQuoteWithItems = function createQuoteWithItems(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createQuoteWithItemsRef(dcInstance, inputVars));
+}
+;
+
 const listQuoteItemTemplatesRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();

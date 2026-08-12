@@ -444,6 +444,18 @@ export function updateQuoteStatus(dcOrVars, vars) {
   return executeMutation(updateQuoteStatusRef(dcInstance, inputVars));
 }
 
+export const createQuoteWithItemsRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuoteWithItems', inputVars);
+}
+createQuoteWithItemsRef.operationName = 'CreateQuoteWithItems';
+
+export function createQuoteWithItems(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createQuoteWithItemsRef(dcInstance, inputVars));
+}
+
 export const listQuoteItemTemplatesRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
