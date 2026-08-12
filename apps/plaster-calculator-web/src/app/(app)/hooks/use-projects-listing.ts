@@ -1,17 +1,29 @@
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import {
     useCompaniesService,
     useProjectsService,
 } from "@libraries/plaster-calculator-web-core";
-import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
-import { createElement, useEffect, useMemo, useState } from "react";
+import { useNotificationsManager } from "@libraries/uikit-web";
+import { useEffect, useMemo, useState } from "react";
 
 import type { ProjectSummary } from "../../../types.js";
 
-export type StatusFilter = "ALL" | "QUOTING" | "QUOTE_SUBMITTED";
+import { ProjectsListingUtils } from "./use-projects-listing.utils.js";
 
-type EnrichedProject = ProjectSummary & { companyName: string | null };
+export type StatusFilter = "ALL" | "QUOTING" | "QUOTE_SUBMITTED";
+export type ProjectsView = "list" | "board";
+
+const ALL_SALES_STATUSES: readonly SalesStatus[] = [
+    "QUOTING",
+    "QUOTE_SUBMITTED",
+    "WON",
+    "LOST",
+];
+
+export type EnrichedProject = ProjectSummary & { companyName: string | null };
 
 export interface ProjectsListingState {
+    readonly view: ProjectsView;
     readonly statusFilter: StatusFilter;
     readonly query: string;
     readonly projectsLoading: boolean;
@@ -27,6 +39,11 @@ export interface ProjectsListingState {
     readonly refresh: () => Promise<void>;
     readonly removeProject: (project: ProjectSummary) => Promise<void>;
     readonly saveRename: (projectId: string) => Promise<void>;
+    readonly moveProjectSalesStatus: (
+        projectId: string,
+        salesStatus: SalesStatus,
+    ) => Promise<void>;
+    readonly setView: (view: ProjectsView) => void;
     readonly setStatusFilter: (filter: StatusFilter) => void;
     readonly setQuery: (query: string) => void;
     readonly clearFilters: () => void;
@@ -43,6 +60,7 @@ export function useProjectsListing(): ProjectsListingState {
     const [companyNames, setCompanyNames] = useState<
         ReadonlyMap<string, string>
     >(new Map());
+    const [view, setView] = useState<ProjectsView>("list");
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
     const [query, setQuery] = useState("");
     const [projectsLoading, setProjectsLoading] = useState(true);
@@ -64,12 +82,16 @@ export function useProjectsListing(): ProjectsListingState {
             try {
                 const project =
                     await projectsService.getProjectStatus(processingProjectId);
-                setProjects((current) => upsertProject(current, project));
+                setProjects((current) =>
+                    ProjectsListingUtils.upsertProject(current, project),
+                );
                 if (project.status === "READY") {
                     notify({
                         intent: "success",
                         title: `${project.name} finished processing`,
-                        actions: projectNotificationAction(project.id),
+                        actions: ProjectsListingUtils.projectNotificationAction(
+                            project.id,
+                        ),
                     });
                     setProcessingProjectId(null);
                     window.clearInterval(timer);
@@ -105,14 +127,12 @@ export function useProjectsListing(): ProjectsListingState {
     async function refresh() {
         setProjectsLoading(true);
         try {
-            const [quoting, submitted] = await Promise.all([
-                projectsService.listProjects({ salesStatus: "QUOTING" }),
-                projectsService.listProjects({
-                    salesStatus: "QUOTE_SUBMITTED",
-                }),
-            ]);
-            const merged = mergeProjects(quoting, submitted);
-            setProjects(merged);
+            const byStatus = await Promise.all(
+                ALL_SALES_STATUSES.map((salesStatus) =>
+                    projectsService.listProjects({ salesStatus }),
+                ),
+            );
+            setProjects(ProjectsListingUtils.mergeProjects(...byStatus));
         } catch (error) {
             notify({
                 intent: "error",
@@ -121,6 +141,30 @@ export function useProjectsListing(): ProjectsListingState {
             });
         } finally {
             setProjectsLoading(false);
+        }
+    }
+
+    async function moveProjectSalesStatus(
+        projectId: string,
+        salesStatus: SalesStatus,
+    ) {
+        const previous = projects;
+        setProjects((current) =>
+            current.map((project) =>
+                project.id === projectId
+                    ? { ...project, salesStatus }
+                    : project,
+            ),
+        );
+        try {
+            await projectsService.updateProject({ projectId, salesStatus });
+        } catch (error) {
+            setProjects(previous);
+            notify({
+                intent: "error",
+                title: "Unable to move project",
+                description: error instanceof Error ? error.message : undefined,
+            });
         }
     }
 
@@ -227,6 +271,7 @@ export function useProjectsListing(): ProjectsListingState {
     const resultCount = filtered.length;
 
     return {
+        view,
         statusFilter,
         query,
         projectsLoading,
@@ -242,6 +287,8 @@ export function useProjectsListing(): ProjectsListingState {
         refresh,
         removeProject,
         saveRename,
+        moveProjectSalesStatus,
+        setView,
         setStatusFilter,
         setQuery,
         clearFilters,
@@ -249,35 +296,4 @@ export function useProjectsListing(): ProjectsListingState {
         setRenameValue,
         setRenamingId,
     };
-}
-
-function projectNotificationAction(projectId: string) {
-    return createElement(
-        ButtonLink,
-        { href: `/projects/${projectId}`, variant: "link" },
-        "Open project",
-    );
-}
-
-function mergeProjects(...lists: ProjectSummary[][]): ProjectSummary[] {
-    const seen = new Set<string>();
-    const result: ProjectSummary[] = [];
-    for (const list of lists) {
-        for (const project of list) {
-            if (!seen.has(project.id)) {
-                seen.add(project.id);
-                result.push(project);
-            }
-        }
-    }
-    return result;
-}
-
-function upsertProject(
-    projects: ProjectSummary[],
-    project: ProjectSummary,
-): ProjectSummary[] {
-    return projects.some((item) => item.id === project.id)
-        ? projects.map((item) => (item.id === project.id ? project : item))
-        : [project, ...projects];
 }
