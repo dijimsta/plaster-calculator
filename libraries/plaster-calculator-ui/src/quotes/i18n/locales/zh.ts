@@ -169,6 +169,8 @@ export const zh = createTranslationResource(
         readinessCheckList: Object.freeze({
             metBadge: "已通过",
             unmetBadge: "{{count}} 项未通过",
+            showCompletedChecks: "显示已完成的检查（{{count}} 项）",
+            hideCompletedChecks: "隐藏已完成的检查",
             fixInline: "请在下方直接处理。",
             fixDeepLink: "请前往关联页面处理，然后返回此处。",
             hideAffectedItems: "隐藏受影响项目",

@@ -8,11 +8,13 @@ import {
     Badge,
     Box,
     Button,
+    Label,
     StackedList,
     Text,
+    Toggle,
 } from "@libraries/uikit-web";
 import type { ReactElement, ReactNode } from "react";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 
@@ -38,7 +40,8 @@ export type ReadinessCheckListProps = {
 };
 
 /**
- * Renders the readiness-check registry as a list, one row per check.
+ * Renders the readiness-check registry as a list. Completed checks start
+ * hidden behind a compact toggle so attention stays on the unmet rows.
  * Presentational only: it derives each row's met/unmet state from `results`
  * and hands `renderFixControl` whatever affected item needs a fix, but owns
  * no data fetching and imports neither the web-core hook nor the connector
@@ -52,10 +55,24 @@ export function ReadinessCheckList({
     renderFixControl,
     variant = "stacked",
 }: ReadinessCheckListProps): ReactElement {
-    if (variant === "alerts") {
-        return (
+    const toggleId = useId();
+    const { t } = useQuotesTranslation();
+    const [showMetChecks, setShowMetChecks] = useState(false);
+    const metCheckCount = checks.filter((check) =>
+        results.some((result) => result.checkId === check.id && result.isMet),
+    ).length;
+    const visibleChecks = showMetChecks
+        ? checks
+        : checks.filter(
+              (check) =>
+                  !results.some(
+                      (result) => result.checkId === check.id && result.isMet,
+                  ),
+          );
+    const checkRows =
+        variant === "alerts" ? (
             <Box direction="column" gap="sm">
-                {checks.map((check) => (
+                {visibleChecks.map((check) => (
                     <ReadinessCheckAlert
                         key={check.id}
                         check={check}
@@ -66,23 +83,45 @@ export function ReadinessCheckList({
                     />
                 ))}
             </Box>
+        ) : (
+            <StackedList bordered>
+                {visibleChecks.map((check) => (
+                    <StackedList.Item key={check.id}>
+                        <ReadinessCheckRow
+                            check={check}
+                            result={results.find(
+                                (result) => result.checkId === check.id,
+                            )}
+                            renderFixControl={renderFixControl}
+                        />
+                    </StackedList.Item>
+                ))}
+            </StackedList>
         );
-    }
 
     return (
-        <StackedList bordered>
-            {checks.map((check) => (
-                <StackedList.Item key={check.id}>
-                    <ReadinessCheckRow
-                        check={check}
-                        result={results.find(
-                            (result) => result.checkId === check.id,
-                        )}
-                        renderFixControl={renderFixControl}
+        <Box direction="column" gap="sm">
+            {metCheckCount > 0 && (
+                <Box direction="row" align="center" gap="sm">
+                    <Toggle
+                        id={toggleId}
+                        size="sm"
+                        checked={showMetChecks}
+                        onChange={(event) =>
+                            setShowMetChecks(event.target.checked)
+                        }
                     />
-                </StackedList.Item>
-            ))}
-        </StackedList>
+                    <Label htmlFor={toggleId}>
+                        {showMetChecks
+                            ? t("readinessCheckList.hideCompletedChecks")
+                            : t("readinessCheckList.showCompletedChecks", {
+                                  count: metCheckCount,
+                              })}
+                    </Label>
+                </Box>
+            )}
+            {checkRows}
+        </Box>
     );
 }
 

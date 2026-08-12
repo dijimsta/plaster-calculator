@@ -163,6 +163,8 @@ export const en = Object.freeze({
     readinessCheckList: Object.freeze({
         metBadge: "Met",
         unmetBadge: "{{count}} unmet",
+        showCompletedChecks: "Show completed checks ({{count}})",
+        hideCompletedChecks: "Hide completed checks",
         fixInline: "Fix this directly below.",
         fixDeepLink: "Fix this from the linked page, then come back here.",
         hideAffectedItems: "Hide affected items",
