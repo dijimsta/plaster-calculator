@@ -4,6 +4,7 @@ export * from "./quote-line-items-table/index.ts";
 export * from "./quote-status-badge/index.ts";
 export * from "./quote-template-form/index.ts";
 export * from "./quote-template-panel/index.ts";
+export * from "./quote-totals-block/index.ts";
 export * from "./quotes-table/index.ts";
 export * from "./use-print-quote-document.hook.ts";
 export * from "./readiness-check-list/index.ts";
