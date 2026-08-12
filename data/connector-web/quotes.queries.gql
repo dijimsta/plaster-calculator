@@ -80,6 +80,93 @@ query ListQuoteItemTemplateConfigsForQuoteTemplate($quoteTemplateId: UUID!)
 # passed. `quoteItemTemplateConfigs` has no relationship to a project, so
 # it's scoped directly by team using the same `auth.token.teamId` guard,
 # matching `ListQuoteItemTemplates` and `ListProjectQuestionnaires`.
+# Feeds the quotes list view. One row per quote, newest-first via the
+# `(teamId, createdAt)` index added in WORK-111. `total inc. GST` isn't a
+# stored column on `Quote` — only `QuoteItem` rows carry line data — so this
+# selects each quote's `QuoteItem` `quantity`/`unitPriceCents` pairs via the
+# `quoteItems_on_quote` reverse relation (the same nesting pattern
+# `ListProjectQuestionnaires` uses for `projectQuestionnaireQuestions_on_projectQuestionnaire`
+# below); the caller runs them through `QuoteTotalsUtils.lineAmountCents` /
+# `subtotalCents` / `gstCents` / `totalIncGstCents` (WORK-110) to compute the
+# total client-side rather than duplicating that maths in the query layer.
+query ListQuotesForTeam @auth(level: USER) {
+    quotes(
+        where: { teamId: { eq_expr: "auth.token.teamId" } }
+        orderBy: [{ createdAt: DESC }]
+    ) {
+        id
+        reference
+        status
+        createdAt
+        project {
+            id
+            name
+            company {
+                id
+                companyName
+            }
+        }
+        items: quoteItems_on_quote {
+            quantity
+            unitPriceCents
+        }
+    }
+}
+
+# Feeds the quote detail document: the quote itself, its `QuoteItem` line
+# rows, and each line's `QuantitySource` provenance (how its quantity was
+# derived). `quote` is guarded by the same `@check` ownership pattern
+# `ListQuoteItemTemplateConfigsForQuoteTemplate` uses for `quoteTemplate`
+# above, and — like `GetQuoteReadiness`'s `project` — is not `@redact`ed
+# because the caller needs its fields back, not just its validated
+# existence.
+query GetQuoteById($id: UUID!) @auth(level: USER) {
+    quote(key: { id: $id })
+        @check(
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this quote"
+        ) {
+        id
+        teamId
+        projectId
+        supplierId
+        status
+        reference
+        issuedAt
+        sentAt
+        acceptedAt
+        createdAt
+        updatedAt
+        project {
+            id
+            name
+            company {
+                id
+                companyName
+            }
+        }
+        items: quoteItems_on_quote(orderBy: [{ displayOrder: ASC }]) {
+            id
+            displayOrder
+            name
+            quantity
+            unitPriceCents
+            materialUnitPriceCents
+            labourUnitPriceCents
+            matchedKeywords
+            sourceTemplateId
+            quantitySourceId
+            quantitySource {
+                id
+                measurementSource
+                measurementPlasterType
+            }
+            createdAt
+            updatedAt
+        }
+    }
+}
+
 query GetQuoteReadiness($projectId: UUID!) @auth(level: USER) {
     project(key: { id: $projectId })
         @check(
