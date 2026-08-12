@@ -4,7 +4,10 @@
     "private": true,
     "description": "Domain-aware React components for Plaster Calculator applications.",
     "type": "module",
-    "exports": "./out/index.js",
+    "exports": {
+        ".": "./out/index.js",
+        "./quote-detail-document.print.css": "./src/quotes/quote-detail-document/quote-detail-document.print.css"
+    },
     "main": "./out/index.js",
     "scripts": {
         "build": "tsc --build tsconfig.build.json"
