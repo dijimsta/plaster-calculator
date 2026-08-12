@@ -7,6 +7,7 @@ import {
     Box,
     Breadcrumb,
     Button,
+    BusyOverlay,
     EmptyState,
     Input,
     PageHeading,
@@ -22,7 +23,6 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation.js";
 
-import { BusyOverlay } from "../../../components/busy-overlay.js";
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../i18n/index.ts";
 import { useSalesStatusLabel } from "../../../lib/sales-status.js";

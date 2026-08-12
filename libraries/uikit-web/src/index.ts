@@ -31,6 +31,8 @@ export type {
 } from "./elements/badge/index.ts";
 export { Backdrop } from "./overlays/backdrop/index.ts";
 export type { BackdropProps } from "./overlays/backdrop/index.ts";
+export { BusyOverlay } from "./overlays/busy-overlay/index.ts";
+export type { BusyOverlayProps } from "./overlays/busy-overlay/index.ts";
 export { Board } from "./layout/board/index.ts";
 export type { BoardProps } from "./layout/board/index.ts";
 export { Box } from "./layout/box/index.ts";
