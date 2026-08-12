@@ -1,0 +1,40 @@
+/*
+ * Print isolation for the quote detail document.
+ *
+ * Targets the `Card` whose id matches `QUOTE_DETAIL_DOCUMENT_PRINT_ROOT_ID`
+ * (see quote-detail-document.component.tsx). This is a standalone CSS file
+ * so it can't import that constant directly — the id string below must be
+ * kept in sync with it by hand if either ever changes.
+ *
+ * Recipe: hide everything on the page, then re-reveal only the print root
+ * and reposition it to the top of the page at full width. This isolates
+ * the document regardless of what page chrome (nav, breadcrumb, action
+ * buttons) wraps it, without requiring any of that chrome to opt in —
+ * useful here because this stylesheet is authored before the web app
+ * route that will eventually import it exists.
+ *
+ * Per-row pagination (avoiding a line item splitting across a page break)
+ * is handled inside the component via Table.Row's `avoidBreakInside` prop,
+ * not here — deliberately not a blanket `break-inside: avoid` on the whole
+ * document, which would force a long quote onto a single page instead of
+ * paginating cleanly between line items.
+ */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #quote-detail-document-print-root,
+    #quote-detail-document-print-root * {
+        visibility: visible;
+    }
+
+    #quote-detail-document-print-root {
+        position: absolute;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+    }
+}
