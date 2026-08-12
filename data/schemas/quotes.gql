@@ -60,7 +60,11 @@ type Supplier
     updatedAt: Timestamp! @default(expr: "request.time")
 }
 
-type Quote @table @index(fields: ["teamId", "updatedAt"], order: [ASC, DESC]) {
+type Quote
+    @table
+    @index(fields: ["teamId", "updatedAt"], order: [ASC, DESC])
+    @index(fields: ["teamId", "createdAt"], order: [ASC, DESC])
+    @unique(fields: ["teamId", "reference"]) {
     id: UUID! @default(expr: "uuidV4()")
     team: Team! @ref(fields: "teamId", references: "id")
     teamId: String!
@@ -68,7 +72,11 @@ type Quote @table @index(fields: ["teamId", "updatedAt"], order: [ASC, DESC]) {
     projectId: UUID!
     supplier: Supplier @ref(fields: "supplierId", references: "id")
     supplierId: UUID
-    status: String!
+    status: String! @default(value: "draft")
+    reference: String
+    issuedAt: Timestamp
+    sentAt: Timestamp
+    acceptedAt: Timestamp
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
