@@ -9,6 +9,17 @@ export const en = Object.freeze({
         emptyStateDescription:
             "Quotes are generated from a project once pricing is set up.",
     }),
+    // Not consumed by any component in this batch — quoteDetailDocument is
+    // presentational-only (no action buttons or breadcrumb by design) and
+    // the route that hosts it, with its breadcrumb and action buttons,
+    // belongs to plaster-calculator-web (a later group). Added here now so
+    // that later work doesn't hardcode English strings for them.
+    quoteDetailPage: Object.freeze({
+        breadcrumb: "Quote",
+        downloadPdf: "Download PDF",
+        markAsSent: "Mark as sent",
+        markAccepted: "Mark accepted",
+    }),
     quoteStatusBadge: Object.freeze({
         draft: "Draft",
         sent: "Sent",
