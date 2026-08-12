@@ -42,6 +42,18 @@ export const zh = createTranslationResource(
             gst: "增值税（10%）",
             totalIncGst: "含税总额",
         }),
+        quoteLineItemsTable: Object.freeze({
+            tableLabel: "项目明细",
+            columnItem: "项目",
+            columnQuantity: "数量",
+            columnUnitPrice: "单价",
+            columnAmount: "金额",
+            provenanceFromSource: "根据{{source}}计算",
+            provenanceFromSourceWithPlasterType:
+                "根据{{source}}计算 — {{plasterType}}",
+            provenanceMatchedKeywords: "已匹配 {{keywords}}",
+            unknownProvenance: "来源未知",
+        }),
         quotesTable: Object.freeze({
             tableLabel: "报价单",
             // zh has a single plural form (CLDR "other"); `_one` mirrors

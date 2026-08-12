@@ -1,0 +1,134 @@
+import type { useQuotesTranslation } from "../i18n/index.ts";
+
+import type {
+    QuoteLineItemsTableQuantitySource,
+    QuoteLineItemsTableRow,
+} from "./quote-line-items-table.types.ts";
+
+type QuotesTFunction = ReturnType<typeof useQuotesTranslation>["t"];
+
+/**
+ * Display unit for each known `measurementSource`, matching the raw strings
+ * `QuantityTakeoffCalculatorUtils` (`@libraries/plaster-calculator-common`)
+ * switches on. Not exhaustive by type -- `measurementSource` is a free-text
+ * column, not a closed union this library can see -- so a row whose source
+ * isn't in this map renders its bare number rather than guessing a unit.
+ */
+const UNIT_BY_MEASUREMENT_SOURCE: Readonly<Record<string, string>> =
+    Object.freeze({
+        WALL_AREA: "m²",
+        CEILING_AREA: "m²",
+        FLOOR_AREA: "m²",
+        CORNICE_LENGTH: "m",
+        DOOR_COUNT: "ea",
+    });
+
+/**
+ * Pure presentation helpers for `QuoteLineItemsTable`. Kept as static
+ * methods rather than module-level functions so the component file only
+ * imports one name.
+ */
+export class QuoteLineItemsTableUtils {
+    /**
+     * Formats `row.quantity` with the unit implied by its `quantitySource`'s
+     * `measurementSource`, e.g. `52.8` -> `"52.8 m²"`. A row with no
+     * `quantitySource` (a keyword-matched flat-fee line) or an unrecognised
+     * `measurementSource` renders the bare number, since there's no unit to
+     * infer. Rounds display to 2dp and trims trailing zeroes, matching how
+     * `quantity` itself is a plain (non-cents) `number` rather than money.
+     */
+    public static quantityDisplayText(row: QuoteLineItemsTableRow): string {
+        const quantityText = QuoteLineItemsTableUtils.formatQuantity(
+            row.quantity,
+        );
+        const unit = row.quantitySource
+            ? UNIT_BY_MEASUREMENT_SOURCE[row.quantitySource.measurementSource]
+            : undefined;
+        return unit ? `${quantityText} ${unit}` : quantityText;
+    }
+
+    /**
+     * Names this row's provenance -- the metric its quantity was measured
+     * from, or the keywords that matched it onto the quote -- so every row
+     * shows *some* reason it's here, never nothing. Prefers
+     * `quantitySource` over `matchedKeywords` when both are present: it
+     * explains the actual quantity, which is the more specific claim, while
+     * `matchedKeywords` only explains inclusion (relevant for a flat-fee
+     * line with nothing to measure, where `quantitySource` is `null`).
+     *
+     * A row with neither is a data bug, not a state this component renders
+     * silently: `GenerateQuoteUtils.resolveQuoteItem`
+     * (`@libraries/plaster-calculator-web-core`) never emits one, since a
+     * template needs either a `quantitySourceId` or a keyword match to
+     * resolve a non-zero quantity in the first place, and `matchedKeywords`
+     * is only ever empty for a `quantitySourceId`-driven, unconditional
+     * template. This warns unconditionally (not gated behind a dev check --
+     * it should never happen in any environment) and renders a translated
+     * fallback label rather than rendering blank provenance.
+     */
+    public static provenanceLabel(
+        row: QuoteLineItemsTableRow,
+        t: QuotesTFunction,
+    ): string {
+        if (row.quantitySource) {
+            return QuoteLineItemsTableUtils.quantitySourceProvenanceLabel(
+                row.quantitySource,
+                t,
+            );
+        }
+        if (row.matchedKeywords.length > 0) {
+            return QuoteLineItemsTableUtils.matchedKeywordsProvenanceLabel(
+                row.matchedKeywords,
+                t,
+            );
+        }
+        console.warn(
+            `QuoteLineItemsTable: line item "${row.name}" (${row.id}) has neither a quantitySource nor matchedKeywords -- every generated line should have one or the other.`,
+        );
+        return t("quoteLineItemsTable.unknownProvenance");
+    }
+
+    private static quantitySourceProvenanceLabel(
+        quantitySource: QuoteLineItemsTableQuantitySource,
+        t: QuotesTFunction,
+    ): string {
+        const source = QuoteLineItemsTableUtils.humanize(
+            quantitySource.measurementSource,
+        );
+        return quantitySource.measurementPlasterType
+            ? t("quoteLineItemsTable.provenanceFromSourceWithPlasterType", {
+                  source,
+                  plasterType: QuoteLineItemsTableUtils.humanize(
+                      quantitySource.measurementPlasterType,
+                  ),
+              })
+            : t("quoteLineItemsTable.provenanceFromSource", { source });
+    }
+
+    private static matchedKeywordsProvenanceLabel(
+        matchedKeywords: readonly string[],
+        t: QuotesTFunction,
+    ): string {
+        const keywords = matchedKeywords
+            .map((keyword) => `"${keyword}"`)
+            .join(", ");
+        return t("quoteLineItemsTable.provenanceMatchedKeywords", {
+            keywords,
+        });
+    }
+
+    private static formatQuantity(quantity: number): string {
+        return String(Number(quantity.toFixed(2)));
+    }
+
+    /**
+     * e.g. `"WALL_AREA"` -> `"wall area"`. `measurementSource`/
+     * `measurementPlasterType` are free-text columns rather than a closed
+     * union this library can see, so -- matching
+     * `QuoteDetailDocumentUtils.humanize` -- this humanizes the raw value
+     * instead of translating it through a fixed key map.
+     */
+    private static humanize(value: string): string {
+        return value.toLowerCase().split("_").filter(Boolean).join(" ");
+    }
+}
