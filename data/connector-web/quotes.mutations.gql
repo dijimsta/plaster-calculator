@@ -323,3 +323,592 @@ mutation UpdateQuoteStatus($id: UUID!, $status: String!)
         data: { status: $status, updatedAt_expr: "request.time" }
     )
 }
+
+# Creates a `Quote` plus up to 20 `QuoteItem` rows in a single
+# `@transaction` mutation — the same "one document, many writes, atomically"
+# shape as `EnsureSystemQuoteItemTemplates` above.
+#
+# Regenerate policy: `Quote.project` is `@unique`, so at most one `Quote`
+# exists per project. If a project already has a `draft` quote, this call
+# replaces it (deletes the old `Quote` and its `QuoteItem` rows, then
+# inserts the new ones). If the existing quote is `sent` or `accepted`,
+# this call must fail rather than silently clobbering a finalized quote.
+#
+# `quoteItem_deleteMany`/`quote_deleteMany` below are filtered by
+# `status: { eq: "draft" }`, so they no-op when the existing quote is
+# `sent`/`accepted` (or there is no existing quote at all). The
+# `quote_insert` that follows then collides with `Quote`'s `@unique`
+# `project` constraint if a non-draft row is still present, and the whole
+# `@transaction` rolls back — so "reject if sent/accepted" falls out of
+# the existing unique constraint rather than needing a custom `@check`
+# here. This is the mechanism WORK-145 proposed, and it works as
+# suggested: the nested relation filter
+# (`quoteItem_deleteMany(where: { quote: { ... } })`) compiles and
+# generates a working SDK.
+#
+# What did NOT work, and is why this mutation's shape looks the way it
+# does: a single list-input variable for the items (e.g.
+# `$items: [QuoteItem_Data!]!` passed straight to a hypothetical
+# `quoteItem_insertMany(data: $items)`). Both the list form and the
+# singular form (`$item: QuoteItem_Data!` into
+# `quoteItem_insert(data: $item)`) are rejected outright by
+# `firebase dataconnect:sdk:generate`:
+# `_Data input types are not yet supported by the generated SDKs:
+# "QuoteItem_Data"`. That is a hard stop in the currently-pinned
+# `firebase-tools` — no document can declare a variable of an
+# auto-generated `<Table>_Data` type, list or not, and still get a
+# working JS SDK out of it.
+#
+# GraphQL mutation documents are also static — there is no directive
+# that expands a field selection to match a variable-length runtime
+# array — so the only way left to accept a variable number of items in
+# one atomic document is a fixed number of aliased `quoteItem_insert`
+# slots, each individually switched on with the standard `@include`
+# directive (proven separately to compile and generate correctly). Every
+# per-slot variable above has a default, so a caller only has to supply
+# values (and `$includeItemN: true`) for the slots it actually uses;
+# unused slots need no arguments at all.
+#
+# 20 slots is a deliberately generous cap: `EnsureSystemQuoteItemTemplates`
+# seeds 6 system item templates, and a team's own `QuoteItemTemplate`
+# rows (via `CreateQuoteItemTemplate`) add to that — 20 comfortably
+# covers system + team templates for any realistic team catalog. If a
+# project's generated item set ever needs to exceed 20, that is an
+# application-layer concern (validate before calling, or extend this
+# mutation with more slots) — not something a `@check` here could
+# enforce, matching how `UpdateQuoteStatus` above defers
+# transition-order enforcement to the web app layer rather than guessing
+# at it here.
+mutation CreateQuoteWithItems(
+    $projectId: UUID!
+    $quoteId: UUID!
+    $includeItem1: Boolean = false
+    $item1Name: String = ""
+    $item1DisplayOrder: Int = 0
+    $item1Quantity: Float = 0
+    $item1SourceTemplateId: UUID
+    $item1QuantitySourceId: UUID
+    $item1UnitPriceCents: Int = 0
+    $item1MaterialUnitPriceCents: Int = 0
+    $item1LabourUnitPriceCents: Int = 0
+    $item1MatchedKeywords: [String!]! = []
+    $includeItem2: Boolean = false
+    $item2Name: String = ""
+    $item2DisplayOrder: Int = 0
+    $item2Quantity: Float = 0
+    $item2SourceTemplateId: UUID
+    $item2QuantitySourceId: UUID
+    $item2UnitPriceCents: Int = 0
+    $item2MaterialUnitPriceCents: Int = 0
+    $item2LabourUnitPriceCents: Int = 0
+    $item2MatchedKeywords: [String!]! = []
+    $includeItem3: Boolean = false
+    $item3Name: String = ""
+    $item3DisplayOrder: Int = 0
+    $item3Quantity: Float = 0
+    $item3SourceTemplateId: UUID
+    $item3QuantitySourceId: UUID
+    $item3UnitPriceCents: Int = 0
+    $item3MaterialUnitPriceCents: Int = 0
+    $item3LabourUnitPriceCents: Int = 0
+    $item3MatchedKeywords: [String!]! = []
+    $includeItem4: Boolean = false
+    $item4Name: String = ""
+    $item4DisplayOrder: Int = 0
+    $item4Quantity: Float = 0
+    $item4SourceTemplateId: UUID
+    $item4QuantitySourceId: UUID
+    $item4UnitPriceCents: Int = 0
+    $item4MaterialUnitPriceCents: Int = 0
+    $item4LabourUnitPriceCents: Int = 0
+    $item4MatchedKeywords: [String!]! = []
+    $includeItem5: Boolean = false
+    $item5Name: String = ""
+    $item5DisplayOrder: Int = 0
+    $item5Quantity: Float = 0
+    $item5SourceTemplateId: UUID
+    $item5QuantitySourceId: UUID
+    $item5UnitPriceCents: Int = 0
+    $item5MaterialUnitPriceCents: Int = 0
+    $item5LabourUnitPriceCents: Int = 0
+    $item5MatchedKeywords: [String!]! = []
+    $includeItem6: Boolean = false
+    $item6Name: String = ""
+    $item6DisplayOrder: Int = 0
+    $item6Quantity: Float = 0
+    $item6SourceTemplateId: UUID
+    $item6QuantitySourceId: UUID
+    $item6UnitPriceCents: Int = 0
+    $item6MaterialUnitPriceCents: Int = 0
+    $item6LabourUnitPriceCents: Int = 0
+    $item6MatchedKeywords: [String!]! = []
+    $includeItem7: Boolean = false
+    $item7Name: String = ""
+    $item7DisplayOrder: Int = 0
+    $item7Quantity: Float = 0
+    $item7SourceTemplateId: UUID
+    $item7QuantitySourceId: UUID
+    $item7UnitPriceCents: Int = 0
+    $item7MaterialUnitPriceCents: Int = 0
+    $item7LabourUnitPriceCents: Int = 0
+    $item7MatchedKeywords: [String!]! = []
+    $includeItem8: Boolean = false
+    $item8Name: String = ""
+    $item8DisplayOrder: Int = 0
+    $item8Quantity: Float = 0
+    $item8SourceTemplateId: UUID
+    $item8QuantitySourceId: UUID
+    $item8UnitPriceCents: Int = 0
+    $item8MaterialUnitPriceCents: Int = 0
+    $item8LabourUnitPriceCents: Int = 0
+    $item8MatchedKeywords: [String!]! = []
+    $includeItem9: Boolean = false
+    $item9Name: String = ""
+    $item9DisplayOrder: Int = 0
+    $item9Quantity: Float = 0
+    $item9SourceTemplateId: UUID
+    $item9QuantitySourceId: UUID
+    $item9UnitPriceCents: Int = 0
+    $item9MaterialUnitPriceCents: Int = 0
+    $item9LabourUnitPriceCents: Int = 0
+    $item9MatchedKeywords: [String!]! = []
+    $includeItem10: Boolean = false
+    $item10Name: String = ""
+    $item10DisplayOrder: Int = 0
+    $item10Quantity: Float = 0
+    $item10SourceTemplateId: UUID
+    $item10QuantitySourceId: UUID
+    $item10UnitPriceCents: Int = 0
+    $item10MaterialUnitPriceCents: Int = 0
+    $item10LabourUnitPriceCents: Int = 0
+    $item10MatchedKeywords: [String!]! = []
+    $includeItem11: Boolean = false
+    $item11Name: String = ""
+    $item11DisplayOrder: Int = 0
+    $item11Quantity: Float = 0
+    $item11SourceTemplateId: UUID
+    $item11QuantitySourceId: UUID
+    $item11UnitPriceCents: Int = 0
+    $item11MaterialUnitPriceCents: Int = 0
+    $item11LabourUnitPriceCents: Int = 0
+    $item11MatchedKeywords: [String!]! = []
+    $includeItem12: Boolean = false
+    $item12Name: String = ""
+    $item12DisplayOrder: Int = 0
+    $item12Quantity: Float = 0
+    $item12SourceTemplateId: UUID
+    $item12QuantitySourceId: UUID
+    $item12UnitPriceCents: Int = 0
+    $item12MaterialUnitPriceCents: Int = 0
+    $item12LabourUnitPriceCents: Int = 0
+    $item12MatchedKeywords: [String!]! = []
+    $includeItem13: Boolean = false
+    $item13Name: String = ""
+    $item13DisplayOrder: Int = 0
+    $item13Quantity: Float = 0
+    $item13SourceTemplateId: UUID
+    $item13QuantitySourceId: UUID
+    $item13UnitPriceCents: Int = 0
+    $item13MaterialUnitPriceCents: Int = 0
+    $item13LabourUnitPriceCents: Int = 0
+    $item13MatchedKeywords: [String!]! = []
+    $includeItem14: Boolean = false
+    $item14Name: String = ""
+    $item14DisplayOrder: Int = 0
+    $item14Quantity: Float = 0
+    $item14SourceTemplateId: UUID
+    $item14QuantitySourceId: UUID
+    $item14UnitPriceCents: Int = 0
+    $item14MaterialUnitPriceCents: Int = 0
+    $item14LabourUnitPriceCents: Int = 0
+    $item14MatchedKeywords: [String!]! = []
+    $includeItem15: Boolean = false
+    $item15Name: String = ""
+    $item15DisplayOrder: Int = 0
+    $item15Quantity: Float = 0
+    $item15SourceTemplateId: UUID
+    $item15QuantitySourceId: UUID
+    $item15UnitPriceCents: Int = 0
+    $item15MaterialUnitPriceCents: Int = 0
+    $item15LabourUnitPriceCents: Int = 0
+    $item15MatchedKeywords: [String!]! = []
+    $includeItem16: Boolean = false
+    $item16Name: String = ""
+    $item16DisplayOrder: Int = 0
+    $item16Quantity: Float = 0
+    $item16SourceTemplateId: UUID
+    $item16QuantitySourceId: UUID
+    $item16UnitPriceCents: Int = 0
+    $item16MaterialUnitPriceCents: Int = 0
+    $item16LabourUnitPriceCents: Int = 0
+    $item16MatchedKeywords: [String!]! = []
+    $includeItem17: Boolean = false
+    $item17Name: String = ""
+    $item17DisplayOrder: Int = 0
+    $item17Quantity: Float = 0
+    $item17SourceTemplateId: UUID
+    $item17QuantitySourceId: UUID
+    $item17UnitPriceCents: Int = 0
+    $item17MaterialUnitPriceCents: Int = 0
+    $item17LabourUnitPriceCents: Int = 0
+    $item17MatchedKeywords: [String!]! = []
+    $includeItem18: Boolean = false
+    $item18Name: String = ""
+    $item18DisplayOrder: Int = 0
+    $item18Quantity: Float = 0
+    $item18SourceTemplateId: UUID
+    $item18QuantitySourceId: UUID
+    $item18UnitPriceCents: Int = 0
+    $item18MaterialUnitPriceCents: Int = 0
+    $item18LabourUnitPriceCents: Int = 0
+    $item18MatchedKeywords: [String!]! = []
+    $includeItem19: Boolean = false
+    $item19Name: String = ""
+    $item19DisplayOrder: Int = 0
+    $item19Quantity: Float = 0
+    $item19SourceTemplateId: UUID
+    $item19QuantitySourceId: UUID
+    $item19UnitPriceCents: Int = 0
+    $item19MaterialUnitPriceCents: Int = 0
+    $item19LabourUnitPriceCents: Int = 0
+    $item19MatchedKeywords: [String!]! = []
+    $includeItem20: Boolean = false
+    $item20Name: String = ""
+    $item20DisplayOrder: Int = 0
+    $item20Quantity: Float = 0
+    $item20SourceTemplateId: UUID
+    $item20QuantitySourceId: UUID
+    $item20UnitPriceCents: Int = 0
+    $item20MaterialUnitPriceCents: Int = 0
+    $item20LabourUnitPriceCents: Int = 0
+    $item20MatchedKeywords: [String!]! = []
+) @auth(level: USER) @transaction {
+    query @redact {
+        project(key: { id: $projectId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this project"
+            ) {
+            id
+            teamId
+        }
+    }
+    quoteItem_deleteMany(
+        where: {
+            quote: { projectId: { eq: $projectId }, status: { eq: "draft" } }
+        }
+    )
+    quote_deleteMany(
+        where: { projectId: { eq: $projectId }, status: { eq: "draft" } }
+    )
+    quote_insert(
+        data: {
+            id: $quoteId
+            projectId: $projectId
+            teamId_expr: "auth.token.teamId"
+            status: "draft"
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+    item1: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item1SourceTemplateId
+            displayOrder: $item1DisplayOrder
+            name: $item1Name
+            quantity: $item1Quantity
+            quantitySourceId: $item1QuantitySourceId
+            unitPriceCents: $item1UnitPriceCents
+            materialUnitPriceCents: $item1MaterialUnitPriceCents
+            labourUnitPriceCents: $item1LabourUnitPriceCents
+            matchedKeywords: $item1MatchedKeywords
+        }
+    ) @include(if: $includeItem1)
+    item2: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item2SourceTemplateId
+            displayOrder: $item2DisplayOrder
+            name: $item2Name
+            quantity: $item2Quantity
+            quantitySourceId: $item2QuantitySourceId
+            unitPriceCents: $item2UnitPriceCents
+            materialUnitPriceCents: $item2MaterialUnitPriceCents
+            labourUnitPriceCents: $item2LabourUnitPriceCents
+            matchedKeywords: $item2MatchedKeywords
+        }
+    ) @include(if: $includeItem2)
+    item3: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item3SourceTemplateId
+            displayOrder: $item3DisplayOrder
+            name: $item3Name
+            quantity: $item3Quantity
+            quantitySourceId: $item3QuantitySourceId
+            unitPriceCents: $item3UnitPriceCents
+            materialUnitPriceCents: $item3MaterialUnitPriceCents
+            labourUnitPriceCents: $item3LabourUnitPriceCents
+            matchedKeywords: $item3MatchedKeywords
+        }
+    ) @include(if: $includeItem3)
+    item4: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item4SourceTemplateId
+            displayOrder: $item4DisplayOrder
+            name: $item4Name
+            quantity: $item4Quantity
+            quantitySourceId: $item4QuantitySourceId
+            unitPriceCents: $item4UnitPriceCents
+            materialUnitPriceCents: $item4MaterialUnitPriceCents
+            labourUnitPriceCents: $item4LabourUnitPriceCents
+            matchedKeywords: $item4MatchedKeywords
+        }
+    ) @include(if: $includeItem4)
+    item5: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item5SourceTemplateId
+            displayOrder: $item5DisplayOrder
+            name: $item5Name
+            quantity: $item5Quantity
+            quantitySourceId: $item5QuantitySourceId
+            unitPriceCents: $item5UnitPriceCents
+            materialUnitPriceCents: $item5MaterialUnitPriceCents
+            labourUnitPriceCents: $item5LabourUnitPriceCents
+            matchedKeywords: $item5MatchedKeywords
+        }
+    ) @include(if: $includeItem5)
+    item6: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item6SourceTemplateId
+            displayOrder: $item6DisplayOrder
+            name: $item6Name
+            quantity: $item6Quantity
+            quantitySourceId: $item6QuantitySourceId
+            unitPriceCents: $item6UnitPriceCents
+            materialUnitPriceCents: $item6MaterialUnitPriceCents
+            labourUnitPriceCents: $item6LabourUnitPriceCents
+            matchedKeywords: $item6MatchedKeywords
+        }
+    ) @include(if: $includeItem6)
+    item7: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item7SourceTemplateId
+            displayOrder: $item7DisplayOrder
+            name: $item7Name
+            quantity: $item7Quantity
+            quantitySourceId: $item7QuantitySourceId
+            unitPriceCents: $item7UnitPriceCents
+            materialUnitPriceCents: $item7MaterialUnitPriceCents
+            labourUnitPriceCents: $item7LabourUnitPriceCents
+            matchedKeywords: $item7MatchedKeywords
+        }
+    ) @include(if: $includeItem7)
+    item8: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item8SourceTemplateId
+            displayOrder: $item8DisplayOrder
+            name: $item8Name
+            quantity: $item8Quantity
+            quantitySourceId: $item8QuantitySourceId
+            unitPriceCents: $item8UnitPriceCents
+            materialUnitPriceCents: $item8MaterialUnitPriceCents
+            labourUnitPriceCents: $item8LabourUnitPriceCents
+            matchedKeywords: $item8MatchedKeywords
+        }
+    ) @include(if: $includeItem8)
+    item9: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item9SourceTemplateId
+            displayOrder: $item9DisplayOrder
+            name: $item9Name
+            quantity: $item9Quantity
+            quantitySourceId: $item9QuantitySourceId
+            unitPriceCents: $item9UnitPriceCents
+            materialUnitPriceCents: $item9MaterialUnitPriceCents
+            labourUnitPriceCents: $item9LabourUnitPriceCents
+            matchedKeywords: $item9MatchedKeywords
+        }
+    ) @include(if: $includeItem9)
+    item10: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item10SourceTemplateId
+            displayOrder: $item10DisplayOrder
+            name: $item10Name
+            quantity: $item10Quantity
+            quantitySourceId: $item10QuantitySourceId
+            unitPriceCents: $item10UnitPriceCents
+            materialUnitPriceCents: $item10MaterialUnitPriceCents
+            labourUnitPriceCents: $item10LabourUnitPriceCents
+            matchedKeywords: $item10MatchedKeywords
+        }
+    ) @include(if: $includeItem10)
+    item11: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item11SourceTemplateId
+            displayOrder: $item11DisplayOrder
+            name: $item11Name
+            quantity: $item11Quantity
+            quantitySourceId: $item11QuantitySourceId
+            unitPriceCents: $item11UnitPriceCents
+            materialUnitPriceCents: $item11MaterialUnitPriceCents
+            labourUnitPriceCents: $item11LabourUnitPriceCents
+            matchedKeywords: $item11MatchedKeywords
+        }
+    ) @include(if: $includeItem11)
+    item12: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item12SourceTemplateId
+            displayOrder: $item12DisplayOrder
+            name: $item12Name
+            quantity: $item12Quantity
+            quantitySourceId: $item12QuantitySourceId
+            unitPriceCents: $item12UnitPriceCents
+            materialUnitPriceCents: $item12MaterialUnitPriceCents
+            labourUnitPriceCents: $item12LabourUnitPriceCents
+            matchedKeywords: $item12MatchedKeywords
+        }
+    ) @include(if: $includeItem12)
+    item13: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item13SourceTemplateId
+            displayOrder: $item13DisplayOrder
+            name: $item13Name
+            quantity: $item13Quantity
+            quantitySourceId: $item13QuantitySourceId
+            unitPriceCents: $item13UnitPriceCents
+            materialUnitPriceCents: $item13MaterialUnitPriceCents
+            labourUnitPriceCents: $item13LabourUnitPriceCents
+            matchedKeywords: $item13MatchedKeywords
+        }
+    ) @include(if: $includeItem13)
+    item14: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item14SourceTemplateId
+            displayOrder: $item14DisplayOrder
+            name: $item14Name
+            quantity: $item14Quantity
+            quantitySourceId: $item14QuantitySourceId
+            unitPriceCents: $item14UnitPriceCents
+            materialUnitPriceCents: $item14MaterialUnitPriceCents
+            labourUnitPriceCents: $item14LabourUnitPriceCents
+            matchedKeywords: $item14MatchedKeywords
+        }
+    ) @include(if: $includeItem14)
+    item15: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item15SourceTemplateId
+            displayOrder: $item15DisplayOrder
+            name: $item15Name
+            quantity: $item15Quantity
+            quantitySourceId: $item15QuantitySourceId
+            unitPriceCents: $item15UnitPriceCents
+            materialUnitPriceCents: $item15MaterialUnitPriceCents
+            labourUnitPriceCents: $item15LabourUnitPriceCents
+            matchedKeywords: $item15MatchedKeywords
+        }
+    ) @include(if: $includeItem15)
+    item16: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item16SourceTemplateId
+            displayOrder: $item16DisplayOrder
+            name: $item16Name
+            quantity: $item16Quantity
+            quantitySourceId: $item16QuantitySourceId
+            unitPriceCents: $item16UnitPriceCents
+            materialUnitPriceCents: $item16MaterialUnitPriceCents
+            labourUnitPriceCents: $item16LabourUnitPriceCents
+            matchedKeywords: $item16MatchedKeywords
+        }
+    ) @include(if: $includeItem16)
+    item17: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item17SourceTemplateId
+            displayOrder: $item17DisplayOrder
+            name: $item17Name
+            quantity: $item17Quantity
+            quantitySourceId: $item17QuantitySourceId
+            unitPriceCents: $item17UnitPriceCents
+            materialUnitPriceCents: $item17MaterialUnitPriceCents
+            labourUnitPriceCents: $item17LabourUnitPriceCents
+            matchedKeywords: $item17MatchedKeywords
+        }
+    ) @include(if: $includeItem17)
+    item18: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item18SourceTemplateId
+            displayOrder: $item18DisplayOrder
+            name: $item18Name
+            quantity: $item18Quantity
+            quantitySourceId: $item18QuantitySourceId
+            unitPriceCents: $item18UnitPriceCents
+            materialUnitPriceCents: $item18MaterialUnitPriceCents
+            labourUnitPriceCents: $item18LabourUnitPriceCents
+            matchedKeywords: $item18MatchedKeywords
+        }
+    ) @include(if: $includeItem18)
+    item19: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item19SourceTemplateId
+            displayOrder: $item19DisplayOrder
+            name: $item19Name
+            quantity: $item19Quantity
+            quantitySourceId: $item19QuantitySourceId
+            unitPriceCents: $item19UnitPriceCents
+            materialUnitPriceCents: $item19MaterialUnitPriceCents
+            labourUnitPriceCents: $item19LabourUnitPriceCents
+            matchedKeywords: $item19MatchedKeywords
+        }
+    ) @include(if: $includeItem19)
+    item20: quoteItem_insert(
+        data: {
+            quoteId: $quoteId
+            teamId_expr: "auth.token.teamId"
+            sourceTemplateId: $item20SourceTemplateId
+            displayOrder: $item20DisplayOrder
+            name: $item20Name
+            quantity: $item20Quantity
+            quantitySourceId: $item20QuantitySourceId
+            unitPriceCents: $item20UnitPriceCents
+            materialUnitPriceCents: $item20MaterialUnitPriceCents
+            labourUnitPriceCents: $item20LabourUnitPriceCents
+            matchedKeywords: $item20MatchedKeywords
+        }
+    ) @include(if: $includeItem20)
+}

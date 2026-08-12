@@ -63,6 +63,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*UpdateQuoteItemTemplate*](#updatequoteitemtemplate)
   - [*DeleteQuoteItemTemplate*](#deletequoteitemtemplate)
   - [*UpdateQuoteStatus*](#updatequotestatus)
+  - [*CreateQuoteWithItems*](#createquotewithitems)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
   - [*UpsertMyUserSignature*](#upsertmyusersignature)
 
@@ -4450,6 +4451,546 @@ export default function UpdateQuoteStatusComponent() {
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
     console.log(mutation.data.quote_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## CreateQuoteWithItems
+You can execute the `CreateQuoteWithItems` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useCreateQuoteWithItems(options?: useDataConnectMutationOptions<CreateQuoteWithItemsData, FirebaseError, CreateQuoteWithItemsVariables>): UseDataConnectMutationResult<CreateQuoteWithItemsData, CreateQuoteWithItemsVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useCreateQuoteWithItems(dc: DataConnect, options?: useDataConnectMutationOptions<CreateQuoteWithItemsData, FirebaseError, CreateQuoteWithItemsVariables>): UseDataConnectMutationResult<CreateQuoteWithItemsData, CreateQuoteWithItemsVariables>;
+```
+
+### Variables
+The `CreateQuoteWithItems` Mutation requires an argument of type `CreateQuoteWithItemsVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface CreateQuoteWithItemsVariables {
+  projectId: UUIDString;
+  quoteId: UUIDString;
+  includeItem1?: boolean | null;
+  item1Name?: string | null;
+  item1DisplayOrder?: number | null;
+  item1Quantity?: number | null;
+  item1SourceTemplateId?: UUIDString | null;
+  item1QuantitySourceId?: UUIDString | null;
+  item1UnitPriceCents?: number | null;
+  item1MaterialUnitPriceCents?: number | null;
+  item1LabourUnitPriceCents?: number | null;
+  item1MatchedKeywords?: string[];
+  includeItem2?: boolean | null;
+  item2Name?: string | null;
+  item2DisplayOrder?: number | null;
+  item2Quantity?: number | null;
+  item2SourceTemplateId?: UUIDString | null;
+  item2QuantitySourceId?: UUIDString | null;
+  item2UnitPriceCents?: number | null;
+  item2MaterialUnitPriceCents?: number | null;
+  item2LabourUnitPriceCents?: number | null;
+  item2MatchedKeywords?: string[];
+  includeItem3?: boolean | null;
+  item3Name?: string | null;
+  item3DisplayOrder?: number | null;
+  item3Quantity?: number | null;
+  item3SourceTemplateId?: UUIDString | null;
+  item3QuantitySourceId?: UUIDString | null;
+  item3UnitPriceCents?: number | null;
+  item3MaterialUnitPriceCents?: number | null;
+  item3LabourUnitPriceCents?: number | null;
+  item3MatchedKeywords?: string[];
+  includeItem4?: boolean | null;
+  item4Name?: string | null;
+  item4DisplayOrder?: number | null;
+  item4Quantity?: number | null;
+  item4SourceTemplateId?: UUIDString | null;
+  item4QuantitySourceId?: UUIDString | null;
+  item4UnitPriceCents?: number | null;
+  item4MaterialUnitPriceCents?: number | null;
+  item4LabourUnitPriceCents?: number | null;
+  item4MatchedKeywords?: string[];
+  includeItem5?: boolean | null;
+  item5Name?: string | null;
+  item5DisplayOrder?: number | null;
+  item5Quantity?: number | null;
+  item5SourceTemplateId?: UUIDString | null;
+  item5QuantitySourceId?: UUIDString | null;
+  item5UnitPriceCents?: number | null;
+  item5MaterialUnitPriceCents?: number | null;
+  item5LabourUnitPriceCents?: number | null;
+  item5MatchedKeywords?: string[];
+  includeItem6?: boolean | null;
+  item6Name?: string | null;
+  item6DisplayOrder?: number | null;
+  item6Quantity?: number | null;
+  item6SourceTemplateId?: UUIDString | null;
+  item6QuantitySourceId?: UUIDString | null;
+  item6UnitPriceCents?: number | null;
+  item6MaterialUnitPriceCents?: number | null;
+  item6LabourUnitPriceCents?: number | null;
+  item6MatchedKeywords?: string[];
+  includeItem7?: boolean | null;
+  item7Name?: string | null;
+  item7DisplayOrder?: number | null;
+  item7Quantity?: number | null;
+  item7SourceTemplateId?: UUIDString | null;
+  item7QuantitySourceId?: UUIDString | null;
+  item7UnitPriceCents?: number | null;
+  item7MaterialUnitPriceCents?: number | null;
+  item7LabourUnitPriceCents?: number | null;
+  item7MatchedKeywords?: string[];
+  includeItem8?: boolean | null;
+  item8Name?: string | null;
+  item8DisplayOrder?: number | null;
+  item8Quantity?: number | null;
+  item8SourceTemplateId?: UUIDString | null;
+  item8QuantitySourceId?: UUIDString | null;
+  item8UnitPriceCents?: number | null;
+  item8MaterialUnitPriceCents?: number | null;
+  item8LabourUnitPriceCents?: number | null;
+  item8MatchedKeywords?: string[];
+  includeItem9?: boolean | null;
+  item9Name?: string | null;
+  item9DisplayOrder?: number | null;
+  item9Quantity?: number | null;
+  item9SourceTemplateId?: UUIDString | null;
+  item9QuantitySourceId?: UUIDString | null;
+  item9UnitPriceCents?: number | null;
+  item9MaterialUnitPriceCents?: number | null;
+  item9LabourUnitPriceCents?: number | null;
+  item9MatchedKeywords?: string[];
+  includeItem10?: boolean | null;
+  item10Name?: string | null;
+  item10DisplayOrder?: number | null;
+  item10Quantity?: number | null;
+  item10SourceTemplateId?: UUIDString | null;
+  item10QuantitySourceId?: UUIDString | null;
+  item10UnitPriceCents?: number | null;
+  item10MaterialUnitPriceCents?: number | null;
+  item10LabourUnitPriceCents?: number | null;
+  item10MatchedKeywords?: string[];
+  includeItem11?: boolean | null;
+  item11Name?: string | null;
+  item11DisplayOrder?: number | null;
+  item11Quantity?: number | null;
+  item11SourceTemplateId?: UUIDString | null;
+  item11QuantitySourceId?: UUIDString | null;
+  item11UnitPriceCents?: number | null;
+  item11MaterialUnitPriceCents?: number | null;
+  item11LabourUnitPriceCents?: number | null;
+  item11MatchedKeywords?: string[];
+  includeItem12?: boolean | null;
+  item12Name?: string | null;
+  item12DisplayOrder?: number | null;
+  item12Quantity?: number | null;
+  item12SourceTemplateId?: UUIDString | null;
+  item12QuantitySourceId?: UUIDString | null;
+  item12UnitPriceCents?: number | null;
+  item12MaterialUnitPriceCents?: number | null;
+  item12LabourUnitPriceCents?: number | null;
+  item12MatchedKeywords?: string[];
+  includeItem13?: boolean | null;
+  item13Name?: string | null;
+  item13DisplayOrder?: number | null;
+  item13Quantity?: number | null;
+  item13SourceTemplateId?: UUIDString | null;
+  item13QuantitySourceId?: UUIDString | null;
+  item13UnitPriceCents?: number | null;
+  item13MaterialUnitPriceCents?: number | null;
+  item13LabourUnitPriceCents?: number | null;
+  item13MatchedKeywords?: string[];
+  includeItem14?: boolean | null;
+  item14Name?: string | null;
+  item14DisplayOrder?: number | null;
+  item14Quantity?: number | null;
+  item14SourceTemplateId?: UUIDString | null;
+  item14QuantitySourceId?: UUIDString | null;
+  item14UnitPriceCents?: number | null;
+  item14MaterialUnitPriceCents?: number | null;
+  item14LabourUnitPriceCents?: number | null;
+  item14MatchedKeywords?: string[];
+  includeItem15?: boolean | null;
+  item15Name?: string | null;
+  item15DisplayOrder?: number | null;
+  item15Quantity?: number | null;
+  item15SourceTemplateId?: UUIDString | null;
+  item15QuantitySourceId?: UUIDString | null;
+  item15UnitPriceCents?: number | null;
+  item15MaterialUnitPriceCents?: number | null;
+  item15LabourUnitPriceCents?: number | null;
+  item15MatchedKeywords?: string[];
+  includeItem16?: boolean | null;
+  item16Name?: string | null;
+  item16DisplayOrder?: number | null;
+  item16Quantity?: number | null;
+  item16SourceTemplateId?: UUIDString | null;
+  item16QuantitySourceId?: UUIDString | null;
+  item16UnitPriceCents?: number | null;
+  item16MaterialUnitPriceCents?: number | null;
+  item16LabourUnitPriceCents?: number | null;
+  item16MatchedKeywords?: string[];
+  includeItem17?: boolean | null;
+  item17Name?: string | null;
+  item17DisplayOrder?: number | null;
+  item17Quantity?: number | null;
+  item17SourceTemplateId?: UUIDString | null;
+  item17QuantitySourceId?: UUIDString | null;
+  item17UnitPriceCents?: number | null;
+  item17MaterialUnitPriceCents?: number | null;
+  item17LabourUnitPriceCents?: number | null;
+  item17MatchedKeywords?: string[];
+  includeItem18?: boolean | null;
+  item18Name?: string | null;
+  item18DisplayOrder?: number | null;
+  item18Quantity?: number | null;
+  item18SourceTemplateId?: UUIDString | null;
+  item18QuantitySourceId?: UUIDString | null;
+  item18UnitPriceCents?: number | null;
+  item18MaterialUnitPriceCents?: number | null;
+  item18LabourUnitPriceCents?: number | null;
+  item18MatchedKeywords?: string[];
+  includeItem19?: boolean | null;
+  item19Name?: string | null;
+  item19DisplayOrder?: number | null;
+  item19Quantity?: number | null;
+  item19SourceTemplateId?: UUIDString | null;
+  item19QuantitySourceId?: UUIDString | null;
+  item19UnitPriceCents?: number | null;
+  item19MaterialUnitPriceCents?: number | null;
+  item19LabourUnitPriceCents?: number | null;
+  item19MatchedKeywords?: string[];
+  includeItem20?: boolean | null;
+  item20Name?: string | null;
+  item20DisplayOrder?: number | null;
+  item20Quantity?: number | null;
+  item20SourceTemplateId?: UUIDString | null;
+  item20QuantitySourceId?: UUIDString | null;
+  item20UnitPriceCents?: number | null;
+  item20MaterialUnitPriceCents?: number | null;
+  item20LabourUnitPriceCents?: number | null;
+  item20MatchedKeywords?: string[];
+}
+```
+### Return Type
+Recall that calling the `CreateQuoteWithItems` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateQuoteWithItems` Mutation is of type `CreateQuoteWithItemsData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface CreateQuoteWithItemsData {
+  quoteItem_deleteMany: number;
+  quote_deleteMany: number;
+  quote_insert: Quote_Key;
+  item1: QuoteItem_Key;
+  item2: QuoteItem_Key;
+  item3: QuoteItem_Key;
+  item4: QuoteItem_Key;
+  item5: QuoteItem_Key;
+  item6: QuoteItem_Key;
+  item7: QuoteItem_Key;
+  item8: QuoteItem_Key;
+  item9: QuoteItem_Key;
+  item10: QuoteItem_Key;
+  item11: QuoteItem_Key;
+  item12: QuoteItem_Key;
+  item13: QuoteItem_Key;
+  item14: QuoteItem_Key;
+  item15: QuoteItem_Key;
+  item16: QuoteItem_Key;
+  item17: QuoteItem_Key;
+  item18: QuoteItem_Key;
+  item19: QuoteItem_Key;
+  item20: QuoteItem_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `CreateQuoteWithItems`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, CreateQuoteWithItemsVariables } from '@generated/data-connector-web';
+import { useCreateQuoteWithItems } from '@generated/data-connector-web/react'
+
+export default function CreateQuoteWithItemsComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useCreateQuoteWithItems();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useCreateQuoteWithItems(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateQuoteWithItems(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateQuoteWithItems(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useCreateQuoteWithItems` Mutation requires an argument of type `CreateQuoteWithItemsVariables`:
+  const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
+    projectId: ..., 
+    quoteId: ..., 
+    includeItem1: ..., // optional
+    item1Name: ..., // optional
+    item1DisplayOrder: ..., // optional
+    item1Quantity: ..., // optional
+    item1SourceTemplateId: ..., // optional
+    item1QuantitySourceId: ..., // optional
+    item1UnitPriceCents: ..., // optional
+    item1MaterialUnitPriceCents: ..., // optional
+    item1LabourUnitPriceCents: ..., // optional
+    item1MatchedKeywords: ..., // optional
+    includeItem2: ..., // optional
+    item2Name: ..., // optional
+    item2DisplayOrder: ..., // optional
+    item2Quantity: ..., // optional
+    item2SourceTemplateId: ..., // optional
+    item2QuantitySourceId: ..., // optional
+    item2UnitPriceCents: ..., // optional
+    item2MaterialUnitPriceCents: ..., // optional
+    item2LabourUnitPriceCents: ..., // optional
+    item2MatchedKeywords: ..., // optional
+    includeItem3: ..., // optional
+    item3Name: ..., // optional
+    item3DisplayOrder: ..., // optional
+    item3Quantity: ..., // optional
+    item3SourceTemplateId: ..., // optional
+    item3QuantitySourceId: ..., // optional
+    item3UnitPriceCents: ..., // optional
+    item3MaterialUnitPriceCents: ..., // optional
+    item3LabourUnitPriceCents: ..., // optional
+    item3MatchedKeywords: ..., // optional
+    includeItem4: ..., // optional
+    item4Name: ..., // optional
+    item4DisplayOrder: ..., // optional
+    item4Quantity: ..., // optional
+    item4SourceTemplateId: ..., // optional
+    item4QuantitySourceId: ..., // optional
+    item4UnitPriceCents: ..., // optional
+    item4MaterialUnitPriceCents: ..., // optional
+    item4LabourUnitPriceCents: ..., // optional
+    item4MatchedKeywords: ..., // optional
+    includeItem5: ..., // optional
+    item5Name: ..., // optional
+    item5DisplayOrder: ..., // optional
+    item5Quantity: ..., // optional
+    item5SourceTemplateId: ..., // optional
+    item5QuantitySourceId: ..., // optional
+    item5UnitPriceCents: ..., // optional
+    item5MaterialUnitPriceCents: ..., // optional
+    item5LabourUnitPriceCents: ..., // optional
+    item5MatchedKeywords: ..., // optional
+    includeItem6: ..., // optional
+    item6Name: ..., // optional
+    item6DisplayOrder: ..., // optional
+    item6Quantity: ..., // optional
+    item6SourceTemplateId: ..., // optional
+    item6QuantitySourceId: ..., // optional
+    item6UnitPriceCents: ..., // optional
+    item6MaterialUnitPriceCents: ..., // optional
+    item6LabourUnitPriceCents: ..., // optional
+    item6MatchedKeywords: ..., // optional
+    includeItem7: ..., // optional
+    item7Name: ..., // optional
+    item7DisplayOrder: ..., // optional
+    item7Quantity: ..., // optional
+    item7SourceTemplateId: ..., // optional
+    item7QuantitySourceId: ..., // optional
+    item7UnitPriceCents: ..., // optional
+    item7MaterialUnitPriceCents: ..., // optional
+    item7LabourUnitPriceCents: ..., // optional
+    item7MatchedKeywords: ..., // optional
+    includeItem8: ..., // optional
+    item8Name: ..., // optional
+    item8DisplayOrder: ..., // optional
+    item8Quantity: ..., // optional
+    item8SourceTemplateId: ..., // optional
+    item8QuantitySourceId: ..., // optional
+    item8UnitPriceCents: ..., // optional
+    item8MaterialUnitPriceCents: ..., // optional
+    item8LabourUnitPriceCents: ..., // optional
+    item8MatchedKeywords: ..., // optional
+    includeItem9: ..., // optional
+    item9Name: ..., // optional
+    item9DisplayOrder: ..., // optional
+    item9Quantity: ..., // optional
+    item9SourceTemplateId: ..., // optional
+    item9QuantitySourceId: ..., // optional
+    item9UnitPriceCents: ..., // optional
+    item9MaterialUnitPriceCents: ..., // optional
+    item9LabourUnitPriceCents: ..., // optional
+    item9MatchedKeywords: ..., // optional
+    includeItem10: ..., // optional
+    item10Name: ..., // optional
+    item10DisplayOrder: ..., // optional
+    item10Quantity: ..., // optional
+    item10SourceTemplateId: ..., // optional
+    item10QuantitySourceId: ..., // optional
+    item10UnitPriceCents: ..., // optional
+    item10MaterialUnitPriceCents: ..., // optional
+    item10LabourUnitPriceCents: ..., // optional
+    item10MatchedKeywords: ..., // optional
+    includeItem11: ..., // optional
+    item11Name: ..., // optional
+    item11DisplayOrder: ..., // optional
+    item11Quantity: ..., // optional
+    item11SourceTemplateId: ..., // optional
+    item11QuantitySourceId: ..., // optional
+    item11UnitPriceCents: ..., // optional
+    item11MaterialUnitPriceCents: ..., // optional
+    item11LabourUnitPriceCents: ..., // optional
+    item11MatchedKeywords: ..., // optional
+    includeItem12: ..., // optional
+    item12Name: ..., // optional
+    item12DisplayOrder: ..., // optional
+    item12Quantity: ..., // optional
+    item12SourceTemplateId: ..., // optional
+    item12QuantitySourceId: ..., // optional
+    item12UnitPriceCents: ..., // optional
+    item12MaterialUnitPriceCents: ..., // optional
+    item12LabourUnitPriceCents: ..., // optional
+    item12MatchedKeywords: ..., // optional
+    includeItem13: ..., // optional
+    item13Name: ..., // optional
+    item13DisplayOrder: ..., // optional
+    item13Quantity: ..., // optional
+    item13SourceTemplateId: ..., // optional
+    item13QuantitySourceId: ..., // optional
+    item13UnitPriceCents: ..., // optional
+    item13MaterialUnitPriceCents: ..., // optional
+    item13LabourUnitPriceCents: ..., // optional
+    item13MatchedKeywords: ..., // optional
+    includeItem14: ..., // optional
+    item14Name: ..., // optional
+    item14DisplayOrder: ..., // optional
+    item14Quantity: ..., // optional
+    item14SourceTemplateId: ..., // optional
+    item14QuantitySourceId: ..., // optional
+    item14UnitPriceCents: ..., // optional
+    item14MaterialUnitPriceCents: ..., // optional
+    item14LabourUnitPriceCents: ..., // optional
+    item14MatchedKeywords: ..., // optional
+    includeItem15: ..., // optional
+    item15Name: ..., // optional
+    item15DisplayOrder: ..., // optional
+    item15Quantity: ..., // optional
+    item15SourceTemplateId: ..., // optional
+    item15QuantitySourceId: ..., // optional
+    item15UnitPriceCents: ..., // optional
+    item15MaterialUnitPriceCents: ..., // optional
+    item15LabourUnitPriceCents: ..., // optional
+    item15MatchedKeywords: ..., // optional
+    includeItem16: ..., // optional
+    item16Name: ..., // optional
+    item16DisplayOrder: ..., // optional
+    item16Quantity: ..., // optional
+    item16SourceTemplateId: ..., // optional
+    item16QuantitySourceId: ..., // optional
+    item16UnitPriceCents: ..., // optional
+    item16MaterialUnitPriceCents: ..., // optional
+    item16LabourUnitPriceCents: ..., // optional
+    item16MatchedKeywords: ..., // optional
+    includeItem17: ..., // optional
+    item17Name: ..., // optional
+    item17DisplayOrder: ..., // optional
+    item17Quantity: ..., // optional
+    item17SourceTemplateId: ..., // optional
+    item17QuantitySourceId: ..., // optional
+    item17UnitPriceCents: ..., // optional
+    item17MaterialUnitPriceCents: ..., // optional
+    item17LabourUnitPriceCents: ..., // optional
+    item17MatchedKeywords: ..., // optional
+    includeItem18: ..., // optional
+    item18Name: ..., // optional
+    item18DisplayOrder: ..., // optional
+    item18Quantity: ..., // optional
+    item18SourceTemplateId: ..., // optional
+    item18QuantitySourceId: ..., // optional
+    item18UnitPriceCents: ..., // optional
+    item18MaterialUnitPriceCents: ..., // optional
+    item18LabourUnitPriceCents: ..., // optional
+    item18MatchedKeywords: ..., // optional
+    includeItem19: ..., // optional
+    item19Name: ..., // optional
+    item19DisplayOrder: ..., // optional
+    item19Quantity: ..., // optional
+    item19SourceTemplateId: ..., // optional
+    item19QuantitySourceId: ..., // optional
+    item19UnitPriceCents: ..., // optional
+    item19MaterialUnitPriceCents: ..., // optional
+    item19LabourUnitPriceCents: ..., // optional
+    item19MatchedKeywords: ..., // optional
+    includeItem20: ..., // optional
+    item20Name: ..., // optional
+    item20DisplayOrder: ..., // optional
+    item20Quantity: ..., // optional
+    item20SourceTemplateId: ..., // optional
+    item20QuantitySourceId: ..., // optional
+    item20UnitPriceCents: ..., // optional
+    item20MaterialUnitPriceCents: ..., // optional
+    item20LabourUnitPriceCents: ..., // optional
+    item20MatchedKeywords: ..., // optional
+  };
+  mutation.mutate(createQuoteWithItemsVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ projectId: ..., quoteId: ..., includeItem1: ..., item1Name: ..., item1DisplayOrder: ..., item1Quantity: ..., item1SourceTemplateId: ..., item1QuantitySourceId: ..., item1UnitPriceCents: ..., item1MaterialUnitPriceCents: ..., item1LabourUnitPriceCents: ..., item1MatchedKeywords: ..., includeItem2: ..., item2Name: ..., item2DisplayOrder: ..., item2Quantity: ..., item2SourceTemplateId: ..., item2QuantitySourceId: ..., item2UnitPriceCents: ..., item2MaterialUnitPriceCents: ..., item2LabourUnitPriceCents: ..., item2MatchedKeywords: ..., includeItem3: ..., item3Name: ..., item3DisplayOrder: ..., item3Quantity: ..., item3SourceTemplateId: ..., item3QuantitySourceId: ..., item3UnitPriceCents: ..., item3MaterialUnitPriceCents: ..., item3LabourUnitPriceCents: ..., item3MatchedKeywords: ..., includeItem4: ..., item4Name: ..., item4DisplayOrder: ..., item4Quantity: ..., item4SourceTemplateId: ..., item4QuantitySourceId: ..., item4UnitPriceCents: ..., item4MaterialUnitPriceCents: ..., item4LabourUnitPriceCents: ..., item4MatchedKeywords: ..., includeItem5: ..., item5Name: ..., item5DisplayOrder: ..., item5Quantity: ..., item5SourceTemplateId: ..., item5QuantitySourceId: ..., item5UnitPriceCents: ..., item5MaterialUnitPriceCents: ..., item5LabourUnitPriceCents: ..., item5MatchedKeywords: ..., includeItem6: ..., item6Name: ..., item6DisplayOrder: ..., item6Quantity: ..., item6SourceTemplateId: ..., item6QuantitySourceId: ..., item6UnitPriceCents: ..., item6MaterialUnitPriceCents: ..., item6LabourUnitPriceCents: ..., item6MatchedKeywords: ..., includeItem7: ..., item7Name: ..., item7DisplayOrder: ..., item7Quantity: ..., item7SourceTemplateId: ..., item7QuantitySourceId: ..., item7UnitPriceCents: ..., item7MaterialUnitPriceCents: ..., item7LabourUnitPriceCents: ..., item7MatchedKeywords: ..., includeItem8: ..., item8Name: ..., item8DisplayOrder: ..., item8Quantity: ..., item8SourceTemplateId: ..., item8QuantitySourceId: ..., item8UnitPriceCents: ..., item8MaterialUnitPriceCents: ..., item8LabourUnitPriceCents: ..., item8MatchedKeywords: ..., includeItem9: ..., item9Name: ..., item9DisplayOrder: ..., item9Quantity: ..., item9SourceTemplateId: ..., item9QuantitySourceId: ..., item9UnitPriceCents: ..., item9MaterialUnitPriceCents: ..., item9LabourUnitPriceCents: ..., item9MatchedKeywords: ..., includeItem10: ..., item10Name: ..., item10DisplayOrder: ..., item10Quantity: ..., item10SourceTemplateId: ..., item10QuantitySourceId: ..., item10UnitPriceCents: ..., item10MaterialUnitPriceCents: ..., item10LabourUnitPriceCents: ..., item10MatchedKeywords: ..., includeItem11: ..., item11Name: ..., item11DisplayOrder: ..., item11Quantity: ..., item11SourceTemplateId: ..., item11QuantitySourceId: ..., item11UnitPriceCents: ..., item11MaterialUnitPriceCents: ..., item11LabourUnitPriceCents: ..., item11MatchedKeywords: ..., includeItem12: ..., item12Name: ..., item12DisplayOrder: ..., item12Quantity: ..., item12SourceTemplateId: ..., item12QuantitySourceId: ..., item12UnitPriceCents: ..., item12MaterialUnitPriceCents: ..., item12LabourUnitPriceCents: ..., item12MatchedKeywords: ..., includeItem13: ..., item13Name: ..., item13DisplayOrder: ..., item13Quantity: ..., item13SourceTemplateId: ..., item13QuantitySourceId: ..., item13UnitPriceCents: ..., item13MaterialUnitPriceCents: ..., item13LabourUnitPriceCents: ..., item13MatchedKeywords: ..., includeItem14: ..., item14Name: ..., item14DisplayOrder: ..., item14Quantity: ..., item14SourceTemplateId: ..., item14QuantitySourceId: ..., item14UnitPriceCents: ..., item14MaterialUnitPriceCents: ..., item14LabourUnitPriceCents: ..., item14MatchedKeywords: ..., includeItem15: ..., item15Name: ..., item15DisplayOrder: ..., item15Quantity: ..., item15SourceTemplateId: ..., item15QuantitySourceId: ..., item15UnitPriceCents: ..., item15MaterialUnitPriceCents: ..., item15LabourUnitPriceCents: ..., item15MatchedKeywords: ..., includeItem16: ..., item16Name: ..., item16DisplayOrder: ..., item16Quantity: ..., item16SourceTemplateId: ..., item16QuantitySourceId: ..., item16UnitPriceCents: ..., item16MaterialUnitPriceCents: ..., item16LabourUnitPriceCents: ..., item16MatchedKeywords: ..., includeItem17: ..., item17Name: ..., item17DisplayOrder: ..., item17Quantity: ..., item17SourceTemplateId: ..., item17QuantitySourceId: ..., item17UnitPriceCents: ..., item17MaterialUnitPriceCents: ..., item17LabourUnitPriceCents: ..., item17MatchedKeywords: ..., includeItem18: ..., item18Name: ..., item18DisplayOrder: ..., item18Quantity: ..., item18SourceTemplateId: ..., item18QuantitySourceId: ..., item18UnitPriceCents: ..., item18MaterialUnitPriceCents: ..., item18LabourUnitPriceCents: ..., item18MatchedKeywords: ..., includeItem19: ..., item19Name: ..., item19DisplayOrder: ..., item19Quantity: ..., item19SourceTemplateId: ..., item19QuantitySourceId: ..., item19UnitPriceCents: ..., item19MaterialUnitPriceCents: ..., item19LabourUnitPriceCents: ..., item19MatchedKeywords: ..., includeItem20: ..., item20Name: ..., item20DisplayOrder: ..., item20Quantity: ..., item20SourceTemplateId: ..., item20QuantitySourceId: ..., item20UnitPriceCents: ..., item20MaterialUnitPriceCents: ..., item20LabourUnitPriceCents: ..., item20MatchedKeywords: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(createQuoteWithItemsVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.quoteItem_deleteMany);
+    console.log(mutation.data.quote_deleteMany);
+    console.log(mutation.data.quote_insert);
+    console.log(mutation.data.item1);
+    console.log(mutation.data.item2);
+    console.log(mutation.data.item3);
+    console.log(mutation.data.item4);
+    console.log(mutation.data.item5);
+    console.log(mutation.data.item6);
+    console.log(mutation.data.item7);
+    console.log(mutation.data.item8);
+    console.log(mutation.data.item9);
+    console.log(mutation.data.item10);
+    console.log(mutation.data.item11);
+    console.log(mutation.data.item12);
+    console.log(mutation.data.item13);
+    console.log(mutation.data.item14);
+    console.log(mutation.data.item15);
+    console.log(mutation.data.item16);
+    console.log(mutation.data.item17);
+    console.log(mutation.data.item18);
+    console.log(mutation.data.item19);
+    console.log(mutation.data.item20);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
