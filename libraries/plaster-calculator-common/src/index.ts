@@ -2,6 +2,7 @@ export * from "./auth/index.ts";
 export * from "./companies/index.ts";
 export * from "./dates/index.ts";
 export * from "./geometry/index.ts";
+export * from "./keyword-matching/index.ts";
 export * from "./projects/index.ts";
 export * from "./questionnaires/index.ts";
 export * from "./quotes/index.ts";
