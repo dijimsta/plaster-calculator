@@ -53,6 +53,16 @@ export const en = Object.freeze({
         gst: "GST (10%)",
         totalIncGst: "Total inc. GST",
     }),
+    generateQuote: Object.freeze({
+        pending: "Generating quote…",
+        errorMessages: Object.freeze({
+            NOT_READY:
+                "This plan isn't ready to quote. Resolve the checks below and try again.",
+            TOO_MANY_ITEMS:
+                "This quote has too many items to generate. Reduce the number of priced items and try again.",
+        }),
+        genericError: "Couldn't generate the quote. Try again.",
+    }),
     quotesTable: Object.freeze({
         tableLabel: "Quotes",
         quoteCount_one: "{{count}} quote",
