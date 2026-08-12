@@ -5,15 +5,18 @@ import {
     sizes,
     truncateStyle,
     variants,
+    weights,
     type TextSize,
     type TextVariant,
+    type TextWeight,
 } from "./text.styles.ts";
 
-export type { TextSize, TextVariant };
+export type { TextSize, TextVariant, TextWeight };
 
 export type TextProps = {
     readonly size?: TextSize;
     readonly variant?: TextVariant;
+    readonly weight?: TextWeight;
     readonly truncate?: boolean;
     readonly id?: string;
     readonly children?: ReactNode;
@@ -22,6 +25,7 @@ export type TextProps = {
 export function Text({
     size = "base",
     variant = "default",
+    weight = "normal",
     truncate = false,
     id,
     children,
@@ -32,6 +36,7 @@ export function Text({
             className={clsx(
                 sizes[size],
                 variants[variant],
+                weights[weight],
                 truncate && truncateStyle,
             )}
         >
