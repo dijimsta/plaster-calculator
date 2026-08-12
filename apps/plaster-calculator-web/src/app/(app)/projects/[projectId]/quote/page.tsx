@@ -2,6 +2,8 @@
 
 import { READINESS_CHECKS } from "@libraries/plaster-calculator-common";
 import {
+    QuoteLineItemsTable,
+    QuoteTotalsBlock,
     ReadinessCheckList,
     ReadinessSummaryHeader,
     useQuotesTranslation,
@@ -19,6 +21,10 @@ import type { ProjectDetail } from "../../../../../types.js";
 import { ProjectHeader } from "../project-page-header.js";
 
 import { useQuoteReadinessFixControlRenderer } from "./page.hooks.js";
+import {
+    useGenerateQuoteAction,
+    useProjectQuoteState,
+} from "./quote-generation.hooks.js";
 
 export default function ProjectQuoteReadinessPage({
     params,
@@ -71,15 +77,9 @@ export default function ProjectQuoteReadinessPage({
 
     const readiness = useQuoteReadiness(projectId);
     const renderFixControl = useQuoteReadinessFixControlRenderer(projectId);
-
-    // Quote generation itself belongs to the take-off/generation epic, not
-    // WORK-124 (Quote readiness gate) — the epic's scope guard explicitly
-    // calls those out as a sibling epic. This button stays inert until that
-    // epic wires real navigation/generation.
-    function handleGenerateQuote(): void {
-        // TODO: wire actual quote generation once the take-off/generation
-        // epic lands it — out of scope for WORK-124.
-    }
+    const projectQuote = useProjectQuoteState(projectId);
+    const { isGenerating, errorMessage, handleGenerateQuote } =
+        useGenerateQuoteAction(projectId, projectQuote.refresh);
 
     return (
         <>
@@ -112,12 +112,30 @@ export default function ProjectQuoteReadinessPage({
                         <ReadinessSummaryHeader
                             results={readiness.results}
                             onGenerateQuote={handleGenerateQuote}
+                            isGenerating={isGenerating}
                         />
+                        {errorMessage && (
+                            <p className={ui.error}>{errorMessage}</p>
+                        )}
                         <ReadinessCheckList
                             checks={READINESS_CHECKS}
                             results={readiness.results}
                             renderFixControl={renderFixControl}
                         />
+                        {projectQuote.hasQuote && projectQuote.totals && (
+                            <Box direction="column" gap="md">
+                                <QuoteLineItemsTable rows={projectQuote.rows} />
+                                <QuoteTotalsBlock
+                                    subtotalCents={
+                                        projectQuote.totals.subtotalCents
+                                    }
+                                    gstCents={projectQuote.totals.gstCents}
+                                    totalIncGstCents={
+                                        projectQuote.totals.totalIncGstCents
+                                    }
+                                />
+                            </Box>
+                        )}
                     </Box>
                 )}
             </Box>
