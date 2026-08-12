@@ -20,6 +20,8 @@ This README will guide you through the process of using the generated JavaScript
   - [*ListQuoteItemTemplates*](#listquoteitemtemplates)
   - [*ListQuoteTemplatesForTeam*](#listquotetemplatesforteam)
   - [*ListQuoteItemTemplateConfigsForQuoteTemplate*](#listquoteitemtemplateconfigsforquotetemplate)
+  - [*ListQuotesForTeam*](#listquotesforteam)
+  - [*GetQuoteById*](#getquotebyid)
   - [*GetQuoteReadiness*](#getquotereadiness)
   - [*GetMyTeam*](#getmyteam)
   - [*GetMyUserSettings*](#getmyusersettings)
@@ -53,6 +55,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*CreateQuoteItemTemplate*](#createquoteitemtemplate)
   - [*UpdateQuoteItemTemplate*](#updatequoteitemtemplate)
   - [*DeleteQuoteItemTemplate*](#deletequoteitemtemplate)
+  - [*UpdateQuoteStatus*](#updatequotestatus)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
   - [*UpsertMyUserSignature*](#upsertmyusersignature)
 
@@ -1206,6 +1209,262 @@ console.log(data.quoteItemTemplateConfigs);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.quoteItemTemplateConfigs);
+});
+```
+
+## ListQuotesForTeam
+You can execute the `ListQuotesForTeam` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+listQuotesForTeam(options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, undefined>;
+
+interface ListQuotesForTeamRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<ListQuotesForTeamData, undefined>;
+}
+export const listQuotesForTeamRef: ListQuotesForTeamRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listQuotesForTeam(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, undefined>;
+
+interface ListQuotesForTeamRef {
+  ...
+  (dc: DataConnect): QueryRef<ListQuotesForTeamData, undefined>;
+}
+export const listQuotesForTeamRef: ListQuotesForTeamRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listQuotesForTeamRef:
+```typescript
+const name = listQuotesForTeamRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListQuotesForTeam` query has no variables.
+### Return Type
+Recall that executing the `ListQuotesForTeam` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListQuotesForTeamData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListQuotesForTeamData {
+  quotes: ({
+    id: UUIDString;
+    reference?: string | null;
+    status: string;
+    createdAt: TimestampString;
+    project: {
+      id: UUIDString;
+      name: string;
+      company?: {
+        id: UUIDString;
+        companyName: string;
+      } & Company_Key;
+    } & Project_Key;
+    items: ({
+      quantity: number;
+      unitPriceCents: number;
+    })[];
+  } & Quote_Key)[];
+}
+```
+### Using `ListQuotesForTeam`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listQuotesForTeam } from '@generated/data-connector-web';
+
+
+// Call the `listQuotesForTeam()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listQuotesForTeam();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listQuotesForTeam(dataConnect);
+
+console.log(data.quotes);
+
+// Or, you can use the `Promise` API.
+listQuotesForTeam().then((response) => {
+  const data = response.data;
+  console.log(data.quotes);
+});
+```
+
+### Using `ListQuotesForTeam`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listQuotesForTeamRef } from '@generated/data-connector-web';
+
+
+// Call the `listQuotesForTeamRef()` function to get a reference to the query.
+const ref = listQuotesForTeamRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listQuotesForTeamRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.quotes);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quotes);
+});
+```
+
+## GetQuoteById
+You can execute the `GetQuoteById` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+getQuoteById(vars: GetQuoteByIdVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuoteByIdData, GetQuoteByIdVariables>;
+
+interface GetQuoteByIdRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetQuoteByIdVariables): QueryRef<GetQuoteByIdData, GetQuoteByIdVariables>;
+}
+export const getQuoteByIdRef: GetQuoteByIdRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getQuoteById(dc: DataConnect, vars: GetQuoteByIdVariables, options?: ExecuteQueryOptions): QueryPromise<GetQuoteByIdData, GetQuoteByIdVariables>;
+
+interface GetQuoteByIdRef {
+  ...
+  (dc: DataConnect, vars: GetQuoteByIdVariables): QueryRef<GetQuoteByIdData, GetQuoteByIdVariables>;
+}
+export const getQuoteByIdRef: GetQuoteByIdRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getQuoteByIdRef:
+```typescript
+const name = getQuoteByIdRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetQuoteById` query requires an argument of type `GetQuoteByIdVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetQuoteByIdVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `GetQuoteById` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetQuoteByIdData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetQuoteByIdData {
+  quote?: {
+    id: UUIDString;
+    teamId: string;
+    projectId: UUIDString;
+    supplierId?: UUIDString | null;
+    status: string;
+    reference?: string | null;
+    issuedAt?: TimestampString | null;
+    sentAt?: TimestampString | null;
+    acceptedAt?: TimestampString | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    project: {
+      id: UUIDString;
+      name: string;
+      company?: {
+        id: UUIDString;
+        companyName: string;
+      } & Company_Key;
+    } & Project_Key;
+    items: ({
+      id: UUIDString;
+      displayOrder: number;
+      name: string;
+      quantity: number;
+      unitPriceCents: number;
+      materialUnitPriceCents: number;
+      labourUnitPriceCents: number;
+      matchedKeywords: string[];
+      sourceTemplateId?: UUIDString | null;
+      quantitySourceId?: UUIDString | null;
+      quantitySource?: {
+        id: UUIDString;
+        measurementSource: string;
+        measurementPlasterType?: string | null;
+      } & QuantitySource_Key;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+    } & QuoteItem_Key)[];
+  } & Quote_Key;
+}
+```
+### Using `GetQuoteById`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getQuoteById, GetQuoteByIdVariables } from '@generated/data-connector-web';
+
+// The `GetQuoteById` query requires an argument of type `GetQuoteByIdVariables`:
+const getQuoteByIdVars: GetQuoteByIdVariables = {
+  id: ..., 
+};
+
+// Call the `getQuoteById()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getQuoteById(getQuoteByIdVars);
+// Variables can be defined inline as well.
+const { data } = await getQuoteById({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getQuoteById(dataConnect, getQuoteByIdVars);
+
+console.log(data.quote);
+
+// Or, you can use the `Promise` API.
+getQuoteById(getQuoteByIdVars).then((response) => {
+  const data = response.data;
+  console.log(data.quote);
+});
+```
+
+### Using `GetQuoteById`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getQuoteByIdRef, GetQuoteByIdVariables } from '@generated/data-connector-web';
+
+// The `GetQuoteById` query requires an argument of type `GetQuoteByIdVariables`:
+const getQuoteByIdVars: GetQuoteByIdVariables = {
+  id: ..., 
+};
+
+// Call the `getQuoteByIdRef()` function to get a reference to the query.
+const ref = getQuoteByIdRef(getQuoteByIdVars);
+// Variables can be defined inline as well.
+const ref = getQuoteByIdRef({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getQuoteByIdRef(dataConnect, getQuoteByIdVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.quote);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quote);
 });
 ```
 
@@ -4944,6 +5203,118 @@ executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.quoteItemTemplateConfig_deleteMany);
   console.log(data.quoteItemTemplate_delete);
+});
+```
+
+## UpdateQuoteStatus
+You can execute the `UpdateQuoteStatus` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+updateQuoteStatus(vars: UpdateQuoteStatusVariables): MutationPromise<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+
+interface UpdateQuoteStatusRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuoteStatusVariables): MutationRef<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+}
+export const updateQuoteStatusRef: UpdateQuoteStatusRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateQuoteStatus(dc: DataConnect, vars: UpdateQuoteStatusVariables): MutationPromise<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+
+interface UpdateQuoteStatusRef {
+  ...
+  (dc: DataConnect, vars: UpdateQuoteStatusVariables): MutationRef<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+}
+export const updateQuoteStatusRef: UpdateQuoteStatusRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateQuoteStatusRef:
+```typescript
+const name = updateQuoteStatusRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateQuoteStatus` mutation requires an argument of type `UpdateQuoteStatusVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateQuoteStatusVariables {
+  id: UUIDString;
+  status: string;
+}
+```
+### Return Type
+Recall that executing the `UpdateQuoteStatus` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateQuoteStatusData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateQuoteStatusData {
+  quote_update?: Quote_Key | null;
+}
+```
+### Using `UpdateQuoteStatus`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateQuoteStatus, UpdateQuoteStatusVariables } from '@generated/data-connector-web';
+
+// The `UpdateQuoteStatus` mutation requires an argument of type `UpdateQuoteStatusVariables`:
+const updateQuoteStatusVars: UpdateQuoteStatusVariables = {
+  id: ..., 
+  status: ..., 
+};
+
+// Call the `updateQuoteStatus()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateQuoteStatus(updateQuoteStatusVars);
+// Variables can be defined inline as well.
+const { data } = await updateQuoteStatus({ id: ..., status: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateQuoteStatus(dataConnect, updateQuoteStatusVars);
+
+console.log(data.quote_update);
+
+// Or, you can use the `Promise` API.
+updateQuoteStatus(updateQuoteStatusVars).then((response) => {
+  const data = response.data;
+  console.log(data.quote_update);
+});
+```
+
+### Using `UpdateQuoteStatus`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateQuoteStatusRef, UpdateQuoteStatusVariables } from '@generated/data-connector-web';
+
+// The `UpdateQuoteStatus` mutation requires an argument of type `UpdateQuoteStatusVariables`:
+const updateQuoteStatusVars: UpdateQuoteStatusVariables = {
+  id: ..., 
+  status: ..., 
+};
+
+// Call the `updateQuoteStatusRef()` function to get a reference to the mutation.
+const ref = updateQuoteStatusRef(updateQuoteStatusVars);
+// Variables can be defined inline as well.
+const ref = updateQuoteStatusRef({ id: ..., status: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateQuoteStatusRef(dataConnect, updateQuoteStatusVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quote_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quote_update);
 });
 ```
 

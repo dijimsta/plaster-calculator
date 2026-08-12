@@ -504,6 +504,20 @@ exports.deleteQuoteItemTemplate = function deleteQuoteItemTemplate(dcOrVars, var
 }
 ;
 
+const updateQuoteStatusRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateQuoteStatus', inputVars);
+}
+updateQuoteStatusRef.operationName = 'UpdateQuoteStatus';
+exports.updateQuoteStatusRef = updateQuoteStatusRef;
+
+exports.updateQuoteStatus = function updateQuoteStatus(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateQuoteStatusRef(dcInstance, inputVars));
+}
+;
+
 const listQuoteItemTemplatesRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
@@ -546,6 +560,36 @@ exports.listQuoteItemTemplateConfigsForQuoteTemplate = function listQuoteItemTem
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
   return executeQuery(listQuoteItemTemplateConfigsForQuoteTemplateRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
+const listQuotesForTeamRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListQuotesForTeam');
+}
+listQuotesForTeamRef.operationName = 'ListQuotesForTeam';
+exports.listQuotesForTeamRef = listQuotesForTeamRef;
+
+exports.listQuotesForTeam = function listQuotesForTeam(dcOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  return executeQuery(listQuotesForTeamRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
+const getQuoteByIdRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetQuoteById', inputVars);
+}
+getQuoteByIdRef.operationName = 'GetQuoteById';
+exports.getQuoteByIdRef = getQuoteByIdRef;
+
+exports.getQuoteById = function getQuoteById(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
+  return executeQuery(getQuoteByIdRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 ;
 
