@@ -21,6 +21,7 @@ import { UserPageHeader } from "../user-page-header.js";
 import { InviteUserPanel } from "./invite-user-panel.js";
 import { PendingInvitationsPanel } from "./pending-invitations-panel.js";
 import { TeamMembersTable } from "./team-members-table.js";
+import { TeamNamePanel } from "./team-name-panel.js";
 import { useTeamInvitations } from "./use-team-invitations.js";
 import { useTeamMembers } from "./use-team-members.js";
 
@@ -106,6 +107,12 @@ function TeamContent({
 
     return (
         <Box direction="column" gap="lg">
+            <TeamNamePanel
+                teamName={team.data.teamName}
+                canEdit={isTeamOwner}
+                isSaving={team.isRenaming}
+                onSave={team.rename}
+            />
             <TeamMembersTable
                 currentUserId={userId}
                 canRemoveMembers={isTeamOwner}

@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import type { MyTeamSummary } from "@libraries/plaster-calculator-common";
+import { useCallback, useMemo, useState } from "react";
 import type { PropsWithChildren, ReactElement } from "react";
 
 import { TeamsServiceContext } from "./teams.context.ts";
@@ -18,9 +19,21 @@ export function TeamsServiceProvider({
         () => teamsService ?? new TeamsService(),
         [teamsService],
     );
+    const [summary, setSummary] = useState<MyTeamSummary>();
+    const refreshMyTeamSummary = useCallback(async () => {
+        try {
+            setSummary(await value.getMyTeamSummary());
+        } catch {
+            setSummary(undefined);
+        }
+    }, [value]);
+    const contextValue = useMemo(
+        () => ({ service: value, summary, refreshMyTeamSummary }),
+        [refreshMyTeamSummary, summary, value],
+    );
 
     return (
-        <TeamsServiceContext.Provider value={value}>
+        <TeamsServiceContext.Provider value={contextValue}>
             {children}
         </TeamsServiceContext.Provider>
     );

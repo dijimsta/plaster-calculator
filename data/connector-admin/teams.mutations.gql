@@ -10,6 +10,15 @@ mutation UpsertTeam($id: String!, $name: String!, $createdByUserId: String!)
     )
 }
 
+mutation UpdateTeamName($teamId: String!, $name: String!)
+@auth(level: NO_ACCESS)
+@transaction {
+    team_update(
+        id: $teamId
+        data: { name: $name, updatedAt_expr: "request.time" }
+    ) @check(expr: "this != null", message: "Team not found")
+}
+
 mutation UpsertTeamMember($teamId: String!, $userId: String!, $role: String!)
 @auth(level: NO_ACCESS) {
     teamMember_upsert(
