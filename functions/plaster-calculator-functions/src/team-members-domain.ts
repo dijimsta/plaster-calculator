@@ -14,6 +14,10 @@ export type TeamMembership = Readonly<{
     teamId: string;
     userId: string;
     role: string;
+    team?: Readonly<{
+        id: string;
+        name: string;
+    }>;
 }>;
 
 export type TeamAuthUser = Readonly<{
@@ -68,6 +72,7 @@ export function createTeamMembersService(
 
             return ListMyTeamMembersResponseSchema.parse({
                 currentUserRole: currentMembership.role,
+                teamName: requireTeamName(currentMembership),
                 members,
             });
         },
@@ -100,6 +105,14 @@ export function createTeamMembersService(
             });
         },
     };
+}
+
+function requireTeamName(membership: TeamMembership): string {
+    const teamName = membership.team?.name.trim();
+    if (!teamName) {
+        throw new HttpsError("internal", "Team name is unavailable.");
+    }
+    return teamName;
 }
 
 function selectMembership(

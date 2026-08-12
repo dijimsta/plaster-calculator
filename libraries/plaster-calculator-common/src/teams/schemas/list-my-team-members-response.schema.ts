@@ -6,6 +6,7 @@ import { TeamRoleSchema } from "./team-role.schema.ts";
 export const ListMyTeamMembersResponseSchema = z
     .object({
         currentUserRole: TeamRoleSchema,
+        teamName: z.string().min(1),
         members: z.array(TeamMemberSchema).readonly(),
     })
     .readonly();

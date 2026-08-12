@@ -9,7 +9,12 @@ function createDependencies(
 ): TeamMembersDependencies {
     return {
         getMemberships: async () => [
-            { teamId: "team-1", userId: "owner-1", role: "OWNER" },
+            {
+                teamId: "team-1",
+                userId: "owner-1",
+                role: "OWNER",
+                team: { id: "team-1", name: "Example Plastering" },
+            },
         ],
         listMembers: async () => [],
         getMember: async () => null,
@@ -26,7 +31,12 @@ test("lists members for any current team member and sorts the owner first", asyn
     const service = createTeamMembersService(
         createDependencies({
             getMemberships: async () => [
-                { teamId: "team-1", userId: "member-1", role: "MEMBER" },
+                {
+                    teamId: "team-1",
+                    userId: "member-1",
+                    role: "MEMBER",
+                    team: { id: "team-1", name: "Example Plastering" },
+                },
             ],
             listMembers: async () => [
                 { teamId: "team-1", userId: "member-1", role: "MEMBER" },
@@ -52,6 +62,7 @@ test("lists members for any current team member and sorts the owner first", asyn
     const result = await service.list("member-1");
 
     assert.equal(result.currentUserRole, "MEMBER");
+    assert.equal(result.teamName, "Example Plastering");
     assert.deepEqual(
         result.members.map((member) => member.userId),
         ["owner-1", "orphan-1", "member-1"],
@@ -105,7 +116,12 @@ test("rejects removal attempts from non-owners", async () => {
     const service = createTeamMembersService(
         createDependencies({
             getMemberships: async () => [
-                { teamId: "team-1", userId: "member-1", role: "MEMBER" },
+                {
+                    teamId: "team-1",
+                    userId: "member-1",
+                    role: "MEMBER",
+                    team: { id: "team-1", name: "Example Plastering" },
+                },
             ],
         }),
     );
