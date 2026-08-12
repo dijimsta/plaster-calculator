@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 import { useId, useState } from "react";

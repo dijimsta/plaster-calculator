@@ -7,13 +7,13 @@ import {
     SettingsServiceProvider,
     TeamsServiceProvider,
 } from "@libraries/plaster-calculator-web-core";
+import { NotificationsProvider } from "@libraries/uikit-web";
 import { type Metadata } from "next";
 import { cookies } from "next/headers.js";
 import { type PropsWithChildren } from "react";
 
 import "./globals.css";
 import { AppTranslationsProvider } from "../components/app-translations-provider.js";
-import { AppNotificationsProvider } from "../components/notifications-manager.provider.js";
 import { AppQueryClientProvider } from "../components/query-client.provider.js";
 import { ThemeInitializer } from "../components/theme-initializer.js";
 import { AppCheckProvider } from "../firebase/app-check.provider.ts";
@@ -82,7 +82,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
                         components={[
                             AppCheckProvider,
                             AppQueryClientProvider,
-                            AppNotificationsProvider,
+                            NotificationsProvider,
                             TeamsServiceProvider,
                             CompaniesServiceProvider,
                             ProjectsServiceProvider,
