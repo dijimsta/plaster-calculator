@@ -105,7 +105,10 @@ export function EditableQuoteForm({
             >
                 <FormLayoutField label="" span="full">
                     <Box direction="column" gap="md">
-                        <Table label={t("editableQuoteForm.lineItemsTitle")}>
+                        <Table
+                            bordered
+                            label={t("editableQuoteForm.lineItemsTitle")}
+                        >
                             <Table.Head>
                                 <Table.Row>
                                     <Table.Header>
