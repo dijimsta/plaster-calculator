@@ -67,7 +67,7 @@ export function ReadinessSummaryHeader({
                         checks={summaryChecks}
                         results={results}
                         renderFixControl={renderFixControl}
-                        variant="subtle-cards"
+                        variant="alerts"
                     />
                 )}
                 <GenerateQuoteAction

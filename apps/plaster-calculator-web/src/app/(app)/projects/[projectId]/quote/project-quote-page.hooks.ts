@@ -81,10 +81,7 @@ export function useProjectQuotePageProject(
 }
 
 export type ProjectQuoteEditorState = {
-    readonly isEditing: boolean;
     readonly isSaving: boolean;
-    readonly beginEditing: () => void;
-    readonly cancelEditing: () => void;
     readonly save: (values: EditableQuoteFormValues) => Promise<void>;
 };
 
@@ -92,26 +89,21 @@ export function useProjectQuoteEditor(
     projectId: string,
     projectQuote: ProjectQuoteState,
 ): ProjectQuoteEditorState {
-    const [isEditing, setIsEditing] = useState(false);
     const { isSaving, saveQuote } = useSaveProjectQuote(projectId);
     const save = useCallback(
         async (values: EditableQuoteFormValues): Promise<void> => {
             if (!projectQuote.quoteId || !projectQuote.editableValues) return;
-            const didSave = await saveQuote(
+            await saveQuote(
                 projectQuote.quoteId,
                 projectQuote.editableValues,
                 values,
             );
-            if (didSave) setIsEditing(false);
         },
         [projectQuote.editableValues, projectQuote.quoteId, saveQuote],
     );
 
     return {
-        isEditing,
         isSaving,
-        beginEditing: () => setIsEditing(true),
-        cancelEditing: () => setIsEditing(false),
         save,
     };
 }

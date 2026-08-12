@@ -66,11 +66,8 @@ export default function ProjectQuoteReadinessPage({
                         }
                         hasQuote={projectQuote.hasQuote}
                         hasDocument={projectQuote.document !== null}
-                        hasEditableValues={projectQuote.editableValues !== null}
-                        isEditing={editor.isEditing}
                         isSaving={editor.isSaving}
                         onDownload={printQuoteDocument}
-                        onEdit={editor.beginEditing}
                     />
                 }
             />

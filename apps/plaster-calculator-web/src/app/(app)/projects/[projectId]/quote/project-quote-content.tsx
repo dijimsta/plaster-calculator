@@ -1,12 +1,7 @@
-import {
-    READINESS_CHECKS,
-    ROOMS_MEASURED_CHECK_ID,
-    SCALE_APPLIED_CHECK_ID,
-} from "@libraries/plaster-calculator-common";
+import { READINESS_CHECKS } from "@libraries/plaster-calculator-common";
 import {
     EditableQuoteForm,
     QuoteDetailDocument,
-    ReadinessCheckList,
     ReadinessSummaryHeader,
     useQuotesTranslation,
 } from "@libraries/plaster-calculator-ui";
@@ -20,17 +15,6 @@ import { ui } from "../../../../../lib/styles.js";
 
 import type { ProjectQuoteEditorState } from "./project-quote-page.hooks.js";
 import type { ProjectQuoteState } from "./quote-generation.hooks.js";
-
-const SUMMARY_READINESS_CHECKS = READINESS_CHECKS.filter(
-    (check) =>
-        check.id === SCALE_APPLIED_CHECK_ID ||
-        check.id === ROOMS_MEASURED_CHECK_ID,
-);
-const DETAIL_READINESS_CHECKS = READINESS_CHECKS.filter(
-    (check) =>
-        check.id !== SCALE_APPLIED_CHECK_ID &&
-        check.id !== ROOMS_MEASURED_CHECK_ID,
-);
 
 export type ProjectQuoteContentProps = {
     readonly projectError: string;
@@ -105,17 +89,12 @@ function ReadinessContent({
                 results={readiness.results}
                 onGenerateQuote={onGenerateQuote}
                 isGenerating={isGenerating}
-                summaryChecks={SUMMARY_READINESS_CHECKS}
+                summaryChecks={READINESS_CHECKS}
                 renderFixControl={renderFixControl}
             />
             {generationErrorMessage && (
                 <p className={ui.error}>{generationErrorMessage}</p>
             )}
-            <ReadinessCheckList
-                checks={DETAIL_READINESS_CHECKS}
-                results={readiness.results}
-                renderFixControl={renderFixControl}
-            />
         </>
     );
 }
@@ -139,20 +118,25 @@ function ProjectQuoteBody({
             </p>
         );
     }
-    if (editor.isEditing && projectQuote.editableValues) {
-        return (
+    if (!projectQuote.editableValues) {
+        return projectQuote.document ? (
+            <QuoteDetailDocument {...projectQuote.document} />
+        ) : null;
+    }
+
+    return (
+        <>
             <EditableQuoteForm
                 formId="project-quote-form"
                 initialValues={projectQuote.editableValues}
                 disabled={editor.isSaving}
-                onCancel={editor.cancelEditing}
                 onSubmit={editor.save}
             />
-        );
-    }
-    return projectQuote.document ? (
-        <QuoteDetailDocument {...projectQuote.document} />
-    ) : null;
+            {projectQuote.document && (
+                <QuoteDetailDocument {...projectQuote.document} printOnly />
+            )}
+        </>
+    );
 }
 
 function PageStatus({ label }: { readonly label: string }): ReactElement {

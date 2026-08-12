@@ -13,6 +13,7 @@ import {
 } from "@libraries/uikit-web";
 import { Plus, Trash2 } from "lucide-react";
 import type { ReactElement } from "react";
+import { useEffect } from "react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
@@ -25,7 +26,7 @@ export type EditableQuoteFormProps = {
     readonly formId: string;
     readonly initialValues: EditableQuoteFormValues;
     readonly disabled?: boolean;
-    readonly onCancel: () => void;
+    readonly onCancel?: () => void;
     readonly onSubmit: (
         values: EditableQuoteFormValues,
     ) => void | Promise<void>;
@@ -46,7 +47,7 @@ export function EditableQuoteForm({
     onSubmit,
 }: EditableQuoteFormProps): ReactElement {
     const { t } = useQuotesTranslation();
-    const { control, handleSubmit } = useForm<EditableQuoteFormValues>({
+    const { control, handleSubmit, reset } = useForm<EditableQuoteFormValues>({
         defaultValues: initialValues,
     });
     const { fields, append, remove } = useFieldArray({
@@ -65,10 +66,14 @@ export function EditableQuoteForm({
     );
     const gstCents = QuoteTotalsUtils.gstCents(subtotalCents);
 
+    useEffect(() => {
+        reset(initialValues);
+    }, [initialValues, reset]);
+
     return (
         <FormLayout
             id={formId}
-            variant="cards"
+            variant="stacked-wide"
             onSubmit={handleSubmit(onSubmit)}
         >
             <FormLayoutSection
@@ -241,14 +246,16 @@ export function EditableQuoteForm({
                 </FormLayoutField>
             </FormLayoutSection>
             <FormLayoutActions>
-                <Button
-                    type="button"
-                    variant="secondary"
-                    disabled={disabled}
-                    onClick={onCancel}
-                >
-                    {t("common.cancel")}
-                </Button>
+                {onCancel && (
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        disabled={disabled}
+                        onClick={onCancel}
+                    >
+                        {t("common.cancel")}
+                    </Button>
+                )}
                 <Button type="submit" disabled={disabled}>
                     {disabled
                         ? t("editableQuoteForm.saving")

@@ -1,7 +1,7 @@
 import type { QuoteStatus } from "@libraries/plaster-calculator-common";
 import { useQuotesTranslation } from "@libraries/plaster-calculator-ui";
 import { Button, ButtonGroup } from "@libraries/uikit-web";
-import { Download, Pencil } from "lucide-react";
+import { Download } from "lucide-react";
 import type { ReactElement } from "react";
 
 import { useQuoteStatusActions } from "./quote-detail.hooks.js";
@@ -12,11 +12,8 @@ export type ProjectQuoteActionsProps = {
     readonly status: QuoteStatus;
     readonly hasQuote: boolean;
     readonly hasDocument: boolean;
-    readonly hasEditableValues: boolean;
-    readonly isEditing: boolean;
     readonly isSaving: boolean;
     readonly onDownload: () => void;
-    readonly onEdit: () => void;
 };
 
 export function ProjectQuoteActions({
@@ -25,11 +22,8 @@ export function ProjectQuoteActions({
     status,
     hasQuote,
     hasDocument,
-    hasEditableValues,
-    isEditing,
     isSaving,
     onDownload,
-    onEdit,
 }: ProjectQuoteActionsProps): ReactElement | null {
     const { t } = useQuotesTranslation();
     const statusActions = useQuoteStatusActions(projectId, quoteId, status);
@@ -42,17 +36,10 @@ export function ProjectQuoteActions({
             downloadLabel={t("quoteDetailPage.downloadPdf")}
             markAsSentLabel={t("quoteDetailPage.markAsSent")}
             markAcceptedLabel={t("quoteDetailPage.markAccepted")}
-            editLabel={t("editableQuoteForm.edit")}
-            canDownload={hasDocument && !isEditing && !isSaving}
-            canEdit={hasEditableValues && !isEditing && !isSaving}
-            canMarkAsSent={
-                statusActions.canMarkAsSent && !isEditing && !isSaving
-            }
-            canMarkAccepted={
-                statusActions.canMarkAccepted && !isEditing && !isSaving
-            }
+            canDownload={hasDocument && !isSaving}
+            canMarkAsSent={statusActions.canMarkAsSent && !isSaving}
+            canMarkAccepted={statusActions.canMarkAccepted && !isSaving}
             onDownload={onDownload}
-            onEdit={onEdit}
             onMarkAsSent={() => void statusActions.markAsSent()}
             onMarkAccepted={() => void statusActions.markAccepted()}
         />
@@ -64,13 +51,10 @@ export type QuoteDetailActionsProps = {
     readonly downloadLabel: string;
     readonly markAsSentLabel: string;
     readonly markAcceptedLabel: string;
-    readonly editLabel: string;
     readonly canDownload: boolean;
-    readonly canEdit: boolean;
     readonly canMarkAsSent: boolean;
     readonly canMarkAccepted: boolean;
     readonly onDownload: () => void;
-    readonly onEdit: () => void;
     readonly onMarkAsSent: () => void;
     readonly onMarkAccepted: () => void;
 };
@@ -81,13 +65,10 @@ export function QuoteDetailActions({
     downloadLabel,
     markAsSentLabel,
     markAcceptedLabel,
-    editLabel,
     canDownload,
-    canEdit,
     canMarkAsSent,
     canMarkAccepted,
     onDownload,
-    onEdit,
     onMarkAsSent,
     onMarkAccepted,
 }: QuoteDetailActionsProps): ReactElement {
@@ -100,14 +81,6 @@ export function QuoteDetailActions({
                 onClick={onDownload}
             >
                 {downloadLabel}
-            </Button>
-            <Button
-                variant="secondary"
-                icon={<Pencil size={16} aria-hidden="true" />}
-                disabled={!canEdit}
-                onClick={onEdit}
-            >
-                {editLabel}
             </Button>
             <Button
                 variant="secondary"

@@ -4,10 +4,10 @@ import type {
     ReadinessResult,
 } from "@libraries/plaster-calculator-common";
 import {
+    Alert,
     Badge,
     Box,
     Button,
-    Card,
     StackedList,
     Text,
 } from "@libraries/uikit-web";
@@ -34,7 +34,7 @@ export type ReadinessCheckListProps = {
     readonly checks: readonly ReadinessCheck[];
     readonly results: readonly ReadinessResult[];
     readonly renderFixControl?: ReadinessCheckListRenderFixControl;
-    readonly variant?: "stacked" | "subtle-cards";
+    readonly variant?: "stacked" | "alerts";
 };
 
 /**
@@ -52,19 +52,18 @@ export function ReadinessCheckList({
     renderFixControl,
     variant = "stacked",
 }: ReadinessCheckListProps): ReactElement {
-    if (variant === "subtle-cards") {
+    if (variant === "alerts") {
         return (
             <Box direction="column" gap="sm">
                 {checks.map((check) => (
-                    <Card key={check.id} variant="subtle">
-                        <ReadinessCheckRow
-                            check={check}
-                            result={results.find(
-                                (result) => result.checkId === check.id,
-                            )}
-                            renderFixControl={renderFixControl}
-                        />
-                    </Card>
+                    <ReadinessCheckAlert
+                        key={check.id}
+                        check={check}
+                        result={results.find(
+                            (result) => result.checkId === check.id,
+                        )}
+                        renderFixControl={renderFixControl}
+                    />
                 ))}
             </Box>
         );
@@ -92,6 +91,25 @@ type ReadinessCheckRowProps = {
     readonly result: ReadinessResult | undefined;
     readonly renderFixControl: ReadinessCheckListRenderFixControl | undefined;
 };
+
+function ReadinessCheckAlert({
+    check,
+    result,
+    renderFixControl,
+}: ReadinessCheckRowProps): ReactElement {
+    return (
+        <Alert
+            intent={result?.isMet ? "success" : "error"}
+            variant="light-with-border"
+        >
+            <ReadinessCheckRow
+                check={check}
+                result={result}
+                renderFixControl={renderFixControl}
+            />
+        </Alert>
+    );
+}
 
 /**
  * One check's row. An unmet check with more than one affected item starts

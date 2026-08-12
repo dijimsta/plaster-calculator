@@ -4,6 +4,7 @@ import type { ReactElement, ReactNode } from "react";
 import { styles } from "./card.styles.ts";
 
 export type CardVariant = "default" | "subtle";
+export type CardVisibility = keyof typeof styles.visibility;
 
 export type CardProps = {
     /**
@@ -13,16 +14,25 @@ export type CardProps = {
      */
     readonly id?: string;
     readonly variant?: CardVariant;
+    readonly visibility?: CardVisibility;
     readonly children?: ReactNode;
 };
 
 export function Card({
     id,
     variant = "default",
+    visibility = "visible",
     children,
 }: CardProps): ReactElement {
     return (
-        <div id={id} className={clsx(styles.root, styles.variants[variant])}>
+        <div
+            id={id}
+            className={clsx(
+                styles.root,
+                styles.variants[variant],
+                styles.visibility[visibility],
+            )}
+        >
             {children}
         </div>
     );
