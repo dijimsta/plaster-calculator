@@ -12,6 +12,8 @@ export const zh = createTranslationResource(
             description: "价格设置完成后，可在此查看根据项目生成的所有报价。",
             emptyStateTitle: "暂无报价",
             emptyStateDescription: "价格设置完成后，系统将根据项目生成报价。",
+            loading: "正在加载报价…",
+            unableToLoad: "无法加载报价，请尝试刷新。",
         }),
         // Same note as en.ts: not consumed by any component in this batch,
         // added ahead of the route that will use them.

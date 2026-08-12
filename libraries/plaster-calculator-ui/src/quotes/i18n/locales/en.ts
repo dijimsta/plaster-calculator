@@ -8,6 +8,8 @@ export const en = Object.freeze({
         emptyStateTitle: "No quotes yet",
         emptyStateDescription:
             "Quotes are generated from a project once pricing is set up.",
+        loading: "Loading quotes…",
+        unableToLoad: "Unable to load quotes. Try refreshing.",
     }),
     // Not consumed by any component in this batch — quoteDetailDocument is
     // presentational-only (no action buttons or breadcrumb by design) and
