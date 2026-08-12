@@ -48,13 +48,23 @@ export const zh = createTranslationResource(
             provenanceFromSource: "根据{{source}}计算",
             provenanceFromSourceWithPlasterType:
                 "根据{{source}}计算 — {{plasterType}}",
-            provenanceMatchedKeywords: "已匹配 {{keywords}}",
+            provenanceMatchedKeywords: "已匹配关键词 {{keywords}}",
             unknownProvenance: "来源未知",
         }),
         quoteTotalsBlock: Object.freeze({
             subtotal: "小计",
             gst: "增值税（10%）",
             totalIncGst: "含税总额",
+        }),
+        generateQuote: Object.freeze({
+            pending: "正在生成报价…",
+            errorMessages: Object.freeze({
+                NOT_READY:
+                    "该方案尚未就绪，无法生成报价。请先解决下方的检查项，然后重试。",
+                TOO_MANY_ITEMS:
+                    "报价项目过多，无法生成。请减少计价项目数量后重试。",
+            }),
+            genericError: "无法生成报价，请重试。",
         }),
         quotesTable: Object.freeze({
             tableLabel: "报价单",
