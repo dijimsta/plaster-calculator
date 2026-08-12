@@ -270,3 +270,56 @@ mutation DeleteQuoteItemTemplate($id: UUID!) @auth(level: USER) @transaction {
     quoteItemTemplate_delete(id: $id)
         @check(expr: "this != null", message: "Item not found")
 }
+
+# Sets `status`, stamping `updatedAt` the same way every other mutation in
+# this file does.
+#
+# This does not also conditionally stamp `sentAt`/`acceptedAt` in the same
+# call. That was tried — `sentAt_expr`/`acceptedAt_expr` set to
+# `"vars.status == 'sent' ? request.time : this"` (reading `$status` via
+# `vars.status`, the same way `AcceptTeamInvitation` in
+# connector-admin/teams.mutations.gql reads a mutation variable inside a
+# `@check` expr via `vars.tokenHash`) — on the theory that Data Connect
+# supports an increment-style self-reference in `_expr` fields (as in
+# `count_expr: "this + 1"`). `firebase dataconnect:sdk:generate` rejects it:
+# `this` is not declared in the CEL environment for an `_update` mutation's
+# `Timestamp_Expr` fields, only in `@check` contexts. Without a working
+# self-reference there is no schema-valid way for a single static mutation
+# document to conditionally write exactly one of two fields while leaving
+# the other untouched: the `data` field set is fixed at author time, so a
+# `sent`-transition call and an `accepted`-transition call both evaluate
+# every expression in this document, and any non-matching branch has to
+# produce *some* Timestamp value — `null` would silently erase a
+# previously-set `sentAt` the next time this mutation runs for the
+# `accepted` transition.
+#
+# The schema-valid way to stamp a single field unconditionally with
+# `request.time` is a dedicated mutation per transition — exactly what
+# `AcceptTeamInvitation` already does for `acceptedAt`. That's deliberately
+# not added here: this ticket's scope is the status write, and per-status
+# timestamp stamping can follow later (e.g. alongside WORK-123, when the web
+# app layer's actual needs are known) as `MarkQuoteSent`/`MarkQuoteAccepted`
+# mutations shaped like `AcceptTeamInvitation` rather than guessed at now.
+#
+# Similarly, this mutation does not enforce that draft -> sent -> accepted
+# is followed in order — a `@check` here could only compare against the
+# quote's *current* status, not walk a full state machine. Transition-order
+# enforcement belongs to the web app layer (WORK-123).
+mutation UpdateQuoteStatus($id: UUID!, $status: String!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        quote(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote"
+            ) {
+            id
+            teamId
+        }
+    }
+    quote_update(
+        id: $id
+        data: { status: $status, updatedAt_expr: "request.time" }
+    )
+}
