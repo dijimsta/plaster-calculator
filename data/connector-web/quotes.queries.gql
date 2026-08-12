@@ -218,3 +218,73 @@ query GetQuoteReadiness($projectId: UUID!) @auth(level: USER) {
         }
     }
 }
+
+# Feeds the project's Quote tab: reads back the `Quote` `CreateQuoteWithItems`
+# (WORK-145) just generated for a project, so the tab can render it after
+# generation and on later visits, plus each `QuoteItem`'s `quantitySource`
+# (why a quantity is what it is) and `sourceTemplate` (which catalog entry
+# produced the line) nested inline — the same two `@ref`s `GetQuoteById`
+# selects for `quantitySource`, extended here with `sourceTemplate` so the
+# Quote tab doesn't need a second round trip per line to show provenance.
+#
+# `project` is guarded by the same `@check` ownership pattern `GetQuoteById`
+# and `GetQuoteReadiness` use, so a project from another team can't be read.
+# `Quote.project` is `@unique` (at most one quote per project — the
+# constraint `CreateQuoteWithItems`'s regenerate-on-draft logic relies on),
+# so the reverse relation Data Connect generates for it is a singular
+# `quote_on_project` object, not a list: unlike `GetQuoteById`, which
+# `@check`s `this != null` on the `quote` field itself and therefore throws
+# when the id doesn't resolve, nesting `quote_on_project` under the
+# already-`@check`ed `project` is a plain field lookup with no `@check` of
+# its own, so it resolves to `null` when the project has no quote yet
+# (nothing generated, or a project that predates WORK-145) rather than
+# erroring — exactly the "no quote yet" case this query needs to support,
+# since the Quote tab must render a "not generated" state, not an error.
+query GetProjectQuote($projectId: UUID!) @auth(level: USER) {
+    project(key: { id: $projectId })
+        @check(
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this project"
+        ) {
+        id
+        teamId
+        quote: quote_on_project {
+            id
+            teamId
+            projectId
+            supplierId
+            status
+            reference
+            issuedAt
+            sentAt
+            acceptedAt
+            createdAt
+            updatedAt
+            items: quoteItems_on_quote(orderBy: [{ displayOrder: ASC }]) {
+                id
+                displayOrder
+                name
+                quantity
+                unitPriceCents
+                materialUnitPriceCents
+                labourUnitPriceCents
+                matchedKeywords
+                sourceTemplateId
+                quantitySourceId
+                sourceTemplate {
+                    id
+                    name
+                    scope
+                    systemKey
+                }
+                quantitySource {
+                    id
+                    measurementSource
+                    measurementPlasterType
+                }
+                createdAt
+                updatedAt
+            }
+        }
+    }
+}
