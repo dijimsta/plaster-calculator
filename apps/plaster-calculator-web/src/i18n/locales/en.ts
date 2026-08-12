@@ -1,5 +1,7 @@
 import { appMetadataByLanguage } from "../language.ts";
 
+import { projects } from "./en/projects.ts";
+
 export const en = Object.freeze({
     common: Object.freeze({}),
     appMetadata: appMetadataByLanguage.en,
@@ -90,25 +92,7 @@ export const en = Object.freeze({
         annotateSelectedPages: "Annotate {{count}} selected pages",
         page: "Page {{number}}",
     }),
-    projects: Object.freeze({
-        breadcrumb: "Projects",
-        title: "Projects",
-        statusTabs: Object.freeze({
-            all: "All",
-        }),
-        loadingProjects: "Loading projects...",
-        refresh: "Refresh",
-        refreshTitle: "Refresh projects",
-        emptyStateTitle: "No projects match your filters",
-        tableHeaders: Object.freeze({
-            project: "Project",
-            company: "Company",
-            plan: "Plan",
-            status: "Status",
-            updated: "Updated",
-            actions: "Actions",
-        }),
-    }),
+    projects,
     questionnaires: Object.freeze({
         title: "Questionnaires",
         projectsTab: "Projects",

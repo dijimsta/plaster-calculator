@@ -1,5 +1,7 @@
 "use client";
 
+import type { SalesStatus } from "@libraries/plaster-calculator-common";
+import { ProjectKanbanBoard } from "@libraries/plaster-calculator-ui";
 import {
     Badge,
     Box,
@@ -8,7 +10,6 @@ import {
     EmptyState,
     Input,
     PageHeading,
-    Table,
     Tabs,
     Text,
 } from "@libraries/uikit-web";
@@ -16,28 +17,36 @@ import {
     FolderKanban,
     Home,
     LoaderCircle,
-    Pencil,
     RefreshCcw,
     Search,
-    Trash2,
 } from "lucide-react";
-import { default as LinkModule } from "next/link.js";
+import { useRouter } from "next/navigation.js";
 
 import { BusyOverlay } from "../../../components/busy-overlay.js";
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../i18n/index.ts";
 import { useSalesStatusLabel } from "../../../lib/sales-status.js";
+import type { EnrichedProject } from "../hooks/use-projects-listing.js";
 import {
     useProjectsListing,
     type StatusFilter,
 } from "../hooks/use-projects-listing.js";
 
-const Link = LinkModule.default;
+import { ProjectsTable } from "./projects-table.js";
+
+const BOARD_STATUSES: readonly SalesStatus[] = [
+    "QUOTING",
+    "QUOTE_SUBMITTED",
+    "WON",
+    "LOST",
+];
 
 export default function ProjectsPage() {
     const { t } = useAppTranslation();
+    const router = useRouter();
     const salesStatusLabel = useSalesStatusLabel();
     const {
+        view,
         statusFilter,
         query,
         projectsLoading,
@@ -52,6 +61,8 @@ export default function ProjectsPage() {
         refresh,
         removeProject,
         saveRename,
+        moveProjectSalesStatus,
+        setView,
         setStatusFilter,
         setQuery,
         clearFilters,
@@ -89,6 +100,21 @@ export default function ProjectsPage() {
             },
         ];
 
+    const boardColumns = BOARD_STATUSES.map((salesStatus) => ({
+        salesStatus,
+        label: salesStatusLabel(salesStatus),
+    }));
+
+    const boardCards = filtered.map((project) => ({
+        id: project.id,
+        name: project.name,
+        address: project.address,
+        companyName: project.companyName,
+        originalFileName: project.originalFileName,
+        updatedAt: project.updatedAt,
+        salesStatus: project.salesStatus,
+    }));
+
     return (
         <>
             {busyMessage && <BusyOverlay message={busyMessage} />}
@@ -114,50 +140,85 @@ export default function ProjectsPage() {
             </PageHeading>
             <Box direction="column" gap="lg" padding="md">
                 <Box direction="column" gap="md">
-                    <Box direction="row" align="center" gap="md" wrap>
-                        <Tabs variant="pills-on-gray" label="Filter by status">
-                            {statusTabs.map((tab) => (
-                                <Tabs.Item
-                                    key={tab.value}
-                                    current={statusFilter === tab.value}
-                                >
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setStatusFilter(tab.value)
-                                        }
+                    <Box
+                        direction="row"
+                        align="center"
+                        justify="between"
+                        gap="md"
+                        wrap
+                    >
+                        <Box direction="row" align="center" gap="md" wrap>
+                            <Tabs
+                                variant="pills-on-gray"
+                                label="Filter by status"
+                            >
+                                {statusTabs.map((tab) => (
+                                    <Tabs.Item
+                                        key={tab.value}
+                                        current={statusFilter === tab.value}
                                     >
-                                        {tab.label}
-                                        <Badge size="xs" color="gray">
-                                            {tab.count}
-                                        </Badge>
-                                    </button>
-                                </Tabs.Item>
-                            ))}
-                        </Tabs>
-                        <Input
-                            leadingIcon={
-                                <Search
-                                    size={16}
-                                    className="text-gray-400 dark:text-gray-500"
-                                />
-                            }
-                            placeholder="Search project, company or plan…"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                        />
-                        <Button
-                            variant="secondary"
-                            onClick={() => void refresh()}
-                            title={t("projects.refreshTitle")}
-                        >
-                            <RefreshCcw size={18} /> {t("projects.refresh")}
-                        </Button>
-                        {filtersActive && (
-                            <Button variant="secondary" onClick={clearFilters}>
-                                Clear filters
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setStatusFilter(tab.value)
+                                            }
+                                        >
+                                            {tab.label}
+                                            <Badge size="xs" color="gray">
+                                                {tab.count}
+                                            </Badge>
+                                        </button>
+                                    </Tabs.Item>
+                                ))}
+                            </Tabs>
+                            <Input
+                                leadingIcon={
+                                    <Search
+                                        size={16}
+                                        className="text-gray-400 dark:text-gray-500"
+                                    />
+                                }
+                                placeholder="Search project, company or plan…"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                            />
+                            <Button
+                                variant="secondary"
+                                onClick={() => void refresh()}
+                                title={t("projects.refreshTitle")}
+                            >
+                                <RefreshCcw size={18} /> {t("projects.refresh")}
                             </Button>
-                        )}
+                            {filtersActive && (
+                                <Button
+                                    variant="secondary"
+                                    onClick={clearFilters}
+                                >
+                                    Clear filters
+                                </Button>
+                            )}
+                        </Box>
+                        <Tabs
+                            variant="pills-on-gray"
+                            label={t("projects.viewToggle.label")}
+                        >
+                            <Tabs.Item current={view === "list"}>
+                                <button
+                                    type="button"
+                                    onClick={() => setView("list")}
+                                >
+                                    {t("projects.viewToggle.list")}
+                                </button>
+                            </Tabs.Item>
+                            <Tabs.Item current={view === "board"}>
+                                <button
+                                    type="button"
+                                    onClick={() => setView("board")}
+                                >
+                                    {t("projects.viewToggle.board")}
+                                </button>
+                            </Tabs.Item>
+                        </Tabs>
                     </Box>
                     <Text variant="muted">
                         Showing {resultCount} of {totalCount} projects
@@ -185,120 +246,30 @@ export default function ProjectsPage() {
                             ) : undefined
                         }
                     />
+                ) : view === "board" ? (
+                    <ProjectKanbanBoard
+                        columns={boardColumns}
+                        cards={boardCards}
+                        onOpen={(projectId) =>
+                            router.push(`/projects/${projectId}`)
+                        }
+                        onMove={moveProjectSalesStatus}
+                    />
                 ) : (
-                    <Table bordered>
-                        <Table.Head>
-                            <Table.Row>
-                                {tableHeaders.map((header) => (
-                                    <Table.Header key={header}>
-                                        {header}
-                                    </Table.Header>
-                                ))}
-                            </Table.Row>
-                        </Table.Head>
-                        <Table.Body>
-                            {filtered.map((project) => (
-                                <Table.Row key={project.id}>
-                                    <Table.Cell>
-                                        {renamingId === project.id ? (
-                                            <Input
-                                                value={renameValue}
-                                                onChange={(event) =>
-                                                    setRenameValue(
-                                                        event.target.value,
-                                                    )
-                                                }
-                                                onKeyDown={(event) => {
-                                                    if (event.key === "Enter") {
-                                                        saveRename(project.id);
-                                                    }
-                                                }}
-                                            />
-                                        ) : (
-                                            <Link
-                                                href={`/projects/${project.id}`}
-                                            >
-                                                <strong>{project.name}</strong>
-                                                {project.address && (
-                                                    <Text
-                                                        variant="muted"
-                                                        truncate
-                                                    >
-                                                        {project.address}
-                                                    </Text>
-                                                )}
-                                            </Link>
-                                        )}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {project.companyName ?? "—"}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {project.originalFileName}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <Badge
-                                            dot
-                                            color={
-                                                project.salesStatus ===
-                                                "QUOTE_SUBMITTED"
-                                                    ? "green"
-                                                    : "blue"
-                                            }
-                                            size="xs"
-                                        >
-                                            {salesStatusLabel(
-                                                project.salesStatus,
-                                            )}
-                                        </Badge>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {new Date(
-                                            project.updatedAt,
-                                        ).toLocaleString()}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <Box gap="sm">
-                                            {renamingId === project.id ? (
-                                                <Button
-                                                    variant="secondary"
-                                                    onClick={() =>
-                                                        saveRename(project.id)
-                                                    }
-                                                >
-                                                    Save
-                                                </Button>
-                                            ) : (
-                                                <Button
-                                                    variant="secondary"
-                                                    onClick={() => {
-                                                        setRenamingId(
-                                                            project.id,
-                                                        );
-                                                        setRenameValue(
-                                                            project.name,
-                                                        );
-                                                    }}
-                                                    title="Rename project"
-                                                >
-                                                    <Pencil size={18} />
-                                                </Button>
-                                            )}
-                                            <Button
-                                                variant="secondary"
-                                                onClick={() =>
-                                                    removeProject(project)
-                                                }
-                                                title="Delete project"
-                                            >
-                                                <Trash2 size={18} />
-                                            </Button>
-                                        </Box>
-                                    </Table.Cell>
-                                </Table.Row>
-                            ))}
-                        </Table.Body>
-                    </Table>
+                    <ProjectsTable
+                        headers={tableHeaders}
+                        projects={filtered}
+                        renamingId={renamingId}
+                        renameValue={renameValue}
+                        salesStatusLabel={salesStatusLabel}
+                        onRenameValueChange={setRenameValue}
+                        onStartRename={(project: EnrichedProject) => {
+                            setRenamingId(project.id);
+                            setRenameValue(project.name);
+                        }}
+                        onSaveRename={saveRename}
+                        onDelete={removeProject}
+                    />
                 )}
             </Box>
         </>
