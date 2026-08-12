@@ -7,7 +7,8 @@
     "exports": "./out/index.js",
     "main": "./out/index.js",
     "scripts": {
-        "build": "tsc --build tsconfig.build.json"
+        "build": "tsc --build tsconfig.build.json",
+        "test": "node --test"
     },
     "dependencies": {
         "@generated/data-connector-web": "workspace:*",
@@ -16,6 +17,7 @@
     "devDependencies": {
         "@tanstack-query-firebase/react": "^2.1.1",
         "@tanstack/react-query": "^5.101.4",
+        "@types/node": "^26.1.2",
         "@types/react": "^19.2.18",
         "firebase": "^12.17.0",
         "typescript": "^6.0.3"
