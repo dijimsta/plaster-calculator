@@ -4,6 +4,7 @@ import type { QuotesTableRow } from "@libraries/plaster-calculator-ui";
 export const QUOTES_TABLE_POPULATED_ROWS: readonly QuotesTableRow[] = [
     {
         quoteId: "quote-1042",
+        projectId: "project-riverside-extension",
         reference: "Q-1042",
         projectName: "Riverside Extension",
         companyName: "Coastal Builders Pty Ltd",
@@ -13,6 +14,7 @@ export const QUOTES_TABLE_POPULATED_ROWS: readonly QuotesTableRow[] = [
     },
     {
         quoteId: "quote-1041",
+        projectId: "project-hilltop-renovation",
         reference: "Q-1041",
         projectName: "Hilltop Renovation",
         companyName: "Summit Construction",
@@ -22,6 +24,7 @@ export const QUOTES_TABLE_POPULATED_ROWS: readonly QuotesTableRow[] = [
     },
     {
         quoteId: "quote-1039",
+        projectId: "project-lakeside-granny-flat",
         reference: "Q-1039",
         projectName: "Lakeside Granny Flat",
         companyName: null,
@@ -31,6 +34,7 @@ export const QUOTES_TABLE_POPULATED_ROWS: readonly QuotesTableRow[] = [
     },
     {
         quoteId: "quote-1036",
+        projectId: "project-warehouse-fitout-stage-2",
         reference: null,
         projectName: "Warehouse Fitout — Stage 2",
         companyName: "Metro Fitouts",
@@ -40,6 +44,7 @@ export const QUOTES_TABLE_POPULATED_ROWS: readonly QuotesTableRow[] = [
     },
     {
         quoteId: "quote-1035",
+        projectId: "project-beachside-duplex",
         reference: "Q-1035",
         projectName: "Beachside Duplex",
         companyName: "Shoreline Homes",
@@ -49,6 +54,7 @@ export const QUOTES_TABLE_POPULATED_ROWS: readonly QuotesTableRow[] = [
     },
     {
         quoteId: "quote-1028",
+        projectId: "project-heritage-cottage-restoration",
         reference: "Q-1028",
         projectName: "Heritage Cottage Restoration",
         companyName: "Old Town Renovations",
@@ -62,6 +68,7 @@ export const QUOTES_TABLE_POPULATED_ROWS: readonly QuotesTableRow[] = [
 export const QUOTES_TABLE_SINGLE_ROW: readonly QuotesTableRow[] = [
     {
         quoteId: "quote-1042",
+        projectId: "project-riverside-extension",
         reference: "Q-1042",
         projectName: "Riverside Extension",
         companyName: "Coastal Builders Pty Ltd",

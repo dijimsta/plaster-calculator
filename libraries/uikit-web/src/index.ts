@@ -49,7 +49,7 @@ export type {
 export { ButtonGroup } from "./elements/button-group/index.ts";
 export type { ButtonGroupProps } from "./elements/button-group/index.ts";
 export { Card } from "./layout/card/index.ts";
-export type { CardProps } from "./layout/card/index.ts";
+export type { CardProps, CardVariant } from "./layout/card/index.ts";
 export { Checkbox } from "./forms/checkbox/index.ts";
 export type { CheckboxProps, CheckboxSize } from "./forms/checkbox/index.ts";
 export { Container } from "./layout/container/index.ts";

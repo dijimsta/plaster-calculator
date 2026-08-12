@@ -5,6 +5,8 @@ import {
     DEFAULT_WALL_BOARD_TYPE,
     INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
     READINESS_CHECKS,
+    ROOMS_MEASURED_CHECK_ID,
+    SCALE_APPLIED_CHECK_ID,
     TEMPLATE_PRICED_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
 } from "@libraries/plaster-calculator-common";
@@ -46,6 +48,17 @@ export default meta;
 
 type Story = StoryObj<typeof ReadinessCheckList>;
 
+const SUMMARY_READINESS_CHECKS = READINESS_CHECKS.filter(
+    (check) =>
+        check.id === SCALE_APPLIED_CHECK_ID ||
+        check.id === ROOMS_MEASURED_CHECK_ID,
+);
+const DETAIL_READINESS_CHECKS = READINESS_CHECKS.filter(
+    (check) =>
+        check.id !== SCALE_APPLIED_CHECK_ID &&
+        check.id !== ROOMS_MEASURED_CHECK_ID,
+);
+
 export const FullyBlocked: Story = {
     name: "Fully blocked",
     render: () => {
@@ -56,9 +69,10 @@ export const FullyBlocked: Story = {
                 <ReadinessSummaryHeader
                     results={FULLY_BLOCKED_RESULTS}
                     onGenerateQuote={fn()}
+                    summaryChecks={SUMMARY_READINESS_CHECKS}
                 />
                 <ReadinessCheckList
-                    checks={READINESS_CHECKS}
+                    checks={DETAIL_READINESS_CHECKS}
                     results={FULLY_BLOCKED_RESULTS}
                     renderFixControl={(item, check: ReadinessCheck) => {
                         switch (check.id) {
@@ -126,9 +140,10 @@ export const OneCheckUnmet: Story = {
             <ReadinessSummaryHeader
                 results={ONE_CHECK_UNMET_RESULTS}
                 onGenerateQuote={fn()}
+                summaryChecks={SUMMARY_READINESS_CHECKS}
             />
             <ReadinessCheckList
-                checks={READINESS_CHECKS}
+                checks={DETAIL_READINESS_CHECKS}
                 results={ONE_CHECK_UNMET_RESULTS}
                 renderFixControl={(item, check: ReadinessCheck) =>
                     check.id === TEMPLATE_PRICED_CHECK_ID ? (
@@ -150,9 +165,10 @@ export const Ready: Story = {
             <ReadinessSummaryHeader
                 results={ALL_CHECKS_MET_RESULTS}
                 onGenerateQuote={fn()}
+                summaryChecks={SUMMARY_READINESS_CHECKS}
             />
             <ReadinessCheckList
-                checks={READINESS_CHECKS}
+                checks={DETAIL_READINESS_CHECKS}
                 results={ALL_CHECKS_MET_RESULTS}
             />
         </Box>
@@ -166,9 +182,10 @@ export const MultiPageOnlyPageTwoUnscaled: Story = {
             <ReadinessSummaryHeader
                 results={MULTI_PAGE_ONLY_PAGE_TWO_UNSCALED_RESULTS}
                 onGenerateQuote={fn()}
+                summaryChecks={SUMMARY_READINESS_CHECKS}
             />
             <ReadinessCheckList
-                checks={READINESS_CHECKS}
+                checks={DETAIL_READINESS_CHECKS}
                 results={MULTI_PAGE_ONLY_PAGE_TWO_UNSCALED_RESULTS}
             />
         </Box>
@@ -189,9 +206,10 @@ export const CheckAffectingSeveralRoomsExpanded: Story = {
             <ReadinessSummaryHeader
                 results={CHECK_AFFECTING_SEVERAL_ROOMS_RESULTS}
                 onGenerateQuote={fn()}
+                summaryChecks={SUMMARY_READINESS_CHECKS}
             />
             <ReadinessCheckList
-                checks={READINESS_CHECKS}
+                checks={DETAIL_READINESS_CHECKS}
                 results={CHECK_AFFECTING_SEVERAL_ROOMS_RESULTS}
                 renderFixControl={(item, check: ReadinessCheck) =>
                     check.id === WALL_TYPE_SET_CHECK_ID ? (

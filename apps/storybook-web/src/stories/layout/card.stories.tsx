@@ -59,6 +59,14 @@ export const TitleOnly: Story = {
     ),
 };
 
+export const Subtle: Story = {
+    render: () => (
+        <Card variant="subtle">
+            <Card.Title>Scale applied</Card.Title>
+        </Card>
+    ),
+};
+
 export const WithHeader: Story = {
     render: () => (
         <Card>

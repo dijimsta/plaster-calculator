@@ -3,7 +3,14 @@ import type {
     ReadinessCheck,
     ReadinessResult,
 } from "@libraries/plaster-calculator-common";
-import { Badge, Box, Button, StackedList, Text } from "@libraries/uikit-web";
+import {
+    Badge,
+    Box,
+    Button,
+    Card,
+    StackedList,
+    Text,
+} from "@libraries/uikit-web";
 import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
 
@@ -27,6 +34,7 @@ export type ReadinessCheckListProps = {
     readonly checks: readonly ReadinessCheck[];
     readonly results: readonly ReadinessResult[];
     readonly renderFixControl?: ReadinessCheckListRenderFixControl;
+    readonly variant?: "stacked" | "subtle-cards";
 };
 
 /**
@@ -42,7 +50,26 @@ export function ReadinessCheckList({
     checks,
     results,
     renderFixControl,
+    variant = "stacked",
 }: ReadinessCheckListProps): ReactElement {
+    if (variant === "subtle-cards") {
+        return (
+            <Box direction="column" gap="sm">
+                {checks.map((check) => (
+                    <Card key={check.id} variant="subtle">
+                        <ReadinessCheckRow
+                            check={check}
+                            result={results.find(
+                                (result) => result.checkId === check.id,
+                            )}
+                            renderFixControl={renderFixControl}
+                        />
+                    </Card>
+                ))}
+            </Box>
+        );
+    }
+
     return (
         <StackedList bordered>
             {checks.map((check) => (
