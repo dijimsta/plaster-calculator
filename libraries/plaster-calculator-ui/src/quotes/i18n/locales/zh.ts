@@ -38,9 +38,6 @@ export const zh = createTranslationResource(
             columnQuantity: "数量",
             columnUnitPrice: "单价",
             columnAmount: "金额",
-            subtotal: "小计",
-            gst: "增值税（10%）",
-            totalIncGst: "含税总额",
         }),
         quoteLineItemsTable: Object.freeze({
             tableLabel: "项目明细",
@@ -53,6 +50,11 @@ export const zh = createTranslationResource(
                 "根据{{source}}计算 — {{plasterType}}",
             provenanceMatchedKeywords: "已匹配 {{keywords}}",
             unknownProvenance: "来源未知",
+        }),
+        quoteTotalsBlock: Object.freeze({
+            subtotal: "小计",
+            gst: "增值税（10%）",
+            totalIncGst: "含税总额",
         }),
         quotesTable: Object.freeze({
             tableLabel: "报价单",

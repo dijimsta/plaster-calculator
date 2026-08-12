@@ -6,6 +6,7 @@ import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 import { QuoteStatusBadge } from "../quote-status-badge/index.ts";
+import { QuoteTotalsBlock } from "../quote-totals-block/index.ts";
 
 import type { QuoteDetailDocumentLineItem } from "./quote-detail-document.types.ts";
 import { QuoteDetailDocumentUtils } from "./quote-detail-document.utils.ts";
@@ -112,47 +113,12 @@ export function QuoteDetailDocument({
                         ))}
                     </Table.Body>
                 </Table>
-                <Box direction="column" gap="xs" align="end">
-                    <QuoteDetailDocumentTotalsRow
-                        label={t("quoteDetailDocument.subtotal")}
-                        amountCents={totals.subtotalCents}
-                    />
-                    <QuoteDetailDocumentTotalsRow
-                        label={t("quoteDetailDocument.gst")}
-                        amountCents={totals.gstCents}
-                    />
-                    <QuoteDetailDocumentTotalsRow
-                        label={t("quoteDetailDocument.totalIncGst")}
-                        amountCents={totals.totalIncGstCents}
-                        emphasized
-                    />
-                </Box>
+                <QuoteTotalsBlock
+                    subtotalCents={totals.subtotalCents}
+                    gstCents={totals.gstCents}
+                    totalIncGstCents={totals.totalIncGstCents}
+                />
             </Box>
         </Card>
-    );
-}
-
-type QuoteDetailDocumentTotalsRowProps = {
-    readonly label: string;
-    readonly amountCents: number;
-    readonly emphasized?: boolean;
-};
-
-function QuoteDetailDocumentTotalsRow({
-    label,
-    amountCents,
-    emphasized = false,
-}: QuoteDetailDocumentTotalsRowProps): ReactElement {
-    const textSize = emphasized ? "base" : "sm";
-
-    return (
-        <Box direction="row" gap="md">
-            <Text size={textSize} variant={emphasized ? "default" : "muted"}>
-                {label}
-            </Text>
-            <Text size={textSize}>
-                ${CurrencyUtils.centsToDollarsText(amountCents)}
-            </Text>
-        </Box>
     );
 }
