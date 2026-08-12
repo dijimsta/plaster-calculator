@@ -13,6 +13,14 @@ export const zh = createTranslationResource(
             emptyStateTitle: "暂无报价",
             emptyStateDescription: "价格设置完成后，系统将根据项目生成报价。",
         }),
+        // Same note as en.ts: not consumed by any component in this batch,
+        // added ahead of the route that will use them.
+        quoteDetailPage: Object.freeze({
+            breadcrumb: "报价单",
+            downloadPdf: "下载 PDF",
+            markAsSent: "标记为已发送",
+            markAccepted: "标记为已接受",
+        }),
         quoteStatusBadge: Object.freeze({
             draft: "草稿",
             sent: "已发送",
