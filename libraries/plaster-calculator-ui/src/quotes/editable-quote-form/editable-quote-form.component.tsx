@@ -79,6 +79,7 @@ export function EditableQuoteForm({
             <FormLayoutSection
                 title={t("editableQuoteForm.quoteDetailsTitle")}
                 description={t("editableQuoteForm.quoteDetailsDescription")}
+                bodySpacing="compact"
             >
                 <FormLayoutField
                     label={t("editableQuoteForm.referenceLabel")}
