@@ -17,7 +17,7 @@
         {
             "source": "functions/plaster-calculator-functions",
             "codebase": "plaster-calculator-functions",
-            "runtime": "nodejs22",
+            "runtime": "nodejs24",
             "predeploy": [
                 "pnpm --filter @functions/plaster-calculator-functions run bundle"
             ]
