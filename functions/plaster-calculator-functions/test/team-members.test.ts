@@ -19,6 +19,7 @@ function createDependencies(
         listMembers: async () => [],
         getMember: async () => null,
         deleteMember: async () => undefined,
+        updateTeamName: async () => undefined,
         listAuthUsers: async () => [],
         getAuthUser: async () => null,
         revokeRefreshTokens: async () => undefined,
@@ -166,6 +167,88 @@ test("retries stale claim cleanup after membership is already absent", async () 
     await service.remove("owner-1", { userId: "former-member" });
 
     assert.deepEqual(claims, [{ theme: "dark" }]);
+});
+
+test("allows the owner to update the normalized team name", async () => {
+    const updates: { readonly teamId: string; readonly name: string }[] = [];
+    const service = createTeamMembersService(
+        createDependencies({
+            updateTeamName: async (teamId, name) => {
+                updates.push({ teamId, name });
+            },
+        }),
+    );
+
+    const result = await service.updateName("owner-1", {
+        name: "  New Team Name  ",
+    });
+
+    assert.deepEqual(result, { teamName: "New Team Name" });
+    assert.deepEqual(updates, [{ teamId: "team-1", name: "New Team Name" }]);
+});
+
+test("rejects team name updates from non-owners", async () => {
+    const service = createTeamMembersService(
+        createDependencies({
+            getMemberships: async () => [
+                {
+                    teamId: "team-1",
+                    userId: "member-1",
+                    role: "MEMBER",
+                    team: { id: "team-1", name: "Example Plastering" },
+                },
+            ],
+        }),
+    );
+
+    await assert.rejects(
+        service.updateName("member-1", { name: "New Team Name" }),
+        hasErrorCode("permission-denied"),
+    );
+});
+
+test("rejects an invalid team name before updating Data Connect", async () => {
+    let updateCount = 0;
+    const service = createTeamMembersService(
+        createDependencies({
+            updateTeamName: async () => {
+                updateCount += 1;
+            },
+        }),
+    );
+
+    await assert.rejects(
+        service.updateName("owner-1", { name: "   " }),
+        hasErrorCode("invalid-argument"),
+    );
+    assert.equal(updateCount, 0);
+});
+
+test("requires exactly one membership before updating a team name", async () => {
+    for (const memberships of [
+        [],
+        [
+            {
+                teamId: "team-1",
+                userId: "owner-1",
+                role: "OWNER",
+            },
+            {
+                teamId: "team-2",
+                userId: "owner-1",
+                role: "OWNER",
+            },
+        ],
+    ]) {
+        const service = createTeamMembersService(
+            createDependencies({ getMemberships: async () => memberships }),
+        );
+
+        await assert.rejects(
+            service.updateName("owner-1", { name: "New Team Name" }),
+            hasErrorCode("failed-precondition"),
+        );
+    }
 });
 
 function hasErrorCode(code: string) {

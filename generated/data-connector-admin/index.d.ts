@@ -719,6 +719,15 @@ export interface UpdateReminderVariables {
   completedAt?: TimestampString | null;
 }
 
+export interface UpdateTeamNameData {
+  team_update?: Team_Key | null;
+}
+
+export interface UpdateTeamNameVariables {
+  teamId: string;
+  name: string;
+}
+
 export interface UpsertTeamData {
   team_upsert: Team_Key;
 }
@@ -878,6 +887,11 @@ export function getReminderById(vars: GetReminderByIdVariables, options?: Operat
 export function upsertTeam(dc: DataConnect, vars: UpsertTeamVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertTeamData>>;
 /** Generated Node Admin SDK operation action function for the 'UpsertTeam' Mutation. Allow users to pass in custom DataConnect instances. */
 export function upsertTeam(vars: UpsertTeamVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertTeamData>>;
+
+/** Generated Node Admin SDK operation action function for the 'UpdateTeamName' Mutation. Allow users to execute without passing in DataConnect. */
+export function updateTeamName(dc: DataConnect, vars: UpdateTeamNameVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateTeamNameData>>;
+/** Generated Node Admin SDK operation action function for the 'UpdateTeamName' Mutation. Allow users to pass in custom DataConnect instances. */
+export function updateTeamName(vars: UpdateTeamNameVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpdateTeamNameData>>;
 
 /** Generated Node Admin SDK operation action function for the 'UpsertTeamMember' Mutation. Allow users to execute without passing in DataConnect. */
 export function upsertTeamMember(dc: DataConnect, vars: UpsertTeamMemberVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<UpsertTeamMemberData>>;

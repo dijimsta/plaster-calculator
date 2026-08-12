@@ -33,6 +33,9 @@ const defaultDependencies: TeamMembersDependencies = {
     deleteMember: async (teamId, userId) => {
         await DataConnector.deleteTeamMember({ teamId, userId });
     },
+    updateTeamName: async (teamId, name) => {
+        await DataConnector.updateTeamName({ teamId, name });
+    },
     listAuthUsers,
     getAuthUser: getAuthUserOrNull,
     revokeRefreshTokens: async (userId) => {
@@ -53,6 +56,11 @@ export const listMyTeamMembers = onCall(async (request) => {
 export const removeTeamMember = onCall(async (request) => {
     const auth = requireAuth(request);
     return teamMembersService.remove(auth.uid, request.data);
+});
+
+export const updateMyTeamName = onCall(async (request) => {
+    const auth = requireAuth(request);
+    return teamMembersService.updateName(auth.uid, request.data);
 });
 
 async function listAuthUsers(
