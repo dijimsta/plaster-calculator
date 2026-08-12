@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import { Children, useState } from "react";
 import type { DragEvent, ReactElement, ReactNode } from "react";

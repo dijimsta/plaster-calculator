@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import { cloneElement, createContext, useContext } from "react";
 import type { ReactElement, ReactNode } from "react";

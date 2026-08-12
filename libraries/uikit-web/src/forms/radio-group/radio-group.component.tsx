@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import { createContext, useContext, useId } from "react";
 import type { ChangeEventHandler, ReactElement, ReactNode } from "react";
