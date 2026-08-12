@@ -14,6 +14,7 @@ import type {
 import { GenerateQuoteUtils } from "../../src/quotes/generate-quote.utils.ts";
 
 const WALL_QUANTITY_SOURCE_ID = "qs-wall-standard";
+const SYSTEM_WALL_QUANTITY_SOURCE_ID = "c1b8d7b7bfda440099d664a366c02f62";
 
 function templateConfigFixture(
     overrides: Partial<GenerateQuoteTemplateConfig> = {},
@@ -130,6 +131,24 @@ test("resolveQuoteItems resolves a matched keyword-conditional template with no 
     assert.deepEqual(items[0]?.matchedKeywords, ["raised ceiling"]);
 });
 
+test("resolveQuoteItems resolves an unconditional template with no quantity source to a flat quantity of 1", () => {
+    const items = GenerateQuoteUtils.resolveQuoteItems(
+        [
+            templateConfigFixture({
+                itemTemplateId: "site-setup",
+                name: "Site setup",
+                quantitySourceId: null,
+            }),
+        ],
+        [],
+        "",
+    );
+
+    assert.equal(items.length, 1);
+    assert.equal(items[0]?.quantity, 1);
+    assert.deepEqual(items[0]?.matchedKeywords, []);
+});
+
 test("resolveQuoteItems resolves a matched keyword-conditional template that also has a quantity source from the rollup, not a flat 1", () => {
     const items = GenerateQuoteUtils.resolveQuoteItems(
         [
@@ -191,6 +210,82 @@ test("build proceeds and produces mutation variables when the readiness gate is 
         assert.equal(result.variables.includeItem1, true);
         assert.equal(result.variables.item1Quantity, 1);
         assert.deepEqual(result.variables.item1MatchedKeywords, ["skylight"]);
+    }
+});
+
+test("build matches Data Connect's compact quantity-source UUIDs to measured rollups", () => {
+    const input: GenerateQuoteInput = {
+        isReady: true,
+        projectId: "project-1",
+        quoteId: "quote-1",
+        pages: [
+            {
+                pageId: "page-1",
+                overlay: {
+                    areas: [
+                        {
+                            id: "room-1",
+                            label: "Living room",
+                            points: [
+                                [0, 0],
+                                [100, 0],
+                                [100, 100],
+                                [0, 100],
+                            ],
+                            wallBoardType: "10mm Plasterboard",
+                            ceilingPlasterType: "Standard",
+                            ceilingHeightMm: 2400,
+                            source: "detected",
+                            deleted: false,
+                        },
+                    ],
+                },
+                scaleMmPerPx: 5,
+                pageHeightMm: null,
+            },
+        ],
+        templateConfigs: [
+            templateConfigFixture({
+                quantitySourceId: SYSTEM_WALL_QUANTITY_SOURCE_ID,
+            }),
+        ],
+        searchText: "",
+    };
+
+    const result = GenerateQuoteUtils.build(input);
+
+    assert.equal(result.ok, true);
+    if (result.ok) {
+        assert.equal(result.itemCount, 1);
+        assert.equal(result.variables.item1Quantity, 4.8);
+        assert.equal(
+            result.variables.item1QuantitySourceId,
+            SYSTEM_WALL_QUANTITY_SOURCE_ID,
+        );
+    }
+});
+
+test("build refuses to persist an empty quote when no items resolve", () => {
+    const input: GenerateQuoteInput = {
+        isReady: true,
+        projectId: "project-1",
+        quoteId: "quote-1",
+        pages: [],
+        templateConfigs: [
+            templateConfigFixture({
+                hasKeywords: true,
+                keywords: ["skylight"],
+                quantitySourceId: null,
+            }),
+        ],
+        searchText: "standard ceiling throughout",
+    };
+
+    const result = GenerateQuoteUtils.build(input);
+
+    assert.equal(result.ok, false);
+    if (!result.ok) {
+        assert.equal(result.reason, "NO_ITEMS");
     }
 });
 

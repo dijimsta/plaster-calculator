@@ -14,11 +14,11 @@ export type QuoteLineItemsTableProps = {
 
 /**
  * The line-items table on a generated quote: one row per `QuoteItem`,
- * naming each row's provenance -- the metric its quantity came from, or the
- * keywords that matched it onto the quote -- beneath its name. Read-only:
- * no editing affordances. Presentational only -- `rows` is data the caller
- * already mapped from a query result; this component owns no data
- * fetching.
+ * naming each row's provenance -- the metric its quantity came from, the
+ * keywords that matched it onto the quote, or its default inclusion --
+ * beneath its name. Read-only: no editing affordances. Presentational only
+ * -- `rows` is data the caller already mapped from a query result; this
+ * component owns no data fetching.
  */
 export function QuoteLineItemsTable({
     rows,

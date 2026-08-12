@@ -652,6 +652,7 @@ export interface GetQuoteReadinessData {
     name: string;
     salesStatus: string;
     pageCount: number;
+    extractedTextJson?: string | null;
   } & Project_Key;
   floorplanPages: ({
     id: UUIDString;
@@ -659,6 +660,7 @@ export interface GetQuoteReadinessData {
     scaleMmPerPx?: number | null;
     ceilingHeightMm?: number | null;
     overlayJson?: string | null;
+    ocrTextContent?: string | null;
   } & FloorplanPage_Key)[];
   projectQuestionnaireQuestions: ({
     id: UUIDString;

@@ -46,6 +46,7 @@ export const en = Object.freeze({
         provenanceFromSourceWithPlasterType:
             "From {{source}} — {{plasterType}}",
         provenanceMatchedKeywords: "Matched {{keywords}}",
+        includedByDefault: "Included by default",
         unknownProvenance: "Provenance unknown",
     }),
     quoteTotalsBlock: Object.freeze({
@@ -58,6 +59,8 @@ export const en = Object.freeze({
         errorMessages: Object.freeze({
             NOT_READY:
                 "This plan isn't ready to quote. Resolve the checks below and try again.",
+            NO_ITEMS:
+                "No billable items were found. Check the plan measurements and quote template, then try again.",
             TOO_MANY_ITEMS:
                 "This quote has too many items to generate. Reduce the number of priced items and try again.",
         }),

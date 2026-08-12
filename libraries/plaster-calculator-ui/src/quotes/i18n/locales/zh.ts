@@ -49,6 +49,7 @@ export const zh = createTranslationResource(
             provenanceFromSourceWithPlasterType:
                 "根据{{source}}计算 — {{plasterType}}",
             provenanceMatchedKeywords: "已匹配关键词 {{keywords}}",
+            includedByDefault: "默认包含",
             unknownProvenance: "来源未知",
         }),
         quoteTotalsBlock: Object.freeze({
@@ -61,6 +62,8 @@ export const zh = createTranslationResource(
             errorMessages: Object.freeze({
                 NOT_READY:
                     "该方案尚未就绪，无法生成报价。请先解决下方的检查项，然后重试。",
+                NO_ITEMS:
+                    "未找到可计费项目。请检查方案测量数据和报价模板，然后重试。",
                 TOO_MANY_ITEMS:
                     "报价项目过多，无法生成。请减少计价项目数量后重试。",
             }),
