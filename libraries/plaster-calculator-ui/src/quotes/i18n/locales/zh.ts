@@ -18,6 +18,19 @@ export const zh = createTranslationResource(
             sent: "已发送",
             accepted: "已接受",
         }),
+        quoteDetailDocument: Object.freeze({
+            noReference: "无参考编号",
+            noCompany: "无公司",
+            manualLineItem: "手动录入",
+            lineItemsLabel: "项目明细",
+            columnItem: "项目",
+            columnQuantity: "数量",
+            columnUnitPrice: "单价",
+            columnAmount: "金额",
+            subtotal: "小计",
+            gst: "增值税（10%）",
+            totalIncGst: "含税总额",
+        }),
         quotesTable: Object.freeze({
             tableLabel: "报价单",
             // zh has a single plural form (CLDR "other"); `_one` mirrors
