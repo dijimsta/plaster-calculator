@@ -201,6 +201,8 @@ export const zh = createTranslationResource(
             ceilingHeight: Object.freeze({
                 label: "天花板高度",
                 labelWithArea: "天花板高度 — {{area}}",
+                suggestion:
+                    "建议的天花板高度：{{height}} 毫米。请检查后保存以应用此值。",
                 error: "无法更新天花板高度，请重试。",
             }),
             unitPrice: Object.freeze({

@@ -1,5 +1,5 @@
 import type { ReadinessAffectedItem } from "@libraries/plaster-calculator-common";
-import { Badge, Box, Button, Input } from "@libraries/uikit-web";
+import { Badge, Box, Button, Input, Text } from "@libraries/uikit-web";
 import { useId, useState } from "react";
 import type { ReactElement } from "react";
 
@@ -51,24 +51,34 @@ export function CeilingHeightFixControl({
         : t("readinessFixControls.ceilingHeight.label");
     const parsedHeightMm = Number.parseInt(text, 10);
     const isValid = Number.isInteger(parsedHeightMm) && parsedHeightMm > 0;
+    const isSuggestedValue = value === null;
 
     return (
         <Box direction="column" gap="xs">
-            <Box direction="row" align="center" gap="xs" wrap>
-                <Input
-                    id={id}
-                    label={label}
-                    type="number"
-                    inputMode="numeric"
-                    min={0}
-                    step={1}
-                    trailingAddon="mm"
-                    value={text}
-                    disabled={isPending}
-                    invalid={!isValid}
-                    placeholder={String(pageDefaultHeightMm)}
-                    onChange={(event) => setText(event.target.value)}
-                />
+            {isSuggestedValue && (
+                <Text size="sm" variant="muted">
+                    {t("readinessFixControls.ceilingHeight.suggestion", {
+                        height: pageDefaultHeightMm,
+                    })}
+                </Text>
+            )}
+            <Box direction="row" align="center" gap="xs">
+                <Box grow>
+                    <Input
+                        id={id}
+                        label={label}
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        step={1}
+                        trailingAddon="mm"
+                        value={text}
+                        disabled={isPending}
+                        invalid={!isValid}
+                        placeholder={String(pageDefaultHeightMm)}
+                        onChange={(event) => setText(event.target.value)}
+                    />
+                </Box>
                 <Button
                     type="button"
                     variant="secondary"

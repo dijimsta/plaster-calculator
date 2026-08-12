@@ -12,6 +12,8 @@ import {
     GenerateQuoteError,
     useGenerateQuote,
 } from "@libraries/plaster-calculator-web-core";
+import { useQueryClient } from "@tanstack/react-query";
+import { QueryFetchPolicy } from "firebase/data-connect";
 import { useCallback, useMemo } from "react";
 
 import type { ProjectDetail } from "../../../../../types.js";
@@ -37,7 +39,7 @@ export type ProjectQuoteState = {
  * have a generated quote" query, independent of whether generation just
  * happened in this session or the tab is simply being revisited. Maps the
  * query's quote onto the printable detail document via `QuoteTabUtils`.
- * `refresh()` re-runs the query —
+ * `refresh()` reads the query from the server and updates its shared cache —
  * `useGenerateQuoteAction` below calls it once `CreateQuoteWithItems`
  * resolves, since that mutation has no automatic cache relationship to this
  * query.
@@ -46,8 +48,11 @@ export function useProjectQuoteState(
     projectId: string,
     project: ProjectDetail | null,
 ): ProjectQuoteState {
-    const { data, refetch, isLoading, error } =
-        DataConnectorReact.useGetProjectQuote(dataConnect, { projectId });
+    const { data, isLoading, error } = DataConnectorReact.useGetProjectQuote(
+        dataConnect,
+        { projectId },
+    );
+    const queryClient = useQueryClient();
     const quote = data?.project?.quote ?? null;
 
     const document = useMemo(
@@ -66,8 +71,19 @@ export function useProjectQuoteState(
         [quote],
     );
     const refresh = useCallback(async (): Promise<void> => {
-        await refetch();
-    }, [refetch]);
+        const ref = DataConnector.getProjectQuoteRef(dataConnect, {
+            projectId,
+        });
+        const refreshed = await DataConnector.getProjectQuote(
+            dataConnect,
+            { projectId },
+            { fetchPolicy: QueryFetchPolicy.SERVER_ONLY },
+        );
+        queryClient.setQueryData(
+            [ref.name, ref.variables ?? null],
+            refreshed.data,
+        );
+    }, [projectId, queryClient]);
 
     return {
         document,
