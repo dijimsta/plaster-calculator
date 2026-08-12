@@ -115,7 +115,10 @@ function TeamContent({
             {isTeamOwner && (
                 <>
                     <PendingInvitationsPanel invitations={invitations} />
-                    <InviteUserPanel invitations={invitations} />
+                    <InviteUserPanel
+                        invitations={invitations}
+                        teamName={team.data.teamName}
+                    />
                 </>
             )}
         </Box>

@@ -19,6 +19,7 @@ import {
 } from "./invitation-email-modal.js";
 import {
     buildInvitationEmailBody,
+    buildInvitationEmailSubject,
     buildInvitationUrl,
 } from "./team-invitation-links.js";
 import type { UseTeamInvitationsResult } from "./use-team-invitations.js";
@@ -28,10 +29,12 @@ const EMAIL_INPUT_ID = "team-invitation-email";
 
 export type InviteUserPanelProps = Readonly<{
     invitations: UseTeamInvitationsResult;
+    teamName: string;
 }>;
 
 export function InviteUserPanel({
     invitations,
+    teamName,
 }: InviteUserPanelProps): ReactElement {
     const [email, setEmail] = useState("");
     const [emailDraft, setEmailDraft] = useState<InvitationEmailDraft | null>(
@@ -53,7 +56,8 @@ export function InviteUserPanel({
         );
         setEmailDraft({
             email: response.invitation.email,
-            body: buildInvitationEmailBody(invitationUrl),
+            subject: buildInvitationEmailSubject(teamName),
+            body: buildInvitationEmailBody(invitationUrl, teamName),
         });
         setEmail("");
     }

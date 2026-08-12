@@ -15,6 +15,7 @@ import { buildInvitationMailtoHref } from "./team-invitation-links.js";
 
 export type InvitationEmailDraft = Readonly<{
     email: string;
+    subject: string;
     body: string;
 }>;
 
@@ -34,7 +35,7 @@ export function InvitationEmailModal({
     const mailtoHref =
         draft === null
             ? undefined
-            : buildInvitationMailtoHref(draft.email, draft.body);
+            : buildInvitationMailtoHref(draft.email, draft.subject, draft.body);
 
     return (
         <ModalDialog
