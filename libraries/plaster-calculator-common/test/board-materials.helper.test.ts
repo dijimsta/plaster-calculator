@@ -116,3 +116,48 @@ test("wallBoardTypeSource reports 'defaulted' when the primary value is undefine
         "defaulted",
     );
 });
+
+test("wallPlasterCategory reports STANDARD for ordinary plasterboard", () => {
+    assert.equal(
+        BoardMaterialsHelper.wallPlasterCategory("10mm Plasterboard"),
+        "STANDARD",
+    );
+    assert.equal(
+        BoardMaterialsHelper.wallPlasterCategory("13mm Plasterboard"),
+        "STANDARD",
+    );
+});
+
+test("wallPlasterCategory reports STANDARD for acoustic and dry-area fire-resistant boards", () => {
+    assert.equal(
+        BoardMaterialsHelper.wallPlasterCategory("10mm Acoustic (Soundchek)"),
+        "STANDARD",
+    );
+    assert.equal(
+        BoardMaterialsHelper.wallPlasterCategory(
+            "13mm Fire Resistant - dry area",
+        ),
+        "STANDARD",
+    );
+});
+
+test("wallPlasterCategory reports WET_AREA for villaboard, water-resistant, and wet-area fire-resistant boards", () => {
+    assert.equal(
+        BoardMaterialsHelper.wallPlasterCategory("9mm Villaboard"),
+        "WET_AREA",
+    );
+    assert.equal(
+        BoardMaterialsHelper.wallPlasterCategory("6mm Villaboard"),
+        "WET_AREA",
+    );
+    assert.equal(
+        BoardMaterialsHelper.wallPlasterCategory("10mm Water Resistant"),
+        "WET_AREA",
+    );
+    assert.equal(
+        BoardMaterialsHelper.wallPlasterCategory(
+            "13mm Fire Resistant - wet area",
+        ),
+        "WET_AREA",
+    );
+});

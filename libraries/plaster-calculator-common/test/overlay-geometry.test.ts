@@ -82,3 +82,80 @@ test("wallLengthByType returns nothing for outdoor areas", () => {
         [],
     );
 });
+
+test("wallLengthPxByCategory groups the default wall material under STANDARD", () => {
+    assert.deepEqual(OverlayGeometryHelper.wallLengthPxByCategory(area()), [
+        { category: "STANDARD", lengthPx: 400 },
+    ]);
+});
+
+test("wallLengthPxByCategory groups a wet-area board type under WET_AREA", () => {
+    assert.deepEqual(
+        OverlayGeometryHelper.wallLengthPxByCategory(
+            area({ wallBoardType: "9mm Villaboard" }),
+        ),
+        [{ category: "WET_AREA", lengthPx: 400 }],
+    );
+});
+
+test("wallLengthPxByCategory returns nothing for outdoor areas", () => {
+    assert.deepEqual(
+        OverlayGeometryHelper.wallLengthPxByCategory(area({ isOutdoor: true })),
+        [],
+    );
+});
+
+test("wallAreaM2ForArea multiplies wall length by height, per category", () => {
+    // 100x100px square at 10mm/px = 4 x 1m walls = 4m perimeter, 2.4m high.
+    // 4m x 2.4m = 9.6m2, all STANDARD (the default wall material).
+    const result = OverlayGeometryHelper.wallAreaM2ForArea(
+        area({ ceilingHeightMm: 2400 }),
+        10,
+        null,
+    );
+    assert.deepEqual(result, [{ category: "STANDARD", areaM2: 9.6 }]);
+});
+
+test("wallAreaM2ForArea falls back to the page height when the area has none set", () => {
+    const result = OverlayGeometryHelper.wallAreaM2ForArea(area(), 10, 2400);
+    assert.deepEqual(result, [{ category: "STANDARD", areaM2: 9.6 }]);
+});
+
+test("wallAreaM2ForArea returns nothing when no height is known from either the area or the page", () => {
+    assert.deepEqual(
+        OverlayGeometryHelper.wallAreaM2ForArea(area(), 10, null),
+        [],
+    );
+});
+
+test("floorAreaM2ForArea matches ceilingAreaM2ForArea's flat area", () => {
+    assert.equal(
+        OverlayGeometryHelper.floorAreaM2ForArea(area(), 10),
+        OverlayGeometryHelper.ceilingAreaM2ForArea(area(), 10),
+    );
+});
+
+test("floorAreaM2ForArea does not increase for a raked ceiling, unlike ceilingAreaM2ForArea", () => {
+    const rakedArea = area({
+        ceilingMode: "raked",
+        rakedCeiling: {
+            lowEdgeIndex: 0,
+            highEdgeIndex: 2,
+            lowHeightMm: 2400,
+            highHeightMm: 3000,
+        },
+    });
+    const floor = OverlayGeometryHelper.floorAreaM2ForArea(rakedArea, 10);
+    const ceiling = OverlayGeometryHelper.ceilingAreaM2ForArea(rakedArea, 10);
+    assert.equal(floor, 1);
+    assert.ok(ceiling > floor);
+});
+
+test("perimeterLengthPx sums every edge including the closing edge", () => {
+    assert.equal(OverlayGeometryHelper.perimeterLengthPx(SQUARE_100PX), 400);
+});
+
+test("perimeterLengthMForArea converts the perimeter to metres using the page scale", () => {
+    // 100x100px square at 10mm/px = 400px perimeter = 4000mm = 4m.
+    assert.equal(OverlayGeometryHelper.perimeterLengthMForArea(area(), 10), 4);
+});
