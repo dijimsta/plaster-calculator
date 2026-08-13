@@ -3,6 +3,7 @@ import { createTranslationResource } from "@ui/internationalization";
 import { appMetadataByLanguage } from "../language.ts";
 
 import { en } from "./en.ts";
+import { zhUserPage } from "./user-page.zh.ts";
 
 export const zh = createTranslationResource(
     en,
@@ -15,6 +16,7 @@ export const zh = createTranslationResource(
             welcomeBack: "欢迎回来，<strong>{{name}}</strong>！",
             goToApp: "进入应用",
             description: "快速准确地为任何项目估算抹灰工程。",
+            namePlaceholder: "姓名",
             emailPlaceholder: "电子邮箱地址",
             passwordPlaceholder: "密码",
             loading: "请稍候…",
@@ -23,6 +25,7 @@ export const zh = createTranslationResource(
             continueWithGoogle: "使用 Google 继续",
             backToLogin: "返回登录",
             createNewAccount: "创建新账户",
+            createAccount: "创建账户",
             authenticationFailed: "身份验证失败。",
             googleSignInFailed: "Google 登录失败。",
         }),
@@ -213,29 +216,7 @@ export const zh = createTranslationResource(
                 add: "添加联系人",
             }),
         }),
-        userPage: Object.freeze({
-            profile: Object.freeze({
-                title: "个人资料",
-                description: "来自已登录个人资料和关联登录提供商的账户详情。",
-                signedInUser: "已登录用户",
-                noEmailAddress: "无电子邮箱地址",
-                notProvided: "未提供",
-                fields: Object.freeze({
-                    name: "姓名",
-                    email: "电子邮箱",
-                }),
-                connectedLogins: "已关联的登录方式",
-                noConnectedSocialLogins: "没有关联的社交登录方式。",
-            }),
-            appearance: Object.freeze({
-                title: "外观",
-                description: "选择计算器工作区使用的颜色模式。",
-            }),
-            language: Object.freeze({
-                title: "语言",
-                description: "选择问卷表单使用的语言。",
-            }),
-        }),
+        userPage: zhUserPage,
         userSettings: Object.freeze({
             title: "提醒设置",
             description: "控制如何为新工作创建报价跟进提醒。",

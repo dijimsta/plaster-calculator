@@ -1,16 +1,17 @@
 "use client";
 
-import { FirebaseService } from "@libraries/plaster-calculator-web-core";
+import {
+    FirebaseService,
+    updateUserDisplayName,
+} from "@libraries/plaster-calculator-web-core";
 import {
     Alert,
     Button,
     ButtonLink,
     Card,
     Divider,
-    FormLayout,
     GoogleIcon,
     Heading1,
-    Input,
     Paragraph,
 } from "@libraries/uikit-web";
 import {
@@ -27,6 +28,8 @@ import { Trans } from "react-i18next";
 
 import { useAppTranslation } from "../../../i18n/index.ts";
 import { activeTheme, cx } from "../../../lib/styles.js";
+
+import { EmailAuthForm } from "./email-auth-form.js";
 
 const googleProvider = new GoogleAuthProvider();
 const auth = FirebaseService.getAuth();
@@ -45,6 +48,7 @@ const cardWrapperClass = "w-full max-w-md shrink-0 max-[768px]:max-w-none";
 export default function LoginPage() {
     const router = useRouter();
     const { t } = useAppTranslation();
+    const [displayName, setDisplayName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
@@ -66,7 +70,12 @@ export default function LoginPage() {
         setLoading(true);
         try {
             if (isRegistering) {
-                await createUserWithEmailAndPassword(auth, email, password);
+                const credential = await createUserWithEmailAndPassword(
+                    auth,
+                    email,
+                    password,
+                );
+                await updateUserDisplayName(credential.user, displayName);
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
             }
@@ -163,39 +172,17 @@ export default function LoginPage() {
                             </Alert>
                         )}
 
-                        <FormLayout onSubmit={handleEmailSubmit}>
-                            <Input
-                                type="email"
-                                required
-                                autoComplete="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder={t("loginPage.emailPlaceholder")}
-                            />
-                            <Input
-                                type="password"
-                                required
-                                autoComplete={
-                                    isRegistering
-                                        ? "new-password"
-                                        : "current-password"
-                                }
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder={t("loginPage.passwordPlaceholder")}
-                            />
-                            <Button
-                                type="submit"
-                                disabled={loading}
-                                variant="primary"
-                                fullWidth
-                                size="large"
-                            >
-                                {loading
-                                    ? t("loginPage.loading")
-                                    : t("loginPage.logIn")}
-                            </Button>
-                        </FormLayout>
+                        <EmailAuthForm
+                            displayName={displayName}
+                            email={email}
+                            password={password}
+                            isRegistering={isRegistering}
+                            loading={loading}
+                            onDisplayNameChange={setDisplayName}
+                            onEmailChange={setEmail}
+                            onPasswordChange={setPassword}
+                            onSubmit={handleEmailSubmit}
+                        />
 
                         <Divider>{t("loginPage.or")}</Divider>
 

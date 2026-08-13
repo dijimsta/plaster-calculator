@@ -1,5 +1,7 @@
 import { appMetadataByLanguage } from "../language.ts";
 
+import { enUserPage } from "./user-page.en.ts";
+
 export const en = Object.freeze({
     common: Object.freeze({}),
     appMetadata: appMetadataByLanguage.en,
@@ -11,6 +13,7 @@ export const en = Object.freeze({
         goToApp: "Go to App",
         description:
             "Quote your plastering quickly and accurately for any project.",
+        namePlaceholder: "Name",
         emailPlaceholder: "Email address",
         passwordPlaceholder: "Password",
         loading: "Please wait…",
@@ -19,6 +22,7 @@ export const en = Object.freeze({
         continueWithGoogle: "Continue with Google",
         backToLogin: "Back to log in",
         createNewAccount: "Create new account",
+        createAccount: "Create account",
         authenticationFailed: "Authentication failed.",
         googleSignInFailed: "Google sign-in failed.",
     }),
@@ -210,31 +214,7 @@ export const en = Object.freeze({
             add: "Add contact",
         }),
     }),
-    userPage: Object.freeze({
-        profile: Object.freeze({
-            title: "Profile",
-            description:
-                "Account details from your signed-in profile and connected login providers.",
-            signedInUser: "Signed in user",
-            noEmailAddress: "No email address",
-            notProvided: "Not provided",
-            fields: Object.freeze({
-                name: "Name",
-                email: "Email",
-            }),
-            connectedLogins: "Connected logins",
-            noConnectedSocialLogins: "No connected social logins.",
-        }),
-        appearance: Object.freeze({
-            title: "Appearance",
-            description:
-                "Choose the colour mode used across the calculator workspace.",
-        }),
-        language: Object.freeze({
-            title: "Language",
-            description: "Choose the language used for questionnaire forms.",
-        }),
-    }),
+    userPage: enUserPage,
     userSettings: Object.freeze({
         title: "Reminder settings",
         description:

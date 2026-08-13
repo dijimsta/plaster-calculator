@@ -19,6 +19,7 @@ import { ThemeSettingsControl } from "../../../components/theme-settings-control
 import { useAppTranslation } from "../../../i18n/index.ts";
 
 import { UserPageHeader } from "./user-page-header.js";
+import { UserProfileNameForm } from "./user-profile-name-form.js";
 import { UserSettingsPanel } from "./user-settings.js";
 
 export default function UserPage() {
@@ -71,12 +72,6 @@ export default function UserPage() {
                             <DescriptionList
                                 items={[
                                     {
-                                        term: t("userPage.profile.fields.name"),
-                                        details:
-                                            user.displayName ||
-                                            t("userPage.profile.notProvided"),
-                                    },
-                                    {
                                         term: t(
                                             "userPage.profile.fields.email",
                                         ),
@@ -86,6 +81,7 @@ export default function UserPage() {
                                     },
                                 ]}
                             />
+                            <UserProfileNameForm user={user} />
                             <Box direction="column" gap="md">
                                 <Heading6>
                                     {t("userPage.profile.connectedLogins")}
