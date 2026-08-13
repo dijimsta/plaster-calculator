@@ -56,15 +56,10 @@ export class QuoteLineItemsTableUtils {
      * `matchedKeywords` only explains inclusion (relevant for a flat-fee
      * line with nothing to measure, where `quantitySource` is `null`).
      *
-     * A row with neither is a data bug, not a state this component renders
-     * silently: `GenerateQuoteUtils.resolveQuoteItem`
-     * (`@libraries/plaster-calculator-web-core`) never emits one, since a
-     * template needs either a `quantitySourceId` or a keyword match to
-     * resolve a non-zero quantity in the first place, and `matchedKeywords`
-     * is only ever empty for a `quantitySourceId`-driven, unconditional
-     * template. This warns unconditionally (not gated behind a dev check --
-     * it should never happen in any environment) and renders a translated
-     * fallback label rather than rendering blank provenance.
+     * A row with neither is an unconditional flat-fee item configured as
+     * "Include by default". It legitimately has no measured quantity source
+     * or matched keyword, so it renders an explicit translated label rather
+     * than warning or falling back to unknown provenance.
      */
     public static provenanceLabel(
         row: QuoteLineItemsTableRow,
@@ -82,10 +77,7 @@ export class QuoteLineItemsTableUtils {
                 t,
             );
         }
-        console.warn(
-            `QuoteLineItemsTable: line item "${row.name}" (${row.id}) has neither a quantitySource nor matchedKeywords -- every generated line should have one or the other.`,
-        );
-        return t("quoteLineItemsTable.unknownProvenance");
+        return t("quoteLineItemsTable.includedByDefault");
     }
 
     private static quantitySourceProvenanceLabel(

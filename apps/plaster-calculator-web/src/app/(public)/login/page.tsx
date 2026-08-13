@@ -1,38 +1,22 @@
 "use client";
 
 import {
-    FirebaseService,
-    updateUserDisplayName,
-} from "@libraries/plaster-calculator-web-core";
-import {
     Alert,
     Button,
-    ButtonLink,
     Card,
     Divider,
     GoogleIcon,
     Heading1,
     Paragraph,
 } from "@libraries/uikit-web";
-import {
-    createUserWithEmailAndPassword,
-    GoogleAuthProvider,
-    onAuthStateChanged,
-    signInWithEmailAndPassword,
-    signInWithPopup,
-    type User,
-} from "firebase/auth";
-import { useRouter } from "next/navigation.js";
-import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { Trans } from "react-i18next";
 
 import { useAppTranslation } from "../../../i18n/index.ts";
 import { activeTheme, cx } from "../../../lib/styles.js";
 
 import { EmailAuthForm } from "./email-auth-form.js";
-
-const googleProvider = new GoogleAuthProvider();
-const auth = FirebaseService.getAuth();
+import { useLoginPage } from "./use-login-page.ts";
 
 const pageClass = cx(
     "flex min-h-screen items-center justify-center p-5",
@@ -46,112 +30,23 @@ const brandClass =
 const cardWrapperClass = "w-full max-w-md shrink-0 max-[768px]:max-w-none";
 
 export default function LoginPage() {
-    const router = useRouter();
+    return (
+        <Suspense fallback={null}>
+            <LoginPageContent />
+        </Suspense>
+    );
+}
+
+function LoginPageContent() {
+    const login = useLoginPage();
     const { t } = useAppTranslation();
-    const [displayName, setDisplayName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [isRegistering, setIsRegistering] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [authChecked, setAuthChecked] = useState(false);
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        return onAuthStateChanged(auth, (user) => {
-            setCurrentUser(user);
-            setAuthChecked(true);
-        });
-    }, []);
-
-    async function handleEmailSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        setError(null);
-        setLoading(true);
-        try {
-            if (isRegistering) {
-                const credential = await createUserWithEmailAndPassword(
-                    auth,
-                    email,
-                    password,
-                );
-                await updateUserDisplayName(credential.user, displayName);
-            } else {
-                await signInWithEmailAndPassword(auth, email, password);
-            }
-            router.push("/");
-        } catch (err: unknown) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : t("loginPage.authenticationFailed"),
-            );
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    async function handleGoogleSignIn() {
-        setError(null);
-        setLoading(true);
-        try {
-            await signInWithPopup(auth, googleProvider);
-            router.push("/");
-        } catch (err: unknown) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : t("loginPage.googleSignInFailed"),
-            );
-            setLoading(false);
-        }
-    }
-
-    if (!authChecked) {
+    if (!login.authChecked) {
         return null;
     }
 
-    if (currentUser) {
-        return (
-            <div className={pageClass}>
-                <div className={heroClass}>
-                    <div className={brandClass}>
-                        <Heading1>{t("loginPage.brandName")}</Heading1>
-                        <Paragraph textSize="xl">
-                            {t("loginPage.signedInDescription")}
-                        </Paragraph>
-                    </div>
-
-                    <div className={cardWrapperClass}>
-                        <Card>
-                            <Paragraph>
-                                <Trans
-                                    t={t}
-                                    i18nKey="loginPage.welcomeBack"
-                                    values={{
-                                        name:
-                                            currentUser.displayName ??
-                                            currentUser.email ??
-                                            t("sidebar.userFallback"),
-                                    }}
-                                    components={{ strong: <strong /> }}
-                                />
-                            </Paragraph>
-                            <Card.ButtonGroup>
-                                <ButtonLink
-                                    href="/"
-                                    variant="primary"
-                                    fullWidth
-                                    size="large"
-                                >
-                                    {t("loginPage.goToApp")}
-                                </ButtonLink>
-                            </Card.ButtonGroup>
-                        </Card>
-                    </div>
-                </div>
-            </div>
-        );
+    if (login.currentUser) {
+        return <SignedInPage login={login} />;
     }
 
     return (
@@ -166,30 +61,30 @@ export default function LoginPage() {
 
                 <div className={cardWrapperClass}>
                     <Card>
-                        {error && (
+                        {login.error && (
                             <Alert intent="error" variant="light-with-border">
-                                {error}
+                                {login.error}
                             </Alert>
                         )}
 
                         <EmailAuthForm
-                            displayName={displayName}
-                            email={email}
-                            password={password}
-                            isRegistering={isRegistering}
-                            loading={loading}
-                            onDisplayNameChange={setDisplayName}
-                            onEmailChange={setEmail}
-                            onPasswordChange={setPassword}
-                            onSubmit={handleEmailSubmit}
+                            displayName={login.displayName}
+                            email={login.email}
+                            password={login.password}
+                            isRegistering={login.isRegistering}
+                            loading={login.loading}
+                            onDisplayNameChange={login.setDisplayName}
+                            onEmailChange={login.setEmail}
+                            onPasswordChange={login.setPassword}
+                            onSubmit={login.handleEmailSubmit}
                         />
 
                         <Divider>{t("loginPage.or")}</Divider>
 
                         <Button
                             type="button"
-                            onClick={handleGoogleSignIn}
-                            disabled={loading}
+                            onClick={login.handleGoogleSignIn}
+                            disabled={login.loading}
                             variant="secondary"
                             fullWidth
                             size="large"
@@ -202,16 +97,83 @@ export default function LoginPage() {
                             <Button
                                 type="button"
                                 variant="ghost"
-                                onClick={() => {
-                                    setIsRegistering((v) => !v);
-                                    setError(null);
-                                }}
+                                onClick={login.toggleRegistration}
                             >
-                                {isRegistering
+                                {login.isRegistering
                                     ? t("loginPage.backToLogin")
                                     : t("loginPage.createNewAccount")}
                             </Button>
                         </Card.Footer>
+                    </Card>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function SignedInPage({
+    login,
+}: Readonly<{ login: ReturnType<typeof useLoginPage> }>) {
+    const { t } = useAppTranslation();
+    const currentUser = login.currentUser;
+    if (!currentUser) return null;
+
+    return (
+        <div className={pageClass}>
+            <div className={heroClass}>
+                <div className={brandClass}>
+                    <Heading1>{t("loginPage.brandName")}</Heading1>
+                    <Paragraph textSize="xl">
+                        {t("loginPage.signedInDescription")}
+                    </Paragraph>
+                </div>
+
+                <div className={cardWrapperClass}>
+                    <Card>
+                        {login.error && (
+                            <Alert intent="error" variant="light-with-border">
+                                {login.error}
+                            </Alert>
+                        )}
+                        <Paragraph>
+                            <Trans
+                                t={t}
+                                i18nKey="loginPage.welcomeBack"
+                                values={{
+                                    name:
+                                        currentUser.displayName ??
+                                        currentUser.email ??
+                                        t("sidebar.userFallback"),
+                                }}
+                                components={{ strong: <strong /> }}
+                            />
+                        </Paragraph>
+                        <Card.ButtonGroup>
+                            <Button
+                                type="button"
+                                variant="primary"
+                                fullWidth
+                                size="large"
+                                disabled={login.loading}
+                                onClick={login.retryTeamSetup}
+                            >
+                                {login.loading
+                                    ? t("loginPage.loading")
+                                    : t("loginPage.retryTeamSetup")}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                fullWidth
+                                size="large"
+                                disabled={login.loading}
+                                onClick={() =>
+                                    void login.handleUseAnotherAccount()
+                                }
+                            >
+                                {t("loginPage.backToLogin")}
+                            </Button>
+                        </Card.ButtonGroup>
                     </Card>
                 </div>
             </div>

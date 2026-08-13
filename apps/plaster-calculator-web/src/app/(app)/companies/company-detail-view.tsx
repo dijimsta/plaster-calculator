@@ -6,6 +6,7 @@ import {
 } from "@libraries/plaster-calculator-web-core";
 import {
     Box,
+    BusyOverlay,
     EmptyState,
     Paragraph,
     Text,
@@ -14,7 +15,6 @@ import {
 import { Building2, LoaderCircle } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 
-import { BusyOverlay } from "../../../components/busy-overlay.js";
 import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
 import type {

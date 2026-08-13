@@ -9,6 +9,7 @@ import type { QuoteStatus } from "@libraries/plaster-calculator-common";
  */
 export type QuotesTableRow = {
     readonly quoteId: string;
+    readonly projectId: string;
     readonly reference: string | null;
     readonly projectName: string;
     readonly companyName: string | null;

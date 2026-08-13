@@ -88,7 +88,7 @@ function useUpdateAreaOverlayFieldCallback(
                     QuoteReadinessFixUtils.currentReferencePoints(page),
                 referenceLengthMm: page.referenceLengthMm,
             });
-            refresh();
+            await refresh();
         },
         [projectId, projectsService, refresh],
     );
@@ -146,7 +146,7 @@ function useUpdateUnitPriceCallback(
                 materialUnitPriceCents: config.materialUnitPriceCents,
                 labourUnitPriceCents: config.labourUnitPriceCents,
             });
-            refresh();
+            await refresh();
         },
         [activeTemplate, refresh, updateItemTemplateConfig],
     );
@@ -179,7 +179,7 @@ function useConfirmAnswerSourceCallback(
                 projectId,
                 answerSource: MANUAL_ANSWER_SOURCE,
             });
-            refresh();
+            await refresh();
         },
         [projectId, refresh, updateAnswerSource],
     );

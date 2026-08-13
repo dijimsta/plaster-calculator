@@ -5,8 +5,9 @@ import {
     PageHeading,
     Tabs,
 } from "@libraries/uikit-web";
-import { Download, File, Home, Pencil, RefreshCcw } from "lucide-react";
+import { Download, File, Home, Pencil } from "lucide-react";
 import { default as LinkModule } from "next/link.js";
+import type { ReactNode } from "react";
 
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../../i18n/index.ts";
@@ -21,11 +22,11 @@ export interface ProjectHeaderProps {
     readonly activeTab: "floorplan" | "questionnaires" | "quote";
     readonly renaming?: boolean;
     readonly renameValue?: string;
-    readonly load: () => void;
     readonly saveRename?: () => Promise<void>;
     readonly setRenaming?: (renaming: boolean) => void;
     readonly setRenameValue?: (value: string) => void;
     readonly validateAndExport?: () => Promise<void>;
+    readonly additionalActions?: ReactNode;
 }
 
 export function ProjectHeader({
@@ -34,11 +35,11 @@ export function ProjectHeader({
     activeTab,
     renaming,
     renameValue,
-    load,
     saveRename,
     setRenaming,
     setRenameValue,
     validateAndExport,
+    additionalActions,
 }: ProjectHeaderProps) {
     const { t } = useAppTranslation();
 
@@ -78,8 +79,8 @@ export function ProjectHeader({
             </PageHeading.Content>
             <ProjectHeaderActions
                 project={project}
-                load={load}
                 validateAndExport={validateAndExport}
+                additionalActions={additionalActions}
             />
             <PageHeading.Navigation>
                 <Tabs>
@@ -134,9 +135,12 @@ function ProjectHeaderTitle({
 
 function ProjectHeaderActions({
     project,
-    load,
     validateAndExport,
-}: Pick<ProjectHeaderProps, "project" | "load" | "validateAndExport">) {
+    additionalActions,
+}: Pick<
+    ProjectHeaderProps,
+    "project" | "validateAndExport" | "additionalActions"
+>) {
     return (
         <PageHeading.Actions>
             {project && validateAndExport && (
@@ -148,13 +152,7 @@ function ProjectHeaderActions({
                     CSV
                 </Button>
             )}
-            <Button
-                icon={<RefreshCcw aria-hidden="true" />}
-                variant="secondary"
-                onClick={load}
-            >
-                Refresh
-            </Button>
+            {additionalActions}
         </PageHeading.Actions>
     );
 }

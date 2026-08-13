@@ -27,6 +27,8 @@ export type QuoteDetailDocumentProps = {
     readonly issuedAt: string;
     readonly status: QuoteStatus;
     readonly lineItems: readonly QuoteDetailDocumentLineItem[];
+    /** Keeps the document mounted for printing without duplicating it on screen. */
+    readonly printOnly?: boolean;
 };
 
 /**
@@ -42,12 +44,16 @@ export function QuoteDetailDocument({
     issuedAt,
     status,
     lineItems,
+    printOnly = false,
 }: QuoteDetailDocumentProps): ReactElement {
     const { t } = useQuotesTranslation();
     const totals = QuoteDetailDocumentUtils.totals(lineItems);
 
     return (
-        <Card id={QUOTE_DETAIL_DOCUMENT_PRINT_ROOT_ID}>
+        <Card
+            id={QUOTE_DETAIL_DOCUMENT_PRINT_ROOT_ID}
+            visibility={printOnly ? "print-only" : "visible"}
+        >
             <Box direction="column" gap="lg">
                 <Box direction="row" justify="between" align="start" wrap>
                     <Box direction="column" gap="xs">

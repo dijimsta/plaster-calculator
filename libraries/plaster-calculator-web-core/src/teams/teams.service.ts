@@ -1,8 +1,9 @@
 import * as DataConnector from "@generated/data-connector-web";
 import {
-    EnsureMyTeamResponseSchema,
     CreateTeamInvitationRequestSchema,
     CreateTeamInvitationResponseSchema,
+    InitializeMyTeamRequestSchema,
+    InitializeMyTeamResponseSchema,
     ListPendingTeamInvitationsResponseSchema,
     ListMyTeamMembersResponseSchema,
     MyTeamSummarySchema,
@@ -10,13 +11,17 @@ import {
     RemoveTeamMemberResponseSchema,
     RevokeTeamInvitationRequestSchema,
     RevokeTeamInvitationResponseSchema,
+    UpdateTeamNameRequestSchema,
+    UpdateTeamNameResponseSchema,
     type CreateTeamInvitationRequest,
     type CreateTeamInvitationResponse,
+    type InitializeMyTeamRequest,
     type ListPendingTeamInvitationsResponse,
     type ListMyTeamMembersResponse,
     type MyTeamSummary,
     type RemoveTeamMemberResponse,
     type RevokeTeamInvitationResponse,
+    type UpdateTeamNameResponse,
 } from "@libraries/plaster-calculator-common";
 import type { DataConnect } from "firebase/data-connect";
 import { httpsCallable, type Functions } from "firebase/functions";
@@ -31,13 +36,13 @@ export class TeamsService {
         ),
     ) {}
 
-    public async ensureMyTeam(): Promise<string> {
-        const ensureMyTeamCallable = httpsCallable(
-            this.functions,
-            "ensureMyTeam",
-        );
-        const { data } = await ensureMyTeamCallable();
-        return EnsureMyTeamResponseSchema.parse(data).teamId;
+    public async initializeMyTeam(invitationToken?: string): Promise<string> {
+        const input = invitationToken === undefined ? {} : { invitationToken };
+        const request: InitializeMyTeamRequest =
+            InitializeMyTeamRequestSchema.parse(input);
+        const callable = httpsCallable(this.functions, "initializeMyTeam");
+        const { data } = await callable(request);
+        return InitializeMyTeamResponseSchema.parse(data).teamId;
     }
 
     public async listMyTeamMembers(): Promise<ListMyTeamMembersResponse> {
@@ -66,6 +71,15 @@ export class TeamsService {
         const callable = httpsCallable(this.functions, "removeTeamMember");
         const { data } = await callable(request);
         return RemoveTeamMemberResponseSchema.parse(data);
+    }
+
+    public async updateMyTeamName(
+        name: string,
+    ): Promise<UpdateTeamNameResponse> {
+        const request = UpdateTeamNameRequestSchema.parse({ name });
+        const callable = httpsCallable(this.functions, "updateMyTeamName");
+        const { data } = await callable(request);
+        return UpdateTeamNameResponseSchema.parse(data);
     }
 
     public async listPendingTeamInvitations(): Promise<ListPendingTeamInvitationsResponse> {

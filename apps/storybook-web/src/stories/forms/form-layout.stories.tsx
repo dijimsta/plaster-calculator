@@ -21,7 +21,13 @@ const meta: Meta<typeof FormLayout> = {
     argTypes: {
         variant: {
             control: "select",
-            options: ["stacked", "two-column", "cards", "labels-left"],
+            options: [
+                "stacked",
+                "stacked-wide",
+                "two-column",
+                "cards",
+                "labels-left",
+            ],
         },
     },
     parameters: {

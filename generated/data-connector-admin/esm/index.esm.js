@@ -162,6 +162,12 @@ export function upsertTeam(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeMutation('UpsertTeam', inputVars, inputOpts);
 }
 
+export function updateTeamName(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeMutation('UpdateTeamName', inputVars, inputOpts);
+}
+
 export function upsertTeamMember(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

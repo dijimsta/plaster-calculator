@@ -1,5 +1,6 @@
 import { appMetadataByLanguage } from "../language.ts";
 
+import { projects } from "./en/projects.ts";
 import { enUserPage } from "./user-page.en.ts";
 
 export const en = Object.freeze({
@@ -25,6 +26,7 @@ export const en = Object.freeze({
         createAccount: "Create account",
         authenticationFailed: "Authentication failed.",
         googleSignInFailed: "Google sign-in failed.",
+        retryTeamSetup: "Retry team setup",
     }),
     sidebar: Object.freeze({
         navigationLabel: "Application navigation",
@@ -94,25 +96,7 @@ export const en = Object.freeze({
         annotateSelectedPages: "Annotate {{count}} selected pages",
         page: "Page {{number}}",
     }),
-    projects: Object.freeze({
-        breadcrumb: "Projects",
-        title: "Projects",
-        statusTabs: Object.freeze({
-            all: "All",
-        }),
-        loadingProjects: "Loading projects...",
-        refresh: "Refresh",
-        refreshTitle: "Refresh projects",
-        emptyStateTitle: "No projects match your filters",
-        tableHeaders: Object.freeze({
-            project: "Project",
-            company: "Company",
-            plan: "Plan",
-            status: "Status",
-            updated: "Updated",
-            actions: "Actions",
-        }),
-    }),
+    projects,
     questionnaires: Object.freeze({
         title: "Questionnaires",
         projectsTab: "Projects",

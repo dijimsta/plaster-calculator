@@ -3,8 +3,8 @@
 import * as DataConnector from "@generated/data-connector-web";
 import * as DataConnectorReact from "@generated/data-connector-web/react";
 import type {
-    QuoteLineItemsTableRow,
-    QuoteTotalsBlockProps,
+    EditableQuoteFormValues,
+    QuoteDetailDocumentProps,
 } from "@libraries/plaster-calculator-ui";
 import { useQuotesTranslation } from "@libraries/plaster-calculator-ui";
 import {
@@ -12,7 +12,11 @@ import {
     GenerateQuoteError,
     useGenerateQuote,
 } from "@libraries/plaster-calculator-web-core";
+import { useQueryClient } from "@tanstack/react-query";
+import { QueryFetchPolicy } from "firebase/data-connect";
 import { useCallback, useMemo } from "react";
+
+import type { ProjectDetail } from "../../../../../types.js";
 
 import { QuoteTabUtils } from "./quote-tab.utils.js";
 
@@ -21,9 +25,12 @@ const dataConnect = FirebaseService.getDataConnect(
 );
 
 export type ProjectQuoteState = {
-    readonly rows: readonly QuoteLineItemsTableRow[];
-    readonly totals: QuoteTotalsBlockProps | null;
+    readonly document: QuoteDetailDocumentProps | null;
+    readonly editableValues: EditableQuoteFormValues | null;
+    readonly quoteId: string | null;
     readonly hasQuote: boolean;
+    readonly isLoading: boolean;
+    readonly error: unknown;
     readonly refresh: () => Promise<void>;
 };
 
@@ -31,37 +38,61 @@ export type ProjectQuoteState = {
  * Reads back `GetProjectQuote` — the Quote tab's "does this project already
  * have a generated quote" query, independent of whether generation just
  * happened in this session or the tab is simply being revisited. Maps the
- * query's `quote.items` onto `QuoteLineItemsTable`/`QuoteTotalsBlock`'s
- * props via `QuoteTabUtils`, mirroring `useQuoteDetailState`'s identical
- * "hook fetches, maps onto a UI-shaped result" split on the
- * `/quotes/[quoteId]` route. `refresh()` re-runs the query —
+ * query's quote onto the printable detail document via `QuoteTabUtils`.
+ * `refresh()` reads the query from the server and updates its shared cache —
  * `useGenerateQuoteAction` below calls it once `CreateQuoteWithItems`
  * resolves, since that mutation has no automatic cache relationship to this
  * query.
  */
-export function useProjectQuoteState(projectId: string): ProjectQuoteState {
-    const { data, refetch } = DataConnectorReact.useGetProjectQuote(
+export function useProjectQuoteState(
+    projectId: string,
+    project: ProjectDetail | null,
+): ProjectQuoteState {
+    const { data, isLoading, error } = DataConnectorReact.useGetProjectQuote(
         dataConnect,
         { projectId },
     );
+    const queryClient = useQueryClient();
     const quote = data?.project?.quote ?? null;
 
-    const rows = useMemo(
-        () => (quote ? QuoteTabUtils.toLineItemsTableRows(quote.items) : []),
+    const document = useMemo(
+        () =>
+            quote && project
+                ? QuoteTabUtils.toDocumentProps(
+                      quote,
+                      project.name,
+                      project.companyName ?? null,
+                  )
+                : null,
+        [project, quote],
+    );
+    const editableValues = useMemo(
+        () => (quote ? QuoteTabUtils.toEditableValues(quote) : null),
         [quote],
     );
-    const totals = useMemo(
-        () => (quote ? QuoteTabUtils.toTotals(quote.items) : null),
-        [quote],
-    );
+    const refresh = useCallback(async (): Promise<void> => {
+        const ref = DataConnector.getProjectQuoteRef(dataConnect, {
+            projectId,
+        });
+        const refreshed = await DataConnector.getProjectQuote(
+            dataConnect,
+            { projectId },
+            { fetchPolicy: QueryFetchPolicy.SERVER_ONLY },
+        );
+        queryClient.setQueryData(
+            [ref.name, ref.variables ?? null],
+            refreshed.data,
+        );
+    }, [projectId, queryClient]);
 
     return {
-        rows,
-        totals,
+        document,
+        editableValues,
+        quoteId: quote?.id ?? null,
         hasQuote: quote !== null,
-        refresh: async () => {
-            await refetch();
-        },
+        isLoading,
+        error: error ?? null,
+        refresh,
     };
 }
 

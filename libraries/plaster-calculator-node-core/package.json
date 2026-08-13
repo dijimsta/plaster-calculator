@@ -13,7 +13,7 @@
         "@libraries/plaster-calculator-common": "workspace:*"
     },
     "devDependencies": {
-        "@types/node": "^26.1.2",
+        "@types/node": "^22.20.1",
         "firebase-admin": "^14.2.0",
         "typescript": "^6.0.3"
     },

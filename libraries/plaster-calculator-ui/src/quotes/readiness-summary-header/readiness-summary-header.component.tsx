@@ -1,4 +1,7 @@
-import type { ReadinessResult } from "@libraries/plaster-calculator-common";
+import type {
+    ReadinessCheck,
+    ReadinessResult,
+} from "@libraries/plaster-calculator-common";
 import {
     Badge,
     Box,
@@ -10,10 +13,14 @@ import {
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
+import type { ReadinessCheckListRenderFixControl } from "../readiness-check-list/index.ts";
+import { ReadinessCheckList } from "../readiness-check-list/index.ts";
 
 export type ReadinessSummaryHeaderProps = {
     readonly results: readonly ReadinessResult[];
     readonly onGenerateQuote: () => void;
+    readonly summaryChecks?: readonly ReadinessCheck[];
+    readonly renderFixControl?: ReadinessCheckListRenderFixControl;
     /**
      * Set while a generation request (`useGenerateQuote()`,
      * `@libraries/plaster-calculator-web-core`) is in flight — WORK-151's
@@ -41,59 +48,131 @@ export type ReadinessSummaryHeaderProps = {
 export function ReadinessSummaryHeader({
     results,
     onGenerateQuote,
+    summaryChecks = [],
+    renderFixControl,
     isGenerating = false,
 }: ReadinessSummaryHeaderProps): ReactElement {
-    const { t } = useQuotesTranslation();
     const unmetCount = results.filter((result) => !result.isMet).length;
     const isReady = results.length > 0 && unmetCount === 0;
 
     return (
         <Card>
             <Box direction="column" gap="md">
-                <Box direction="row" justify="between" align="center" wrap>
-                    <Box direction="column" gap="xs">
-                        <Card.Title>
-                            {isReady
-                                ? t("readinessSummaryHeader.readyTitle")
-                                : t("readinessSummaryHeader.notReadyTitle")}
-                        </Card.Title>
-                        <Paragraph textSize="sm" variant="muted">
-                            {isReady
-                                ? t("readinessSummaryHeader.readyDescription")
-                                : t(
-                                      "readinessSummaryHeader.notReadyDescription",
-                                      { count: unmetCount },
-                                  )}
-                        </Paragraph>
-                    </Box>
-                    <Badge
-                        color={isReady ? "green" : "red"}
-                        variant="pill-with-border"
-                    >
-                        {isReady
-                            ? t("readinessSummaryHeader.readyBadge")
-                            : t("readinessSummaryHeader.unmetBadge", {
-                                  count: unmetCount,
-                              })}
-                    </Badge>
-                </Box>
-                <Box direction="row" gap="sm" align="center" wrap>
-                    <Button
-                        type="button"
-                        disabled={!isReady || isGenerating}
-                        onClick={onGenerateQuote}
-                    >
-                        {isGenerating
-                            ? t("generateQuote.pending")
-                            : t("readinessSummaryHeader.generateQuote")}
-                    </Button>
-                    {!isReady && (
-                        <Text size="sm" variant="muted">
-                            {t("readinessSummaryHeader.disabledReason")}
-                        </Text>
-                    )}
-                </Box>
+                <ReadinessSummaryStatus
+                    isReady={isReady}
+                    unmetCount={unmetCount}
+                />
+                {summaryChecks.length > 0 && (
+                    <ReadinessCheckList
+                        checks={summaryChecks}
+                        results={results}
+                        renderFixControl={renderFixControl}
+                        variant="alerts"
+                    />
+                )}
+                <GenerateQuoteAction
+                    isReady={isReady}
+                    isGenerating={isGenerating}
+                    onGenerateQuote={onGenerateQuote}
+                />
             </Box>
         </Card>
+    );
+}
+
+type ReadinessSummaryStatusProps = {
+    readonly isReady: boolean;
+    readonly unmetCount: number;
+};
+
+function ReadinessSummaryStatus({
+    isReady,
+    unmetCount,
+}: ReadinessSummaryStatusProps): ReactElement {
+    const { t } = useQuotesTranslation();
+
+    if (isReady) {
+        return (
+            <ReadinessSummaryStatusLayout
+                title={t("readinessSummaryHeader.readyTitle")}
+                description={t("readinessSummaryHeader.readyDescription")}
+                badgeLabel={t("readinessSummaryHeader.readyBadge")}
+                badgeColor="green"
+            />
+        );
+    }
+
+    return (
+        <ReadinessSummaryStatusLayout
+            title={t("readinessSummaryHeader.notReadyTitle")}
+            description={t("readinessSummaryHeader.notReadyDescription", {
+                count: unmetCount,
+            })}
+            badgeLabel={t("readinessSummaryHeader.unmetBadge", {
+                count: unmetCount,
+            })}
+            badgeColor="red"
+        />
+    );
+}
+
+type ReadinessSummaryStatusLayoutProps = {
+    readonly title: string;
+    readonly description: string;
+    readonly badgeLabel: string;
+    readonly badgeColor: "green" | "red";
+};
+
+function ReadinessSummaryStatusLayout({
+    title,
+    description,
+    badgeLabel,
+    badgeColor,
+}: ReadinessSummaryStatusLayoutProps): ReactElement {
+    return (
+        <Box direction="row" justify="between" align="center" wrap>
+            <Box direction="column" gap="xs">
+                <Card.Title>{title}</Card.Title>
+                <Paragraph textSize="sm" variant="muted">
+                    {description}
+                </Paragraph>
+            </Box>
+            <Badge color={badgeColor} variant="pill-with-border">
+                {badgeLabel}
+            </Badge>
+        </Box>
+    );
+}
+
+type GenerateQuoteActionProps = {
+    readonly isReady: boolean;
+    readonly isGenerating: boolean;
+    readonly onGenerateQuote: () => void;
+};
+
+function GenerateQuoteAction({
+    isReady,
+    isGenerating,
+    onGenerateQuote,
+}: GenerateQuoteActionProps): ReactElement {
+    const { t } = useQuotesTranslation();
+
+    return (
+        <Box direction="row" gap="sm" align="center" wrap>
+            <Button
+                type="button"
+                disabled={!isReady || isGenerating}
+                onClick={onGenerateQuote}
+            >
+                {isGenerating
+                    ? t("generateQuote.pending")
+                    : t("readinessSummaryHeader.generateQuote")}
+            </Button>
+            {!isReady && (
+                <Text size="sm" variant="muted">
+                    {t("readinessSummaryHeader.disabledReason")}
+                </Text>
+            )}
+        </Box>
     );
 }

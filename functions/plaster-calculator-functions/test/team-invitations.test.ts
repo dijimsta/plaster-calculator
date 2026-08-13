@@ -8,7 +8,6 @@ import {
     normalizeInvitationEmail,
     readInvitationRole,
     selectOwnerTeamId,
-    shouldCreatePersonalTeamForNewUser,
 } from "../src/team-invitation-domain.ts";
 import type { TeamInvitationDependencies } from "../src/team-invitation-domain.ts";
 
@@ -29,7 +28,6 @@ function createDependencies(
         rotateInvitation: async () => undefined,
         revokeInvitation: async () => undefined,
         listPendingInvitations: async () => [],
-        findPendingInvitations: async () => [],
         getInvitationByTokenHash: async () => undefined,
         acceptInvitation: async () => undefined,
         ...overrides,
@@ -210,6 +208,31 @@ test("rejects redemption when the user already belongs to a team", async () => {
     );
 });
 
+test("repairs a stale invitation read after concurrent acceptance", async () => {
+    const invitations = [
+        invitation(),
+        invitation({
+            acceptedAt: "2026-08-09T00:01:00.000Z",
+            acceptedByUserId: "user-1",
+        }),
+    ];
+    const claims: Record<string, unknown>[] = [];
+    const service = createTeamInvitationService(
+        createDependencies({
+            getInvitationByTokenHash: async () => invitations.shift(),
+            getMemberships: async () => [{ teamId: "team-1", role: "MEMBER" }],
+            setCustomUserClaims: async (_userId, value) => {
+                claims.push(value);
+            },
+        }),
+    );
+
+    const result = await service.accept("user-1", TOKEN_A);
+
+    assert.deepEqual(result, { teamId: "team-1", role: "MEMBER" });
+    assert.deepEqual(claims, [{ teamId: "team-1" }]);
+});
+
 test("accepts an invitation and repairs claims on an idempotent replay", async () => {
     let acceptCalls = 0;
     const claims: Record<string, unknown>[] = [];
@@ -247,48 +270,30 @@ test("accepts an invitation and repairs claims on an idempotent replay", async (
     ]);
 });
 
-test("suppresses personal-team creation only while an invitation is pending", async () => {
-    assert.equal(
-        await shouldCreatePersonalTeamForNewUser(undefined, async () => false),
-        true,
-    );
-    assert.equal(
-        await shouldCreatePersonalTeamForNewUser(
-            "member@example.com",
-            async () => false,
-        ),
-        true,
-    );
-    assert.equal(
-        await shouldCreatePersonalTeamForNewUser(
-            "member@example.com",
-            async () => true,
-        ),
-        false,
-    );
-});
-
-test("signup suppression and redemption tolerate the invitation race", async () => {
-    let membershipCreated = false;
-    const shouldCreate = await shouldCreatePersonalTeamForNewUser(
-        "member@example.com",
-        async () => true,
-    );
+test("treats a concurrent acceptance conflict as an idempotent success", async () => {
+    const pending = invitation();
+    const accepted = invitation({
+        acceptedAt: "2026-08-09T00:01:00.000Z",
+        acceptedByUserId: "user-1",
+    });
+    const invitations = [pending, accepted];
+    const claims: Record<string, unknown>[] = [];
     const service = createTeamInvitationService(
         createDependencies({
-            getInvitationByTokenHash: async () => invitation(),
-            getMemberships: async () =>
-                membershipCreated ? [{ teamId: "team-1", role: "MEMBER" }] : [],
+            getInvitationByTokenHash: async () => invitations.shift(),
             acceptInvitation: async () => {
-                membershipCreated = true;
+                throw new Error("transaction lost the acceptance race");
+            },
+            setCustomUserClaims: async (_userId, value) => {
+                claims.push(value);
             },
         }),
     );
 
-    await service.accept("user-1", TOKEN_A);
+    const result = await service.accept("user-1", TOKEN_A);
 
-    assert.equal(shouldCreate, false);
-    assert.equal(membershipCreated, true);
+    assert.deepEqual(result, { teamId: "team-1", role: "MEMBER" });
+    assert.deepEqual(claims, [{ teamId: "team-1" }]);
 });
 
 function hasErrorCode(code: string) {

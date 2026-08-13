@@ -21,6 +21,25 @@ export const en = Object.freeze({
         notFoundDescription:
             "This quote doesn't exist or you don't have access to it.",
     }),
+    editableQuoteForm: Object.freeze({
+        quoteDetailsTitle: "Quote details",
+        quoteDetailsDescription:
+            "This quote is an independent copy. Changes here won't alter the template.",
+        referenceLabel: "Quote reference",
+        lineItemsTitle: "Line items",
+        lineItemsDescription:
+            "Edit descriptions, quantities and prices, or add and remove items.",
+        addItem: "Add item",
+        removeItem: "Remove item {{number}}",
+        save: "Save quote",
+        saving: "Saving…",
+        edit: "Edit quote",
+        saveSuccessTitle: "Quote saved",
+        saveSuccessDescription: "Your quote changes are now up to date.",
+        saveErrorTitle: "Couldn't save quote",
+        saveErrorDescription:
+            "Some changes may not have been saved. Review the refreshed quote and try again.",
+    }),
     quoteStatusBadge: Object.freeze({
         draft: "Draft",
         sent: "Sent",
@@ -46,6 +65,7 @@ export const en = Object.freeze({
         provenanceFromSourceWithPlasterType:
             "From {{source}} — {{plasterType}}",
         provenanceMatchedKeywords: "Matched {{keywords}}",
+        includedByDefault: "Included by default",
         unknownProvenance: "Provenance unknown",
     }),
     quoteTotalsBlock: Object.freeze({
@@ -58,6 +78,8 @@ export const en = Object.freeze({
         errorMessages: Object.freeze({
             NOT_READY:
                 "This plan isn't ready to quote. Resolve the checks below and try again.",
+            NO_ITEMS:
+                "No billable items were found. Check the plan measurements and quote template, then try again.",
             TOO_MANY_ITEMS:
                 "This quote has too many items to generate. Reduce the number of priced items and try again.",
         }),
@@ -123,6 +145,7 @@ export const en = Object.freeze({
         loadingReadiness: "Checking quote readiness…",
         unableToLoadReadiness:
             "Unable to load quote readiness. Try refreshing.",
+        unableToLoadQuote: "Unable to load the quote. Try refreshing.",
     }),
     readinessSummaryHeader: Object.freeze({
         readyTitle: "Ready to quote",
@@ -140,6 +163,8 @@ export const en = Object.freeze({
     readinessCheckList: Object.freeze({
         metBadge: "Met",
         unmetBadge: "{{count}} unmet",
+        showCompletedChecks: "Show completed checks ({{count}})",
+        hideCompletedChecks: "Hide completed checks",
         fixInline: "Fix this directly below.",
         fixDeepLink: "Fix this from the linked page, then come back here.",
         hideAffectedItems: "Hide affected items",
@@ -171,6 +196,8 @@ export const en = Object.freeze({
         ceilingHeight: Object.freeze({
             label: "Ceiling height",
             labelWithArea: "Ceiling height — {{area}}",
+            suggestion:
+                "Suggested ceiling height: {{height}} mm. Review and save to apply it.",
             error: "Couldn't update the ceiling height. Try again.",
         }),
         unitPrice: Object.freeze({
