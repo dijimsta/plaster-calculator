@@ -1,7 +1,10 @@
 import clsx from "clsx";
 
 export const base =
-    "inline-flex items-center gap-2 border-0 text-sm font-medium leading-5 cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed";
+    "group inline-flex items-center gap-2 border-0 text-sm font-medium leading-5 cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed";
+
+export const hoverRevealIcon =
+    "opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100";
 
 export const growStyle = "flex-1";
 export const fullWidthStyle = "w-full";

@@ -7,6 +7,7 @@ import type {
 
 import {
     buttonClassName,
+    hoverRevealIcon,
     type ButtonSize,
     type ButtonContentAlignment,
     type ButtonVariant,
@@ -20,6 +21,8 @@ export type ButtonProps = {
     readonly size?: ButtonSize;
     readonly icon?: ReactElement;
     readonly iconPosition?: ButtonIconPosition;
+    /** Reveals the icon when the button is hovered or keyboard-focused. */
+    readonly revealIconOnHover?: boolean;
     /** Allows the button to grow to fill available space in a flex row. */
     readonly grow?: boolean;
     readonly fullWidth?: boolean;
@@ -40,6 +43,7 @@ export function Button({
     size = "medium",
     icon,
     iconPosition = "left",
+    revealIconOnHover = false,
     grow = false,
     fullWidth = false,
     align = "center",
@@ -52,6 +56,8 @@ export function Button({
     onMouseDown,
     children,
 }: ButtonProps): ReactElement {
+    const renderedIcon = renderIcon(icon, revealIconOnHover);
+
     return (
         <button
             type={type}
@@ -69,9 +75,21 @@ export function Button({
                 variant,
             })}
         >
-            {iconPosition === "left" && icon}
+            {iconPosition === "left" && renderedIcon}
             {children}
-            {iconPosition === "right" && icon}
+            {iconPosition === "right" && renderedIcon}
         </button>
+    );
+}
+
+function renderIcon(
+    icon: ReactElement | undefined,
+    revealOnHover: boolean,
+): ReactNode {
+    if (icon === undefined) return undefined;
+    return revealOnHover ? (
+        <span className={hoverRevealIcon}>{icon}</span>
+    ) : (
+        icon
     );
 }
