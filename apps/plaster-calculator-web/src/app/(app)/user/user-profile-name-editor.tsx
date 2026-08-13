@@ -75,6 +75,7 @@ export function UserProfileNameEditor({
                     variant="ghost"
                     size="small"
                     align="start"
+                    flush
                     disabled={isSaving}
                     icon={<Pencil size={14} aria-hidden="true" />}
                     iconPosition="right"
