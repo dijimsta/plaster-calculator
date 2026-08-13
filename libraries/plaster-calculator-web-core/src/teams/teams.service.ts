@@ -1,8 +1,9 @@
 import * as DataConnector from "@generated/data-connector-web";
 import {
-    EnsureMyTeamResponseSchema,
     CreateTeamInvitationRequestSchema,
     CreateTeamInvitationResponseSchema,
+    InitializeMyTeamRequestSchema,
+    InitializeMyTeamResponseSchema,
     ListPendingTeamInvitationsResponseSchema,
     ListMyTeamMembersResponseSchema,
     MyTeamSummarySchema,
@@ -14,6 +15,7 @@ import {
     UpdateTeamNameResponseSchema,
     type CreateTeamInvitationRequest,
     type CreateTeamInvitationResponse,
+    type InitializeMyTeamRequest,
     type ListPendingTeamInvitationsResponse,
     type ListMyTeamMembersResponse,
     type MyTeamSummary,
@@ -34,13 +36,13 @@ export class TeamsService {
         ),
     ) {}
 
-    public async ensureMyTeam(): Promise<string> {
-        const ensureMyTeamCallable = httpsCallable(
-            this.functions,
-            "ensureMyTeam",
-        );
-        const { data } = await ensureMyTeamCallable();
-        return EnsureMyTeamResponseSchema.parse(data).teamId;
+    public async initializeMyTeam(invitationToken?: string): Promise<string> {
+        const input = invitationToken === undefined ? {} : { invitationToken };
+        const request: InitializeMyTeamRequest =
+            InitializeMyTeamRequestSchema.parse(input);
+        const callable = httpsCallable(this.functions, "initializeMyTeam");
+        const { data } = await callable(request);
+        return InitializeMyTeamResponseSchema.parse(data).teamId;
     }
 
     public async listMyTeamMembers(): Promise<ListMyTeamMembersResponse> {

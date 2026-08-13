@@ -1,53 +1,59 @@
 import "./bootstrap.js";
 
 import * as DataConnector from "@generated/data-connector-admin";
-import { EnsureMyTeamResponseSchema } from "@libraries/plaster-calculator-common";
+import {
+    EnsureMyTeamResponseSchema,
+    InitializeMyTeamResponseSchema,
+} from "@libraries/plaster-calculator-common";
 import { getAuth } from "firebase-admin/auth";
 import { onCall } from "firebase-functions/https";
-import { auth as firebaseAuth } from "firebase-functions/v1";
 
 import { requireAuth } from "./auth.js";
-import { shouldCreatePersonalTeamForNewUser } from "./team-invitations.js";
+import { acceptTeamInvitationForUser } from "./team-invitations.js";
+import { createTeamOnboardingService } from "./team-onboarding-domain.js";
+import { isRecord } from "./validation.js";
 
-export async function ensureTeamForUser(userId: string) {
-    const response = await DataConnector.getTeamMembershipForUser({ userId });
-    const existing = response.data.teamMembers[0];
-    if (existing) return EnsureMyTeamResponseSchema.parse(existing);
-
-    const user = await getAuth().getUser(userId);
-    const teamId = personalTeamId(userId);
-    await DataConnector.upsertTeam({
-        id: teamId,
-        name: personalTeamName(user.displayName, user.email),
-        createdByUserId: userId,
-    });
-    await DataConnector.upsertTeamMember({ teamId, userId, role: "OWNER" });
-    await getAuth().setCustomUserClaims(userId, {
-        ...(user.customClaims ?? {}),
-        teamId,
-    });
-    return EnsureMyTeamResponseSchema.parse({ teamId });
-}
-
-export const ensureMyTeam = onCall(async (request) => {
-    const auth = requireAuth(request);
-    return ensureTeamForUser(auth.uid);
+const teamOnboardingService = createTeamOnboardingService({
+    getMemberships: async (userId) => {
+        const response = await DataConnector.getTeamMembershipForUser({
+            userId,
+        });
+        return response.data.teamMembers;
+    },
+    getAuthUser: async (userId) => getAuth().getUser(userId),
+    upsertTeam: async (input) => {
+        await DataConnector.upsertTeam(input);
+    },
+    upsertTeamMember: async (input) => {
+        await DataConnector.upsertTeamMember(input);
+    },
+    setCustomUserClaims: async (userId, claims) => {
+        await getAuth().setCustomUserClaims(userId, claims);
+    },
+    acceptInvitation: acceptTeamInvitationForUser,
 });
 
-export const createPersonalTeamForNewUser = firebaseAuth
-    .user()
-    .onCreate(async (user) => {
-        if (!(await shouldCreatePersonalTeamForNewUser(user.email))) {
-            return;
-        }
-        await ensureTeamForUser(user.uid);
-    });
-
-function personalTeamName(displayName?: string, email?: string): string {
-    const name = displayName?.trim() || email?.split("@")[0] || "Personal";
-    return `${name}'s team`;
+export async function initializeTeamForUser(
+    userId: string,
+    invitationToken?: unknown,
+) {
+    return teamOnboardingService.initialize(userId, invitationToken);
 }
 
-function personalTeamId(userId: string): string {
-    return `T${userId}`;
-}
+export const initializeMyTeam = onCall(async (request) => {
+    const auth = requireAuth(request);
+    const data = isRecord(request.data) ? request.data : {};
+    const result = await initializeTeamForUser(
+        auth.uid,
+        data["invitationToken"],
+    );
+    return InitializeMyTeamResponseSchema.parse(result);
+});
+
+// Compatibility wrapper for clients deployed before initializeMyTeam.
+export const ensureMyTeam = onCall(async (request) => {
+    const auth = requireAuth(request);
+    return EnsureMyTeamResponseSchema.parse(
+        await initializeTeamForUser(auth.uid),
+    );
+});

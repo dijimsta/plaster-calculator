@@ -28,8 +28,7 @@ export {
     listProjectReminders,
     updateReminder,
 } from "./reminders.js";
-export { ensureMyTeam } from "./teams.js";
-export { createPersonalTeamForNewUser } from "./teams.js";
+export { ensureMyTeam, initializeMyTeam } from "./teams.js";
 export {
     listMyTeamMembers,
     removeTeamMember,

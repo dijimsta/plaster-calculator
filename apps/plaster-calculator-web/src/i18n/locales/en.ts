@@ -23,6 +23,7 @@ export const en = Object.freeze({
         createNewAccount: "Create new account",
         authenticationFailed: "Authentication failed.",
         googleSignInFailed: "Google sign-in failed.",
+        retryTeamSetup: "Retry team setup",
     }),
     sidebar: Object.freeze({
         navigationLabel: "Application navigation",

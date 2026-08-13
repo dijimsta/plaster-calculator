@@ -26,6 +26,7 @@ export const zh = createTranslationResource(
             createNewAccount: "创建新账户",
             authenticationFailed: "身份验证失败。",
             googleSignInFailed: "Google 登录失败。",
+            retryTeamSetup: "重试团队设置",
         }),
         sidebar: Object.freeze({
             navigationLabel: "应用导航",

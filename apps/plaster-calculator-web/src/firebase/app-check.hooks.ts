@@ -12,23 +12,30 @@ import { RECAPTCHA_SITE_KEY } from "./firebase.constants.ts";
 
 export function useAppCheck(): AppCheck | undefined {
     const [appCheck, setAppCheck] = useState<AppCheck>();
-    const environment = process.env["NEXT_PUBLIC_ENVIRONMENT"];
+    const publicEnvironment = process.env["NEXT_PUBLIC_ENVIRONMENT"];
+    const nodeEnvironment = process.env.NODE_ENV;
 
     useEffect(() => {
-        checkAppCheckDebugToken(environment);
+        checkAppCheckDebugToken(nodeEnvironment, publicEnvironment);
         setAppCheck(
             initializeAppCheck(FirebaseService.app, {
                 provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
                 isTokenAutoRefreshEnabled: true,
             }),
         );
-    }, []);
+    }, [nodeEnvironment, publicEnvironment]);
 
     return appCheck;
 }
 
-function checkAppCheckDebugToken(environment: string | undefined) {
-    if (environment === "development") {
+function checkAppCheckDebugToken(
+    nodeEnvironment: string | undefined,
+    publicEnvironment: string | undefined,
+) {
+    if (
+        nodeEnvironment === "development" ||
+        publicEnvironment === "development"
+    ) {
         (
             self as typeof self & {
                 FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean | string;
