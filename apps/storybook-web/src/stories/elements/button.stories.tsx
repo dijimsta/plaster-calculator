@@ -114,6 +114,7 @@ export const WithHoverRevealIcon: Story = {
             icon={<GoogleIcon />}
             iconPosition="right"
             revealIconOnHover
+            flush
         >
             Edit profile
         </Button>

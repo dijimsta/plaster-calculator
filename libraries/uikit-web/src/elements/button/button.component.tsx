@@ -25,6 +25,8 @@ export type ButtonProps = {
     readonly revealIconOnHover?: boolean;
     /** Allows the button to grow to fill available space in a flex row. */
     readonly grow?: boolean;
+    /** Removes outer padding so content aligns flush with adjacent text. */
+    readonly flush?: boolean;
     readonly fullWidth?: boolean;
     readonly align?: ButtonContentAlignment;
     /** Names icon-only actions and is announced when no visible text is present. */
@@ -45,6 +47,7 @@ export function Button({
     iconPosition = "left",
     revealIconOnHover = false,
     grow = false,
+    flush,
     fullWidth = false,
     align = "center",
     label,
@@ -69,6 +72,7 @@ export function Button({
             onMouseDown={onMouseDown}
             className={buttonClassName({
                 align,
+                flush: Boolean(flush),
                 fullWidth,
                 grow,
                 size,

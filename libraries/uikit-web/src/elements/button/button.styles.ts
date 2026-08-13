@@ -42,6 +42,7 @@ export const variants = Object.freeze({
 
 type ButtonClassNameOptions = {
     readonly align: ButtonContentAlignment;
+    readonly flush: boolean;
     readonly fullWidth: boolean;
     readonly grow: boolean;
     readonly size: ButtonSize;
@@ -50,6 +51,7 @@ type ButtonClassNameOptions = {
 
 export function buttonClassName({
     align,
+    flush,
     fullWidth,
     grow,
     size,
@@ -58,9 +60,18 @@ export function buttonClassName({
     return clsx(
         base,
         variants[variant],
-        variant === "link" ? "p-0" : sizes[size],
+        buttonPaddingClassName(flush, size, variant),
         grow && growStyle,
         fullWidth && fullWidthStyle,
         contentAlignments[align],
     );
+}
+
+function buttonPaddingClassName(
+    flush: boolean,
+    size: ButtonSize,
+    variant: ButtonVariant,
+): string {
+    if (flush || variant === "link") return "p-0";
+    return sizes[size];
 }
