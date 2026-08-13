@@ -1,7 +1,8 @@
 import type { ReactElement, ReactNode } from "react";
 
 import {
-    sectionBodyVariants,
+    sectionBodyClassName,
+    type FormLayoutSectionBodySpacing,
     sectionDescription,
     sectionHeader,
     sectionTitle,
@@ -12,13 +13,17 @@ import { useFormLayoutVariant } from "./form-layout.context.ts";
 export type FormLayoutSectionProps = {
     readonly title: ReactNode;
     readonly description?: ReactNode;
+    readonly bodySpacing?: FormLayoutSectionBodySpacing;
     readonly children?: ReactNode;
 };
+
+export type { FormLayoutSectionBodySpacing };
 
 /** A titled group of related fields within a FormLayout. */
 export function FormLayoutSection({
     title,
     description,
+    bodySpacing = "default",
     children,
 }: FormLayoutSectionProps): ReactElement {
     const variant = useFormLayoutVariant();
@@ -31,7 +36,9 @@ export function FormLayoutSection({
                     <p className={sectionDescription}>{description}</p>
                 )}
             </div>
-            <div className={sectionBodyVariants[variant]}>{children}</div>
+            <div className={sectionBodyClassName(variant, bodySpacing)}>
+                {children}
+            </div>
         </section>
     );
 }

@@ -2,6 +2,7 @@
 
 import {
     editorTranslations,
+    projectsTranslations,
     questionnairesTranslations,
     quotesTranslations,
 } from "@libraries/plaster-calculator-ui";
@@ -20,6 +21,7 @@ export function AppTranslationsProvider({
             translations={[
                 appTranslations,
                 editorTranslations,
+                projectsTranslations,
                 questionnairesTranslations,
                 quotesTranslations,
             ]}

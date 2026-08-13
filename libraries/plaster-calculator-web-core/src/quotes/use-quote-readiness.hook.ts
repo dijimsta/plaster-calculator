@@ -2,7 +2,9 @@
 
 import * as DataConnector from "@generated/data-connector-web";
 import * as DataConnectorReact from "@generated/data-connector-web/react";
-import { useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { QueryFetchPolicy } from "firebase/data-connect";
+import { useCallback, useMemo } from "react";
 
 import { FirebaseService } from "../firebase/firebase.service.ts";
 
@@ -23,21 +25,36 @@ const dataConnect = FirebaseService.getDataConnect(
  * write.
  */
 export function useQuoteReadiness(projectId: string): UseQuoteReadinessResult {
-    const { data, isLoading, error, refetch } =
-        DataConnectorReact.useGetQuoteReadiness(dataConnect, { projectId });
+    const { data, isLoading, error } = DataConnectorReact.useGetQuoteReadiness(
+        dataConnect,
+        { projectId },
+    );
+    const queryClient = useQueryClient();
 
     const results = useMemo(
         () => (data ? QuoteReadinessUtils.evaluate(data) : []),
         [data],
     );
+    const refresh = useCallback(async (): Promise<void> => {
+        const ref = DataConnector.getQuoteReadinessRef(dataConnect, {
+            projectId,
+        });
+        const refreshed = await DataConnector.getQuoteReadiness(
+            dataConnect,
+            { projectId },
+            { fetchPolicy: QueryFetchPolicy.SERVER_ONLY },
+        );
+        queryClient.setQueryData(
+            [ref.name, ref.variables ?? null],
+            refreshed.data,
+        );
+    }, [projectId, queryClient]);
 
     return {
         results,
         isReady: QuoteReadinessUtils.isReady(results),
         loading: isLoading,
         error: error ?? null,
-        refresh: () => {
-            void refetch();
-        },
+        refresh,
     };
 }

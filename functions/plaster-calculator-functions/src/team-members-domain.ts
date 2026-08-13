@@ -3,10 +3,13 @@ import {
     RemoveTeamMemberRequestSchema,
     RemoveTeamMemberResponseSchema,
     TEAM_OWNER_ROLE,
+    UpdateTeamNameRequestSchema,
+    UpdateTeamNameResponseSchema,
     type ListMyTeamMembersResponse,
     type RemoveTeamMemberResponse,
     type TeamMember,
     type TeamRole,
+    type UpdateTeamNameResponse,
 } from "@libraries/plaster-calculator-common";
 import { HttpsError } from "firebase-functions/https";
 
@@ -33,6 +36,7 @@ export interface TeamMembersDependencies {
     listMembers(teamId: string): Promise<readonly TeamMembership[]>;
     getMember(teamId: string, userId: string): Promise<TeamMembership | null>;
     deleteMember(teamId: string, userId: string): Promise<void>;
+    updateTeamName(teamId: string, name: string): Promise<void>;
     listAuthUsers(userIds: readonly string[]): Promise<readonly TeamAuthUser[]>;
     getAuthUser(userId: string): Promise<TeamAuthUser | null>;
     revokeRefreshTokens(userId: string): Promise<void>;
@@ -45,6 +49,7 @@ export interface TeamMembersDependencies {
 export type TeamMembersService = Readonly<{
     list(userId: string): Promise<ListMyTeamMembersResponse>;
     remove(userId: string, input: unknown): Promise<RemoveTeamMemberResponse>;
+    updateName(userId: string, input: unknown): Promise<UpdateTeamNameResponse>;
 }>;
 
 export function createTeamMembersService(
@@ -104,6 +109,21 @@ export function createTeamMembersService(
                 removedUserId: request.userId,
             });
         },
+        async updateName(userId, input) {
+            const request = parseUpdateNameRequest(input);
+            const currentMembership = selectMembership(
+                await dependencies.getMemberships(userId),
+            );
+            requireOwner(currentMembership.role);
+            await dependencies.updateTeamName(
+                currentMembership.teamId,
+                request.name,
+            );
+
+            return UpdateTeamNameResponseSchema.parse({
+                teamName: request.name,
+            });
+        },
     };
 }
 
@@ -132,6 +152,17 @@ function parseRemoveRequest(input: unknown): { readonly userId: string } {
     const result = RemoveTeamMemberRequestSchema.safeParse(input);
     if (!result.success) {
         throw new HttpsError("invalid-argument", "User ID is required.");
+    }
+    return result.data;
+}
+
+function parseUpdateNameRequest(input: unknown): { readonly name: string } {
+    const result = UpdateTeamNameRequestSchema.safeParse(input);
+    if (!result.success) {
+        throw new HttpsError(
+            "invalid-argument",
+            "Team name must be between 1 and 100 characters.",
+        );
     }
     return result.data;
 }

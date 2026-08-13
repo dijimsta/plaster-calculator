@@ -29,6 +29,7 @@ export class QuotesListUtils {
 
             return {
                 quoteId: quote.id,
+                projectId: quote.project.id,
                 reference: quote.reference ?? null,
                 projectName: quote.project.name,
                 companyName: quote.project.company?.companyName ?? null,

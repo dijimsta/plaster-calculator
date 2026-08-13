@@ -178,6 +178,7 @@ query GetQuoteReadiness($projectId: UUID!) @auth(level: USER) {
         name
         salesStatus
         pageCount
+        extractedTextJson
     }
     floorplanPages(
         where: { projectId: { eq: $projectId } }
@@ -188,6 +189,7 @@ query GetQuoteReadiness($projectId: UUID!) @auth(level: USER) {
         scaleMmPerPx
         ceilingHeightMm
         overlayJson
+        ocrTextContent
     }
     projectQuestionnaireQuestions(
         where: { projectQuestionnaire: { projectId: { eq: $projectId } } }

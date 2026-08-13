@@ -1,26 +1,23 @@
 "use client";
 
-import { READINESS_CHECKS } from "@libraries/plaster-calculator-common";
-import {
-    QuoteLineItemsTable,
-    QuoteTotalsBlock,
-    ReadinessCheckList,
-    ReadinessSummaryHeader,
-    useQuotesTranslation,
-} from "@libraries/plaster-calculator-ui";
-import {
-    useProjectsService,
-    useQuoteReadiness,
-} from "@libraries/plaster-calculator-web-core";
-import { Box, Text } from "@libraries/uikit-web";
-import { LoaderCircle } from "lucide-react";
-import { use, useCallback, useEffect, useState } from "react";
+import "@libraries/plaster-calculator-ui/quote-detail-document.print.css";
 
-import { ui } from "../../../../../lib/styles.js";
-import type { ProjectDetail } from "../../../../../types.js";
+import { DRAFT_QUOTE_STATUS } from "@libraries/plaster-calculator-common";
+import { usePrintQuoteDocument } from "@libraries/plaster-calculator-ui";
+import { useQuoteReadiness } from "@libraries/plaster-calculator-web-core";
+import { useSearchParams } from "next/navigation.js";
+import { use } from "react";
+
 import { ProjectHeader } from "../project-page-header.js";
 
 import { useQuoteReadinessFixControlRenderer } from "./page.hooks.js";
+import { ProjectQuoteContent } from "./project-quote-content.js";
+import {
+    useProjectQuoteEditor,
+    useProjectQuotePageProject,
+} from "./project-quote-page.hooks.js";
+import { ProjectQuoteActions } from "./quote-detail-actions.js";
+import { useAutoPrintOnMount } from "./quote-detail.hooks.js";
 import {
     useGenerateQuoteAction,
     useProjectQuoteState,
@@ -32,113 +29,57 @@ export default function ProjectQuoteReadinessPage({
     params: Promise<{ projectId: string }>;
 }) {
     const { projectId } = use(params);
-    const { t } = useQuotesTranslation();
-    const projectsService = useProjectsService();
-    const [project, setProject] = useState<ProjectDetail | null>(null);
-    const [error, setError] = useState("");
-    const [renaming, setRenaming] = useState(false);
-    const [renameValue, setRenameValue] = useState("");
-
-    const load = useCallback(async (): Promise<void> => {
-        try {
-            const detail = await projectsService.getProject(projectId);
-            setProject(detail);
-            setRenameValue(detail.name);
-        } catch (err) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : t("projectQuoteReadinessPage.unableToLoadProject"),
-            );
-        }
-    }, [projectId, projectsService, t]);
-
-    useEffect(() => {
-        void load();
-    }, [load]);
-
-    async function saveRename() {
-        if (!project || !renameValue.trim()) return;
-        try {
-            const renamed = await projectsService.renameProject(
-                project.id,
-                renameValue.trim(),
-            );
-            setProject(renamed);
-            setRenaming(false);
-        } catch (err) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : t("projectQuoteReadinessPage.unableToLoadProject"),
-            );
-        }
-    }
-
+    const searchParams = useSearchParams();
+    const projectState = useProjectQuotePageProject(projectId);
     const readiness = useQuoteReadiness(projectId);
     const renderFixControl = useQuoteReadinessFixControlRenderer(projectId);
-    const projectQuote = useProjectQuoteState(projectId);
+    const projectQuote = useProjectQuoteState(projectId, projectState.project);
+    const editor = useProjectQuoteEditor(projectId, projectQuote);
     const { isGenerating, errorMessage, handleGenerateQuote } =
         useGenerateQuoteAction(projectId, projectQuote.refresh);
+    const { printQuoteDocument } = usePrintQuoteDocument();
+
+    useAutoPrintOnMount(
+        printQuoteDocument,
+        searchParams.get("print") === "1",
+        projectQuote.document !== null,
+    );
 
     return (
         <>
             <ProjectHeader
-                project={project}
+                project={projectState.project}
                 projectId={projectId}
                 activeTab="quote"
-                renaming={renaming}
-                renameValue={renameValue}
-                load={load}
-                saveRename={saveRename}
-                setRenaming={setRenaming}
-                setRenameValue={setRenameValue}
+                renaming={projectState.renaming}
+                renameValue={projectState.renameValue}
+                saveRename={projectState.saveRename}
+                setRenaming={projectState.setRenaming}
+                setRenameValue={projectState.setRenameValue}
+                additionalActions={
+                    <ProjectQuoteActions
+                        projectId={projectId}
+                        quoteId={projectQuote.quoteId}
+                        status={
+                            projectQuote.document?.status ?? DRAFT_QUOTE_STATUS
+                        }
+                        hasQuote={projectQuote.hasQuote}
+                        hasDocument={projectQuote.document !== null}
+                        isSaving={editor.isSaving}
+                        onDownload={printQuoteDocument}
+                    />
+                }
             />
-            <Box padding="md" direction="column" gap="md">
-                {error && <p className={ui.error}>{error}</p>}
-                {readiness.loading ? (
-                    <Box align="center" justify="center" gap="sm" status>
-                        <LoaderCircle className="animate-spin" size={24} />
-                        <Text variant="muted">
-                            {t("projectQuoteReadinessPage.loadingReadiness")}
-                        </Text>
-                    </Box>
-                ) : readiness.error ? (
-                    <p className={ui.error}>
-                        {t("projectQuoteReadinessPage.unableToLoadReadiness")}
-                    </p>
-                ) : (
-                    <Box direction="column" gap="lg">
-                        <ReadinessSummaryHeader
-                            results={readiness.results}
-                            onGenerateQuote={handleGenerateQuote}
-                            isGenerating={isGenerating}
-                        />
-                        {errorMessage && (
-                            <p className={ui.error}>{errorMessage}</p>
-                        )}
-                        <ReadinessCheckList
-                            checks={READINESS_CHECKS}
-                            results={readiness.results}
-                            renderFixControl={renderFixControl}
-                        />
-                        {projectQuote.hasQuote && projectQuote.totals && (
-                            <Box direction="column" gap="md">
-                                <QuoteLineItemsTable rows={projectQuote.rows} />
-                                <QuoteTotalsBlock
-                                    subtotalCents={
-                                        projectQuote.totals.subtotalCents
-                                    }
-                                    gstCents={projectQuote.totals.gstCents}
-                                    totalIncGstCents={
-                                        projectQuote.totals.totalIncGstCents
-                                    }
-                                />
-                            </Box>
-                        )}
-                    </Box>
-                )}
-            </Box>
+            <ProjectQuoteContent
+                projectError={projectState.error}
+                readiness={readiness}
+                renderFixControl={renderFixControl}
+                projectQuote={projectQuote}
+                editor={editor}
+                isGenerating={isGenerating}
+                generationErrorMessage={errorMessage}
+                onGenerateQuote={handleGenerateQuote}
+            />
         </>
     );
 }

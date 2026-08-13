@@ -102,6 +102,10 @@ export interface CreateQuestionnaireTemplateVariables {
   name: string;
 }
 
+export interface CreateQuoteItemData {
+  quoteItem_insert: QuoteItem_Key;
+}
+
 export interface CreateQuoteItemTemplateConfigData {
   quoteItemTemplateConfig_insert: QuoteItemTemplateConfig_Key;
 }
@@ -123,6 +127,15 @@ export interface CreateQuoteItemTemplateVariables {
   name: string;
   hasKeywords: boolean;
   keywords: string[];
+}
+
+export interface CreateQuoteItemVariables {
+  id: UUIDString;
+  quoteId: UUIDString;
+  displayOrder: number;
+  name: string;
+  quantity: number;
+  unitPriceCents: number;
 }
 
 export interface CreateQuoteTemplateData {
@@ -411,12 +424,20 @@ export interface DeleteQuestionnaireTemplateVariables {
   id: UUIDString;
 }
 
+export interface DeleteQuoteItemData {
+  quoteItem_delete?: QuoteItem_Key | null;
+}
+
 export interface DeleteQuoteItemTemplateData {
   quoteItemTemplateConfig_deleteMany: number;
   quoteItemTemplate_delete?: QuoteItemTemplate_Key | null;
 }
 
 export interface DeleteQuoteItemTemplateVariables {
+  id: UUIDString;
+}
+
+export interface DeleteQuoteItemVariables {
   id: UUIDString;
 }
 
@@ -652,6 +673,7 @@ export interface GetQuoteReadinessData {
     name: string;
     salesStatus: string;
     pageCount: number;
+    extractedTextJson?: string | null;
   } & Project_Key;
   floorplanPages: ({
     id: UUIDString;
@@ -659,6 +681,7 @@ export interface GetQuoteReadinessData {
     scaleMmPerPx?: number | null;
     ceilingHeightMm?: number | null;
     overlayJson?: string | null;
+    ocrTextContent?: string | null;
   } & FloorplanPage_Key)[];
   projectQuestionnaireQuestions: ({
     id: UUIDString;
@@ -981,6 +1004,19 @@ export interface UpdateQuestionnaireTemplateQuestionVariables {
   position: number;
 }
 
+export interface UpdateQuoteDetailsData {
+  quote_update?: Quote_Key | null;
+}
+
+export interface UpdateQuoteDetailsVariables {
+  id: UUIDString;
+  reference?: string | null;
+}
+
+export interface UpdateQuoteItemData {
+  quoteItem_update?: QuoteItem_Key | null;
+}
+
 export interface UpdateQuoteItemTemplateConfigData {
   quoteItemTemplateConfig_update?: QuoteItemTemplateConfig_Key | null;
 }
@@ -1003,6 +1039,14 @@ export interface UpdateQuoteItemTemplateVariables {
   name: string;
   hasKeywords: boolean;
   keywords: string[];
+}
+
+export interface UpdateQuoteItemVariables {
+  id: UUIDString;
+  displayOrder: number;
+  name: string;
+  quantity: number;
+  unitPriceCents: number;
 }
 
 export interface UpdateQuoteStatusData {
@@ -1477,6 +1521,54 @@ export const updateQuoteStatusRef: UpdateQuoteStatusRef;
 
 export function updateQuoteStatus(vars: UpdateQuoteStatusVariables): MutationPromise<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
 export function updateQuoteStatus(dc: DataConnect, vars: UpdateQuoteStatusVariables): MutationPromise<UpdateQuoteStatusData, UpdateQuoteStatusVariables>;
+
+interface UpdateQuoteDetailsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuoteDetailsVariables): MutationRef<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateQuoteDetailsVariables): MutationRef<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
+  operationName: string;
+}
+export const updateQuoteDetailsRef: UpdateQuoteDetailsRef;
+
+export function updateQuoteDetails(vars: UpdateQuoteDetailsVariables): MutationPromise<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
+export function updateQuoteDetails(dc: DataConnect, vars: UpdateQuoteDetailsVariables): MutationPromise<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
+
+interface UpdateQuoteItemRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuoteItemVariables): MutationRef<UpdateQuoteItemData, UpdateQuoteItemVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateQuoteItemVariables): MutationRef<UpdateQuoteItemData, UpdateQuoteItemVariables>;
+  operationName: string;
+}
+export const updateQuoteItemRef: UpdateQuoteItemRef;
+
+export function updateQuoteItem(vars: UpdateQuoteItemVariables): MutationPromise<UpdateQuoteItemData, UpdateQuoteItemVariables>;
+export function updateQuoteItem(dc: DataConnect, vars: UpdateQuoteItemVariables): MutationPromise<UpdateQuoteItemData, UpdateQuoteItemVariables>;
+
+interface CreateQuoteItemRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateQuoteItemVariables): MutationRef<CreateQuoteItemData, CreateQuoteItemVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateQuoteItemVariables): MutationRef<CreateQuoteItemData, CreateQuoteItemVariables>;
+  operationName: string;
+}
+export const createQuoteItemRef: CreateQuoteItemRef;
+
+export function createQuoteItem(vars: CreateQuoteItemVariables): MutationPromise<CreateQuoteItemData, CreateQuoteItemVariables>;
+export function createQuoteItem(dc: DataConnect, vars: CreateQuoteItemVariables): MutationPromise<CreateQuoteItemData, CreateQuoteItemVariables>;
+
+interface DeleteQuoteItemRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteQuoteItemVariables): MutationRef<DeleteQuoteItemData, DeleteQuoteItemVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteQuoteItemVariables): MutationRef<DeleteQuoteItemData, DeleteQuoteItemVariables>;
+  operationName: string;
+}
+export const deleteQuoteItemRef: DeleteQuoteItemRef;
+
+export function deleteQuoteItem(vars: DeleteQuoteItemVariables): MutationPromise<DeleteQuoteItemData, DeleteQuoteItemVariables>;
+export function deleteQuoteItem(dc: DataConnect, vars: DeleteQuoteItemVariables): MutationPromise<DeleteQuoteItemData, DeleteQuoteItemVariables>;
 
 interface CreateQuoteWithItemsRef {
   /* Allow users to create refs without passing in DataConnect */

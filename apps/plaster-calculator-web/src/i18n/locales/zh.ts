@@ -3,6 +3,7 @@ import { createTranslationResource } from "@ui/internationalization";
 import { appMetadataByLanguage } from "../language.ts";
 
 import { en } from "./en.ts";
+import { projects } from "./zh/projects.ts";
 
 export const zh = createTranslationResource(
     en,
@@ -94,25 +95,7 @@ export const zh = createTranslationResource(
             annotateSelectedPages: "标注已选择的 {{count}} 页",
             page: "第 {{number}} 页",
         }),
-        projects: Object.freeze({
-            breadcrumb: "项目",
-            title: "项目",
-            statusTabs: Object.freeze({
-                all: "全部",
-            }),
-            loadingProjects: "正在加载项目...",
-            refresh: "刷新",
-            refreshTitle: "刷新项目",
-            emptyStateTitle: "没有符合筛选条件的项目",
-            tableHeaders: Object.freeze({
-                project: "项目",
-                company: "公司",
-                plan: "平面图",
-                status: "状态",
-                updated: "更新时间",
-                actions: "操作",
-            }),
-        }),
+        projects,
         questionnaires: Object.freeze({
             title: "问卷",
             projectsTab: "项目",

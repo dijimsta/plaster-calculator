@@ -16,5 +16,13 @@ export const variants = Object.freeze({
 export type TextVariant =
     typeof variants extends Record<infer K, string> ? K : never;
 
+export const weights = Object.freeze({
+    normal: "",
+    semibold: "font-semibold",
+});
+
+export type TextWeight =
+    typeof weights extends Record<infer K, string> ? K : never;
+
 export const truncateStyle =
     "block overflow-hidden text-ellipsis whitespace-nowrap";

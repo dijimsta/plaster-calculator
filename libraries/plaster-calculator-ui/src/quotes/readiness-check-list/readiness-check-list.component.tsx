@@ -3,9 +3,18 @@ import type {
     ReadinessCheck,
     ReadinessResult,
 } from "@libraries/plaster-calculator-common";
-import { Badge, Box, Button, StackedList, Text } from "@libraries/uikit-web";
+import {
+    Alert,
+    Badge,
+    Box,
+    Button,
+    Label,
+    StackedList,
+    Text,
+    Toggle,
+} from "@libraries/uikit-web";
 import type { ReactElement, ReactNode } from "react";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 
@@ -27,10 +36,12 @@ export type ReadinessCheckListProps = {
     readonly checks: readonly ReadinessCheck[];
     readonly results: readonly ReadinessResult[];
     readonly renderFixControl?: ReadinessCheckListRenderFixControl;
+    readonly variant?: "stacked" | "alerts";
 };
 
 /**
- * Renders the readiness-check registry as a list, one row per check.
+ * Renders the readiness-check registry as a list. Completed checks start
+ * hidden behind a compact toggle so attention stays on the unmet rows.
  * Presentational only: it derives each row's met/unmet state from `results`
  * and hands `renderFixControl` whatever affected item needs a fix, but owns
  * no data fetching and imports neither the web-core hook nor the connector
@@ -42,21 +53,75 @@ export function ReadinessCheckList({
     checks,
     results,
     renderFixControl,
+    variant = "stacked",
 }: ReadinessCheckListProps): ReactElement {
-    return (
-        <StackedList bordered>
-            {checks.map((check) => (
-                <StackedList.Item key={check.id}>
-                    <ReadinessCheckRow
+    const toggleId = useId();
+    const { t } = useQuotesTranslation();
+    const [showMetChecks, setShowMetChecks] = useState(false);
+    const metCheckCount = checks.filter((check) =>
+        results.some((result) => result.checkId === check.id && result.isMet),
+    ).length;
+    const visibleChecks = showMetChecks
+        ? checks
+        : checks.filter(
+              (check) =>
+                  !results.some(
+                      (result) => result.checkId === check.id && result.isMet,
+                  ),
+          );
+    const checkRows =
+        variant === "alerts" ? (
+            <Box direction="column" gap="sm">
+                {visibleChecks.map((check) => (
+                    <ReadinessCheckAlert
+                        key={check.id}
                         check={check}
                         result={results.find(
                             (result) => result.checkId === check.id,
                         )}
                         renderFixControl={renderFixControl}
                     />
-                </StackedList.Item>
-            ))}
-        </StackedList>
+                ))}
+            </Box>
+        ) : (
+            <StackedList bordered>
+                {visibleChecks.map((check) => (
+                    <StackedList.Item key={check.id}>
+                        <ReadinessCheckRow
+                            check={check}
+                            result={results.find(
+                                (result) => result.checkId === check.id,
+                            )}
+                            renderFixControl={renderFixControl}
+                        />
+                    </StackedList.Item>
+                ))}
+            </StackedList>
+        );
+
+    return (
+        <Box direction="column" gap="sm">
+            {metCheckCount > 0 && (
+                <Box direction="row" align="center" gap="sm">
+                    <Toggle
+                        id={toggleId}
+                        size="sm"
+                        checked={showMetChecks}
+                        onChange={(event) =>
+                            setShowMetChecks(event.target.checked)
+                        }
+                    />
+                    <Label htmlFor={toggleId}>
+                        {showMetChecks
+                            ? t("readinessCheckList.hideCompletedChecks")
+                            : t("readinessCheckList.showCompletedChecks", {
+                                  count: metCheckCount,
+                              })}
+                    </Label>
+                </Box>
+            )}
+            {checkRows}
+        </Box>
     );
 }
 
@@ -65,6 +130,25 @@ type ReadinessCheckRowProps = {
     readonly result: ReadinessResult | undefined;
     readonly renderFixControl: ReadinessCheckListRenderFixControl | undefined;
 };
+
+function ReadinessCheckAlert({
+    check,
+    result,
+    renderFixControl,
+}: ReadinessCheckRowProps): ReactElement {
+    return (
+        <Alert
+            intent={result?.isMet ? "success" : "error"}
+            variant="light-with-border"
+        >
+            <ReadinessCheckRow
+                check={check}
+                result={result}
+                renderFixControl={renderFixControl}
+            />
+        </Alert>
+    );
+}
 
 /**
  * One check's row. An unmet check with more than one affected item starts

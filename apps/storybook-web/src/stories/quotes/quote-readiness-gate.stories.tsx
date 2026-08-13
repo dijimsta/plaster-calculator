@@ -11,12 +11,10 @@ import {
 import {
     CeilingHeightFixControl,
     ConfirmFixControl,
-    ReadinessCheckList,
     ReadinessSummaryHeader,
     UnitPriceFixControl,
     WallBoardTypeFixControl,
 } from "@libraries/plaster-calculator-ui";
-import { Box } from "@libraries/uikit-web";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 
@@ -28,15 +26,15 @@ import {
     ONE_CHECK_UNMET_RESULTS,
 } from "./quote-readiness-gate.stubs.ts";
 
-const meta: Meta<typeof ReadinessCheckList> = {
+const meta: Meta<typeof ReadinessSummaryHeader> = {
     title: "Plaster Calculator/Quotes/QuoteReadinessGate",
-    component: ReadinessCheckList,
+    component: ReadinessSummaryHeader,
     tags: ["autodocs"],
     parameters: {
         docs: {
             description: {
                 component:
-                    "The quote readiness gate panel — ReadinessSummaryHeader and ReadinessCheckList composed together, as they'll appear on the (not yet built) quote readiness route. Results are stub data here; the real route wires them up from useQuoteReadiness() in a later ticket.",
+                    "The quote readiness gate card, with every readiness check presented as a light bordered alert. Results are stub data here; the project quote route wires them up from useQuoteReadiness().",
             },
         },
     },
@@ -44,7 +42,7 @@ const meta: Meta<typeof ReadinessCheckList> = {
 
 export default meta;
 
-type Story = StoryObj<typeof ReadinessCheckList>;
+type Story = StoryObj<typeof ReadinessSummaryHeader>;
 
 export const FullyBlocked: Story = {
     name: "Fully blocked",
@@ -52,69 +50,64 @@ export const FullyBlocked: Story = {
         const handleFixControlChange = fn();
 
         return (
-            <Box direction="column" gap="lg">
-                <ReadinessSummaryHeader
-                    results={FULLY_BLOCKED_RESULTS}
-                    onGenerateQuote={fn()}
-                />
-                <ReadinessCheckList
-                    checks={READINESS_CHECKS}
-                    results={FULLY_BLOCKED_RESULTS}
-                    renderFixControl={(item, check: ReadinessCheck) => {
-                        switch (check.id) {
-                            case WALL_TYPE_SET_CHECK_ID:
-                                return (
-                                    <WallBoardTypeFixControl
-                                        item={item}
-                                        value={DEFAULT_WALL_BOARD_TYPE}
-                                        onChange={handleFixControlChange}
-                                    />
-                                );
-                            case CEILING_HEIGHT_SET_CHECK_ID:
-                                return (
-                                    <CeilingHeightFixControl
-                                        item={item}
-                                        value={null}
-                                        pageDefaultHeightMm={2400}
-                                        onChange={handleFixControlChange}
-                                    />
-                                );
-                            case TEMPLATE_PRICED_CHECK_ID:
-                                return (
-                                    <UnitPriceFixControl
-                                        item={item}
-                                        valueCents={0}
-                                        onChange={handleFixControlChange}
-                                    />
-                                );
-                            case INFERRED_ANSWERS_CONFIRMED_CHECK_ID:
-                                return (
-                                    <ConfirmFixControl
-                                        item={item}
-                                        label="Inferred answer"
-                                        value="Approximately 142m², excluding wet areas."
-                                        onConfirm={handleFixControlChange}
-                                    />
-                                );
-                            case ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID:
-                                return (
-                                    <ConfirmFixControl
-                                        item={item}
-                                        label="Assumed wall type"
-                                        value={DEFAULT_WALL_BOARD_TYPE}
-                                        onConfirm={handleFixControlChange}
-                                    />
-                                );
-                            default:
-                                // SCALE_APPLIED and ROOMS_MEASURED are
-                                // DEEP_LINK checks — their fix targets land
-                                // in WORK-139, so there's nothing to render
-                                // here yet.
-                                return null;
-                        }
-                    }}
-                />
-            </Box>
+            <ReadinessSummaryHeader
+                results={FULLY_BLOCKED_RESULTS}
+                onGenerateQuote={fn()}
+                summaryChecks={READINESS_CHECKS}
+                renderFixControl={(item, check: ReadinessCheck) => {
+                    switch (check.id) {
+                        case WALL_TYPE_SET_CHECK_ID:
+                            return (
+                                <WallBoardTypeFixControl
+                                    item={item}
+                                    value={DEFAULT_WALL_BOARD_TYPE}
+                                    onChange={handleFixControlChange}
+                                />
+                            );
+                        case CEILING_HEIGHT_SET_CHECK_ID:
+                            return (
+                                <CeilingHeightFixControl
+                                    item={item}
+                                    value={null}
+                                    pageDefaultHeightMm={2400}
+                                    onChange={handleFixControlChange}
+                                />
+                            );
+                        case TEMPLATE_PRICED_CHECK_ID:
+                            return (
+                                <UnitPriceFixControl
+                                    item={item}
+                                    valueCents={0}
+                                    onChange={handleFixControlChange}
+                                />
+                            );
+                        case INFERRED_ANSWERS_CONFIRMED_CHECK_ID:
+                            return (
+                                <ConfirmFixControl
+                                    item={item}
+                                    label="Inferred answer"
+                                    value="Approximately 142m², excluding wet areas."
+                                    onConfirm={handleFixControlChange}
+                                />
+                            );
+                        case ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID:
+                            return (
+                                <ConfirmFixControl
+                                    item={item}
+                                    label="Assumed wall type"
+                                    value={DEFAULT_WALL_BOARD_TYPE}
+                                    onConfirm={handleFixControlChange}
+                                />
+                            );
+                        default:
+                            // SCALE_APPLIED and ROOMS_MEASURED are
+                            // DEEP_LINK checks — their fix targets land
+                            // in WORK-139, so there's nothing to render
+                            // here yet.
+                            return null;
+                    }
+                }}
+            />
         );
     },
 };
@@ -122,56 +115,41 @@ export const FullyBlocked: Story = {
 export const OneCheckUnmet: Story = {
     name: "One check unmet",
     render: () => (
-        <Box direction="column" gap="lg">
-            <ReadinessSummaryHeader
-                results={ONE_CHECK_UNMET_RESULTS}
-                onGenerateQuote={fn()}
-            />
-            <ReadinessCheckList
-                checks={READINESS_CHECKS}
-                results={ONE_CHECK_UNMET_RESULTS}
-                renderFixControl={(item, check: ReadinessCheck) =>
-                    check.id === TEMPLATE_PRICED_CHECK_ID ? (
-                        <UnitPriceFixControl
-                            item={item}
-                            valueCents={0}
-                            onChange={fn()}
-                        />
-                    ) : null
-                }
-            />
-        </Box>
+        <ReadinessSummaryHeader
+            results={ONE_CHECK_UNMET_RESULTS}
+            onGenerateQuote={fn()}
+            summaryChecks={READINESS_CHECKS}
+            renderFixControl={(item, check: ReadinessCheck) =>
+                check.id === TEMPLATE_PRICED_CHECK_ID ? (
+                    <UnitPriceFixControl
+                        item={item}
+                        valueCents={0}
+                        onChange={fn()}
+                    />
+                ) : null
+            }
+        />
     ),
 };
 
 export const Ready: Story = {
     render: () => (
-        <Box direction="column" gap="lg">
-            <ReadinessSummaryHeader
-                results={ALL_CHECKS_MET_RESULTS}
-                onGenerateQuote={fn()}
-            />
-            <ReadinessCheckList
-                checks={READINESS_CHECKS}
-                results={ALL_CHECKS_MET_RESULTS}
-            />
-        </Box>
+        <ReadinessSummaryHeader
+            results={ALL_CHECKS_MET_RESULTS}
+            onGenerateQuote={fn()}
+            summaryChecks={READINESS_CHECKS}
+        />
     ),
 };
 
 export const MultiPageOnlyPageTwoUnscaled: Story = {
     name: "Multi-page, only page 2 unscaled",
     render: () => (
-        <Box direction="column" gap="lg">
-            <ReadinessSummaryHeader
-                results={MULTI_PAGE_ONLY_PAGE_TWO_UNSCALED_RESULTS}
-                onGenerateQuote={fn()}
-            />
-            <ReadinessCheckList
-                checks={READINESS_CHECKS}
-                results={MULTI_PAGE_ONLY_PAGE_TWO_UNSCALED_RESULTS}
-            />
-        </Box>
+        <ReadinessSummaryHeader
+            results={MULTI_PAGE_ONLY_PAGE_TWO_UNSCALED_RESULTS}
+            onGenerateQuote={fn()}
+            summaryChecks={READINESS_CHECKS}
+        />
     ),
 };
 
@@ -185,24 +163,19 @@ export const CheckAffectingSeveralRoomsExpanded: Story = {
         },
     },
     render: () => (
-        <Box direction="column" gap="lg">
-            <ReadinessSummaryHeader
-                results={CHECK_AFFECTING_SEVERAL_ROOMS_RESULTS}
-                onGenerateQuote={fn()}
-            />
-            <ReadinessCheckList
-                checks={READINESS_CHECKS}
-                results={CHECK_AFFECTING_SEVERAL_ROOMS_RESULTS}
-                renderFixControl={(item, check: ReadinessCheck) =>
-                    check.id === WALL_TYPE_SET_CHECK_ID ? (
-                        <WallBoardTypeFixControl
-                            item={item}
-                            value={DEFAULT_WALL_BOARD_TYPE}
-                            onChange={fn()}
-                        />
-                    ) : null
-                }
-            />
-        </Box>
+        <ReadinessSummaryHeader
+            results={CHECK_AFFECTING_SEVERAL_ROOMS_RESULTS}
+            onGenerateQuote={fn()}
+            summaryChecks={READINESS_CHECKS}
+            renderFixControl={(item, check: ReadinessCheck) =>
+                check.id === WALL_TYPE_SET_CHECK_ID ? (
+                    <WallBoardTypeFixControl
+                        item={item}
+                        value={DEFAULT_WALL_BOARD_TYPE}
+                        onChange={fn()}
+                    />
+                ) : null
+            }
+        />
     ),
 };

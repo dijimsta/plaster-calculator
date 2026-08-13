@@ -57,6 +57,10 @@ This README will guide you through the process of using the generated JavaScript
   - [*UpdateQuoteItemTemplate*](#updatequoteitemtemplate)
   - [*DeleteQuoteItemTemplate*](#deletequoteitemtemplate)
   - [*UpdateQuoteStatus*](#updatequotestatus)
+  - [*UpdateQuoteDetails*](#updatequotedetails)
+  - [*UpdateQuoteItem*](#updatequoteitem)
+  - [*CreateQuoteItem*](#createquoteitem)
+  - [*DeleteQuoteItem*](#deletequoteitem)
   - [*CreateQuoteWithItems*](#createquotewithitems)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
   - [*UpsertMyUserSignature*](#upsertmyusersignature)
@@ -1519,6 +1523,7 @@ export interface GetQuoteReadinessData {
     name: string;
     salesStatus: string;
     pageCount: number;
+    extractedTextJson?: string | null;
   } & Project_Key;
   floorplanPages: ({
     id: UUIDString;
@@ -1526,6 +1531,7 @@ export interface GetQuoteReadinessData {
     scaleMmPerPx?: number | null;
     ceilingHeightMm?: number | null;
     overlayJson?: string | null;
+    ocrTextContent?: string | null;
   } & FloorplanPage_Key)[];
   projectQuestionnaireQuestions: ({
     id: UUIDString;
@@ -5467,6 +5473,472 @@ console.log(data.quote_update);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.quote_update);
+});
+```
+
+## UpdateQuoteDetails
+You can execute the `UpdateQuoteDetails` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+updateQuoteDetails(vars: UpdateQuoteDetailsVariables): MutationPromise<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
+
+interface UpdateQuoteDetailsRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuoteDetailsVariables): MutationRef<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
+}
+export const updateQuoteDetailsRef: UpdateQuoteDetailsRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateQuoteDetails(dc: DataConnect, vars: UpdateQuoteDetailsVariables): MutationPromise<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
+
+interface UpdateQuoteDetailsRef {
+  ...
+  (dc: DataConnect, vars: UpdateQuoteDetailsVariables): MutationRef<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
+}
+export const updateQuoteDetailsRef: UpdateQuoteDetailsRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateQuoteDetailsRef:
+```typescript
+const name = updateQuoteDetailsRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateQuoteDetails` mutation requires an argument of type `UpdateQuoteDetailsVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateQuoteDetailsVariables {
+  id: UUIDString;
+  reference?: string | null;
+}
+```
+### Return Type
+Recall that executing the `UpdateQuoteDetails` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateQuoteDetailsData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateQuoteDetailsData {
+  quote_update?: Quote_Key | null;
+}
+```
+### Using `UpdateQuoteDetails`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateQuoteDetails, UpdateQuoteDetailsVariables } from '@generated/data-connector-web';
+
+// The `UpdateQuoteDetails` mutation requires an argument of type `UpdateQuoteDetailsVariables`:
+const updateQuoteDetailsVars: UpdateQuoteDetailsVariables = {
+  id: ..., 
+  reference: ..., // optional
+};
+
+// Call the `updateQuoteDetails()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateQuoteDetails(updateQuoteDetailsVars);
+// Variables can be defined inline as well.
+const { data } = await updateQuoteDetails({ id: ..., reference: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateQuoteDetails(dataConnect, updateQuoteDetailsVars);
+
+console.log(data.quote_update);
+
+// Or, you can use the `Promise` API.
+updateQuoteDetails(updateQuoteDetailsVars).then((response) => {
+  const data = response.data;
+  console.log(data.quote_update);
+});
+```
+
+### Using `UpdateQuoteDetails`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateQuoteDetailsRef, UpdateQuoteDetailsVariables } from '@generated/data-connector-web';
+
+// The `UpdateQuoteDetails` mutation requires an argument of type `UpdateQuoteDetailsVariables`:
+const updateQuoteDetailsVars: UpdateQuoteDetailsVariables = {
+  id: ..., 
+  reference: ..., // optional
+};
+
+// Call the `updateQuoteDetailsRef()` function to get a reference to the mutation.
+const ref = updateQuoteDetailsRef(updateQuoteDetailsVars);
+// Variables can be defined inline as well.
+const ref = updateQuoteDetailsRef({ id: ..., reference: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateQuoteDetailsRef(dataConnect, updateQuoteDetailsVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quote_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quote_update);
+});
+```
+
+## UpdateQuoteItem
+You can execute the `UpdateQuoteItem` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+updateQuoteItem(vars: UpdateQuoteItemVariables): MutationPromise<UpdateQuoteItemData, UpdateQuoteItemVariables>;
+
+interface UpdateQuoteItemRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateQuoteItemVariables): MutationRef<UpdateQuoteItemData, UpdateQuoteItemVariables>;
+}
+export const updateQuoteItemRef: UpdateQuoteItemRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateQuoteItem(dc: DataConnect, vars: UpdateQuoteItemVariables): MutationPromise<UpdateQuoteItemData, UpdateQuoteItemVariables>;
+
+interface UpdateQuoteItemRef {
+  ...
+  (dc: DataConnect, vars: UpdateQuoteItemVariables): MutationRef<UpdateQuoteItemData, UpdateQuoteItemVariables>;
+}
+export const updateQuoteItemRef: UpdateQuoteItemRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateQuoteItemRef:
+```typescript
+const name = updateQuoteItemRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateQuoteItem` mutation requires an argument of type `UpdateQuoteItemVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateQuoteItemVariables {
+  id: UUIDString;
+  displayOrder: number;
+  name: string;
+  quantity: number;
+  unitPriceCents: number;
+}
+```
+### Return Type
+Recall that executing the `UpdateQuoteItem` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateQuoteItemData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateQuoteItemData {
+  quoteItem_update?: QuoteItem_Key | null;
+}
+```
+### Using `UpdateQuoteItem`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateQuoteItem, UpdateQuoteItemVariables } from '@generated/data-connector-web';
+
+// The `UpdateQuoteItem` mutation requires an argument of type `UpdateQuoteItemVariables`:
+const updateQuoteItemVars: UpdateQuoteItemVariables = {
+  id: ..., 
+  displayOrder: ..., 
+  name: ..., 
+  quantity: ..., 
+  unitPriceCents: ..., 
+};
+
+// Call the `updateQuoteItem()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateQuoteItem(updateQuoteItemVars);
+// Variables can be defined inline as well.
+const { data } = await updateQuoteItem({ id: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateQuoteItem(dataConnect, updateQuoteItemVars);
+
+console.log(data.quoteItem_update);
+
+// Or, you can use the `Promise` API.
+updateQuoteItem(updateQuoteItemVars).then((response) => {
+  const data = response.data;
+  console.log(data.quoteItem_update);
+});
+```
+
+### Using `UpdateQuoteItem`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateQuoteItemRef, UpdateQuoteItemVariables } from '@generated/data-connector-web';
+
+// The `UpdateQuoteItem` mutation requires an argument of type `UpdateQuoteItemVariables`:
+const updateQuoteItemVars: UpdateQuoteItemVariables = {
+  id: ..., 
+  displayOrder: ..., 
+  name: ..., 
+  quantity: ..., 
+  unitPriceCents: ..., 
+};
+
+// Call the `updateQuoteItemRef()` function to get a reference to the mutation.
+const ref = updateQuoteItemRef(updateQuoteItemVars);
+// Variables can be defined inline as well.
+const ref = updateQuoteItemRef({ id: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateQuoteItemRef(dataConnect, updateQuoteItemVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quoteItem_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteItem_update);
+});
+```
+
+## CreateQuoteItem
+You can execute the `CreateQuoteItem` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+createQuoteItem(vars: CreateQuoteItemVariables): MutationPromise<CreateQuoteItemData, CreateQuoteItemVariables>;
+
+interface CreateQuoteItemRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateQuoteItemVariables): MutationRef<CreateQuoteItemData, CreateQuoteItemVariables>;
+}
+export const createQuoteItemRef: CreateQuoteItemRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+createQuoteItem(dc: DataConnect, vars: CreateQuoteItemVariables): MutationPromise<CreateQuoteItemData, CreateQuoteItemVariables>;
+
+interface CreateQuoteItemRef {
+  ...
+  (dc: DataConnect, vars: CreateQuoteItemVariables): MutationRef<CreateQuoteItemData, CreateQuoteItemVariables>;
+}
+export const createQuoteItemRef: CreateQuoteItemRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createQuoteItemRef:
+```typescript
+const name = createQuoteItemRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `CreateQuoteItem` mutation requires an argument of type `CreateQuoteItemVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface CreateQuoteItemVariables {
+  id: UUIDString;
+  quoteId: UUIDString;
+  displayOrder: number;
+  name: string;
+  quantity: number;
+  unitPriceCents: number;
+}
+```
+### Return Type
+Recall that executing the `CreateQuoteItem` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `CreateQuoteItemData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface CreateQuoteItemData {
+  quoteItem_insert: QuoteItem_Key;
+}
+```
+### Using `CreateQuoteItem`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, createQuoteItem, CreateQuoteItemVariables } from '@generated/data-connector-web';
+
+// The `CreateQuoteItem` mutation requires an argument of type `CreateQuoteItemVariables`:
+const createQuoteItemVars: CreateQuoteItemVariables = {
+  id: ..., 
+  quoteId: ..., 
+  displayOrder: ..., 
+  name: ..., 
+  quantity: ..., 
+  unitPriceCents: ..., 
+};
+
+// Call the `createQuoteItem()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await createQuoteItem(createQuoteItemVars);
+// Variables can be defined inline as well.
+const { data } = await createQuoteItem({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await createQuoteItem(dataConnect, createQuoteItemVars);
+
+console.log(data.quoteItem_insert);
+
+// Or, you can use the `Promise` API.
+createQuoteItem(createQuoteItemVars).then((response) => {
+  const data = response.data;
+  console.log(data.quoteItem_insert);
+});
+```
+
+### Using `CreateQuoteItem`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, createQuoteItemRef, CreateQuoteItemVariables } from '@generated/data-connector-web';
+
+// The `CreateQuoteItem` mutation requires an argument of type `CreateQuoteItemVariables`:
+const createQuoteItemVars: CreateQuoteItemVariables = {
+  id: ..., 
+  quoteId: ..., 
+  displayOrder: ..., 
+  name: ..., 
+  quantity: ..., 
+  unitPriceCents: ..., 
+};
+
+// Call the `createQuoteItemRef()` function to get a reference to the mutation.
+const ref = createQuoteItemRef(createQuoteItemVars);
+// Variables can be defined inline as well.
+const ref = createQuoteItemRef({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = createQuoteItemRef(dataConnect, createQuoteItemVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quoteItem_insert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteItem_insert);
+});
+```
+
+## DeleteQuoteItem
+You can execute the `DeleteQuoteItem` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+deleteQuoteItem(vars: DeleteQuoteItemVariables): MutationPromise<DeleteQuoteItemData, DeleteQuoteItemVariables>;
+
+interface DeleteQuoteItemRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteQuoteItemVariables): MutationRef<DeleteQuoteItemData, DeleteQuoteItemVariables>;
+}
+export const deleteQuoteItemRef: DeleteQuoteItemRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deleteQuoteItem(dc: DataConnect, vars: DeleteQuoteItemVariables): MutationPromise<DeleteQuoteItemData, DeleteQuoteItemVariables>;
+
+interface DeleteQuoteItemRef {
+  ...
+  (dc: DataConnect, vars: DeleteQuoteItemVariables): MutationRef<DeleteQuoteItemData, DeleteQuoteItemVariables>;
+}
+export const deleteQuoteItemRef: DeleteQuoteItemRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteQuoteItemRef:
+```typescript
+const name = deleteQuoteItemRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeleteQuoteItem` mutation requires an argument of type `DeleteQuoteItemVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeleteQuoteItemVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeleteQuoteItem` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeleteQuoteItemData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeleteQuoteItemData {
+  quoteItem_delete?: QuoteItem_Key | null;
+}
+```
+### Using `DeleteQuoteItem`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deleteQuoteItem, DeleteQuoteItemVariables } from '@generated/data-connector-web';
+
+// The `DeleteQuoteItem` mutation requires an argument of type `DeleteQuoteItemVariables`:
+const deleteQuoteItemVars: DeleteQuoteItemVariables = {
+  id: ..., 
+};
+
+// Call the `deleteQuoteItem()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deleteQuoteItem(deleteQuoteItemVars);
+// Variables can be defined inline as well.
+const { data } = await deleteQuoteItem({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deleteQuoteItem(dataConnect, deleteQuoteItemVars);
+
+console.log(data.quoteItem_delete);
+
+// Or, you can use the `Promise` API.
+deleteQuoteItem(deleteQuoteItemVars).then((response) => {
+  const data = response.data;
+  console.log(data.quoteItem_delete);
+});
+```
+
+### Using `DeleteQuoteItem`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deleteQuoteItemRef, DeleteQuoteItemVariables } from '@generated/data-connector-web';
+
+// The `DeleteQuoteItem` mutation requires an argument of type `DeleteQuoteItemVariables`:
+const deleteQuoteItemVars: DeleteQuoteItemVariables = {
+  id: ..., 
+};
+
+// Call the `deleteQuoteItemRef()` function to get a reference to the mutation.
+const ref = deleteQuoteItemRef(deleteQuoteItemVars);
+// Variables can be defined inline as well.
+const ref = deleteQuoteItemRef({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deleteQuoteItemRef(dataConnect, deleteQuoteItemVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quoteItem_delete);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteItem_delete);
 });
 ```
 

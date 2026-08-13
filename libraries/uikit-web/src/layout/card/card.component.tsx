@@ -1,6 +1,10 @@
+import clsx from "clsx";
 import type { ReactElement, ReactNode } from "react";
 
 import { styles } from "./card.styles.ts";
+
+export type CardVariant = "default" | "subtle";
+export type CardVisibility = keyof typeof styles.visibility;
 
 export type CardProps = {
     /**
@@ -9,35 +13,59 @@ export type CardProps = {
      * stylesheet isolating one card via an `#id` selector.
      */
     readonly id?: string;
+    readonly variant?: CardVariant;
+    readonly visibility?: CardVisibility;
     readonly children?: ReactNode;
 };
 
-export function Card({ id, children }: CardProps): ReactElement {
+export function Card({
+    id,
+    variant = "default",
+    visibility = "visible",
+    children,
+}: CardProps): ReactElement {
     return (
-        <div id={id} className={styles.root}>
+        <div
+            id={id}
+            className={clsx(
+                styles.root,
+                styles.variants[variant],
+                styles.visibility[visibility],
+            )}
+        >
             {children}
         </div>
     );
 }
 
 export namespace Card {
-    export function Header({ children }: CardProps): ReactElement {
+    export function Header({
+        children,
+    }: Pick<CardProps, "children">): ReactElement {
         return <div className={styles.header}>{children}</div>;
     }
 
-    export function Body({ children }: CardProps): ReactElement {
+    export function Body({
+        children,
+    }: Pick<CardProps, "children">): ReactElement {
         return <div className={styles.body}>{children}</div>;
     }
 
-    export function Title({ children }: CardProps): ReactElement {
+    export function Title({
+        children,
+    }: Pick<CardProps, "children">): ReactElement {
         return <h2 className={styles.title}>{children}</h2>;
     }
 
-    export function ButtonGroup({ children }: CardProps): ReactElement {
+    export function ButtonGroup({
+        children,
+    }: Pick<CardProps, "children">): ReactElement {
         return <div className={styles.buttonGroup}>{children}</div>;
     }
 
-    export function Footer({ children }: CardProps): ReactElement {
+    export function Footer({
+        children,
+    }: Pick<CardProps, "children">): ReactElement {
         return <p className={styles.footer}>{children}</p>;
     }
 }

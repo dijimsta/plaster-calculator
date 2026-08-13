@@ -29,7 +29,11 @@ export {
     updateReminder,
 } from "./reminders.js";
 export { ensureMyTeam, initializeMyTeam } from "./teams.js";
-export { listMyTeamMembers, removeTeamMember } from "./team-members.js";
+export {
+    listMyTeamMembers,
+    removeTeamMember,
+    updateMyTeamName,
+} from "./team-members.js";
 export {
     acceptTeamInvitation,
     createTeamInvitation,

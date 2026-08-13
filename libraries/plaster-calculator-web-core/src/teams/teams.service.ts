@@ -11,6 +11,8 @@ import {
     RemoveTeamMemberResponseSchema,
     RevokeTeamInvitationRequestSchema,
     RevokeTeamInvitationResponseSchema,
+    UpdateTeamNameRequestSchema,
+    UpdateTeamNameResponseSchema,
     type CreateTeamInvitationRequest,
     type CreateTeamInvitationResponse,
     type InitializeMyTeamRequest,
@@ -19,6 +21,7 @@ import {
     type MyTeamSummary,
     type RemoveTeamMemberResponse,
     type RevokeTeamInvitationResponse,
+    type UpdateTeamNameResponse,
 } from "@libraries/plaster-calculator-common";
 import type { DataConnect } from "firebase/data-connect";
 import { httpsCallable, type Functions } from "firebase/functions";
@@ -68,6 +71,15 @@ export class TeamsService {
         const callable = httpsCallable(this.functions, "removeTeamMember");
         const { data } = await callable(request);
         return RemoveTeamMemberResponseSchema.parse(data);
+    }
+
+    public async updateMyTeamName(
+        name: string,
+    ): Promise<UpdateTeamNameResponse> {
+        const request = UpdateTeamNameRequestSchema.parse({ name });
+        const callable = httpsCallable(this.functions, "updateMyTeamName");
+        const { data } = await callable(request);
+        return UpdateTeamNameResponseSchema.parse(data);
     }
 
     public async listPendingTeamInvitations(): Promise<ListPendingTeamInvitationsResponse> {

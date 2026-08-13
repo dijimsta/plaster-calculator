@@ -324,6 +324,116 @@ mutation UpdateQuoteStatus($id: UUID!, $status: String!)
     )
 }
 
+# Generated quotes are snapshots of their template/take-off inputs. These
+# focused mutations let users edit that snapshot without changing the source
+# template or regenerating the quote. Every operation validates team ownership
+# before writing; item creation derives teamId from the authenticated token.
+mutation UpdateQuoteDetails($id: UUID!, $reference: String)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        quote(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote"
+            ) {
+            id
+            teamId
+        }
+    }
+    quote_update(
+        id: $id
+        data: { reference: $reference, updatedAt_expr: "request.time" }
+    )
+}
+
+mutation UpdateQuoteItem(
+    $id: UUID!
+    $displayOrder: Int!
+    $name: String!
+    $quantity: Float!
+    $unitPriceCents: Int!
+) @auth(level: USER) @transaction {
+    query @redact {
+        quoteItem(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote item"
+            ) {
+            id
+            teamId
+        }
+    }
+    quoteItem_update(
+        id: $id
+        data: {
+            sourceTemplateId: null
+            displayOrder: $displayOrder
+            name: $name
+            quantity: $quantity
+            quantitySourceId: null
+            unitPriceCents: $unitPriceCents
+            materialUnitPriceCents: 0
+            labourUnitPriceCents: 0
+            matchedKeywords: []
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateQuoteItem(
+    $id: UUID!
+    $quoteId: UUID!
+    $displayOrder: Int!
+    $name: String!
+    $quantity: Float!
+    $unitPriceCents: Int!
+) @auth(level: USER) @transaction {
+    query @redact {
+        quote(key: { id: $quoteId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote"
+            ) {
+            id
+            teamId
+        }
+    }
+    quoteItem_insert(
+        data: {
+            id: $id
+            teamId_expr: "auth.token.teamId"
+            quoteId: $quoteId
+            sourceTemplateId: null
+            displayOrder: $displayOrder
+            name: $name
+            quantity: $quantity
+            quantitySourceId: null
+            unitPriceCents: $unitPriceCents
+            materialUnitPriceCents: 0
+            labourUnitPriceCents: 0
+            matchedKeywords: []
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation DeleteQuoteItem($id: UUID!) @auth(level: USER) @transaction {
+    query @redact {
+        quoteItem(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote item"
+            ) {
+            id
+            teamId
+        }
+    }
+    quoteItem_delete(id: $id)
+        @check(expr: "this != null", message: "Quote item not found")
+}
+
 # Creates a `Quote` plus up to 20 `QuoteItem` rows in a single
 # `@transaction` mutation — the same "one document, many writes, atomically"
 # shape as `EnsureSystemQuoteItemTemplates` above.

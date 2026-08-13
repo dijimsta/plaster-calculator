@@ -1,9 +1,9 @@
 /**
  * A line item's quantity provenance -- how many `QuantitySource` fields
  * (`measurementSource`, `measurementPlasterType`) this library can see. Not
- * every line has one: a keyword-matched flat-fee line (see
- * `QuoteLineItemsTableUtils.provenanceLabel`) carries `null` instead, and
- * names its own provenance via `matchedKeywords`.
+ * every line has one: a flat-fee line (see `QuoteLineItemsTableUtils.
+ * provenanceLabel`) carries `null` instead, and is either explained by its
+ * `matchedKeywords` or identified as included by default.
  */
 export type QuoteLineItemsTableQuantitySource = {
     readonly measurementSource: string;

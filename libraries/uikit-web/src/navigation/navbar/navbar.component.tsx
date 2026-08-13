@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import { Menu, X } from "lucide-react";
 import {

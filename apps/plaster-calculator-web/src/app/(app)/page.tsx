@@ -1,9 +1,14 @@
 "use client";
 
-import { Alert, Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
+import {
+    Alert,
+    Box,
+    Breadcrumb,
+    BusyOverlay,
+    PageHeading,
+} from "@libraries/uikit-web";
 import { Home } from "lucide-react";
 
-import { BusyOverlay } from "../../components/busy-overlay.js";
 import { useAppTranslation } from "../../i18n/index.ts";
 import { ui } from "../../lib/styles.js";
 

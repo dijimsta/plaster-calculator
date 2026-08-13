@@ -10,8 +10,8 @@ import type { QuotesTableRow } from "./quotes-table.types.ts";
 
 export type QuotesTableProps = {
     readonly rows: readonly QuotesTableRow[];
-    readonly onOpen: (quoteId: string) => void;
-    readonly onDownload: (quoteId: string) => void;
+    readonly onOpen: (projectId: string) => void;
+    readonly onDownload: (projectId: string) => void;
 };
 
 /** The all-quotes table: one row per quote, with a count line and empty state. */
@@ -78,8 +78,8 @@ export function QuotesTable({
 
 type QuotesTableBodyRowProps = {
     readonly row: QuotesTableRow;
-    readonly onOpen: (quoteId: string) => void;
-    readonly onDownload: (quoteId: string) => void;
+    readonly onOpen: (projectId: string) => void;
+    readonly onDownload: (projectId: string) => void;
 };
 
 function QuotesTableBodyRow({
@@ -90,7 +90,7 @@ function QuotesTableBodyRow({
     const { t } = useQuotesTranslation();
 
     return (
-        <Table.Row onClick={() => onOpen(row.quoteId)}>
+        <Table.Row onClick={() => onOpen(row.projectId)}>
             <Table.Cell>{row.reference ?? "—"}</Table.Cell>
             <Table.Cell>
                 <Text truncate>{row.projectName}</Text>
@@ -119,7 +119,7 @@ function QuotesTableBodyRow({
                     icon={<Download size={16} aria-hidden="true" />}
                     onClick={(event) => {
                         event.stopPropagation();
-                        onDownload(row.quoteId);
+                        onDownload(row.projectId);
                     }}
                 />
             </Table.Cell>

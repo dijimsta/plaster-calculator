@@ -202,7 +202,6 @@ export default function ProjectPage({
                     activeTab="floorplan"
                     renaming={renaming}
                     renameValue={renameValue}
-                    load={load}
                     saveRename={saveRename}
                     setRenaming={setRenaming}
                     setRenameValue={setRenameValue}

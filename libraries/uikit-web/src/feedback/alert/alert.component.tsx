@@ -47,9 +47,9 @@ export function Alert({
                         </h3>
                     )}
                     {children !== undefined && (
-                        <p className={clsx(styles.body, bodyColors[intent])}>
+                        <div className={clsx(styles.body, bodyColors[intent])}>
                             {children}
-                        </p>
+                        </div>
                     )}
                 </div>
                 {onDismiss !== undefined && (
@@ -71,7 +71,7 @@ function containerClass(
     return clsx(
         accent ? styles.accentContainer : styles.container,
         !isLight && containerColors[intent],
-        isLight && "bg-white",
+        isLight && "bg-white dark:bg-white/5",
         hasBorder && ringColors[intent],
         accent && accentBorderColors[intent],
     );

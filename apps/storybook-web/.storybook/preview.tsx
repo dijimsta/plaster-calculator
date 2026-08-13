@@ -1,6 +1,7 @@
 import "../src/styles.css";
 
 import {
+    projectsTranslations,
     questionnairesTranslations,
     quotesTranslations,
 } from "@libraries/plaster-calculator-ui";
@@ -13,7 +14,11 @@ const preview: Preview = {
     decorators: [
         (Story) => (
             <I18nProvider
-                translations={[questionnairesTranslations, quotesTranslations]}
+                translations={[
+                    projectsTranslations,
+                    questionnairesTranslations,
+                    quotesTranslations,
+                ]}
             >
                 <NotificationsProvider>
                     <Story />
