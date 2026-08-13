@@ -6,8 +6,6 @@ import {
     Box,
     Card,
     Container,
-    DescriptionList,
-    Heading5,
     Heading6,
     Paragraph,
     StackedList,
@@ -19,7 +17,7 @@ import { ThemeSettingsControl } from "../../../components/theme-settings-control
 import { useAppTranslation } from "../../../i18n/index.ts";
 
 import { UserPageHeader } from "./user-page-header.js";
-import { UserProfileNameForm } from "./user-profile-name-form.js";
+import { UserProfileNameEditor } from "./user-profile-name-editor.js";
 import { UserSettingsPanel } from "./user-settings.js";
 
 export default function UserPage() {
@@ -56,11 +54,8 @@ export default function UserPage() {
                                     }
                                     size="xl"
                                 />
-                                <Box direction="column">
-                                    <Heading5>
-                                        {user.displayName ||
-                                            t("userPage.profile.signedInUser")}
-                                    </Heading5>
+                                <Box direction="column" align="start">
+                                    <UserProfileNameEditor user={user} />
                                     <Paragraph textSize="sm" variant="muted">
                                         {user.email ||
                                             t(
@@ -69,19 +64,6 @@ export default function UserPage() {
                                     </Paragraph>
                                 </Box>
                             </Box>
-                            <DescriptionList
-                                items={[
-                                    {
-                                        term: t(
-                                            "userPage.profile.fields.email",
-                                        ),
-                                        details:
-                                            user.email ||
-                                            t("userPage.profile.notProvided"),
-                                    },
-                                ]}
-                            />
-                            <UserProfileNameForm user={user} />
                             <Box direction="column" gap="md">
                                 <Heading6>
                                     {t("userPage.profile.connectedLogins")}

@@ -10,11 +10,7 @@ export const enUserPage = Object.freeze({
             name: "Name",
             email: "Email",
         }),
-        nameDescription:
-            "This name is shown throughout your account and to your team.",
-        savingName: "Saving...",
-        saveName: "Save name",
-        nameSaved: "Name saved.",
+        editName: "Edit name",
         unableToSaveName: "Unable to save name.",
         connectedLogins: "Connected logins",
         noConnectedSocialLogins: "No connected social logins.",
