@@ -29,20 +29,6 @@ export function filterCompanies(
     );
 }
 
-export function mergeCompanies(
-    ...companyLists: readonly (readonly CompanySummary[])[]
-): CompanySummary[] {
-    const companiesById = new Map<string, CompanySummary>();
-    for (const companies of companyLists) {
-        for (const company of companies) {
-            if (!companiesById.has(company.id)) {
-                companiesById.set(company.id, company);
-            }
-        }
-    }
-    return [...companiesById.values()];
-}
-
 export function toCompanyDraft(company: CompanySummary): CompanyDraft {
     return {
         companyName: company.companyName,

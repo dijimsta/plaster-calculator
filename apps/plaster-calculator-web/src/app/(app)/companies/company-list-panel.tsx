@@ -17,13 +17,13 @@ import { cx, ui } from "../../../lib/styles.js";
 import type { CompanySummary } from "../../../types.js";
 
 import { CompanyRow } from "./company-row.js";
-import { filterCompanies, mergeCompanies } from "./company.utils.js";
+import { filterCompanies } from "./company.utils.js";
 
 interface CompanyListPanelProps {
-    readonly createdCompanies: readonly CompanySummary[];
+    readonly refreshKey: number;
 }
 
-export function CompanyListPanel({ createdCompanies }: CompanyListPanelProps) {
+export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
     const companiesService = useCompaniesService();
     const { t } = useAppTranslation();
     const [companies, setCompanies] = useState<CompanySummary[]>([]);
@@ -33,15 +33,11 @@ export function CompanyListPanel({ createdCompanies }: CompanyListPanelProps) {
 
     useEffect(() => {
         void refresh();
-    }, [companiesService]);
+    }, [refreshKey, companiesService]);
 
-    const displayedCompanies = useMemo(
-        () => mergeCompanies(createdCompanies, companies),
-        [companies, createdCompanies],
-    );
     const filtered = useMemo(
-        () => filterCompanies(displayedCompanies, query),
-        [displayedCompanies, query],
+        () => filterCompanies(companies, query),
+        [companies, query],
     );
     async function refresh(): Promise<void> {
         setIsLoading(true);

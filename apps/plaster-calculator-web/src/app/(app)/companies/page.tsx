@@ -7,17 +7,13 @@ import { useState } from "react";
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
-import type { CompanySummary } from "../../../types.js";
 
 import { CompanyListPanel } from "./company-list-panel.js";
-import { mergeCompanies } from "./company.utils.js";
 import { NewCompanyPanel } from "./new-company-panel.js";
 
 export default function CompaniesPage() {
     const { t } = useAppTranslation();
-    const [createdCompanies, setCreatedCompanies] = useState<CompanySummary[]>(
-        [],
-    );
+    const [companyListRefreshKey, setCompanyListRefreshKey] = useState(0);
 
     return (
         <>
@@ -48,13 +44,11 @@ export default function CompaniesPage() {
             <Box direction="column" padding="md">
                 <section className={cx(ui.layoutGrid, "items-start")}>
                     <NewCompanyPanel
-                        onCreated={(company) =>
-                            setCreatedCompanies((current) =>
-                                mergeCompanies([company], current),
-                            )
+                        onCreated={() =>
+                            setCompanyListRefreshKey((current) => current + 1)
                         }
                     />
-                    <CompanyListPanel createdCompanies={createdCompanies} />
+                    <CompanyListPanel refreshKey={companyListRefreshKey} />
                 </section>
             </Box>
         </>
