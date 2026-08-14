@@ -4,7 +4,7 @@ import {
     CompanyDetailSchema,
     CompanySummarySchema,
 } from "@libraries/plaster-calculator-common";
-import type { DataConnect } from "firebase/data-connect";
+import { QueryFetchPolicy, type DataConnect } from "firebase/data-connect";
 
 import { FirebaseService } from "../firebase/firebase.service.ts";
 
@@ -28,7 +28,9 @@ export class CompaniesService {
     ) {}
 
     public async listCompanies(): Promise<CompanySummary[]> {
-        const result = await DataConnector.listMyCompanies(this.dataConnect);
+        const result = await DataConnector.listMyCompanies(this.dataConnect, {
+            fetchPolicy: QueryFetchPolicy.SERVER_ONLY,
+        });
         return result.data.companies.map((company) =>
             this.toCompanySummary(company),
         );
