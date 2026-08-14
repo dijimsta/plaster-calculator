@@ -7,6 +7,7 @@ import { useState, type FormEvent } from "react";
 
 import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
+import type { CompanyDetail } from "../../../types.js";
 
 import { CompanyDraftFields } from "./company-draft-fields.js";
 import { EMPTY_ACCOUNT_DRAFT } from "./company.types.js";
@@ -14,7 +15,7 @@ import type { CompanyDraft } from "./company.types.js";
 import { optionalValue } from "./company.utils.js";
 
 interface NewCompanyPanelProps {
-    readonly onCreated: () => void;
+    readonly onCreated: (company: CompanyDetail) => void;
 }
 
 export function NewCompanyPanel({ onCreated }: NewCompanyPanelProps) {
@@ -28,14 +29,14 @@ export function NewCompanyPanel({ onCreated }: NewCompanyPanelProps) {
         const companyName = draft.companyName.trim();
         if (!companyName) return;
         try {
-            await companiesService.createCompany({
+            const company = await companiesService.createCompany({
                 companyName,
                 businessNumber: optionalValue(draft.businessNumber),
                 phoneNumber: optionalValue(draft.phoneNumber),
             });
             setDraft(EMPTY_ACCOUNT_DRAFT);
             setMessage(t("companies.newCompany.created"));
-            onCreated();
+            onCreated(company);
         } catch (error) {
             setMessage(
                 error instanceof Error
