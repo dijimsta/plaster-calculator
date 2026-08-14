@@ -106,6 +106,21 @@ export const WithTrailingIcon: Story = {
     ),
 };
 
+export const WithHoverRevealIcon: Story = {
+    render: (args) => (
+        <Button
+            {...args}
+            variant="ghost"
+            icon={<GoogleIcon />}
+            iconPosition="right"
+            revealIconOnHover
+            flush
+        >
+            Edit profile
+        </Button>
+    ),
+};
+
 export const IconOnly: Story = {
     render: (args) => (
         <Button

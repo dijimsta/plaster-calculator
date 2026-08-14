@@ -5,10 +5,8 @@ import {
     Button,
     Card,
     Divider,
-    FormLayout,
     GoogleIcon,
     Heading1,
-    Input,
     Paragraph,
 } from "@libraries/uikit-web";
 import { Suspense } from "react";
@@ -17,6 +15,7 @@ import { Trans } from "react-i18next";
 import { useAppTranslation } from "../../../i18n/index.ts";
 import { activeTheme, cx } from "../../../lib/styles.js";
 
+import { EmailAuthForm } from "./email-auth-form.js";
 import { useLoginPage } from "./use-login-page.ts";
 
 const pageClass = cx(
@@ -68,41 +67,17 @@ function LoginPageContent() {
                             </Alert>
                         )}
 
-                        <FormLayout onSubmit={login.handleEmailSubmit}>
-                            <Input
-                                type="email"
-                                required
-                                autoComplete="email"
-                                value={login.email}
-                                onChange={(e) => login.setEmail(e.target.value)}
-                                placeholder={t("loginPage.emailPlaceholder")}
-                            />
-                            <Input
-                                type="password"
-                                required
-                                autoComplete={
-                                    login.isRegistering
-                                        ? "new-password"
-                                        : "current-password"
-                                }
-                                value={login.password}
-                                onChange={(e) =>
-                                    login.setPassword(e.target.value)
-                                }
-                                placeholder={t("loginPage.passwordPlaceholder")}
-                            />
-                            <Button
-                                type="submit"
-                                disabled={login.loading}
-                                variant="primary"
-                                fullWidth
-                                size="large"
-                            >
-                                {login.loading
-                                    ? t("loginPage.loading")
-                                    : t("loginPage.logIn")}
-                            </Button>
-                        </FormLayout>
+                        <EmailAuthForm
+                            displayName={login.displayName}
+                            email={login.email}
+                            password={login.password}
+                            isRegistering={login.isRegistering}
+                            loading={login.loading}
+                            onDisplayNameChange={login.setDisplayName}
+                            onEmailChange={login.setEmail}
+                            onPasswordChange={login.setPassword}
+                            onSubmit={login.handleEmailSubmit}
+                        />
 
                         <Divider>{t("loginPage.or")}</Divider>
 

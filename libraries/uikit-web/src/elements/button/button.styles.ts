@@ -1,7 +1,10 @@
 import clsx from "clsx";
 
 export const base =
-    "inline-flex items-center gap-2 border-0 text-sm font-medium leading-5 cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed";
+    "group inline-flex items-center gap-2 border-0 text-sm font-medium leading-5 cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed";
+
+export const hoverRevealIcon =
+    "opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100";
 
 export const growStyle = "flex-1";
 export const fullWidthStyle = "w-full";
@@ -39,6 +42,7 @@ export const variants = Object.freeze({
 
 type ButtonClassNameOptions = {
     readonly align: ButtonContentAlignment;
+    readonly flush: boolean;
     readonly fullWidth: boolean;
     readonly grow: boolean;
     readonly size: ButtonSize;
@@ -47,6 +51,7 @@ type ButtonClassNameOptions = {
 
 export function buttonClassName({
     align,
+    flush,
     fullWidth,
     grow,
     size,
@@ -55,9 +60,18 @@ export function buttonClassName({
     return clsx(
         base,
         variants[variant],
-        variant === "link" ? "p-0" : sizes[size],
+        buttonPaddingClassName(flush, size, variant),
         grow && growStyle,
         fullWidth && fullWidthStyle,
         contentAlignments[align],
     );
+}
+
+function buttonPaddingClassName(
+    flush: boolean,
+    size: ButtonSize,
+    variant: ButtonVariant,
+): string {
+    if (flush || variant === "link") return "p-0";
+    return sizes[size];
 }

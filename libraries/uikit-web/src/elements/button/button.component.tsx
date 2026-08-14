@@ -7,6 +7,7 @@ import type {
 
 import {
     buttonClassName,
+    hoverRevealIcon,
     type ButtonSize,
     type ButtonContentAlignment,
     type ButtonVariant,
@@ -20,8 +21,12 @@ export type ButtonProps = {
     readonly size?: ButtonSize;
     readonly icon?: ReactElement;
     readonly iconPosition?: ButtonIconPosition;
+    /** Reveals the icon when the button is hovered or keyboard-focused. */
+    readonly revealIconOnHover?: boolean;
     /** Allows the button to grow to fill available space in a flex row. */
     readonly grow?: boolean;
+    /** Removes outer padding so content aligns flush with adjacent text. */
+    readonly flush?: boolean;
     readonly fullWidth?: boolean;
     readonly align?: ButtonContentAlignment;
     /** Names icon-only actions and is announced when no visible text is present. */
@@ -40,7 +45,9 @@ export function Button({
     size = "medium",
     icon,
     iconPosition = "left",
+    revealIconOnHover = false,
     grow = false,
+    flush,
     fullWidth = false,
     align = "center",
     label,
@@ -52,6 +59,8 @@ export function Button({
     onMouseDown,
     children,
 }: ButtonProps): ReactElement {
+    const renderedIcon = renderIcon(icon, revealIconOnHover);
+
     return (
         <button
             type={type}
@@ -63,15 +72,28 @@ export function Button({
             onMouseDown={onMouseDown}
             className={buttonClassName({
                 align,
+                flush: Boolean(flush),
                 fullWidth,
                 grow,
                 size,
                 variant,
             })}
         >
-            {iconPosition === "left" && icon}
+            {iconPosition === "left" && renderedIcon}
             {children}
-            {iconPosition === "right" && icon}
+            {iconPosition === "right" && renderedIcon}
         </button>
+    );
+}
+
+function renderIcon(
+    icon: ReactElement | undefined,
+    revealOnHover: boolean,
+): ReactNode {
+    if (icon === undefined) return undefined;
+    return revealOnHover ? (
+        <span className={hoverRevealIcon}>{icon}</span>
+    ) : (
+        icon
     );
 }

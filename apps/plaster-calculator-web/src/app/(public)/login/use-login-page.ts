@@ -3,6 +3,7 @@
 import {
     FirebaseService,
     initializeUserTeam,
+    updateUserDisplayName,
     useTeamsService,
 } from "@libraries/plaster-calculator-web-core";
 import {
@@ -13,6 +14,7 @@ import {
     signInWithPopup,
     signOut,
     type User,
+    type UserCredential,
 } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation.js";
 import { useEffect, useState } from "react";
@@ -28,6 +30,7 @@ export function useLoginPage() {
     const teamsService = useTeamsService();
     const { t } = useAppTranslation();
     const invitationToken = searchParams.get("invitation") ?? undefined;
+    const [displayName, setDisplayName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
@@ -35,6 +38,8 @@ export function useLoginPage() {
     const [error, setError] = useState<string | null>(null);
     const [authChecked, setAuthChecked] = useState(false);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [isEmailRegistrationPending, setIsEmailRegistrationPending] =
+        useState(false);
     const [teamSetupAttempt, setTeamSetupAttempt] = useState(0);
 
     useEffect(() => {
@@ -46,7 +51,7 @@ export function useLoginPage() {
 
     useEffect(() => {
         let isActive = true;
-        if (currentUser) {
+        if (currentUser && !isEmailRegistrationPending) {
             setError(null);
             setLoading(true);
             void initializeUserTeam(currentUser, teamsService, invitationToken)
@@ -71,6 +76,7 @@ export function useLoginPage() {
         };
     }, [
         currentUser,
+        isEmailRegistrationPending,
         invitationToken,
         router,
         teamSetupAttempt,
@@ -82,11 +88,18 @@ export function useLoginPage() {
         event.preventDefault();
         setError(null);
         setLoading(true);
+        setIsEmailRegistrationPending(isRegistering);
         try {
-            await (isRegistering
-                ? createUserWithEmailAndPassword(auth, email, password)
-                : signInWithEmailAndPassword(auth, email, password));
+            await authenticateWithEmail({
+                displayName,
+                email,
+                isRegistering,
+                password,
+            });
+            setIsEmailRegistrationPending(false);
+            setTeamSetupAttempt((attempt) => attempt + 1);
         } catch (submitError: unknown) {
+            setIsEmailRegistrationPending(false);
             setError(
                 errorMessage(submitError, t("loginPage.authenticationFailed")),
             );
@@ -124,6 +137,7 @@ export function useLoginPage() {
     return {
         authChecked,
         currentUser,
+        displayName,
         email,
         error,
         handleEmailSubmit,
@@ -133,6 +147,7 @@ export function useLoginPage() {
         loading,
         password,
         retryTeamSetup: () => setTeamSetupAttempt((attempt) => attempt + 1),
+        setDisplayName,
         setEmail,
         setPassword,
         toggleRegistration: () => {
@@ -140,6 +155,31 @@ export function useLoginPage() {
             setError(null);
         },
     };
+}
+
+type AuthenticateWithEmailOptions = Readonly<{
+    displayName: string;
+    email: string;
+    isRegistering: boolean;
+    password: string;
+}>;
+
+async function authenticateWithEmail({
+    displayName,
+    email,
+    isRegistering,
+    password,
+}: AuthenticateWithEmailOptions): Promise<UserCredential> {
+    if (!isRegistering) {
+        return signInWithEmailAndPassword(auth, email, password);
+    }
+    const credential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+    );
+    await updateUserDisplayName(credential.user, displayName);
+    return credential;
 }
 
 function errorMessage(error: unknown, fallback: string): string {
