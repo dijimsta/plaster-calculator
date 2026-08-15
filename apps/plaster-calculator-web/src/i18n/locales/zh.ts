@@ -37,7 +37,7 @@ export const zh = createTranslationResource(
             navLabels: Object.freeze({
                 home: "首页",
                 projects: "项目",
-                questionnaires: "问卷",
+                questionnaires: "工作范围",
                 quotes: "报价",
                 companies: "公司",
             }),
@@ -100,9 +100,9 @@ export const zh = createTranslationResource(
         }),
         projects,
         questionnaires: Object.freeze({
-            title: "问卷",
-            projectsTab: "项目",
-            templatesTab: "模板",
+            title: "工作范围",
+            projectsTab: "工作范围",
+            templatesTab: "澄清模板",
         }),
         quotes: Object.freeze({
             title: "报价",
@@ -242,6 +242,7 @@ export const zh = createTranslationResource(
             detailsAriaLabel: "项目详情",
             loading: "加载中...",
             floorplanTab: "平面图",
+            scopeOfWorkTab: "工作范围",
             quoteTab: "报价",
             renameProject: "重命名项目",
         }),

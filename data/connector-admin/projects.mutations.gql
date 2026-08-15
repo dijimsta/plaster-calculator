@@ -39,6 +39,7 @@ mutation UpdateProject(
     $address: String
     $salesStatus: String
     $assignee: String
+    $scope: String
 ) @auth(level: NO_ACCESS) {
     project_update(
         id: $id
@@ -48,6 +49,7 @@ mutation UpdateProject(
             address: $address
             salesStatus: $salesStatus
             assignee: $assignee
+            scope: $scope
             updatedAt_expr: "request.time"
         }
     )

@@ -39,6 +39,7 @@ export function toSummary(
 export function toDetail(project: ProjectWithPages): ProjectDetail {
     return {
         ...toSummary(project),
+        scope: project.scope ?? null,
         pages: project.pages.map(toPage),
     };
 }

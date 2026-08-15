@@ -91,7 +91,7 @@ export function ProjectHeader({
                     </Tabs.Item>
                     <Tabs.Item current={activeTab === "questionnaires"}>
                         <Link href={`/projects/${projectId}/questionnaires`}>
-                            Questionnaire
+                            {t("projectHeader.scopeOfWorkTab")}
                         </Link>
                     </Tabs.Item>
                     <Tabs.Item current={activeTab === "quote"}>

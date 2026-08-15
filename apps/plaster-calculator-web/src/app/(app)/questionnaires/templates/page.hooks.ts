@@ -85,13 +85,13 @@ export function useCreateQuestionnaireTemplateCallback(
                 dispatch({ type: "createSucceeded" });
                 notify({
                     intent: "success",
-                    title: "Template created",
+                    title: "Clarification template created",
                     description: `"${values.name}" is ready to use.`,
                 });
             } catch {
                 notify({
                     intent: "error",
-                    title: "Couldn't create template",
+                    title: "Couldn't create clarification template",
                     description:
                         "Something went wrong while saving. Please try again.",
                 });
@@ -118,16 +118,16 @@ export function useDeleteQuestionnaireTemplateCallback(
                 dispatch({ type: "deleteSucceeded" });
                 notify({
                     intent: "success",
-                    title: "Template deleted",
+                    title: "Clarification template deleted",
                     description: `"${template.name}" was permanently deleted.`,
                 });
             } catch {
                 dispatch({ type: "deleteFailed" });
                 notify({
                     intent: "error",
-                    title: "Couldn't delete template",
+                    title: "Couldn't delete clarification template",
                     description:
-                        "The template may already be in use. Please try again.",
+                        "The clarification template may already be in use. Please try again.",
                 });
             }
         },
@@ -243,13 +243,13 @@ export function useUpdateQuestionnaireTemplateCallback(
                 dispatch({ type: "editSucceeded" });
                 notify({
                     intent: "success",
-                    title: "Template updated",
+                    title: "Clarification template updated",
                     description: `"${values.name}" has been saved.`,
                 });
             } catch {
                 notify({
                     intent: "error",
-                    title: "Couldn't update template",
+                    title: "Couldn't update clarification template",
                     description:
                         "Something went wrong while saving. Please try again.",
                 });

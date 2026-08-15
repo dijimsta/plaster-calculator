@@ -6,6 +6,7 @@ import { ProjectSummarySchema } from "./project-summary.schema.ts";
 export const ProjectDetailSchema = ProjectSummarySchema.extend({
     teamId: z.string().nullable().optional(),
     assignee: z.string().nullable().optional(),
+    scope: z.string().nullable(),
     pages: z.array(FloorplanPageSchema),
 });
 

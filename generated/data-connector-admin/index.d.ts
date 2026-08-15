@@ -250,6 +250,7 @@ export interface GetProjectDetailsByIdData {
     originalPath: string;
     status: string;
     salesStatus: string;
+    scope?: string | null;
     processingError?: string | null;
     pageCount: number;
     extractedTextJson?: string | null;
@@ -703,6 +704,7 @@ export interface UpdateProjectVariables {
   address?: string | null;
   salesStatus?: string | null;
   assignee?: string | null;
+  scope?: string | null;
 }
 
 export interface UpdateReminderData {

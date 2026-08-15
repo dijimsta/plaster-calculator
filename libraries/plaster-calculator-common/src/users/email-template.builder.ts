@@ -13,7 +13,7 @@ const SCOPE_OF_WORK_INTRO =
     "Before we start, it would be really great if you could advise the following scope of work for this project:";
 
 const NO_UNANSWERED_QUESTIONS_LINE =
-    "All questionnaire questions have been answered — thank you!";
+    "All clarifications have been answered — thank you!";
 
 export class EmailTemplateBuilder {
     private readonly signature: EmailSignature;
