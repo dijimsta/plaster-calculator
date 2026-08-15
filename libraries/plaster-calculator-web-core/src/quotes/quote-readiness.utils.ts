@@ -109,6 +109,7 @@ export class QuoteReadinessUtils {
             createdAt: "",
             updatedAt: "",
             pageCount: project.pageCount,
+            scope: null,
             pages: floorplanPages.map(QuoteReadinessUtils.buildFloorplanPage),
         };
     }

@@ -7,12 +7,13 @@ export interface ProjectUpdateFields {
     companyId?: string | null;
     address?: string | null;
     assignee?: string | null;
+    scope?: string | null;
     salesStatus?: SalesStatus;
 }
 
 export function nextNullableProjectField(
     updates: ProjectUpdateFields,
-    field: "companyId" | "address" | "assignee",
+    field: "companyId" | "address" | "assignee" | "scope",
     current: string | null | undefined,
 ) {
     return hasField(updates, field)

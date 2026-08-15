@@ -10,7 +10,7 @@ import {
 import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
 import { useProjectsService } from "@libraries/plaster-calculator-web-core";
 import { Box, Button, EmptyState } from "@libraries/uikit-web";
-import { ClipboardList, Mail, Plus, Sparkles } from "lucide-react";
+import { ClipboardList, FilePenLine, Mail, Plus, Sparkles } from "lucide-react";
 import { use, useCallback, useEffect, useState } from "react";
 
 import { ui } from "../../../../../lib/styles.js";
@@ -28,6 +28,7 @@ import {
     useRemoveProjectQuestionnaireQuestionCallback,
     useSaveProjectQuestionnaireQuestionAnswerCallback,
 } from "./page.hooks.js";
+import { ProjectScopeEditor } from "./project-scope-editor.js";
 
 export default function ProjectQuestionnairesPage({
     params,
@@ -146,6 +147,12 @@ export default function ProjectQuestionnairesPage({
                 <Box direction="row" justify="end" gap="sm">
                     <Button
                         variant="secondary"
+                        icon={<FilePenLine size={18} aria-hidden="true" />}
+                    >
+                        {t("projectQuestionnairesPage.draftScope")}
+                    </Button>
+                    <Button
+                        variant="secondary"
                         icon={<Sparkles size={18} aria-hidden="true" />}
                         disabled={isAutoFilling || questions.length === 0}
                         onClick={() => void handleAutoFill()}
@@ -195,6 +202,12 @@ export default function ProjectQuestionnairesPage({
                         }
                     />
                 )}
+                <ProjectScopeEditor
+                    project={project}
+                    projectId={projectId}
+                    onSaved={(updatedProject) => setProject(updatedProject)}
+                    onError={setError}
+                />
             </Box>
             <AddProjectQuestionnaireQuestionModal
                 open={isAddQuestionModalOpen}

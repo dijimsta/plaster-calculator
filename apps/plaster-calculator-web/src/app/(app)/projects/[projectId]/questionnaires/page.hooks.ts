@@ -108,7 +108,7 @@ export function useAddProjectQuestionnaireQuestionCallback(
             } catch {
                 notify({
                     intent: "error",
-                    title: "Couldn't add question",
+                    title: "Couldn't add clarification",
                     description:
                         "Something went wrong while saving. Please try again.",
                 });
@@ -168,13 +168,13 @@ export function useApplyQuestionnaireTemplateCallback(
                 await refresh();
                 notify({
                     intent: "success",
-                    title: "Questions added",
-                    description: `"${template.name}"'s questions were copied in.`,
+                    title: "Clarifications added",
+                    description: `"${template.name}"'s clarifications were copied in.`,
                 });
             } catch {
                 notify({
                     intent: "error",
-                    title: "Couldn't add questions",
+                    title: "Couldn't add clarifications",
                     description:
                         "Something went wrong while copying the template. Please try again.",
                 });
@@ -269,19 +269,19 @@ export function useAnswerQuestionnaireWithAiCallback(
                 intent: updatedCount > 0 ? "success" : "info",
                 title:
                     updatedCount > 0
-                        ? "Auto-fill complete"
+                        ? "Answers found on plan"
                         : "No confident answers found",
                 description:
                     updatedCount > 0
                         ? `${updatedCount} answer${updatedCount === 1 ? "" : "s"} suggested from the floor plan.`
-                        : "The AI couldn't confidently answer any questions from the available floor plan data.",
+                        : "The AI couldn't confidently answer any clarifications from the available floor plan data.",
             });
         } catch {
             notify({
                 intent: "error",
-                title: "Couldn't auto-fill answers",
+                title: "Couldn't find answers on plan",
                 description:
-                    "Something went wrong while auto-filling. Please try again.",
+                    "Something went wrong while checking the plan. Please try again.",
             });
         }
     }, [notify, projectId, questionnairesService, refresh]);
@@ -303,7 +303,7 @@ export function useRemoveProjectQuestionnaireQuestionCallback(
             } catch {
                 notify({
                     intent: "error",
-                    title: "Couldn't remove question",
+                    title: "Couldn't remove clarification",
                     description:
                         "Something went wrong while removing. Please try again.",
                 });

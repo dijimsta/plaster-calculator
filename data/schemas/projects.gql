@@ -22,6 +22,7 @@ type Project
     originalPath: String!
     status: String!
     salesStatus: String! @default(value: "QUOTING")
+    scope: String
     processingError: String
     pageCount: Int!
     extractedTextJson: String

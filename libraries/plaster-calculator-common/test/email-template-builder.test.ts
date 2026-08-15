@@ -47,7 +47,7 @@ test("build lists each unanswered question", () => {
 test("build notes when there are no unanswered questions", () => {
     const builder = new EmailTemplateBuilder(FULL_SIGNATURE);
     const { body } = builder.build([]);
-    assert.match(body, /All questionnaire questions have been answered/);
+    assert.match(body, /All clarifications have been answered/);
 });
 
 test("build includes the standard closing and sign-off", () => {
@@ -99,5 +99,5 @@ test("build produces an empty body section when the signature is entirely empty"
     const builder = new EmailTemplateBuilder(EMPTY_SIGNATURE);
     const { body } = builder.build([]);
     assert.ok(!body.endsWith("\n\n"));
-    assert.match(body, /All questionnaire questions have been answered.*$/s);
+    assert.match(body, /All clarifications have been answered.*$/s);
 });

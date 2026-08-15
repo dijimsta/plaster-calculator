@@ -60,6 +60,7 @@ export interface FloorplanPage {
 }
 
 export interface ProjectDetail extends ProjectSummary {
+    scope: string | null;
     pages: FloorplanPage[];
 }
 
@@ -130,6 +131,7 @@ export interface UpdateProjectRequest extends ProjectIdRequest {
     address?: unknown;
     salesStatus?: unknown;
     assignee?: unknown;
+    scope?: unknown;
 }
 
 export interface CompanyIdRequest {

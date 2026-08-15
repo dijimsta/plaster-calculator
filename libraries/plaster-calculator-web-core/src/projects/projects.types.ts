@@ -26,6 +26,7 @@ export type UpdateProjectRequest = {
     companyId?: string | null;
     address?: string | null;
     salesStatus?: SalesStatus;
+    scope?: string | null;
 };
 
 export type ListProjectsRequest = {

@@ -244,6 +244,10 @@ export const updateProject = onCall<
         );
     }
 
+    if (hasField(data, "scope")) {
+        updates.scope = readOptionalNullableString(data.scope, "Scope");
+    }
+
     if (Object.keys(updates).length === 0) {
         throw new HttpsError(
             "invalid-argument",
@@ -305,6 +309,7 @@ async function updateOwnedProject(
         address: nextNullableProjectField(updates, "address", project.address),
         salesStatus: nextSalesStatus,
         assignee: nextAssignee,
+        scope: nextNullableProjectField(updates, "scope", project.scope),
     });
 
     const updatedProject = await requireOwnedProject(projectId, userId);

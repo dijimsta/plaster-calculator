@@ -34,7 +34,7 @@ export const en = Object.freeze({
         navLabels: Object.freeze({
             home: "Home",
             projects: "Projects",
-            questionnaires: "Questionnaires",
+            questionnaires: "Scope of work",
             quotes: "Quotes",
             companies: "Companies",
         }),
@@ -98,9 +98,9 @@ export const en = Object.freeze({
     }),
     projects,
     questionnaires: Object.freeze({
-        title: "Questionnaires",
-        projectsTab: "Projects",
-        templatesTab: "Templates",
+        title: "Scope of work",
+        projectsTab: "Scope of work",
+        templatesTab: "Clarification Template",
     }),
     quotes: Object.freeze({
         title: "Quotes",
@@ -243,6 +243,7 @@ export const en = Object.freeze({
         detailsAriaLabel: "Project details",
         loading: "Loading...",
         floorplanTab: "Floorplan",
+        scopeOfWorkTab: "Scope of work",
         quoteTab: "Quote",
         renameProject: "Rename project",
     }),
