@@ -48,6 +48,11 @@ don't state false precision (e.g. "14.37m²") when the source only supports "app
   question expects a number, a "what type..." question expects a short category, a
   yes/no-phrased question expects "Yes"/"No").
 
+Room-by-room data and OCR text are only available once floor plan pages have been
+processed. For a project that hasn't reached that stage yet, you will only be given text
+extracted from the uploaded PDF — answer only what that text clearly supports, and leave
+everything else blank rather than guessing at room geometry you have not been given.
+
 ## How to answer
 - Base every answer only on the data provided. Do not invent measurements, room names, or
   job details that aren't present in the given data.
