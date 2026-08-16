@@ -10,7 +10,7 @@ import type { QuoteTemplate } from "./quote-template-panel.types.ts";
 
 export type QuoteTemplateListRowProps = {
     readonly template: QuoteTemplate;
-    /** Undefined until a variation editor exists (WORK-195) -- the "Open" action then renders disabled rather than linking nowhere. */
+    /** `QuoteTemplatePanel` always supplies this (WORK-195); it stays optional here, and the "Open" action stays disabled without it, only in case some other caller renders this row on its own. */
     readonly onOpenVariation?: (variationId: string) => void;
     readonly onRename: () => void;
     readonly onDelete: () => void;

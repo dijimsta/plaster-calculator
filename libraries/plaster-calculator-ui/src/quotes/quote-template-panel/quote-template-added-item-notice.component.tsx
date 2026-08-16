@@ -12,7 +12,7 @@ export type QuoteTemplateAddedItemNoticeProps = {
     readonly itemNames: readonly string[];
     /** The team's variations (the default itself excluded). */
     readonly variations: readonly QuoteTemplate[];
-    /** Undefined until a variation editor exists (WORK-195) -- each variation's link then renders disabled rather than linking nowhere. */
+    /** `QuoteTemplatePanel` always supplies this (WORK-195); it stays optional here, and each variation's link stays disabled without it, only in case some other caller renders this notice on its own. */
     readonly onOpenVariation?: (variationId: string) => void;
     readonly onDismiss: () => void;
 };
