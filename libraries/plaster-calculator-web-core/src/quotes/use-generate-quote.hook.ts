@@ -32,39 +32,50 @@ function buildProjectSearchText(
 
 /**
  * The Quote tab's take-off -> match -> price -> persist entry point (a
- * later ticket wires the tab itself to this hook). Reuses `GetQuoteReadiness`
- * (WORK-130) for both `useQuoteReadiness()`'s gate and this hook's own
- * pages/template-configs data — the same round trip already backs the
- * readiness gate, so this hook doesn't add a second query. `generate()`
- * delegates all take-off/match/price/slot-mapping logic to
- * `GenerateQuoteUtils`, matching `useSaveQuoteTemplate()`'s
- * "thin hook, pure utils" split.
+ * later ticket wires the tab itself to this hook). Consumes
+ * `useQuoteReadiness()` (WORK-130/WORK-193) for both the readiness gate
+ * *and* the resolved pricing template — its `data`, `quoteTemplateId`, and
+ * `defaultTemplateConfigs` — rather than re-fetching or re-resolving any of
+ * that itself, so readiness and generation always agree on which
+ * `QuoteTemplate` priced a project's take-off. `generate()` delegates all
+ * take-off/match/price/slot-mapping logic to `GenerateQuoteUtils`, matching
+ * `useSaveQuoteTemplate()`'s "thin hook, pure utils" split.
  *
  * `GenerateQuoteUtils.build()` refuses to run at all — no
- * `CreateQuoteWithItems` call — when the readiness gate isn't met, or when
- * matching+quantity-resolution produced more than `CreateQuoteWithItems`'s
- * 20 slots can hold; either refusal surfaces as a thrown `GenerateQuoteError`,
- * which `useMutation` turns into this hook's `error`, the same way a
- * `CreateQuoteWithItems` network/`@check` failure would surface as a
- * `FirebaseError`.
+ * `CreateQuoteWithItems` call — when the readiness gate isn't met, the
+ * pricing template hasn't resolved yet, or matching+quantity-resolution
+ * produced more than `CreateQuoteWithItems`'s 20 slots can hold; every
+ * refusal surfaces as a thrown `GenerateQuoteError`, which `useMutation`
+ * turns into this hook's `error`, the same way a `CreateQuoteWithItems`
+ * network/`@check` failure would surface as a `FirebaseError`.
  */
 export function useGenerateQuote(projectId: string): UseGenerateQuoteResult {
-    const { isReady, data } = useQuoteReadiness(projectId);
+    const { isReady, data, quoteTemplateId, defaultTemplateConfigs } =
+        useQuoteReadiness(projectId);
     const { mutateAsync: createQuoteWithItems } =
         DataConnectorReact.useCreateQuoteWithItems(dataConnect);
 
     const mutation = useMutation<string, GenerateQuoteError | FirebaseError>({
         mutationFn: async (): Promise<string> => {
+            if (!quoteTemplateId) {
+                throw new GenerateQuoteError(
+                    "NOT_READY",
+                    "The project's pricing template has not resolved yet; refusing to generate a quote.",
+                );
+            }
+
             const quoteId = crypto.randomUUID();
             const result = GenerateQuoteUtils.build({
                 isReady,
                 projectId,
                 quoteId,
+                quoteTemplateId,
                 pages: GenerateQuoteUtils.buildPageTakeoffInputs(
                     data?.floorplanPages ?? [],
                 ),
                 templateConfigs: GenerateQuoteUtils.buildTemplateConfigs(
                     data?.quoteItemTemplateConfigs ?? [],
+                    defaultTemplateConfigs,
                 ),
                 searchText: buildProjectSearchText(data),
             });
