@@ -1,4 +1,4 @@
-import { Box, Table, Text } from "@libraries/uikit-web";
+import { Table, Text } from "@libraries/uikit-web";
 import type { ReactElement } from "react";
 import { Controller } from "react-hook-form";
 import type { Control } from "react-hook-form";
@@ -26,14 +26,7 @@ export function QuoteTemplateFormDefaultItemRow({
     return (
         <Table.Row>
             <Table.Cell>
-                <Box direction="column" gap="xs">
-                    <Text size="base">{item.name}</Text>
-                    <Text size="sm" variant="muted">
-                        {t(
-                            `quoteTemplateForm.quantitySourceDescription.${item.systemKey}`,
-                        )}
-                    </Text>
-                </Box>
+                <Text size="base">{item.name}</Text>
             </Table.Cell>
             <Table.Cell fit>
                 <Text size="sm">{item.unit}</Text>
