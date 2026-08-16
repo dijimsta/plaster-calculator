@@ -8,7 +8,10 @@ import {
     useQuestionnairesTranslation,
 } from "@libraries/plaster-calculator-ui";
 import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
-import { useProjectsService } from "@libraries/plaster-calculator-web-core";
+import {
+    useGenerateQuestionnaireEmailModal,
+    useProjectsService,
+} from "@libraries/plaster-calculator-web-core";
 import { Box, Button, EmptyState } from "@libraries/uikit-web";
 import { ClipboardList, FilePenLine, Mail, Plus, Sparkles } from "lucide-react";
 import { use, useCallback, useEffect, useState } from "react";
@@ -17,7 +20,6 @@ import { ui } from "../../../../../lib/styles.js";
 import type { ProjectDetail } from "../../../../../types.js";
 import { ProjectHeader } from "../project-page-header.js";
 
-import { useGenerateQuestionnaireEmailModal } from "./generate-questionnaire-email.hook.js";
 import {
     useAddProjectQuestionnaireQuestionCallback,
     useAnswerQuestionnaireWithAiCallback,
@@ -164,7 +166,6 @@ export default function ProjectQuestionnairesPage({
                     <Button
                         variant="secondary"
                         icon={<Mail size={18} aria-hidden="true" />}
-                        disabled={emailModal.disabled}
                         onClick={emailModal.openModal}
                     >
                         {t("projectQuestionnairesPage.generateEmail")}
