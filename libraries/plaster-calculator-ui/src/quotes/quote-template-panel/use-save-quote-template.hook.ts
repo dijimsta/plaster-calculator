@@ -91,7 +91,7 @@ export function useSaveQuoteTemplate(
 
             await Promise.all(
                 values.defaultItems.map((item) =>
-                    QuoteTemplatePanelUtils.updateDefaultQuoteItemPrice(
+                    QuoteTemplatePanelUtils.updateQuoteItemPrice(
                         quoteTemplateId,
                         item,
                         originalDefaultItems.find(

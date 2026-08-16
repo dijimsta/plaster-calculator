@@ -5,6 +5,7 @@ export * from "./quote-line-items-table/index.ts";
 export * from "./quote-status-badge/index.ts";
 export * from "./quote-template-form/index.ts";
 export * from "./quote-template-panel/index.ts";
+export * from "./quote-template-variation-editor/index.ts";
 export * from "./quote-totals-block/index.ts";
 export * from "./quote-unit-input/index.ts";
 export * from "./quotes-table/index.ts";

@@ -6,7 +6,7 @@ import {
     Text,
     useNotificationsManager,
 } from "@libraries/uikit-web";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
@@ -15,6 +15,7 @@ import type {
     QuoteItemSystemKey,
     QuoteTemplateFormValues,
 } from "../quote-template-form/index.ts";
+import { QuoteTemplateVariationEditor } from "../quote-template-variation-editor/index.ts";
 
 import { QuoteTemplateAddedItemNotice } from "./quote-template-added-item-notice.component.tsx";
 import { QuoteTemplateList } from "./quote-template-list.component.tsx";
@@ -25,7 +26,13 @@ import { useSaveQuoteTemplate } from "./use-save-quote-template.hook.ts";
 
 export type QuoteTemplatePanelProps = {
     readonly onCancel: () => void;
-    /** Undefined until a variation editor exists (WORK-195) -- every "open a variation" action in the template list and the added-item notice renders disabled rather than linking nowhere. */
+    /**
+     * Notified whenever this panel switches to showing a variation's editor
+     * (WORK-195) -- an optional hook for an app layer that wants to react,
+     * e.g. reflect the open variation in the URL (WORK-196). The panel
+     * manages "which variation is open" itself either way: every "open a
+     * variation" action works whether or not this is supplied.
+     */
     readonly onOpenVariation?: (variationId: string) => void;
 };
 
@@ -66,6 +73,34 @@ export function QuoteTemplatePanel({
     const variations = templates.filter((template) => !template.isDefault);
     const { notify } = useNotificationsManager();
     const [addedItemNames, setAddedItemNames] = useState<readonly string[]>([]);
+    const [openVariationId, setOpenVariationId] = useState<string | null>(null);
+    const openVariation =
+        templates.find((template) => template.id === openVariationId) ?? null;
+
+    // Defensive backstop for a variation that stops existing while open --
+    // e.g. its own delete action, which also calls `onClose` directly, but
+    // this covers any other path (a stale tab, a future bulk-delete) that
+    // refreshes `templates` without going through this panel's own close
+    // handler.
+    useEffect(() => {
+        if (
+            openVariationId !== null &&
+            !templates.some((template) => template.id === openVariationId)
+        ) {
+            setOpenVariationId(null);
+        }
+    }, [templates, openVariationId]);
+
+    const handleOpenVariation = useCallback(
+        (variationId: string): void => {
+            setOpenVariationId(variationId);
+            onOpenVariation?.(variationId);
+        },
+        [onOpenVariation],
+    );
+    const handleCloseVariation = useCallback((): void => {
+        setOpenVariationId(null);
+    }, []);
 
     const handleSubmit = useCallback(
         async (values: QuoteTemplateFormValues): Promise<void> => {
@@ -135,32 +170,45 @@ export function QuoteTemplatePanel({
                 onCreateVariation={createVariation}
                 onRenameTemplate={renameTemplate}
                 onDeleteTemplate={deleteTemplate}
-                onOpenVariation={onOpenVariation}
+                onOpenVariation={handleOpenVariation}
             />
             {addedItemNames.length > 0 && (
                 <QuoteTemplateAddedItemNotice
                     itemNames={addedItemNames}
                     variations={variations}
-                    onOpenVariation={onOpenVariation}
+                    onOpenVariation={handleOpenVariation}
                     onDismiss={() => setAddedItemNames([])}
                 />
             )}
-            <Text size="lg" weight="semibold">
-                {t("quoteTemplatePanel.defaultEditorTitle")}
-            </Text>
-            {isLoading ? (
-                <Paragraph textSize="sm" variant="muted">
-                    {t("quoteTemplatePanel.loading")}
-                </Paragraph>
-            ) : (
-                <QuoteTemplateForm
-                    key={formItemKey}
-                    formId="quote-template-form"
-                    initialValues={initialValues}
-                    disabled={isSaving}
-                    onCancel={onCancel}
-                    onSubmit={handleSubmit}
+            {openVariation !== null ? (
+                <QuoteTemplateVariationEditor
+                    variation={openVariation}
+                    defaultTemplateItems={allDefaultTemplateItems}
+                    isMutatingTemplateList={isMutatingTemplateList}
+                    onRenameTemplate={renameTemplate}
+                    onDeleteTemplate={deleteTemplate}
+                    onClose={handleCloseVariation}
                 />
+            ) : (
+                <>
+                    <Text size="lg" weight="semibold">
+                        {t("quoteTemplatePanel.defaultEditorTitle")}
+                    </Text>
+                    {isLoading ? (
+                        <Paragraph textSize="sm" variant="muted">
+                            {t("quoteTemplatePanel.loading")}
+                        </Paragraph>
+                    ) : (
+                        <QuoteTemplateForm
+                            key={formItemKey}
+                            formId="quote-template-form"
+                            initialValues={initialValues}
+                            disabled={isSaving}
+                            onCancel={onCancel}
+                            onSubmit={handleSubmit}
+                        />
+                    )}
+                </>
             )}
         </Card>
     );

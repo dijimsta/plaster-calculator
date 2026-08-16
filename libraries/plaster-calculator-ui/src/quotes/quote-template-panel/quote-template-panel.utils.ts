@@ -149,9 +149,23 @@ export class QuoteTemplatePanelUtils {
         }
     }
 
-    static async updateDefaultQuoteItemPrice(
+    /**
+     * Updates a single item's price on `quoteTemplateId` if it changed from
+     * `original`, preserving every other field (`enabled`,
+     * `materialUnitPriceCents`, `labourUnitPriceCents`) untouched. Takes
+     * only `itemTemplateId`/`unitPriceCents` rather than a full form-item
+     * shape, since that's all it ever reads -- so both the default
+     * template's own item prices (`useSaveQuoteTemplate`) and a variation's
+     * prices-only editor (`useSaveQuoteTemplateVariationPrices`, in
+     * `../quote-template-variation-editor/`) can share this one method
+     * instead of each needing its own copy.
+     */
+    static async updateQuoteItemPrice(
         quoteTemplateId: string,
-        item: QuoteTemplateFormValues["defaultItems"][number],
+        item: {
+            readonly itemTemplateId: string;
+            readonly unitPriceCents: number;
+        },
         original: QuoteTemplateItem | undefined,
         updateItemTemplateConfig: UpdateItemTemplateConfigFn,
     ): Promise<void> {
