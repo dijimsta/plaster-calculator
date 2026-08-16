@@ -36,6 +36,9 @@ export function QuoteLineItemsTable({
                         {t("quoteLineItemsTable.columnQuantity")}
                     </Table.Header>
                     <Table.Header align="end">
+                        {t("quoteUnitInput.label")}
+                    </Table.Header>
+                    <Table.Header align="end">
                         {t("quoteLineItemsTable.columnUnitPrice")}
                     </Table.Header>
                     <Table.Header align="end">
@@ -80,6 +83,7 @@ function QuoteLineItemsTableBodyRow({
             <Table.Cell align="end">
                 {QuoteLineItemsTableUtils.quantityDisplayText(row)}
             </Table.Cell>
+            <Table.Cell align="end">{row.unit ?? ""}</Table.Cell>
             <Table.Cell align="end">
                 {CurrencyUtils.centsToAudDisplayText(row.unitPriceCents)}
             </Table.Cell>

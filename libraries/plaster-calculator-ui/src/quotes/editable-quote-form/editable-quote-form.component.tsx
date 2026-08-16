@@ -18,6 +18,7 @@ import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 import { QuoteTotalsBlock } from "../quote-totals-block/index.ts";
+import { QuoteUnitInput } from "../quote-unit-input/index.ts";
 
 import type { EditableQuoteFormValues } from "./editable-quote-form.types.ts";
 import { EditableQuotePriceInput } from "./editable-quote-price-input.component.tsx";
@@ -35,6 +36,7 @@ export type EditableQuoteFormProps = {
 const EMPTY_LINE_ITEM: EditableQuoteFormValues["lineItems"][number] = {
     name: "",
     quantity: 1,
+    unit: "",
     unitPriceCents: 0,
 };
 
@@ -117,6 +119,9 @@ export function EditableQuoteForm({
                                         {t("quoteDetailDocument.columnItem")}
                                     </Table.Header>
                                     <Table.Header fit>
+                                        {t("quoteUnitInput.label")}
+                                    </Table.Header>
+                                    <Table.Header fit>
                                         {t(
                                             "quoteDetailDocument.columnQuantity",
                                         )}
@@ -145,6 +150,31 @@ export function EditableQuoteForm({
                                                         value={field.value}
                                                         disabled={disabled}
                                                         required
+                                                        onChange={
+                                                            field.onChange
+                                                        }
+                                                        onBlur={field.onBlur}
+                                                    />
+                                                )}
+                                            />
+                                        </Table.Cell>
+                                        <Table.Cell fit>
+                                            <Controller
+                                                name={`lineItems.${index}.unit`}
+                                                control={control}
+                                                rules={{
+                                                    required:
+                                                        item.id === undefined,
+                                                }}
+                                                render={({ field }) => (
+                                                    <QuoteUnitInput
+                                                        id={`${formId}-item-${item.fieldKey}-unit`}
+                                                        value={field.value}
+                                                        disabled={disabled}
+                                                        required={
+                                                            item.id ===
+                                                            undefined
+                                                        }
                                                         onChange={
                                                             field.onChange
                                                         }

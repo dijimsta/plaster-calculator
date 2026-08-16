@@ -13,6 +13,7 @@ export type QuoteTemplateItem = {
     readonly scope: QuoteItemTemplateScope;
     readonly systemKey: string | null;
     readonly name: string;
+    readonly unit: string | null;
     readonly hasKeywords: boolean;
     readonly keywords: readonly string[];
     readonly sortOrder: number;

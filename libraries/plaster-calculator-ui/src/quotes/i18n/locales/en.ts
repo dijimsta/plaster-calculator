@@ -2,6 +2,12 @@ export const en = Object.freeze({
     common: Object.freeze({
         cancel: "Cancel",
     }),
+    quoteUnitInput: Object.freeze({
+        label: "Unit",
+        selectUnit: "Select unit",
+        other: "Other",
+        otherLabel: "Custom unit",
+    }),
     quotesPage: Object.freeze({
         description:
             "All quotes generated from your projects, once pricing is set up.",
@@ -120,6 +126,7 @@ export const en = Object.freeze({
         customItemsDescription:
             "Add your own items and choose when they're included on a quote.",
         priceLabel: "Price",
+        unitLabel: "Unit",
         itemNameLabel: "Item name",
         includeOnQuotesLabel: "Include on quotes",
         includeWhenKeywordsMatch: "Include when keywords match",
@@ -132,12 +139,19 @@ export const en = Object.freeze({
         saveChanges: "Save changes",
         saving: "Saving...",
         quantitySourceDescription: Object.freeze({
-            PLASTERBOARD_10MM_WALLS: "Measured from wall area",
-            VILLABOARD_6MM_WET_WALLS: "Measured from wet-area wall area",
-            PLASTERBOARD_10MM_CEILINGS: "Measured from ceiling area",
-            COVE_CORNICE_90MM: "Measured from wall-ceiling junction length",
-            FC_SHEET_15MM_WET_FLOORS: "Measured from wet-area floor area",
-            EZY_JAMB_DOOR_SETS: "Measured from door count",
+            PLASTERBOARD_10MM: "Walls plus mapped ceiling area",
+            PLASTERBOARD_13MM: "Walls plus mapped ceiling area",
+            VILLABOARD_9MM: "Walls plus mapped ceiling area",
+            VILLABOARD_6MM: "Walls plus mapped ceiling area",
+            ACOUSTIC_SOUNDCHEK_10MM: "Walls plus mapped ceiling area",
+            ACOUSTIC_SOUNDCHEK_13MM: "Walls plus mapped ceiling area",
+            WATER_RESISTANT_10MM: "Walls plus mapped ceiling area",
+            WATER_RESISTANT_13MM: "Walls plus mapped ceiling area",
+            FIRE_RESISTANT_DRY_13MM: "Walls plus mapped ceiling area",
+            FIRE_RESISTANT_DRY_16MM: "Walls plus mapped ceiling area",
+            FIRE_RESISTANT_WET_13MM: "Walls plus mapped ceiling area",
+            FIRE_RESISTANT_WET_16MM: "Walls plus mapped ceiling area",
+            FLEXIBLE_BOARD_6_5MM: "Walls plus mapped ceiling area",
         }),
     }),
     projectQuoteReadinessPage: Object.freeze({
@@ -179,6 +193,7 @@ export const en = Object.freeze({
             WALL_TYPE_SET: "Wall type set",
             CEILING_HEIGHT_SET: "Ceiling height set",
             TEMPLATE_PRICED: "Template priced",
+            TEMPLATE_UNIT_SET: "Template units set",
             INFERRED_ANSWERS_CONFIRMED: "Inferred answers confirmed",
             ASSUMED_WALL_TYPES_CONFIRMED: "Assumed wall types confirmed",
         }),
@@ -206,6 +221,7 @@ export const en = Object.freeze({
             error: "Couldn't update the unit price. Try again.",
         }),
         confirmError: "Couldn't confirm. Try again.",
+        setTemplateUnits: "Set template units",
         confirmAccessibleLabelWithLocation:
             'Confirm {{label}} "{{value}}" for {{location}}',
         confirmAccessibleLabel: 'Confirm {{label}} "{{value}}"',

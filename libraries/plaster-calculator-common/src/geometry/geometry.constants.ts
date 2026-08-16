@@ -18,5 +18,12 @@ export const WALL_BOARD_TYPES = [
 ] as const;
 export type WallBoardType = (typeof WALL_BOARD_TYPES)[number];
 
+export const CEILING_BOARD_TYPES = [
+    "Recessed Edge",
+    "Water Resistant",
+] as const;
+export type CeilingBoardType = (typeof CEILING_BOARD_TYPES)[number];
+
 export const DEFAULT_WALL_BOARD_PROFILE: WallBoardProfile = "RE";
 export const DEFAULT_WALL_BOARD_TYPE: WallBoardType = "10mm Plasterboard";
+export const DEFAULT_CEILING_BOARD_TYPE: CeilingBoardType = "Recessed Edge";

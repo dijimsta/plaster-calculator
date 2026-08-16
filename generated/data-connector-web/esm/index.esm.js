@@ -348,16 +348,16 @@ export function getProjectQuestionnaire(dcOrVars, varsOrOptions, options) {
   return executeQuery(getProjectQuestionnaireRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 
-export const ensureSystemQuoteItemTemplatesRef = (dc) => {
+export const reconcileSystemQuoteItemTemplatesRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'EnsureSystemQuoteItemTemplates');
+  return mutationRef(dcInstance, 'ReconcileSystemQuoteItemTemplates');
 }
-ensureSystemQuoteItemTemplatesRef.operationName = 'EnsureSystemQuoteItemTemplates';
+reconcileSystemQuoteItemTemplatesRef.operationName = 'ReconcileSystemQuoteItemTemplates';
 
-export function ensureSystemQuoteItemTemplates(dc) {
+export function reconcileSystemQuoteItemTemplates(dc) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dc, undefined);
-  return executeMutation(ensureSystemQuoteItemTemplatesRef(dcInstance, inputVars));
+  return executeMutation(reconcileSystemQuoteItemTemplatesRef(dcInstance, inputVars));
 }
 
 export const createQuoteTemplateRef = (dcOrVars, vars) => {

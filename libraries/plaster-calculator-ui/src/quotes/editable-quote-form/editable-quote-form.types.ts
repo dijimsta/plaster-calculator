@@ -2,6 +2,7 @@ export type EditableQuoteLineItem = {
     readonly id?: string;
     readonly name: string;
     readonly quantity: number;
+    readonly unit: string | null;
     readonly unitPriceCents: number;
 };
 

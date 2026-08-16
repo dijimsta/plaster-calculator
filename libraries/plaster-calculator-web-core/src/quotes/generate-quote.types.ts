@@ -1,5 +1,8 @@
 import type { CreateQuoteWithItemsVariables } from "@generated/data-connector-web";
-import type { PageTakeoffInput } from "@libraries/plaster-calculator-common";
+import type {
+    PageTakeoffInput,
+    QuantitySourceDefinition,
+} from "@libraries/plaster-calculator-common";
 import type { FirebaseError } from "firebase/app";
 
 /**
@@ -22,9 +25,11 @@ import type { FirebaseError } from "firebase/app";
 export type GenerateQuoteTemplateConfig = {
     readonly itemTemplateId: string;
     readonly name: string;
+    readonly unit: string | null;
     readonly hasKeywords: boolean;
     readonly keywords: readonly string[];
     readonly quantitySourceId: string | null;
+    readonly quantitySource: QuantitySourceDefinition | null;
     readonly sortOrder: number;
     readonly unitPriceCents: number;
     readonly materialUnitPriceCents: number;
@@ -41,6 +46,7 @@ export type ResolvedQuoteItem = {
     readonly name: string;
     readonly displayOrder: number;
     readonly quantity: number;
+    readonly unit: string | null;
     readonly quantitySourceId: string | null;
     readonly unitPriceCents: number;
     readonly materialUnitPriceCents: number;

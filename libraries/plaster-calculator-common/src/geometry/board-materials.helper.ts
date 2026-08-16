@@ -1,10 +1,13 @@
 import {
     DEFAULT_WALL_BOARD_PROFILE,
     DEFAULT_WALL_BOARD_TYPE,
+    CEILING_BOARD_TYPES,
+    DEFAULT_CEILING_BOARD_TYPE,
     WALL_BOARD_PROFILES,
     WALL_BOARD_TYPES,
     type WallBoardProfile,
     type WallBoardType,
+    type CeilingBoardType,
 } from "./geometry.constants.ts";
 
 /**
@@ -18,15 +21,31 @@ import {
 export type WallBoardTypeSource = "explicit" | "legacy" | "defaulted";
 
 /**
- * The two `QuantitySource.measurementPlasterType` values seeded for
- * `WALL_AREA` (see `data/connector-web/quotes.mutations.gql`'s
- * `EnsureSystemQuoteItemTemplates`): `STANDARD` plasterboard vs a
- * `WET_AREA` board (villaboard, water-resistant, or wet-area fire-resistant
- * sheeting).
+ * The legacy `WALL_AREA` quantity-source categories: `STANDARD` plasterboard
+ * vs a `WET_AREA` board (villaboard, water-resistant, or wet-area
+ * fire-resistant sheeting).
  */
 export type WallPlasterCategory = "STANDARD" | "WET_AREA";
 
 export class BoardMaterialsHelper {
+    public static normalizeCeilingBoardType(
+        value: string | null | undefined,
+    ): CeilingBoardType {
+        return BoardMaterialsHelper.isCeilingBoardType(value)
+            ? value
+            : DEFAULT_CEILING_BOARD_TYPE;
+    }
+
+    /** Maps the editor's ceiling products onto the wall-board quote catalog. */
+    public static wallBoardTypeForCeiling(
+        value: string | null | undefined,
+    ): WallBoardType {
+        return BoardMaterialsHelper.normalizeCeilingBoardType(value) ===
+            "Water Resistant"
+            ? "10mm Water Resistant"
+            : "10mm Plasterboard";
+    }
+
     public static normalizeWallBoardProfile(
         value: string | null | undefined,
     ): WallBoardProfile {
@@ -61,13 +80,8 @@ export class BoardMaterialsHelper {
 
     /**
      * Classifies a resolved `WallBoardType` (from `normalizeWallBoardType()`)
-     * as `STANDARD` or `WET_AREA`, for splitting `QuantitySource.WALL_AREA`
-     * quantities the same way `EnsureSystemQuoteItemTemplates` splits the
-     * wall quote item templates: one for `10mm Plasterboard` walls, one for
-     * `6mm Villaboard` wet-area walls. There is no existing field that
-     * stores this classification directly, so it is derived here from
-     * `WALL_BOARD_TYPES`'s board names rather than invented on a schema that
-     * is out of scope for this change.
+     * as `STANDARD` or `WET_AREA` for pre-migration
+     * `QuantitySource.WALL_AREA` calculations.
      */
     public static wallPlasterCategory(
         wallBoardType: WallBoardType,
@@ -132,6 +146,12 @@ export class BoardMaterialsHelper {
         value: string | null | undefined,
     ): value is WallBoardProfile {
         return WALL_BOARD_PROFILES.includes(value as WallBoardProfile);
+    }
+
+    private static isCeilingBoardType(
+        value: string | null | undefined,
+    ): value is CeilingBoardType {
+        return CEILING_BOARD_TYPES.includes(value as CeilingBoardType);
     }
 
     private static isWallBoardType(

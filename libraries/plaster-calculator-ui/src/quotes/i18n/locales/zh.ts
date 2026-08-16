@@ -8,6 +8,12 @@ export const zh = createTranslationResource(
         common: Object.freeze({
             cancel: "取消",
         }),
+        quoteUnitInput: Object.freeze({
+            label: "单位",
+            selectUnit: "选择单位",
+            other: "其他",
+            otherLabel: "自定义单位",
+        }),
         quotesPage: Object.freeze({
             description: "价格设置完成后，可在此查看根据项目生成的所有报价。",
             emptyStateTitle: "暂无报价",
@@ -124,6 +130,7 @@ export const zh = createTranslationResource(
             customItemsDescription:
                 "添加您自己的项目，并选择它们何时包含在报价单中。",
             priceLabel: "价格",
+            unitLabel: "单位",
             itemNameLabel: "项目名称",
             includeOnQuotesLabel: "包含在报价单中",
             includeWhenKeywordsMatch: "关键词匹配时包含",
@@ -136,12 +143,19 @@ export const zh = createTranslationResource(
             saveChanges: "保存更改",
             saving: "正在保存...",
             quantitySourceDescription: Object.freeze({
-                PLASTERBOARD_10MM_WALLS: "根据墙面面积计算",
-                VILLABOARD_6MM_WET_WALLS: "根据湿区墙面面积计算",
-                PLASTERBOARD_10MM_CEILINGS: "根据天花板面积计算",
-                COVE_CORNICE_90MM: "根据墙面与天花板交接线长度计算",
-                FC_SHEET_15MM_WET_FLOORS: "根据湿区地面面积计算",
-                EZY_JAMB_DOOR_SETS: "根据门套数量计算",
+                PLASTERBOARD_10MM: "墙面加对应天花板面积",
+                PLASTERBOARD_13MM: "墙面加对应天花板面积",
+                VILLABOARD_9MM: "墙面加对应天花板面积",
+                VILLABOARD_6MM: "墙面加对应天花板面积",
+                ACOUSTIC_SOUNDCHEK_10MM: "墙面加对应天花板面积",
+                ACOUSTIC_SOUNDCHEK_13MM: "墙面加对应天花板面积",
+                WATER_RESISTANT_10MM: "墙面加对应天花板面积",
+                WATER_RESISTANT_13MM: "墙面加对应天花板面积",
+                FIRE_RESISTANT_DRY_13MM: "墙面加对应天花板面积",
+                FIRE_RESISTANT_DRY_16MM: "墙面加对应天花板面积",
+                FIRE_RESISTANT_WET_13MM: "墙面加对应天花板面积",
+                FIRE_RESISTANT_WET_16MM: "墙面加对应天花板面积",
+                FLEXIBLE_BOARD_6_5MM: "墙面加对应天花板面积",
             }),
         }),
         projectQuoteReadinessPage: Object.freeze({
@@ -186,6 +200,7 @@ export const zh = createTranslationResource(
                 WALL_TYPE_SET: "已设置墙板类型",
                 CEILING_HEIGHT_SET: "已设置天花板高度",
                 TEMPLATE_PRICED: "模板已定价",
+                TEMPLATE_UNIT_SET: "模板单位已设置",
                 INFERRED_ANSWERS_CONFIRMED: "已确认推断答案",
                 ASSUMED_WALL_TYPES_CONFIRMED: "已确认假定墙板类型",
             }),
@@ -213,6 +228,7 @@ export const zh = createTranslationResource(
                 error: "无法更新单价，请重试。",
             }),
             confirmError: "无法确认，请重试。",
+            setTemplateUnits: "设置模板单位",
             confirmAccessibleLabelWithLocation:
                 "确认{{location}}的{{label}}“{{value}}”",
             confirmAccessibleLabel: "确认{{label}}“{{value}}”",

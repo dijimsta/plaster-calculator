@@ -1,133 +1,346 @@
-mutation EnsureSystemQuoteItemTemplates @auth(level: USER) @transaction {
-    wallsPlasterboardQuantitySource: quantitySource_upsert(
+mutation ReconcileSystemQuoteItemTemplates @auth(level: USER) @transaction {
+    quoteItemTemplateConfig_deleteMany(
+        where: {
+            itemTemplate: {
+                scope: { eq: "SYSTEM" }
+                systemKey: {
+                    nin: [
+                        "PLASTERBOARD_10MM"
+                        "PLASTERBOARD_13MM"
+                        "VILLABOARD_9MM"
+                        "VILLABOARD_6MM"
+                        "ACOUSTIC_SOUNDCHEK_10MM"
+                        "ACOUSTIC_SOUNDCHEK_13MM"
+                        "WATER_RESISTANT_10MM"
+                        "WATER_RESISTANT_13MM"
+                        "FIRE_RESISTANT_DRY_13MM"
+                        "FIRE_RESISTANT_DRY_16MM"
+                        "FIRE_RESISTANT_WET_13MM"
+                        "FIRE_RESISTANT_WET_16MM"
+                        "FLEXIBLE_BOARD_6_5MM"
+                    ]
+                }
+            }
+        }
+    )
+    quoteItemTemplate_deleteMany(
+        where: {
+            scope: { eq: "SYSTEM" }
+            systemKey: {
+                nin: [
+                    "PLASTERBOARD_10MM"
+                    "PLASTERBOARD_13MM"
+                    "VILLABOARD_9MM"
+                    "VILLABOARD_6MM"
+                    "ACOUSTIC_SOUNDCHEK_10MM"
+                    "ACOUSTIC_SOUNDCHEK_13MM"
+                    "WATER_RESISTANT_10MM"
+                    "WATER_RESISTANT_13MM"
+                    "FIRE_RESISTANT_DRY_13MM"
+                    "FIRE_RESISTANT_DRY_16MM"
+                    "FIRE_RESISTANT_WET_13MM"
+                    "FIRE_RESISTANT_WET_16MM"
+                    "FLEXIBLE_BOARD_6_5MM"
+                ]
+            }
+        }
+    )
+    plasterboard10mmSource: quantitySource_upsert(
         data: {
-            id: "c1b8d7b7-bfda-4400-99d6-64a366c02f62"
-            measurementSource: "WALL_AREA"
-            measurementPlasterType: "STANDARD"
+            id: "6ace0575-1ea7-4d53-a247-6828ee6d53dd"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "10mm Plasterboard"
             updatedAt_expr: "request.time"
         }
     )
-    wetWallsVillaboardQuantitySource: quantitySource_upsert(
+    plasterboard13mmSource: quantitySource_upsert(
         data: {
-            id: "9f8704f9-9c21-406b-99ab-7e30eec761ff"
-            measurementSource: "WALL_AREA"
-            measurementPlasterType: "WET_AREA"
+            id: "fdb03694-8840-424f-a69f-f15e4f574a00"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "13mm Plasterboard"
             updatedAt_expr: "request.time"
         }
     )
-    ceilingsPlasterboardQuantitySource: quantitySource_upsert(
+    villaboard9mmSource: quantitySource_upsert(
         data: {
-            id: "c3c91574-33c5-40bf-bc6d-caab40b7da22"
-            measurementSource: "CEILING_AREA"
-            measurementPlasterType: "STANDARD"
+            id: "067cf0a6-c5bf-4785-b9a4-145b78b092ae"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "9mm Villaboard"
             updatedAt_expr: "request.time"
         }
     )
-    coveCorniceQuantitySource: quantitySource_upsert(
+    villaboard6mmSource: quantitySource_upsert(
         data: {
-            id: "c8b59f22-fa5a-467d-995e-7d261e86dc52"
-            measurementSource: "CORNICE_LENGTH"
-            measurementPlasterType: null
+            id: "500e94b1-f00b-4e25-b82d-f2456db31eb7"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "6mm Villaboard"
             updatedAt_expr: "request.time"
         }
     )
-    wetFloorsFcSheetQuantitySource: quantitySource_upsert(
+    acoustic10mmSource: quantitySource_upsert(
         data: {
-            id: "a8c9d27b-6e1e-4834-8a12-a2b6bf811ac1"
-            measurementSource: "FLOOR_AREA"
-            measurementPlasterType: "WET_AREA"
+            id: "6357fcbe-082b-4845-bd54-7a4958785fc4"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "10mm Acoustic (Soundchek)"
             updatedAt_expr: "request.time"
         }
     )
-    doorSetsQuantitySource: quantitySource_upsert(
+    acoustic13mmSource: quantitySource_upsert(
         data: {
-            id: "84caa96a-9e65-4176-ab64-c9360081caf8"
-            measurementSource: "DOOR_COUNT"
-            measurementPlasterType: null
+            id: "24feab76-4498-4b71-ae60-9f5cc28f714c"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "13mm Acoustic (Soundchek)"
             updatedAt_expr: "request.time"
         }
     )
-    wallsPlasterboardItemTemplate: quoteItemTemplate_upsert(
+    waterResistant10mmSource: quantitySource_upsert(
         data: {
-            id: "f47826e8-6f88-451c-9377-8635b4c7ac04"
+            id: "895057c2-15fb-4899-abf0-568111785c15"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "10mm Water Resistant"
+            updatedAt_expr: "request.time"
+        }
+    )
+    waterResistant13mmSource: quantitySource_upsert(
+        data: {
+            id: "01996fc0-bc7b-477e-add9-4c9c576372c7"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "13mm Water Resistant"
+            updatedAt_expr: "request.time"
+        }
+    )
+    fireDry13mmSource: quantitySource_upsert(
+        data: {
+            id: "ca2288ef-fcda-40d2-bc84-41d148eb5d6c"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "13mm Fire Resistant - dry area"
+            updatedAt_expr: "request.time"
+        }
+    )
+    fireDry16mmSource: quantitySource_upsert(
+        data: {
+            id: "e7d0437e-ddbe-4b81-9ce4-4b528f40c1be"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "16mm Fire Resistant - dry area"
+            updatedAt_expr: "request.time"
+        }
+    )
+    fireWet13mmSource: quantitySource_upsert(
+        data: {
+            id: "c5b85a0e-995f-46fe-b68f-86dc5988f6da"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "13mm Fire Resistant - wet area"
+            updatedAt_expr: "request.time"
+        }
+    )
+    fireWet16mmSource: quantitySource_upsert(
+        data: {
+            id: "c121c8cb-2c5f-41b4-9205-71e2b3d151bc"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "16mm Fire Resistant - wet area"
+            updatedAt_expr: "request.time"
+        }
+    )
+    flexible6_5mmSource: quantitySource_upsert(
+        data: {
+            id: "1312d481-0847-4dce-b645-595fea47d3a3"
+            measurementSource: "PLASTERBOARD_AREA"
+            measurementPlasterType: "6.5mm Flexible board"
+            updatedAt_expr: "request.time"
+        }
+    )
+    plasterboard10mm: quoteItemTemplate_upsert(
+        data: {
+            id: "aa275192-9eec-4258-8b01-28383fd2870b"
             teamId: null
             scope: "SYSTEM"
-            systemKey: "PLASTERBOARD_10MM_WALLS"
-            name: "10mm Plasterboard — walls"
+            systemKey: "PLASTERBOARD_10MM"
+            name: "10mm Plasterboard"
+            unit: "m²"
             hasKeywords: false
             keywords: []
-            quantitySourceId: "c1b8d7b7-bfda-4400-99d6-64a366c02f62"
+            quantitySourceId: "6ace0575-1ea7-4d53-a247-6828ee6d53dd"
             sortOrder: 0
             updatedAt_expr: "request.time"
         }
     )
-    wetWallsVillaboardItemTemplate: quoteItemTemplate_upsert(
+    plasterboard13mm: quoteItemTemplate_upsert(
         data: {
-            id: "1f28456f-d936-4adb-afc9-43d9767a44b2"
+            id: "6a418a53-61b5-4ded-ab2d-0f24c2623d05"
             teamId: null
             scope: "SYSTEM"
-            systemKey: "VILLABOARD_6MM_WET_WALLS"
-            name: "6mm Villaboard — wet-area walls"
+            systemKey: "PLASTERBOARD_13MM"
+            name: "13mm Plasterboard"
+            unit: "m²"
             hasKeywords: false
             keywords: []
-            quantitySourceId: "9f8704f9-9c21-406b-99ab-7e30eec761ff"
+            quantitySourceId: "fdb03694-8840-424f-a69f-f15e4f574a00"
             sortOrder: 1
             updatedAt_expr: "request.time"
         }
     )
-    ceilingsPlasterboardItemTemplate: quoteItemTemplate_upsert(
+    villaboard9mm: quoteItemTemplate_upsert(
         data: {
-            id: "a4642ab3-300a-483b-96f4-0b00da347714"
+            id: "ca5a51f5-578b-49bf-b895-b2f78ce22f92"
             teamId: null
             scope: "SYSTEM"
-            systemKey: "PLASTERBOARD_10MM_CEILINGS"
-            name: "10mm Plasterboard — ceilings"
+            systemKey: "VILLABOARD_9MM"
+            name: "9mm Villaboard"
+            unit: "m²"
             hasKeywords: false
             keywords: []
-            quantitySourceId: "c3c91574-33c5-40bf-bc6d-caab40b7da22"
+            quantitySourceId: "067cf0a6-c5bf-4785-b9a4-145b78b092ae"
             sortOrder: 2
             updatedAt_expr: "request.time"
         }
     )
-    coveCorniceItemTemplate: quoteItemTemplate_upsert(
+    villaboard6mm: quoteItemTemplate_upsert(
         data: {
-            id: "fcaf405c-352c-49ce-81bc-638f2331ef82"
+            id: "41155fb7-7228-47bb-878d-747e0af9f2a3"
             teamId: null
             scope: "SYSTEM"
-            systemKey: "COVE_CORNICE_90MM"
-            name: "90mm cove cornice"
+            systemKey: "VILLABOARD_6MM"
+            name: "6mm Villaboard"
+            unit: "m²"
             hasKeywords: false
             keywords: []
-            quantitySourceId: "c8b59f22-fa5a-467d-995e-7d261e86dc52"
+            quantitySourceId: "500e94b1-f00b-4e25-b82d-f2456db31eb7"
             sortOrder: 3
             updatedAt_expr: "request.time"
         }
     )
-    wetFloorsFcSheetItemTemplate: quoteItemTemplate_upsert(
+    acoustic10mm: quoteItemTemplate_upsert(
         data: {
-            id: "bab0f6de-f4a0-4b38-ab1c-81694a0ea6a7"
+            id: "5c610649-fea0-45e4-b958-d8f9f3d574e1"
             teamId: null
             scope: "SYSTEM"
-            systemKey: "FC_SHEET_15MM_WET_FLOORS"
-            name: "15mm compressed FC sheet — wet floors"
+            systemKey: "ACOUSTIC_SOUNDCHEK_10MM"
+            name: "10mm Acoustic (Soundchek)"
+            unit: "m²"
             hasKeywords: false
             keywords: []
-            quantitySourceId: "a8c9d27b-6e1e-4834-8a12-a2b6bf811ac1"
+            quantitySourceId: "6357fcbe-082b-4845-bd54-7a4958785fc4"
             sortOrder: 4
             updatedAt_expr: "request.time"
         }
     )
-    doorSetsItemTemplate: quoteItemTemplate_upsert(
+    acoustic13mm: quoteItemTemplate_upsert(
         data: {
-            id: "003e5926-102f-4dbe-ba56-f1cf7930888c"
+            id: "7ba57553-05cf-4a07-8384-9c8622385dd7"
             teamId: null
             scope: "SYSTEM"
-            systemKey: "EZY_JAMB_DOOR_SETS"
-            name: "Ezy jamb door sets"
+            systemKey: "ACOUSTIC_SOUNDCHEK_13MM"
+            name: "13mm Acoustic (Soundchek)"
+            unit: "m²"
             hasKeywords: false
             keywords: []
-            quantitySourceId: "84caa96a-9e65-4176-ab64-c9360081caf8"
+            quantitySourceId: "24feab76-4498-4b71-ae60-9f5cc28f714c"
             sortOrder: 5
+            updatedAt_expr: "request.time"
+        }
+    )
+    waterResistant10mm: quoteItemTemplate_upsert(
+        data: {
+            id: "816e4bde-11fd-4134-912f-71a6c627e119"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "WATER_RESISTANT_10MM"
+            name: "10mm Water Resistant"
+            unit: "m²"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "895057c2-15fb-4899-abf0-568111785c15"
+            sortOrder: 6
+            updatedAt_expr: "request.time"
+        }
+    )
+    waterResistant13mm: quoteItemTemplate_upsert(
+        data: {
+            id: "731958c7-3aee-4d3e-abb0-dc9d6e8bdda0"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "WATER_RESISTANT_13MM"
+            name: "13mm Water Resistant"
+            unit: "m²"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "01996fc0-bc7b-477e-add9-4c9c576372c7"
+            sortOrder: 7
+            updatedAt_expr: "request.time"
+        }
+    )
+    fireDry13mm: quoteItemTemplate_upsert(
+        data: {
+            id: "0572d226-cded-4153-a65d-f51fe8677a3d"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "FIRE_RESISTANT_DRY_13MM"
+            name: "13mm Fire Resistant - dry area"
+            unit: "m²"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "ca2288ef-fcda-40d2-bc84-41d148eb5d6c"
+            sortOrder: 8
+            updatedAt_expr: "request.time"
+        }
+    )
+    fireDry16mm: quoteItemTemplate_upsert(
+        data: {
+            id: "9591c4af-4ac1-431b-977f-62ea093048bf"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "FIRE_RESISTANT_DRY_16MM"
+            name: "16mm Fire Resistant - dry area"
+            unit: "m²"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "e7d0437e-ddbe-4b81-9ce4-4b528f40c1be"
+            sortOrder: 9
+            updatedAt_expr: "request.time"
+        }
+    )
+    fireWet13mm: quoteItemTemplate_upsert(
+        data: {
+            id: "864587f1-93fd-49ea-8057-aefb9498503f"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "FIRE_RESISTANT_WET_13MM"
+            name: "13mm Fire Resistant - wet area"
+            unit: "m²"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "c5b85a0e-995f-46fe-b68f-86dc5988f6da"
+            sortOrder: 10
+            updatedAt_expr: "request.time"
+        }
+    )
+    fireWet16mm: quoteItemTemplate_upsert(
+        data: {
+            id: "9aaf3f4f-e9a4-4c66-9d46-f83a58d41d97"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "FIRE_RESISTANT_WET_16MM"
+            name: "16mm Fire Resistant - wet area"
+            unit: "m²"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "c121c8cb-2c5f-41b4-9205-71e2b3d151bc"
+            sortOrder: 11
+            updatedAt_expr: "request.time"
+        }
+    )
+    flexible6_5mm: quoteItemTemplate_upsert(
+        data: {
+            id: "9f587904-c172-4dd2-98e8-f3493bf9d911"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "FLEXIBLE_BOARD_6_5MM"
+            name: "6.5mm Flexible board"
+            unit: "m²"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "1312d481-0847-4dce-b645-595fea47d3a3"
+            sortOrder: 12
             updatedAt_expr: "request.time"
         }
     )
@@ -211,6 +424,7 @@ mutation UpdateQuoteItemTemplateConfig(
 mutation CreateQuoteItemTemplate(
     $id: UUID!
     $name: String!
+    $unit: String!
     $hasKeywords: Boolean!
     $keywords: [String!]!
 ) @auth(level: USER) {
@@ -220,6 +434,7 @@ mutation CreateQuoteItemTemplate(
             teamId_expr: "auth.token.teamId"
             scope: "TEAM"
             name: $name
+            unit: $unit
             hasKeywords: $hasKeywords
             keywords: $keywords
             createdAt_expr: "request.time"
@@ -231,6 +446,7 @@ mutation CreateQuoteItemTemplate(
 mutation UpdateQuoteItemTemplate(
     $id: UUID!
     $name: String!
+    $unit: String!
     $hasKeywords: Boolean!
     $keywords: [String!]!
 ) @auth(level: USER) @transaction {
@@ -248,6 +464,7 @@ mutation UpdateQuoteItemTemplate(
         id: $id
         data: {
             name: $name
+            unit: $unit
             hasKeywords: $hasKeywords
             keywords: $keywords
             updatedAt_expr: "request.time"
@@ -352,6 +569,7 @@ mutation UpdateQuoteItem(
     $displayOrder: Int!
     $name: String!
     $quantity: Float!
+    $unit: String
     $unitPriceCents: Int!
 ) @auth(level: USER) @transaction {
     query @redact {
@@ -371,6 +589,7 @@ mutation UpdateQuoteItem(
             displayOrder: $displayOrder
             name: $name
             quantity: $quantity
+            unit: $unit
             quantitySourceId: null
             unitPriceCents: $unitPriceCents
             materialUnitPriceCents: 0
@@ -387,6 +606,7 @@ mutation CreateQuoteItem(
     $displayOrder: Int!
     $name: String!
     $quantity: Float!
+    $unit: String!
     $unitPriceCents: Int!
 ) @auth(level: USER) @transaction {
     query @redact {
@@ -408,6 +628,7 @@ mutation CreateQuoteItem(
             displayOrder: $displayOrder
             name: $name
             quantity: $quantity
+            unit: $unit
             quantitySourceId: null
             unitPriceCents: $unitPriceCents
             materialUnitPriceCents: 0
@@ -436,7 +657,7 @@ mutation DeleteQuoteItem($id: UUID!) @auth(level: USER) @transaction {
 
 # Creates a `Quote` plus up to 20 `QuoteItem` rows in a single
 # `@transaction` mutation — the same "one document, many writes, atomically"
-# shape as `EnsureSystemQuoteItemTemplates` above.
+# shape as `ReconcileSystemQuoteItemTemplates` above.
 #
 # Regenerate policy: `Quote.project` is `@unique`, so at most one `Quote`
 # exists per project. If a project already has a `draft` quote, this call
@@ -479,9 +700,8 @@ mutation DeleteQuoteItem($id: UUID!) @auth(level: USER) @transaction {
 # values (and `$includeItemN: true`) for the slots it actually uses;
 # unused slots need no arguments at all.
 #
-# 20 slots is a deliberately generous cap: `EnsureSystemQuoteItemTemplates`
-# seeds 6 system item templates, and a team's own `QuoteItemTemplate`
-# rows (via `CreateQuoteItemTemplate`) add to that — 20 comfortably
+# 20 slots covers the 13 system plasterboard templates plus a team's own
+# `QuoteItemTemplate` rows (via `CreateQuoteItemTemplate`). It comfortably
 # covers system + team templates for any realistic team catalog. If a
 # project's generated item set ever needs to exceed 20, that is an
 # application-layer concern (validate before calling, or extend this
@@ -496,6 +716,7 @@ mutation CreateQuoteWithItems(
     $item1Name: String = ""
     $item1DisplayOrder: Int = 0
     $item1Quantity: Float = 0
+    $item1Unit: String
     $item1SourceTemplateId: UUID
     $item1QuantitySourceId: UUID
     $item1UnitPriceCents: Int = 0
@@ -506,6 +727,7 @@ mutation CreateQuoteWithItems(
     $item2Name: String = ""
     $item2DisplayOrder: Int = 0
     $item2Quantity: Float = 0
+    $item2Unit: String
     $item2SourceTemplateId: UUID
     $item2QuantitySourceId: UUID
     $item2UnitPriceCents: Int = 0
@@ -516,6 +738,7 @@ mutation CreateQuoteWithItems(
     $item3Name: String = ""
     $item3DisplayOrder: Int = 0
     $item3Quantity: Float = 0
+    $item3Unit: String
     $item3SourceTemplateId: UUID
     $item3QuantitySourceId: UUID
     $item3UnitPriceCents: Int = 0
@@ -526,6 +749,7 @@ mutation CreateQuoteWithItems(
     $item4Name: String = ""
     $item4DisplayOrder: Int = 0
     $item4Quantity: Float = 0
+    $item4Unit: String
     $item4SourceTemplateId: UUID
     $item4QuantitySourceId: UUID
     $item4UnitPriceCents: Int = 0
@@ -536,6 +760,7 @@ mutation CreateQuoteWithItems(
     $item5Name: String = ""
     $item5DisplayOrder: Int = 0
     $item5Quantity: Float = 0
+    $item5Unit: String
     $item5SourceTemplateId: UUID
     $item5QuantitySourceId: UUID
     $item5UnitPriceCents: Int = 0
@@ -546,6 +771,7 @@ mutation CreateQuoteWithItems(
     $item6Name: String = ""
     $item6DisplayOrder: Int = 0
     $item6Quantity: Float = 0
+    $item6Unit: String
     $item6SourceTemplateId: UUID
     $item6QuantitySourceId: UUID
     $item6UnitPriceCents: Int = 0
@@ -556,6 +782,7 @@ mutation CreateQuoteWithItems(
     $item7Name: String = ""
     $item7DisplayOrder: Int = 0
     $item7Quantity: Float = 0
+    $item7Unit: String
     $item7SourceTemplateId: UUID
     $item7QuantitySourceId: UUID
     $item7UnitPriceCents: Int = 0
@@ -566,6 +793,7 @@ mutation CreateQuoteWithItems(
     $item8Name: String = ""
     $item8DisplayOrder: Int = 0
     $item8Quantity: Float = 0
+    $item8Unit: String
     $item8SourceTemplateId: UUID
     $item8QuantitySourceId: UUID
     $item8UnitPriceCents: Int = 0
@@ -576,6 +804,7 @@ mutation CreateQuoteWithItems(
     $item9Name: String = ""
     $item9DisplayOrder: Int = 0
     $item9Quantity: Float = 0
+    $item9Unit: String
     $item9SourceTemplateId: UUID
     $item9QuantitySourceId: UUID
     $item9UnitPriceCents: Int = 0
@@ -586,6 +815,7 @@ mutation CreateQuoteWithItems(
     $item10Name: String = ""
     $item10DisplayOrder: Int = 0
     $item10Quantity: Float = 0
+    $item10Unit: String
     $item10SourceTemplateId: UUID
     $item10QuantitySourceId: UUID
     $item10UnitPriceCents: Int = 0
@@ -596,6 +826,7 @@ mutation CreateQuoteWithItems(
     $item11Name: String = ""
     $item11DisplayOrder: Int = 0
     $item11Quantity: Float = 0
+    $item11Unit: String
     $item11SourceTemplateId: UUID
     $item11QuantitySourceId: UUID
     $item11UnitPriceCents: Int = 0
@@ -606,6 +837,7 @@ mutation CreateQuoteWithItems(
     $item12Name: String = ""
     $item12DisplayOrder: Int = 0
     $item12Quantity: Float = 0
+    $item12Unit: String
     $item12SourceTemplateId: UUID
     $item12QuantitySourceId: UUID
     $item12UnitPriceCents: Int = 0
@@ -616,6 +848,7 @@ mutation CreateQuoteWithItems(
     $item13Name: String = ""
     $item13DisplayOrder: Int = 0
     $item13Quantity: Float = 0
+    $item13Unit: String
     $item13SourceTemplateId: UUID
     $item13QuantitySourceId: UUID
     $item13UnitPriceCents: Int = 0
@@ -626,6 +859,7 @@ mutation CreateQuoteWithItems(
     $item14Name: String = ""
     $item14DisplayOrder: Int = 0
     $item14Quantity: Float = 0
+    $item14Unit: String
     $item14SourceTemplateId: UUID
     $item14QuantitySourceId: UUID
     $item14UnitPriceCents: Int = 0
@@ -636,6 +870,7 @@ mutation CreateQuoteWithItems(
     $item15Name: String = ""
     $item15DisplayOrder: Int = 0
     $item15Quantity: Float = 0
+    $item15Unit: String
     $item15SourceTemplateId: UUID
     $item15QuantitySourceId: UUID
     $item15UnitPriceCents: Int = 0
@@ -646,6 +881,7 @@ mutation CreateQuoteWithItems(
     $item16Name: String = ""
     $item16DisplayOrder: Int = 0
     $item16Quantity: Float = 0
+    $item16Unit: String
     $item16SourceTemplateId: UUID
     $item16QuantitySourceId: UUID
     $item16UnitPriceCents: Int = 0
@@ -656,6 +892,7 @@ mutation CreateQuoteWithItems(
     $item17Name: String = ""
     $item17DisplayOrder: Int = 0
     $item17Quantity: Float = 0
+    $item17Unit: String
     $item17SourceTemplateId: UUID
     $item17QuantitySourceId: UUID
     $item17UnitPriceCents: Int = 0
@@ -666,6 +903,7 @@ mutation CreateQuoteWithItems(
     $item18Name: String = ""
     $item18DisplayOrder: Int = 0
     $item18Quantity: Float = 0
+    $item18Unit: String
     $item18SourceTemplateId: UUID
     $item18QuantitySourceId: UUID
     $item18UnitPriceCents: Int = 0
@@ -676,6 +914,7 @@ mutation CreateQuoteWithItems(
     $item19Name: String = ""
     $item19DisplayOrder: Int = 0
     $item19Quantity: Float = 0
+    $item19Unit: String
     $item19SourceTemplateId: UUID
     $item19QuantitySourceId: UUID
     $item19UnitPriceCents: Int = 0
@@ -686,6 +925,7 @@ mutation CreateQuoteWithItems(
     $item20Name: String = ""
     $item20DisplayOrder: Int = 0
     $item20Quantity: Float = 0
+    $item20Unit: String
     $item20SourceTemplateId: UUID
     $item20QuantitySourceId: UUID
     $item20UnitPriceCents: Int = 0
@@ -729,6 +969,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item1DisplayOrder
             name: $item1Name
             quantity: $item1Quantity
+            unit: $item1Unit
             quantitySourceId: $item1QuantitySourceId
             unitPriceCents: $item1UnitPriceCents
             materialUnitPriceCents: $item1MaterialUnitPriceCents
@@ -744,6 +985,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item2DisplayOrder
             name: $item2Name
             quantity: $item2Quantity
+            unit: $item2Unit
             quantitySourceId: $item2QuantitySourceId
             unitPriceCents: $item2UnitPriceCents
             materialUnitPriceCents: $item2MaterialUnitPriceCents
@@ -759,6 +1001,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item3DisplayOrder
             name: $item3Name
             quantity: $item3Quantity
+            unit: $item3Unit
             quantitySourceId: $item3QuantitySourceId
             unitPriceCents: $item3UnitPriceCents
             materialUnitPriceCents: $item3MaterialUnitPriceCents
@@ -774,6 +1017,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item4DisplayOrder
             name: $item4Name
             quantity: $item4Quantity
+            unit: $item4Unit
             quantitySourceId: $item4QuantitySourceId
             unitPriceCents: $item4UnitPriceCents
             materialUnitPriceCents: $item4MaterialUnitPriceCents
@@ -789,6 +1033,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item5DisplayOrder
             name: $item5Name
             quantity: $item5Quantity
+            unit: $item5Unit
             quantitySourceId: $item5QuantitySourceId
             unitPriceCents: $item5UnitPriceCents
             materialUnitPriceCents: $item5MaterialUnitPriceCents
@@ -804,6 +1049,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item6DisplayOrder
             name: $item6Name
             quantity: $item6Quantity
+            unit: $item6Unit
             quantitySourceId: $item6QuantitySourceId
             unitPriceCents: $item6UnitPriceCents
             materialUnitPriceCents: $item6MaterialUnitPriceCents
@@ -819,6 +1065,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item7DisplayOrder
             name: $item7Name
             quantity: $item7Quantity
+            unit: $item7Unit
             quantitySourceId: $item7QuantitySourceId
             unitPriceCents: $item7UnitPriceCents
             materialUnitPriceCents: $item7MaterialUnitPriceCents
@@ -834,6 +1081,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item8DisplayOrder
             name: $item8Name
             quantity: $item8Quantity
+            unit: $item8Unit
             quantitySourceId: $item8QuantitySourceId
             unitPriceCents: $item8UnitPriceCents
             materialUnitPriceCents: $item8MaterialUnitPriceCents
@@ -849,6 +1097,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item9DisplayOrder
             name: $item9Name
             quantity: $item9Quantity
+            unit: $item9Unit
             quantitySourceId: $item9QuantitySourceId
             unitPriceCents: $item9UnitPriceCents
             materialUnitPriceCents: $item9MaterialUnitPriceCents
@@ -864,6 +1113,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item10DisplayOrder
             name: $item10Name
             quantity: $item10Quantity
+            unit: $item10Unit
             quantitySourceId: $item10QuantitySourceId
             unitPriceCents: $item10UnitPriceCents
             materialUnitPriceCents: $item10MaterialUnitPriceCents
@@ -879,6 +1129,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item11DisplayOrder
             name: $item11Name
             quantity: $item11Quantity
+            unit: $item11Unit
             quantitySourceId: $item11QuantitySourceId
             unitPriceCents: $item11UnitPriceCents
             materialUnitPriceCents: $item11MaterialUnitPriceCents
@@ -894,6 +1145,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item12DisplayOrder
             name: $item12Name
             quantity: $item12Quantity
+            unit: $item12Unit
             quantitySourceId: $item12QuantitySourceId
             unitPriceCents: $item12UnitPriceCents
             materialUnitPriceCents: $item12MaterialUnitPriceCents
@@ -909,6 +1161,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item13DisplayOrder
             name: $item13Name
             quantity: $item13Quantity
+            unit: $item13Unit
             quantitySourceId: $item13QuantitySourceId
             unitPriceCents: $item13UnitPriceCents
             materialUnitPriceCents: $item13MaterialUnitPriceCents
@@ -924,6 +1177,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item14DisplayOrder
             name: $item14Name
             quantity: $item14Quantity
+            unit: $item14Unit
             quantitySourceId: $item14QuantitySourceId
             unitPriceCents: $item14UnitPriceCents
             materialUnitPriceCents: $item14MaterialUnitPriceCents
@@ -939,6 +1193,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item15DisplayOrder
             name: $item15Name
             quantity: $item15Quantity
+            unit: $item15Unit
             quantitySourceId: $item15QuantitySourceId
             unitPriceCents: $item15UnitPriceCents
             materialUnitPriceCents: $item15MaterialUnitPriceCents
@@ -954,6 +1209,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item16DisplayOrder
             name: $item16Name
             quantity: $item16Quantity
+            unit: $item16Unit
             quantitySourceId: $item16QuantitySourceId
             unitPriceCents: $item16UnitPriceCents
             materialUnitPriceCents: $item16MaterialUnitPriceCents
@@ -969,6 +1225,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item17DisplayOrder
             name: $item17Name
             quantity: $item17Quantity
+            unit: $item17Unit
             quantitySourceId: $item17QuantitySourceId
             unitPriceCents: $item17UnitPriceCents
             materialUnitPriceCents: $item17MaterialUnitPriceCents
@@ -984,6 +1241,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item18DisplayOrder
             name: $item18Name
             quantity: $item18Quantity
+            unit: $item18Unit
             quantitySourceId: $item18QuantitySourceId
             unitPriceCents: $item18UnitPriceCents
             materialUnitPriceCents: $item18MaterialUnitPriceCents
@@ -999,6 +1257,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item19DisplayOrder
             name: $item19Name
             quantity: $item19Quantity
+            unit: $item19Unit
             quantitySourceId: $item19QuantitySourceId
             unitPriceCents: $item19UnitPriceCents
             materialUnitPriceCents: $item19MaterialUnitPriceCents
@@ -1014,6 +1273,7 @@ mutation CreateQuoteWithItems(
             displayOrder: $item20DisplayOrder
             name: $item20Name
             quantity: $item20Quantity
+            unit: $item20Unit
             quantitySourceId: $item20QuantitySourceId
             unitPriceCents: $item20UnitPriceCents
             materialUnitPriceCents: $item20MaterialUnitPriceCents

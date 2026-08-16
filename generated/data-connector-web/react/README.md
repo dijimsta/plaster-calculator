@@ -56,7 +56,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*UpdateProjectQuestionnaireQuestionAnswer*](#updateprojectquestionnairequestionanswer)
   - [*UpdateProjectQuestionnaireQuestionAnswerSource*](#updateprojectquestionnairequestionanswersource)
   - [*DeleteProjectQuestionnaireQuestion*](#deleteprojectquestionnairequestion)
-  - [*EnsureSystemQuoteItemTemplates*](#ensuresystemquoteitemtemplates)
+  - [*ReconcileSystemQuoteItemTemplates*](#reconcilesystemquoteitemtemplates)
   - [*CreateQuoteTemplate*](#createquotetemplate)
   - [*CreateQuoteItemTemplateConfig*](#createquoteitemtemplateconfig)
   - [*UpdateQuoteItemTemplateConfig*](#updatequoteitemtemplateconfig)
@@ -799,6 +799,7 @@ export interface ListQuoteItemTemplatesData {
     scope: string;
     systemKey?: string | null;
     name: string;
+    unit?: string | null;
     hasKeywords: boolean;
     keywords: string[];
     quantitySourceId?: UUIDString | null;
@@ -966,6 +967,7 @@ export interface ListQuoteItemTemplateConfigsForQuoteTemplateData {
     itemTemplate: {
       id: UUIDString;
       name: string;
+      unit?: string | null;
       hasKeywords: boolean;
       keywords: string[];
       sortOrder: number;
@@ -1163,6 +1165,7 @@ export interface GetQuoteByIdData {
       displayOrder: number;
       name: string;
       quantity: number;
+      unit?: string | null;
       unitPriceCents: number;
       materialUnitPriceCents: number;
       labourUnitPriceCents: number;
@@ -1288,10 +1291,16 @@ export interface GetQuoteReadinessData {
     itemTemplate: {
       id: UUIDString;
       name: string;
+      unit?: string | null;
       hasKeywords: boolean;
       keywords: string[];
       sortOrder: number;
       quantitySourceId?: UUIDString | null;
+      quantitySource?: {
+        id: UUIDString;
+        measurementSource: string;
+        measurementPlasterType?: string | null;
+      } & QuantitySource_Key;
     } & QuoteItemTemplate_Key;
   })[];
 }
@@ -1398,6 +1407,7 @@ export interface GetProjectQuoteData {
         displayOrder: number;
         name: string;
         quantity: number;
+        unit?: string | null;
         unitPriceCents: number;
         materialUnitPriceCents: number;
         labourUnitPriceCents: number;
@@ -3787,72 +3797,88 @@ export default function DeleteProjectQuestionnaireQuestionComponent() {
 }
 ```
 
-## EnsureSystemQuoteItemTemplates
-You can execute the `EnsureSystemQuoteItemTemplates` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## ReconcileSystemQuoteItemTemplates
+You can execute the `ReconcileSystemQuoteItemTemplates` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useEnsureSystemQuoteItemTemplates(options?: useDataConnectMutationOptions<EnsureSystemQuoteItemTemplatesData, FirebaseError, void>): UseDataConnectMutationResult<EnsureSystemQuoteItemTemplatesData, undefined>;
+useReconcileSystemQuoteItemTemplates(options?: useDataConnectMutationOptions<ReconcileSystemQuoteItemTemplatesData, FirebaseError, void>): UseDataConnectMutationResult<ReconcileSystemQuoteItemTemplatesData, undefined>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useEnsureSystemQuoteItemTemplates(dc: DataConnect, options?: useDataConnectMutationOptions<EnsureSystemQuoteItemTemplatesData, FirebaseError, void>): UseDataConnectMutationResult<EnsureSystemQuoteItemTemplatesData, undefined>;
+useReconcileSystemQuoteItemTemplates(dc: DataConnect, options?: useDataConnectMutationOptions<ReconcileSystemQuoteItemTemplatesData, FirebaseError, void>): UseDataConnectMutationResult<ReconcileSystemQuoteItemTemplatesData, undefined>;
 ```
 
 ### Variables
-The `EnsureSystemQuoteItemTemplates` Mutation has no variables.
+The `ReconcileSystemQuoteItemTemplates` Mutation has no variables.
 ### Return Type
-Recall that calling the `EnsureSystemQuoteItemTemplates` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `ReconcileSystemQuoteItemTemplates` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `EnsureSystemQuoteItemTemplates` Mutation is of type `EnsureSystemQuoteItemTemplatesData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `ReconcileSystemQuoteItemTemplates` Mutation is of type `ReconcileSystemQuoteItemTemplatesData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface EnsureSystemQuoteItemTemplatesData {
-  wallsPlasterboardQuantitySource: QuantitySource_Key;
-  wetWallsVillaboardQuantitySource: QuantitySource_Key;
-  ceilingsPlasterboardQuantitySource: QuantitySource_Key;
-  coveCorniceQuantitySource: QuantitySource_Key;
-  wetFloorsFcSheetQuantitySource: QuantitySource_Key;
-  doorSetsQuantitySource: QuantitySource_Key;
-  wallsPlasterboardItemTemplate: QuoteItemTemplate_Key;
-  wetWallsVillaboardItemTemplate: QuoteItemTemplate_Key;
-  ceilingsPlasterboardItemTemplate: QuoteItemTemplate_Key;
-  coveCorniceItemTemplate: QuoteItemTemplate_Key;
-  wetFloorsFcSheetItemTemplate: QuoteItemTemplate_Key;
-  doorSetsItemTemplate: QuoteItemTemplate_Key;
+export interface ReconcileSystemQuoteItemTemplatesData {
+  quoteItemTemplateConfig_deleteMany: number;
+  quoteItemTemplate_deleteMany: number;
+  plasterboard10mmSource: QuantitySource_Key;
+  plasterboard13mmSource: QuantitySource_Key;
+  villaboard9mmSource: QuantitySource_Key;
+  villaboard6mmSource: QuantitySource_Key;
+  acoustic10mmSource: QuantitySource_Key;
+  acoustic13mmSource: QuantitySource_Key;
+  waterResistant10mmSource: QuantitySource_Key;
+  waterResistant13mmSource: QuantitySource_Key;
+  fireDry13mmSource: QuantitySource_Key;
+  fireDry16mmSource: QuantitySource_Key;
+  fireWet13mmSource: QuantitySource_Key;
+  fireWet16mmSource: QuantitySource_Key;
+  flexible6_5mmSource: QuantitySource_Key;
+  plasterboard10mm: QuoteItemTemplate_Key;
+  plasterboard13mm: QuoteItemTemplate_Key;
+  villaboard9mm: QuoteItemTemplate_Key;
+  villaboard6mm: QuoteItemTemplate_Key;
+  acoustic10mm: QuoteItemTemplate_Key;
+  acoustic13mm: QuoteItemTemplate_Key;
+  waterResistant10mm: QuoteItemTemplate_Key;
+  waterResistant13mm: QuoteItemTemplate_Key;
+  fireDry13mm: QuoteItemTemplate_Key;
+  fireDry16mm: QuoteItemTemplate_Key;
+  fireWet13mm: QuoteItemTemplate_Key;
+  fireWet16mm: QuoteItemTemplate_Key;
+  flexible6_5mm: QuoteItemTemplate_Key;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `EnsureSystemQuoteItemTemplates`'s Mutation hook function
+### Using `ReconcileSystemQuoteItemTemplates`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
 import { connectorConfig } from '@generated/data-connector-web';
-import { useEnsureSystemQuoteItemTemplates } from '@generated/data-connector-web/react'
+import { useReconcileSystemQuoteItemTemplates } from '@generated/data-connector-web/react'
 
-export default function EnsureSystemQuoteItemTemplatesComponent() {
+export default function ReconcileSystemQuoteItemTemplatesComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useEnsureSystemQuoteItemTemplates();
+  const mutation = useReconcileSystemQuoteItemTemplates();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useEnsureSystemQuoteItemTemplates(dataConnect);
+  const mutation = useReconcileSystemQuoteItemTemplates(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useEnsureSystemQuoteItemTemplates(options);
+  const mutation = useReconcileSystemQuoteItemTemplates(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useEnsureSystemQuoteItemTemplates(dataConnect, options);
+  const mutation = useReconcileSystemQuoteItemTemplates(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
   mutation.mutate();
@@ -3875,18 +3901,34 @@ export default function EnsureSystemQuoteItemTemplatesComponent() {
 
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
-    console.log(mutation.data.wallsPlasterboardQuantitySource);
-    console.log(mutation.data.wetWallsVillaboardQuantitySource);
-    console.log(mutation.data.ceilingsPlasterboardQuantitySource);
-    console.log(mutation.data.coveCorniceQuantitySource);
-    console.log(mutation.data.wetFloorsFcSheetQuantitySource);
-    console.log(mutation.data.doorSetsQuantitySource);
-    console.log(mutation.data.wallsPlasterboardItemTemplate);
-    console.log(mutation.data.wetWallsVillaboardItemTemplate);
-    console.log(mutation.data.ceilingsPlasterboardItemTemplate);
-    console.log(mutation.data.coveCorniceItemTemplate);
-    console.log(mutation.data.wetFloorsFcSheetItemTemplate);
-    console.log(mutation.data.doorSetsItemTemplate);
+    console.log(mutation.data.quoteItemTemplateConfig_deleteMany);
+    console.log(mutation.data.quoteItemTemplate_deleteMany);
+    console.log(mutation.data.plasterboard10mmSource);
+    console.log(mutation.data.plasterboard13mmSource);
+    console.log(mutation.data.villaboard9mmSource);
+    console.log(mutation.data.villaboard6mmSource);
+    console.log(mutation.data.acoustic10mmSource);
+    console.log(mutation.data.acoustic13mmSource);
+    console.log(mutation.data.waterResistant10mmSource);
+    console.log(mutation.data.waterResistant13mmSource);
+    console.log(mutation.data.fireDry13mmSource);
+    console.log(mutation.data.fireDry16mmSource);
+    console.log(mutation.data.fireWet13mmSource);
+    console.log(mutation.data.fireWet16mmSource);
+    console.log(mutation.data.flexible6_5mmSource);
+    console.log(mutation.data.plasterboard10mm);
+    console.log(mutation.data.plasterboard13mm);
+    console.log(mutation.data.villaboard9mm);
+    console.log(mutation.data.villaboard6mm);
+    console.log(mutation.data.acoustic10mm);
+    console.log(mutation.data.acoustic13mm);
+    console.log(mutation.data.waterResistant10mm);
+    console.log(mutation.data.waterResistant13mm);
+    console.log(mutation.data.fireDry13mm);
+    console.log(mutation.data.fireDry16mm);
+    console.log(mutation.data.fireWet13mm);
+    console.log(mutation.data.fireWet16mm);
+    console.log(mutation.data.flexible6_5mm);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
@@ -4211,6 +4253,7 @@ The `CreateQuoteItemTemplate` Mutation requires an argument of type `CreateQuote
 export interface CreateQuoteItemTemplateVariables {
   id: UUIDString;
   name: string;
+  unit: string;
   hasKeywords: boolean;
   keywords: string[];
 }
@@ -4264,12 +4307,13 @@ export default function CreateQuoteItemTemplateComponent() {
   const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
     id: ..., 
     name: ..., 
+    unit: ...,
     hasKeywords: ..., 
     keywords: ..., 
   };
   mutation.mutate(createQuoteItemTemplateVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ id: ..., name: ..., hasKeywords: ..., keywords: ..., });
+  mutation.mutate({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -4311,6 +4355,7 @@ The `UpdateQuoteItemTemplate` Mutation requires an argument of type `UpdateQuote
 export interface UpdateQuoteItemTemplateVariables {
   id: UUIDString;
   name: string;
+  unit: string;
   hasKeywords: boolean;
   keywords: string[];
 }
@@ -4364,12 +4409,13 @@ export default function UpdateQuoteItemTemplateComponent() {
   const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
     id: ..., 
     name: ..., 
+    unit: ...,
     hasKeywords: ..., 
     keywords: ..., 
   };
   mutation.mutate(updateQuoteItemTemplateVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ id: ..., name: ..., hasKeywords: ..., keywords: ..., });
+  mutation.mutate({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -4701,6 +4747,7 @@ export interface UpdateQuoteItemVariables {
   displayOrder: number;
   name: string;
   quantity: number;
+  unit?: string | null;
   unitPriceCents: number;
 }
 ```
@@ -4755,11 +4802,12 @@ export default function UpdateQuoteItemComponent() {
     displayOrder: ..., 
     name: ..., 
     quantity: ..., 
+    unit: ..., // optional
     unitPriceCents: ..., 
   };
   mutation.mutate(updateQuoteItemVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ id: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+  mutation.mutate({ id: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -4804,6 +4852,7 @@ export interface CreateQuoteItemVariables {
   displayOrder: number;
   name: string;
   quantity: number;
+  unit: string;
   unitPriceCents: number;
 }
 ```
@@ -4859,11 +4908,12 @@ export default function CreateQuoteItemComponent() {
     displayOrder: ..., 
     name: ..., 
     quantity: ..., 
+    unit: ...,
     unitPriceCents: ..., 
   };
   mutation.mutate(createQuoteItemVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+  mutation.mutate({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -5003,6 +5053,7 @@ export interface CreateQuoteWithItemsVariables {
   item1Name?: string | null;
   item1DisplayOrder?: number | null;
   item1Quantity?: number | null;
+  item1Unit?: string | null;
   item1SourceTemplateId?: UUIDString | null;
   item1QuantitySourceId?: UUIDString | null;
   item1UnitPriceCents?: number | null;
@@ -5013,6 +5064,7 @@ export interface CreateQuoteWithItemsVariables {
   item2Name?: string | null;
   item2DisplayOrder?: number | null;
   item2Quantity?: number | null;
+  item2Unit?: string | null;
   item2SourceTemplateId?: UUIDString | null;
   item2QuantitySourceId?: UUIDString | null;
   item2UnitPriceCents?: number | null;
@@ -5023,6 +5075,7 @@ export interface CreateQuoteWithItemsVariables {
   item3Name?: string | null;
   item3DisplayOrder?: number | null;
   item3Quantity?: number | null;
+  item3Unit?: string | null;
   item3SourceTemplateId?: UUIDString | null;
   item3QuantitySourceId?: UUIDString | null;
   item3UnitPriceCents?: number | null;
@@ -5033,6 +5086,7 @@ export interface CreateQuoteWithItemsVariables {
   item4Name?: string | null;
   item4DisplayOrder?: number | null;
   item4Quantity?: number | null;
+  item4Unit?: string | null;
   item4SourceTemplateId?: UUIDString | null;
   item4QuantitySourceId?: UUIDString | null;
   item4UnitPriceCents?: number | null;
@@ -5043,6 +5097,7 @@ export interface CreateQuoteWithItemsVariables {
   item5Name?: string | null;
   item5DisplayOrder?: number | null;
   item5Quantity?: number | null;
+  item5Unit?: string | null;
   item5SourceTemplateId?: UUIDString | null;
   item5QuantitySourceId?: UUIDString | null;
   item5UnitPriceCents?: number | null;
@@ -5053,6 +5108,7 @@ export interface CreateQuoteWithItemsVariables {
   item6Name?: string | null;
   item6DisplayOrder?: number | null;
   item6Quantity?: number | null;
+  item6Unit?: string | null;
   item6SourceTemplateId?: UUIDString | null;
   item6QuantitySourceId?: UUIDString | null;
   item6UnitPriceCents?: number | null;
@@ -5063,6 +5119,7 @@ export interface CreateQuoteWithItemsVariables {
   item7Name?: string | null;
   item7DisplayOrder?: number | null;
   item7Quantity?: number | null;
+  item7Unit?: string | null;
   item7SourceTemplateId?: UUIDString | null;
   item7QuantitySourceId?: UUIDString | null;
   item7UnitPriceCents?: number | null;
@@ -5073,6 +5130,7 @@ export interface CreateQuoteWithItemsVariables {
   item8Name?: string | null;
   item8DisplayOrder?: number | null;
   item8Quantity?: number | null;
+  item8Unit?: string | null;
   item8SourceTemplateId?: UUIDString | null;
   item8QuantitySourceId?: UUIDString | null;
   item8UnitPriceCents?: number | null;
@@ -5083,6 +5141,7 @@ export interface CreateQuoteWithItemsVariables {
   item9Name?: string | null;
   item9DisplayOrder?: number | null;
   item9Quantity?: number | null;
+  item9Unit?: string | null;
   item9SourceTemplateId?: UUIDString | null;
   item9QuantitySourceId?: UUIDString | null;
   item9UnitPriceCents?: number | null;
@@ -5093,6 +5152,7 @@ export interface CreateQuoteWithItemsVariables {
   item10Name?: string | null;
   item10DisplayOrder?: number | null;
   item10Quantity?: number | null;
+  item10Unit?: string | null;
   item10SourceTemplateId?: UUIDString | null;
   item10QuantitySourceId?: UUIDString | null;
   item10UnitPriceCents?: number | null;
@@ -5103,6 +5163,7 @@ export interface CreateQuoteWithItemsVariables {
   item11Name?: string | null;
   item11DisplayOrder?: number | null;
   item11Quantity?: number | null;
+  item11Unit?: string | null;
   item11SourceTemplateId?: UUIDString | null;
   item11QuantitySourceId?: UUIDString | null;
   item11UnitPriceCents?: number | null;
@@ -5113,6 +5174,7 @@ export interface CreateQuoteWithItemsVariables {
   item12Name?: string | null;
   item12DisplayOrder?: number | null;
   item12Quantity?: number | null;
+  item12Unit?: string | null;
   item12SourceTemplateId?: UUIDString | null;
   item12QuantitySourceId?: UUIDString | null;
   item12UnitPriceCents?: number | null;
@@ -5123,6 +5185,7 @@ export interface CreateQuoteWithItemsVariables {
   item13Name?: string | null;
   item13DisplayOrder?: number | null;
   item13Quantity?: number | null;
+  item13Unit?: string | null;
   item13SourceTemplateId?: UUIDString | null;
   item13QuantitySourceId?: UUIDString | null;
   item13UnitPriceCents?: number | null;
@@ -5133,6 +5196,7 @@ export interface CreateQuoteWithItemsVariables {
   item14Name?: string | null;
   item14DisplayOrder?: number | null;
   item14Quantity?: number | null;
+  item14Unit?: string | null;
   item14SourceTemplateId?: UUIDString | null;
   item14QuantitySourceId?: UUIDString | null;
   item14UnitPriceCents?: number | null;
@@ -5143,6 +5207,7 @@ export interface CreateQuoteWithItemsVariables {
   item15Name?: string | null;
   item15DisplayOrder?: number | null;
   item15Quantity?: number | null;
+  item15Unit?: string | null;
   item15SourceTemplateId?: UUIDString | null;
   item15QuantitySourceId?: UUIDString | null;
   item15UnitPriceCents?: number | null;
@@ -5153,6 +5218,7 @@ export interface CreateQuoteWithItemsVariables {
   item16Name?: string | null;
   item16DisplayOrder?: number | null;
   item16Quantity?: number | null;
+  item16Unit?: string | null;
   item16SourceTemplateId?: UUIDString | null;
   item16QuantitySourceId?: UUIDString | null;
   item16UnitPriceCents?: number | null;
@@ -5163,6 +5229,7 @@ export interface CreateQuoteWithItemsVariables {
   item17Name?: string | null;
   item17DisplayOrder?: number | null;
   item17Quantity?: number | null;
+  item17Unit?: string | null;
   item17SourceTemplateId?: UUIDString | null;
   item17QuantitySourceId?: UUIDString | null;
   item17UnitPriceCents?: number | null;
@@ -5173,6 +5240,7 @@ export interface CreateQuoteWithItemsVariables {
   item18Name?: string | null;
   item18DisplayOrder?: number | null;
   item18Quantity?: number | null;
+  item18Unit?: string | null;
   item18SourceTemplateId?: UUIDString | null;
   item18QuantitySourceId?: UUIDString | null;
   item18UnitPriceCents?: number | null;
@@ -5183,6 +5251,7 @@ export interface CreateQuoteWithItemsVariables {
   item19Name?: string | null;
   item19DisplayOrder?: number | null;
   item19Quantity?: number | null;
+  item19Unit?: string | null;
   item19SourceTemplateId?: UUIDString | null;
   item19QuantitySourceId?: UUIDString | null;
   item19UnitPriceCents?: number | null;
@@ -5193,6 +5262,7 @@ export interface CreateQuoteWithItemsVariables {
   item20Name?: string | null;
   item20DisplayOrder?: number | null;
   item20Quantity?: number | null;
+  item20Unit?: string | null;
   item20SourceTemplateId?: UUIDString | null;
   item20QuantitySourceId?: UUIDString | null;
   item20UnitPriceCents?: number | null;
@@ -5276,6 +5346,7 @@ export default function CreateQuoteWithItemsComponent() {
     item1Name: ..., // optional
     item1DisplayOrder: ..., // optional
     item1Quantity: ..., // optional
+    item1Unit: ..., // optional
     item1SourceTemplateId: ..., // optional
     item1QuantitySourceId: ..., // optional
     item1UnitPriceCents: ..., // optional
@@ -5286,6 +5357,7 @@ export default function CreateQuoteWithItemsComponent() {
     item2Name: ..., // optional
     item2DisplayOrder: ..., // optional
     item2Quantity: ..., // optional
+    item2Unit: ..., // optional
     item2SourceTemplateId: ..., // optional
     item2QuantitySourceId: ..., // optional
     item2UnitPriceCents: ..., // optional
@@ -5296,6 +5368,7 @@ export default function CreateQuoteWithItemsComponent() {
     item3Name: ..., // optional
     item3DisplayOrder: ..., // optional
     item3Quantity: ..., // optional
+    item3Unit: ..., // optional
     item3SourceTemplateId: ..., // optional
     item3QuantitySourceId: ..., // optional
     item3UnitPriceCents: ..., // optional
@@ -5306,6 +5379,7 @@ export default function CreateQuoteWithItemsComponent() {
     item4Name: ..., // optional
     item4DisplayOrder: ..., // optional
     item4Quantity: ..., // optional
+    item4Unit: ..., // optional
     item4SourceTemplateId: ..., // optional
     item4QuantitySourceId: ..., // optional
     item4UnitPriceCents: ..., // optional
@@ -5316,6 +5390,7 @@ export default function CreateQuoteWithItemsComponent() {
     item5Name: ..., // optional
     item5DisplayOrder: ..., // optional
     item5Quantity: ..., // optional
+    item5Unit: ..., // optional
     item5SourceTemplateId: ..., // optional
     item5QuantitySourceId: ..., // optional
     item5UnitPriceCents: ..., // optional
@@ -5326,6 +5401,7 @@ export default function CreateQuoteWithItemsComponent() {
     item6Name: ..., // optional
     item6DisplayOrder: ..., // optional
     item6Quantity: ..., // optional
+    item6Unit: ..., // optional
     item6SourceTemplateId: ..., // optional
     item6QuantitySourceId: ..., // optional
     item6UnitPriceCents: ..., // optional
@@ -5336,6 +5412,7 @@ export default function CreateQuoteWithItemsComponent() {
     item7Name: ..., // optional
     item7DisplayOrder: ..., // optional
     item7Quantity: ..., // optional
+    item7Unit: ..., // optional
     item7SourceTemplateId: ..., // optional
     item7QuantitySourceId: ..., // optional
     item7UnitPriceCents: ..., // optional
@@ -5346,6 +5423,7 @@ export default function CreateQuoteWithItemsComponent() {
     item8Name: ..., // optional
     item8DisplayOrder: ..., // optional
     item8Quantity: ..., // optional
+    item8Unit: ..., // optional
     item8SourceTemplateId: ..., // optional
     item8QuantitySourceId: ..., // optional
     item8UnitPriceCents: ..., // optional
@@ -5356,6 +5434,7 @@ export default function CreateQuoteWithItemsComponent() {
     item9Name: ..., // optional
     item9DisplayOrder: ..., // optional
     item9Quantity: ..., // optional
+    item9Unit: ..., // optional
     item9SourceTemplateId: ..., // optional
     item9QuantitySourceId: ..., // optional
     item9UnitPriceCents: ..., // optional
@@ -5366,6 +5445,7 @@ export default function CreateQuoteWithItemsComponent() {
     item10Name: ..., // optional
     item10DisplayOrder: ..., // optional
     item10Quantity: ..., // optional
+    item10Unit: ..., // optional
     item10SourceTemplateId: ..., // optional
     item10QuantitySourceId: ..., // optional
     item10UnitPriceCents: ..., // optional
@@ -5376,6 +5456,7 @@ export default function CreateQuoteWithItemsComponent() {
     item11Name: ..., // optional
     item11DisplayOrder: ..., // optional
     item11Quantity: ..., // optional
+    item11Unit: ..., // optional
     item11SourceTemplateId: ..., // optional
     item11QuantitySourceId: ..., // optional
     item11UnitPriceCents: ..., // optional
@@ -5386,6 +5467,7 @@ export default function CreateQuoteWithItemsComponent() {
     item12Name: ..., // optional
     item12DisplayOrder: ..., // optional
     item12Quantity: ..., // optional
+    item12Unit: ..., // optional
     item12SourceTemplateId: ..., // optional
     item12QuantitySourceId: ..., // optional
     item12UnitPriceCents: ..., // optional
@@ -5396,6 +5478,7 @@ export default function CreateQuoteWithItemsComponent() {
     item13Name: ..., // optional
     item13DisplayOrder: ..., // optional
     item13Quantity: ..., // optional
+    item13Unit: ..., // optional
     item13SourceTemplateId: ..., // optional
     item13QuantitySourceId: ..., // optional
     item13UnitPriceCents: ..., // optional
@@ -5406,6 +5489,7 @@ export default function CreateQuoteWithItemsComponent() {
     item14Name: ..., // optional
     item14DisplayOrder: ..., // optional
     item14Quantity: ..., // optional
+    item14Unit: ..., // optional
     item14SourceTemplateId: ..., // optional
     item14QuantitySourceId: ..., // optional
     item14UnitPriceCents: ..., // optional
@@ -5416,6 +5500,7 @@ export default function CreateQuoteWithItemsComponent() {
     item15Name: ..., // optional
     item15DisplayOrder: ..., // optional
     item15Quantity: ..., // optional
+    item15Unit: ..., // optional
     item15SourceTemplateId: ..., // optional
     item15QuantitySourceId: ..., // optional
     item15UnitPriceCents: ..., // optional
@@ -5426,6 +5511,7 @@ export default function CreateQuoteWithItemsComponent() {
     item16Name: ..., // optional
     item16DisplayOrder: ..., // optional
     item16Quantity: ..., // optional
+    item16Unit: ..., // optional
     item16SourceTemplateId: ..., // optional
     item16QuantitySourceId: ..., // optional
     item16UnitPriceCents: ..., // optional
@@ -5436,6 +5522,7 @@ export default function CreateQuoteWithItemsComponent() {
     item17Name: ..., // optional
     item17DisplayOrder: ..., // optional
     item17Quantity: ..., // optional
+    item17Unit: ..., // optional
     item17SourceTemplateId: ..., // optional
     item17QuantitySourceId: ..., // optional
     item17UnitPriceCents: ..., // optional
@@ -5446,6 +5533,7 @@ export default function CreateQuoteWithItemsComponent() {
     item18Name: ..., // optional
     item18DisplayOrder: ..., // optional
     item18Quantity: ..., // optional
+    item18Unit: ..., // optional
     item18SourceTemplateId: ..., // optional
     item18QuantitySourceId: ..., // optional
     item18UnitPriceCents: ..., // optional
@@ -5456,6 +5544,7 @@ export default function CreateQuoteWithItemsComponent() {
     item19Name: ..., // optional
     item19DisplayOrder: ..., // optional
     item19Quantity: ..., // optional
+    item19Unit: ..., // optional
     item19SourceTemplateId: ..., // optional
     item19QuantitySourceId: ..., // optional
     item19UnitPriceCents: ..., // optional
@@ -5466,6 +5555,7 @@ export default function CreateQuoteWithItemsComponent() {
     item20Name: ..., // optional
     item20DisplayOrder: ..., // optional
     item20Quantity: ..., // optional
+    item20Unit: ..., // optional
     item20SourceTemplateId: ..., // optional
     item20QuantitySourceId: ..., // optional
     item20UnitPriceCents: ..., // optional
@@ -5475,7 +5565,7 @@ export default function CreateQuoteWithItemsComponent() {
   };
   mutation.mutate(createQuoteWithItemsVars);
   // Variables can be defined inline as well.
-  mutation.mutate({ projectId: ..., quoteId: ..., includeItem1: ..., item1Name: ..., item1DisplayOrder: ..., item1Quantity: ..., item1SourceTemplateId: ..., item1QuantitySourceId: ..., item1UnitPriceCents: ..., item1MaterialUnitPriceCents: ..., item1LabourUnitPriceCents: ..., item1MatchedKeywords: ..., includeItem2: ..., item2Name: ..., item2DisplayOrder: ..., item2Quantity: ..., item2SourceTemplateId: ..., item2QuantitySourceId: ..., item2UnitPriceCents: ..., item2MaterialUnitPriceCents: ..., item2LabourUnitPriceCents: ..., item2MatchedKeywords: ..., includeItem3: ..., item3Name: ..., item3DisplayOrder: ..., item3Quantity: ..., item3SourceTemplateId: ..., item3QuantitySourceId: ..., item3UnitPriceCents: ..., item3MaterialUnitPriceCents: ..., item3LabourUnitPriceCents: ..., item3MatchedKeywords: ..., includeItem4: ..., item4Name: ..., item4DisplayOrder: ..., item4Quantity: ..., item4SourceTemplateId: ..., item4QuantitySourceId: ..., item4UnitPriceCents: ..., item4MaterialUnitPriceCents: ..., item4LabourUnitPriceCents: ..., item4MatchedKeywords: ..., includeItem5: ..., item5Name: ..., item5DisplayOrder: ..., item5Quantity: ..., item5SourceTemplateId: ..., item5QuantitySourceId: ..., item5UnitPriceCents: ..., item5MaterialUnitPriceCents: ..., item5LabourUnitPriceCents: ..., item5MatchedKeywords: ..., includeItem6: ..., item6Name: ..., item6DisplayOrder: ..., item6Quantity: ..., item6SourceTemplateId: ..., item6QuantitySourceId: ..., item6UnitPriceCents: ..., item6MaterialUnitPriceCents: ..., item6LabourUnitPriceCents: ..., item6MatchedKeywords: ..., includeItem7: ..., item7Name: ..., item7DisplayOrder: ..., item7Quantity: ..., item7SourceTemplateId: ..., item7QuantitySourceId: ..., item7UnitPriceCents: ..., item7MaterialUnitPriceCents: ..., item7LabourUnitPriceCents: ..., item7MatchedKeywords: ..., includeItem8: ..., item8Name: ..., item8DisplayOrder: ..., item8Quantity: ..., item8SourceTemplateId: ..., item8QuantitySourceId: ..., item8UnitPriceCents: ..., item8MaterialUnitPriceCents: ..., item8LabourUnitPriceCents: ..., item8MatchedKeywords: ..., includeItem9: ..., item9Name: ..., item9DisplayOrder: ..., item9Quantity: ..., item9SourceTemplateId: ..., item9QuantitySourceId: ..., item9UnitPriceCents: ..., item9MaterialUnitPriceCents: ..., item9LabourUnitPriceCents: ..., item9MatchedKeywords: ..., includeItem10: ..., item10Name: ..., item10DisplayOrder: ..., item10Quantity: ..., item10SourceTemplateId: ..., item10QuantitySourceId: ..., item10UnitPriceCents: ..., item10MaterialUnitPriceCents: ..., item10LabourUnitPriceCents: ..., item10MatchedKeywords: ..., includeItem11: ..., item11Name: ..., item11DisplayOrder: ..., item11Quantity: ..., item11SourceTemplateId: ..., item11QuantitySourceId: ..., item11UnitPriceCents: ..., item11MaterialUnitPriceCents: ..., item11LabourUnitPriceCents: ..., item11MatchedKeywords: ..., includeItem12: ..., item12Name: ..., item12DisplayOrder: ..., item12Quantity: ..., item12SourceTemplateId: ..., item12QuantitySourceId: ..., item12UnitPriceCents: ..., item12MaterialUnitPriceCents: ..., item12LabourUnitPriceCents: ..., item12MatchedKeywords: ..., includeItem13: ..., item13Name: ..., item13DisplayOrder: ..., item13Quantity: ..., item13SourceTemplateId: ..., item13QuantitySourceId: ..., item13UnitPriceCents: ..., item13MaterialUnitPriceCents: ..., item13LabourUnitPriceCents: ..., item13MatchedKeywords: ..., includeItem14: ..., item14Name: ..., item14DisplayOrder: ..., item14Quantity: ..., item14SourceTemplateId: ..., item14QuantitySourceId: ..., item14UnitPriceCents: ..., item14MaterialUnitPriceCents: ..., item14LabourUnitPriceCents: ..., item14MatchedKeywords: ..., includeItem15: ..., item15Name: ..., item15DisplayOrder: ..., item15Quantity: ..., item15SourceTemplateId: ..., item15QuantitySourceId: ..., item15UnitPriceCents: ..., item15MaterialUnitPriceCents: ..., item15LabourUnitPriceCents: ..., item15MatchedKeywords: ..., includeItem16: ..., item16Name: ..., item16DisplayOrder: ..., item16Quantity: ..., item16SourceTemplateId: ..., item16QuantitySourceId: ..., item16UnitPriceCents: ..., item16MaterialUnitPriceCents: ..., item16LabourUnitPriceCents: ..., item16MatchedKeywords: ..., includeItem17: ..., item17Name: ..., item17DisplayOrder: ..., item17Quantity: ..., item17SourceTemplateId: ..., item17QuantitySourceId: ..., item17UnitPriceCents: ..., item17MaterialUnitPriceCents: ..., item17LabourUnitPriceCents: ..., item17MatchedKeywords: ..., includeItem18: ..., item18Name: ..., item18DisplayOrder: ..., item18Quantity: ..., item18SourceTemplateId: ..., item18QuantitySourceId: ..., item18UnitPriceCents: ..., item18MaterialUnitPriceCents: ..., item18LabourUnitPriceCents: ..., item18MatchedKeywords: ..., includeItem19: ..., item19Name: ..., item19DisplayOrder: ..., item19Quantity: ..., item19SourceTemplateId: ..., item19QuantitySourceId: ..., item19UnitPriceCents: ..., item19MaterialUnitPriceCents: ..., item19LabourUnitPriceCents: ..., item19MatchedKeywords: ..., includeItem20: ..., item20Name: ..., item20DisplayOrder: ..., item20Quantity: ..., item20SourceTemplateId: ..., item20QuantitySourceId: ..., item20UnitPriceCents: ..., item20MaterialUnitPriceCents: ..., item20LabourUnitPriceCents: ..., item20MatchedKeywords: ..., });
+  mutation.mutate({ projectId: ..., quoteId: ..., includeItem1: ..., item1Name: ..., item1DisplayOrder: ..., item1Quantity: ..., item1Unit: ..., item1SourceTemplateId: ..., item1QuantitySourceId: ..., item1UnitPriceCents: ..., item1MaterialUnitPriceCents: ..., item1LabourUnitPriceCents: ..., item1MatchedKeywords: ..., includeItem2: ..., item2Name: ..., item2DisplayOrder: ..., item2Quantity: ..., item2Unit: ..., item2SourceTemplateId: ..., item2QuantitySourceId: ..., item2UnitPriceCents: ..., item2MaterialUnitPriceCents: ..., item2LabourUnitPriceCents: ..., item2MatchedKeywords: ..., includeItem3: ..., item3Name: ..., item3DisplayOrder: ..., item3Quantity: ..., item3Unit: ..., item3SourceTemplateId: ..., item3QuantitySourceId: ..., item3UnitPriceCents: ..., item3MaterialUnitPriceCents: ..., item3LabourUnitPriceCents: ..., item3MatchedKeywords: ..., includeItem4: ..., item4Name: ..., item4DisplayOrder: ..., item4Quantity: ..., item4Unit: ..., item4SourceTemplateId: ..., item4QuantitySourceId: ..., item4UnitPriceCents: ..., item4MaterialUnitPriceCents: ..., item4LabourUnitPriceCents: ..., item4MatchedKeywords: ..., includeItem5: ..., item5Name: ..., item5DisplayOrder: ..., item5Quantity: ..., item5Unit: ..., item5SourceTemplateId: ..., item5QuantitySourceId: ..., item5UnitPriceCents: ..., item5MaterialUnitPriceCents: ..., item5LabourUnitPriceCents: ..., item5MatchedKeywords: ..., includeItem6: ..., item6Name: ..., item6DisplayOrder: ..., item6Quantity: ..., item6Unit: ..., item6SourceTemplateId: ..., item6QuantitySourceId: ..., item6UnitPriceCents: ..., item6MaterialUnitPriceCents: ..., item6LabourUnitPriceCents: ..., item6MatchedKeywords: ..., includeItem7: ..., item7Name: ..., item7DisplayOrder: ..., item7Quantity: ..., item7Unit: ..., item7SourceTemplateId: ..., item7QuantitySourceId: ..., item7UnitPriceCents: ..., item7MaterialUnitPriceCents: ..., item7LabourUnitPriceCents: ..., item7MatchedKeywords: ..., includeItem8: ..., item8Name: ..., item8DisplayOrder: ..., item8Quantity: ..., item8Unit: ..., item8SourceTemplateId: ..., item8QuantitySourceId: ..., item8UnitPriceCents: ..., item8MaterialUnitPriceCents: ..., item8LabourUnitPriceCents: ..., item8MatchedKeywords: ..., includeItem9: ..., item9Name: ..., item9DisplayOrder: ..., item9Quantity: ..., item9Unit: ..., item9SourceTemplateId: ..., item9QuantitySourceId: ..., item9UnitPriceCents: ..., item9MaterialUnitPriceCents: ..., item9LabourUnitPriceCents: ..., item9MatchedKeywords: ..., includeItem10: ..., item10Name: ..., item10DisplayOrder: ..., item10Quantity: ..., item10Unit: ..., item10SourceTemplateId: ..., item10QuantitySourceId: ..., item10UnitPriceCents: ..., item10MaterialUnitPriceCents: ..., item10LabourUnitPriceCents: ..., item10MatchedKeywords: ..., includeItem11: ..., item11Name: ..., item11DisplayOrder: ..., item11Quantity: ..., item11Unit: ..., item11SourceTemplateId: ..., item11QuantitySourceId: ..., item11UnitPriceCents: ..., item11MaterialUnitPriceCents: ..., item11LabourUnitPriceCents: ..., item11MatchedKeywords: ..., includeItem12: ..., item12Name: ..., item12DisplayOrder: ..., item12Quantity: ..., item12Unit: ..., item12SourceTemplateId: ..., item12QuantitySourceId: ..., item12UnitPriceCents: ..., item12MaterialUnitPriceCents: ..., item12LabourUnitPriceCents: ..., item12MatchedKeywords: ..., includeItem13: ..., item13Name: ..., item13DisplayOrder: ..., item13Quantity: ..., item13Unit: ..., item13SourceTemplateId: ..., item13QuantitySourceId: ..., item13UnitPriceCents: ..., item13MaterialUnitPriceCents: ..., item13LabourUnitPriceCents: ..., item13MatchedKeywords: ..., includeItem14: ..., item14Name: ..., item14DisplayOrder: ..., item14Quantity: ..., item14Unit: ..., item14SourceTemplateId: ..., item14QuantitySourceId: ..., item14UnitPriceCents: ..., item14MaterialUnitPriceCents: ..., item14LabourUnitPriceCents: ..., item14MatchedKeywords: ..., includeItem15: ..., item15Name: ..., item15DisplayOrder: ..., item15Quantity: ..., item15Unit: ..., item15SourceTemplateId: ..., item15QuantitySourceId: ..., item15UnitPriceCents: ..., item15MaterialUnitPriceCents: ..., item15LabourUnitPriceCents: ..., item15MatchedKeywords: ..., includeItem16: ..., item16Name: ..., item16DisplayOrder: ..., item16Quantity: ..., item16Unit: ..., item16SourceTemplateId: ..., item16QuantitySourceId: ..., item16UnitPriceCents: ..., item16MaterialUnitPriceCents: ..., item16LabourUnitPriceCents: ..., item16MatchedKeywords: ..., includeItem17: ..., item17Name: ..., item17DisplayOrder: ..., item17Quantity: ..., item17Unit: ..., item17SourceTemplateId: ..., item17QuantitySourceId: ..., item17UnitPriceCents: ..., item17MaterialUnitPriceCents: ..., item17LabourUnitPriceCents: ..., item17MatchedKeywords: ..., includeItem18: ..., item18Name: ..., item18DisplayOrder: ..., item18Quantity: ..., item18Unit: ..., item18SourceTemplateId: ..., item18QuantitySourceId: ..., item18UnitPriceCents: ..., item18MaterialUnitPriceCents: ..., item18LabourUnitPriceCents: ..., item18MatchedKeywords: ..., includeItem19: ..., item19Name: ..., item19DisplayOrder: ..., item19Quantity: ..., item19Unit: ..., item19SourceTemplateId: ..., item19QuantitySourceId: ..., item19UnitPriceCents: ..., item19MaterialUnitPriceCents: ..., item19LabourUnitPriceCents: ..., item19MatchedKeywords: ..., includeItem20: ..., item20Name: ..., item20DisplayOrder: ..., item20Quantity: ..., item20Unit: ..., item20SourceTemplateId: ..., item20QuantitySourceId: ..., item20UnitPriceCents: ..., item20MaterialUnitPriceCents: ..., item20LabourUnitPriceCents: ..., item20MatchedKeywords: ..., });
 
   // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
   const options = {
@@ -5725,4 +5815,3 @@ export default function UpsertMyUserSignatureComponent() {
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
-

@@ -15,6 +15,7 @@ import {
     ROOMS_MEASURED_CHECK_ID,
     SCALE_APPLIED_CHECK_ID,
     TEMPLATE_PRICED_CHECK_ID,
+    TEMPLATE_UNIT_SET_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
 } from "@libraries/plaster-calculator-common";
 import type { ReadinessCheckListRenderFixControl } from "@libraries/plaster-calculator-ui";
@@ -23,6 +24,7 @@ import {
     ConfirmFixControl,
     FloorplanDeepLinkFixControl,
     parseOverlay,
+    QuoteTemplateDeepLinkFixControl,
     UnitPriceFixControl,
     useActiveQuoteTemplate,
     useQuotesTranslation,
@@ -290,6 +292,8 @@ export function useQuoteReadinessFixControlRenderer(
                             }
                         />
                     );
+                case TEMPLATE_UNIT_SET_CHECK_ID:
+                    return <QuoteTemplateDeepLinkFixControl />;
                 case INFERRED_ANSWERS_CONFIRMED_CHECK_ID:
                     return (
                         <ConfirmFixControl

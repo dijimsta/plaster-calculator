@@ -42,6 +42,7 @@ export type ReadinessQuoteItemTemplateConfig = {
     readonly label: string;
     readonly enabled: boolean;
     readonly unitPriceCents: number;
+    readonly unit: string | null;
     readonly quantitySourceId: string | null;
 };
 

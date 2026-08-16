@@ -36,6 +36,9 @@ export function QuoteTemplateFormDefaultItemRow({
                 </Box>
             </Table.Cell>
             <Table.Cell fit>
+                <Text size="sm">{item.unit}</Text>
+            </Table.Cell>
+            <Table.Cell fit>
                 <Controller
                     name={`defaultItems.${index}.unitPriceCents`}
                     control={control}

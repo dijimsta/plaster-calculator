@@ -7,7 +7,7 @@
  * `QuantitySource` type; callers map their Data Connect query results onto
  * it. `measurementSource`/`measurementPlasterType` are plain `string`s,
  * matching the schema's `String!`/`String` columns, rather than a literal
- * union of the six seeded values — an unrecognised or newly-seeded
+ * union of the seeded values — an unrecognised or newly seeded
  * `measurementSource` should quote as zero (see
  * `QuantityTakeoffCalculatorUtils`'s `default` case), not fail to type at
  * the boundary.

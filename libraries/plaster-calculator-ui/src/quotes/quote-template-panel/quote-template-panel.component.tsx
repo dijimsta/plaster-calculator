@@ -67,17 +67,23 @@ export function QuoteTemplatePanel({
             itemTemplateId: item.itemTemplateId,
             systemKey: (item.systemKey ?? "") as QuoteItemSystemKey,
             name: item.name,
+            unit: item.unit ?? "m²",
             unitPriceCents: item.unitPriceCents,
         })),
         customItems: customItems.map((item) => ({
             itemTemplateId: item.itemTemplateId,
             name: item.name,
+            unit: item.unit ?? "",
             hasKeywords: item.hasKeywords,
             enabled: item.enabled,
             keywords: item.keywords,
             unitPriceCents: item.unitPriceCents,
         })),
     };
+    const formItemKey = [
+        quoteTemplateId,
+        ...[...defaultItems, ...customItems].map((item) => item.itemTemplateId),
+    ].join(":");
 
     return (
         <Card>
@@ -91,6 +97,7 @@ export function QuoteTemplatePanel({
                 </Paragraph>
             ) : (
                 <QuoteTemplateForm
+                    key={formItemKey}
                     formId="quote-template-form"
                     initialValues={initialValues}
                     disabled={isSaving}

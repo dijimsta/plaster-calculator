@@ -10,6 +10,8 @@ type WallEdgeLength = {
     readonly boardType: WallBoardType;
     readonly profile: WallBoardProfile;
     readonly lengthPx: number;
+    readonly start: Point;
+    readonly end: Point;
 };
 
 export class OverlayGeometryHelper {
@@ -117,6 +119,49 @@ export class OverlayGeometryHelper {
     }
 
     /**
+     * Wall-board surface area in m² grouped by the editor's exact board type.
+     * Flat walls use the resolved room/page height. Raked walls use a
+     * trapezoid per edge, interpolating the ceiling height at both endpoints
+     * between the configured low and high ceiling edges.
+     */
+    public static wallAreaM2ByBoardType(
+        area: AreaPolygon,
+        scaleMmPerPx: number,
+        pageHeightMm: number | null,
+    ): { boardType: WallBoardType; areaM2: number }[] {
+        const flatHeightMm = OverlayGeometryHelper.effectiveFlatHeight(
+            area,
+            pageHeightMm,
+        );
+        const totals = new Map<WallBoardType, number>();
+        OverlayGeometryHelper.wallEdgeLengths(area).forEach(
+            ({ boardType, lengthPx, start, end }) => {
+                const startHeightMm = OverlayGeometryHelper.wallHeightMmAt(
+                    area,
+                    start,
+                    flatHeightMm,
+                );
+                const endHeightMm = OverlayGeometryHelper.wallHeightMmAt(
+                    area,
+                    end,
+                    flatHeightMm,
+                );
+                if (startHeightMm == null || endHeightMm == null) return;
+                const lengthM = (lengthPx * scaleMmPerPx) / 1000;
+                const averageHeightM = (startHeightMm + endHeightMm) / 2 / 1000;
+                totals.set(
+                    boardType,
+                    (totals.get(boardType) ?? 0) + lengthM * averageHeightM,
+                );
+            },
+        );
+        return Array.from(totals.entries()).map(([boardType, areaM2]) => ({
+            boardType,
+            areaM2,
+        }));
+    }
+
+    /**
      * Every wall edge's resolved board type/profile and pixel length, for
      * one area — the shared per-edge walk that both `wallLengthByType()` and
      * `wallLengthPxByCategory()` group differently. Outdoor areas have no
@@ -142,8 +187,47 @@ export class OverlayGeometryHelper {
                 (index + 1) % area.points.length,
             );
             const lengthPx = OverlayGeometryHelper.pointDistance(point, next);
-            return [{ boardType, profile, lengthPx }];
+            return [{ boardType, profile, lengthPx, start: point, end: next }];
         });
+    }
+
+    private static wallHeightMmAt(
+        area: AreaPolygon,
+        point: Point,
+        flatFallbackMm: number | null,
+    ): number | null {
+        const raked = area.ceilingMode === "raked" ? area.rakedCeiling : null;
+        if (
+            !raked ||
+            raked.lowHeightMm == null ||
+            raked.highHeightMm == null ||
+            raked.lowEdgeIndex === raked.highEdgeIndex
+        ) {
+            return flatFallbackMm;
+        }
+        const lowMid = OverlayGeometryHelper.edgeMidpoint(
+            area.points,
+            raked.lowEdgeIndex,
+        );
+        const highMid = OverlayGeometryHelper.edgeMidpoint(
+            area.points,
+            raked.highEdgeIndex,
+        );
+        if (!lowMid || !highMid) return flatFallbackMm;
+        const runX = highMid[0] - lowMid[0];
+        const runY = highMid[1] - lowMid[1];
+        const runSquared = runX * runX + runY * runY;
+        if (runSquared <= 0) return flatFallbackMm;
+        const position = OverlayGeometryHelper.clamp(
+            ((point[0] - lowMid[0]) * runX + (point[1] - lowMid[1]) * runY) /
+                runSquared,
+            0,
+            1,
+        );
+        return (
+            raked.lowHeightMm +
+            (raked.highHeightMm - raked.lowHeightMm) * position
+        );
     }
 
     public static polygonArea(points: Point[]): number {

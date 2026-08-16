@@ -87,6 +87,7 @@ export function quoteItemTemplateConfig(
         label: "Skim coat",
         enabled: true,
         unitPriceCents: 1000,
+        unit: "ea",
         quantitySourceId: "WALL_AREA",
         ...overrides,
     };

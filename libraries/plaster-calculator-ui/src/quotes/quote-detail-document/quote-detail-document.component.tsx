@@ -76,6 +76,9 @@ export function QuoteDetailDocument({
                                 {t("quoteDetailDocument.columnQuantity")}
                             </Table.Header>
                             <Table.Header align="end">
+                                {t("quoteUnitInput.label")}
+                            </Table.Header>
+                            <Table.Header align="end">
                                 {t("quoteDetailDocument.columnUnitPrice")}
                             </Table.Header>
                             <Table.Header align="end">
@@ -99,6 +102,9 @@ export function QuoteDetailDocument({
                                 </Table.Cell>
                                 <Table.Cell align="end">
                                     {item.quantity}
+                                </Table.Cell>
+                                <Table.Cell align="end">
+                                    {item.unit ?? ""}
                                 </Table.Cell>
                                 <Table.Cell align="end">
                                     $

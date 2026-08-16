@@ -13,6 +13,7 @@ query ListQuoteItemTemplates @auth(level: USER) {
         scope
         systemKey
         name
+        unit
         hasKeywords
         keywords
         quantitySourceId
@@ -60,6 +61,7 @@ query ListQuoteItemTemplateConfigsForQuoteTemplate($quoteTemplateId: UUID!)
         itemTemplate {
             id
             name
+            unit
             hasKeywords
             keywords
             sortOrder
@@ -150,6 +152,7 @@ query GetQuoteById($id: UUID!) @auth(level: USER) {
             displayOrder
             name
             quantity
+            unit
             unitPriceCents
             materialUnitPriceCents
             labourUnitPriceCents
@@ -213,10 +216,16 @@ query GetQuoteReadiness($projectId: UUID!) @auth(level: USER) {
         itemTemplate {
             id
             name
+            unit
             hasKeywords
             keywords
             sortOrder
             quantitySourceId
+            quantitySource {
+                id
+                measurementSource
+                measurementPlasterType
+            }
         }
     }
 }
@@ -267,6 +276,7 @@ query GetProjectQuote($projectId: UUID!) @auth(level: USER) {
                 displayOrder
                 name
                 quantity
+                unit
                 unitPriceCents
                 materialUnitPriceCents
                 labourUnitPriceCents

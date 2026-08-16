@@ -20,6 +20,22 @@ const dataConnect = FirebaseService.getDataConnect(
 const quoteItemTemplatesListRef =
     DataConnector.listQuoteItemTemplatesRef(dataConnect);
 
+const SYSTEM_ITEM_KEYS = new Set([
+    "PLASTERBOARD_10MM",
+    "PLASTERBOARD_13MM",
+    "VILLABOARD_9MM",
+    "VILLABOARD_6MM",
+    "ACOUSTIC_SOUNDCHEK_10MM",
+    "ACOUSTIC_SOUNDCHEK_13MM",
+    "WATER_RESISTANT_10MM",
+    "WATER_RESISTANT_13MM",
+    "FIRE_RESISTANT_DRY_13MM",
+    "FIRE_RESISTANT_DRY_16MM",
+    "FIRE_RESISTANT_WET_13MM",
+    "FIRE_RESISTANT_WET_16MM",
+    "FLEXIBLE_BOARD_6_5MM",
+]);
+
 export function useQuoteItemTemplates(quoteTemplateId: string | null): {
     readonly defaultItems: readonly QuoteTemplateItem[];
     readonly customItems: readonly QuoteTemplateItem[];
@@ -33,8 +49,8 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
             { quoteTemplateId: quoteTemplateId ?? "" },
             { enabled: quoteTemplateId !== null },
         );
-    const { mutateAsync: ensureSystemItemTemplates } =
-        DataConnectorReact.useEnsureSystemQuoteItemTemplates(dataConnect);
+    const { mutateAsync: reconcileSystemItemTemplates } =
+        DataConnectorReact.useReconcileSystemQuoteItemTemplates(dataConnect);
     const { mutateAsync: createItemTemplateConfig } =
         DataConnectorReact.useCreateQuoteItemTemplateConfig(dataConnect);
     const queryClient = useQueryClient();
@@ -55,12 +71,16 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
         (item) => item.scope === TEAM_QUOTE_ITEM_TEMPLATE_SCOPE,
     );
 
-    const hasNoSystemItemTemplates =
+    const systemItemKeys = itemTemplates.flatMap((itemTemplate) =>
+        itemTemplate.scope === SYSTEM_QUOTE_ITEM_TEMPLATE_SCOPE &&
+        itemTemplate.systemKey
+            ? [itemTemplate.systemKey]
+            : [],
+    );
+    const systemCatalogNeedsReconciliation =
         !isLoadingItemTemplates &&
-        !itemTemplates.some(
-            (itemTemplate) =>
-                itemTemplate.scope === SYSTEM_QUOTE_ITEM_TEMPLATE_SCOPE,
-        );
+        (systemItemKeys.length !== SYSTEM_ITEM_KEYS.size ||
+            systemItemKeys.some((key) => !SYSTEM_ITEM_KEYS.has(key)));
     const missingSystemConfigItemTemplateIds = itemTemplates
         .filter(
             (itemTemplate) =>
@@ -73,11 +93,11 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
         .join(",");
 
     useEffect(() => {
-        if (!hasNoSystemItemTemplates || isEnsuringRef.current) {
+        if (!systemCatalogNeedsReconciliation || isEnsuringRef.current) {
             return;
         }
         isEnsuringRef.current = true;
-        void ensureSystemItemTemplates(undefined)
+        void reconcileSystemItemTemplates(undefined)
             .then(async () => {
                 const refreshed = await DataConnector.listQuoteItemTemplates(
                     dataConnect,
@@ -94,7 +114,11 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
             .finally(() => {
                 isEnsuringRef.current = false;
             });
-    }, [ensureSystemItemTemplates, hasNoSystemItemTemplates, queryClient]);
+    }, [
+        queryClient,
+        reconcileSystemItemTemplates,
+        systemCatalogNeedsReconciliation,
+    ]);
 
     useEffect(() => {
         if (

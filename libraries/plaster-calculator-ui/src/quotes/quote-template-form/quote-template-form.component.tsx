@@ -38,6 +38,7 @@ const EMPTY_FORM_VALUES: QuoteTemplateFormValues = {
 
 const EMPTY_CUSTOM_ITEM: QuoteTemplateFormValues["customItems"][number] = {
     name: "",
+    unit: "",
     hasKeywords: false,
     enabled: true,
     keywords: [],
@@ -82,6 +83,9 @@ export function QuoteTemplateForm({
                                     {t("quoteTemplateForm.itemNameLabel")}
                                 </Table.Header>
                                 <Table.Header fit>
+                                    {t("quoteTemplateForm.unitLabel")}
+                                </Table.Header>
+                                <Table.Header fit>
                                     {t("quoteTemplateForm.priceLabel")}
                                 </Table.Header>
                             </Table.Row>
@@ -119,6 +123,9 @@ export function QuoteTemplateForm({
                                     </Table.Header>
                                     <Table.Header>
                                         {t("quoteTemplateForm.keywordsLabel")}
+                                    </Table.Header>
+                                    <Table.Header fit>
+                                        {t("quoteTemplateForm.unitLabel")}
                                     </Table.Header>
                                     <Table.Header fit>
                                         {t("quoteTemplateForm.priceLabel")}
