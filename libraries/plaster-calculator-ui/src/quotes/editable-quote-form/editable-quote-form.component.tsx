@@ -178,7 +178,6 @@ export function EditableQuoteForm({
                                                         onChange={
                                                             field.onChange
                                                         }
-                                                        onBlur={field.onBlur}
                                                     />
                                                 )}
                                             />

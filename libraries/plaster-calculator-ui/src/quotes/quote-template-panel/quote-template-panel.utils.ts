@@ -171,6 +171,71 @@ export class QuoteTemplatePanelUtils {
         });
     }
 
+    /** `itemTemplateId -> unitPriceCents` for a set of configs, e.g. the default template's own configs. Used to price a backfilled config on a non-default template at the default's price rather than $0 -- see `resolveBackfillPriceCents()`. */
+    static mapUnitPricesByItemTemplateId(
+        configs: readonly QuoteItemTemplateConfigRow[],
+    ): ReadonlyMap<string, number> {
+        return new Map(
+            configs.map((config) => [
+                config.itemTemplateId,
+                config.unitPriceCents,
+            ]),
+        );
+    }
+
+    /**
+     * Which `QuoteTemplate` is the team's default (`isDefault: true`), and
+     * whether `quoteTemplateId` names it. `needsDefaultPricesForBackfill` is
+     * true only when `quoteTemplateId` names some *other* template -- a
+     * variation -- since the default has no other default to copy a
+     * backfilled price from.
+     */
+    static resolveDefaultTemplateContext(
+        quoteTemplateId: string | null,
+        templates: readonly {
+            readonly id: string;
+            readonly isDefault: boolean;
+        }[],
+    ): {
+        readonly defaultTemplateId: string | null;
+        readonly isDefaultTemplate: boolean;
+        readonly needsDefaultPricesForBackfill: boolean;
+    } {
+        const defaultTemplateId =
+            templates.find((template) => template.isDefault)?.id ?? null;
+        const isDefaultTemplate =
+            quoteTemplateId !== null && quoteTemplateId === defaultTemplateId;
+        return {
+            defaultTemplateId,
+            isDefaultTemplate,
+            needsDefaultPricesForBackfill:
+                quoteTemplateId !== null &&
+                !isDefaultTemplate &&
+                defaultTemplateId !== null,
+        };
+    }
+
+    /**
+     * A backfilled `QuoteItemTemplateConfig`'s starting price. The default
+     * template backfills at $0, same as before -- there is no "other"
+     * default for it to copy from, and its price inputs are how a team sets
+     * that price in the first place. A variation backfills at the default's
+     * *current* price for that item (falling back to $0 only if the default
+     * itself doesn't have a config for it yet either), so a newly added
+     * default item arrives on every variation priced, not unpriced and
+     * failing `TEMPLATE_PRICED`.
+     */
+    static resolveBackfillPriceCents(
+        isDefaultTemplate: boolean,
+        itemTemplateId: string,
+        defaultPriceByItemTemplateId: ReadonlyMap<string, number>,
+    ): number {
+        if (isDefaultTemplate) {
+            return 0;
+        }
+        return defaultPriceByItemTemplateId.get(itemTemplateId) ?? 0;
+    }
+
     static async refreshQuoteTemplateItems(
         dataConnect: DataConnect,
         quoteTemplateId: string,
