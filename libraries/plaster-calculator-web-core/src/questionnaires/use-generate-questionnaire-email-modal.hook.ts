@@ -1,33 +1,31 @@
+"use client";
+
 import { EmailTemplateBuilder } from "@libraries/plaster-calculator-common";
 import type {
     EmailTemplate,
     UserSignature,
 } from "@libraries/plaster-calculator-common";
-import {
-    useCompaniesService,
-    useUserSignature,
-} from "@libraries/plaster-calculator-web-core";
-import type { CompaniesService } from "@libraries/plaster-calculator-web-core";
 import { useEffect, useState } from "react";
 
-import type { CompanyContact, CompanyDetail } from "../../../../../types.js";
+import { useCompaniesService } from "../companies/companies.hooks.ts";
+import type { CompaniesService } from "../companies/companies.service.ts";
+import type {
+    CompanyContact,
+    CompanyDetail,
+} from "../companies/companies.types.ts";
+import { useUserSignature } from "../users/user-signature.hook.ts";
 
-import type { ProjectQuestionnaireQuestion } from "./page.hooks.js";
+import type {
+    GenerateQuestionnaireEmailModalState,
+    QuestionnaireEmailClarification,
+} from "./questionnaire-email-modal.types.ts";
 
-export interface GenerateQuestionnaireEmailModalState {
-    readonly isOpen: boolean;
-    readonly disabled: boolean;
-    readonly subject: string;
-    readonly body: string;
-    readonly mailtoHref: string;
-    readonly openModal: () => void;
-    readonly closeModal: () => void;
-}
-
-function getUnansweredQuestions(
-    questions: readonly ProjectQuestionnaireQuestion[],
-): readonly ProjectQuestionnaireQuestion[] {
-    return questions.filter((question) => !question.answer?.trim());
+function getUnansweredClarifications(
+    clarifications: readonly QuestionnaireEmailClarification[],
+): readonly QuestionnaireEmailClarification[] {
+    return clarifications.filter(
+        (clarification) => !clarification.answer?.trim(),
+    );
 }
 
 function useCompanyForEmail(
@@ -64,12 +62,12 @@ function findPrimaryContact(
 
 function buildEmailContent(
     signature: UserSignature | undefined,
-    unansweredQuestions: readonly ProjectQuestionnaireQuestion[],
+    unansweredClarifications: readonly QuestionnaireEmailClarification[],
     contact: CompanyContact | undefined,
 ): EmailTemplate | null {
     if (!signature) return null;
     return new EmailTemplateBuilder(signature.signature).build(
-        unansweredQuestions,
+        unansweredClarifications,
         contact?.name,
     );
 }
@@ -86,22 +84,33 @@ function buildMailtoHref(
     return `mailto:${contact?.email ?? ""}?${query}`;
 }
 
+/**
+ * Builds the scope-of-work email preview (subject/body/mailto href) and the
+ * open/close state for its preview modal. Only unanswered clarifications are
+ * listed in the body; a project with no company attached simply yields an
+ * empty recipient — the draft still opens. Whether the affordance that opens
+ * this modal is enabled or visible is left entirely to the caller.
+ */
 export function useGenerateQuestionnaireEmailModal(
     companyId: string | null,
-    questions: readonly ProjectQuestionnaireQuestion[],
+    clarifications: readonly QuestionnaireEmailClarification[],
 ): GenerateQuestionnaireEmailModalState {
     const companiesService = useCompaniesService();
     const [isOpen, setOpen] = useState(false);
     const company = useCompanyForEmail(companyId, companiesService);
     const { signature } = useUserSignature();
 
-    const unansweredQuestions = getUnansweredQuestions(questions);
+    const unansweredClarifications =
+        getUnansweredClarifications(clarifications);
     const contact = findPrimaryContact(company);
-    const content = buildEmailContent(signature, unansweredQuestions, contact);
+    const content = buildEmailContent(
+        signature,
+        unansweredClarifications,
+        contact,
+    );
 
     return {
         isOpen,
-        disabled: unansweredQuestions.length === 0 || !content,
         subject: content?.subject ?? "",
         body: content?.body ?? "",
         mailtoHref: buildMailtoHref(contact, content),
