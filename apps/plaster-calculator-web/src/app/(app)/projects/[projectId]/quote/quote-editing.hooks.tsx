@@ -28,7 +28,8 @@ export type SaveProjectQuoteState = {
 export function useSaveProjectQuote(projectId: string): SaveProjectQuoteState {
     const updateDetails = DataConnectorReact.useUpdateQuoteDetails(dataConnect);
     const updateItem = DataConnectorReact.useUpdateQuoteItem(dataConnect);
-    const createItem = DataConnectorReact.useCreateQuoteItem(dataConnect);
+    const createItem =
+        DataConnectorReact.useCreateQuoteItemWithUnit(dataConnect);
     const deleteItem = DataConnectorReact.useDeleteQuoteItem(dataConnect);
     const queryClient = useQueryClient();
     const { notify } = useNotificationsManager();

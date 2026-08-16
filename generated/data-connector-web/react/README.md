@@ -60,13 +60,13 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*CreateQuoteTemplate*](#createquotetemplate)
   - [*CreateQuoteItemTemplateConfig*](#createquoteitemtemplateconfig)
   - [*UpdateQuoteItemTemplateConfig*](#updatequoteitemtemplateconfig)
-  - [*CreateQuoteItemTemplate*](#createquoteitemtemplate)
-  - [*UpdateQuoteItemTemplate*](#updatequoteitemtemplate)
+  - [*CreateQuoteItemTemplateWithUnit*](#createquoteitemtemplatewithunit)
+  - [*UpdateQuoteItemTemplateWithUnit*](#updatequoteitemtemplatewithunit)
   - [*DeleteQuoteItemTemplate*](#deletequoteitemtemplate)
   - [*UpdateQuoteStatus*](#updatequotestatus)
   - [*UpdateQuoteDetails*](#updatequotedetails)
   - [*UpdateQuoteItem*](#updatequoteitem)
-  - [*CreateQuoteItem*](#createquoteitem)
+  - [*CreateQuoteItemWithUnit*](#createquoteitemwithunit)
   - [*DeleteQuoteItem*](#deletequoteitem)
   - [*CreateQuoteWithItems*](#createquotewithitems)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
@@ -4236,21 +4236,21 @@ export default function UpdateQuoteItemTemplateConfigComponent() {
 }
 ```
 
-## CreateQuoteItemTemplate
-You can execute the `CreateQuoteItemTemplate` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## CreateQuoteItemTemplateWithUnit
+You can execute the `CreateQuoteItemTemplateWithUnit` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useCreateQuoteItemTemplate(options?: useDataConnectMutationOptions<CreateQuoteItemTemplateData, FirebaseError, CreateQuoteItemTemplateVariables>): UseDataConnectMutationResult<CreateQuoteItemTemplateData, CreateQuoteItemTemplateVariables>;
+useCreateQuoteItemTemplateWithUnit(options?: useDataConnectMutationOptions<CreateQuoteItemTemplateWithUnitData, FirebaseError, CreateQuoteItemTemplateWithUnitVariables>): UseDataConnectMutationResult<CreateQuoteItemTemplateWithUnitData, CreateQuoteItemTemplateWithUnitVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useCreateQuoteItemTemplate(dc: DataConnect, options?: useDataConnectMutationOptions<CreateQuoteItemTemplateData, FirebaseError, CreateQuoteItemTemplateVariables>): UseDataConnectMutationResult<CreateQuoteItemTemplateData, CreateQuoteItemTemplateVariables>;
+useCreateQuoteItemTemplateWithUnit(dc: DataConnect, options?: useDataConnectMutationOptions<CreateQuoteItemTemplateWithUnitData, FirebaseError, CreateQuoteItemTemplateWithUnitVariables>): UseDataConnectMutationResult<CreateQuoteItemTemplateWithUnitData, CreateQuoteItemTemplateWithUnitVariables>;
 ```
 
 ### Variables
-The `CreateQuoteItemTemplate` Mutation requires an argument of type `CreateQuoteItemTemplateVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `CreateQuoteItemTemplateWithUnit` Mutation requires an argument of type `CreateQuoteItemTemplateWithUnitVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface CreateQuoteItemTemplateVariables {
+export interface CreateQuoteItemTemplateWithUnitVariables {
   id: UUIDString;
   name: string;
   unit: string;
@@ -4259,59 +4259,59 @@ export interface CreateQuoteItemTemplateVariables {
 }
 ```
 ### Return Type
-Recall that calling the `CreateQuoteItemTemplate` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `CreateQuoteItemTemplateWithUnit` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateQuoteItemTemplate` Mutation is of type `CreateQuoteItemTemplateData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateQuoteItemTemplateWithUnit` Mutation is of type `CreateQuoteItemTemplateWithUnitData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface CreateQuoteItemTemplateData {
+export interface CreateQuoteItemTemplateWithUnitData {
   quoteItemTemplate_insert: QuoteItemTemplate_Key;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `CreateQuoteItemTemplate`'s Mutation hook function
+### Using `CreateQuoteItemTemplateWithUnit`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, CreateQuoteItemTemplateVariables } from '@generated/data-connector-web';
-import { useCreateQuoteItemTemplate } from '@generated/data-connector-web/react'
+import { connectorConfig, CreateQuoteItemTemplateWithUnitVariables } from '@generated/data-connector-web';
+import { useCreateQuoteItemTemplateWithUnit } from '@generated/data-connector-web/react'
 
-export default function CreateQuoteItemTemplateComponent() {
+export default function CreateQuoteItemTemplateWithUnitComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useCreateQuoteItemTemplate();
+  const mutation = useCreateQuoteItemTemplateWithUnit();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useCreateQuoteItemTemplate(dataConnect);
+  const mutation = useCreateQuoteItemTemplateWithUnit(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useCreateQuoteItemTemplate(options);
+  const mutation = useCreateQuoteItemTemplateWithUnit(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useCreateQuoteItemTemplate(dataConnect, options);
+  const mutation = useCreateQuoteItemTemplateWithUnit(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useCreateQuoteItemTemplate` Mutation requires an argument of type `CreateQuoteItemTemplateVariables`:
-  const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
+  // The `useCreateQuoteItemTemplateWithUnit` Mutation requires an argument of type `CreateQuoteItemTemplateWithUnitVariables`:
+  const createQuoteItemTemplateWithUnitVars: CreateQuoteItemTemplateWithUnitVariables = {
     id: ..., 
     name: ..., 
     unit: ...,
     hasKeywords: ..., 
     keywords: ..., 
   };
-  mutation.mutate(createQuoteItemTemplateVars);
+  mutation.mutate(createQuoteItemTemplateWithUnitVars);
   // Variables can be defined inline as well.
   mutation.mutate({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
@@ -4319,7 +4319,7 @@ export default function CreateQuoteItemTemplateComponent() {
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(createQuoteItemTemplateVars, options);
+  mutation.mutate(createQuoteItemTemplateWithUnitVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -4338,21 +4338,21 @@ export default function CreateQuoteItemTemplateComponent() {
 }
 ```
 
-## UpdateQuoteItemTemplate
-You can execute the `UpdateQuoteItemTemplate` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## UpdateQuoteItemTemplateWithUnit
+You can execute the `UpdateQuoteItemTemplateWithUnit` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useUpdateQuoteItemTemplate(options?: useDataConnectMutationOptions<UpdateQuoteItemTemplateData, FirebaseError, UpdateQuoteItemTemplateVariables>): UseDataConnectMutationResult<UpdateQuoteItemTemplateData, UpdateQuoteItemTemplateVariables>;
+useUpdateQuoteItemTemplateWithUnit(options?: useDataConnectMutationOptions<UpdateQuoteItemTemplateWithUnitData, FirebaseError, UpdateQuoteItemTemplateWithUnitVariables>): UseDataConnectMutationResult<UpdateQuoteItemTemplateWithUnitData, UpdateQuoteItemTemplateWithUnitVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useUpdateQuoteItemTemplate(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateQuoteItemTemplateData, FirebaseError, UpdateQuoteItemTemplateVariables>): UseDataConnectMutationResult<UpdateQuoteItemTemplateData, UpdateQuoteItemTemplateVariables>;
+useUpdateQuoteItemTemplateWithUnit(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateQuoteItemTemplateWithUnitData, FirebaseError, UpdateQuoteItemTemplateWithUnitVariables>): UseDataConnectMutationResult<UpdateQuoteItemTemplateWithUnitData, UpdateQuoteItemTemplateWithUnitVariables>;
 ```
 
 ### Variables
-The `UpdateQuoteItemTemplate` Mutation requires an argument of type `UpdateQuoteItemTemplateVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `UpdateQuoteItemTemplateWithUnit` Mutation requires an argument of type `UpdateQuoteItemTemplateWithUnitVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface UpdateQuoteItemTemplateVariables {
+export interface UpdateQuoteItemTemplateWithUnitVariables {
   id: UUIDString;
   name: string;
   unit: string;
@@ -4361,59 +4361,59 @@ export interface UpdateQuoteItemTemplateVariables {
 }
 ```
 ### Return Type
-Recall that calling the `UpdateQuoteItemTemplate` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `UpdateQuoteItemTemplateWithUnit` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateQuoteItemTemplate` Mutation is of type `UpdateQuoteItemTemplateData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateQuoteItemTemplateWithUnit` Mutation is of type `UpdateQuoteItemTemplateWithUnitData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface UpdateQuoteItemTemplateData {
+export interface UpdateQuoteItemTemplateWithUnitData {
   quoteItemTemplate_update?: QuoteItemTemplate_Key | null;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `UpdateQuoteItemTemplate`'s Mutation hook function
+### Using `UpdateQuoteItemTemplateWithUnit`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, UpdateQuoteItemTemplateVariables } from '@generated/data-connector-web';
-import { useUpdateQuoteItemTemplate } from '@generated/data-connector-web/react'
+import { connectorConfig, UpdateQuoteItemTemplateWithUnitVariables } from '@generated/data-connector-web';
+import { useUpdateQuoteItemTemplateWithUnit } from '@generated/data-connector-web/react'
 
-export default function UpdateQuoteItemTemplateComponent() {
+export default function UpdateQuoteItemTemplateWithUnitComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useUpdateQuoteItemTemplate();
+  const mutation = useUpdateQuoteItemTemplateWithUnit();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useUpdateQuoteItemTemplate(dataConnect);
+  const mutation = useUpdateQuoteItemTemplateWithUnit(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useUpdateQuoteItemTemplate(options);
+  const mutation = useUpdateQuoteItemTemplateWithUnit(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useUpdateQuoteItemTemplate(dataConnect, options);
+  const mutation = useUpdateQuoteItemTemplateWithUnit(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useUpdateQuoteItemTemplate` Mutation requires an argument of type `UpdateQuoteItemTemplateVariables`:
-  const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
+  // The `useUpdateQuoteItemTemplateWithUnit` Mutation requires an argument of type `UpdateQuoteItemTemplateWithUnitVariables`:
+  const updateQuoteItemTemplateWithUnitVars: UpdateQuoteItemTemplateWithUnitVariables = {
     id: ..., 
     name: ..., 
     unit: ...,
     hasKeywords: ..., 
     keywords: ..., 
   };
-  mutation.mutate(updateQuoteItemTemplateVars);
+  mutation.mutate(updateQuoteItemTemplateWithUnitVars);
   // Variables can be defined inline as well.
   mutation.mutate({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
@@ -4421,7 +4421,7 @@ export default function UpdateQuoteItemTemplateComponent() {
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(updateQuoteItemTemplateVars, options);
+  mutation.mutate(updateQuoteItemTemplateWithUnitVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -4832,21 +4832,21 @@ export default function UpdateQuoteItemComponent() {
 }
 ```
 
-## CreateQuoteItem
-You can execute the `CreateQuoteItem` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+## CreateQuoteItemWithUnit
+You can execute the `CreateQuoteItemWithUnit` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
-useCreateQuoteItem(options?: useDataConnectMutationOptions<CreateQuoteItemData, FirebaseError, CreateQuoteItemVariables>): UseDataConnectMutationResult<CreateQuoteItemData, CreateQuoteItemVariables>;
+useCreateQuoteItemWithUnit(options?: useDataConnectMutationOptions<CreateQuoteItemWithUnitData, FirebaseError, CreateQuoteItemWithUnitVariables>): UseDataConnectMutationResult<CreateQuoteItemWithUnitData, CreateQuoteItemWithUnitVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Mutation hook function.
 ```javascript
-useCreateQuoteItem(dc: DataConnect, options?: useDataConnectMutationOptions<CreateQuoteItemData, FirebaseError, CreateQuoteItemVariables>): UseDataConnectMutationResult<CreateQuoteItemData, CreateQuoteItemVariables>;
+useCreateQuoteItemWithUnit(dc: DataConnect, options?: useDataConnectMutationOptions<CreateQuoteItemWithUnitData, FirebaseError, CreateQuoteItemWithUnitVariables>): UseDataConnectMutationResult<CreateQuoteItemWithUnitData, CreateQuoteItemWithUnitVariables>;
 ```
 
 ### Variables
-The `CreateQuoteItem` Mutation requires an argument of type `CreateQuoteItemVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+The `CreateQuoteItemWithUnit` Mutation requires an argument of type `CreateQuoteItemWithUnitVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 
 ```javascript
-export interface CreateQuoteItemVariables {
+export interface CreateQuoteItemWithUnitVariables {
   id: UUIDString;
   quoteId: UUIDString;
   displayOrder: number;
@@ -4857,52 +4857,52 @@ export interface CreateQuoteItemVariables {
 }
 ```
 ### Return Type
-Recall that calling the `CreateQuoteItem` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+Recall that calling the `CreateQuoteItemWithUnit` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
 
 To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
 
 To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
 
-To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateQuoteItem` Mutation is of type `CreateQuoteItemData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateQuoteItemWithUnit` Mutation is of type `CreateQuoteItemWithUnitData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
 ```javascript
-export interface CreateQuoteItemData {
+export interface CreateQuoteItemWithUnitData {
   quoteItem_insert: QuoteItem_Key;
 }
 ```
 
 To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
 
-### Using `CreateQuoteItem`'s Mutation hook function
+### Using `CreateQuoteItemWithUnit`'s Mutation hook function
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, CreateQuoteItemVariables } from '@generated/data-connector-web';
-import { useCreateQuoteItem } from '@generated/data-connector-web/react'
+import { connectorConfig, CreateQuoteItemWithUnitVariables } from '@generated/data-connector-web';
+import { useCreateQuoteItemWithUnit } from '@generated/data-connector-web/react'
 
-export default function CreateQuoteItemComponent() {
+export default function CreateQuoteItemWithUnitComponent() {
   // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
-  const mutation = useCreateQuoteItem();
+  const mutation = useCreateQuoteItemWithUnit();
 
   // You can also pass in a `DataConnect` instance to the Mutation hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const mutation = useCreateQuoteItem(dataConnect);
+  const mutation = useCreateQuoteItemWithUnit(dataConnect);
 
   // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useCreateQuoteItem(options);
+  const mutation = useCreateQuoteItemWithUnit(options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  const mutation = useCreateQuoteItem(dataConnect, options);
+  const mutation = useCreateQuoteItemWithUnit(dataConnect, options);
 
   // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
-  // The `useCreateQuoteItem` Mutation requires an argument of type `CreateQuoteItemVariables`:
-  const createQuoteItemVars: CreateQuoteItemVariables = {
+  // The `useCreateQuoteItemWithUnit` Mutation requires an argument of type `CreateQuoteItemWithUnitVariables`:
+  const createQuoteItemWithUnitVars: CreateQuoteItemWithUnitVariables = {
     id: ..., 
     quoteId: ..., 
     displayOrder: ..., 
@@ -4911,7 +4911,7 @@ export default function CreateQuoteItemComponent() {
     unit: ...,
     unitPriceCents: ..., 
   };
-  mutation.mutate(createQuoteItemVars);
+  mutation.mutate(createQuoteItemWithUnitVars);
   // Variables can be defined inline as well.
   mutation.mutate({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
 
@@ -4919,7 +4919,7 @@ export default function CreateQuoteItemComponent() {
   const options = {
     onSuccess: () => { console.log('Mutation succeeded!'); }
   };
-  mutation.mutate(createQuoteItemVars, options);
+  mutation.mutate(createQuoteItemWithUnitVars, options);
 
   // Then, you can render your component dynamically based on the status of the Mutation.
   if (mutation.isPending) {
@@ -4937,7 +4937,6 @@ export default function CreateQuoteItemComponent() {
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
-
 ## DeleteQuoteItem
 You can execute the `DeleteQuoteItem` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript

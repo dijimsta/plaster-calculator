@@ -53,13 +53,13 @@ This README will guide you through the process of using the generated JavaScript
   - [*CreateQuoteTemplate*](#createquotetemplate)
   - [*CreateQuoteItemTemplateConfig*](#createquoteitemtemplateconfig)
   - [*UpdateQuoteItemTemplateConfig*](#updatequoteitemtemplateconfig)
-  - [*CreateQuoteItemTemplate*](#createquoteitemtemplate)
-  - [*UpdateQuoteItemTemplate*](#updatequoteitemtemplate)
+  - [*CreateQuoteItemTemplateWithUnit*](#createquoteitemtemplatewithunit)
+  - [*UpdateQuoteItemTemplateWithUnit*](#updatequoteitemtemplatewithunit)
   - [*DeleteQuoteItemTemplate*](#deletequoteitemtemplate)
   - [*UpdateQuoteStatus*](#updatequotestatus)
   - [*UpdateQuoteDetails*](#updatequotedetails)
   - [*UpdateQuoteItem*](#updatequoteitem)
-  - [*CreateQuoteItem*](#createquoteitem)
+  - [*CreateQuoteItemWithUnit*](#createquoteitemwithunit)
   - [*DeleteQuoteItem*](#deletequoteitem)
   - [*CreateQuoteWithItems*](#createquotewithitems)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
@@ -5104,40 +5104,40 @@ executeMutation(ref).then((response) => {
 });
 ```
 
-## CreateQuoteItemTemplate
-You can execute the `CreateQuoteItemTemplate` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## CreateQuoteItemTemplateWithUnit
+You can execute the `CreateQuoteItemTemplateWithUnit` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-createQuoteItemTemplate(vars: CreateQuoteItemTemplateVariables): MutationPromise<CreateQuoteItemTemplateData, CreateQuoteItemTemplateVariables>;
+createQuoteItemTemplateWithUnit(vars: CreateQuoteItemTemplateWithUnitVariables): MutationPromise<CreateQuoteItemTemplateWithUnitData, CreateQuoteItemTemplateWithUnitVariables>;
 
-interface CreateQuoteItemTemplateRef {
+interface CreateQuoteItemTemplateWithUnitRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateQuoteItemTemplateVariables): MutationRef<CreateQuoteItemTemplateData, CreateQuoteItemTemplateVariables>;
+  (vars: CreateQuoteItemTemplateWithUnitVariables): MutationRef<CreateQuoteItemTemplateWithUnitData, CreateQuoteItemTemplateWithUnitVariables>;
 }
-export const createQuoteItemTemplateRef: CreateQuoteItemTemplateRef;
+export const createQuoteItemTemplateWithUnitRef: CreateQuoteItemTemplateWithUnitRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-createQuoteItemTemplate(dc: DataConnect, vars: CreateQuoteItemTemplateVariables): MutationPromise<CreateQuoteItemTemplateData, CreateQuoteItemTemplateVariables>;
+createQuoteItemTemplateWithUnit(dc: DataConnect, vars: CreateQuoteItemTemplateWithUnitVariables): MutationPromise<CreateQuoteItemTemplateWithUnitData, CreateQuoteItemTemplateWithUnitVariables>;
 
-interface CreateQuoteItemTemplateRef {
+interface CreateQuoteItemTemplateWithUnitRef {
   ...
-  (dc: DataConnect, vars: CreateQuoteItemTemplateVariables): MutationRef<CreateQuoteItemTemplateData, CreateQuoteItemTemplateVariables>;
+  (dc: DataConnect, vars: CreateQuoteItemTemplateWithUnitVariables): MutationRef<CreateQuoteItemTemplateWithUnitData, CreateQuoteItemTemplateWithUnitVariables>;
 }
-export const createQuoteItemTemplateRef: CreateQuoteItemTemplateRef;
+export const createQuoteItemTemplateWithUnitRef: CreateQuoteItemTemplateWithUnitRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createQuoteItemTemplateRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createQuoteItemTemplateWithUnitRef:
 ```typescript
-const name = createQuoteItemTemplateRef.operationName;
+const name = createQuoteItemTemplateWithUnitRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `CreateQuoteItemTemplate` mutation requires an argument of type `CreateQuoteItemTemplateVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `CreateQuoteItemTemplateWithUnit` mutation requires an argument of type `CreateQuoteItemTemplateWithUnitVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface CreateQuoteItemTemplateVariables {
+export interface CreateQuoteItemTemplateWithUnitVariables {
   id: UUIDString;
   name: string;
   unit: string;
@@ -5146,22 +5146,22 @@ export interface CreateQuoteItemTemplateVariables {
 }
 ```
 ### Return Type
-Recall that executing the `CreateQuoteItemTemplate` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `CreateQuoteItemTemplateWithUnit` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `CreateQuoteItemTemplateData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `CreateQuoteItemTemplateWithUnitData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface CreateQuoteItemTemplateData {
+export interface CreateQuoteItemTemplateWithUnitData {
   quoteItemTemplate_insert: QuoteItemTemplate_Key;
 }
 ```
-### Using `CreateQuoteItemTemplate`'s action shortcut function
+### Using `CreateQuoteItemTemplateWithUnit`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, createQuoteItemTemplate, CreateQuoteItemTemplateVariables } from '@generated/data-connector-web';
+import { connectorConfig, createQuoteItemTemplateWithUnit, CreateQuoteItemTemplateWithUnitVariables } from '@generated/data-connector-web';
 
-// The `CreateQuoteItemTemplate` mutation requires an argument of type `CreateQuoteItemTemplateVariables`:
-const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
+// The `CreateQuoteItemTemplateWithUnit` mutation requires an argument of type `CreateQuoteItemTemplateWithUnitVariables`:
+const createQuoteItemTemplateWithUnitVars: CreateQuoteItemTemplateWithUnitVariables = {
   id: ..., 
   name: ..., 
   unit: ...,
@@ -5169,33 +5169,33 @@ const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
   keywords: ..., 
 };
 
-// Call the `createQuoteItemTemplate()` function to execute the mutation.
+// Call the `createQuoteItemTemplateWithUnit()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await createQuoteItemTemplate(createQuoteItemTemplateVars);
+const { data } = await createQuoteItemTemplateWithUnit(createQuoteItemTemplateWithUnitVars);
 // Variables can be defined inline as well.
-const { data } = await createQuoteItemTemplate({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
+const { data } = await createQuoteItemTemplateWithUnit({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await createQuoteItemTemplate(dataConnect, createQuoteItemTemplateVars);
+const { data } = await createQuoteItemTemplateWithUnit(dataConnect, createQuoteItemTemplateWithUnitVars);
 
 console.log(data.quoteItemTemplate_insert);
 
 // Or, you can use the `Promise` API.
-createQuoteItemTemplate(createQuoteItemTemplateVars).then((response) => {
+createQuoteItemTemplateWithUnit(createQuoteItemTemplateWithUnitVars).then((response) => {
   const data = response.data;
   console.log(data.quoteItemTemplate_insert);
 });
 ```
 
-### Using `CreateQuoteItemTemplate`'s `MutationRef` function
+### Using `CreateQuoteItemTemplateWithUnit`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, createQuoteItemTemplateRef, CreateQuoteItemTemplateVariables } from '@generated/data-connector-web';
+import { connectorConfig, createQuoteItemTemplateWithUnitRef, CreateQuoteItemTemplateWithUnitVariables } from '@generated/data-connector-web';
 
-// The `CreateQuoteItemTemplate` mutation requires an argument of type `CreateQuoteItemTemplateVariables`:
-const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
+// The `CreateQuoteItemTemplateWithUnit` mutation requires an argument of type `CreateQuoteItemTemplateWithUnitVariables`:
+const createQuoteItemTemplateWithUnitVars: CreateQuoteItemTemplateWithUnitVariables = {
   id: ..., 
   name: ..., 
   unit: ...,
@@ -5203,14 +5203,14 @@ const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
   keywords: ..., 
 };
 
-// Call the `createQuoteItemTemplateRef()` function to get a reference to the mutation.
-const ref = createQuoteItemTemplateRef(createQuoteItemTemplateVars);
+// Call the `createQuoteItemTemplateWithUnitRef()` function to get a reference to the mutation.
+const ref = createQuoteItemTemplateWithUnitRef(createQuoteItemTemplateWithUnitVars);
 // Variables can be defined inline as well.
-const ref = createQuoteItemTemplateRef({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
+const ref = createQuoteItemTemplateWithUnitRef({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = createQuoteItemTemplateRef(dataConnect, createQuoteItemTemplateVars);
+const ref = createQuoteItemTemplateWithUnitRef(dataConnect, createQuoteItemTemplateWithUnitVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
@@ -5225,40 +5225,40 @@ executeMutation(ref).then((response) => {
 });
 ```
 
-## UpdateQuoteItemTemplate
-You can execute the `UpdateQuoteItemTemplate` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## UpdateQuoteItemTemplateWithUnit
+You can execute the `UpdateQuoteItemTemplateWithUnit` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-updateQuoteItemTemplate(vars: UpdateQuoteItemTemplateVariables): MutationPromise<UpdateQuoteItemTemplateData, UpdateQuoteItemTemplateVariables>;
+updateQuoteItemTemplateWithUnit(vars: UpdateQuoteItemTemplateWithUnitVariables): MutationPromise<UpdateQuoteItemTemplateWithUnitData, UpdateQuoteItemTemplateWithUnitVariables>;
 
-interface UpdateQuoteItemTemplateRef {
+interface UpdateQuoteItemTemplateWithUnitRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: UpdateQuoteItemTemplateVariables): MutationRef<UpdateQuoteItemTemplateData, UpdateQuoteItemTemplateVariables>;
+  (vars: UpdateQuoteItemTemplateWithUnitVariables): MutationRef<UpdateQuoteItemTemplateWithUnitData, UpdateQuoteItemTemplateWithUnitVariables>;
 }
-export const updateQuoteItemTemplateRef: UpdateQuoteItemTemplateRef;
+export const updateQuoteItemTemplateWithUnitRef: UpdateQuoteItemTemplateWithUnitRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-updateQuoteItemTemplate(dc: DataConnect, vars: UpdateQuoteItemTemplateVariables): MutationPromise<UpdateQuoteItemTemplateData, UpdateQuoteItemTemplateVariables>;
+updateQuoteItemTemplateWithUnit(dc: DataConnect, vars: UpdateQuoteItemTemplateWithUnitVariables): MutationPromise<UpdateQuoteItemTemplateWithUnitData, UpdateQuoteItemTemplateWithUnitVariables>;
 
-interface UpdateQuoteItemTemplateRef {
+interface UpdateQuoteItemTemplateWithUnitRef {
   ...
-  (dc: DataConnect, vars: UpdateQuoteItemTemplateVariables): MutationRef<UpdateQuoteItemTemplateData, UpdateQuoteItemTemplateVariables>;
+  (dc: DataConnect, vars: UpdateQuoteItemTemplateWithUnitVariables): MutationRef<UpdateQuoteItemTemplateWithUnitData, UpdateQuoteItemTemplateWithUnitVariables>;
 }
-export const updateQuoteItemTemplateRef: UpdateQuoteItemTemplateRef;
+export const updateQuoteItemTemplateWithUnitRef: UpdateQuoteItemTemplateWithUnitRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateQuoteItemTemplateRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateQuoteItemTemplateWithUnitRef:
 ```typescript
-const name = updateQuoteItemTemplateRef.operationName;
+const name = updateQuoteItemTemplateWithUnitRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `UpdateQuoteItemTemplate` mutation requires an argument of type `UpdateQuoteItemTemplateVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `UpdateQuoteItemTemplateWithUnit` mutation requires an argument of type `UpdateQuoteItemTemplateWithUnitVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface UpdateQuoteItemTemplateVariables {
+export interface UpdateQuoteItemTemplateWithUnitVariables {
   id: UUIDString;
   name: string;
   unit: string;
@@ -5267,22 +5267,22 @@ export interface UpdateQuoteItemTemplateVariables {
 }
 ```
 ### Return Type
-Recall that executing the `UpdateQuoteItemTemplate` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `UpdateQuoteItemTemplateWithUnit` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `UpdateQuoteItemTemplateData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `UpdateQuoteItemTemplateWithUnitData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface UpdateQuoteItemTemplateData {
+export interface UpdateQuoteItemTemplateWithUnitData {
   quoteItemTemplate_update?: QuoteItemTemplate_Key | null;
 }
 ```
-### Using `UpdateQuoteItemTemplate`'s action shortcut function
+### Using `UpdateQuoteItemTemplateWithUnit`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, updateQuoteItemTemplate, UpdateQuoteItemTemplateVariables } from '@generated/data-connector-web';
+import { connectorConfig, updateQuoteItemTemplateWithUnit, UpdateQuoteItemTemplateWithUnitVariables } from '@generated/data-connector-web';
 
-// The `UpdateQuoteItemTemplate` mutation requires an argument of type `UpdateQuoteItemTemplateVariables`:
-const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
+// The `UpdateQuoteItemTemplateWithUnit` mutation requires an argument of type `UpdateQuoteItemTemplateWithUnitVariables`:
+const updateQuoteItemTemplateWithUnitVars: UpdateQuoteItemTemplateWithUnitVariables = {
   id: ..., 
   name: ..., 
   unit: ...,
@@ -5290,33 +5290,33 @@ const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
   keywords: ..., 
 };
 
-// Call the `updateQuoteItemTemplate()` function to execute the mutation.
+// Call the `updateQuoteItemTemplateWithUnit()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await updateQuoteItemTemplate(updateQuoteItemTemplateVars);
+const { data } = await updateQuoteItemTemplateWithUnit(updateQuoteItemTemplateWithUnitVars);
 // Variables can be defined inline as well.
-const { data } = await updateQuoteItemTemplate({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
+const { data } = await updateQuoteItemTemplateWithUnit({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await updateQuoteItemTemplate(dataConnect, updateQuoteItemTemplateVars);
+const { data } = await updateQuoteItemTemplateWithUnit(dataConnect, updateQuoteItemTemplateWithUnitVars);
 
 console.log(data.quoteItemTemplate_update);
 
 // Or, you can use the `Promise` API.
-updateQuoteItemTemplate(updateQuoteItemTemplateVars).then((response) => {
+updateQuoteItemTemplateWithUnit(updateQuoteItemTemplateWithUnitVars).then((response) => {
   const data = response.data;
   console.log(data.quoteItemTemplate_update);
 });
 ```
 
-### Using `UpdateQuoteItemTemplate`'s `MutationRef` function
+### Using `UpdateQuoteItemTemplateWithUnit`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, updateQuoteItemTemplateRef, UpdateQuoteItemTemplateVariables } from '@generated/data-connector-web';
+import { connectorConfig, updateQuoteItemTemplateWithUnitRef, UpdateQuoteItemTemplateWithUnitVariables } from '@generated/data-connector-web';
 
-// The `UpdateQuoteItemTemplate` mutation requires an argument of type `UpdateQuoteItemTemplateVariables`:
-const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
+// The `UpdateQuoteItemTemplateWithUnit` mutation requires an argument of type `UpdateQuoteItemTemplateWithUnitVariables`:
+const updateQuoteItemTemplateWithUnitVars: UpdateQuoteItemTemplateWithUnitVariables = {
   id: ..., 
   name: ..., 
   unit: ...,
@@ -5324,14 +5324,14 @@ const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
   keywords: ..., 
 };
 
-// Call the `updateQuoteItemTemplateRef()` function to get a reference to the mutation.
-const ref = updateQuoteItemTemplateRef(updateQuoteItemTemplateVars);
+// Call the `updateQuoteItemTemplateWithUnitRef()` function to get a reference to the mutation.
+const ref = updateQuoteItemTemplateWithUnitRef(updateQuoteItemTemplateWithUnitVars);
 // Variables can be defined inline as well.
-const ref = updateQuoteItemTemplateRef({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
+const ref = updateQuoteItemTemplateWithUnitRef({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = updateQuoteItemTemplateRef(dataConnect, updateQuoteItemTemplateVars);
+const ref = updateQuoteItemTemplateWithUnitRef(dataConnect, updateQuoteItemTemplateWithUnitVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
@@ -5808,40 +5808,40 @@ executeMutation(ref).then((response) => {
 });
 ```
 
-## CreateQuoteItem
-You can execute the `CreateQuoteItem` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## CreateQuoteItemWithUnit
+You can execute the `CreateQuoteItemWithUnit` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-createQuoteItem(vars: CreateQuoteItemVariables): MutationPromise<CreateQuoteItemData, CreateQuoteItemVariables>;
+createQuoteItemWithUnit(vars: CreateQuoteItemWithUnitVariables): MutationPromise<CreateQuoteItemWithUnitData, CreateQuoteItemWithUnitVariables>;
 
-interface CreateQuoteItemRef {
+interface CreateQuoteItemWithUnitRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateQuoteItemVariables): MutationRef<CreateQuoteItemData, CreateQuoteItemVariables>;
+  (vars: CreateQuoteItemWithUnitVariables): MutationRef<CreateQuoteItemWithUnitData, CreateQuoteItemWithUnitVariables>;
 }
-export const createQuoteItemRef: CreateQuoteItemRef;
+export const createQuoteItemWithUnitRef: CreateQuoteItemWithUnitRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-createQuoteItem(dc: DataConnect, vars: CreateQuoteItemVariables): MutationPromise<CreateQuoteItemData, CreateQuoteItemVariables>;
+createQuoteItemWithUnit(dc: DataConnect, vars: CreateQuoteItemWithUnitVariables): MutationPromise<CreateQuoteItemWithUnitData, CreateQuoteItemWithUnitVariables>;
 
-interface CreateQuoteItemRef {
+interface CreateQuoteItemWithUnitRef {
   ...
-  (dc: DataConnect, vars: CreateQuoteItemVariables): MutationRef<CreateQuoteItemData, CreateQuoteItemVariables>;
+  (dc: DataConnect, vars: CreateQuoteItemWithUnitVariables): MutationRef<CreateQuoteItemWithUnitData, CreateQuoteItemWithUnitVariables>;
 }
-export const createQuoteItemRef: CreateQuoteItemRef;
+export const createQuoteItemWithUnitRef: CreateQuoteItemWithUnitRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createQuoteItemRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createQuoteItemWithUnitRef:
 ```typescript
-const name = createQuoteItemRef.operationName;
+const name = createQuoteItemWithUnitRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `CreateQuoteItem` mutation requires an argument of type `CreateQuoteItemVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `CreateQuoteItemWithUnit` mutation requires an argument of type `CreateQuoteItemWithUnitVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 
 ```typescript
-export interface CreateQuoteItemVariables {
+export interface CreateQuoteItemWithUnitVariables {
   id: UUIDString;
   quoteId: UUIDString;
   displayOrder: number;
@@ -5852,22 +5852,22 @@ export interface CreateQuoteItemVariables {
 }
 ```
 ### Return Type
-Recall that executing the `CreateQuoteItem` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `CreateQuoteItemWithUnit` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `CreateQuoteItemData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `CreateQuoteItemWithUnitData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface CreateQuoteItemData {
+export interface CreateQuoteItemWithUnitData {
   quoteItem_insert: QuoteItem_Key;
 }
 ```
-### Using `CreateQuoteItem`'s action shortcut function
+### Using `CreateQuoteItemWithUnit`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, createQuoteItem, CreateQuoteItemVariables } from '@generated/data-connector-web';
+import { connectorConfig, createQuoteItemWithUnit, CreateQuoteItemWithUnitVariables } from '@generated/data-connector-web';
 
-// The `CreateQuoteItem` mutation requires an argument of type `CreateQuoteItemVariables`:
-const createQuoteItemVars: CreateQuoteItemVariables = {
+// The `CreateQuoteItemWithUnit` mutation requires an argument of type `CreateQuoteItemWithUnitVariables`:
+const createQuoteItemWithUnitVars: CreateQuoteItemWithUnitVariables = {
   id: ..., 
   quoteId: ..., 
   displayOrder: ..., 
@@ -5877,33 +5877,33 @@ const createQuoteItemVars: CreateQuoteItemVariables = {
   unitPriceCents: ..., 
 };
 
-// Call the `createQuoteItem()` function to execute the mutation.
+// Call the `createQuoteItemWithUnit()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await createQuoteItem(createQuoteItemVars);
+const { data } = await createQuoteItemWithUnit(createQuoteItemWithUnitVars);
 // Variables can be defined inline as well.
-const { data } = await createQuoteItem({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
+const { data } = await createQuoteItemWithUnit({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await createQuoteItem(dataConnect, createQuoteItemVars);
+const { data } = await createQuoteItemWithUnit(dataConnect, createQuoteItemWithUnitVars);
 
 console.log(data.quoteItem_insert);
 
 // Or, you can use the `Promise` API.
-createQuoteItem(createQuoteItemVars).then((response) => {
+createQuoteItemWithUnit(createQuoteItemWithUnitVars).then((response) => {
   const data = response.data;
   console.log(data.quoteItem_insert);
 });
 ```
 
-### Using `CreateQuoteItem`'s `MutationRef` function
+### Using `CreateQuoteItemWithUnit`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, createQuoteItemRef, CreateQuoteItemVariables } from '@generated/data-connector-web';
+import { connectorConfig, createQuoteItemWithUnitRef, CreateQuoteItemWithUnitVariables } from '@generated/data-connector-web';
 
-// The `CreateQuoteItem` mutation requires an argument of type `CreateQuoteItemVariables`:
-const createQuoteItemVars: CreateQuoteItemVariables = {
+// The `CreateQuoteItemWithUnit` mutation requires an argument of type `CreateQuoteItemWithUnitVariables`:
+const createQuoteItemWithUnitVars: CreateQuoteItemWithUnitVariables = {
   id: ..., 
   quoteId: ..., 
   displayOrder: ..., 
@@ -5913,14 +5913,14 @@ const createQuoteItemVars: CreateQuoteItemVariables = {
   unitPriceCents: ..., 
 };
 
-// Call the `createQuoteItemRef()` function to get a reference to the mutation.
-const ref = createQuoteItemRef(createQuoteItemVars);
+// Call the `createQuoteItemWithUnitRef()` function to get a reference to the mutation.
+const ref = createQuoteItemWithUnitRef(createQuoteItemWithUnitVars);
 // Variables can be defined inline as well.
-const ref = createQuoteItemRef({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
+const ref = createQuoteItemWithUnitRef({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = createQuoteItemRef(dataConnect, createQuoteItemVars);
+const ref = createQuoteItemWithUnitRef(dataConnect, createQuoteItemWithUnitVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
@@ -5934,7 +5934,6 @@ executeMutation(ref).then((response) => {
   console.log(data.quoteItem_insert);
 });
 ```
-
 ## DeleteQuoteItem
 You can execute the `DeleteQuoteItem` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript

@@ -23,9 +23,9 @@ export function useSaveQuoteTemplate(
     readonly isSaving: boolean;
 } {
     const { mutateAsync: createItemTemplate } =
-        DataConnectorReact.useCreateQuoteItemTemplate(dataConnect);
+        DataConnectorReact.useCreateQuoteItemTemplateWithUnit(dataConnect);
     const { mutateAsync: updateItemTemplate } =
-        DataConnectorReact.useUpdateQuoteItemTemplate(dataConnect);
+        DataConnectorReact.useUpdateQuoteItemTemplateWithUnit(dataConnect);
     const { mutateAsync: deleteItemTemplate } =
         DataConnectorReact.useDeleteQuoteItemTemplate(dataConnect);
     const { mutateAsync: createItemTemplateConfig } =

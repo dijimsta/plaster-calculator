@@ -1,4 +1,148 @@
-mutation ReconcileSystemQuoteItemTemplates @auth(level: USER) @transaction {
+# Retained for deployed pre-unit clients. New SDKs omit retired operations;
+# current clients use ReconcileSystemQuoteItemTemplates below.
+mutation EnsureSystemQuoteItemTemplates
+@retired
+@auth(level: USER)
+@transaction {
+    wallsPlasterboardQuantitySource: quantitySource_upsert(
+        data: {
+            id: "c1b8d7b7-bfda-4400-99d6-64a366c02f62"
+            measurementSource: "WALL_AREA"
+            measurementPlasterType: "STANDARD"
+            updatedAt_expr: "request.time"
+        }
+    )
+    wetWallsVillaboardQuantitySource: quantitySource_upsert(
+        data: {
+            id: "9f8704f9-9c21-406b-99ab-7e30eec761ff"
+            measurementSource: "WALL_AREA"
+            measurementPlasterType: "WET_AREA"
+            updatedAt_expr: "request.time"
+        }
+    )
+    ceilingsPlasterboardQuantitySource: quantitySource_upsert(
+        data: {
+            id: "c3c91574-33c5-40bf-bc6d-caab40b7da22"
+            measurementSource: "CEILING_AREA"
+            measurementPlasterType: "STANDARD"
+            updatedAt_expr: "request.time"
+        }
+    )
+    coveCorniceQuantitySource: quantitySource_upsert(
+        data: {
+            id: "c8b59f22-fa5a-467d-995e-7d261e86dc52"
+            measurementSource: "CORNICE_LENGTH"
+            measurementPlasterType: null
+            updatedAt_expr: "request.time"
+        }
+    )
+    wetFloorsFcSheetQuantitySource: quantitySource_upsert(
+        data: {
+            id: "a8c9d27b-6e1e-4834-8a12-a2b6bf811ac1"
+            measurementSource: "FLOOR_AREA"
+            measurementPlasterType: "WET_AREA"
+            updatedAt_expr: "request.time"
+        }
+    )
+    doorSetsQuantitySource: quantitySource_upsert(
+        data: {
+            id: "84caa96a-9e65-4176-ab64-c9360081caf8"
+            measurementSource: "DOOR_COUNT"
+            measurementPlasterType: null
+            updatedAt_expr: "request.time"
+        }
+    )
+    wallsPlasterboardItemTemplate: quoteItemTemplate_upsert(
+        data: {
+            id: "f47826e8-6f88-451c-9377-8635b4c7ac04"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "PLASTERBOARD_10MM_WALLS"
+            name: "10mm Plasterboard — walls"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "c1b8d7b7-bfda-4400-99d6-64a366c02f62"
+            sortOrder: 0
+            updatedAt_expr: "request.time"
+        }
+    )
+    wetWallsVillaboardItemTemplate: quoteItemTemplate_upsert(
+        data: {
+            id: "1f28456f-d936-4adb-afc9-43d9767a44b2"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "VILLABOARD_6MM_WET_WALLS"
+            name: "6mm Villaboard — wet-area walls"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "9f8704f9-9c21-406b-99ab-7e30eec761ff"
+            sortOrder: 1
+            updatedAt_expr: "request.time"
+        }
+    )
+    ceilingsPlasterboardItemTemplate: quoteItemTemplate_upsert(
+        data: {
+            id: "a4642ab3-300a-483b-96f4-0b00da347714"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "PLASTERBOARD_10MM_CEILINGS"
+            name: "10mm Plasterboard — ceilings"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "c3c91574-33c5-40bf-bc6d-caab40b7da22"
+            sortOrder: 2
+            updatedAt_expr: "request.time"
+        }
+    )
+    coveCorniceItemTemplate: quoteItemTemplate_upsert(
+        data: {
+            id: "fcaf405c-352c-49ce-81bc-638f2331ef82"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "COVE_CORNICE_90MM"
+            name: "90mm cove cornice"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "c8b59f22-fa5a-467d-995e-7d261e86dc52"
+            sortOrder: 3
+            updatedAt_expr: "request.time"
+        }
+    )
+    wetFloorsFcSheetItemTemplate: quoteItemTemplate_upsert(
+        data: {
+            id: "bab0f6de-f4a0-4b38-ab1c-81694a0ea6a7"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "FC_SHEET_15MM_WET_FLOORS"
+            name: "15mm compressed FC sheet — wet floors"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "a8c9d27b-6e1e-4834-8a12-a2b6bf811ac1"
+            sortOrder: 4
+            updatedAt_expr: "request.time"
+        }
+    )
+    doorSetsItemTemplate: quoteItemTemplate_upsert(
+        data: {
+            id: "003e5926-102f-4dbe-ba56-f1cf7930888c"
+            teamId: null
+            scope: "SYSTEM"
+            systemKey: "EZY_JAMB_DOOR_SETS"
+            name: "Ezy jamb door sets"
+            hasKeywords: false
+            keywords: []
+            quantitySourceId: "84caa96a-9e65-4176-ab64-c9360081caf8"
+            sortOrder: 5
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation ReconcileSystemQuoteItemTemplates
+@auth(
+    expr: "auth.uid == auth.token.sub && auth.token.firebase.sign_in_provider != 'anonymous'"
+)
+@transaction {
     quoteItemTemplateConfig_deleteMany(
         where: {
             itemTemplate: {
@@ -424,10 +568,33 @@ mutation UpdateQuoteItemTemplateConfig(
 mutation CreateQuoteItemTemplate(
     $id: UUID!
     $name: String!
+    $hasKeywords: Boolean!
+    $keywords: [String!]!
+) @retired @auth(level: USER) {
+    quoteItemTemplate_insert(
+        data: {
+            id: $id
+            teamId_expr: "auth.token.teamId"
+            scope: "TEAM"
+            name: $name
+            hasKeywords: $hasKeywords
+            keywords: $keywords
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateQuoteItemTemplateWithUnit(
+    $id: UUID!
+    $name: String!
     $unit: String!
     $hasKeywords: Boolean!
     $keywords: [String!]!
-) @auth(level: USER) {
+)
+@auth(
+    expr: "auth.uid == auth.token.sub && auth.token.firebase.sign_in_provider != 'anonymous' && auth.token.teamId != ''"
+) {
     quoteItemTemplate_insert(
         data: {
             id: $id
@@ -446,10 +613,41 @@ mutation CreateQuoteItemTemplate(
 mutation UpdateQuoteItemTemplate(
     $id: UUID!
     $name: String!
+    $hasKeywords: Boolean!
+    $keywords: [String!]!
+) @retired @auth(level: USER) @transaction {
+    query @redact {
+        quoteItemTemplate(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this item"
+            ) {
+            id
+            teamId
+        }
+    }
+    quoteItemTemplate_update(
+        id: $id
+        data: {
+            name: $name
+            hasKeywords: $hasKeywords
+            keywords: $keywords
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateQuoteItemTemplateWithUnit(
+    $id: UUID!
+    $name: String!
     $unit: String!
     $hasKeywords: Boolean!
     $keywords: [String!]!
-) @auth(level: USER) @transaction {
+)
+@auth(
+    expr: "auth.uid == auth.token.sub && auth.token.firebase.sign_in_provider != 'anonymous' && auth.token.teamId != ''"
+)
+@transaction {
     query @redact {
         quoteItemTemplate(key: { id: $id })
             @check(
@@ -606,9 +804,51 @@ mutation CreateQuoteItem(
     $displayOrder: Int!
     $name: String!
     $quantity: Float!
+    $unitPriceCents: Int!
+) @retired @auth(level: USER) @transaction {
+    query @redact {
+        quote(key: { id: $quoteId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote"
+            ) {
+            id
+            teamId
+        }
+    }
+    quoteItem_insert(
+        data: {
+            id: $id
+            teamId_expr: "auth.token.teamId"
+            quoteId: $quoteId
+            sourceTemplateId: null
+            displayOrder: $displayOrder
+            name: $name
+            quantity: $quantity
+            quantitySourceId: null
+            unitPriceCents: $unitPriceCents
+            materialUnitPriceCents: 0
+            labourUnitPriceCents: 0
+            matchedKeywords: []
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation CreateQuoteItemWithUnit(
+    $id: UUID!
+    $quoteId: UUID!
+    $displayOrder: Int!
+    $name: String!
+    $quantity: Float!
     $unit: String!
     $unitPriceCents: Int!
-) @auth(level: USER) @transaction {
+)
+@auth(
+    expr: "auth.uid == auth.token.sub && auth.token.firebase.sign_in_provider != 'anonymous' && auth.token.teamId != ''"
+)
+@transaction {
     query @redact {
         quote(key: { id: $quoteId })
             @check(

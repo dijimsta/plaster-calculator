@@ -13,11 +13,11 @@ type QuoteItemTemplateConfigRow =
     DataConnector.ListQuoteItemTemplateConfigsForQuoteTemplateData["quoteItemTemplateConfigs"][number];
 
 type CreateItemTemplateFn = (
-    vars: DataConnector.CreateQuoteItemTemplateVariables,
-) => Promise<DataConnector.CreateQuoteItemTemplateData>;
+    vars: DataConnector.CreateQuoteItemTemplateWithUnitVariables,
+) => Promise<DataConnector.CreateQuoteItemTemplateWithUnitData>;
 type UpdateItemTemplateFn = (
-    vars: DataConnector.UpdateQuoteItemTemplateVariables,
-) => Promise<DataConnector.UpdateQuoteItemTemplateData>;
+    vars: DataConnector.UpdateQuoteItemTemplateWithUnitVariables,
+) => Promise<DataConnector.UpdateQuoteItemTemplateWithUnitData>;
 type CreateItemTemplateConfigFn = (
     vars: DataConnector.CreateQuoteItemTemplateConfigVariables,
 ) => Promise<DataConnector.CreateQuoteItemTemplateConfigData>;
