@@ -29,6 +29,95 @@ export interface ApplyQuestionnaireTemplateToProjectVariables {
   sourceTemplateId: UUIDString;
 }
 
+export interface BatchApplyQuestionnaireTemplateToProjectData {
+  projectQuestionnaire_upsert: ProjectQuestionnaire_Key;
+  question1: ProjectQuestionnaireQuestion_Key;
+  question2: ProjectQuestionnaireQuestion_Key;
+  question3: ProjectQuestionnaireQuestion_Key;
+  question4: ProjectQuestionnaireQuestion_Key;
+  question5: ProjectQuestionnaireQuestion_Key;
+  question6: ProjectQuestionnaireQuestion_Key;
+  question7: ProjectQuestionnaireQuestion_Key;
+  question8: ProjectQuestionnaireQuestion_Key;
+  question9: ProjectQuestionnaireQuestion_Key;
+  question10: ProjectQuestionnaireQuestion_Key;
+  question11: ProjectQuestionnaireQuestion_Key;
+  question12: ProjectQuestionnaireQuestion_Key;
+  question13: ProjectQuestionnaireQuestion_Key;
+  question14: ProjectQuestionnaireQuestion_Key;
+  question15: ProjectQuestionnaireQuestion_Key;
+  question16: ProjectQuestionnaireQuestion_Key;
+  question17: ProjectQuestionnaireQuestion_Key;
+  question18: ProjectQuestionnaireQuestion_Key;
+  question19: ProjectQuestionnaireQuestion_Key;
+  question20: ProjectQuestionnaireQuestion_Key;
+}
+
+export interface BatchApplyQuestionnaireTemplateToProjectVariables {
+  projectId: UUIDString;
+  sourceTemplateId: UUIDString;
+  includeQuestion1?: boolean | null;
+  question1Label?: string | null;
+  question1Position?: number | null;
+  includeQuestion2?: boolean | null;
+  question2Label?: string | null;
+  question2Position?: number | null;
+  includeQuestion3?: boolean | null;
+  question3Label?: string | null;
+  question3Position?: number | null;
+  includeQuestion4?: boolean | null;
+  question4Label?: string | null;
+  question4Position?: number | null;
+  includeQuestion5?: boolean | null;
+  question5Label?: string | null;
+  question5Position?: number | null;
+  includeQuestion6?: boolean | null;
+  question6Label?: string | null;
+  question6Position?: number | null;
+  includeQuestion7?: boolean | null;
+  question7Label?: string | null;
+  question7Position?: number | null;
+  includeQuestion8?: boolean | null;
+  question8Label?: string | null;
+  question8Position?: number | null;
+  includeQuestion9?: boolean | null;
+  question9Label?: string | null;
+  question9Position?: number | null;
+  includeQuestion10?: boolean | null;
+  question10Label?: string | null;
+  question10Position?: number | null;
+  includeQuestion11?: boolean | null;
+  question11Label?: string | null;
+  question11Position?: number | null;
+  includeQuestion12?: boolean | null;
+  question12Label?: string | null;
+  question12Position?: number | null;
+  includeQuestion13?: boolean | null;
+  question13Label?: string | null;
+  question13Position?: number | null;
+  includeQuestion14?: boolean | null;
+  question14Label?: string | null;
+  question14Position?: number | null;
+  includeQuestion15?: boolean | null;
+  question15Label?: string | null;
+  question15Position?: number | null;
+  includeQuestion16?: boolean | null;
+  question16Label?: string | null;
+  question16Position?: number | null;
+  includeQuestion17?: boolean | null;
+  question17Label?: string | null;
+  question17Position?: number | null;
+  includeQuestion18?: boolean | null;
+  question18Label?: string | null;
+  question18Position?: number | null;
+  includeQuestion19?: boolean | null;
+  question19Label?: string | null;
+  question19Position?: number | null;
+  includeQuestion20?: boolean | null;
+  question20Label?: string | null;
+  question20Position?: number | null;
+}
+
 export interface ClearMyCompanyPrimaryContactData {
   company_update?: Company_Key | null;
 }
@@ -1367,6 +1456,18 @@ export const applyQuestionnaireTemplateToProjectRef: ApplyQuestionnaireTemplateT
 
 export function applyQuestionnaireTemplateToProject(vars: ApplyQuestionnaireTemplateToProjectVariables): MutationPromise<ApplyQuestionnaireTemplateToProjectData, ApplyQuestionnaireTemplateToProjectVariables>;
 export function applyQuestionnaireTemplateToProject(dc: DataConnect, vars: ApplyQuestionnaireTemplateToProjectVariables): MutationPromise<ApplyQuestionnaireTemplateToProjectData, ApplyQuestionnaireTemplateToProjectVariables>;
+
+interface BatchApplyQuestionnaireTemplateToProjectRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: BatchApplyQuestionnaireTemplateToProjectVariables): MutationRef<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: BatchApplyQuestionnaireTemplateToProjectVariables): MutationRef<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
+  operationName: string;
+}
+export const batchApplyQuestionnaireTemplateToProjectRef: BatchApplyQuestionnaireTemplateToProjectRef;
+
+export function batchApplyQuestionnaireTemplateToProject(vars: BatchApplyQuestionnaireTemplateToProjectVariables): MutationPromise<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
+export function batchApplyQuestionnaireTemplateToProject(dc: DataConnect, vars: BatchApplyQuestionnaireTemplateToProjectVariables): MutationPromise<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
 
 interface CreateProjectQuestionnaireQuestionRef {
   /* Allow users to create refs without passing in DataConnect */

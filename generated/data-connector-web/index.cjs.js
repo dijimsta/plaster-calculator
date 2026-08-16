@@ -276,6 +276,20 @@ exports.applyQuestionnaireTemplateToProject = function applyQuestionnaireTemplat
 }
 ;
 
+const batchApplyQuestionnaireTemplateToProjectRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'BatchApplyQuestionnaireTemplateToProject', inputVars);
+}
+batchApplyQuestionnaireTemplateToProjectRef.operationName = 'BatchApplyQuestionnaireTemplateToProject';
+exports.batchApplyQuestionnaireTemplateToProjectRef = batchApplyQuestionnaireTemplateToProjectRef;
+
+exports.batchApplyQuestionnaireTemplateToProject = function batchApplyQuestionnaireTemplateToProject(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(batchApplyQuestionnaireTemplateToProjectRef(dcInstance, inputVars));
+}
+;
+
 const createProjectQuestionnaireQuestionRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
