@@ -80,6 +80,10 @@ export function QuoteTemplatePanel({
             unitPriceCents: item.unitPriceCents,
         })),
     };
+    const formItemKey = [
+        quoteTemplateId,
+        ...[...defaultItems, ...customItems].map((item) => item.itemTemplateId),
+    ].join(":");
 
     return (
         <Card>
@@ -93,6 +97,7 @@ export function QuoteTemplatePanel({
                 </Paragraph>
             ) : (
                 <QuoteTemplateForm
+                    key={formItemKey}
                     formId="quote-template-form"
                     initialValues={initialValues}
                     disabled={isSaving}
