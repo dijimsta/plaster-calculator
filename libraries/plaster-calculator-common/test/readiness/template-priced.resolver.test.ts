@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { resolveTemplatePriced } from "../../src/index.ts";
+import {
+    QuoteItemInclusionUtils,
+    resolveTemplatePriced,
+} from "../../src/index.ts";
 
 import {
     page,
@@ -56,6 +59,64 @@ test("resolveTemplatePriced checks flat-fee items with no quantity source", () =
         {
             quoteItemTemplateId: manualUnpriced.quoteItemTemplateId,
             quoteItemTemplateLabel: manualUnpriced.label,
+        },
+    ]);
+});
+
+test("resolveTemplatePriced fails for a variation with an unpriced included line, even when the default template is fully priced", () => {
+    // The default template is fully priced and enables both items - on its
+    // own it would pass TEMPLATE_PRICED. The variation actually pricing
+    // this quote reuses the default's `enabled` (via
+    // QuoteItemInclusionUtils.resolveInclusion, per the single include-rule
+    // contract) but has its own, unpriced, unitPriceCents for "Cornice".
+    // Readiness must be evaluated against the variation's prices, not the
+    // default's, so it still fails.
+    const defaultSkimCoat = quoteItemTemplateConfig({
+        quoteItemTemplateId: "skim-coat",
+        label: "Skim coat",
+        enabled: true,
+        unitPriceCents: 1000,
+    });
+    const defaultCornice = quoteItemTemplateConfig({
+        quoteItemTemplateId: "cornice",
+        label: "Cornice",
+        enabled: true,
+        unitPriceCents: 500,
+    });
+
+    const variationSkimCoat = quoteItemTemplateConfig({
+        quoteItemTemplateId: "skim-coat",
+        label: "Skim coat",
+        unitPriceCents: 1200,
+    });
+    const variationCornice = quoteItemTemplateConfig({
+        quoteItemTemplateId: "cornice",
+        label: "Cornice",
+        unitPriceCents: 0,
+    });
+
+    const variationConfigsForReadiness = [
+        QuoteItemInclusionUtils.resolveInclusion(
+            variationSkimCoat,
+            defaultSkimCoat,
+        ),
+        QuoteItemInclusionUtils.resolveInclusion(
+            variationCornice,
+            defaultCornice,
+        ),
+    ];
+
+    const result = resolveTemplatePriced({
+        project: project([page()]),
+        quoteItemTemplateConfigs: variationConfigsForReadiness,
+    });
+
+    assert.equal(result.isMet, false);
+    assert.equal(result.affectedItemCount, 1);
+    assert.deepEqual(result.affectedItems, [
+        {
+            quoteItemTemplateId: "cornice",
+            quoteItemTemplateLabel: "Cornice",
         },
     ]);
 });
