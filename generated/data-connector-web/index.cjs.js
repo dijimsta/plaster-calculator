@@ -462,31 +462,31 @@ exports.updateQuoteItemTemplateConfig = function updateQuoteItemTemplateConfig(d
 }
 ;
 
-const createQuoteItemTemplateRef = (dcOrVars, vars) => {
+const createQuoteItemTemplateWithUnitRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateQuoteItemTemplate', inputVars);
+  return mutationRef(dcInstance, 'CreateQuoteItemTemplateWithUnit', inputVars);
 }
-createQuoteItemTemplateRef.operationName = 'CreateQuoteItemTemplate';
-exports.createQuoteItemTemplateRef = createQuoteItemTemplateRef;
+createQuoteItemTemplateWithUnitRef.operationName = 'CreateQuoteItemTemplateWithUnit';
+exports.createQuoteItemTemplateWithUnitRef = createQuoteItemTemplateWithUnitRef;
 
-exports.createQuoteItemTemplate = function createQuoteItemTemplate(dcOrVars, vars) {
+exports.createQuoteItemTemplateWithUnit = function createQuoteItemTemplateWithUnit(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createQuoteItemTemplateRef(dcInstance, inputVars));
+  return executeMutation(createQuoteItemTemplateWithUnitRef(dcInstance, inputVars));
 }
 ;
 
-const updateQuoteItemTemplateRef = (dcOrVars, vars) => {
+const updateQuoteItemTemplateWithUnitRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'UpdateQuoteItemTemplate', inputVars);
+  return mutationRef(dcInstance, 'UpdateQuoteItemTemplateWithUnit', inputVars);
 }
-updateQuoteItemTemplateRef.operationName = 'UpdateQuoteItemTemplate';
-exports.updateQuoteItemTemplateRef = updateQuoteItemTemplateRef;
+updateQuoteItemTemplateWithUnitRef.operationName = 'UpdateQuoteItemTemplateWithUnit';
+exports.updateQuoteItemTemplateWithUnitRef = updateQuoteItemTemplateWithUnitRef;
 
-exports.updateQuoteItemTemplate = function updateQuoteItemTemplate(dcOrVars, vars) {
+exports.updateQuoteItemTemplateWithUnit = function updateQuoteItemTemplateWithUnit(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(updateQuoteItemTemplateRef(dcInstance, inputVars));
+  return executeMutation(updateQuoteItemTemplateWithUnitRef(dcInstance, inputVars));
 }
 ;
 
@@ -546,17 +546,17 @@ exports.updateQuoteItem = function updateQuoteItem(dcOrVars, vars) {
 }
 ;
 
-const createQuoteItemRef = (dcOrVars, vars) => {
+const createQuoteItemWithUnitRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateQuoteItem', inputVars);
+  return mutationRef(dcInstance, 'CreateQuoteItemWithUnit', inputVars);
 }
-createQuoteItemRef.operationName = 'CreateQuoteItem';
-exports.createQuoteItemRef = createQuoteItemRef;
+createQuoteItemWithUnitRef.operationName = 'CreateQuoteItemWithUnit';
+exports.createQuoteItemWithUnitRef = createQuoteItemWithUnitRef;
 
-exports.createQuoteItem = function createQuoteItem(dcOrVars, vars) {
+exports.createQuoteItemWithUnit = function createQuoteItemWithUnit(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
-  return executeMutation(createQuoteItemRef(dcInstance, inputVars));
+  return executeMutation(createQuoteItemWithUnitRef(dcInstance, inputVars));
 }
 ;
 
