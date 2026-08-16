@@ -184,26 +184,66 @@ export class CompaniesService {
         return this.getCompany(companyId);
     }
 
-    private toCompanySummary(company: CompanyRow): CompanySummary {
-        return CompanySummarySchema.parse({
-            id: company.id,
-            teamId: company.teamId,
-            companyName: company.companyName,
-            businessNumber: company.businessNumber ?? null,
-            phoneNumber: company.phoneNumber ?? null,
-            primaryContactId: company.primaryContactId ?? null,
-            createdAt: company.createdAt,
-            updatedAt: company.updatedAt,
+    /**
+     * Assigns a `QuoteTemplate` variation to price this company's projects
+     * (WORK-190/WORK-193), via `AssignQuoteTemplateToCompany`. Re-reads the
+     * company afterwards, matching every other write method on this
+     * service, so the returned `CompanyDetail.quoteTemplateId`/
+     * `quoteTemplateName` reflect the new assignment rather than a stale
+     * pre-write snapshot.
+     */
+    public async assignQuoteTemplate(
+        companyId: string,
+        quoteTemplateId: string,
+    ): Promise<CompanyDetail> {
+        await DataConnector.assignQuoteTemplateToCompany(this.dataConnect, {
+            companyId,
+            quoteTemplateId,
         });
+        return this.getCompany(companyId);
+    }
+
+    /**
+     * Clears this company's `QuoteTemplate` assignment via
+     * `ClearCompanyQuoteTemplate`, so its projects fall back to the team's
+     * default template. Matches `clearMyCompanyPrimaryContact`'s
+     * re-read-after-write pattern above.
+     */
+    public async clearQuoteTemplate(companyId: string): Promise<CompanyDetail> {
+        await DataConnector.clearCompanyQuoteTemplate(this.dataConnect, {
+            companyId,
+        });
+        return this.getCompany(companyId);
+    }
+
+    private toCompanySummary(company: CompanyRow): CompanySummary {
+        return {
+            ...CompanySummarySchema.parse({
+                id: company.id,
+                teamId: company.teamId,
+                companyName: company.companyName,
+                businessNumber: company.businessNumber ?? null,
+                phoneNumber: company.phoneNumber ?? null,
+                primaryContactId: company.primaryContactId ?? null,
+                createdAt: company.createdAt,
+                updatedAt: company.updatedAt,
+            }),
+            quoteTemplateId: company.quoteTemplateId ?? null,
+            quoteTemplateName: company.quoteTemplate?.name ?? null,
+        };
     }
 
     private toCompanyDetail(company: CompanyDetailRow): CompanyDetail {
-        return CompanyDetailSchema.parse({
-            ...this.toCompanySummary(company),
-            contacts: company.contacts.map((contact) =>
-                this.toCompanyContact(contact),
-            ),
-        });
+        return {
+            ...CompanyDetailSchema.parse({
+                ...this.toCompanySummary(company),
+                contacts: company.contacts.map((contact) =>
+                    this.toCompanyContact(contact),
+                ),
+            }),
+            quoteTemplateId: company.quoteTemplateId ?? null,
+            quoteTemplateName: company.quoteTemplate?.name ?? null,
+        };
     }
 
     private toCompanyContact(contact: CompanyContactRow): CompanyContact {

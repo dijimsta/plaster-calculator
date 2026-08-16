@@ -65,6 +65,18 @@ export type GenerateQuoteInput = {
     readonly isReady: boolean;
     readonly projectId: string;
     readonly quoteId: string;
+    /**
+     * The `QuoteTemplate` (WORK-190/WORK-193) that priced `templateConfigs` —
+     * the project's company's assignment, or the team's default template
+     * when the company has none. `useGenerateQuote()` resolves this the
+     * same way `useQuoteReadiness()` does, in fact from that same hook
+     * call, so readiness and generation always agree on which rates a
+     * quote was built from. Not written anywhere by `build()` today —
+     * `CreateQuoteWithItems` has no column for it — but carried on this
+     * input so a caller can't hand `templateConfigs` to `build()` without
+     * having actually resolved a template for them.
+     */
+    readonly quoteTemplateId: string;
     readonly pages: readonly PageTakeoffInput[];
     readonly templateConfigs: readonly GenerateQuoteTemplateConfig[];
     readonly searchText: string;

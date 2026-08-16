@@ -65,6 +65,21 @@ function resolvedItemFixture(
     };
 }
 
+function generateQuoteInputFixture(
+    overrides: Partial<GenerateQuoteInput> = {},
+): GenerateQuoteInput {
+    return {
+        isReady: true,
+        projectId: "project-1",
+        quoteId: "quote-1",
+        quoteTemplateId: "template-set-1",
+        pages: [],
+        templateConfigs: [],
+        searchText: "",
+        ...overrides,
+    };
+}
+
 test("resolveQuoteItems keeps an unconditional template whose quantity source resolved to a non-zero quantity", () => {
     const items = GenerateQuoteUtils.resolveQuoteItems(
         [templateConfigFixture()],
@@ -169,14 +184,10 @@ test("resolveQuoteItems resolves a matched keyword-conditional template that als
 });
 
 test("build refuses to run at all when the readiness gate is not met", () => {
-    const input: GenerateQuoteInput = {
+    const input = generateQuoteInputFixture({
         isReady: false,
-        projectId: "project-1",
-        quoteId: "quote-1",
-        pages: [],
         templateConfigs: [templateConfigFixture()],
-        searchText: "",
-    };
+    });
 
     const result = GenerateQuoteUtils.build(input);
 
@@ -187,10 +198,7 @@ test("build refuses to run at all when the readiness gate is not met", () => {
 });
 
 test("build proceeds and produces mutation variables when the readiness gate is met", () => {
-    const input: GenerateQuoteInput = {
-        isReady: true,
-        projectId: "project-1",
-        quoteId: "quote-1",
+    const input = generateQuoteInputFixture({
         pages: [] as readonly PageTakeoffInput[],
         templateConfigs: [
             templateConfigFixture({
@@ -200,7 +208,7 @@ test("build proceeds and produces mutation variables when the readiness gate is 
             }),
         ],
         searchText: "roof plan shows a skylight over the kitchen",
-    };
+    });
 
     const result = GenerateQuoteUtils.build(input);
 
@@ -217,10 +225,7 @@ test("build proceeds and produces mutation variables when the readiness gate is 
 });
 
 test("build matches Data Connect's compact quantity-source UUIDs to measured rollups", () => {
-    const input: GenerateQuoteInput = {
-        isReady: true,
-        projectId: "project-1",
-        quoteId: "quote-1",
+    const input = generateQuoteInputFixture({
         pages: [
             {
                 pageId: "page-1",
@@ -252,8 +257,7 @@ test("build matches Data Connect's compact quantity-source UUIDs to measured rol
                 quantitySourceId: "c1b8d7b7bfda440099d664a366c02f62",
             }),
         ],
-        searchText: "",
-    };
+    });
 
     const result = GenerateQuoteUtils.build(input);
 
@@ -269,11 +273,7 @@ test("build matches Data Connect's compact quantity-source UUIDs to measured rol
 });
 
 test("build refuses to persist an empty quote when no items resolve", () => {
-    const input: GenerateQuoteInput = {
-        isReady: true,
-        projectId: "project-1",
-        quoteId: "quote-1",
-        pages: [],
+    const input = generateQuoteInputFixture({
         templateConfigs: [
             templateConfigFixture({
                 hasKeywords: true,
@@ -282,7 +282,7 @@ test("build refuses to persist an empty quote when no items resolve", () => {
             }),
         ],
         searchText: "standard ceiling throughout",
-    };
+    });
 
     const result = GenerateQuoteUtils.build(input);
 

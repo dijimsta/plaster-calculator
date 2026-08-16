@@ -3,6 +3,7 @@ import type {
     GetQuoteReadinessData,
 } from "@generated/data-connector-web";
 import {
+    QuoteItemInclusionUtils,
     QuoteItemKeywordMatcherUtils,
     ReadinessCheckUtils,
     TakeoffRollupUtils,
@@ -208,37 +209,71 @@ export class GenerateQuoteUtils {
     }
 
     /**
-     * Maps `GetQuoteReadiness`'s `quoteItemTemplateConfigs` (already
-     * filtered to `enabled: true` by that query) onto
-     * `GenerateQuoteTemplateConfig`. `materialUnitPriceCents`/
-     * `labourUnitPriceCents` are hard-coded to `0` — see
-     * `GenerateQuoteTemplateConfig`'s doc comment for why.
+     * Maps `GetQuoteReadiness`'s `quoteItemTemplateConfigs` for the
+     * template actually pricing this quote (`configs` — the project's
+     * company's assigned variation, or the team's default template when it
+     * has none) onto `GenerateQuoteTemplateConfig`, resolving each item's
+     * inclusion via `QuoteItemInclusionUtils.resolveInclusion()`
+     * (`@libraries/plaster-calculator-common`) against
+     * `defaultTemplateConfigs` — the team's default template's own
+     * configs — rather than trusting `configs`' own `enabled` column. That
+     * single rule ("the default decides whether an item goes on a quote,
+     * not the variation pricing it") is why a variation can carry a
+     * different `enabled` value than the default without it silently
+     * adding or dropping a line: an item missing from
+     * `defaultTemplateConfigs` entirely (e.g. disabled on the default) is
+     * treated as excluded, the same as an explicit `enabled: false`
+     * default row. When `configs` and `defaultTemplateConfigs` are the
+     * same template (no company assignment), every row resolves against
+     * itself and this is a no-op over today's `enabled: true`-filtered
+     * query result.
+     *
+     * `materialUnitPriceCents`/`labourUnitPriceCents` are hard-coded to `0`
+     * — see `GenerateQuoteTemplateConfig`'s doc comment for why.
      */
     public static buildTemplateConfigs(
         configs: readonly QueryTemplateConfig[],
+        defaultTemplateConfigs: readonly QueryTemplateConfig[],
     ): readonly GenerateQuoteTemplateConfig[] {
-        return configs.map((config) => ({
-            itemTemplateId: config.itemTemplateId,
-            name: config.itemTemplate.name,
-            unit: config.itemTemplate.unit ?? null,
-            hasKeywords: config.itemTemplate.hasKeywords,
-            keywords: config.itemTemplate.keywords,
-            quantitySourceId: config.itemTemplate.quantitySourceId ?? null,
-            quantitySource: config.itemTemplate.quantitySource
-                ? {
-                      id: config.itemTemplate.quantitySource.id,
-                      measurementSource:
-                          config.itemTemplate.quantitySource.measurementSource,
-                      measurementPlasterType:
-                          config.itemTemplate.quantitySource
-                              .measurementPlasterType ?? null,
-                  }
-                : null,
-            sortOrder: config.itemTemplate.sortOrder,
-            unitPriceCents: config.unitPriceCents,
-            materialUnitPriceCents: 0,
-            labourUnitPriceCents: 0,
-        }));
+        const defaultConfigsByItemTemplateId = new Map(
+            defaultTemplateConfigs.map((config) => [
+                config.itemTemplateId,
+                config,
+            ]),
+        );
+        return configs
+            .map((config) =>
+                QuoteItemInclusionUtils.resolveInclusion(config, {
+                    enabled:
+                        defaultConfigsByItemTemplateId.get(
+                            config.itemTemplateId,
+                        )?.enabled ?? false,
+                }),
+            )
+            .filter((config) => config.enabled)
+            .map((config) => ({
+                itemTemplateId: config.itemTemplateId,
+                name: config.itemTemplate.name,
+                unit: config.itemTemplate.unit ?? null,
+                hasKeywords: config.itemTemplate.hasKeywords,
+                keywords: config.itemTemplate.keywords,
+                quantitySourceId: config.itemTemplate.quantitySourceId ?? null,
+                quantitySource: config.itemTemplate.quantitySource
+                    ? {
+                          id: config.itemTemplate.quantitySource.id,
+                          measurementSource:
+                              config.itemTemplate.quantitySource
+                                  .measurementSource,
+                          measurementPlasterType:
+                              config.itemTemplate.quantitySource
+                                  .measurementPlasterType ?? null,
+                      }
+                    : null,
+                sortOrder: config.itemTemplate.sortOrder,
+                unitPriceCents: config.unitPriceCents,
+                materialUnitPriceCents: 0,
+                labourUnitPriceCents: 0,
+            }));
     }
 
     private static resolveQuoteItem(

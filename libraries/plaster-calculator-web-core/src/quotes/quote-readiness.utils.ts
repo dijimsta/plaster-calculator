@@ -2,6 +2,7 @@ import type { GetQuoteReadinessData } from "@generated/data-connector-web";
 import {
     OverlaySchema,
     PDF_UPLOAD_TYPE,
+    QuoteItemInclusionUtils,
     READINESS_CHECKS,
     type FloorplanPage,
     type ProjectDetail,
@@ -12,6 +13,8 @@ import {
 
 type QueryProject = NonNullable<GetQuoteReadinessData["project"]>;
 type QueryFloorplanPage = GetQuoteReadinessData["floorplanPages"][number];
+type QueryTemplateConfig =
+    GetQuoteReadinessData["quoteItemTemplateConfigs"][number];
 
 /**
  * Adapts `GetQuoteReadiness`'s Data Connect response onto the readiness
@@ -27,11 +30,24 @@ export class QuoteReadinessUtils {
      * which the `GetQuoteReadiness` `@check` guard should already prevent
      * by failing the request, but the query's generated type still marks
      * `project` optional.
+     *
+     * `defaultTemplateConfigs` (WORK-193) is the team's default template's
+     * own `quoteItemTemplateConfigs` — `data.quoteItemTemplateConfigs` when
+     * there is no variation in play, or a second `GetQuoteReadiness`
+     * response's when the project's company is priced from a variation
+     * (`useQuoteReadiness()`'s two-pass resolution). It's what
+     * `buildReadinessCheckInput()` resolves each item's `enabled` against,
+     * per `TEMPLATE_PRICED`/`TEMPLATE_UNIT_SET`'s contract that `enabled`
+     * is always the default template's value, never a variation's own.
      */
     public static evaluate(
         data: GetQuoteReadinessData,
+        defaultTemplateConfigs: readonly QueryTemplateConfig[],
     ): readonly ReadinessResult[] {
-        const input = QuoteReadinessUtils.buildReadinessCheckInput(data);
+        const input = QuoteReadinessUtils.buildReadinessCheckInput(
+            data,
+            defaultTemplateConfigs,
+        );
         return input
             ? READINESS_CHECKS.map((check) => check.resolve(input))
             : [];
@@ -51,25 +67,54 @@ export class QuoteReadinessUtils {
         });
     }
 
+    /**
+     * `data.quoteItemTemplateConfigs` are the template actually pricing
+     * this project's own rows — each carries its own `enabled` column, but
+     * per `QuoteItemInclusionUtils.resolveInclusion()`'s design, only the
+     * default template decides whether an item goes on a quote. Every row
+     * is resolved against `defaultTemplateConfigsByItemTemplateId` before
+     * being mapped onto `ReadinessQuoteItemTemplateConfig`: an item missing
+     * from the default entirely (e.g. disabled there) resolves to
+     * `enabled: false`, the same as an explicit default `enabled: false`
+     * row, regardless of what the pricing template's own row says.
+     */
     private static buildReadinessCheckInput(
         data: GetQuoteReadinessData,
+        defaultTemplateConfigs: readonly QueryTemplateConfig[],
     ): ReadinessCheckInput | null {
         if (!data.project) return null;
+        const defaultConfigsByItemTemplateId = new Map(
+            defaultTemplateConfigs.map((config) => [
+                config.itemTemplateId,
+                config,
+            ]),
+        );
         return {
             project: QuoteReadinessUtils.buildProjectDetail(
                 data.project,
                 data.floorplanPages,
             ),
             quoteItemTemplateConfigs: data.quoteItemTemplateConfigs.map(
-                (config) => ({
-                    quoteItemTemplateId: config.itemTemplateId,
-                    label: config.itemTemplate.name,
-                    enabled: config.enabled,
-                    unitPriceCents: config.unitPriceCents,
-                    unit: config.itemTemplate.unit ?? null,
-                    quantitySourceId:
-                        config.itemTemplate.quantitySourceId ?? null,
-                }),
+                (config) => {
+                    const resolved = QuoteItemInclusionUtils.resolveInclusion(
+                        config,
+                        {
+                            enabled:
+                                defaultConfigsByItemTemplateId.get(
+                                    config.itemTemplateId,
+                                )?.enabled ?? false,
+                        },
+                    );
+                    return {
+                        quoteItemTemplateId: resolved.itemTemplateId,
+                        label: resolved.itemTemplate.name,
+                        enabled: resolved.enabled,
+                        unitPriceCents: resolved.unitPriceCents,
+                        unit: resolved.itemTemplate.unit ?? null,
+                        quantitySourceId:
+                            resolved.itemTemplate.quantitySourceId ?? null,
+                    };
+                },
             ),
             questionnaireAnswers: data.projectQuestionnaireQuestions.map(
                 (question) => ({
