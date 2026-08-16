@@ -23,6 +23,49 @@ export const zh = createTranslationResource(
             emptyStateTitle: "暂无澄清模板",
             emptyStateDescription: "请先创建澄清模板，再从中添加澄清项。",
         }),
+        clarificationsStep: Object.freeze({
+            templatePicker: Object.freeze({
+                label: "从模板开始",
+                startFromScratch: "从空白开始",
+                apply: "应用模板",
+                applying: "正在应用模板…",
+            }),
+            rows: Object.freeze({
+                labelFieldLabel: "澄清项 {{number}}",
+                sheetReference: "在{{sheet}}中找到",
+                addRowPlaceholder: "添加您自己的澄清项",
+                statusLabels: Object.freeze({
+                    ON_PLAN: "已在平面图中找到",
+                    UNCHECKED: "未核实",
+                    ASK_BUILDER: "需询问建造商",
+                }),
+            }),
+            emptyState: Object.freeze({
+                title: "暂无澄清项",
+                description: "从上方的模板开始，或在下方添加您自己的澄清项。",
+            }),
+            findAnswers: Object.freeze({
+                action: "在平面图中查找答案",
+                running: "正在平面图中查找答案…",
+                // zh has a single plural form (CLDR "other"); `_one` mirrors
+                // `_other` verbatim, matching the note on quoteCount above.
+                creditCost_one: "使用 {{count}} 个积分",
+                creditCost_other: "使用 {{count}} 个积分",
+            }),
+            emailCard: Object.freeze({
+                title: "向建造商发送邮件",
+                descriptionBeforeRun_one: "有 {{count}} 项澄清需要建造商回复。",
+                descriptionBeforeRun_other:
+                    "有 {{count}} 项澄清需要建造商回复。",
+                descriptionAfterRun_one:
+                    "仍有 {{count}} 项澄清需要建造商回复。",
+                descriptionAfterRun_other:
+                    "仍有 {{count}} 项澄清需要建造商回复。",
+                send: "向建造商发送邮件",
+                resend: "重新发送邮件",
+                sentConfirmation: "邮件已发送",
+            }),
+        }),
         editQuestionnaireTemplateDrawer: Object.freeze({
             title: "编辑模板",
             description: "更新模板的名称和澄清项。",

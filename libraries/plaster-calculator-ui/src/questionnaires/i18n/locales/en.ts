@@ -19,6 +19,49 @@ export const en = Object.freeze({
         emptyStateDescription:
             "Create a clarification template before adding clarifications from it.",
     }),
+    clarificationsStep: Object.freeze({
+        templatePicker: Object.freeze({
+            label: "Start from a template",
+            startFromScratch: "Start from scratch",
+            apply: "Apply template",
+            applying: "Applying template…",
+        }),
+        rows: Object.freeze({
+            labelFieldLabel: "Clarification {{number}}",
+            sheetReference: "Found on {{sheet}}",
+            addRowPlaceholder: "Add your own clarification",
+            statusLabels: Object.freeze({
+                ON_PLAN: "On plan",
+                UNCHECKED: "Unchecked",
+                ASK_BUILDER: "Ask builder",
+            }),
+        }),
+        emptyState: Object.freeze({
+            title: "No clarifications yet",
+            description:
+                "Start from a template above, or add your own clarification below.",
+        }),
+        findAnswers: Object.freeze({
+            action: "Find Answers on Plan",
+            running: "Finding answers on plan…",
+            creditCost_one: "Uses {{count}} credit",
+            creditCost_other: "Uses {{count}} credits",
+        }),
+        emailCard: Object.freeze({
+            title: "Email the builder",
+            descriptionBeforeRun_one:
+                "{{count}} clarification for the builder.",
+            descriptionBeforeRun_other:
+                "{{count}} clarifications for the builder.",
+            descriptionAfterRun_one:
+                "{{count}} clarification still needs the builder's input.",
+            descriptionAfterRun_other:
+                "{{count}} clarifications still need the builder's input.",
+            send: "Email the builder",
+            resend: "Resend email",
+            sentConfirmation: "Email sent",
+        }),
+    }),
     editQuestionnaireTemplateDrawer: Object.freeze({
         title: "Edit template",
         description: "Update the template's name and clarifications.",
