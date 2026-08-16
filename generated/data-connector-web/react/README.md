@@ -51,6 +51,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*DeleteQuestionnaireTemplate*](#deletequestionnairetemplate)
   - [*EnsureProjectQuestionnaire*](#ensureprojectquestionnaire)
   - [*ApplyQuestionnaireTemplateToProject*](#applyquestionnairetemplatetoproject)
+  - [*BatchApplyQuestionnaireTemplateToProject*](#batchapplyquestionnairetemplatetoproject)
   - [*CreateProjectQuestionnaireQuestion*](#createprojectquestionnairequestion)
   - [*UpdateProjectQuestionnaireQuestion*](#updateprojectquestionnairequestion)
   - [*UpdateProjectQuestionnaireQuestionAnswer*](#updateprojectquestionnairequestionanswer)
@@ -3305,6 +3306,262 @@ export default function ApplyQuestionnaireTemplateToProjectComponent() {
 }
 ```
 
+## BatchApplyQuestionnaireTemplateToProject
+You can execute the `BatchApplyQuestionnaireTemplateToProject` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useBatchApplyQuestionnaireTemplateToProject(options?: useDataConnectMutationOptions<BatchApplyQuestionnaireTemplateToProjectData, FirebaseError, BatchApplyQuestionnaireTemplateToProjectVariables>): UseDataConnectMutationResult<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useBatchApplyQuestionnaireTemplateToProject(dc: DataConnect, options?: useDataConnectMutationOptions<BatchApplyQuestionnaireTemplateToProjectData, FirebaseError, BatchApplyQuestionnaireTemplateToProjectVariables>): UseDataConnectMutationResult<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
+```
+
+### Variables
+The `BatchApplyQuestionnaireTemplateToProject` Mutation requires an argument of type `BatchApplyQuestionnaireTemplateToProjectVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface BatchApplyQuestionnaireTemplateToProjectVariables {
+  projectId: UUIDString;
+  sourceTemplateId: UUIDString;
+  includeQuestion1?: boolean | null;
+  question1Label?: string | null;
+  question1Position?: number | null;
+  includeQuestion2?: boolean | null;
+  question2Label?: string | null;
+  question2Position?: number | null;
+  includeQuestion3?: boolean | null;
+  question3Label?: string | null;
+  question3Position?: number | null;
+  includeQuestion4?: boolean | null;
+  question4Label?: string | null;
+  question4Position?: number | null;
+  includeQuestion5?: boolean | null;
+  question5Label?: string | null;
+  question5Position?: number | null;
+  includeQuestion6?: boolean | null;
+  question6Label?: string | null;
+  question6Position?: number | null;
+  includeQuestion7?: boolean | null;
+  question7Label?: string | null;
+  question7Position?: number | null;
+  includeQuestion8?: boolean | null;
+  question8Label?: string | null;
+  question8Position?: number | null;
+  includeQuestion9?: boolean | null;
+  question9Label?: string | null;
+  question9Position?: number | null;
+  includeQuestion10?: boolean | null;
+  question10Label?: string | null;
+  question10Position?: number | null;
+  includeQuestion11?: boolean | null;
+  question11Label?: string | null;
+  question11Position?: number | null;
+  includeQuestion12?: boolean | null;
+  question12Label?: string | null;
+  question12Position?: number | null;
+  includeQuestion13?: boolean | null;
+  question13Label?: string | null;
+  question13Position?: number | null;
+  includeQuestion14?: boolean | null;
+  question14Label?: string | null;
+  question14Position?: number | null;
+  includeQuestion15?: boolean | null;
+  question15Label?: string | null;
+  question15Position?: number | null;
+  includeQuestion16?: boolean | null;
+  question16Label?: string | null;
+  question16Position?: number | null;
+  includeQuestion17?: boolean | null;
+  question17Label?: string | null;
+  question17Position?: number | null;
+  includeQuestion18?: boolean | null;
+  question18Label?: string | null;
+  question18Position?: number | null;
+  includeQuestion19?: boolean | null;
+  question19Label?: string | null;
+  question19Position?: number | null;
+  includeQuestion20?: boolean | null;
+  question20Label?: string | null;
+  question20Position?: number | null;
+}
+```
+### Return Type
+Recall that calling the `BatchApplyQuestionnaireTemplateToProject` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `BatchApplyQuestionnaireTemplateToProject` Mutation is of type `BatchApplyQuestionnaireTemplateToProjectData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface BatchApplyQuestionnaireTemplateToProjectData {
+  projectQuestionnaire_upsert: ProjectQuestionnaire_Key;
+  question1: ProjectQuestionnaireQuestion_Key;
+  question2: ProjectQuestionnaireQuestion_Key;
+  question3: ProjectQuestionnaireQuestion_Key;
+  question4: ProjectQuestionnaireQuestion_Key;
+  question5: ProjectQuestionnaireQuestion_Key;
+  question6: ProjectQuestionnaireQuestion_Key;
+  question7: ProjectQuestionnaireQuestion_Key;
+  question8: ProjectQuestionnaireQuestion_Key;
+  question9: ProjectQuestionnaireQuestion_Key;
+  question10: ProjectQuestionnaireQuestion_Key;
+  question11: ProjectQuestionnaireQuestion_Key;
+  question12: ProjectQuestionnaireQuestion_Key;
+  question13: ProjectQuestionnaireQuestion_Key;
+  question14: ProjectQuestionnaireQuestion_Key;
+  question15: ProjectQuestionnaireQuestion_Key;
+  question16: ProjectQuestionnaireQuestion_Key;
+  question17: ProjectQuestionnaireQuestion_Key;
+  question18: ProjectQuestionnaireQuestion_Key;
+  question19: ProjectQuestionnaireQuestion_Key;
+  question20: ProjectQuestionnaireQuestion_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `BatchApplyQuestionnaireTemplateToProject`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, BatchApplyQuestionnaireTemplateToProjectVariables } from '@generated/data-connector-web';
+import { useBatchApplyQuestionnaireTemplateToProject } from '@generated/data-connector-web/react'
+
+export default function BatchApplyQuestionnaireTemplateToProjectComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useBatchApplyQuestionnaireTemplateToProject();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useBatchApplyQuestionnaireTemplateToProject(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useBatchApplyQuestionnaireTemplateToProject(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useBatchApplyQuestionnaireTemplateToProject(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useBatchApplyQuestionnaireTemplateToProject` Mutation requires an argument of type `BatchApplyQuestionnaireTemplateToProjectVariables`:
+  const batchApplyQuestionnaireTemplateToProjectVars: BatchApplyQuestionnaireTemplateToProjectVariables = {
+    projectId: ..., 
+    sourceTemplateId: ..., 
+    includeQuestion1: ..., // optional
+    question1Label: ..., // optional
+    question1Position: ..., // optional
+    includeQuestion2: ..., // optional
+    question2Label: ..., // optional
+    question2Position: ..., // optional
+    includeQuestion3: ..., // optional
+    question3Label: ..., // optional
+    question3Position: ..., // optional
+    includeQuestion4: ..., // optional
+    question4Label: ..., // optional
+    question4Position: ..., // optional
+    includeQuestion5: ..., // optional
+    question5Label: ..., // optional
+    question5Position: ..., // optional
+    includeQuestion6: ..., // optional
+    question6Label: ..., // optional
+    question6Position: ..., // optional
+    includeQuestion7: ..., // optional
+    question7Label: ..., // optional
+    question7Position: ..., // optional
+    includeQuestion8: ..., // optional
+    question8Label: ..., // optional
+    question8Position: ..., // optional
+    includeQuestion9: ..., // optional
+    question9Label: ..., // optional
+    question9Position: ..., // optional
+    includeQuestion10: ..., // optional
+    question10Label: ..., // optional
+    question10Position: ..., // optional
+    includeQuestion11: ..., // optional
+    question11Label: ..., // optional
+    question11Position: ..., // optional
+    includeQuestion12: ..., // optional
+    question12Label: ..., // optional
+    question12Position: ..., // optional
+    includeQuestion13: ..., // optional
+    question13Label: ..., // optional
+    question13Position: ..., // optional
+    includeQuestion14: ..., // optional
+    question14Label: ..., // optional
+    question14Position: ..., // optional
+    includeQuestion15: ..., // optional
+    question15Label: ..., // optional
+    question15Position: ..., // optional
+    includeQuestion16: ..., // optional
+    question16Label: ..., // optional
+    question16Position: ..., // optional
+    includeQuestion17: ..., // optional
+    question17Label: ..., // optional
+    question17Position: ..., // optional
+    includeQuestion18: ..., // optional
+    question18Label: ..., // optional
+    question18Position: ..., // optional
+    includeQuestion19: ..., // optional
+    question19Label: ..., // optional
+    question19Position: ..., // optional
+    includeQuestion20: ..., // optional
+    question20Label: ..., // optional
+    question20Position: ..., // optional
+  };
+  mutation.mutate(batchApplyQuestionnaireTemplateToProjectVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ projectId: ..., sourceTemplateId: ..., includeQuestion1: ..., question1Label: ..., question1Position: ..., includeQuestion2: ..., question2Label: ..., question2Position: ..., includeQuestion3: ..., question3Label: ..., question3Position: ..., includeQuestion4: ..., question4Label: ..., question4Position: ..., includeQuestion5: ..., question5Label: ..., question5Position: ..., includeQuestion6: ..., question6Label: ..., question6Position: ..., includeQuestion7: ..., question7Label: ..., question7Position: ..., includeQuestion8: ..., question8Label: ..., question8Position: ..., includeQuestion9: ..., question9Label: ..., question9Position: ..., includeQuestion10: ..., question10Label: ..., question10Position: ..., includeQuestion11: ..., question11Label: ..., question11Position: ..., includeQuestion12: ..., question12Label: ..., question12Position: ..., includeQuestion13: ..., question13Label: ..., question13Position: ..., includeQuestion14: ..., question14Label: ..., question14Position: ..., includeQuestion15: ..., question15Label: ..., question15Position: ..., includeQuestion16: ..., question16Label: ..., question16Position: ..., includeQuestion17: ..., question17Label: ..., question17Position: ..., includeQuestion18: ..., question18Label: ..., question18Position: ..., includeQuestion19: ..., question19Label: ..., question19Position: ..., includeQuestion20: ..., question20Label: ..., question20Position: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(batchApplyQuestionnaireTemplateToProjectVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.projectQuestionnaire_upsert);
+    console.log(mutation.data.question1);
+    console.log(mutation.data.question2);
+    console.log(mutation.data.question3);
+    console.log(mutation.data.question4);
+    console.log(mutation.data.question5);
+    console.log(mutation.data.question6);
+    console.log(mutation.data.question7);
+    console.log(mutation.data.question8);
+    console.log(mutation.data.question9);
+    console.log(mutation.data.question10);
+    console.log(mutation.data.question11);
+    console.log(mutation.data.question12);
+    console.log(mutation.data.question13);
+    console.log(mutation.data.question14);
+    console.log(mutation.data.question15);
+    console.log(mutation.data.question16);
+    console.log(mutation.data.question17);
+    console.log(mutation.data.question18);
+    console.log(mutation.data.question19);
+    console.log(mutation.data.question20);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
 ## CreateProjectQuestionnaireQuestion
 You can execute the `CreateProjectQuestionnaireQuestion` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
@@ -4307,7 +4564,7 @@ export default function CreateQuoteItemTemplateWithUnitComponent() {
   const createQuoteItemTemplateWithUnitVars: CreateQuoteItemTemplateWithUnitVariables = {
     id: ..., 
     name: ..., 
-    unit: ...,
+    unit: ..., 
     hasKeywords: ..., 
     keywords: ..., 
   };
@@ -4409,7 +4666,7 @@ export default function UpdateQuoteItemTemplateWithUnitComponent() {
   const updateQuoteItemTemplateWithUnitVars: UpdateQuoteItemTemplateWithUnitVariables = {
     id: ..., 
     name: ..., 
-    unit: ...,
+    unit: ..., 
     hasKeywords: ..., 
     keywords: ..., 
   };
@@ -4908,7 +5165,7 @@ export default function CreateQuoteItemWithUnitComponent() {
     displayOrder: ..., 
     name: ..., 
     quantity: ..., 
-    unit: ...,
+    unit: ..., 
     unitPriceCents: ..., 
   };
   mutation.mutate(createQuoteItemWithUnitVars);
@@ -4937,6 +5194,7 @@ export default function CreateQuoteItemWithUnitComponent() {
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
+
 ## DeleteQuoteItem
 You can execute the `DeleteQuoteItem` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
 ```javascript
@@ -5814,3 +6072,4 @@ export default function UpsertMyUserSignatureComponent() {
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
 ```
+

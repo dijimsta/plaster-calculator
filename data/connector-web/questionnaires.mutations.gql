@@ -167,6 +167,303 @@ mutation ApplyQuestionnaireTemplateToProject(
     )
 }
 
+# Upserts the `ProjectQuestionnaire` (recording `sourceTemplateId`) and
+# inserts up to 20 copied `ProjectQuestionnaireQuestion` rows in a single
+# `@transaction` mutation, so applying a template to a project — currently
+# one `CreateProjectQuestionnaireQuestion` call per question via
+# `Promise.all` in `useApplyQuestionnaireTemplateCallback` — becomes one
+# round trip. This mutation only writes the copy: the caller reads the
+# template client-side and passes the copied labels/positions in; no
+# template-reading logic lives here. `ApplyQuestionnaireTemplateToProject`
+# above is unchanged and keeps serving the scope-of-work route until a
+# future migration moves it over to this mutation too.
+#
+# Shape follows `CreateQuoteWithItems` in quotes.mutations.gql: a fixed
+# number of aliased `projectQuestionnaireQuestion_insert` slots, each
+# switched on with `@include`, because `firebase dataconnect:sdk:generate`
+# rejects any variable of an auto-generated `<Table>_Data` type (list or
+# singular) with "_Data input types are not yet supported by the generated
+# SDKs" — so there is no way to accept a variable-length list of questions
+# in one atomic document; a fixed slot count is the only mechanism proven
+# to compile and generate a working SDK. `id` is omitted from each insert
+# and left to `ProjectQuestionnaireQuestion.id`'s `@default(expr:
+# "uuidV4()")`, since the caller only supplies labels and positions.
+#
+# 20 slots comfortably covers any realistic clarification template (the
+# motivating case is an eight-question template). Every per-slot variable
+# has a default, so a caller only supplies values (and
+# `$includeQuestionN: true`) for the slots it actually uses.
+mutation BatchApplyQuestionnaireTemplateToProject(
+    $projectId: UUID!
+    $sourceTemplateId: UUID!
+    $includeQuestion1: Boolean = false
+    $question1Label: String = ""
+    $question1Position: Int = 0
+    $includeQuestion2: Boolean = false
+    $question2Label: String = ""
+    $question2Position: Int = 0
+    $includeQuestion3: Boolean = false
+    $question3Label: String = ""
+    $question3Position: Int = 0
+    $includeQuestion4: Boolean = false
+    $question4Label: String = ""
+    $question4Position: Int = 0
+    $includeQuestion5: Boolean = false
+    $question5Label: String = ""
+    $question5Position: Int = 0
+    $includeQuestion6: Boolean = false
+    $question6Label: String = ""
+    $question6Position: Int = 0
+    $includeQuestion7: Boolean = false
+    $question7Label: String = ""
+    $question7Position: Int = 0
+    $includeQuestion8: Boolean = false
+    $question8Label: String = ""
+    $question8Position: Int = 0
+    $includeQuestion9: Boolean = false
+    $question9Label: String = ""
+    $question9Position: Int = 0
+    $includeQuestion10: Boolean = false
+    $question10Label: String = ""
+    $question10Position: Int = 0
+    $includeQuestion11: Boolean = false
+    $question11Label: String = ""
+    $question11Position: Int = 0
+    $includeQuestion12: Boolean = false
+    $question12Label: String = ""
+    $question12Position: Int = 0
+    $includeQuestion13: Boolean = false
+    $question13Label: String = ""
+    $question13Position: Int = 0
+    $includeQuestion14: Boolean = false
+    $question14Label: String = ""
+    $question14Position: Int = 0
+    $includeQuestion15: Boolean = false
+    $question15Label: String = ""
+    $question15Position: Int = 0
+    $includeQuestion16: Boolean = false
+    $question16Label: String = ""
+    $question16Position: Int = 0
+    $includeQuestion17: Boolean = false
+    $question17Label: String = ""
+    $question17Position: Int = 0
+    $includeQuestion18: Boolean = false
+    $question18Label: String = ""
+    $question18Position: Int = 0
+    $includeQuestion19: Boolean = false
+    $question19Label: String = ""
+    $question19Position: Int = 0
+    $includeQuestion20: Boolean = false
+    $question20Label: String = ""
+    $question20Position: Int = 0
+) @auth(level: USER) @transaction {
+    query @redact {
+        project(key: { id: $projectId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this project"
+            ) {
+            id
+            teamId
+        }
+        questionnaireTemplate(key: { id: $sourceTemplateId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this template"
+            ) {
+            id
+            teamId
+        }
+    }
+    projectQuestionnaire_upsert(
+        data: {
+            projectId: $projectId
+            sourceTemplateId: $sourceTemplateId
+            updatedAt_expr: "request.time"
+        }
+    )
+    question1: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question1Label
+            position: $question1Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion1)
+    question2: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question2Label
+            position: $question2Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion2)
+    question3: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question3Label
+            position: $question3Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion3)
+    question4: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question4Label
+            position: $question4Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion4)
+    question5: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question5Label
+            position: $question5Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion5)
+    question6: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question6Label
+            position: $question6Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion6)
+    question7: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question7Label
+            position: $question7Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion7)
+    question8: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question8Label
+            position: $question8Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion8)
+    question9: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question9Label
+            position: $question9Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion9)
+    question10: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question10Label
+            position: $question10Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion10)
+    question11: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question11Label
+            position: $question11Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion11)
+    question12: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question12Label
+            position: $question12Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion12)
+    question13: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question13Label
+            position: $question13Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion13)
+    question14: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question14Label
+            position: $question14Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion14)
+    question15: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question15Label
+            position: $question15Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion15)
+    question16: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question16Label
+            position: $question16Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion16)
+    question17: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question17Label
+            position: $question17Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion17)
+    question18: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question18Label
+            position: $question18Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion18)
+    question19: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question19Label
+            position: $question19Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion19)
+    question20: projectQuestionnaireQuestion_insert(
+        data: {
+            projectQuestionnaireId: $projectId
+            label: $question20Label
+            position: $question20Position
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeQuestion20)
+}
+
 mutation CreateProjectQuestionnaireQuestion(
     $id: UUID!
     $projectId: UUID!

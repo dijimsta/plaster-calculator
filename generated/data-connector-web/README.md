@@ -44,6 +44,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*DeleteQuestionnaireTemplate*](#deletequestionnairetemplate)
   - [*EnsureProjectQuestionnaire*](#ensureprojectquestionnaire)
   - [*ApplyQuestionnaireTemplateToProject*](#applyquestionnairetemplatetoproject)
+  - [*BatchApplyQuestionnaireTemplateToProject*](#batchapplyquestionnairetemplatetoproject)
   - [*CreateProjectQuestionnaireQuestion*](#createprojectquestionnairequestion)
   - [*UpdateProjectQuestionnaireQuestion*](#updateprojectquestionnairequestion)
   - [*UpdateProjectQuestionnaireQuestionAnswer*](#updateprojectquestionnairequestionanswer)
@@ -3943,6 +3944,398 @@ executeMutation(ref).then((response) => {
 });
 ```
 
+## BatchApplyQuestionnaireTemplateToProject
+You can execute the `BatchApplyQuestionnaireTemplateToProject` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+batchApplyQuestionnaireTemplateToProject(vars: BatchApplyQuestionnaireTemplateToProjectVariables): MutationPromise<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
+
+interface BatchApplyQuestionnaireTemplateToProjectRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: BatchApplyQuestionnaireTemplateToProjectVariables): MutationRef<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
+}
+export const batchApplyQuestionnaireTemplateToProjectRef: BatchApplyQuestionnaireTemplateToProjectRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+batchApplyQuestionnaireTemplateToProject(dc: DataConnect, vars: BatchApplyQuestionnaireTemplateToProjectVariables): MutationPromise<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
+
+interface BatchApplyQuestionnaireTemplateToProjectRef {
+  ...
+  (dc: DataConnect, vars: BatchApplyQuestionnaireTemplateToProjectVariables): MutationRef<BatchApplyQuestionnaireTemplateToProjectData, BatchApplyQuestionnaireTemplateToProjectVariables>;
+}
+export const batchApplyQuestionnaireTemplateToProjectRef: BatchApplyQuestionnaireTemplateToProjectRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the batchApplyQuestionnaireTemplateToProjectRef:
+```typescript
+const name = batchApplyQuestionnaireTemplateToProjectRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `BatchApplyQuestionnaireTemplateToProject` mutation requires an argument of type `BatchApplyQuestionnaireTemplateToProjectVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface BatchApplyQuestionnaireTemplateToProjectVariables {
+  projectId: UUIDString;
+  sourceTemplateId: UUIDString;
+  includeQuestion1?: boolean | null;
+  question1Label?: string | null;
+  question1Position?: number | null;
+  includeQuestion2?: boolean | null;
+  question2Label?: string | null;
+  question2Position?: number | null;
+  includeQuestion3?: boolean | null;
+  question3Label?: string | null;
+  question3Position?: number | null;
+  includeQuestion4?: boolean | null;
+  question4Label?: string | null;
+  question4Position?: number | null;
+  includeQuestion5?: boolean | null;
+  question5Label?: string | null;
+  question5Position?: number | null;
+  includeQuestion6?: boolean | null;
+  question6Label?: string | null;
+  question6Position?: number | null;
+  includeQuestion7?: boolean | null;
+  question7Label?: string | null;
+  question7Position?: number | null;
+  includeQuestion8?: boolean | null;
+  question8Label?: string | null;
+  question8Position?: number | null;
+  includeQuestion9?: boolean | null;
+  question9Label?: string | null;
+  question9Position?: number | null;
+  includeQuestion10?: boolean | null;
+  question10Label?: string | null;
+  question10Position?: number | null;
+  includeQuestion11?: boolean | null;
+  question11Label?: string | null;
+  question11Position?: number | null;
+  includeQuestion12?: boolean | null;
+  question12Label?: string | null;
+  question12Position?: number | null;
+  includeQuestion13?: boolean | null;
+  question13Label?: string | null;
+  question13Position?: number | null;
+  includeQuestion14?: boolean | null;
+  question14Label?: string | null;
+  question14Position?: number | null;
+  includeQuestion15?: boolean | null;
+  question15Label?: string | null;
+  question15Position?: number | null;
+  includeQuestion16?: boolean | null;
+  question16Label?: string | null;
+  question16Position?: number | null;
+  includeQuestion17?: boolean | null;
+  question17Label?: string | null;
+  question17Position?: number | null;
+  includeQuestion18?: boolean | null;
+  question18Label?: string | null;
+  question18Position?: number | null;
+  includeQuestion19?: boolean | null;
+  question19Label?: string | null;
+  question19Position?: number | null;
+  includeQuestion20?: boolean | null;
+  question20Label?: string | null;
+  question20Position?: number | null;
+}
+```
+### Return Type
+Recall that executing the `BatchApplyQuestionnaireTemplateToProject` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `BatchApplyQuestionnaireTemplateToProjectData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface BatchApplyQuestionnaireTemplateToProjectData {
+  projectQuestionnaire_upsert: ProjectQuestionnaire_Key;
+  question1: ProjectQuestionnaireQuestion_Key;
+  question2: ProjectQuestionnaireQuestion_Key;
+  question3: ProjectQuestionnaireQuestion_Key;
+  question4: ProjectQuestionnaireQuestion_Key;
+  question5: ProjectQuestionnaireQuestion_Key;
+  question6: ProjectQuestionnaireQuestion_Key;
+  question7: ProjectQuestionnaireQuestion_Key;
+  question8: ProjectQuestionnaireQuestion_Key;
+  question9: ProjectQuestionnaireQuestion_Key;
+  question10: ProjectQuestionnaireQuestion_Key;
+  question11: ProjectQuestionnaireQuestion_Key;
+  question12: ProjectQuestionnaireQuestion_Key;
+  question13: ProjectQuestionnaireQuestion_Key;
+  question14: ProjectQuestionnaireQuestion_Key;
+  question15: ProjectQuestionnaireQuestion_Key;
+  question16: ProjectQuestionnaireQuestion_Key;
+  question17: ProjectQuestionnaireQuestion_Key;
+  question18: ProjectQuestionnaireQuestion_Key;
+  question19: ProjectQuestionnaireQuestion_Key;
+  question20: ProjectQuestionnaireQuestion_Key;
+}
+```
+### Using `BatchApplyQuestionnaireTemplateToProject`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, batchApplyQuestionnaireTemplateToProject, BatchApplyQuestionnaireTemplateToProjectVariables } from '@generated/data-connector-web';
+
+// The `BatchApplyQuestionnaireTemplateToProject` mutation requires an argument of type `BatchApplyQuestionnaireTemplateToProjectVariables`:
+const batchApplyQuestionnaireTemplateToProjectVars: BatchApplyQuestionnaireTemplateToProjectVariables = {
+  projectId: ..., 
+  sourceTemplateId: ..., 
+  includeQuestion1: ..., // optional
+  question1Label: ..., // optional
+  question1Position: ..., // optional
+  includeQuestion2: ..., // optional
+  question2Label: ..., // optional
+  question2Position: ..., // optional
+  includeQuestion3: ..., // optional
+  question3Label: ..., // optional
+  question3Position: ..., // optional
+  includeQuestion4: ..., // optional
+  question4Label: ..., // optional
+  question4Position: ..., // optional
+  includeQuestion5: ..., // optional
+  question5Label: ..., // optional
+  question5Position: ..., // optional
+  includeQuestion6: ..., // optional
+  question6Label: ..., // optional
+  question6Position: ..., // optional
+  includeQuestion7: ..., // optional
+  question7Label: ..., // optional
+  question7Position: ..., // optional
+  includeQuestion8: ..., // optional
+  question8Label: ..., // optional
+  question8Position: ..., // optional
+  includeQuestion9: ..., // optional
+  question9Label: ..., // optional
+  question9Position: ..., // optional
+  includeQuestion10: ..., // optional
+  question10Label: ..., // optional
+  question10Position: ..., // optional
+  includeQuestion11: ..., // optional
+  question11Label: ..., // optional
+  question11Position: ..., // optional
+  includeQuestion12: ..., // optional
+  question12Label: ..., // optional
+  question12Position: ..., // optional
+  includeQuestion13: ..., // optional
+  question13Label: ..., // optional
+  question13Position: ..., // optional
+  includeQuestion14: ..., // optional
+  question14Label: ..., // optional
+  question14Position: ..., // optional
+  includeQuestion15: ..., // optional
+  question15Label: ..., // optional
+  question15Position: ..., // optional
+  includeQuestion16: ..., // optional
+  question16Label: ..., // optional
+  question16Position: ..., // optional
+  includeQuestion17: ..., // optional
+  question17Label: ..., // optional
+  question17Position: ..., // optional
+  includeQuestion18: ..., // optional
+  question18Label: ..., // optional
+  question18Position: ..., // optional
+  includeQuestion19: ..., // optional
+  question19Label: ..., // optional
+  question19Position: ..., // optional
+  includeQuestion20: ..., // optional
+  question20Label: ..., // optional
+  question20Position: ..., // optional
+};
+
+// Call the `batchApplyQuestionnaireTemplateToProject()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await batchApplyQuestionnaireTemplateToProject(batchApplyQuestionnaireTemplateToProjectVars);
+// Variables can be defined inline as well.
+const { data } = await batchApplyQuestionnaireTemplateToProject({ projectId: ..., sourceTemplateId: ..., includeQuestion1: ..., question1Label: ..., question1Position: ..., includeQuestion2: ..., question2Label: ..., question2Position: ..., includeQuestion3: ..., question3Label: ..., question3Position: ..., includeQuestion4: ..., question4Label: ..., question4Position: ..., includeQuestion5: ..., question5Label: ..., question5Position: ..., includeQuestion6: ..., question6Label: ..., question6Position: ..., includeQuestion7: ..., question7Label: ..., question7Position: ..., includeQuestion8: ..., question8Label: ..., question8Position: ..., includeQuestion9: ..., question9Label: ..., question9Position: ..., includeQuestion10: ..., question10Label: ..., question10Position: ..., includeQuestion11: ..., question11Label: ..., question11Position: ..., includeQuestion12: ..., question12Label: ..., question12Position: ..., includeQuestion13: ..., question13Label: ..., question13Position: ..., includeQuestion14: ..., question14Label: ..., question14Position: ..., includeQuestion15: ..., question15Label: ..., question15Position: ..., includeQuestion16: ..., question16Label: ..., question16Position: ..., includeQuestion17: ..., question17Label: ..., question17Position: ..., includeQuestion18: ..., question18Label: ..., question18Position: ..., includeQuestion19: ..., question19Label: ..., question19Position: ..., includeQuestion20: ..., question20Label: ..., question20Position: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await batchApplyQuestionnaireTemplateToProject(dataConnect, batchApplyQuestionnaireTemplateToProjectVars);
+
+console.log(data.projectQuestionnaire_upsert);
+console.log(data.question1);
+console.log(data.question2);
+console.log(data.question3);
+console.log(data.question4);
+console.log(data.question5);
+console.log(data.question6);
+console.log(data.question7);
+console.log(data.question8);
+console.log(data.question9);
+console.log(data.question10);
+console.log(data.question11);
+console.log(data.question12);
+console.log(data.question13);
+console.log(data.question14);
+console.log(data.question15);
+console.log(data.question16);
+console.log(data.question17);
+console.log(data.question18);
+console.log(data.question19);
+console.log(data.question20);
+
+// Or, you can use the `Promise` API.
+batchApplyQuestionnaireTemplateToProject(batchApplyQuestionnaireTemplateToProjectVars).then((response) => {
+  const data = response.data;
+  console.log(data.projectQuestionnaire_upsert);
+  console.log(data.question1);
+  console.log(data.question2);
+  console.log(data.question3);
+  console.log(data.question4);
+  console.log(data.question5);
+  console.log(data.question6);
+  console.log(data.question7);
+  console.log(data.question8);
+  console.log(data.question9);
+  console.log(data.question10);
+  console.log(data.question11);
+  console.log(data.question12);
+  console.log(data.question13);
+  console.log(data.question14);
+  console.log(data.question15);
+  console.log(data.question16);
+  console.log(data.question17);
+  console.log(data.question18);
+  console.log(data.question19);
+  console.log(data.question20);
+});
+```
+
+### Using `BatchApplyQuestionnaireTemplateToProject`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, batchApplyQuestionnaireTemplateToProjectRef, BatchApplyQuestionnaireTemplateToProjectVariables } from '@generated/data-connector-web';
+
+// The `BatchApplyQuestionnaireTemplateToProject` mutation requires an argument of type `BatchApplyQuestionnaireTemplateToProjectVariables`:
+const batchApplyQuestionnaireTemplateToProjectVars: BatchApplyQuestionnaireTemplateToProjectVariables = {
+  projectId: ..., 
+  sourceTemplateId: ..., 
+  includeQuestion1: ..., // optional
+  question1Label: ..., // optional
+  question1Position: ..., // optional
+  includeQuestion2: ..., // optional
+  question2Label: ..., // optional
+  question2Position: ..., // optional
+  includeQuestion3: ..., // optional
+  question3Label: ..., // optional
+  question3Position: ..., // optional
+  includeQuestion4: ..., // optional
+  question4Label: ..., // optional
+  question4Position: ..., // optional
+  includeQuestion5: ..., // optional
+  question5Label: ..., // optional
+  question5Position: ..., // optional
+  includeQuestion6: ..., // optional
+  question6Label: ..., // optional
+  question6Position: ..., // optional
+  includeQuestion7: ..., // optional
+  question7Label: ..., // optional
+  question7Position: ..., // optional
+  includeQuestion8: ..., // optional
+  question8Label: ..., // optional
+  question8Position: ..., // optional
+  includeQuestion9: ..., // optional
+  question9Label: ..., // optional
+  question9Position: ..., // optional
+  includeQuestion10: ..., // optional
+  question10Label: ..., // optional
+  question10Position: ..., // optional
+  includeQuestion11: ..., // optional
+  question11Label: ..., // optional
+  question11Position: ..., // optional
+  includeQuestion12: ..., // optional
+  question12Label: ..., // optional
+  question12Position: ..., // optional
+  includeQuestion13: ..., // optional
+  question13Label: ..., // optional
+  question13Position: ..., // optional
+  includeQuestion14: ..., // optional
+  question14Label: ..., // optional
+  question14Position: ..., // optional
+  includeQuestion15: ..., // optional
+  question15Label: ..., // optional
+  question15Position: ..., // optional
+  includeQuestion16: ..., // optional
+  question16Label: ..., // optional
+  question16Position: ..., // optional
+  includeQuestion17: ..., // optional
+  question17Label: ..., // optional
+  question17Position: ..., // optional
+  includeQuestion18: ..., // optional
+  question18Label: ..., // optional
+  question18Position: ..., // optional
+  includeQuestion19: ..., // optional
+  question19Label: ..., // optional
+  question19Position: ..., // optional
+  includeQuestion20: ..., // optional
+  question20Label: ..., // optional
+  question20Position: ..., // optional
+};
+
+// Call the `batchApplyQuestionnaireTemplateToProjectRef()` function to get a reference to the mutation.
+const ref = batchApplyQuestionnaireTemplateToProjectRef(batchApplyQuestionnaireTemplateToProjectVars);
+// Variables can be defined inline as well.
+const ref = batchApplyQuestionnaireTemplateToProjectRef({ projectId: ..., sourceTemplateId: ..., includeQuestion1: ..., question1Label: ..., question1Position: ..., includeQuestion2: ..., question2Label: ..., question2Position: ..., includeQuestion3: ..., question3Label: ..., question3Position: ..., includeQuestion4: ..., question4Label: ..., question4Position: ..., includeQuestion5: ..., question5Label: ..., question5Position: ..., includeQuestion6: ..., question6Label: ..., question6Position: ..., includeQuestion7: ..., question7Label: ..., question7Position: ..., includeQuestion8: ..., question8Label: ..., question8Position: ..., includeQuestion9: ..., question9Label: ..., question9Position: ..., includeQuestion10: ..., question10Label: ..., question10Position: ..., includeQuestion11: ..., question11Label: ..., question11Position: ..., includeQuestion12: ..., question12Label: ..., question12Position: ..., includeQuestion13: ..., question13Label: ..., question13Position: ..., includeQuestion14: ..., question14Label: ..., question14Position: ..., includeQuestion15: ..., question15Label: ..., question15Position: ..., includeQuestion16: ..., question16Label: ..., question16Position: ..., includeQuestion17: ..., question17Label: ..., question17Position: ..., includeQuestion18: ..., question18Label: ..., question18Position: ..., includeQuestion19: ..., question19Label: ..., question19Position: ..., includeQuestion20: ..., question20Label: ..., question20Position: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = batchApplyQuestionnaireTemplateToProjectRef(dataConnect, batchApplyQuestionnaireTemplateToProjectVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.projectQuestionnaire_upsert);
+console.log(data.question1);
+console.log(data.question2);
+console.log(data.question3);
+console.log(data.question4);
+console.log(data.question5);
+console.log(data.question6);
+console.log(data.question7);
+console.log(data.question8);
+console.log(data.question9);
+console.log(data.question10);
+console.log(data.question11);
+console.log(data.question12);
+console.log(data.question13);
+console.log(data.question14);
+console.log(data.question15);
+console.log(data.question16);
+console.log(data.question17);
+console.log(data.question18);
+console.log(data.question19);
+console.log(data.question20);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.projectQuestionnaire_upsert);
+  console.log(data.question1);
+  console.log(data.question2);
+  console.log(data.question3);
+  console.log(data.question4);
+  console.log(data.question5);
+  console.log(data.question6);
+  console.log(data.question7);
+  console.log(data.question8);
+  console.log(data.question9);
+  console.log(data.question10);
+  console.log(data.question11);
+  console.log(data.question12);
+  console.log(data.question13);
+  console.log(data.question14);
+  console.log(data.question15);
+  console.log(data.question16);
+  console.log(data.question17);
+  console.log(data.question18);
+  console.log(data.question19);
+  console.log(data.question20);
+});
+```
+
 ## CreateProjectQuestionnaireQuestion
 You can execute the `CreateProjectQuestionnaireQuestion` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
@@ -5164,7 +5557,7 @@ import { connectorConfig, createQuoteItemTemplateWithUnit, CreateQuoteItemTempla
 const createQuoteItemTemplateWithUnitVars: CreateQuoteItemTemplateWithUnitVariables = {
   id: ..., 
   name: ..., 
-  unit: ...,
+  unit: ..., 
   hasKeywords: ..., 
   keywords: ..., 
 };
@@ -5198,7 +5591,7 @@ import { connectorConfig, createQuoteItemTemplateWithUnitRef, CreateQuoteItemTem
 const createQuoteItemTemplateWithUnitVars: CreateQuoteItemTemplateWithUnitVariables = {
   id: ..., 
   name: ..., 
-  unit: ...,
+  unit: ..., 
   hasKeywords: ..., 
   keywords: ..., 
 };
@@ -5285,7 +5678,7 @@ import { connectorConfig, updateQuoteItemTemplateWithUnit, UpdateQuoteItemTempla
 const updateQuoteItemTemplateWithUnitVars: UpdateQuoteItemTemplateWithUnitVariables = {
   id: ..., 
   name: ..., 
-  unit: ...,
+  unit: ..., 
   hasKeywords: ..., 
   keywords: ..., 
 };
@@ -5319,7 +5712,7 @@ import { connectorConfig, updateQuoteItemTemplateWithUnitRef, UpdateQuoteItemTem
 const updateQuoteItemTemplateWithUnitVars: UpdateQuoteItemTemplateWithUnitVariables = {
   id: ..., 
   name: ..., 
-  unit: ...,
+  unit: ..., 
   hasKeywords: ..., 
   keywords: ..., 
 };
@@ -5873,7 +6266,7 @@ const createQuoteItemWithUnitVars: CreateQuoteItemWithUnitVariables = {
   displayOrder: ..., 
   name: ..., 
   quantity: ..., 
-  unit: ...,
+  unit: ..., 
   unitPriceCents: ..., 
 };
 
@@ -5909,7 +6302,7 @@ const createQuoteItemWithUnitVars: CreateQuoteItemWithUnitVariables = {
   displayOrder: ..., 
   name: ..., 
   quantity: ..., 
-  unit: ...,
+  unit: ..., 
   unitPriceCents: ..., 
 };
 
@@ -5934,6 +6327,7 @@ executeMutation(ref).then((response) => {
   console.log(data.quoteItem_insert);
 });
 ```
+
 ## DeleteQuoteItem
 You can execute the `DeleteQuoteItem` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
@@ -7164,3 +7558,4 @@ executeMutation(ref).then((response) => {
   console.log(data.userSignature_upsert);
 });
 ```
+
