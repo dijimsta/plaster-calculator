@@ -29,7 +29,13 @@ export function QuoteTemplateFormDefaultItemRow({
                 <Text size="base">{item.name}</Text>
             </Table.Cell>
             <Table.Cell fit>
-                <Text size="sm">{item.unit}</Text>
+                {item.unit ? (
+                    <Text size="sm">{item.unit}</Text>
+                ) : (
+                    <Text size="sm" variant="muted">
+                        {t("quoteTemplateForm.unitNotSet")}
+                    </Text>
+                )}
             </Table.Cell>
             <Table.Cell fit>
                 <Controller

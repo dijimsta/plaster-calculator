@@ -59,7 +59,13 @@ export function useActiveQuoteTemplate(): {
     }, [createTemplate, hasNoTemplates, queryClient]);
 
     return {
-        activeTemplate: templates[0] ?? null,
+        // `ListQuoteTemplatesForTeam` orders `isDefault: DESC`, so `templates[0]`
+        // would also resolve to the default today -- but this reads `isDefault`
+        // explicitly rather than leaning on that ordering, so the default a
+        // team edits doesn't quietly change if the query's `orderBy` ever
+        // does.
+        activeTemplate:
+            templates.find((template) => template.isDefault) ?? null,
         isLoading: isLoading || hasNoTemplates,
     };
 }

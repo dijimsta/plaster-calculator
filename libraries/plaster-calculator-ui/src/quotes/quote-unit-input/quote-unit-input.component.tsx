@@ -1,13 +1,29 @@
 "use client";
 
-import { Box, Input, SelectMenu } from "@libraries/uikit-web";
+import {
+    DAY_QUOTE_UNIT,
+    EACH_QUOTE_UNIT,
+    HOUR_QUOTE_UNIT,
+    ITEM_QUOTE_UNIT,
+    LINEAR_METRE_QUOTE_UNIT,
+    QuoteUnitSchema,
+    SQUARE_METRE_QUOTE_UNIT,
+} from "@libraries/plaster-calculator-common";
+import { SelectMenu } from "@libraries/uikit-web";
 import type { ChangeEvent, ReactElement } from "react";
-import { useEffect, useState } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 
-const PRESET_UNITS = ["m²", "m", "ea"] as const;
-const OTHER_UNIT = "__OTHER__";
+// The fixed vocabulary, read from `QuoteUnitSchema` (`plaster-calculator-common`)
+// rather than redefined here -- see that schema's doc comment.
+const QUOTE_UNITS = [
+    SQUARE_METRE_QUOTE_UNIT,
+    LINEAR_METRE_QUOTE_UNIT,
+    EACH_QUOTE_UNIT,
+    ITEM_QUOTE_UNIT,
+    HOUR_QUOTE_UNIT,
+    DAY_QUOTE_UNIT,
+] as const;
 
 export type QuoteUnitInputProps = {
     readonly id: string;
@@ -15,71 +31,58 @@ export type QuoteUnitInputProps = {
     readonly disabled?: boolean;
     readonly required?: boolean;
     readonly onChange: (value: string) => void;
-    readonly onBlur?: () => void;
 };
 
-/** Preset quote units plus an explicit free-text "Other" value. */
+/**
+ * The fixed `QuoteUnitSchema` unit picker. Replaces the old m²/m/ea presets
+ * plus free-text "Other" escape hatch: `QuoteItemTemplate.unit` is now a
+ * closed vocabulary end to end (schema -> connector -> this input), so
+ * there is nothing left for free text to do.
+ *
+ * A stored value outside the six-unit list (data written before this
+ * vocabulary closed) is appended as an extra, selectable option rather than
+ * being silently snapped to one of the six or blanked out -- losing or
+ * mutating a team's existing data on an unrelated render is worse than
+ * showing one non-standard option alongside the standard six. Picking any
+ * other option replaces it, same as picking any other option ever does.
+ */
 export function QuoteUnitInput({
     id,
     value,
     disabled = false,
     required = false,
     onChange,
-    onBlur,
 }: QuoteUnitInputProps): ReactElement {
     const { t } = useQuotesTranslation();
     const resolvedValue = value ?? "";
-    const [selection, setSelection] = useState(() =>
-        presetSelection(resolvedValue),
-    );
-
-    useEffect(() => {
-        if (resolvedValue) {
-            setSelection(presetSelection(resolvedValue));
-        } else if (selection !== OTHER_UNIT) {
-            setSelection("");
-        }
-    }, [resolvedValue, selection]);
+    const isRecognizedUnit =
+        resolvedValue === "" ||
+        QuoteUnitSchema.safeParse(resolvedValue).success;
 
     return (
-        <Box direction="column" gap="xs">
-            <SelectMenu
-                id={id}
-                label={t("quoteUnitInput.label")}
-                disabled={disabled}
-                required={required}
-                value={selection}
-                options={[
-                    { value: "", label: t("quoteUnitInput.selectUnit") },
-                    { value: "m²", label: "m²" },
-                    { value: "m", label: "m" },
-                    { value: "ea", label: "ea" },
-                    { value: OTHER_UNIT, label: t("quoteUnitInput.other") },
-                ]}
-                onChange={(event: ChangeEvent<HTMLSelectElement>) => {
-                    const nextSelection = event.target.value;
-                    setSelection(nextSelection);
-                    onChange(nextSelection === OTHER_UNIT ? "" : nextSelection);
-                }}
-            />
-            {selection === OTHER_UNIT && (
-                <Input
-                    id={`${id}-other`}
-                    label={t("quoteUnitInput.otherLabel")}
-                    value={resolvedValue}
-                    disabled={disabled}
-                    required={required}
-                    onChange={(event) => onChange(event.target.value)}
-                    onBlur={onBlur}
-                />
-            )}
-        </Box>
+        <SelectMenu
+            id={id}
+            label={t("quoteUnitInput.label")}
+            disabled={disabled}
+            required={required}
+            value={resolvedValue}
+            options={[
+                { value: "", label: t("quoteUnitInput.selectUnit") },
+                ...QUOTE_UNITS.map((unit) => ({ value: unit, label: unit })),
+                ...(isRecognizedUnit
+                    ? []
+                    : [
+                          {
+                              value: resolvedValue,
+                              label: t("quoteUnitInput.unrecognizedUnit", {
+                                  unit: resolvedValue,
+                              }),
+                          },
+                      ]),
+            ]}
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                onChange(event.target.value)
+            }
+        />
     );
-}
-
-function presetSelection(value: string): string {
-    if (!value) return "";
-    return PRESET_UNITS.includes(value as (typeof PRESET_UNITS)[number])
-        ? value
-        : OTHER_UNIT;
 }

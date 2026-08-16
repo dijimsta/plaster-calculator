@@ -5,8 +5,7 @@ export const en = Object.freeze({
     quoteUnitInput: Object.freeze({
         label: "Unit",
         selectUnit: "Select unit",
-        other: "Other",
-        otherLabel: "Custom unit",
+        unrecognizedUnit: "{{unit}} (not a standard unit)",
     }),
     quotesPage: Object.freeze({
         description:
@@ -108,9 +107,10 @@ export const en = Object.freeze({
             "The default items and pricing used when quotes are generated from a project.",
     }),
     quoteTemplatePanel: Object.freeze({
-        title: "Quote template",
+        title: "Quote templates",
         description:
-            "Adjust the default item prices and add custom items that should appear on every quote.",
+            "Adjust the default item prices and add custom items that should appear on every quote. Variations reuse the default's item list, units and keywords -- only their prices differ.",
+        defaultEditorTitle: "Default template",
         loading: "Loading quote template...",
         saveSuccessTitle: "Quote template saved",
         saveSuccessDescription: "Your changes have been saved.",
@@ -127,6 +127,7 @@ export const en = Object.freeze({
             "Add your own items and choose when they're included on a quote.",
         priceLabel: "Price",
         unitLabel: "Unit",
+        unitNotSet: "Not set",
         itemNameLabel: "Item name",
         includeOnQuotesLabel: "Include on quotes",
         includeWhenKeywordsMatch: "Include when keywords match",
@@ -138,6 +139,40 @@ export const en = Object.freeze({
         removeItem: "Remove item {{number}}",
         saveChanges: "Save changes",
         saving: "Saving...",
+    }),
+    quoteTemplateList: Object.freeze({
+        tableLabel: "Quote templates",
+        nameColumn: "Name",
+        loading: "Loading quote templates...",
+        defaultBadge: "Default",
+        openAction: "Open {{name}}",
+        renameAction: "Rename {{name}}",
+        deleteAction: "Delete {{name}}",
+        addVariation: "Add variation",
+        nameLabel: "Template name",
+        createDialogTitle: "New quote template variation",
+        renameDialogTitle: "Rename quote template",
+        createSubmit: "Create",
+        renameSubmit: "Rename",
+        savingAction: "Saving...",
+        deleteDialogTitle: 'Delete "{{name}}"?',
+        deleteDialogDescription:
+            'This can\'t be undone. Any company assigned to "{{name}}" will fall back to the default template.',
+        deleteSubmit: "Delete",
+        deletingAction: "Deleting...",
+        createErrorTitle: "Couldn't create variation",
+        createErrorDescription:
+            "Something went wrong while creating the variation. Try again.",
+        renameErrorTitle: "Couldn't rename template",
+        renameErrorDescription:
+            "Something went wrong while renaming. Try again.",
+        deleteErrorTitle: "Couldn't delete template",
+        deleteErrorDescription:
+            "Something went wrong while deleting. Try again.",
+        addedItemNoticeTitle: "{{items}} added to the default template",
+        addedItemNoticeDescription:
+            "Every variation will pick this up at the default price the next time it's opened. Open a variation below to re-price it there if it needs something different.",
+        openVariationToReprice: "Open {{name}} to re-price",
     }),
     projectQuoteReadinessPage: Object.freeze({
         unableToLoadProject: "Unable to load project",

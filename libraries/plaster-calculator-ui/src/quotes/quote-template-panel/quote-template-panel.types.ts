@@ -3,6 +3,7 @@ import type { QuoteItemTemplateScope } from "@libraries/plaster-calculator-commo
 export type QuoteTemplate = {
     readonly id: string;
     readonly name: string;
+    readonly isDefault: boolean;
     readonly createdAt: string;
     readonly updatedAt: string;
 };

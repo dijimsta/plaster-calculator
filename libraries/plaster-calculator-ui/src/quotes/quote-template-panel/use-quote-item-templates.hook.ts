@@ -9,7 +9,7 @@ import {
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { useQueryClient } from "@tanstack/react-query";
 import { QueryFetchPolicy } from "firebase/data-connect";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import type { QuoteTemplateItem } from "./quote-template-panel.types.ts";
 import { QuoteTemplatePanelUtils } from "./quote-template-panel.utils.ts";
@@ -19,6 +19,56 @@ const dataConnect = FirebaseService.getDataConnect(
 );
 const quoteItemTemplatesListRef =
     DataConnector.listQuoteItemTemplatesRef(dataConnect);
+
+type DefaultTemplateBackfillPrices = {
+    readonly isDefaultTemplate: boolean;
+    readonly needsDefaultPricesForBackfill: boolean;
+    readonly isLoadingDefaultConfigs: boolean;
+    readonly defaultPriceByItemTemplateId: ReadonlyMap<string, number>;
+};
+
+/**
+ * Which template is the default, and -- when `quoteTemplateId` names some
+ * *other* template (a variation) -- the default's own configs, read only
+ * for their price. Split out of `useQuoteItemTemplates()` to keep that
+ * hook's own branching within this file's complexity limit; see
+ * `QuoteTemplatePanelUtils.resolveBackfillPriceCents()`, the caller of
+ * `defaultPriceByItemTemplateId`, for why a variation needs this at all.
+ */
+function useDefaultTemplateBackfillPrices(
+    quoteTemplateId: string | null,
+): DefaultTemplateBackfillPrices {
+    const { data: templatesData } =
+        DataConnectorReact.useListQuoteTemplatesForTeam(dataConnect);
+    const {
+        defaultTemplateId,
+        isDefaultTemplate,
+        needsDefaultPricesForBackfill,
+    } = QuoteTemplatePanelUtils.resolveDefaultTemplateContext(
+        quoteTemplateId,
+        templatesData?.quoteTemplates ?? [],
+    );
+    const { data: defaultConfigsData, isLoading: isLoadingDefaultConfigs } =
+        DataConnectorReact.useListQuoteItemTemplateConfigsForQuoteTemplate(
+            dataConnect,
+            { quoteTemplateId: defaultTemplateId ?? "" },
+            { enabled: needsDefaultPricesForBackfill },
+        );
+    const defaultPriceByItemTemplateId = useMemo(
+        () =>
+            QuoteTemplatePanelUtils.mapUnitPricesByItemTemplateId(
+                defaultConfigsData?.quoteItemTemplateConfigs ?? [],
+            ),
+        [defaultConfigsData],
+    );
+
+    return {
+        isDefaultTemplate,
+        needsDefaultPricesForBackfill,
+        isLoadingDefaultConfigs,
+        defaultPriceByItemTemplateId,
+    };
+}
 
 const SYSTEM_ITEM_KEYS = new Set([
     "PLASTERBOARD_10MM",
@@ -49,6 +99,12 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
             { quoteTemplateId: quoteTemplateId ?? "" },
             { enabled: quoteTemplateId !== null },
         );
+    const {
+        isDefaultTemplate,
+        needsDefaultPricesForBackfill,
+        isLoadingDefaultConfigs,
+        defaultPriceByItemTemplateId,
+    } = useDefaultTemplateBackfillPrices(quoteTemplateId);
     const { mutateAsync: reconcileSystemItemTemplates } =
         DataConnectorReact.useReconcileSystemQuoteItemTemplates(dataConnect);
     const { mutateAsync: createItemTemplateConfig } =
@@ -81,10 +137,16 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
         !isLoadingItemTemplates &&
         (systemItemKeys.length !== SYSTEM_ITEM_KEYS.size ||
             systemItemKeys.some((key) => !SYSTEM_ITEM_KEYS.has(key)));
-    const missingSystemConfigItemTemplateIds = itemTemplates
+    // Every item template missing a config row for `quoteTemplateId` -- not
+    // just SYSTEM ones. A custom item created against the default (via
+    // `QuoteTemplatePanel`'s "add item") only gets a `QuoteItemTemplateConfig`
+    // for the default itself; every variation is missing one for it, the
+    // same gap a SYSTEM item the team's catalog doesn't have yet leaves on
+    // every template. `resolveBackfillPriceCents()` decides what price a
+    // backfilled row for either kind lands at.
+    const missingConfigItemTemplateIds = itemTemplates
         .filter(
             (itemTemplate) =>
-                itemTemplate.scope === SYSTEM_QUOTE_ITEM_TEMPLATE_SCOPE &&
                 !configs.some(
                     (config) => config.itemTemplateId === itemTemplate.id,
                 ),
@@ -125,7 +187,8 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
             quoteTemplateId === null ||
             isLoadingItemTemplates ||
             isLoadingConfigs ||
-            missingSystemConfigItemTemplateIds === "" ||
+            (needsDefaultPricesForBackfill && isLoadingDefaultConfigs) ||
+            missingConfigItemTemplateIds === "" ||
             isBackfillingRef.current
         ) {
             return;
@@ -133,17 +196,20 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
         isBackfillingRef.current = true;
         const activeQuoteTemplateId = quoteTemplateId;
         void Promise.all(
-            missingSystemConfigItemTemplateIds
-                .split(",")
-                .map((itemTemplateId) =>
-                    createItemTemplateConfig({
-                        quoteTemplateId: activeQuoteTemplateId,
-                        itemTemplateId,
-                        unitPriceCents: 0,
-                        materialUnitPriceCents: 0,
-                        labourUnitPriceCents: 0,
-                    }),
-                ),
+            missingConfigItemTemplateIds.split(",").map((itemTemplateId) =>
+                createItemTemplateConfig({
+                    quoteTemplateId: activeQuoteTemplateId,
+                    itemTemplateId,
+                    unitPriceCents:
+                        QuoteTemplatePanelUtils.resolveBackfillPriceCents(
+                            isDefaultTemplate,
+                            itemTemplateId,
+                            defaultPriceByItemTemplateId,
+                        ),
+                    materialUnitPriceCents: 0,
+                    labourUnitPriceCents: 0,
+                }),
+            ),
         )
             .then(async () => {
                 const ref =
@@ -167,9 +233,13 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
             });
     }, [
         createItemTemplateConfig,
+        defaultPriceByItemTemplateId,
+        isDefaultTemplate,
         isLoadingConfigs,
+        isLoadingDefaultConfigs,
         isLoadingItemTemplates,
-        missingSystemConfigItemTemplateIds,
+        missingConfigItemTemplateIds,
+        needsDefaultPricesForBackfill,
         quoteTemplateId,
         queryClient,
     ]);

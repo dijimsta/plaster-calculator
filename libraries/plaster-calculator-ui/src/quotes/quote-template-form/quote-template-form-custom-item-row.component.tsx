@@ -171,7 +171,6 @@ export function QuoteTemplateFormCustomItemRow({
                             value={field.value}
                             required
                             onChange={field.onChange}
-                            onBlur={field.onBlur}
                         />
                     )}
                 />
