@@ -67,11 +67,13 @@ export function QuoteTemplatePanel({
             itemTemplateId: item.itemTemplateId,
             systemKey: (item.systemKey ?? "") as QuoteItemSystemKey,
             name: item.name,
+            unit: item.unit ?? "m²",
             unitPriceCents: item.unitPriceCents,
         })),
         customItems: customItems.map((item) => ({
             itemTemplateId: item.itemTemplateId,
             name: item.name,
+            unit: item.unit ?? "",
             hasKeywords: item.hasKeywords,
             enabled: item.enabled,
             keywords: item.keywords,

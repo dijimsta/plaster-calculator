@@ -49,7 +49,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*UpdateProjectQuestionnaireQuestionAnswer*](#updateprojectquestionnairequestionanswer)
   - [*UpdateProjectQuestionnaireQuestionAnswerSource*](#updateprojectquestionnairequestionanswersource)
   - [*DeleteProjectQuestionnaireQuestion*](#deleteprojectquestionnairequestion)
-  - [*EnsureSystemQuoteItemTemplates*](#ensuresystemquoteitemtemplates)
+  - [*ReconcileSystemQuoteItemTemplates*](#reconcilesystemquoteitemtemplates)
   - [*CreateQuoteTemplate*](#createquotetemplate)
   - [*CreateQuoteItemTemplateConfig*](#createquoteitemtemplateconfig)
   - [*UpdateQuoteItemTemplateConfig*](#updatequoteitemtemplateconfig)
@@ -937,6 +937,7 @@ export interface ListQuoteItemTemplatesData {
     scope: string;
     systemKey?: string | null;
     name: string;
+    unit?: string | null;
     hasKeywords: boolean;
     keywords: string[];
     quantitySourceId?: UUIDString | null;
@@ -1148,6 +1149,7 @@ export interface ListQuoteItemTemplateConfigsForQuoteTemplateData {
     itemTemplate: {
       id: UUIDString;
       name: string;
+      unit?: string | null;
       hasKeywords: boolean;
       keywords: string[];
       sortOrder: number;
@@ -1394,6 +1396,7 @@ export interface GetQuoteByIdData {
       displayOrder: number;
       name: string;
       quantity: number;
+      unit?: string | null;
       unitPriceCents: number;
       materialUnitPriceCents: number;
       labourUnitPriceCents: number;
@@ -1546,10 +1549,16 @@ export interface GetQuoteReadinessData {
     itemTemplate: {
       id: UUIDString;
       name: string;
+      unit?: string | null;
       hasKeywords: boolean;
       keywords: string[];
       sortOrder: number;
       quantitySourceId?: UUIDString | null;
+      quantitySource?: {
+        id: UUIDString;
+        measurementSource: string;
+        measurementPlasterType?: string | null;
+      } & QuantitySource_Key;
     } & QuoteItemTemplate_Key;
   })[];
 }
@@ -1692,6 +1701,7 @@ export interface GetProjectQuoteData {
         displayOrder: number;
         name: string;
         quantity: number;
+        unit?: string | null;
         unitPriceCents: number;
         materialUnitPriceCents: number;
         labourUnitPriceCents: number;
@@ -4511,149 +4521,229 @@ executeMutation(ref).then((response) => {
 });
 ```
 
-## EnsureSystemQuoteItemTemplates
-You can execute the `EnsureSystemQuoteItemTemplates` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+## ReconcileSystemQuoteItemTemplates
+You can execute the `ReconcileSystemQuoteItemTemplates` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-ensureSystemQuoteItemTemplates(): MutationPromise<EnsureSystemQuoteItemTemplatesData, undefined>;
+reconcileSystemQuoteItemTemplates(): MutationPromise<ReconcileSystemQuoteItemTemplatesData, undefined>;
 
-interface EnsureSystemQuoteItemTemplatesRef {
+interface ReconcileSystemQuoteItemTemplatesRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (): MutationRef<EnsureSystemQuoteItemTemplatesData, undefined>;
+  (): MutationRef<ReconcileSystemQuoteItemTemplatesData, undefined>;
 }
-export const ensureSystemQuoteItemTemplatesRef: EnsureSystemQuoteItemTemplatesRef;
+export const reconcileSystemQuoteItemTemplatesRef: ReconcileSystemQuoteItemTemplatesRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
 ```typescript
-ensureSystemQuoteItemTemplates(dc: DataConnect): MutationPromise<EnsureSystemQuoteItemTemplatesData, undefined>;
+reconcileSystemQuoteItemTemplates(dc: DataConnect): MutationPromise<ReconcileSystemQuoteItemTemplatesData, undefined>;
 
-interface EnsureSystemQuoteItemTemplatesRef {
+interface ReconcileSystemQuoteItemTemplatesRef {
   ...
-  (dc: DataConnect): MutationRef<EnsureSystemQuoteItemTemplatesData, undefined>;
+  (dc: DataConnect): MutationRef<ReconcileSystemQuoteItemTemplatesData, undefined>;
 }
-export const ensureSystemQuoteItemTemplatesRef: EnsureSystemQuoteItemTemplatesRef;
+export const reconcileSystemQuoteItemTemplatesRef: ReconcileSystemQuoteItemTemplatesRef;
 ```
 
-If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the ensureSystemQuoteItemTemplatesRef:
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the reconcileSystemQuoteItemTemplatesRef:
 ```typescript
-const name = ensureSystemQuoteItemTemplatesRef.operationName;
+const name = reconcileSystemQuoteItemTemplatesRef.operationName;
 console.log(name);
 ```
 
 ### Variables
-The `EnsureSystemQuoteItemTemplates` mutation has no variables.
+The `ReconcileSystemQuoteItemTemplates` mutation has no variables.
 ### Return Type
-Recall that executing the `EnsureSystemQuoteItemTemplates` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+Recall that executing the `ReconcileSystemQuoteItemTemplates` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
 
-The `data` property is an object of type `EnsureSystemQuoteItemTemplatesData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+The `data` property is an object of type `ReconcileSystemQuoteItemTemplatesData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
 ```typescript
-export interface EnsureSystemQuoteItemTemplatesData {
-  wallsPlasterboardQuantitySource: QuantitySource_Key;
-  wetWallsVillaboardQuantitySource: QuantitySource_Key;
-  ceilingsPlasterboardQuantitySource: QuantitySource_Key;
-  coveCorniceQuantitySource: QuantitySource_Key;
-  wetFloorsFcSheetQuantitySource: QuantitySource_Key;
-  doorSetsQuantitySource: QuantitySource_Key;
-  wallsPlasterboardItemTemplate: QuoteItemTemplate_Key;
-  wetWallsVillaboardItemTemplate: QuoteItemTemplate_Key;
-  ceilingsPlasterboardItemTemplate: QuoteItemTemplate_Key;
-  coveCorniceItemTemplate: QuoteItemTemplate_Key;
-  wetFloorsFcSheetItemTemplate: QuoteItemTemplate_Key;
-  doorSetsItemTemplate: QuoteItemTemplate_Key;
+export interface ReconcileSystemQuoteItemTemplatesData {
+  quoteItemTemplateConfig_deleteMany: number;
+  quoteItemTemplate_deleteMany: number;
+  plasterboard10mmSource: QuantitySource_Key;
+  plasterboard13mmSource: QuantitySource_Key;
+  villaboard9mmSource: QuantitySource_Key;
+  villaboard6mmSource: QuantitySource_Key;
+  acoustic10mmSource: QuantitySource_Key;
+  acoustic13mmSource: QuantitySource_Key;
+  waterResistant10mmSource: QuantitySource_Key;
+  waterResistant13mmSource: QuantitySource_Key;
+  fireDry13mmSource: QuantitySource_Key;
+  fireDry16mmSource: QuantitySource_Key;
+  fireWet13mmSource: QuantitySource_Key;
+  fireWet16mmSource: QuantitySource_Key;
+  flexible6_5mmSource: QuantitySource_Key;
+  plasterboard10mm: QuoteItemTemplate_Key;
+  plasterboard13mm: QuoteItemTemplate_Key;
+  villaboard9mm: QuoteItemTemplate_Key;
+  villaboard6mm: QuoteItemTemplate_Key;
+  acoustic10mm: QuoteItemTemplate_Key;
+  acoustic13mm: QuoteItemTemplate_Key;
+  waterResistant10mm: QuoteItemTemplate_Key;
+  waterResistant13mm: QuoteItemTemplate_Key;
+  fireDry13mm: QuoteItemTemplate_Key;
+  fireDry16mm: QuoteItemTemplate_Key;
+  fireWet13mm: QuoteItemTemplate_Key;
+  fireWet16mm: QuoteItemTemplate_Key;
+  flexible6_5mm: QuoteItemTemplate_Key;
 }
 ```
-### Using `EnsureSystemQuoteItemTemplates`'s action shortcut function
+### Using `ReconcileSystemQuoteItemTemplates`'s action shortcut function
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, ensureSystemQuoteItemTemplates } from '@generated/data-connector-web';
+import { connectorConfig, reconcileSystemQuoteItemTemplates } from '@generated/data-connector-web';
 
 
-// Call the `ensureSystemQuoteItemTemplates()` function to execute the mutation.
+// Call the `reconcileSystemQuoteItemTemplates()` function to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
-const { data } = await ensureSystemQuoteItemTemplates();
+const { data } = await reconcileSystemQuoteItemTemplates();
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await ensureSystemQuoteItemTemplates(dataConnect);
+const { data } = await reconcileSystemQuoteItemTemplates(dataConnect);
 
-console.log(data.wallsPlasterboardQuantitySource);
-console.log(data.wetWallsVillaboardQuantitySource);
-console.log(data.ceilingsPlasterboardQuantitySource);
-console.log(data.coveCorniceQuantitySource);
-console.log(data.wetFloorsFcSheetQuantitySource);
-console.log(data.doorSetsQuantitySource);
-console.log(data.wallsPlasterboardItemTemplate);
-console.log(data.wetWallsVillaboardItemTemplate);
-console.log(data.ceilingsPlasterboardItemTemplate);
-console.log(data.coveCorniceItemTemplate);
-console.log(data.wetFloorsFcSheetItemTemplate);
-console.log(data.doorSetsItemTemplate);
+console.log(data.quoteItemTemplateConfig_deleteMany);
+console.log(data.quoteItemTemplate_deleteMany);
+console.log(data.plasterboard10mmSource);
+console.log(data.plasterboard13mmSource);
+console.log(data.villaboard9mmSource);
+console.log(data.villaboard6mmSource);
+console.log(data.acoustic10mmSource);
+console.log(data.acoustic13mmSource);
+console.log(data.waterResistant10mmSource);
+console.log(data.waterResistant13mmSource);
+console.log(data.fireDry13mmSource);
+console.log(data.fireDry16mmSource);
+console.log(data.fireWet13mmSource);
+console.log(data.fireWet16mmSource);
+console.log(data.flexible6_5mmSource);
+console.log(data.plasterboard10mm);
+console.log(data.plasterboard13mm);
+console.log(data.villaboard9mm);
+console.log(data.villaboard6mm);
+console.log(data.acoustic10mm);
+console.log(data.acoustic13mm);
+console.log(data.waterResistant10mm);
+console.log(data.waterResistant13mm);
+console.log(data.fireDry13mm);
+console.log(data.fireDry16mm);
+console.log(data.fireWet13mm);
+console.log(data.fireWet16mm);
+console.log(data.flexible6_5mm);
 
 // Or, you can use the `Promise` API.
-ensureSystemQuoteItemTemplates().then((response) => {
+reconcileSystemQuoteItemTemplates().then((response) => {
   const data = response.data;
-  console.log(data.wallsPlasterboardQuantitySource);
-  console.log(data.wetWallsVillaboardQuantitySource);
-  console.log(data.ceilingsPlasterboardQuantitySource);
-  console.log(data.coveCorniceQuantitySource);
-  console.log(data.wetFloorsFcSheetQuantitySource);
-  console.log(data.doorSetsQuantitySource);
-  console.log(data.wallsPlasterboardItemTemplate);
-  console.log(data.wetWallsVillaboardItemTemplate);
-  console.log(data.ceilingsPlasterboardItemTemplate);
-  console.log(data.coveCorniceItemTemplate);
-  console.log(data.wetFloorsFcSheetItemTemplate);
-  console.log(data.doorSetsItemTemplate);
+  console.log(data.quoteItemTemplateConfig_deleteMany);
+  console.log(data.quoteItemTemplate_deleteMany);
+  console.log(data.plasterboard10mmSource);
+  console.log(data.plasterboard13mmSource);
+  console.log(data.villaboard9mmSource);
+  console.log(data.villaboard6mmSource);
+  console.log(data.acoustic10mmSource);
+  console.log(data.acoustic13mmSource);
+  console.log(data.waterResistant10mmSource);
+  console.log(data.waterResistant13mmSource);
+  console.log(data.fireDry13mmSource);
+  console.log(data.fireDry16mmSource);
+  console.log(data.fireWet13mmSource);
+  console.log(data.fireWet16mmSource);
+  console.log(data.flexible6_5mmSource);
+  console.log(data.plasterboard10mm);
+  console.log(data.plasterboard13mm);
+  console.log(data.villaboard9mm);
+  console.log(data.villaboard6mm);
+  console.log(data.acoustic10mm);
+  console.log(data.acoustic13mm);
+  console.log(data.waterResistant10mm);
+  console.log(data.waterResistant13mm);
+  console.log(data.fireDry13mm);
+  console.log(data.fireDry16mm);
+  console.log(data.fireWet13mm);
+  console.log(data.fireWet16mm);
+  console.log(data.flexible6_5mm);
 });
 ```
 
-### Using `EnsureSystemQuoteItemTemplates`'s `MutationRef` function
+### Using `ReconcileSystemQuoteItemTemplates`'s `MutationRef` function
 
 ```typescript
 import { getDataConnect, executeMutation } from 'firebase/data-connect';
-import { connectorConfig, ensureSystemQuoteItemTemplatesRef } from '@generated/data-connector-web';
+import { connectorConfig, reconcileSystemQuoteItemTemplatesRef } from '@generated/data-connector-web';
 
 
-// Call the `ensureSystemQuoteItemTemplatesRef()` function to get a reference to the mutation.
-const ref = ensureSystemQuoteItemTemplatesRef();
+// Call the `reconcileSystemQuoteItemTemplatesRef()` function to get a reference to the mutation.
+const ref = reconcileSystemQuoteItemTemplatesRef();
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = ensureSystemQuoteItemTemplatesRef(dataConnect);
+const ref = reconcileSystemQuoteItemTemplatesRef(dataConnect);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await executeMutation(ref);
 
-console.log(data.wallsPlasterboardQuantitySource);
-console.log(data.wetWallsVillaboardQuantitySource);
-console.log(data.ceilingsPlasterboardQuantitySource);
-console.log(data.coveCorniceQuantitySource);
-console.log(data.wetFloorsFcSheetQuantitySource);
-console.log(data.doorSetsQuantitySource);
-console.log(data.wallsPlasterboardItemTemplate);
-console.log(data.wetWallsVillaboardItemTemplate);
-console.log(data.ceilingsPlasterboardItemTemplate);
-console.log(data.coveCorniceItemTemplate);
-console.log(data.wetFloorsFcSheetItemTemplate);
-console.log(data.doorSetsItemTemplate);
+console.log(data.quoteItemTemplateConfig_deleteMany);
+console.log(data.quoteItemTemplate_deleteMany);
+console.log(data.plasterboard10mmSource);
+console.log(data.plasterboard13mmSource);
+console.log(data.villaboard9mmSource);
+console.log(data.villaboard6mmSource);
+console.log(data.acoustic10mmSource);
+console.log(data.acoustic13mmSource);
+console.log(data.waterResistant10mmSource);
+console.log(data.waterResistant13mmSource);
+console.log(data.fireDry13mmSource);
+console.log(data.fireDry16mmSource);
+console.log(data.fireWet13mmSource);
+console.log(data.fireWet16mmSource);
+console.log(data.flexible6_5mmSource);
+console.log(data.plasterboard10mm);
+console.log(data.plasterboard13mm);
+console.log(data.villaboard9mm);
+console.log(data.villaboard6mm);
+console.log(data.acoustic10mm);
+console.log(data.acoustic13mm);
+console.log(data.waterResistant10mm);
+console.log(data.waterResistant13mm);
+console.log(data.fireDry13mm);
+console.log(data.fireDry16mm);
+console.log(data.fireWet13mm);
+console.log(data.fireWet16mm);
+console.log(data.flexible6_5mm);
 
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
-  console.log(data.wallsPlasterboardQuantitySource);
-  console.log(data.wetWallsVillaboardQuantitySource);
-  console.log(data.ceilingsPlasterboardQuantitySource);
-  console.log(data.coveCorniceQuantitySource);
-  console.log(data.wetFloorsFcSheetQuantitySource);
-  console.log(data.doorSetsQuantitySource);
-  console.log(data.wallsPlasterboardItemTemplate);
-  console.log(data.wetWallsVillaboardItemTemplate);
-  console.log(data.ceilingsPlasterboardItemTemplate);
-  console.log(data.coveCorniceItemTemplate);
-  console.log(data.wetFloorsFcSheetItemTemplate);
-  console.log(data.doorSetsItemTemplate);
+  console.log(data.quoteItemTemplateConfig_deleteMany);
+  console.log(data.quoteItemTemplate_deleteMany);
+  console.log(data.plasterboard10mmSource);
+  console.log(data.plasterboard13mmSource);
+  console.log(data.villaboard9mmSource);
+  console.log(data.villaboard6mmSource);
+  console.log(data.acoustic10mmSource);
+  console.log(data.acoustic13mmSource);
+  console.log(data.waterResistant10mmSource);
+  console.log(data.waterResistant13mmSource);
+  console.log(data.fireDry13mmSource);
+  console.log(data.fireDry16mmSource);
+  console.log(data.fireWet13mmSource);
+  console.log(data.fireWet16mmSource);
+  console.log(data.flexible6_5mmSource);
+  console.log(data.plasterboard10mm);
+  console.log(data.plasterboard13mm);
+  console.log(data.villaboard9mm);
+  console.log(data.villaboard6mm);
+  console.log(data.acoustic10mm);
+  console.log(data.acoustic13mm);
+  console.log(data.waterResistant10mm);
+  console.log(data.waterResistant13mm);
+  console.log(data.fireDry13mm);
+  console.log(data.fireDry16mm);
+  console.log(data.fireWet13mm);
+  console.log(data.fireWet16mm);
+  console.log(data.flexible6_5mm);
 });
 ```
 
@@ -5050,6 +5140,7 @@ The `CreateQuoteItemTemplate` mutation requires an argument of type `CreateQuote
 export interface CreateQuoteItemTemplateVariables {
   id: UUIDString;
   name: string;
+  unit: string;
   hasKeywords: boolean;
   keywords: string[];
 }
@@ -5073,6 +5164,7 @@ import { connectorConfig, createQuoteItemTemplate, CreateQuoteItemTemplateVariab
 const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
   id: ..., 
   name: ..., 
+  unit: ...,
   hasKeywords: ..., 
   keywords: ..., 
 };
@@ -5081,7 +5173,7 @@ const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createQuoteItemTemplate(createQuoteItemTemplateVars);
 // Variables can be defined inline as well.
-const { data } = await createQuoteItemTemplate({ id: ..., name: ..., hasKeywords: ..., keywords: ..., });
+const { data } = await createQuoteItemTemplate({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5106,6 +5198,7 @@ import { connectorConfig, createQuoteItemTemplateRef, CreateQuoteItemTemplateVar
 const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
   id: ..., 
   name: ..., 
+  unit: ...,
   hasKeywords: ..., 
   keywords: ..., 
 };
@@ -5113,7 +5206,7 @@ const createQuoteItemTemplateVars: CreateQuoteItemTemplateVariables = {
 // Call the `createQuoteItemTemplateRef()` function to get a reference to the mutation.
 const ref = createQuoteItemTemplateRef(createQuoteItemTemplateVars);
 // Variables can be defined inline as well.
-const ref = createQuoteItemTemplateRef({ id: ..., name: ..., hasKeywords: ..., keywords: ..., });
+const ref = createQuoteItemTemplateRef({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5168,6 +5261,7 @@ The `UpdateQuoteItemTemplate` mutation requires an argument of type `UpdateQuote
 export interface UpdateQuoteItemTemplateVariables {
   id: UUIDString;
   name: string;
+  unit: string;
   hasKeywords: boolean;
   keywords: string[];
 }
@@ -5191,6 +5285,7 @@ import { connectorConfig, updateQuoteItemTemplate, UpdateQuoteItemTemplateVariab
 const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
   id: ..., 
   name: ..., 
+  unit: ...,
   hasKeywords: ..., 
   keywords: ..., 
 };
@@ -5199,7 +5294,7 @@ const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateQuoteItemTemplate(updateQuoteItemTemplateVars);
 // Variables can be defined inline as well.
-const { data } = await updateQuoteItemTemplate({ id: ..., name: ..., hasKeywords: ..., keywords: ..., });
+const { data } = await updateQuoteItemTemplate({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5224,6 +5319,7 @@ import { connectorConfig, updateQuoteItemTemplateRef, UpdateQuoteItemTemplateVar
 const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
   id: ..., 
   name: ..., 
+  unit: ...,
   hasKeywords: ..., 
   keywords: ..., 
 };
@@ -5231,7 +5327,7 @@ const updateQuoteItemTemplateVars: UpdateQuoteItemTemplateVariables = {
 // Call the `updateQuoteItemTemplateRef()` function to get a reference to the mutation.
 const ref = updateQuoteItemTemplateRef(updateQuoteItemTemplateVars);
 // Variables can be defined inline as well.
-const ref = updateQuoteItemTemplateRef({ id: ..., name: ..., hasKeywords: ..., keywords: ..., });
+const ref = updateQuoteItemTemplateRef({ id: ..., name: ..., unit: ..., hasKeywords: ..., keywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5626,6 +5722,7 @@ export interface UpdateQuoteItemVariables {
   displayOrder: number;
   name: string;
   quantity: number;
+  unit?: string | null;
   unitPriceCents: number;
 }
 ```
@@ -5650,6 +5747,7 @@ const updateQuoteItemVars: UpdateQuoteItemVariables = {
   displayOrder: ..., 
   name: ..., 
   quantity: ..., 
+  unit: ..., // optional
   unitPriceCents: ..., 
 };
 
@@ -5657,7 +5755,7 @@ const updateQuoteItemVars: UpdateQuoteItemVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await updateQuoteItem(updateQuoteItemVars);
 // Variables can be defined inline as well.
-const { data } = await updateQuoteItem({ id: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+const { data } = await updateQuoteItem({ id: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5684,13 +5782,14 @@ const updateQuoteItemVars: UpdateQuoteItemVariables = {
   displayOrder: ..., 
   name: ..., 
   quantity: ..., 
+  unit: ..., // optional
   unitPriceCents: ..., 
 };
 
 // Call the `updateQuoteItemRef()` function to get a reference to the mutation.
 const ref = updateQuoteItemRef(updateQuoteItemVars);
 // Variables can be defined inline as well.
-const ref = updateQuoteItemRef({ id: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+const ref = updateQuoteItemRef({ id: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5748,6 +5847,7 @@ export interface CreateQuoteItemVariables {
   displayOrder: number;
   name: string;
   quantity: number;
+  unit: string;
   unitPriceCents: number;
 }
 ```
@@ -5773,6 +5873,7 @@ const createQuoteItemVars: CreateQuoteItemVariables = {
   displayOrder: ..., 
   name: ..., 
   quantity: ..., 
+  unit: ...,
   unitPriceCents: ..., 
 };
 
@@ -5780,7 +5881,7 @@ const createQuoteItemVars: CreateQuoteItemVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createQuoteItem(createQuoteItemVars);
 // Variables can be defined inline as well.
-const { data } = await createQuoteItem({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+const { data } = await createQuoteItem({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5808,13 +5909,14 @@ const createQuoteItemVars: CreateQuoteItemVariables = {
   displayOrder: ..., 
   name: ..., 
   quantity: ..., 
+  unit: ...,
   unitPriceCents: ..., 
 };
 
 // Call the `createQuoteItemRef()` function to get a reference to the mutation.
 const ref = createQuoteItemRef(createQuoteItemVars);
 // Variables can be defined inline as well.
-const ref = createQuoteItemRef({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unitPriceCents: ..., });
+const ref = createQuoteItemRef({ id: ..., quoteId: ..., displayOrder: ..., name: ..., quantity: ..., unit: ..., unitPriceCents: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -5982,6 +6084,7 @@ export interface CreateQuoteWithItemsVariables {
   item1Name?: string | null;
   item1DisplayOrder?: number | null;
   item1Quantity?: number | null;
+  item1Unit?: string | null;
   item1SourceTemplateId?: UUIDString | null;
   item1QuantitySourceId?: UUIDString | null;
   item1UnitPriceCents?: number | null;
@@ -5992,6 +6095,7 @@ export interface CreateQuoteWithItemsVariables {
   item2Name?: string | null;
   item2DisplayOrder?: number | null;
   item2Quantity?: number | null;
+  item2Unit?: string | null;
   item2SourceTemplateId?: UUIDString | null;
   item2QuantitySourceId?: UUIDString | null;
   item2UnitPriceCents?: number | null;
@@ -6002,6 +6106,7 @@ export interface CreateQuoteWithItemsVariables {
   item3Name?: string | null;
   item3DisplayOrder?: number | null;
   item3Quantity?: number | null;
+  item3Unit?: string | null;
   item3SourceTemplateId?: UUIDString | null;
   item3QuantitySourceId?: UUIDString | null;
   item3UnitPriceCents?: number | null;
@@ -6012,6 +6117,7 @@ export interface CreateQuoteWithItemsVariables {
   item4Name?: string | null;
   item4DisplayOrder?: number | null;
   item4Quantity?: number | null;
+  item4Unit?: string | null;
   item4SourceTemplateId?: UUIDString | null;
   item4QuantitySourceId?: UUIDString | null;
   item4UnitPriceCents?: number | null;
@@ -6022,6 +6128,7 @@ export interface CreateQuoteWithItemsVariables {
   item5Name?: string | null;
   item5DisplayOrder?: number | null;
   item5Quantity?: number | null;
+  item5Unit?: string | null;
   item5SourceTemplateId?: UUIDString | null;
   item5QuantitySourceId?: UUIDString | null;
   item5UnitPriceCents?: number | null;
@@ -6032,6 +6139,7 @@ export interface CreateQuoteWithItemsVariables {
   item6Name?: string | null;
   item6DisplayOrder?: number | null;
   item6Quantity?: number | null;
+  item6Unit?: string | null;
   item6SourceTemplateId?: UUIDString | null;
   item6QuantitySourceId?: UUIDString | null;
   item6UnitPriceCents?: number | null;
@@ -6042,6 +6150,7 @@ export interface CreateQuoteWithItemsVariables {
   item7Name?: string | null;
   item7DisplayOrder?: number | null;
   item7Quantity?: number | null;
+  item7Unit?: string | null;
   item7SourceTemplateId?: UUIDString | null;
   item7QuantitySourceId?: UUIDString | null;
   item7UnitPriceCents?: number | null;
@@ -6052,6 +6161,7 @@ export interface CreateQuoteWithItemsVariables {
   item8Name?: string | null;
   item8DisplayOrder?: number | null;
   item8Quantity?: number | null;
+  item8Unit?: string | null;
   item8SourceTemplateId?: UUIDString | null;
   item8QuantitySourceId?: UUIDString | null;
   item8UnitPriceCents?: number | null;
@@ -6062,6 +6172,7 @@ export interface CreateQuoteWithItemsVariables {
   item9Name?: string | null;
   item9DisplayOrder?: number | null;
   item9Quantity?: number | null;
+  item9Unit?: string | null;
   item9SourceTemplateId?: UUIDString | null;
   item9QuantitySourceId?: UUIDString | null;
   item9UnitPriceCents?: number | null;
@@ -6072,6 +6183,7 @@ export interface CreateQuoteWithItemsVariables {
   item10Name?: string | null;
   item10DisplayOrder?: number | null;
   item10Quantity?: number | null;
+  item10Unit?: string | null;
   item10SourceTemplateId?: UUIDString | null;
   item10QuantitySourceId?: UUIDString | null;
   item10UnitPriceCents?: number | null;
@@ -6082,6 +6194,7 @@ export interface CreateQuoteWithItemsVariables {
   item11Name?: string | null;
   item11DisplayOrder?: number | null;
   item11Quantity?: number | null;
+  item11Unit?: string | null;
   item11SourceTemplateId?: UUIDString | null;
   item11QuantitySourceId?: UUIDString | null;
   item11UnitPriceCents?: number | null;
@@ -6092,6 +6205,7 @@ export interface CreateQuoteWithItemsVariables {
   item12Name?: string | null;
   item12DisplayOrder?: number | null;
   item12Quantity?: number | null;
+  item12Unit?: string | null;
   item12SourceTemplateId?: UUIDString | null;
   item12QuantitySourceId?: UUIDString | null;
   item12UnitPriceCents?: number | null;
@@ -6102,6 +6216,7 @@ export interface CreateQuoteWithItemsVariables {
   item13Name?: string | null;
   item13DisplayOrder?: number | null;
   item13Quantity?: number | null;
+  item13Unit?: string | null;
   item13SourceTemplateId?: UUIDString | null;
   item13QuantitySourceId?: UUIDString | null;
   item13UnitPriceCents?: number | null;
@@ -6112,6 +6227,7 @@ export interface CreateQuoteWithItemsVariables {
   item14Name?: string | null;
   item14DisplayOrder?: number | null;
   item14Quantity?: number | null;
+  item14Unit?: string | null;
   item14SourceTemplateId?: UUIDString | null;
   item14QuantitySourceId?: UUIDString | null;
   item14UnitPriceCents?: number | null;
@@ -6122,6 +6238,7 @@ export interface CreateQuoteWithItemsVariables {
   item15Name?: string | null;
   item15DisplayOrder?: number | null;
   item15Quantity?: number | null;
+  item15Unit?: string | null;
   item15SourceTemplateId?: UUIDString | null;
   item15QuantitySourceId?: UUIDString | null;
   item15UnitPriceCents?: number | null;
@@ -6132,6 +6249,7 @@ export interface CreateQuoteWithItemsVariables {
   item16Name?: string | null;
   item16DisplayOrder?: number | null;
   item16Quantity?: number | null;
+  item16Unit?: string | null;
   item16SourceTemplateId?: UUIDString | null;
   item16QuantitySourceId?: UUIDString | null;
   item16UnitPriceCents?: number | null;
@@ -6142,6 +6260,7 @@ export interface CreateQuoteWithItemsVariables {
   item17Name?: string | null;
   item17DisplayOrder?: number | null;
   item17Quantity?: number | null;
+  item17Unit?: string | null;
   item17SourceTemplateId?: UUIDString | null;
   item17QuantitySourceId?: UUIDString | null;
   item17UnitPriceCents?: number | null;
@@ -6152,6 +6271,7 @@ export interface CreateQuoteWithItemsVariables {
   item18Name?: string | null;
   item18DisplayOrder?: number | null;
   item18Quantity?: number | null;
+  item18Unit?: string | null;
   item18SourceTemplateId?: UUIDString | null;
   item18QuantitySourceId?: UUIDString | null;
   item18UnitPriceCents?: number | null;
@@ -6162,6 +6282,7 @@ export interface CreateQuoteWithItemsVariables {
   item19Name?: string | null;
   item19DisplayOrder?: number | null;
   item19Quantity?: number | null;
+  item19Unit?: string | null;
   item19SourceTemplateId?: UUIDString | null;
   item19QuantitySourceId?: UUIDString | null;
   item19UnitPriceCents?: number | null;
@@ -6172,6 +6293,7 @@ export interface CreateQuoteWithItemsVariables {
   item20Name?: string | null;
   item20DisplayOrder?: number | null;
   item20Quantity?: number | null;
+  item20Unit?: string | null;
   item20SourceTemplateId?: UUIDString | null;
   item20QuantitySourceId?: UUIDString | null;
   item20UnitPriceCents?: number | null;
@@ -6225,6 +6347,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item1Name: ..., // optional
   item1DisplayOrder: ..., // optional
   item1Quantity: ..., // optional
+  item1Unit: ..., // optional
   item1SourceTemplateId: ..., // optional
   item1QuantitySourceId: ..., // optional
   item1UnitPriceCents: ..., // optional
@@ -6235,6 +6358,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item2Name: ..., // optional
   item2DisplayOrder: ..., // optional
   item2Quantity: ..., // optional
+  item2Unit: ..., // optional
   item2SourceTemplateId: ..., // optional
   item2QuantitySourceId: ..., // optional
   item2UnitPriceCents: ..., // optional
@@ -6245,6 +6369,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item3Name: ..., // optional
   item3DisplayOrder: ..., // optional
   item3Quantity: ..., // optional
+  item3Unit: ..., // optional
   item3SourceTemplateId: ..., // optional
   item3QuantitySourceId: ..., // optional
   item3UnitPriceCents: ..., // optional
@@ -6255,6 +6380,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item4Name: ..., // optional
   item4DisplayOrder: ..., // optional
   item4Quantity: ..., // optional
+  item4Unit: ..., // optional
   item4SourceTemplateId: ..., // optional
   item4QuantitySourceId: ..., // optional
   item4UnitPriceCents: ..., // optional
@@ -6265,6 +6391,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item5Name: ..., // optional
   item5DisplayOrder: ..., // optional
   item5Quantity: ..., // optional
+  item5Unit: ..., // optional
   item5SourceTemplateId: ..., // optional
   item5QuantitySourceId: ..., // optional
   item5UnitPriceCents: ..., // optional
@@ -6275,6 +6402,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item6Name: ..., // optional
   item6DisplayOrder: ..., // optional
   item6Quantity: ..., // optional
+  item6Unit: ..., // optional
   item6SourceTemplateId: ..., // optional
   item6QuantitySourceId: ..., // optional
   item6UnitPriceCents: ..., // optional
@@ -6285,6 +6413,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item7Name: ..., // optional
   item7DisplayOrder: ..., // optional
   item7Quantity: ..., // optional
+  item7Unit: ..., // optional
   item7SourceTemplateId: ..., // optional
   item7QuantitySourceId: ..., // optional
   item7UnitPriceCents: ..., // optional
@@ -6295,6 +6424,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item8Name: ..., // optional
   item8DisplayOrder: ..., // optional
   item8Quantity: ..., // optional
+  item8Unit: ..., // optional
   item8SourceTemplateId: ..., // optional
   item8QuantitySourceId: ..., // optional
   item8UnitPriceCents: ..., // optional
@@ -6305,6 +6435,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item9Name: ..., // optional
   item9DisplayOrder: ..., // optional
   item9Quantity: ..., // optional
+  item9Unit: ..., // optional
   item9SourceTemplateId: ..., // optional
   item9QuantitySourceId: ..., // optional
   item9UnitPriceCents: ..., // optional
@@ -6315,6 +6446,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item10Name: ..., // optional
   item10DisplayOrder: ..., // optional
   item10Quantity: ..., // optional
+  item10Unit: ..., // optional
   item10SourceTemplateId: ..., // optional
   item10QuantitySourceId: ..., // optional
   item10UnitPriceCents: ..., // optional
@@ -6325,6 +6457,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item11Name: ..., // optional
   item11DisplayOrder: ..., // optional
   item11Quantity: ..., // optional
+  item11Unit: ..., // optional
   item11SourceTemplateId: ..., // optional
   item11QuantitySourceId: ..., // optional
   item11UnitPriceCents: ..., // optional
@@ -6335,6 +6468,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item12Name: ..., // optional
   item12DisplayOrder: ..., // optional
   item12Quantity: ..., // optional
+  item12Unit: ..., // optional
   item12SourceTemplateId: ..., // optional
   item12QuantitySourceId: ..., // optional
   item12UnitPriceCents: ..., // optional
@@ -6345,6 +6479,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item13Name: ..., // optional
   item13DisplayOrder: ..., // optional
   item13Quantity: ..., // optional
+  item13Unit: ..., // optional
   item13SourceTemplateId: ..., // optional
   item13QuantitySourceId: ..., // optional
   item13UnitPriceCents: ..., // optional
@@ -6355,6 +6490,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item14Name: ..., // optional
   item14DisplayOrder: ..., // optional
   item14Quantity: ..., // optional
+  item14Unit: ..., // optional
   item14SourceTemplateId: ..., // optional
   item14QuantitySourceId: ..., // optional
   item14UnitPriceCents: ..., // optional
@@ -6365,6 +6501,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item15Name: ..., // optional
   item15DisplayOrder: ..., // optional
   item15Quantity: ..., // optional
+  item15Unit: ..., // optional
   item15SourceTemplateId: ..., // optional
   item15QuantitySourceId: ..., // optional
   item15UnitPriceCents: ..., // optional
@@ -6375,6 +6512,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item16Name: ..., // optional
   item16DisplayOrder: ..., // optional
   item16Quantity: ..., // optional
+  item16Unit: ..., // optional
   item16SourceTemplateId: ..., // optional
   item16QuantitySourceId: ..., // optional
   item16UnitPriceCents: ..., // optional
@@ -6385,6 +6523,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item17Name: ..., // optional
   item17DisplayOrder: ..., // optional
   item17Quantity: ..., // optional
+  item17Unit: ..., // optional
   item17SourceTemplateId: ..., // optional
   item17QuantitySourceId: ..., // optional
   item17UnitPriceCents: ..., // optional
@@ -6395,6 +6534,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item18Name: ..., // optional
   item18DisplayOrder: ..., // optional
   item18Quantity: ..., // optional
+  item18Unit: ..., // optional
   item18SourceTemplateId: ..., // optional
   item18QuantitySourceId: ..., // optional
   item18UnitPriceCents: ..., // optional
@@ -6405,6 +6545,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item19Name: ..., // optional
   item19DisplayOrder: ..., // optional
   item19Quantity: ..., // optional
+  item19Unit: ..., // optional
   item19SourceTemplateId: ..., // optional
   item19QuantitySourceId: ..., // optional
   item19UnitPriceCents: ..., // optional
@@ -6415,6 +6556,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item20Name: ..., // optional
   item20DisplayOrder: ..., // optional
   item20Quantity: ..., // optional
+  item20Unit: ..., // optional
   item20SourceTemplateId: ..., // optional
   item20QuantitySourceId: ..., // optional
   item20UnitPriceCents: ..., // optional
@@ -6427,7 +6569,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createQuoteWithItems(createQuoteWithItemsVars);
 // Variables can be defined inline as well.
-const { data } = await createQuoteWithItems({ projectId: ..., quoteId: ..., includeItem1: ..., item1Name: ..., item1DisplayOrder: ..., item1Quantity: ..., item1SourceTemplateId: ..., item1QuantitySourceId: ..., item1UnitPriceCents: ..., item1MaterialUnitPriceCents: ..., item1LabourUnitPriceCents: ..., item1MatchedKeywords: ..., includeItem2: ..., item2Name: ..., item2DisplayOrder: ..., item2Quantity: ..., item2SourceTemplateId: ..., item2QuantitySourceId: ..., item2UnitPriceCents: ..., item2MaterialUnitPriceCents: ..., item2LabourUnitPriceCents: ..., item2MatchedKeywords: ..., includeItem3: ..., item3Name: ..., item3DisplayOrder: ..., item3Quantity: ..., item3SourceTemplateId: ..., item3QuantitySourceId: ..., item3UnitPriceCents: ..., item3MaterialUnitPriceCents: ..., item3LabourUnitPriceCents: ..., item3MatchedKeywords: ..., includeItem4: ..., item4Name: ..., item4DisplayOrder: ..., item4Quantity: ..., item4SourceTemplateId: ..., item4QuantitySourceId: ..., item4UnitPriceCents: ..., item4MaterialUnitPriceCents: ..., item4LabourUnitPriceCents: ..., item4MatchedKeywords: ..., includeItem5: ..., item5Name: ..., item5DisplayOrder: ..., item5Quantity: ..., item5SourceTemplateId: ..., item5QuantitySourceId: ..., item5UnitPriceCents: ..., item5MaterialUnitPriceCents: ..., item5LabourUnitPriceCents: ..., item5MatchedKeywords: ..., includeItem6: ..., item6Name: ..., item6DisplayOrder: ..., item6Quantity: ..., item6SourceTemplateId: ..., item6QuantitySourceId: ..., item6UnitPriceCents: ..., item6MaterialUnitPriceCents: ..., item6LabourUnitPriceCents: ..., item6MatchedKeywords: ..., includeItem7: ..., item7Name: ..., item7DisplayOrder: ..., item7Quantity: ..., item7SourceTemplateId: ..., item7QuantitySourceId: ..., item7UnitPriceCents: ..., item7MaterialUnitPriceCents: ..., item7LabourUnitPriceCents: ..., item7MatchedKeywords: ..., includeItem8: ..., item8Name: ..., item8DisplayOrder: ..., item8Quantity: ..., item8SourceTemplateId: ..., item8QuantitySourceId: ..., item8UnitPriceCents: ..., item8MaterialUnitPriceCents: ..., item8LabourUnitPriceCents: ..., item8MatchedKeywords: ..., includeItem9: ..., item9Name: ..., item9DisplayOrder: ..., item9Quantity: ..., item9SourceTemplateId: ..., item9QuantitySourceId: ..., item9UnitPriceCents: ..., item9MaterialUnitPriceCents: ..., item9LabourUnitPriceCents: ..., item9MatchedKeywords: ..., includeItem10: ..., item10Name: ..., item10DisplayOrder: ..., item10Quantity: ..., item10SourceTemplateId: ..., item10QuantitySourceId: ..., item10UnitPriceCents: ..., item10MaterialUnitPriceCents: ..., item10LabourUnitPriceCents: ..., item10MatchedKeywords: ..., includeItem11: ..., item11Name: ..., item11DisplayOrder: ..., item11Quantity: ..., item11SourceTemplateId: ..., item11QuantitySourceId: ..., item11UnitPriceCents: ..., item11MaterialUnitPriceCents: ..., item11LabourUnitPriceCents: ..., item11MatchedKeywords: ..., includeItem12: ..., item12Name: ..., item12DisplayOrder: ..., item12Quantity: ..., item12SourceTemplateId: ..., item12QuantitySourceId: ..., item12UnitPriceCents: ..., item12MaterialUnitPriceCents: ..., item12LabourUnitPriceCents: ..., item12MatchedKeywords: ..., includeItem13: ..., item13Name: ..., item13DisplayOrder: ..., item13Quantity: ..., item13SourceTemplateId: ..., item13QuantitySourceId: ..., item13UnitPriceCents: ..., item13MaterialUnitPriceCents: ..., item13LabourUnitPriceCents: ..., item13MatchedKeywords: ..., includeItem14: ..., item14Name: ..., item14DisplayOrder: ..., item14Quantity: ..., item14SourceTemplateId: ..., item14QuantitySourceId: ..., item14UnitPriceCents: ..., item14MaterialUnitPriceCents: ..., item14LabourUnitPriceCents: ..., item14MatchedKeywords: ..., includeItem15: ..., item15Name: ..., item15DisplayOrder: ..., item15Quantity: ..., item15SourceTemplateId: ..., item15QuantitySourceId: ..., item15UnitPriceCents: ..., item15MaterialUnitPriceCents: ..., item15LabourUnitPriceCents: ..., item15MatchedKeywords: ..., includeItem16: ..., item16Name: ..., item16DisplayOrder: ..., item16Quantity: ..., item16SourceTemplateId: ..., item16QuantitySourceId: ..., item16UnitPriceCents: ..., item16MaterialUnitPriceCents: ..., item16LabourUnitPriceCents: ..., item16MatchedKeywords: ..., includeItem17: ..., item17Name: ..., item17DisplayOrder: ..., item17Quantity: ..., item17SourceTemplateId: ..., item17QuantitySourceId: ..., item17UnitPriceCents: ..., item17MaterialUnitPriceCents: ..., item17LabourUnitPriceCents: ..., item17MatchedKeywords: ..., includeItem18: ..., item18Name: ..., item18DisplayOrder: ..., item18Quantity: ..., item18SourceTemplateId: ..., item18QuantitySourceId: ..., item18UnitPriceCents: ..., item18MaterialUnitPriceCents: ..., item18LabourUnitPriceCents: ..., item18MatchedKeywords: ..., includeItem19: ..., item19Name: ..., item19DisplayOrder: ..., item19Quantity: ..., item19SourceTemplateId: ..., item19QuantitySourceId: ..., item19UnitPriceCents: ..., item19MaterialUnitPriceCents: ..., item19LabourUnitPriceCents: ..., item19MatchedKeywords: ..., includeItem20: ..., item20Name: ..., item20DisplayOrder: ..., item20Quantity: ..., item20SourceTemplateId: ..., item20QuantitySourceId: ..., item20UnitPriceCents: ..., item20MaterialUnitPriceCents: ..., item20LabourUnitPriceCents: ..., item20MatchedKeywords: ..., });
+const { data } = await createQuoteWithItems({ projectId: ..., quoteId: ..., includeItem1: ..., item1Name: ..., item1DisplayOrder: ..., item1Quantity: ..., item1Unit: ..., item1SourceTemplateId: ..., item1QuantitySourceId: ..., item1UnitPriceCents: ..., item1MaterialUnitPriceCents: ..., item1LabourUnitPriceCents: ..., item1MatchedKeywords: ..., includeItem2: ..., item2Name: ..., item2DisplayOrder: ..., item2Quantity: ..., item2Unit: ..., item2SourceTemplateId: ..., item2QuantitySourceId: ..., item2UnitPriceCents: ..., item2MaterialUnitPriceCents: ..., item2LabourUnitPriceCents: ..., item2MatchedKeywords: ..., includeItem3: ..., item3Name: ..., item3DisplayOrder: ..., item3Quantity: ..., item3Unit: ..., item3SourceTemplateId: ..., item3QuantitySourceId: ..., item3UnitPriceCents: ..., item3MaterialUnitPriceCents: ..., item3LabourUnitPriceCents: ..., item3MatchedKeywords: ..., includeItem4: ..., item4Name: ..., item4DisplayOrder: ..., item4Quantity: ..., item4Unit: ..., item4SourceTemplateId: ..., item4QuantitySourceId: ..., item4UnitPriceCents: ..., item4MaterialUnitPriceCents: ..., item4LabourUnitPriceCents: ..., item4MatchedKeywords: ..., includeItem5: ..., item5Name: ..., item5DisplayOrder: ..., item5Quantity: ..., item5Unit: ..., item5SourceTemplateId: ..., item5QuantitySourceId: ..., item5UnitPriceCents: ..., item5MaterialUnitPriceCents: ..., item5LabourUnitPriceCents: ..., item5MatchedKeywords: ..., includeItem6: ..., item6Name: ..., item6DisplayOrder: ..., item6Quantity: ..., item6Unit: ..., item6SourceTemplateId: ..., item6QuantitySourceId: ..., item6UnitPriceCents: ..., item6MaterialUnitPriceCents: ..., item6LabourUnitPriceCents: ..., item6MatchedKeywords: ..., includeItem7: ..., item7Name: ..., item7DisplayOrder: ..., item7Quantity: ..., item7Unit: ..., item7SourceTemplateId: ..., item7QuantitySourceId: ..., item7UnitPriceCents: ..., item7MaterialUnitPriceCents: ..., item7LabourUnitPriceCents: ..., item7MatchedKeywords: ..., includeItem8: ..., item8Name: ..., item8DisplayOrder: ..., item8Quantity: ..., item8Unit: ..., item8SourceTemplateId: ..., item8QuantitySourceId: ..., item8UnitPriceCents: ..., item8MaterialUnitPriceCents: ..., item8LabourUnitPriceCents: ..., item8MatchedKeywords: ..., includeItem9: ..., item9Name: ..., item9DisplayOrder: ..., item9Quantity: ..., item9Unit: ..., item9SourceTemplateId: ..., item9QuantitySourceId: ..., item9UnitPriceCents: ..., item9MaterialUnitPriceCents: ..., item9LabourUnitPriceCents: ..., item9MatchedKeywords: ..., includeItem10: ..., item10Name: ..., item10DisplayOrder: ..., item10Quantity: ..., item10Unit: ..., item10SourceTemplateId: ..., item10QuantitySourceId: ..., item10UnitPriceCents: ..., item10MaterialUnitPriceCents: ..., item10LabourUnitPriceCents: ..., item10MatchedKeywords: ..., includeItem11: ..., item11Name: ..., item11DisplayOrder: ..., item11Quantity: ..., item11Unit: ..., item11SourceTemplateId: ..., item11QuantitySourceId: ..., item11UnitPriceCents: ..., item11MaterialUnitPriceCents: ..., item11LabourUnitPriceCents: ..., item11MatchedKeywords: ..., includeItem12: ..., item12Name: ..., item12DisplayOrder: ..., item12Quantity: ..., item12Unit: ..., item12SourceTemplateId: ..., item12QuantitySourceId: ..., item12UnitPriceCents: ..., item12MaterialUnitPriceCents: ..., item12LabourUnitPriceCents: ..., item12MatchedKeywords: ..., includeItem13: ..., item13Name: ..., item13DisplayOrder: ..., item13Quantity: ..., item13Unit: ..., item13SourceTemplateId: ..., item13QuantitySourceId: ..., item13UnitPriceCents: ..., item13MaterialUnitPriceCents: ..., item13LabourUnitPriceCents: ..., item13MatchedKeywords: ..., includeItem14: ..., item14Name: ..., item14DisplayOrder: ..., item14Quantity: ..., item14Unit: ..., item14SourceTemplateId: ..., item14QuantitySourceId: ..., item14UnitPriceCents: ..., item14MaterialUnitPriceCents: ..., item14LabourUnitPriceCents: ..., item14MatchedKeywords: ..., includeItem15: ..., item15Name: ..., item15DisplayOrder: ..., item15Quantity: ..., item15Unit: ..., item15SourceTemplateId: ..., item15QuantitySourceId: ..., item15UnitPriceCents: ..., item15MaterialUnitPriceCents: ..., item15LabourUnitPriceCents: ..., item15MatchedKeywords: ..., includeItem16: ..., item16Name: ..., item16DisplayOrder: ..., item16Quantity: ..., item16Unit: ..., item16SourceTemplateId: ..., item16QuantitySourceId: ..., item16UnitPriceCents: ..., item16MaterialUnitPriceCents: ..., item16LabourUnitPriceCents: ..., item16MatchedKeywords: ..., includeItem17: ..., item17Name: ..., item17DisplayOrder: ..., item17Quantity: ..., item17Unit: ..., item17SourceTemplateId: ..., item17QuantitySourceId: ..., item17UnitPriceCents: ..., item17MaterialUnitPriceCents: ..., item17LabourUnitPriceCents: ..., item17MatchedKeywords: ..., includeItem18: ..., item18Name: ..., item18DisplayOrder: ..., item18Quantity: ..., item18Unit: ..., item18SourceTemplateId: ..., item18QuantitySourceId: ..., item18UnitPriceCents: ..., item18MaterialUnitPriceCents: ..., item18LabourUnitPriceCents: ..., item18MatchedKeywords: ..., includeItem19: ..., item19Name: ..., item19DisplayOrder: ..., item19Quantity: ..., item19Unit: ..., item19SourceTemplateId: ..., item19QuantitySourceId: ..., item19UnitPriceCents: ..., item19MaterialUnitPriceCents: ..., item19LabourUnitPriceCents: ..., item19MatchedKeywords: ..., includeItem20: ..., item20Name: ..., item20DisplayOrder: ..., item20Quantity: ..., item20Unit: ..., item20SourceTemplateId: ..., item20QuantitySourceId: ..., item20UnitPriceCents: ..., item20MaterialUnitPriceCents: ..., item20LabourUnitPriceCents: ..., item20MatchedKeywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -6500,6 +6642,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item1Name: ..., // optional
   item1DisplayOrder: ..., // optional
   item1Quantity: ..., // optional
+  item1Unit: ..., // optional
   item1SourceTemplateId: ..., // optional
   item1QuantitySourceId: ..., // optional
   item1UnitPriceCents: ..., // optional
@@ -6510,6 +6653,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item2Name: ..., // optional
   item2DisplayOrder: ..., // optional
   item2Quantity: ..., // optional
+  item2Unit: ..., // optional
   item2SourceTemplateId: ..., // optional
   item2QuantitySourceId: ..., // optional
   item2UnitPriceCents: ..., // optional
@@ -6520,6 +6664,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item3Name: ..., // optional
   item3DisplayOrder: ..., // optional
   item3Quantity: ..., // optional
+  item3Unit: ..., // optional
   item3SourceTemplateId: ..., // optional
   item3QuantitySourceId: ..., // optional
   item3UnitPriceCents: ..., // optional
@@ -6530,6 +6675,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item4Name: ..., // optional
   item4DisplayOrder: ..., // optional
   item4Quantity: ..., // optional
+  item4Unit: ..., // optional
   item4SourceTemplateId: ..., // optional
   item4QuantitySourceId: ..., // optional
   item4UnitPriceCents: ..., // optional
@@ -6540,6 +6686,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item5Name: ..., // optional
   item5DisplayOrder: ..., // optional
   item5Quantity: ..., // optional
+  item5Unit: ..., // optional
   item5SourceTemplateId: ..., // optional
   item5QuantitySourceId: ..., // optional
   item5UnitPriceCents: ..., // optional
@@ -6550,6 +6697,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item6Name: ..., // optional
   item6DisplayOrder: ..., // optional
   item6Quantity: ..., // optional
+  item6Unit: ..., // optional
   item6SourceTemplateId: ..., // optional
   item6QuantitySourceId: ..., // optional
   item6UnitPriceCents: ..., // optional
@@ -6560,6 +6708,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item7Name: ..., // optional
   item7DisplayOrder: ..., // optional
   item7Quantity: ..., // optional
+  item7Unit: ..., // optional
   item7SourceTemplateId: ..., // optional
   item7QuantitySourceId: ..., // optional
   item7UnitPriceCents: ..., // optional
@@ -6570,6 +6719,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item8Name: ..., // optional
   item8DisplayOrder: ..., // optional
   item8Quantity: ..., // optional
+  item8Unit: ..., // optional
   item8SourceTemplateId: ..., // optional
   item8QuantitySourceId: ..., // optional
   item8UnitPriceCents: ..., // optional
@@ -6580,6 +6730,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item9Name: ..., // optional
   item9DisplayOrder: ..., // optional
   item9Quantity: ..., // optional
+  item9Unit: ..., // optional
   item9SourceTemplateId: ..., // optional
   item9QuantitySourceId: ..., // optional
   item9UnitPriceCents: ..., // optional
@@ -6590,6 +6741,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item10Name: ..., // optional
   item10DisplayOrder: ..., // optional
   item10Quantity: ..., // optional
+  item10Unit: ..., // optional
   item10SourceTemplateId: ..., // optional
   item10QuantitySourceId: ..., // optional
   item10UnitPriceCents: ..., // optional
@@ -6600,6 +6752,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item11Name: ..., // optional
   item11DisplayOrder: ..., // optional
   item11Quantity: ..., // optional
+  item11Unit: ..., // optional
   item11SourceTemplateId: ..., // optional
   item11QuantitySourceId: ..., // optional
   item11UnitPriceCents: ..., // optional
@@ -6610,6 +6763,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item12Name: ..., // optional
   item12DisplayOrder: ..., // optional
   item12Quantity: ..., // optional
+  item12Unit: ..., // optional
   item12SourceTemplateId: ..., // optional
   item12QuantitySourceId: ..., // optional
   item12UnitPriceCents: ..., // optional
@@ -6620,6 +6774,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item13Name: ..., // optional
   item13DisplayOrder: ..., // optional
   item13Quantity: ..., // optional
+  item13Unit: ..., // optional
   item13SourceTemplateId: ..., // optional
   item13QuantitySourceId: ..., // optional
   item13UnitPriceCents: ..., // optional
@@ -6630,6 +6785,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item14Name: ..., // optional
   item14DisplayOrder: ..., // optional
   item14Quantity: ..., // optional
+  item14Unit: ..., // optional
   item14SourceTemplateId: ..., // optional
   item14QuantitySourceId: ..., // optional
   item14UnitPriceCents: ..., // optional
@@ -6640,6 +6796,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item15Name: ..., // optional
   item15DisplayOrder: ..., // optional
   item15Quantity: ..., // optional
+  item15Unit: ..., // optional
   item15SourceTemplateId: ..., // optional
   item15QuantitySourceId: ..., // optional
   item15UnitPriceCents: ..., // optional
@@ -6650,6 +6807,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item16Name: ..., // optional
   item16DisplayOrder: ..., // optional
   item16Quantity: ..., // optional
+  item16Unit: ..., // optional
   item16SourceTemplateId: ..., // optional
   item16QuantitySourceId: ..., // optional
   item16UnitPriceCents: ..., // optional
@@ -6660,6 +6818,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item17Name: ..., // optional
   item17DisplayOrder: ..., // optional
   item17Quantity: ..., // optional
+  item17Unit: ..., // optional
   item17SourceTemplateId: ..., // optional
   item17QuantitySourceId: ..., // optional
   item17UnitPriceCents: ..., // optional
@@ -6670,6 +6829,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item18Name: ..., // optional
   item18DisplayOrder: ..., // optional
   item18Quantity: ..., // optional
+  item18Unit: ..., // optional
   item18SourceTemplateId: ..., // optional
   item18QuantitySourceId: ..., // optional
   item18UnitPriceCents: ..., // optional
@@ -6680,6 +6840,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item19Name: ..., // optional
   item19DisplayOrder: ..., // optional
   item19Quantity: ..., // optional
+  item19Unit: ..., // optional
   item19SourceTemplateId: ..., // optional
   item19QuantitySourceId: ..., // optional
   item19UnitPriceCents: ..., // optional
@@ -6690,6 +6851,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
   item20Name: ..., // optional
   item20DisplayOrder: ..., // optional
   item20Quantity: ..., // optional
+  item20Unit: ..., // optional
   item20SourceTemplateId: ..., // optional
   item20QuantitySourceId: ..., // optional
   item20UnitPriceCents: ..., // optional
@@ -6701,7 +6863,7 @@ const createQuoteWithItemsVars: CreateQuoteWithItemsVariables = {
 // Call the `createQuoteWithItemsRef()` function to get a reference to the mutation.
 const ref = createQuoteWithItemsRef(createQuoteWithItemsVars);
 // Variables can be defined inline as well.
-const ref = createQuoteWithItemsRef({ projectId: ..., quoteId: ..., includeItem1: ..., item1Name: ..., item1DisplayOrder: ..., item1Quantity: ..., item1SourceTemplateId: ..., item1QuantitySourceId: ..., item1UnitPriceCents: ..., item1MaterialUnitPriceCents: ..., item1LabourUnitPriceCents: ..., item1MatchedKeywords: ..., includeItem2: ..., item2Name: ..., item2DisplayOrder: ..., item2Quantity: ..., item2SourceTemplateId: ..., item2QuantitySourceId: ..., item2UnitPriceCents: ..., item2MaterialUnitPriceCents: ..., item2LabourUnitPriceCents: ..., item2MatchedKeywords: ..., includeItem3: ..., item3Name: ..., item3DisplayOrder: ..., item3Quantity: ..., item3SourceTemplateId: ..., item3QuantitySourceId: ..., item3UnitPriceCents: ..., item3MaterialUnitPriceCents: ..., item3LabourUnitPriceCents: ..., item3MatchedKeywords: ..., includeItem4: ..., item4Name: ..., item4DisplayOrder: ..., item4Quantity: ..., item4SourceTemplateId: ..., item4QuantitySourceId: ..., item4UnitPriceCents: ..., item4MaterialUnitPriceCents: ..., item4LabourUnitPriceCents: ..., item4MatchedKeywords: ..., includeItem5: ..., item5Name: ..., item5DisplayOrder: ..., item5Quantity: ..., item5SourceTemplateId: ..., item5QuantitySourceId: ..., item5UnitPriceCents: ..., item5MaterialUnitPriceCents: ..., item5LabourUnitPriceCents: ..., item5MatchedKeywords: ..., includeItem6: ..., item6Name: ..., item6DisplayOrder: ..., item6Quantity: ..., item6SourceTemplateId: ..., item6QuantitySourceId: ..., item6UnitPriceCents: ..., item6MaterialUnitPriceCents: ..., item6LabourUnitPriceCents: ..., item6MatchedKeywords: ..., includeItem7: ..., item7Name: ..., item7DisplayOrder: ..., item7Quantity: ..., item7SourceTemplateId: ..., item7QuantitySourceId: ..., item7UnitPriceCents: ..., item7MaterialUnitPriceCents: ..., item7LabourUnitPriceCents: ..., item7MatchedKeywords: ..., includeItem8: ..., item8Name: ..., item8DisplayOrder: ..., item8Quantity: ..., item8SourceTemplateId: ..., item8QuantitySourceId: ..., item8UnitPriceCents: ..., item8MaterialUnitPriceCents: ..., item8LabourUnitPriceCents: ..., item8MatchedKeywords: ..., includeItem9: ..., item9Name: ..., item9DisplayOrder: ..., item9Quantity: ..., item9SourceTemplateId: ..., item9QuantitySourceId: ..., item9UnitPriceCents: ..., item9MaterialUnitPriceCents: ..., item9LabourUnitPriceCents: ..., item9MatchedKeywords: ..., includeItem10: ..., item10Name: ..., item10DisplayOrder: ..., item10Quantity: ..., item10SourceTemplateId: ..., item10QuantitySourceId: ..., item10UnitPriceCents: ..., item10MaterialUnitPriceCents: ..., item10LabourUnitPriceCents: ..., item10MatchedKeywords: ..., includeItem11: ..., item11Name: ..., item11DisplayOrder: ..., item11Quantity: ..., item11SourceTemplateId: ..., item11QuantitySourceId: ..., item11UnitPriceCents: ..., item11MaterialUnitPriceCents: ..., item11LabourUnitPriceCents: ..., item11MatchedKeywords: ..., includeItem12: ..., item12Name: ..., item12DisplayOrder: ..., item12Quantity: ..., item12SourceTemplateId: ..., item12QuantitySourceId: ..., item12UnitPriceCents: ..., item12MaterialUnitPriceCents: ..., item12LabourUnitPriceCents: ..., item12MatchedKeywords: ..., includeItem13: ..., item13Name: ..., item13DisplayOrder: ..., item13Quantity: ..., item13SourceTemplateId: ..., item13QuantitySourceId: ..., item13UnitPriceCents: ..., item13MaterialUnitPriceCents: ..., item13LabourUnitPriceCents: ..., item13MatchedKeywords: ..., includeItem14: ..., item14Name: ..., item14DisplayOrder: ..., item14Quantity: ..., item14SourceTemplateId: ..., item14QuantitySourceId: ..., item14UnitPriceCents: ..., item14MaterialUnitPriceCents: ..., item14LabourUnitPriceCents: ..., item14MatchedKeywords: ..., includeItem15: ..., item15Name: ..., item15DisplayOrder: ..., item15Quantity: ..., item15SourceTemplateId: ..., item15QuantitySourceId: ..., item15UnitPriceCents: ..., item15MaterialUnitPriceCents: ..., item15LabourUnitPriceCents: ..., item15MatchedKeywords: ..., includeItem16: ..., item16Name: ..., item16DisplayOrder: ..., item16Quantity: ..., item16SourceTemplateId: ..., item16QuantitySourceId: ..., item16UnitPriceCents: ..., item16MaterialUnitPriceCents: ..., item16LabourUnitPriceCents: ..., item16MatchedKeywords: ..., includeItem17: ..., item17Name: ..., item17DisplayOrder: ..., item17Quantity: ..., item17SourceTemplateId: ..., item17QuantitySourceId: ..., item17UnitPriceCents: ..., item17MaterialUnitPriceCents: ..., item17LabourUnitPriceCents: ..., item17MatchedKeywords: ..., includeItem18: ..., item18Name: ..., item18DisplayOrder: ..., item18Quantity: ..., item18SourceTemplateId: ..., item18QuantitySourceId: ..., item18UnitPriceCents: ..., item18MaterialUnitPriceCents: ..., item18LabourUnitPriceCents: ..., item18MatchedKeywords: ..., includeItem19: ..., item19Name: ..., item19DisplayOrder: ..., item19Quantity: ..., item19SourceTemplateId: ..., item19QuantitySourceId: ..., item19UnitPriceCents: ..., item19MaterialUnitPriceCents: ..., item19LabourUnitPriceCents: ..., item19MatchedKeywords: ..., includeItem20: ..., item20Name: ..., item20DisplayOrder: ..., item20Quantity: ..., item20SourceTemplateId: ..., item20QuantitySourceId: ..., item20UnitPriceCents: ..., item20MaterialUnitPriceCents: ..., item20LabourUnitPriceCents: ..., item20MatchedKeywords: ..., });
+const ref = createQuoteWithItemsRef({ projectId: ..., quoteId: ..., includeItem1: ..., item1Name: ..., item1DisplayOrder: ..., item1Quantity: ..., item1Unit: ..., item1SourceTemplateId: ..., item1QuantitySourceId: ..., item1UnitPriceCents: ..., item1MaterialUnitPriceCents: ..., item1LabourUnitPriceCents: ..., item1MatchedKeywords: ..., includeItem2: ..., item2Name: ..., item2DisplayOrder: ..., item2Quantity: ..., item2Unit: ..., item2SourceTemplateId: ..., item2QuantitySourceId: ..., item2UnitPriceCents: ..., item2MaterialUnitPriceCents: ..., item2LabourUnitPriceCents: ..., item2MatchedKeywords: ..., includeItem3: ..., item3Name: ..., item3DisplayOrder: ..., item3Quantity: ..., item3Unit: ..., item3SourceTemplateId: ..., item3QuantitySourceId: ..., item3UnitPriceCents: ..., item3MaterialUnitPriceCents: ..., item3LabourUnitPriceCents: ..., item3MatchedKeywords: ..., includeItem4: ..., item4Name: ..., item4DisplayOrder: ..., item4Quantity: ..., item4Unit: ..., item4SourceTemplateId: ..., item4QuantitySourceId: ..., item4UnitPriceCents: ..., item4MaterialUnitPriceCents: ..., item4LabourUnitPriceCents: ..., item4MatchedKeywords: ..., includeItem5: ..., item5Name: ..., item5DisplayOrder: ..., item5Quantity: ..., item5Unit: ..., item5SourceTemplateId: ..., item5QuantitySourceId: ..., item5UnitPriceCents: ..., item5MaterialUnitPriceCents: ..., item5LabourUnitPriceCents: ..., item5MatchedKeywords: ..., includeItem6: ..., item6Name: ..., item6DisplayOrder: ..., item6Quantity: ..., item6Unit: ..., item6SourceTemplateId: ..., item6QuantitySourceId: ..., item6UnitPriceCents: ..., item6MaterialUnitPriceCents: ..., item6LabourUnitPriceCents: ..., item6MatchedKeywords: ..., includeItem7: ..., item7Name: ..., item7DisplayOrder: ..., item7Quantity: ..., item7Unit: ..., item7SourceTemplateId: ..., item7QuantitySourceId: ..., item7UnitPriceCents: ..., item7MaterialUnitPriceCents: ..., item7LabourUnitPriceCents: ..., item7MatchedKeywords: ..., includeItem8: ..., item8Name: ..., item8DisplayOrder: ..., item8Quantity: ..., item8Unit: ..., item8SourceTemplateId: ..., item8QuantitySourceId: ..., item8UnitPriceCents: ..., item8MaterialUnitPriceCents: ..., item8LabourUnitPriceCents: ..., item8MatchedKeywords: ..., includeItem9: ..., item9Name: ..., item9DisplayOrder: ..., item9Quantity: ..., item9Unit: ..., item9SourceTemplateId: ..., item9QuantitySourceId: ..., item9UnitPriceCents: ..., item9MaterialUnitPriceCents: ..., item9LabourUnitPriceCents: ..., item9MatchedKeywords: ..., includeItem10: ..., item10Name: ..., item10DisplayOrder: ..., item10Quantity: ..., item10Unit: ..., item10SourceTemplateId: ..., item10QuantitySourceId: ..., item10UnitPriceCents: ..., item10MaterialUnitPriceCents: ..., item10LabourUnitPriceCents: ..., item10MatchedKeywords: ..., includeItem11: ..., item11Name: ..., item11DisplayOrder: ..., item11Quantity: ..., item11Unit: ..., item11SourceTemplateId: ..., item11QuantitySourceId: ..., item11UnitPriceCents: ..., item11MaterialUnitPriceCents: ..., item11LabourUnitPriceCents: ..., item11MatchedKeywords: ..., includeItem12: ..., item12Name: ..., item12DisplayOrder: ..., item12Quantity: ..., item12Unit: ..., item12SourceTemplateId: ..., item12QuantitySourceId: ..., item12UnitPriceCents: ..., item12MaterialUnitPriceCents: ..., item12LabourUnitPriceCents: ..., item12MatchedKeywords: ..., includeItem13: ..., item13Name: ..., item13DisplayOrder: ..., item13Quantity: ..., item13Unit: ..., item13SourceTemplateId: ..., item13QuantitySourceId: ..., item13UnitPriceCents: ..., item13MaterialUnitPriceCents: ..., item13LabourUnitPriceCents: ..., item13MatchedKeywords: ..., includeItem14: ..., item14Name: ..., item14DisplayOrder: ..., item14Quantity: ..., item14Unit: ..., item14SourceTemplateId: ..., item14QuantitySourceId: ..., item14UnitPriceCents: ..., item14MaterialUnitPriceCents: ..., item14LabourUnitPriceCents: ..., item14MatchedKeywords: ..., includeItem15: ..., item15Name: ..., item15DisplayOrder: ..., item15Quantity: ..., item15Unit: ..., item15SourceTemplateId: ..., item15QuantitySourceId: ..., item15UnitPriceCents: ..., item15MaterialUnitPriceCents: ..., item15LabourUnitPriceCents: ..., item15MatchedKeywords: ..., includeItem16: ..., item16Name: ..., item16DisplayOrder: ..., item16Quantity: ..., item16Unit: ..., item16SourceTemplateId: ..., item16QuantitySourceId: ..., item16UnitPriceCents: ..., item16MaterialUnitPriceCents: ..., item16LabourUnitPriceCents: ..., item16MatchedKeywords: ..., includeItem17: ..., item17Name: ..., item17DisplayOrder: ..., item17Quantity: ..., item17Unit: ..., item17SourceTemplateId: ..., item17QuantitySourceId: ..., item17UnitPriceCents: ..., item17MaterialUnitPriceCents: ..., item17LabourUnitPriceCents: ..., item17MatchedKeywords: ..., includeItem18: ..., item18Name: ..., item18DisplayOrder: ..., item18Quantity: ..., item18Unit: ..., item18SourceTemplateId: ..., item18QuantitySourceId: ..., item18UnitPriceCents: ..., item18MaterialUnitPriceCents: ..., item18LabourUnitPriceCents: ..., item18MatchedKeywords: ..., includeItem19: ..., item19Name: ..., item19DisplayOrder: ..., item19Quantity: ..., item19Unit: ..., item19SourceTemplateId: ..., item19QuantitySourceId: ..., item19UnitPriceCents: ..., item19MaterialUnitPriceCents: ..., item19LabourUnitPriceCents: ..., item19MatchedKeywords: ..., includeItem20: ..., item20Name: ..., item20DisplayOrder: ..., item20Quantity: ..., item20Unit: ..., item20SourceTemplateId: ..., item20QuantitySourceId: ..., item20UnitPriceCents: ..., item20MaterialUnitPriceCents: ..., item20LabourUnitPriceCents: ..., item20MatchedKeywords: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -7003,4 +7165,3 @@ executeMutation(ref).then((response) => {
   console.log(data.userSignature_upsert);
 });
 ```
-

@@ -1,3 +1,4 @@
+import { BoardMaterialsHelper } from "../geometry/board-materials.helper.ts";
 import { OverlayGeometryHelper } from "../geometry/overlay-geometry.helper.ts";
 import type { AreaPolygon, Overlay } from "../geometry/schemas/index.ts";
 
@@ -13,7 +14,7 @@ import type {
  * `FloorplanPage.overlay`'s JSON string into one) plus the page's
  * `scaleMmPerPx`/`ceilingHeightMm`, and returns numbers.
  *
- * All six quantity sources exclude `deleted` areas (`computeQuantities()`
+ * All quantity sources exclude `deleted` areas (`computeQuantities()`
  * filters them once, up front, the same way `ReadinessCheckUtils.
  * activeAreasForPage()` does for the readiness gate). Beyond that,
  * `isOutdoor` is handled per source rather than uniformly:
@@ -58,6 +59,13 @@ export class QuantityTakeoffCalculatorUtils {
         pageHeightMm: number | null,
     ): number {
         switch (source.measurementSource) {
+            case "PLASTERBOARD_AREA":
+                return QuantityTakeoffCalculatorUtils.plasterboardAreaQuantity(
+                    areas,
+                    scaleMmPerPx,
+                    pageHeightMm,
+                    source.measurementPlasterType,
+                );
             case "WALL_AREA":
                 return QuantityTakeoffCalculatorUtils.wallAreaQuantity(
                     areas,
@@ -96,6 +104,39 @@ export class QuantityTakeoffCalculatorUtils {
                 // quotes as zero rather than throwing.
                 return 0;
         }
+    }
+
+    /**
+     * Total sheet area for one exact editor wall-board type. Wall faces are
+     * measured from edge length × ceiling height; ceiling surfaces are added
+     * to the board type selected by `wallBoardTypeForCeiling()`.
+     */
+    private static plasterboardAreaQuantity(
+        areas: readonly AreaPolygon[],
+        scaleMmPerPx: number,
+        pageHeightMm: number | null,
+        measurementPlasterType: string | null,
+    ): number {
+        if (measurementPlasterType == null) return 0;
+        return areas.reduce((total, area) => {
+            const wallArea =
+                OverlayGeometryHelper.wallAreaM2ByBoardType(
+                    area,
+                    scaleMmPerPx,
+                    pageHeightMm,
+                ).find(({ boardType }) => boardType === measurementPlasterType)
+                    ?.areaM2 ?? 0;
+            const ceilingArea =
+                BoardMaterialsHelper.wallBoardTypeForCeiling(
+                    area.ceilingPlasterType,
+                ) === measurementPlasterType
+                    ? OverlayGeometryHelper.ceilingAreaM2ForArea(
+                          area,
+                          scaleMmPerPx,
+                      )
+                    : 0;
+            return total + wallArea + ceilingArea;
+        }, 0);
     }
 
     /**

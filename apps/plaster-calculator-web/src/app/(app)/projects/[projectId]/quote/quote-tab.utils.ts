@@ -24,6 +24,7 @@ export class QuoteTabUtils {
                 id: item.id,
                 name: item.name,
                 quantity: item.quantity,
+                unit: item.unit ?? null,
                 unitPriceCents: item.unitPriceCents,
             })),
         };
@@ -44,6 +45,7 @@ export class QuoteTabUtils {
                 id: item.id,
                 name: item.name,
                 quantity: item.quantity,
+                unit: item.unit ?? null,
                 unitPriceCents: item.unitPriceCents,
                 quantitySource: item.quantitySource
                     ? {

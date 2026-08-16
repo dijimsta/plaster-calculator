@@ -18,6 +18,7 @@ export type QuoteDetailDocumentLineItem = {
     readonly id: string;
     readonly name: string;
     readonly quantity: number;
+    readonly unit: string | null;
     /** In integer cents (see `QuoteTotalsUtils`). */
     readonly unitPriceCents: number;
     readonly quantitySource: QuoteDetailDocumentQuantitySource | null;

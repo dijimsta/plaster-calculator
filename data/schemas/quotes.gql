@@ -14,6 +14,9 @@ type QuoteItemTemplate @table {
     scope: String!
     systemKey: String @unique
     name: String!
+    # Nullable so pre-unit custom templates remain identifiable and can be
+    # completed explicitly by their team instead of receiving a guessed unit.
+    unit: String
     hasKeywords: Boolean! @default(value: false)
     keywords: [String!]!
     quantitySource: QuantitySource
@@ -93,6 +96,9 @@ type QuoteItem @table {
     displayOrder: Int!
     name: String!
     quantity: Float!
+    # Generated quotes are snapshots. Nullable preserves historical items
+    # created before units were stored.
+    unit: String
     quantitySource: QuantitySource
         @ref(fields: "quantitySourceId", references: "id")
     quantitySourceId: UUID

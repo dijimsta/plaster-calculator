@@ -51,6 +51,7 @@ export class QuoteTemplatePanelUtils {
                     ),
                     systemKey: itemTemplate.systemKey ?? null,
                     name: itemTemplate.name,
+                    unit: itemTemplate.unit ?? null,
                     hasKeywords: itemTemplate.hasKeywords,
                     keywords: itemTemplate.keywords,
                     sortOrder: itemTemplate.sortOrder,
@@ -74,6 +75,7 @@ export class QuoteTemplatePanelUtils {
         await createItemTemplate({
             id: itemTemplateId,
             name: item.name,
+            unit: item.unit.trim(),
             hasKeywords: item.hasKeywords,
             keywords: [...item.keywords],
         });
@@ -116,6 +118,7 @@ export class QuoteTemplatePanelUtils {
     ): Promise<void> {
         const nameOrKeywordsChanged =
             original.name !== item.name ||
+            original.unit !== item.unit.trim() ||
             original.hasKeywords !== item.hasKeywords ||
             !QuoteTemplatePanelUtils.haveSameKeywords(
                 original.keywords,
@@ -125,6 +128,7 @@ export class QuoteTemplatePanelUtils {
             await updateItemTemplate({
                 id: itemTemplateId,
                 name: item.name,
+                unit: item.unit.trim(),
                 hasKeywords: item.hasKeywords,
                 keywords: [...item.keywords],
             });

@@ -7,6 +7,7 @@ export type { FloorplanDeepLinkFixControlProps } from "./floorplan-deep-link-fix
 export { UnitPriceFixControl } from "./unit-price-fix-control.component.tsx";
 export type { UnitPriceFixControlProps } from "./unit-price-fix-control.component.tsx";
 export { WallBoardTypeFixControl } from "./wall-board-type-fix-control.component.tsx";
+export { QuoteTemplateDeepLinkFixControl } from "./quote-template-deep-link-fix-control.component.tsx";
 export type { WallBoardTypeFixControlProps } from "./wall-board-type-fix-control.component.tsx";
 export { useFixControlSubmission } from "./use-fix-control-submission.hook.ts";
 export type { FixControlSubmissionState } from "./use-fix-control-submission.hook.ts";

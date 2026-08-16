@@ -128,6 +128,43 @@ test("wallAreaM2ForArea returns nothing when no height is known from either the 
     );
 });
 
+test("wallAreaM2ByBoardType groups exact edge board types and applies overrides", () => {
+    const result = OverlayGeometryHelper.wallAreaM2ByBoardType(
+        area({
+            ceilingHeightMm: 2400,
+            edgeOverrides: {
+                0: { wallBoardType: "13mm Plasterboard" },
+                1: { noPlaster: true },
+            },
+        }),
+        10,
+        null,
+    );
+    assert.deepEqual(result, [
+        { boardType: "13mm Plasterboard", areaM2: 2.4 },
+        { boardType: "10mm Plasterboard", areaM2: 4.8 },
+    ]);
+});
+
+test("wallAreaM2ByBoardType uses per-edge endpoint heights for a raked ceiling", () => {
+    const result = OverlayGeometryHelper.wallAreaM2ByBoardType(
+        area({
+            ceilingMode: "raked",
+            rakedCeiling: {
+                lowEdgeIndex: 0,
+                highEdgeIndex: 2,
+                lowHeightMm: 2400,
+                highHeightMm: 3000,
+            },
+        }),
+        10,
+        null,
+    );
+    assert.deepEqual(result, [
+        { boardType: "10mm Plasterboard", areaM2: 10.8 },
+    ]);
+});
+
 test("floorAreaM2ForArea matches ceilingAreaM2ForArea's flat area", () => {
     assert.equal(
         OverlayGeometryHelper.floorAreaM2ForArea(area(), 10),

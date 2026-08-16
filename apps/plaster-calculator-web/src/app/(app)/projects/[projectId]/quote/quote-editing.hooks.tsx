@@ -70,6 +70,7 @@ export function useSaveProjectQuote(projectId: string): SaveProjectQuoteState {
                             displayOrder,
                             name: item.name.trim(),
                             quantity: item.quantity,
+                            unit: item.unit?.trim() || null,
                             unitPriceCents: item.unitPriceCents,
                         }),
                     ),
@@ -80,6 +81,7 @@ export function useSaveProjectQuote(projectId: string): SaveProjectQuoteState {
                             displayOrder,
                             name: item.name.trim(),
                             quantity: item.quantity,
+                            unit: item.unit?.trim() ?? "",
                             unitPriceCents: item.unitPriceCents,
                         }),
                     ),
@@ -153,6 +155,7 @@ function quoteItemNeedsUpdate(
         (initialIndex !== displayOrder ||
             initialItem.name !== item.name ||
             initialItem.quantity !== item.quantity ||
+            initialItem.unit !== item.unit ||
             initialItem.unitPriceCents !== item.unitPriceCents)
     );
 }

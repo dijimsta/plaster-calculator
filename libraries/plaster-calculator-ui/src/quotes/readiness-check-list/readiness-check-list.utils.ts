@@ -9,6 +9,7 @@ import {
     ROOMS_MEASURED_CHECK_ID,
     SCALE_APPLIED_CHECK_ID,
     TEMPLATE_PRICED_CHECK_ID,
+    TEMPLATE_UNIT_SET_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
 } from "@libraries/plaster-calculator-common";
 
@@ -47,6 +48,8 @@ export class ReadinessCheckListUtils {
                 return t("readinessCheckList.checkLabels.CEILING_HEIGHT_SET");
             case TEMPLATE_PRICED_CHECK_ID:
                 return t("readinessCheckList.checkLabels.TEMPLATE_PRICED");
+            case TEMPLATE_UNIT_SET_CHECK_ID:
+                return t("readinessCheckList.checkLabels.TEMPLATE_UNIT_SET");
             case INFERRED_ANSWERS_CONFIRMED_CHECK_ID:
                 return t(
                     "readinessCheckList.checkLabels.INFERRED_ANSWERS_CONFIRMED",

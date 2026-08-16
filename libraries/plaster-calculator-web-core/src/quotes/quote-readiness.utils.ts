@@ -66,6 +66,7 @@ export class QuoteReadinessUtils {
                     label: config.itemTemplate.name,
                     enabled: config.enabled,
                     unitPriceCents: config.unitPriceCents,
+                    unit: config.itemTemplate.unit ?? null,
                     quantitySourceId:
                         config.itemTemplate.quantitySourceId ?? null,
                 }),

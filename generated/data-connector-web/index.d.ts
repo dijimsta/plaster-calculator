@@ -125,6 +125,7 @@ export interface CreateQuoteItemTemplateData {
 export interface CreateQuoteItemTemplateVariables {
   id: UUIDString;
   name: string;
+  unit: string;
   hasKeywords: boolean;
   keywords: string[];
 }
@@ -135,6 +136,7 @@ export interface CreateQuoteItemVariables {
   displayOrder: number;
   name: string;
   quantity: number;
+  unit: string;
   unitPriceCents: number;
 }
 
@@ -180,6 +182,7 @@ export interface CreateQuoteWithItemsVariables {
   item1Name?: string | null;
   item1DisplayOrder?: number | null;
   item1Quantity?: number | null;
+  item1Unit?: string | null;
   item1SourceTemplateId?: UUIDString | null;
   item1QuantitySourceId?: UUIDString | null;
   item1UnitPriceCents?: number | null;
@@ -190,6 +193,7 @@ export interface CreateQuoteWithItemsVariables {
   item2Name?: string | null;
   item2DisplayOrder?: number | null;
   item2Quantity?: number | null;
+  item2Unit?: string | null;
   item2SourceTemplateId?: UUIDString | null;
   item2QuantitySourceId?: UUIDString | null;
   item2UnitPriceCents?: number | null;
@@ -200,6 +204,7 @@ export interface CreateQuoteWithItemsVariables {
   item3Name?: string | null;
   item3DisplayOrder?: number | null;
   item3Quantity?: number | null;
+  item3Unit?: string | null;
   item3SourceTemplateId?: UUIDString | null;
   item3QuantitySourceId?: UUIDString | null;
   item3UnitPriceCents?: number | null;
@@ -210,6 +215,7 @@ export interface CreateQuoteWithItemsVariables {
   item4Name?: string | null;
   item4DisplayOrder?: number | null;
   item4Quantity?: number | null;
+  item4Unit?: string | null;
   item4SourceTemplateId?: UUIDString | null;
   item4QuantitySourceId?: UUIDString | null;
   item4UnitPriceCents?: number | null;
@@ -220,6 +226,7 @@ export interface CreateQuoteWithItemsVariables {
   item5Name?: string | null;
   item5DisplayOrder?: number | null;
   item5Quantity?: number | null;
+  item5Unit?: string | null;
   item5SourceTemplateId?: UUIDString | null;
   item5QuantitySourceId?: UUIDString | null;
   item5UnitPriceCents?: number | null;
@@ -230,6 +237,7 @@ export interface CreateQuoteWithItemsVariables {
   item6Name?: string | null;
   item6DisplayOrder?: number | null;
   item6Quantity?: number | null;
+  item6Unit?: string | null;
   item6SourceTemplateId?: UUIDString | null;
   item6QuantitySourceId?: UUIDString | null;
   item6UnitPriceCents?: number | null;
@@ -240,6 +248,7 @@ export interface CreateQuoteWithItemsVariables {
   item7Name?: string | null;
   item7DisplayOrder?: number | null;
   item7Quantity?: number | null;
+  item7Unit?: string | null;
   item7SourceTemplateId?: UUIDString | null;
   item7QuantitySourceId?: UUIDString | null;
   item7UnitPriceCents?: number | null;
@@ -250,6 +259,7 @@ export interface CreateQuoteWithItemsVariables {
   item8Name?: string | null;
   item8DisplayOrder?: number | null;
   item8Quantity?: number | null;
+  item8Unit?: string | null;
   item8SourceTemplateId?: UUIDString | null;
   item8QuantitySourceId?: UUIDString | null;
   item8UnitPriceCents?: number | null;
@@ -260,6 +270,7 @@ export interface CreateQuoteWithItemsVariables {
   item9Name?: string | null;
   item9DisplayOrder?: number | null;
   item9Quantity?: number | null;
+  item9Unit?: string | null;
   item9SourceTemplateId?: UUIDString | null;
   item9QuantitySourceId?: UUIDString | null;
   item9UnitPriceCents?: number | null;
@@ -270,6 +281,7 @@ export interface CreateQuoteWithItemsVariables {
   item10Name?: string | null;
   item10DisplayOrder?: number | null;
   item10Quantity?: number | null;
+  item10Unit?: string | null;
   item10SourceTemplateId?: UUIDString | null;
   item10QuantitySourceId?: UUIDString | null;
   item10UnitPriceCents?: number | null;
@@ -280,6 +292,7 @@ export interface CreateQuoteWithItemsVariables {
   item11Name?: string | null;
   item11DisplayOrder?: number | null;
   item11Quantity?: number | null;
+  item11Unit?: string | null;
   item11SourceTemplateId?: UUIDString | null;
   item11QuantitySourceId?: UUIDString | null;
   item11UnitPriceCents?: number | null;
@@ -290,6 +303,7 @@ export interface CreateQuoteWithItemsVariables {
   item12Name?: string | null;
   item12DisplayOrder?: number | null;
   item12Quantity?: number | null;
+  item12Unit?: string | null;
   item12SourceTemplateId?: UUIDString | null;
   item12QuantitySourceId?: UUIDString | null;
   item12UnitPriceCents?: number | null;
@@ -300,6 +314,7 @@ export interface CreateQuoteWithItemsVariables {
   item13Name?: string | null;
   item13DisplayOrder?: number | null;
   item13Quantity?: number | null;
+  item13Unit?: string | null;
   item13SourceTemplateId?: UUIDString | null;
   item13QuantitySourceId?: UUIDString | null;
   item13UnitPriceCents?: number | null;
@@ -310,6 +325,7 @@ export interface CreateQuoteWithItemsVariables {
   item14Name?: string | null;
   item14DisplayOrder?: number | null;
   item14Quantity?: number | null;
+  item14Unit?: string | null;
   item14SourceTemplateId?: UUIDString | null;
   item14QuantitySourceId?: UUIDString | null;
   item14UnitPriceCents?: number | null;
@@ -320,6 +336,7 @@ export interface CreateQuoteWithItemsVariables {
   item15Name?: string | null;
   item15DisplayOrder?: number | null;
   item15Quantity?: number | null;
+  item15Unit?: string | null;
   item15SourceTemplateId?: UUIDString | null;
   item15QuantitySourceId?: UUIDString | null;
   item15UnitPriceCents?: number | null;
@@ -330,6 +347,7 @@ export interface CreateQuoteWithItemsVariables {
   item16Name?: string | null;
   item16DisplayOrder?: number | null;
   item16Quantity?: number | null;
+  item16Unit?: string | null;
   item16SourceTemplateId?: UUIDString | null;
   item16QuantitySourceId?: UUIDString | null;
   item16UnitPriceCents?: number | null;
@@ -340,6 +358,7 @@ export interface CreateQuoteWithItemsVariables {
   item17Name?: string | null;
   item17DisplayOrder?: number | null;
   item17Quantity?: number | null;
+  item17Unit?: string | null;
   item17SourceTemplateId?: UUIDString | null;
   item17QuantitySourceId?: UUIDString | null;
   item17UnitPriceCents?: number | null;
@@ -350,6 +369,7 @@ export interface CreateQuoteWithItemsVariables {
   item18Name?: string | null;
   item18DisplayOrder?: number | null;
   item18Quantity?: number | null;
+  item18Unit?: string | null;
   item18SourceTemplateId?: UUIDString | null;
   item18QuantitySourceId?: UUIDString | null;
   item18UnitPriceCents?: number | null;
@@ -360,6 +380,7 @@ export interface CreateQuoteWithItemsVariables {
   item19Name?: string | null;
   item19DisplayOrder?: number | null;
   item19Quantity?: number | null;
+  item19Unit?: string | null;
   item19SourceTemplateId?: UUIDString | null;
   item19QuantitySourceId?: UUIDString | null;
   item19UnitPriceCents?: number | null;
@@ -370,6 +391,7 @@ export interface CreateQuoteWithItemsVariables {
   item20Name?: string | null;
   item20DisplayOrder?: number | null;
   item20Quantity?: number | null;
+  item20Unit?: string | null;
   item20SourceTemplateId?: UUIDString | null;
   item20QuantitySourceId?: UUIDString | null;
   item20UnitPriceCents?: number | null;
@@ -447,21 +469,6 @@ export interface EnsureProjectQuestionnaireData {
 
 export interface EnsureProjectQuestionnaireVariables {
   projectId: UUIDString;
-}
-
-export interface EnsureSystemQuoteItemTemplatesData {
-  wallsPlasterboardQuantitySource: QuantitySource_Key;
-  wetWallsVillaboardQuantitySource: QuantitySource_Key;
-  ceilingsPlasterboardQuantitySource: QuantitySource_Key;
-  coveCorniceQuantitySource: QuantitySource_Key;
-  wetFloorsFcSheetQuantitySource: QuantitySource_Key;
-  doorSetsQuantitySource: QuantitySource_Key;
-  wallsPlasterboardItemTemplate: QuoteItemTemplate_Key;
-  wetWallsVillaboardItemTemplate: QuoteItemTemplate_Key;
-  ceilingsPlasterboardItemTemplate: QuoteItemTemplate_Key;
-  coveCorniceItemTemplate: QuoteItemTemplate_Key;
-  wetFloorsFcSheetItemTemplate: QuoteItemTemplate_Key;
-  doorSetsItemTemplate: QuoteItemTemplate_Key;
 }
 
 export interface FloorplanPage_Key {
@@ -572,6 +579,7 @@ export interface GetProjectQuoteData {
         displayOrder: number;
         name: string;
         quantity: number;
+        unit?: string | null;
         unitPriceCents: number;
         materialUnitPriceCents: number;
         labourUnitPriceCents: number;
@@ -645,6 +653,7 @@ export interface GetQuoteByIdData {
       displayOrder: number;
       name: string;
       quantity: number;
+      unit?: string | null;
       unitPriceCents: number;
       materialUnitPriceCents: number;
       labourUnitPriceCents: number;
@@ -696,10 +705,16 @@ export interface GetQuoteReadinessData {
     itemTemplate: {
       id: UUIDString;
       name: string;
+      unit?: string | null;
       hasKeywords: boolean;
       keywords: string[];
       sortOrder: number;
       quantitySourceId?: UUIDString | null;
+      quantitySource?: {
+        id: UUIDString;
+        measurementSource: string;
+        measurementPlasterType?: string | null;
+      } & QuantitySource_Key;
     } & QuoteItemTemplate_Key;
   })[];
 }
@@ -774,6 +789,7 @@ export interface ListQuoteItemTemplateConfigsForQuoteTemplateData {
     itemTemplate: {
       id: UUIDString;
       name: string;
+      unit?: string | null;
       hasKeywords: boolean;
       keywords: string[];
       sortOrder: number;
@@ -792,6 +808,7 @@ export interface ListQuoteItemTemplatesData {
     scope: string;
     systemKey?: string | null;
     name: string;
+    unit?: string | null;
     hasKeywords: boolean;
     keywords: string[];
     quantitySourceId?: UUIDString | null;
@@ -885,6 +902,37 @@ export interface QuoteTemplate_Key {
 export interface Quote_Key {
   id: UUIDString;
   __typename?: 'Quote_Key';
+}
+
+export interface ReconcileSystemQuoteItemTemplatesData {
+  quoteItemTemplateConfig_deleteMany: number;
+  quoteItemTemplate_deleteMany: number;
+  plasterboard10mmSource: QuantitySource_Key;
+  plasterboard13mmSource: QuantitySource_Key;
+  villaboard9mmSource: QuantitySource_Key;
+  villaboard6mmSource: QuantitySource_Key;
+  acoustic10mmSource: QuantitySource_Key;
+  acoustic13mmSource: QuantitySource_Key;
+  waterResistant10mmSource: QuantitySource_Key;
+  waterResistant13mmSource: QuantitySource_Key;
+  fireDry13mmSource: QuantitySource_Key;
+  fireDry16mmSource: QuantitySource_Key;
+  fireWet13mmSource: QuantitySource_Key;
+  fireWet16mmSource: QuantitySource_Key;
+  flexible6_5mmSource: QuantitySource_Key;
+  plasterboard10mm: QuoteItemTemplate_Key;
+  plasterboard13mm: QuoteItemTemplate_Key;
+  villaboard9mm: QuoteItemTemplate_Key;
+  villaboard6mm: QuoteItemTemplate_Key;
+  acoustic10mm: QuoteItemTemplate_Key;
+  acoustic13mm: QuoteItemTemplate_Key;
+  waterResistant10mm: QuoteItemTemplate_Key;
+  waterResistant13mm: QuoteItemTemplate_Key;
+  fireDry13mm: QuoteItemTemplate_Key;
+  fireDry16mm: QuoteItemTemplate_Key;
+  fireWet13mm: QuoteItemTemplate_Key;
+  fireWet16mm: QuoteItemTemplate_Key;
+  flexible6_5mm: QuoteItemTemplate_Key;
 }
 
 export interface Reminder_Key {
@@ -1037,6 +1085,7 @@ export interface UpdateQuoteItemTemplateData {
 export interface UpdateQuoteItemTemplateVariables {
   id: UUIDString;
   name: string;
+  unit: string;
   hasKeywords: boolean;
   keywords: string[];
 }
@@ -1046,6 +1095,7 @@ export interface UpdateQuoteItemVariables {
   displayOrder: number;
   name: string;
   quantity: number;
+  unit?: string | null;
   unitPriceCents: number;
 }
 
@@ -1426,17 +1476,17 @@ export const getProjectQuestionnaireRef: GetProjectQuestionnaireRef;
 export function getProjectQuestionnaire(vars: GetProjectQuestionnaireVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
 export function getProjectQuestionnaire(dc: DataConnect, vars: GetProjectQuestionnaireVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuestionnaireData, GetProjectQuestionnaireVariables>;
 
-interface EnsureSystemQuoteItemTemplatesRef {
+interface ReconcileSystemQuoteItemTemplatesRef {
   /* Allow users to create refs without passing in DataConnect */
-  (): MutationRef<EnsureSystemQuoteItemTemplatesData, undefined>;
+  (): MutationRef<ReconcileSystemQuoteItemTemplatesData, undefined>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): MutationRef<EnsureSystemQuoteItemTemplatesData, undefined>;
+  (dc: DataConnect): MutationRef<ReconcileSystemQuoteItemTemplatesData, undefined>;
   operationName: string;
 }
-export const ensureSystemQuoteItemTemplatesRef: EnsureSystemQuoteItemTemplatesRef;
+export const reconcileSystemQuoteItemTemplatesRef: ReconcileSystemQuoteItemTemplatesRef;
 
-export function ensureSystemQuoteItemTemplates(): MutationPromise<EnsureSystemQuoteItemTemplatesData, undefined>;
-export function ensureSystemQuoteItemTemplates(dc: DataConnect): MutationPromise<EnsureSystemQuoteItemTemplatesData, undefined>;
+export function reconcileSystemQuoteItemTemplates(): MutationPromise<ReconcileSystemQuoteItemTemplatesData, undefined>;
+export function reconcileSystemQuoteItemTemplates(dc: DataConnect): MutationPromise<ReconcileSystemQuoteItemTemplatesData, undefined>;
 
 interface CreateQuoteTemplateRef {
   /* Allow users to create refs without passing in DataConnect */

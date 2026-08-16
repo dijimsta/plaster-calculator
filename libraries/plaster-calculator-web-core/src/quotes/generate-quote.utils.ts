@@ -33,26 +33,8 @@ const MAX_QUOTE_ITEMS = 20;
  * without a `DataConnect` instance.
  */
 export class GenerateQuoteUtils {
-    /**
-     * `QuoteItemTemplate.quantitySourceId` can only ever point at one of
-     * these six rows: `EnsureSystemQuoteItemTemplates` (`data/connector-web/
-     * quotes.mutations.gql`) is the only mutation that ever writes a
-     * `QuantitySource` row, and `CreateQuoteItemTemplate` (the mutation a
-     * team uses to add its own custom item templates) never sets
-     * `quantitySourceId` at all — every team-created template's
-     * `quantitySourceId` is `null`. So rather than adding a Data Connect
-     * query just to read `QuantitySource.measurementSource`/
-     * `measurementPlasterType` back (out of scope for this package, and
-     * `GetQuoteReadiness` doesn't select them), this mirrors the same six
-     * `id`/`measurementSource`/`measurementPlasterType` triples
-     * `EnsureSystemQuoteItemTemplates` seeds, by hand. If a future ticket
-     * lets a team seed its own `QuantitySource` rows, this list — and the
-     * assumption above — need to be revisited. The IDs use Data Connect's
-     * compact UUID representation (without hyphens), matching the generated
-     * query values compared in `resolveQuantityFor()`; the seed mutation's
-     * hyphenated literals identify the same UUID rows.
-     */
-    private static readonly KNOWN_QUANTITY_SOURCES: readonly QuantitySourceDefinition[] =
+    /** Keeps pre-migration templates resolvable while their catalog rows age out. */
+    private static readonly LEGACY_QUANTITY_SOURCES: readonly QuantitySourceDefinition[] =
         [
             {
                 id: "c1b8d7b7bfda440099d664a366c02f62",
@@ -106,7 +88,7 @@ export class GenerateQuoteUtils {
 
         const rollupResults = TakeoffRollupUtils.rollup(
             input.pages,
-            GenerateQuoteUtils.KNOWN_QUANTITY_SOURCES,
+            GenerateQuoteUtils.quantitySources(input.templateConfigs),
         );
         const items = GenerateQuoteUtils.resolveQuoteItems(
             input.templateConfigs,
@@ -238,9 +220,20 @@ export class GenerateQuoteUtils {
         return configs.map((config) => ({
             itemTemplateId: config.itemTemplateId,
             name: config.itemTemplate.name,
+            unit: config.itemTemplate.unit ?? null,
             hasKeywords: config.itemTemplate.hasKeywords,
             keywords: config.itemTemplate.keywords,
             quantitySourceId: config.itemTemplate.quantitySourceId ?? null,
+            quantitySource: config.itemTemplate.quantitySource
+                ? {
+                      id: config.itemTemplate.quantitySource.id,
+                      measurementSource:
+                          config.itemTemplate.quantitySource.measurementSource,
+                      measurementPlasterType:
+                          config.itemTemplate.quantitySource
+                              .measurementPlasterType ?? null,
+                  }
+                : null,
             sortOrder: config.itemTemplate.sortOrder,
             unitPriceCents: config.unitPriceCents,
             materialUnitPriceCents: 0,
@@ -270,6 +263,7 @@ export class GenerateQuoteUtils {
             name: config.name,
             displayOrder: config.sortOrder,
             quantity,
+            unit: config.unit,
             quantitySourceId: config.quantitySourceId,
             unitPriceCents: config.unitPriceCents,
             materialUnitPriceCents: config.materialUnitPriceCents,
@@ -315,6 +309,7 @@ export class GenerateQuoteUtils {
         variables[`item${String(slot)}Name`] = item.name;
         variables[`item${String(slot)}DisplayOrder`] = item.displayOrder;
         variables[`item${String(slot)}Quantity`] = item.quantity;
+        variables[`item${String(slot)}Unit`] = item.unit;
         variables[`item${String(slot)}SourceTemplateId`] =
             item.sourceTemplateId;
         variables[`item${String(slot)}QuantitySourceId`] =
@@ -325,5 +320,22 @@ export class GenerateQuoteUtils {
         variables[`item${String(slot)}LabourUnitPriceCents`] =
             item.labourUnitPriceCents;
         variables[`item${String(slot)}MatchedKeywords`] = item.matchedKeywords;
+    }
+
+    private static quantitySources(
+        configs: readonly GenerateQuoteTemplateConfig[],
+    ): readonly QuantitySourceDefinition[] {
+        const sources = new Map(
+            GenerateQuoteUtils.LEGACY_QUANTITY_SOURCES.map((source) => [
+                source.id,
+                source,
+            ]),
+        );
+        configs.forEach((config) => {
+            if (config.quantitySource) {
+                sources.set(config.quantitySource.id, config.quantitySource);
+            }
+        });
+        return Array.from(sources.values());
     }
 }

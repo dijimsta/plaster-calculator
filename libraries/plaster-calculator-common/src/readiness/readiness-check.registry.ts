@@ -8,10 +8,12 @@ import {
     resolveRoomsMeasured,
     resolveScaleApplied,
     resolveTemplatePriced,
+    resolveTemplateUnitSet,
     resolveWallTypeSet,
     ROOMS_MEASURED_CHECK_ID,
     SCALE_APPLIED_CHECK_ID,
     TEMPLATE_PRICED_CHECK_ID,
+    TEMPLATE_UNIT_SET_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
 } from "./checks/index.ts";
 import type { ReadinessCheck } from "./readiness-check.types.ts";
@@ -59,6 +61,12 @@ export const READINESS_CHECKS: readonly ReadinessCheck[] = [
         severity: "BLOCK",
         fixMode: "INLINE",
         resolve: resolveTemplatePriced,
+    },
+    {
+        id: TEMPLATE_UNIT_SET_CHECK_ID,
+        severity: "BLOCK",
+        fixMode: "DEEP_LINK",
+        resolve: resolveTemplateUnitSet,
     },
     {
         id: INFERRED_ANSWERS_CONFIRMED_CHECK_ID,

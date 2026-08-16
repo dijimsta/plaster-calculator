@@ -8,43 +8,21 @@ import type {
 type QuotesTFunction = ReturnType<typeof useQuotesTranslation>["t"];
 
 /**
- * Display unit for each known `measurementSource`, matching the raw strings
- * `QuantityTakeoffCalculatorUtils` (`@libraries/plaster-calculator-common`)
- * switches on. Not exhaustive by type -- `measurementSource` is a free-text
- * column, not a closed union this library can see -- so a row whose source
- * isn't in this map renders its bare number rather than guessing a unit.
- */
-const UNIT_BY_MEASUREMENT_SOURCE: Readonly<Record<string, string>> =
-    Object.freeze({
-        WALL_AREA: "m²",
-        CEILING_AREA: "m²",
-        FLOOR_AREA: "m²",
-        CORNICE_LENGTH: "m",
-        DOOR_COUNT: "ea",
-    });
-
-/**
  * Pure presentation helpers for `QuoteLineItemsTable`. Kept as static
  * methods rather than module-level functions so the component file only
  * imports one name.
  */
 export class QuoteLineItemsTableUtils {
     /**
-     * Formats `row.quantity` with the unit implied by its `quantitySource`'s
-     * `measurementSource`, e.g. `52.8` -> `"52.8 m²"`. A row with no
-     * `quantitySource` (a keyword-matched flat-fee line) or an unrecognised
-     * `measurementSource` renders the bare number, since there's no unit to
-     * infer. Rounds display to 2dp and trims trailing zeroes, matching how
+     * Formats the numeric quantity independently from its stored unit.
+     * Rounds display to 2dp and trims trailing zeroes, matching how
      * `quantity` itself is a plain (non-cents) `number` rather than money.
      */
     public static quantityDisplayText(row: QuoteLineItemsTableRow): string {
         const quantityText = QuoteLineItemsTableUtils.formatQuantity(
             row.quantity,
         );
-        const unit = row.quantitySource
-            ? UNIT_BY_MEASUREMENT_SOURCE[row.quantitySource.measurementSource]
-            : undefined;
-        return unit ? `${quantityText} ${unit}` : quantityText;
+        return quantityText;
     }
 
     /**

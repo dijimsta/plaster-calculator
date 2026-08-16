@@ -36,9 +36,7 @@ function areaFixture(overrides: Partial<AreaPolygon>): AreaPolygon {
     };
 }
 
-// The six sources seeded by `EnsureSystemQuoteItemTemplates`
-// (`data/connector-web/quotes.mutations.gql`), with test-local ids — same
-// fixture as `quantity-takeoff-calculator.utils.test.ts`.
+// Legacy quantity-source fixtures retained to cover historical templates.
 const QUANTITY_SOURCES: QuantitySourceDefinition[] = [
     {
         id: "qs-wall-standard",

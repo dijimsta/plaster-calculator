@@ -14,7 +14,6 @@ import type {
 import { GenerateQuoteUtils } from "../../src/quotes/generate-quote.utils.ts";
 
 const WALL_QUANTITY_SOURCE_ID = "qs-wall-standard";
-const SYSTEM_WALL_QUANTITY_SOURCE_ID = "c1b8d7b7bfda440099d664a366c02f62";
 
 function templateConfigFixture(
     overrides: Partial<GenerateQuoteTemplateConfig> = {},
@@ -22,9 +21,11 @@ function templateConfigFixture(
     return {
         itemTemplateId: "template-1",
         name: "10mm Plasterboard — walls",
+        unit: "m²",
         hasKeywords: false,
         keywords: [],
         quantitySourceId: WALL_QUANTITY_SOURCE_ID,
+        quantitySource: rollupResultFixture(),
         sortOrder: 0,
         unitPriceCents: 1000,
         materialUnitPriceCents: 0,
@@ -54,6 +55,7 @@ function resolvedItemFixture(
         name: "10mm Plasterboard — walls",
         displayOrder: 0,
         quantity: 52.8,
+        unit: "m²",
         quantitySourceId: WALL_QUANTITY_SOURCE_ID,
         unitPriceCents: 1000,
         materialUnitPriceCents: 0,
@@ -209,6 +211,7 @@ test("build proceeds and produces mutation variables when the readiness gate is 
         assert.equal(result.variables.quoteId, "quote-1");
         assert.equal(result.variables.includeItem1, true);
         assert.equal(result.variables.item1Quantity, 1);
+        assert.equal(result.variables.item1Unit, "m²");
         assert.deepEqual(result.variables.item1MatchedKeywords, ["skylight"]);
     }
 });
@@ -246,7 +249,7 @@ test("build matches Data Connect's compact quantity-source UUIDs to measured rol
         ],
         templateConfigs: [
             templateConfigFixture({
-                quantitySourceId: SYSTEM_WALL_QUANTITY_SOURCE_ID,
+                quantitySourceId: "c1b8d7b7bfda440099d664a366c02f62",
             }),
         ],
         searchText: "",
@@ -260,7 +263,7 @@ test("build matches Data Connect's compact quantity-source UUIDs to measured rol
         assert.equal(result.variables.item1Quantity, 4.8);
         assert.equal(
             result.variables.item1QuantitySourceId,
-            SYSTEM_WALL_QUANTITY_SOURCE_ID,
+            "c1b8d7b7bfda440099d664a366c02f62",
         );
     }
 });

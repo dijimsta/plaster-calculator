@@ -55,6 +55,7 @@ const bathroom = areaFixture({
     label: "Bathroom",
     points: rectangle(200, 150),
     wallBoardType: "9mm Villaboard",
+    ceilingPlasterType: "Water Resistant",
 });
 
 // Deleted room: large (500x500px) and wet-area-walled, so that if
@@ -83,9 +84,23 @@ const overlay: Overlay = {
     areas: [livingRoom, bathroom, deletedRoom, patio],
 };
 
-// The six sources seeded by `EnsureSystemQuoteItemTemplates`
-// (`data/connector-web/quotes.mutations.gql`), with test-local ids.
+// Legacy sources plus the new exact-board plasterboard area sources.
 const QUANTITY_SOURCES: QuantitySourceDefinition[] = [
+    {
+        id: "qs-board-10mm-plasterboard",
+        measurementSource: "PLASTERBOARD_AREA",
+        measurementPlasterType: "10mm Plasterboard",
+    },
+    {
+        id: "qs-board-9mm-villaboard",
+        measurementSource: "PLASTERBOARD_AREA",
+        measurementPlasterType: "9mm Villaboard",
+    },
+    {
+        id: "qs-board-10mm-water-resistant",
+        measurementSource: "PLASTERBOARD_AREA",
+        measurementPlasterType: "10mm Water Resistant",
+    },
     {
         id: "qs-wall-standard",
         measurementSource: "WALL_AREA",
@@ -153,6 +168,33 @@ test("WALL_AREA/STANDARD sums only the living room's wall area (33.6m2), excludi
         QUANTITY_SOURCES,
     );
     assert.equal(quantityFor(results, "qs-wall-standard"), 33.6);
+});
+
+test("PLASTERBOARD_AREA totals exact wall type plus mapped regular ceiling area", () => {
+    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+        overlay,
+        SCALE_MM_PER_PX,
+        PAGE_HEIGHT_MM,
+        QUANTITY_SOURCES,
+    );
+    // Living walls 33.6 + living ceiling 12 + outdoor ceiling 1.
+    assert.ok(
+        Math.abs(quantityFor(results, "qs-board-10mm-plasterboard") - 46.6) <
+            1e-9,
+    );
+});
+
+test("PLASTERBOARD_AREA keeps exact villaboard walls separate and maps wet ceilings to 10mm water resistant", () => {
+    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+        overlay,
+        SCALE_MM_PER_PX,
+        PAGE_HEIGHT_MM,
+        QUANTITY_SOURCES,
+    );
+    assert.ok(
+        Math.abs(quantityFor(results, "qs-board-9mm-villaboard") - 16.8) < 1e-9,
+    );
+    assert.equal(quantityFor(results, "qs-board-10mm-water-resistant"), 3);
 });
 
 test("WALL_AREA/WET_AREA sums only the bathroom's wall area (16.8m2)", () => {

@@ -12,6 +12,7 @@ import { Controller } from "react-hook-form";
 import type { Control } from "react-hook-form";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
+import { QuoteUnitInput } from "../quote-unit-input/index.ts";
 
 import { QuoteTemplateFormPriceInput } from "./quote-template-form-price-input.component.tsx";
 import type { QuoteTemplateFormValues } from "./quote-template-form.types.ts";
@@ -157,6 +158,22 @@ export function QuoteTemplateFormCustomItemRow({
                             </Text>
                         )
                     }
+                />
+            </Table.Cell>
+            <Table.Cell fit>
+                <Controller
+                    name={`customItems.${index}.unit`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                        <QuoteUnitInput
+                            id={`${formId}-custom-item-${fieldKey}-unit`}
+                            value={field.value}
+                            required
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                        />
+                    )}
                 />
             </Table.Cell>
             <Table.Cell fit>
