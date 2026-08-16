@@ -90,8 +90,9 @@ export const zh = createTranslationResource(
             upload: "上传",
         }),
         pdfPageModal: Object.freeze({
-            title: "选择 PDF 页面",
-            description: "勾选要标注的页面。",
+            title: "您在哪些页面上标注墙体？",
+            description:
+                "选择显示墙体布局的平面页面。可跳过明细表、立面图等无需标注的页面。",
             cancel: "取消",
             selectPagesToContinue: "选择页面以继续",
             annotateSelectedPage: "标注已选择的 {{count}} 页",

@@ -88,8 +88,9 @@ export const en = Object.freeze({
         upload: "Upload",
     }),
     pdfPageModal: Object.freeze({
-        title: "Select PDF Pages",
-        description: "Tick the pages to annotate.",
+        title: "Which pages do you annotate walls on?",
+        description:
+            "Select the plan pages that show wall layouts. You can skip schedules, elevations, and other pages that don't need annotating.",
         cancel: "Cancel",
         selectPagesToContinue: "Select pages to continue",
         annotateSelectedPage: "Annotate {{count}} selected page",
