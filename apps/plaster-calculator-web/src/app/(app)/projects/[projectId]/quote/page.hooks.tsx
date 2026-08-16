@@ -197,21 +197,19 @@ function useConfirmAnswerSourceCallback(
  * to the floorplan editor, not a value submitted here.
  *
  * Each control's starting value (e.g. the room's current wall board type)
- * is sourced from the same `GetQuoteReadiness` response `useQuoteReadiness`
- * already fetched for this page — calling `useGetQuoteReadiness` again here
- * hits the same react-query cache rather than issuing a second request.
- * That value is read-only *display* seeding; every write path above
- * re-fetches its own fresh copy immediately before saving, rather than
- * trusting this potentially-stale snapshot.
+ * is sourced from `useQuoteReadiness(projectId).data` directly (WORK-191),
+ * the same resolved response the readiness gate itself is built from —
+ * rather than a second, independent `useGetQuoteReadiness` call, which
+ * would need its own `quoteTemplateId` resolution. That value is read-only
+ * *display* seeding; every write path above re-fetches its own fresh copy
+ * immediately before saving, rather than trusting this potentially-stale
+ * snapshot.
  */
 export function useQuoteReadinessFixControlRenderer(
     projectId: string,
 ): ReadinessCheckListRenderFixControl {
     const { t } = useQuotesTranslation();
-    const { data: readinessData } = DataConnectorReact.useGetQuoteReadiness(
-        dataConnect,
-        { projectId },
-    );
+    const { data: readinessData } = useQuoteReadiness(projectId);
     const updateAreaField = useUpdateAreaOverlayFieldCallback(projectId);
     const updateUnitPrice = useUpdateUnitPriceCallback(projectId);
     const confirmAnswerSource = useConfirmAnswerSourceCallback(projectId);

@@ -16,6 +16,22 @@ const dataConnect = FirebaseService.getDataConnect(
 );
 
 /**
+ * Resolves the team's default `QuoteTemplate` id (WORK-191). Interim: always
+ * the default, regardless of the project's company. WORK-193 replaces this
+ * with a company-aware lookup (the project's company's assigned variation,
+ * falling back to this same default) — kept as its own hook so that swap is
+ * a one-line change at each call site below.
+ */
+function useDefaultQuoteTemplateId(): string | undefined {
+    const { data } =
+        DataConnectorReact.useListQuoteTemplatesForTeam(dataConnect);
+    return useMemo(
+        () => data?.quoteTemplates.find((template) => template.isDefault)?.id,
+        [data],
+    );
+}
+
+/**
  * Joins `GetQuoteReadiness` (WORK-130) to the readiness-check registry
  * (WORK-128/129) — the only place the two meet. Parses each floorplan
  * page's `overlayJson`, runs `READINESS_CHECKS` against the assembled
@@ -23,11 +39,19 @@ const dataConnect = FirebaseService.getDataConnect(
  * `isReady` flag. `refresh()` re-runs the query so a caller (e.g. an
  * inline-fix control from WORK-140) can re-evaluate readiness after a
  * write.
+ *
+ * `GetQuoteReadiness` requires a `quoteTemplateId` (WORK-191): which
+ * template's configs price this quote. Resolved via
+ * `useDefaultQuoteTemplateId()` above; readiness stays `loading` until that
+ * resolves, since asking for readiness with no template id yet would be
+ * asking the wrong question.
  */
 export function useQuoteReadiness(projectId: string): UseQuoteReadinessResult {
+    const quoteTemplateId = useDefaultQuoteTemplateId();
     const { data, isLoading, error } = DataConnectorReact.useGetQuoteReadiness(
         dataConnect,
-        { projectId },
+        { projectId, quoteTemplateId: quoteTemplateId ?? "" },
+        { enabled: quoteTemplateId != null },
     );
     const queryClient = useQueryClient();
 
@@ -36,25 +60,32 @@ export function useQuoteReadiness(projectId: string): UseQuoteReadinessResult {
         [data],
     );
     const refresh = useCallback(async (): Promise<void> => {
+        if (!quoteTemplateId) {
+            return;
+        }
         const ref = DataConnector.getQuoteReadinessRef(dataConnect, {
             projectId,
+            quoteTemplateId,
         });
         const refreshed = await DataConnector.getQuoteReadiness(
             dataConnect,
-            { projectId },
+            { projectId, quoteTemplateId },
             { fetchPolicy: QueryFetchPolicy.SERVER_ONLY },
         );
         queryClient.setQueryData(
             [ref.name, ref.variables ?? null],
             refreshed.data,
         );
-    }, [projectId, queryClient]);
+    }, [projectId, quoteTemplateId, queryClient]);
 
     return {
         results,
-        isReady: QuoteReadinessUtils.isReady(results),
-        loading: isLoading,
+        isReady:
+            quoteTemplateId != null && QuoteReadinessUtils.isReady(results),
+        loading: isLoading || quoteTemplateId == null,
         error: error ?? null,
         refresh,
+        data,
+        quoteTemplateId,
     };
 }

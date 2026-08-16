@@ -49,10 +49,7 @@ function buildProjectSearchText(
  * `FirebaseError`.
  */
 export function useGenerateQuote(projectId: string): UseGenerateQuoteResult {
-    const { isReady } = useQuoteReadiness(projectId);
-    const { data } = DataConnectorReact.useGetQuoteReadiness(dataConnect, {
-        projectId,
-    });
+    const { isReady, data } = useQuoteReadiness(projectId);
     const { mutateAsync: createQuoteWithItems } =
         DataConnectorReact.useCreateQuoteWithItems(dataConnect);
 
