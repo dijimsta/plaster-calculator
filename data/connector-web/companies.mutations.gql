@@ -89,6 +89,64 @@ mutation ClearMyCompanyPrimaryContact($companyId: UUID!)
     )
 }
 
+# Assigns a `QuoteTemplate` (WORK-190) to a `Company`. Both `$companyId` and
+# `$quoteTemplateId` are ownership-checked against `auth.token.teamId`,
+# matching the `SetMyCompanyPrimaryContact` pattern below for `$companyId`
+# and `$contactId`, so neither a company nor a template belonging to another
+# team can be linked together.
+mutation AssignQuoteTemplateToCompany(
+    $companyId: UUID!
+    $quoteTemplateId: UUID!
+) @auth(level: USER) @transaction {
+    query @redact {
+        company(key: { id: $companyId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this company"
+            ) {
+            id
+            teamId
+        }
+        quoteTemplate(key: { id: $quoteTemplateId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote template"
+            ) {
+            id
+            teamId
+        }
+    }
+    company_update(
+        id: $companyId
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+# Clears a `Company`'s `QuoteTemplate` assignment, matching
+# `ClearMyCompanyPrimaryContact` below. `quoteTemplateId: null` means "uses
+# the default", per the WORK-190 schema comment on `Company.quoteTemplateId`.
+mutation ClearCompanyQuoteTemplate($companyId: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        company(key: { id: $companyId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this company"
+            ) {
+            id
+            teamId
+        }
+    }
+    company_update(
+        id: $companyId
+        data: { quoteTemplateId: null, updatedAt_expr: "request.time" }
+    )
+}
+
 mutation DeleteMyCompany($id: UUID!) @auth(level: USER) @transaction {
     query @redact {
         company(key: { id: $id })

@@ -350,16 +350,484 @@ mutation ReconcileSystemQuoteItemTemplates
     )
 }
 
+# First-use creation: a team's first `QuoteTemplate` is its default, so this
+# stamps `isDefault: true` unconditionally. It is not reused to create later
+# variations (those aren't the default) — see `CreateQuoteTemplateVariation`
+# below.
 mutation CreateQuoteTemplate($id: UUID!, $name: String!) @auth(level: USER) {
     quoteTemplate_insert(
         data: {
             id: $id
             teamId_expr: "auth.token.teamId"
             name: $name
+            isDefault: true
             createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
         }
     )
+}
+
+# Renames a `QuoteTemplate` without touching its `isDefault` flag or its
+# `QuoteItemTemplateConfig` rows. Ownership is validated the same way
+# `UpdateQuoteItemTemplateWithUnit` validates `$id` below.
+mutation RenameQuoteTemplate($id: UUID!, $name: String!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        quoteTemplate(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote template"
+            ) {
+            id
+            teamId
+        }
+    }
+    quoteTemplate_update(
+        id: $id
+        data: { name: $name, updatedAt_expr: "request.time" }
+    )
+}
+
+# Deletes a `QuoteTemplate`. Any `Company` currently assigned to it (via
+# `Company.quoteTemplateId`, added in WORK-190) has that assignment cleared
+# first — `company_updateMany` sets `quoteTemplateId: null`, which means
+# "uses the default" per the WORK-190 schema comment — so no company is left
+# pointing at a template that's about to stop existing. `QuoteItemTemplateConfig`
+# rows for this template are deleted next, since `QuoteItemTemplateConfig.quoteTemplateId`
+# is a non-null `@ref`; leaving them in place would violate that reference
+# once the template row is gone, the same reason `DeleteQuoteItemTemplate`
+# below deletes a template's configs before deleting the template itself.
+# Ownership is validated with the same `@check` pattern.
+mutation DeleteQuoteTemplate($id: UUID!) @auth(level: USER) @transaction {
+    query @redact {
+        quoteTemplate(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote template"
+            ) {
+            id
+            teamId
+        }
+    }
+    company_updateMany(
+        where: { quoteTemplateId: { eq: $id } }
+        data: { quoteTemplateId: null, updatedAt_expr: "request.time" }
+    )
+    quoteItemTemplateConfig_deleteMany(where: { quoteTemplateId: { eq: $id } })
+    quoteTemplate_delete(id: $id)
+        @check(expr: "this != null", message: "Quote template not found")
+}
+
+# Creates a `QuoteTemplate` variation plus up to 20 `QuoteItemTemplateConfig`
+# rows copied from another template's configs, in a single `@transaction`
+# mutation — the same "one document, many writes, atomically" shape as
+# `CreateQuoteWithItems` above. The caller reads the source template's
+# configs first (typically the team's default, via
+# `ListQuoteItemTemplateConfigsForQuoteTemplate`) and passes each row's
+# `itemTemplateId`/`enabled`/prices straight back in as this mutation's
+# per-slot variables; nothing is re-read server-side, so there is no
+# server-side notion of "the default" baked into this mutation — the caller
+# decides what gets copied.
+#
+# This replaces one `CreateQuoteItemTemplateConfig` call per item — the
+# approach `use-quote-item-templates.hook.ts` uses today for populating a
+# template's configs — for variation creation specifically, because that
+# approach issues N independent mutations: a failure partway through (a
+# duplicate key, a dropped connection) leaves a half-built variation with
+# some prices copied and others missing, silently underpricing any quote
+# generated from it. Wrapping every insert in one `@transaction` makes
+# variation creation atomic: either the whole copy lands, or (any slot
+# fails) none of it does and no partial `QuoteTemplate` is left for the team
+# to find later.
+#
+# 20 slots for the same reason `CreateQuoteWithItems` uses 20: it comfortably
+# covers the 13 system plasterboard templates plus a team's own
+# `QuoteItemTemplate` rows. Every per-slot variable has a default, so a
+# caller only has to supply values (and `$includeItemN: true`) for the slots
+# it actually uses. `itemTemplateId` is a non-null foreign key on
+# `QuoteItemTemplateConfig`, so its per-slot variable carries the nil UUID as
+# a default (`firebase dataconnect:sdk:generate` requires a non-null default
+# for a variable to be usable in a non-null field position); that default is
+# never actually written, because an unused slot's entire `quoteItemTemplateConfig_insert`
+# is skipped by `@include(if: $includeItemN)` before the value is ever used.
+# If a team's catalog ever needs to exceed 20 rows per template, that's an
+# application-layer concern (this mutation would need more slots), matching
+# how `CreateQuoteWithItems` defers the same limit to the application layer.
+mutation CreateQuoteTemplateVariation(
+    $quoteTemplateId: UUID!
+    $name: String!
+    $includeItem1: Boolean = false
+    $item1ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item1Enabled: Boolean = true
+    $item1UnitPriceCents: Int = 0
+    $item1MaterialUnitPriceCents: Int = 0
+    $item1LabourUnitPriceCents: Int = 0
+    $includeItem2: Boolean = false
+    $item2ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item2Enabled: Boolean = true
+    $item2UnitPriceCents: Int = 0
+    $item2MaterialUnitPriceCents: Int = 0
+    $item2LabourUnitPriceCents: Int = 0
+    $includeItem3: Boolean = false
+    $item3ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item3Enabled: Boolean = true
+    $item3UnitPriceCents: Int = 0
+    $item3MaterialUnitPriceCents: Int = 0
+    $item3LabourUnitPriceCents: Int = 0
+    $includeItem4: Boolean = false
+    $item4ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item4Enabled: Boolean = true
+    $item4UnitPriceCents: Int = 0
+    $item4MaterialUnitPriceCents: Int = 0
+    $item4LabourUnitPriceCents: Int = 0
+    $includeItem5: Boolean = false
+    $item5ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item5Enabled: Boolean = true
+    $item5UnitPriceCents: Int = 0
+    $item5MaterialUnitPriceCents: Int = 0
+    $item5LabourUnitPriceCents: Int = 0
+    $includeItem6: Boolean = false
+    $item6ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item6Enabled: Boolean = true
+    $item6UnitPriceCents: Int = 0
+    $item6MaterialUnitPriceCents: Int = 0
+    $item6LabourUnitPriceCents: Int = 0
+    $includeItem7: Boolean = false
+    $item7ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item7Enabled: Boolean = true
+    $item7UnitPriceCents: Int = 0
+    $item7MaterialUnitPriceCents: Int = 0
+    $item7LabourUnitPriceCents: Int = 0
+    $includeItem8: Boolean = false
+    $item8ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item8Enabled: Boolean = true
+    $item8UnitPriceCents: Int = 0
+    $item8MaterialUnitPriceCents: Int = 0
+    $item8LabourUnitPriceCents: Int = 0
+    $includeItem9: Boolean = false
+    $item9ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item9Enabled: Boolean = true
+    $item9UnitPriceCents: Int = 0
+    $item9MaterialUnitPriceCents: Int = 0
+    $item9LabourUnitPriceCents: Int = 0
+    $includeItem10: Boolean = false
+    $item10ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item10Enabled: Boolean = true
+    $item10UnitPriceCents: Int = 0
+    $item10MaterialUnitPriceCents: Int = 0
+    $item10LabourUnitPriceCents: Int = 0
+    $includeItem11: Boolean = false
+    $item11ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item11Enabled: Boolean = true
+    $item11UnitPriceCents: Int = 0
+    $item11MaterialUnitPriceCents: Int = 0
+    $item11LabourUnitPriceCents: Int = 0
+    $includeItem12: Boolean = false
+    $item12ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item12Enabled: Boolean = true
+    $item12UnitPriceCents: Int = 0
+    $item12MaterialUnitPriceCents: Int = 0
+    $item12LabourUnitPriceCents: Int = 0
+    $includeItem13: Boolean = false
+    $item13ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item13Enabled: Boolean = true
+    $item13UnitPriceCents: Int = 0
+    $item13MaterialUnitPriceCents: Int = 0
+    $item13LabourUnitPriceCents: Int = 0
+    $includeItem14: Boolean = false
+    $item14ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item14Enabled: Boolean = true
+    $item14UnitPriceCents: Int = 0
+    $item14MaterialUnitPriceCents: Int = 0
+    $item14LabourUnitPriceCents: Int = 0
+    $includeItem15: Boolean = false
+    $item15ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item15Enabled: Boolean = true
+    $item15UnitPriceCents: Int = 0
+    $item15MaterialUnitPriceCents: Int = 0
+    $item15LabourUnitPriceCents: Int = 0
+    $includeItem16: Boolean = false
+    $item16ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item16Enabled: Boolean = true
+    $item16UnitPriceCents: Int = 0
+    $item16MaterialUnitPriceCents: Int = 0
+    $item16LabourUnitPriceCents: Int = 0
+    $includeItem17: Boolean = false
+    $item17ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item17Enabled: Boolean = true
+    $item17UnitPriceCents: Int = 0
+    $item17MaterialUnitPriceCents: Int = 0
+    $item17LabourUnitPriceCents: Int = 0
+    $includeItem18: Boolean = false
+    $item18ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item18Enabled: Boolean = true
+    $item18UnitPriceCents: Int = 0
+    $item18MaterialUnitPriceCents: Int = 0
+    $item18LabourUnitPriceCents: Int = 0
+    $includeItem19: Boolean = false
+    $item19ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item19Enabled: Boolean = true
+    $item19UnitPriceCents: Int = 0
+    $item19MaterialUnitPriceCents: Int = 0
+    $item19LabourUnitPriceCents: Int = 0
+    $includeItem20: Boolean = false
+    $item20ItemTemplateId: UUID = "00000000-0000-0000-0000-000000000000"
+    $item20Enabled: Boolean = true
+    $item20UnitPriceCents: Int = 0
+    $item20MaterialUnitPriceCents: Int = 0
+    $item20LabourUnitPriceCents: Int = 0
+) @auth(level: USER) @transaction {
+    quoteTemplate_insert(
+        data: {
+            id: $quoteTemplateId
+            teamId_expr: "auth.token.teamId"
+            name: $name
+            isDefault: false
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+    item1: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item1ItemTemplateId
+            enabled: $item1Enabled
+            unitPriceCents: $item1UnitPriceCents
+            materialUnitPriceCents: $item1MaterialUnitPriceCents
+            labourUnitPriceCents: $item1LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem1)
+    item2: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item2ItemTemplateId
+            enabled: $item2Enabled
+            unitPriceCents: $item2UnitPriceCents
+            materialUnitPriceCents: $item2MaterialUnitPriceCents
+            labourUnitPriceCents: $item2LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem2)
+    item3: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item3ItemTemplateId
+            enabled: $item3Enabled
+            unitPriceCents: $item3UnitPriceCents
+            materialUnitPriceCents: $item3MaterialUnitPriceCents
+            labourUnitPriceCents: $item3LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem3)
+    item4: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item4ItemTemplateId
+            enabled: $item4Enabled
+            unitPriceCents: $item4UnitPriceCents
+            materialUnitPriceCents: $item4MaterialUnitPriceCents
+            labourUnitPriceCents: $item4LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem4)
+    item5: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item5ItemTemplateId
+            enabled: $item5Enabled
+            unitPriceCents: $item5UnitPriceCents
+            materialUnitPriceCents: $item5MaterialUnitPriceCents
+            labourUnitPriceCents: $item5LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem5)
+    item6: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item6ItemTemplateId
+            enabled: $item6Enabled
+            unitPriceCents: $item6UnitPriceCents
+            materialUnitPriceCents: $item6MaterialUnitPriceCents
+            labourUnitPriceCents: $item6LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem6)
+    item7: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item7ItemTemplateId
+            enabled: $item7Enabled
+            unitPriceCents: $item7UnitPriceCents
+            materialUnitPriceCents: $item7MaterialUnitPriceCents
+            labourUnitPriceCents: $item7LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem7)
+    item8: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item8ItemTemplateId
+            enabled: $item8Enabled
+            unitPriceCents: $item8UnitPriceCents
+            materialUnitPriceCents: $item8MaterialUnitPriceCents
+            labourUnitPriceCents: $item8LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem8)
+    item9: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item9ItemTemplateId
+            enabled: $item9Enabled
+            unitPriceCents: $item9UnitPriceCents
+            materialUnitPriceCents: $item9MaterialUnitPriceCents
+            labourUnitPriceCents: $item9LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem9)
+    item10: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item10ItemTemplateId
+            enabled: $item10Enabled
+            unitPriceCents: $item10UnitPriceCents
+            materialUnitPriceCents: $item10MaterialUnitPriceCents
+            labourUnitPriceCents: $item10LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem10)
+    item11: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item11ItemTemplateId
+            enabled: $item11Enabled
+            unitPriceCents: $item11UnitPriceCents
+            materialUnitPriceCents: $item11MaterialUnitPriceCents
+            labourUnitPriceCents: $item11LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem11)
+    item12: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item12ItemTemplateId
+            enabled: $item12Enabled
+            unitPriceCents: $item12UnitPriceCents
+            materialUnitPriceCents: $item12MaterialUnitPriceCents
+            labourUnitPriceCents: $item12LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem12)
+    item13: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item13ItemTemplateId
+            enabled: $item13Enabled
+            unitPriceCents: $item13UnitPriceCents
+            materialUnitPriceCents: $item13MaterialUnitPriceCents
+            labourUnitPriceCents: $item13LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem13)
+    item14: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item14ItemTemplateId
+            enabled: $item14Enabled
+            unitPriceCents: $item14UnitPriceCents
+            materialUnitPriceCents: $item14MaterialUnitPriceCents
+            labourUnitPriceCents: $item14LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem14)
+    item15: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item15ItemTemplateId
+            enabled: $item15Enabled
+            unitPriceCents: $item15UnitPriceCents
+            materialUnitPriceCents: $item15MaterialUnitPriceCents
+            labourUnitPriceCents: $item15LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem15)
+    item16: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item16ItemTemplateId
+            enabled: $item16Enabled
+            unitPriceCents: $item16UnitPriceCents
+            materialUnitPriceCents: $item16MaterialUnitPriceCents
+            labourUnitPriceCents: $item16LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem16)
+    item17: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item17ItemTemplateId
+            enabled: $item17Enabled
+            unitPriceCents: $item17UnitPriceCents
+            materialUnitPriceCents: $item17MaterialUnitPriceCents
+            labourUnitPriceCents: $item17LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem17)
+    item18: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item18ItemTemplateId
+            enabled: $item18Enabled
+            unitPriceCents: $item18UnitPriceCents
+            materialUnitPriceCents: $item18MaterialUnitPriceCents
+            labourUnitPriceCents: $item18LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem18)
+    item19: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item19ItemTemplateId
+            enabled: $item19Enabled
+            unitPriceCents: $item19UnitPriceCents
+            materialUnitPriceCents: $item19MaterialUnitPriceCents
+            labourUnitPriceCents: $item19LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem19)
+    item20: quoteItemTemplateConfig_insert(
+        data: {
+            quoteTemplateId: $quoteTemplateId
+            itemTemplateId: $item20ItemTemplateId
+            enabled: $item20Enabled
+            unitPriceCents: $item20UnitPriceCents
+            materialUnitPriceCents: $item20MaterialUnitPriceCents
+            labourUnitPriceCents: $item20LabourUnitPriceCents
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    ) @include(if: $includeItem20)
 }
 
 mutation CreateQuoteItemTemplateConfig(
