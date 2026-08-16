@@ -10,6 +10,9 @@ type Company
     primaryContact: CompanyContact
         @ref(fields: "primaryContactId", references: "id")
     primaryContactId: UUID
+    quoteTemplate: QuoteTemplate
+        @ref(fields: "quoteTemplateId", references: "id")
+    quoteTemplateId: UUID
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }

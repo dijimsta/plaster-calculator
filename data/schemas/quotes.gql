@@ -32,6 +32,7 @@ type QuoteTemplate @table {
     team: Team! @ref(fields: "teamId", references: "id")
     teamId: String!
     name: String!
+    isDefault: Boolean! @default(value: false)
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
