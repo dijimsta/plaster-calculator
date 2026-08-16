@@ -97,6 +97,20 @@ export const en = Object.freeze({
         annotateSelectedPages: "Annotate {{count}} selected pages",
         page: "Page {{number}}",
     }),
+    newProjectWizard: Object.freeze({
+        detailsStep: Object.freeze({
+            projectNameLabel: "Project name",
+            fileLabel: "File",
+            creatingProject: "Creating your project...",
+        }),
+        footer: Object.freeze({
+            cancel: "Cancel",
+            back: "Back",
+            continueToClarifications: "Continue",
+            continueToPages: "Continue to pages",
+            finish: "Finish",
+        }),
+    }),
     projects,
     questionnaires: Object.freeze({
         title: "Scope of work",

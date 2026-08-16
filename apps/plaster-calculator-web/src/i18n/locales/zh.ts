@@ -99,6 +99,20 @@ export const zh = createTranslationResource(
             annotateSelectedPages: "标注已选择的 {{count}} 页",
             page: "第 {{number}} 页",
         }),
+        newProjectWizard: Object.freeze({
+            detailsStep: Object.freeze({
+                projectNameLabel: "项目名称",
+                fileLabel: "文件",
+                creatingProject: "正在创建您的项目...",
+            }),
+            footer: Object.freeze({
+                cancel: "取消",
+                back: "上一步",
+                continueToClarifications: "继续",
+                continueToPages: "继续选择页面",
+                finish: "完成",
+            }),
+        }),
         projects,
         questionnaires: Object.freeze({
             title: "工作范围",

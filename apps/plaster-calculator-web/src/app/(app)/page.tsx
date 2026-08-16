@@ -15,7 +15,7 @@ import { ui } from "../../lib/styles.js";
 import { useDashboardProjects } from "./hooks/use-dashboard-projects.js";
 import { useDashboardUpload } from "./hooks/use-dashboard-upload.js";
 import { NewProjectForm } from "./new-project-form.js";
-import { PdfPageModal } from "./pdf-page-modal.js";
+import { NewProjectWizard } from "./new-project-wizard.js";
 import { ProjectHistory } from "./project-history.js";
 
 export default function HomePage() {
@@ -87,18 +87,10 @@ export default function HomePage() {
                         setRenameValue={projects.setRenameValue}
                     />
                 </section>
-                {upload.draftProjectId && (
-                    <PdfPageModal
-                        errorMessage={upload.pdfPageError}
-                        loading={upload.loading}
-                        pageUploadProgress={upload.pageUploadProgress}
-                        pdfPages={upload.pdfPages}
-                        selectedPages={upload.selectedPages}
-                        closePdfModal={upload.closePdfModal}
-                        processSelectedPdfPages={upload.processSelectedPdfPages}
-                        togglePage={upload.togglePage}
-                    />
-                )}
+                <NewProjectWizard
+                    upload={upload}
+                    progressMessage={projects.message}
+                />
             </Box>
         </>
     );
