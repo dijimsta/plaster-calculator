@@ -1,8 +1,9 @@
+import { PDF_UPLOAD_TYPE } from "@libraries/plaster-calculator-common";
+import type { UploadType } from "@libraries/plaster-calculator-common";
 import { useProjectsService } from "@libraries/plaster-calculator-web-core";
-import { ButtonLink, useNotificationsManager } from "@libraries/uikit-web";
 import { useRouter } from "next/navigation.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
-import { createElement, useState, type DragEvent, type FormEvent } from "react";
+import { useState, type DragEvent, type FormEvent } from "react";
 
 import {
     loadPdfDocument,
@@ -12,6 +13,9 @@ import {
     type PdfPagePreview,
 } from "../../../lib/pdf.js";
 import type { PageUploadProgress } from "../dashboard.types.js";
+
+/** One-based step of the new-project wizard: details -> clarifications -> pages (PDF uploads only). */
+export type WizardStep = 1 | 2 | 3;
 
 interface PreparedPdfUpload {
     pdfDocument: PDFDocumentProxy | null;
@@ -30,12 +34,14 @@ export function useDashboardUpload({
 }: DashboardUploadOptions) {
     const projectsService = useProjectsService();
     const router = useRouter();
-    const { notify } = useNotificationsManager();
     const [name, setName] = useState("");
     const [companyId, setCompanyId] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [wizardOpen, setWizardOpen] = useState(false);
+    const [wizardStep, setWizardStep] = useState<WizardStep>(1);
+    const [uploadType, setUploadType] = useState<UploadType | null>(null);
     const [draftProjectId, setDraftProjectId] = useState<string | null>(null);
     const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(
         null,
@@ -46,10 +52,34 @@ export function useDashboardUpload({
         useState<PageUploadProgress | null>(null);
     const [pdfPageError, setPdfPageError] = useState<string | null>(null);
 
+    /**
+     * Tears down every piece of state the wizard holds -- the draft
+     * project's id, any prepared PDF document/thumbnails, page-selection
+     * progress, and the wizard's own open/step state -- and revokes the PDF
+     * preview object URLs. Must run on every exit path (closing at any
+     * step, finishing, or an error while uploading) so nothing leaks.
+     */
+    function cleanupPdfModal() {
+        void pdfDocument?.cleanup();
+        revokePdfPreviews(pdfPages);
+        setDraftProjectId(null);
+        setPdfDocument(null);
+        setPdfPages([]);
+        setSelectedPages([]);
+        setPageUploadProgress(null);
+        setPdfPageError(null);
+        setWizardOpen(false);
+        setWizardStep(1);
+        setUploadType(null);
+    }
+
     async function submit(event: FormEvent) {
         event.preventDefault();
         if (!file) return;
+        cleanupPdfModal();
         setLoading(true);
+        setWizardOpen(true);
+        setWizardStep(1);
         setMessage("Uploading floorplan...");
         let preparedPdf = emptyPreparedPdfUpload();
         try {
@@ -60,21 +90,26 @@ export function useDashboardUpload({
                 preparedPdf.pdfDocument?.numPages,
                 { companyId },
             );
-            if (upload.uploadType === "PDF") {
-                openPdfPageSelection(upload.projectId, preparedPdf);
+            if (upload.uploadType === PDF_UPLOAD_TYPE) {
+                if (
+                    !preparedPdf.pdfDocument ||
+                    preparedPdf.pages.length === 0
+                ) {
+                    throw new Error("Unable to prepare PDF pages.");
+                }
+                setPdfDocument(preparedPdf.pdfDocument);
+                setPdfPages(preparedPdf.pages);
+                setSelectedPages([]);
                 preparedPdf = emptyPreparedPdfUpload();
-            } else {
-                setMessage("");
-                notify({
-                    intent: "success",
-                    title: `${name || file.name} created`,
-                    description: "The project is ready for annotation.",
-                    actions: projectNotificationAction(upload.projectId),
-                });
             }
+            setUploadType(upload.uploadType);
+            setDraftProjectId(upload.projectId);
+            setMessage("");
+            setWizardStep(2);
             await refresh();
         } catch (error) {
             cleanupPreparedPdfUpload(preparedPdf);
+            cleanupPdfModal();
             setMessage(
                 error instanceof Error ? error.message : "Upload failed",
             );
@@ -95,22 +130,6 @@ export function useDashboardUpload({
         const pages = await renderPdfThumbnails(nextPdfDocument);
         setMessage("Uploading original PDF...");
         return { pdfDocument: nextPdfDocument, pages };
-    }
-
-    function openPdfPageSelection(
-        projectId: string,
-        preparedPdf: PreparedPdfUpload,
-    ) {
-        if (!preparedPdf.pdfDocument || preparedPdf.pages.length === 0) {
-            throw new Error("Unable to prepare PDF pages.");
-        }
-
-        cleanupPdfModal();
-        setDraftProjectId(projectId);
-        setPdfDocument(preparedPdf.pdfDocument);
-        setPdfPages(preparedPdf.pages);
-        setSelectedPages([]);
-        setMessage("");
     }
 
     async function processSelectedPdfPages() {
@@ -179,20 +198,33 @@ export function useDashboardUpload({
         handleFileSelection(event.dataTransfer.files?.[0]);
     }
 
-    function closePdfModal() {
+    /** Closes the wizard from any step, e.g. the modal's own close button/backdrop or a footer Cancel. No-ops while an upload/processing call is in flight. */
+    function closeWizard() {
         if (loading) return;
         cleanupPdfModal();
     }
 
-    function cleanupPdfModal() {
-        void pdfDocument?.cleanup();
-        revokePdfPreviews(pdfPages);
-        setDraftProjectId(null);
-        setPdfDocument(null);
-        setPdfPages([]);
-        setSelectedPages([]);
-        setPageUploadProgress(null);
-        setPdfPageError(null);
+    /** Backward navigation only -- `NewProjectWizardModal`'s rail and footer Back buttons only ever request a step before the current one. */
+    function goToWizardStep(step: number) {
+        setWizardStep(step as WizardStep);
+    }
+
+    /** Step 2 (PDF uploads) -> step 3, the page picker. */
+    function goToPagesStep() {
+        setWizardStep(3);
+    }
+
+    /**
+     * Finishes the wizard for a non-PDF upload -- there's no page-selection
+     * step for it, so completing clarifications is the end of the flow.
+     * Routes to the project the same way the PDF flow does once its pages
+     * are processed.
+     */
+    function finishWizard() {
+        if (!draftProjectId) return;
+        const projectId = draftProjectId;
+        cleanupPdfModal();
+        router.push(`/projects/${projectId}`);
     }
 
     function togglePage(pageNumber: number) {
@@ -205,8 +237,8 @@ export function useDashboardUpload({
 
     return {
         companyId,
-        draftProjectId,
         dragActive,
+        draftProjectId,
         file,
         loading,
         name,
@@ -214,7 +246,13 @@ export function useDashboardUpload({
         pdfPageError,
         pdfPages,
         selectedPages,
-        closePdfModal,
+        uploadType,
+        wizardOpen,
+        wizardStep,
+        closeWizard,
+        finishWizard,
+        goToPagesStep,
+        goToWizardStep,
         handleDrop,
         handleFileSelection,
         processSelectedPdfPages,
@@ -225,6 +263,8 @@ export function useDashboardUpload({
         togglePage,
     };
 }
+
+export type UseDashboardUploadResult = ReturnType<typeof useDashboardUpload>;
 
 function emptyPreparedPdfUpload(): PreparedPdfUpload {
     return { pdfDocument: null, pages: [] };
@@ -239,13 +279,5 @@ function isPdfFile(candidate: File) {
     return (
         candidate.type === "application/pdf" ||
         candidate.name.toLowerCase().endsWith(".pdf")
-    );
-}
-
-function projectNotificationAction(projectId: string) {
-    return createElement(
-        ButtonLink,
-        { href: `/projects/${projectId}`, variant: "link" },
-        "Open project",
     );
 }

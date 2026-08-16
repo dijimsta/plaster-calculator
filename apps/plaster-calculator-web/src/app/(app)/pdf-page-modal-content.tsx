@@ -1,59 +1,27 @@
 "use client";
 
-import { Button, ModalDialog } from "@libraries/uikit-web";
-import { FileUp } from "lucide-react";
-
 import { useAppTranslation } from "../../i18n/index.ts";
 import { cx, ui } from "../../lib/styles.js";
 
-import type { PdfPageModalProps } from "./dashboard.types.js";
+import type { PdfPageModalContentProps } from "./dashboard.types.js";
 
-export function PdfPageModal({
+/**
+ * Step 3 of the new-project wizard (PDF uploads only): the page-preview
+ * grid, upload progress, and any processing error. Purely content -- the
+ * surrounding `ModalDialog` chrome (title, description, footer) belongs to
+ * `NewProjectWizardModal`, which hosts this as its step-3 children.
+ */
+export function PdfPageModalContent({
     errorMessage,
-    loading,
     pageUploadProgress,
     pdfPages,
     selectedPages,
-    closePdfModal,
-    processSelectedPdfPages,
     togglePage,
-}: PdfPageModalProps) {
+}: PdfPageModalContentProps) {
     const { t } = useAppTranslation();
 
     return (
-        <ModalDialog
-            open
-            onClose={closePdfModal}
-            size="xl"
-            title={t("pdfPageModal.title")}
-            description={t("pdfPageModal.description")}
-            footer={
-                <>
-                    <Button
-                        variant="secondary"
-                        disabled={loading}
-                        onClick={closePdfModal}
-                    >
-                        {t("pdfPageModal.cancel")}
-                    </Button>
-                    <Button
-                        variant="primary"
-                        disabled={loading || selectedPages.length === 0}
-                        onClick={processSelectedPdfPages}
-                    >
-                        <FileUp size={18} />{" "}
-                        {selectedPages.length === 0
-                            ? t("pdfPageModal.selectPagesToContinue")
-                            : t(
-                                  selectedPages.length === 1
-                                      ? "pdfPageModal.annotateSelectedPage"
-                                      : "pdfPageModal.annotateSelectedPages",
-                                  { count: selectedPages.length },
-                              )}
-                    </Button>
-                </>
-            }
-        >
+        <>
             {errorMessage && <p className={ui.error}>{errorMessage}</p>}
             {pageUploadProgress && (
                 <div className={ui.pdfProgress}>
@@ -97,6 +65,6 @@ export function PdfPageModal({
                     </div>
                 ))}
             </div>
-        </ModalDialog>
+        </>
     );
 }
