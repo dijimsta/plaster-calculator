@@ -183,6 +183,19 @@ export const zh = createTranslationResource(
                 deleteTitle: "删除公司",
                 delete: "删除",
             }),
+            pricingPanel: Object.freeze({
+                title: "定价",
+                fieldLabel: "报价模板",
+                useDefaultOption: "使用默认模板",
+                defaultTemplateOption: "{{name}}（默认）",
+                usesDefaultDescription:
+                    "使用默认模板。此公司的报价将按团队的默认模板定价。",
+                assignedDescription: "此公司的报价将按{{name}}定价。",
+                unnamedTemplateFallback: "未命名模板",
+                clearedNotification: "现在使用默认模板。",
+                assignedNotification: "报价模板已更新。",
+                unableToSave: "无法更新报价模板",
+            }),
             projectsPanel: Object.freeze({
                 title: "项目",
                 emptyStateTitle: "没有与此公司关联的项目",

@@ -25,6 +25,7 @@ import type {
 
 import { CompanyDetailHeader } from "./company-detail-header.js";
 import { CompanyDetailsPanel } from "./company-details-panel.js";
+import { CompanyPricingPanel } from "./company-pricing-panel.js";
 import { CompanyProjectsPanel } from "./company-projects-panel.js";
 import {
     EMPTY_CONTACT_DRAFT,
@@ -270,6 +271,10 @@ export function CompanyDetailView({
                             setDraft={setDraft}
                         />
                         <div className="grid gap-[18px]">
+                            <CompanyPricingPanel
+                                company={company}
+                                onCompanyUpdated={updateCompanyState}
+                            />
                             <ContactsPanel
                                 company={company}
                                 editContactDraft={editContactDraft}

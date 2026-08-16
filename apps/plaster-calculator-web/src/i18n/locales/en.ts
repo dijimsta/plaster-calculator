@@ -181,6 +181,20 @@ export const en = Object.freeze({
             deleteTitle: "Delete company",
             delete: "Delete",
         }),
+        pricingPanel: Object.freeze({
+            title: "Pricing",
+            fieldLabel: "Quote template",
+            useDefaultOption: "Use the default",
+            defaultTemplateOption: "{{name}} (default)",
+            usesDefaultDescription:
+                "Uses the default. Quotes for this company are priced with your team's default template.",
+            assignedDescription:
+                "Quotes for this company are priced with {{name}}.",
+            unnamedTemplateFallback: "an unnamed template",
+            clearedNotification: "Now uses the default template.",
+            assignedNotification: "Quote template updated.",
+            unableToSave: "Unable to update the quote template",
+        }),
         projectsPanel: Object.freeze({
             title: "Projects",
             emptyStateTitle: "No projects are linked to this company",
