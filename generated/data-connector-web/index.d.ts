@@ -29,6 +29,15 @@ export interface ApplyQuestionnaireTemplateToProjectVariables {
   sourceTemplateId: UUIDString;
 }
 
+export interface AssignQuoteTemplateToCompanyData {
+  company_update?: Company_Key | null;
+}
+
+export interface AssignQuoteTemplateToCompanyVariables {
+  companyId: UUIDString;
+  quoteTemplateId: UUIDString;
+}
+
 export interface BatchApplyQuestionnaireTemplateToProjectData {
   projectQuestionnaire_upsert: ProjectQuestionnaire_Key;
   question1: ProjectQuestionnaireQuestion_Key;
@@ -116,6 +125,14 @@ export interface BatchApplyQuestionnaireTemplateToProjectVariables {
   includeQuestion20?: boolean | null;
   question20Label?: string | null;
   question20Position?: number | null;
+}
+
+export interface ClearCompanyQuoteTemplateData {
+  company_update?: Company_Key | null;
+}
+
+export interface ClearCompanyQuoteTemplateVariables {
+  companyId: UUIDString;
 }
 
 export interface ClearMyCompanyPrimaryContactData {
@@ -236,6 +253,155 @@ export interface CreateQuoteTemplateData {
 export interface CreateQuoteTemplateVariables {
   id: UUIDString;
   name: string;
+}
+
+export interface CreateQuoteTemplateVariationData {
+  quoteTemplate_insert: QuoteTemplate_Key;
+  item1: QuoteItemTemplateConfig_Key;
+  item2: QuoteItemTemplateConfig_Key;
+  item3: QuoteItemTemplateConfig_Key;
+  item4: QuoteItemTemplateConfig_Key;
+  item5: QuoteItemTemplateConfig_Key;
+  item6: QuoteItemTemplateConfig_Key;
+  item7: QuoteItemTemplateConfig_Key;
+  item8: QuoteItemTemplateConfig_Key;
+  item9: QuoteItemTemplateConfig_Key;
+  item10: QuoteItemTemplateConfig_Key;
+  item11: QuoteItemTemplateConfig_Key;
+  item12: QuoteItemTemplateConfig_Key;
+  item13: QuoteItemTemplateConfig_Key;
+  item14: QuoteItemTemplateConfig_Key;
+  item15: QuoteItemTemplateConfig_Key;
+  item16: QuoteItemTemplateConfig_Key;
+  item17: QuoteItemTemplateConfig_Key;
+  item18: QuoteItemTemplateConfig_Key;
+  item19: QuoteItemTemplateConfig_Key;
+  item20: QuoteItemTemplateConfig_Key;
+}
+
+export interface CreateQuoteTemplateVariationVariables {
+  quoteTemplateId: UUIDString;
+  name: string;
+  includeItem1?: boolean | null;
+  item1ItemTemplateId?: UUIDString | null;
+  item1Enabled?: boolean | null;
+  item1UnitPriceCents?: number | null;
+  item1MaterialUnitPriceCents?: number | null;
+  item1LabourUnitPriceCents?: number | null;
+  includeItem2?: boolean | null;
+  item2ItemTemplateId?: UUIDString | null;
+  item2Enabled?: boolean | null;
+  item2UnitPriceCents?: number | null;
+  item2MaterialUnitPriceCents?: number | null;
+  item2LabourUnitPriceCents?: number | null;
+  includeItem3?: boolean | null;
+  item3ItemTemplateId?: UUIDString | null;
+  item3Enabled?: boolean | null;
+  item3UnitPriceCents?: number | null;
+  item3MaterialUnitPriceCents?: number | null;
+  item3LabourUnitPriceCents?: number | null;
+  includeItem4?: boolean | null;
+  item4ItemTemplateId?: UUIDString | null;
+  item4Enabled?: boolean | null;
+  item4UnitPriceCents?: number | null;
+  item4MaterialUnitPriceCents?: number | null;
+  item4LabourUnitPriceCents?: number | null;
+  includeItem5?: boolean | null;
+  item5ItemTemplateId?: UUIDString | null;
+  item5Enabled?: boolean | null;
+  item5UnitPriceCents?: number | null;
+  item5MaterialUnitPriceCents?: number | null;
+  item5LabourUnitPriceCents?: number | null;
+  includeItem6?: boolean | null;
+  item6ItemTemplateId?: UUIDString | null;
+  item6Enabled?: boolean | null;
+  item6UnitPriceCents?: number | null;
+  item6MaterialUnitPriceCents?: number | null;
+  item6LabourUnitPriceCents?: number | null;
+  includeItem7?: boolean | null;
+  item7ItemTemplateId?: UUIDString | null;
+  item7Enabled?: boolean | null;
+  item7UnitPriceCents?: number | null;
+  item7MaterialUnitPriceCents?: number | null;
+  item7LabourUnitPriceCents?: number | null;
+  includeItem8?: boolean | null;
+  item8ItemTemplateId?: UUIDString | null;
+  item8Enabled?: boolean | null;
+  item8UnitPriceCents?: number | null;
+  item8MaterialUnitPriceCents?: number | null;
+  item8LabourUnitPriceCents?: number | null;
+  includeItem9?: boolean | null;
+  item9ItemTemplateId?: UUIDString | null;
+  item9Enabled?: boolean | null;
+  item9UnitPriceCents?: number | null;
+  item9MaterialUnitPriceCents?: number | null;
+  item9LabourUnitPriceCents?: number | null;
+  includeItem10?: boolean | null;
+  item10ItemTemplateId?: UUIDString | null;
+  item10Enabled?: boolean | null;
+  item10UnitPriceCents?: number | null;
+  item10MaterialUnitPriceCents?: number | null;
+  item10LabourUnitPriceCents?: number | null;
+  includeItem11?: boolean | null;
+  item11ItemTemplateId?: UUIDString | null;
+  item11Enabled?: boolean | null;
+  item11UnitPriceCents?: number | null;
+  item11MaterialUnitPriceCents?: number | null;
+  item11LabourUnitPriceCents?: number | null;
+  includeItem12?: boolean | null;
+  item12ItemTemplateId?: UUIDString | null;
+  item12Enabled?: boolean | null;
+  item12UnitPriceCents?: number | null;
+  item12MaterialUnitPriceCents?: number | null;
+  item12LabourUnitPriceCents?: number | null;
+  includeItem13?: boolean | null;
+  item13ItemTemplateId?: UUIDString | null;
+  item13Enabled?: boolean | null;
+  item13UnitPriceCents?: number | null;
+  item13MaterialUnitPriceCents?: number | null;
+  item13LabourUnitPriceCents?: number | null;
+  includeItem14?: boolean | null;
+  item14ItemTemplateId?: UUIDString | null;
+  item14Enabled?: boolean | null;
+  item14UnitPriceCents?: number | null;
+  item14MaterialUnitPriceCents?: number | null;
+  item14LabourUnitPriceCents?: number | null;
+  includeItem15?: boolean | null;
+  item15ItemTemplateId?: UUIDString | null;
+  item15Enabled?: boolean | null;
+  item15UnitPriceCents?: number | null;
+  item15MaterialUnitPriceCents?: number | null;
+  item15LabourUnitPriceCents?: number | null;
+  includeItem16?: boolean | null;
+  item16ItemTemplateId?: UUIDString | null;
+  item16Enabled?: boolean | null;
+  item16UnitPriceCents?: number | null;
+  item16MaterialUnitPriceCents?: number | null;
+  item16LabourUnitPriceCents?: number | null;
+  includeItem17?: boolean | null;
+  item17ItemTemplateId?: UUIDString | null;
+  item17Enabled?: boolean | null;
+  item17UnitPriceCents?: number | null;
+  item17MaterialUnitPriceCents?: number | null;
+  item17LabourUnitPriceCents?: number | null;
+  includeItem18?: boolean | null;
+  item18ItemTemplateId?: UUIDString | null;
+  item18Enabled?: boolean | null;
+  item18UnitPriceCents?: number | null;
+  item18MaterialUnitPriceCents?: number | null;
+  item18LabourUnitPriceCents?: number | null;
+  includeItem19?: boolean | null;
+  item19ItemTemplateId?: UUIDString | null;
+  item19Enabled?: boolean | null;
+  item19UnitPriceCents?: number | null;
+  item19MaterialUnitPriceCents?: number | null;
+  item19LabourUnitPriceCents?: number | null;
+  includeItem20?: boolean | null;
+  item20ItemTemplateId?: UUIDString | null;
+  item20Enabled?: boolean | null;
+  item20UnitPriceCents?: number | null;
+  item20MaterialUnitPriceCents?: number | null;
+  item20LabourUnitPriceCents?: number | null;
 }
 
 export interface CreateQuoteWithItemsData {
@@ -552,6 +718,16 @@ export interface DeleteQuoteItemVariables {
   id: UUIDString;
 }
 
+export interface DeleteQuoteTemplateData {
+  company_updateMany: number;
+  quoteItemTemplateConfig_deleteMany: number;
+  quoteTemplate_delete?: QuoteTemplate_Key | null;
+}
+
+export interface DeleteQuoteTemplateVariables {
+  id: UUIDString;
+}
+
 export interface EnsureProjectQuestionnaireData {
   projectQuestionnaire_upsert: ProjectQuestionnaire_Key;
 }
@@ -573,6 +749,11 @@ export interface GetMyCompanyData {
     businessNumber?: string | null;
     phoneNumber?: string | null;
     primaryContactId?: UUIDString | null;
+    quoteTemplateId?: UUIDString | null;
+    quoteTemplate?: {
+      id: UUIDString;
+      name: string;
+    } & QuoteTemplate_Key;
     createdAt: TimestampString;
     updatedAt: TimestampString;
     contacts: ({
@@ -772,6 +953,10 @@ export interface GetQuoteReadinessData {
     salesStatus: string;
     pageCount: number;
     extractedTextJson?: string | null;
+    company?: {
+      id: UUIDString;
+      quoteTemplateId?: UUIDString | null;
+    } & Company_Key;
   } & Project_Key;
   floorplanPages: ({
     id: UUIDString;
@@ -810,6 +995,7 @@ export interface GetQuoteReadinessData {
 
 export interface GetQuoteReadinessVariables {
   projectId: UUIDString;
+  quoteTemplateId: UUIDString;
 }
 
 export interface ListMyCompaniesData {
@@ -820,6 +1006,11 @@ export interface ListMyCompaniesData {
     businessNumber?: string | null;
     phoneNumber?: string | null;
     primaryContactId?: UUIDString | null;
+    quoteTemplateId?: UUIDString | null;
+    quoteTemplate?: {
+      id: UUIDString;
+      name: string;
+    } & QuoteTemplate_Key;
     createdAt: TimestampString;
     updatedAt: TimestampString;
   } & Company_Key)[];
@@ -911,6 +1102,7 @@ export interface ListQuoteTemplatesForTeamData {
   quoteTemplates: ({
     id: UUIDString;
     name: string;
+    isDefault: boolean;
     createdAt: TimestampString;
     updatedAt: TimestampString;
   } & QuoteTemplate_Key)[];
@@ -1027,6 +1219,15 @@ export interface ReconcileSystemQuoteItemTemplatesData {
 export interface Reminder_Key {
   id: UUIDString;
   __typename?: 'Reminder_Key';
+}
+
+export interface RenameQuoteTemplateData {
+  quoteTemplate_update?: QuoteTemplate_Key | null;
+}
+
+export interface RenameQuoteTemplateVariables {
+  id: UUIDString;
+  name: string;
 }
 
 export interface SetMyCompanyPrimaryContactData {
@@ -1276,6 +1477,30 @@ export const clearMyCompanyPrimaryContactRef: ClearMyCompanyPrimaryContactRef;
 
 export function clearMyCompanyPrimaryContact(vars: ClearMyCompanyPrimaryContactVariables): MutationPromise<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
 export function clearMyCompanyPrimaryContact(dc: DataConnect, vars: ClearMyCompanyPrimaryContactVariables): MutationPromise<ClearMyCompanyPrimaryContactData, ClearMyCompanyPrimaryContactVariables>;
+
+interface AssignQuoteTemplateToCompanyRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: AssignQuoteTemplateToCompanyVariables): MutationRef<AssignQuoteTemplateToCompanyData, AssignQuoteTemplateToCompanyVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: AssignQuoteTemplateToCompanyVariables): MutationRef<AssignQuoteTemplateToCompanyData, AssignQuoteTemplateToCompanyVariables>;
+  operationName: string;
+}
+export const assignQuoteTemplateToCompanyRef: AssignQuoteTemplateToCompanyRef;
+
+export function assignQuoteTemplateToCompany(vars: AssignQuoteTemplateToCompanyVariables): MutationPromise<AssignQuoteTemplateToCompanyData, AssignQuoteTemplateToCompanyVariables>;
+export function assignQuoteTemplateToCompany(dc: DataConnect, vars: AssignQuoteTemplateToCompanyVariables): MutationPromise<AssignQuoteTemplateToCompanyData, AssignQuoteTemplateToCompanyVariables>;
+
+interface ClearCompanyQuoteTemplateRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ClearCompanyQuoteTemplateVariables): MutationRef<ClearCompanyQuoteTemplateData, ClearCompanyQuoteTemplateVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ClearCompanyQuoteTemplateVariables): MutationRef<ClearCompanyQuoteTemplateData, ClearCompanyQuoteTemplateVariables>;
+  operationName: string;
+}
+export const clearCompanyQuoteTemplateRef: ClearCompanyQuoteTemplateRef;
+
+export function clearCompanyQuoteTemplate(vars: ClearCompanyQuoteTemplateVariables): MutationPromise<ClearCompanyQuoteTemplateData, ClearCompanyQuoteTemplateVariables>;
+export function clearCompanyQuoteTemplate(dc: DataConnect, vars: ClearCompanyQuoteTemplateVariables): MutationPromise<ClearCompanyQuoteTemplateData, ClearCompanyQuoteTemplateVariables>;
 
 interface DeleteMyCompanyRef {
   /* Allow users to create refs without passing in DataConnect */
@@ -1600,6 +1825,42 @@ export const createQuoteTemplateRef: CreateQuoteTemplateRef;
 
 export function createQuoteTemplate(vars: CreateQuoteTemplateVariables): MutationPromise<CreateQuoteTemplateData, CreateQuoteTemplateVariables>;
 export function createQuoteTemplate(dc: DataConnect, vars: CreateQuoteTemplateVariables): MutationPromise<CreateQuoteTemplateData, CreateQuoteTemplateVariables>;
+
+interface RenameQuoteTemplateRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: RenameQuoteTemplateVariables): MutationRef<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: RenameQuoteTemplateVariables): MutationRef<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
+  operationName: string;
+}
+export const renameQuoteTemplateRef: RenameQuoteTemplateRef;
+
+export function renameQuoteTemplate(vars: RenameQuoteTemplateVariables): MutationPromise<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
+export function renameQuoteTemplate(dc: DataConnect, vars: RenameQuoteTemplateVariables): MutationPromise<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
+
+interface DeleteQuoteTemplateRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteQuoteTemplateVariables): MutationRef<DeleteQuoteTemplateData, DeleteQuoteTemplateVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteQuoteTemplateVariables): MutationRef<DeleteQuoteTemplateData, DeleteQuoteTemplateVariables>;
+  operationName: string;
+}
+export const deleteQuoteTemplateRef: DeleteQuoteTemplateRef;
+
+export function deleteQuoteTemplate(vars: DeleteQuoteTemplateVariables): MutationPromise<DeleteQuoteTemplateData, DeleteQuoteTemplateVariables>;
+export function deleteQuoteTemplate(dc: DataConnect, vars: DeleteQuoteTemplateVariables): MutationPromise<DeleteQuoteTemplateData, DeleteQuoteTemplateVariables>;
+
+interface CreateQuoteTemplateVariationRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateQuoteTemplateVariationVariables): MutationRef<CreateQuoteTemplateVariationData, CreateQuoteTemplateVariationVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateQuoteTemplateVariationVariables): MutationRef<CreateQuoteTemplateVariationData, CreateQuoteTemplateVariationVariables>;
+  operationName: string;
+}
+export const createQuoteTemplateVariationRef: CreateQuoteTemplateVariationRef;
+
+export function createQuoteTemplateVariation(vars: CreateQuoteTemplateVariationVariables): MutationPromise<CreateQuoteTemplateVariationData, CreateQuoteTemplateVariationVariables>;
+export function createQuoteTemplateVariation(dc: DataConnect, vars: CreateQuoteTemplateVariationVariables): MutationPromise<CreateQuoteTemplateVariationData, CreateQuoteTemplateVariationVariables>;
 
 interface CreateQuoteItemTemplateConfigRef {
   /* Allow users to create refs without passing in DataConnect */

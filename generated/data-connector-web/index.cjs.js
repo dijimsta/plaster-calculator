@@ -63,6 +63,34 @@ exports.clearMyCompanyPrimaryContact = function clearMyCompanyPrimaryContact(dcO
 }
 ;
 
+const assignQuoteTemplateToCompanyRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'AssignQuoteTemplateToCompany', inputVars);
+}
+assignQuoteTemplateToCompanyRef.operationName = 'AssignQuoteTemplateToCompany';
+exports.assignQuoteTemplateToCompanyRef = assignQuoteTemplateToCompanyRef;
+
+exports.assignQuoteTemplateToCompany = function assignQuoteTemplateToCompany(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(assignQuoteTemplateToCompanyRef(dcInstance, inputVars));
+}
+;
+
+const clearCompanyQuoteTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'ClearCompanyQuoteTemplate', inputVars);
+}
+clearCompanyQuoteTemplateRef.operationName = 'ClearCompanyQuoteTemplate';
+exports.clearCompanyQuoteTemplateRef = clearCompanyQuoteTemplateRef;
+
+exports.clearCompanyQuoteTemplate = function clearCompanyQuoteTemplate(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(clearCompanyQuoteTemplateRef(dcInstance, inputVars));
+}
+;
+
 const deleteMyCompanyRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -445,6 +473,48 @@ exports.createQuoteTemplateRef = createQuoteTemplateRef;
 exports.createQuoteTemplate = function createQuoteTemplate(dcOrVars, vars) {
   const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
   return executeMutation(createQuoteTemplateRef(dcInstance, inputVars));
+}
+;
+
+const renameQuoteTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'RenameQuoteTemplate', inputVars);
+}
+renameQuoteTemplateRef.operationName = 'RenameQuoteTemplate';
+exports.renameQuoteTemplateRef = renameQuoteTemplateRef;
+
+exports.renameQuoteTemplate = function renameQuoteTemplate(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(renameQuoteTemplateRef(dcInstance, inputVars));
+}
+;
+
+const deleteQuoteTemplateRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteQuoteTemplate', inputVars);
+}
+deleteQuoteTemplateRef.operationName = 'DeleteQuoteTemplate';
+exports.deleteQuoteTemplateRef = deleteQuoteTemplateRef;
+
+exports.deleteQuoteTemplate = function deleteQuoteTemplate(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteQuoteTemplateRef(dcInstance, inputVars));
+}
+;
+
+const createQuoteTemplateVariationRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateQuoteTemplateVariation', inputVars);
+}
+createQuoteTemplateVariationRef.operationName = 'CreateQuoteTemplateVariation';
+exports.createQuoteTemplateVariationRef = createQuoteTemplateVariationRef;
+
+exports.createQuoteTemplateVariation = function createQuoteTemplateVariation(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createQuoteTemplateVariationRef(dcInstance, inputVars));
 }
 ;
 

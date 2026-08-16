@@ -26,10 +26,11 @@ query ListQuoteItemTemplates @auth(level: USER) {
 query ListQuoteTemplatesForTeam @auth(level: USER) {
     quoteTemplates(
         where: { teamId: { eq_expr: "auth.token.teamId" } }
-        orderBy: [{ updatedAt: DESC }]
+        orderBy: [{ isDefault: DESC }, { updatedAt: DESC }]
     ) {
         id
         name
+        isDefault
         createdAt
         updatedAt
     }
@@ -69,19 +70,6 @@ query ListQuoteItemTemplateConfigsForQuoteTemplate($quoteTemplateId: UUID!)
     }
 }
 
-# Feeds the quote readiness gate (WORK-124) in a single round trip: the
-# project header, its floorplan pages, its questionnaire answers, and the
-# team's enabled pricing configs. `project` uses the same `@check` guard
-# expression against `auth.token.teamId` as `ListQuoteItemTemplateConfigsForQuoteTemplate`
-# guards `quoteTemplate` above, so a project from another team can't be read;
-# the whole request fails before any data is returned if the check fails.
-# Unlike that query's `quoteTemplate`, `project` is not `@redact`ed, because
-# the caller needs its fields (not just its validated existence) back in the
-# response. `floorplanPages` and `projectQuestionnaireQuestions` are filtered
-# by `$projectId`, which is only reachable once the `project` check has
-# passed. `quoteItemTemplateConfigs` has no relationship to a project, so
-# it's scoped directly by team using the same `auth.token.teamId` guard,
-# matching `ListQuoteItemTemplates` and `ListProjectQuestionnaires`.
 # Feeds the quotes list view. One row per quote, newest-first via the
 # `(teamId, createdAt)` index added in WORK-111. `total inc. GST` isn't a
 # stored column on `Quote` — only `QuoteItem` rows carry line data — so this
@@ -170,7 +158,33 @@ query GetQuoteById($id: UUID!) @auth(level: USER) {
     }
 }
 
-query GetQuoteReadiness($projectId: UUID!) @auth(level: USER) {
+# Feeds the quote readiness gate (WORK-124) in a single round trip: the
+# project header, its floorplan pages, its questionnaire answers, and one
+# quote template's enabled pricing configs. `project` uses the same `@check`
+# guard expression against `auth.token.teamId` as
+# `ListQuoteItemTemplateConfigsForQuoteTemplate` guards `quoteTemplate`, so a
+# project from another team can't be read; the whole request fails before
+# any data is returned if the check fails. Unlike that query's
+# `quoteTemplate`, `project` is not `@redact`ed, because the caller needs its
+# fields (not just its validated existence) back in the response.
+# `floorplanPages` and `projectQuestionnaireQuestions` are filtered by
+# `$projectId`, which is only reachable once the `project` check has passed.
+# `project` also selects `company { id quoteTemplateId }` so the caller can
+# resolve which template a project's company is assigned to (or confirm it
+# should fall back to the default) in this same round trip, rather than a
+# separate query just to read that one field.
+#
+# `quoteItemTemplateConfigs` (WORK-191) is now scoped to exactly one
+# `$quoteTemplateId` rather than every config belonging to the team: a team
+# with more than one `QuoteTemplate` would otherwise get every template's
+# configs merged together, mixing prices from unrelated variations into one
+# readiness/pricing response. Ownership of `$quoteTemplateId` is validated
+# the same way `ListQuoteItemTemplateConfigsForQuoteTemplate` validates it —
+# a `@redact`ed `quoteTemplate` lookup `@check`ed against
+# `auth.token.teamId` — so a template from another team can't be used to
+# leak that team's pricing.
+query GetQuoteReadiness($projectId: UUID!, $quoteTemplateId: UUID!)
+@auth(level: USER) {
     project(key: { id: $projectId })
         @check(
             expr: "this != null && this.teamId == auth.token.teamId"
@@ -182,6 +196,10 @@ query GetQuoteReadiness($projectId: UUID!) @auth(level: USER) {
         salesStatus
         pageCount
         extractedTextJson
+        company {
+            id
+            quoteTemplateId
+        }
     }
     floorplanPages(
         where: { projectId: { eq: $projectId } }
@@ -203,10 +221,19 @@ query GetQuoteReadiness($projectId: UUID!) @auth(level: USER) {
         answer
         answerSource
     }
+    quoteTemplate(key: { id: $quoteTemplateId })
+        @redact
+        @check(
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this quote template"
+        ) {
+        id
+        teamId
+    }
     quoteItemTemplateConfigs(
         where: {
             enabled: { eq: true }
-            quoteTemplate: { teamId: { eq_expr: "auth.token.teamId" } }
+            quoteTemplateId: { eq: $quoteTemplateId }
         }
         orderBy: [{ createdAt: ASC }]
     ) {

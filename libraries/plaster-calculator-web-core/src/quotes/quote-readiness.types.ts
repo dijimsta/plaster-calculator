@@ -1,3 +1,4 @@
+import type { GetQuoteReadinessData } from "@generated/data-connector-web";
 import type { ReadinessResult } from "@libraries/plaster-calculator-common";
 import type { FirebaseError } from "firebase/app";
 
@@ -9,6 +10,12 @@ import type { FirebaseError } from "firebase/app";
  * `GetQuoteReadiness` and re-evaluates the registry against the fresh
  * response — it's what the inline-fix controls (WORK-140) call after a
  * successful write.
+ *
+ * `data` and `quoteTemplateId` (WORK-191) are the raw query response and
+ * the template id it was fetched with, exposed so a caller that needs more
+ * than the evaluated `results` — `useGenerateQuote()`, an inline-fix
+ * control reading a starting value — doesn't run a second, independent
+ * `GetQuoteReadiness`/template-resolution round trip.
  */
 export type UseQuoteReadinessResult = {
     readonly results: readonly ReadinessResult[];
@@ -16,4 +23,6 @@ export type UseQuoteReadinessResult = {
     readonly loading: boolean;
     readonly error: FirebaseError | null;
     readonly refresh: () => Promise<void>;
+    readonly data: GetQuoteReadinessData | undefined;
+    readonly quoteTemplateId: string | undefined;
 };

@@ -32,6 +32,8 @@ This README will guide you through the process of using the generated JavaScript
   - [*UpdateMyCompany*](#updatemycompany)
   - [*SetMyCompanyPrimaryContact*](#setmycompanyprimarycontact)
   - [*ClearMyCompanyPrimaryContact*](#clearmycompanyprimarycontact)
+  - [*AssignQuoteTemplateToCompany*](#assignquotetemplatetocompany)
+  - [*ClearCompanyQuoteTemplate*](#clearcompanyquotetemplate)
   - [*DeleteMyCompany*](#deletemycompany)
   - [*CreateMyCompanyContact*](#createmycompanycontact)
   - [*UpdateMyCompanyContact*](#updatemycompanycontact)
@@ -52,6 +54,9 @@ This README will guide you through the process of using the generated JavaScript
   - [*DeleteProjectQuestionnaireQuestion*](#deleteprojectquestionnairequestion)
   - [*ReconcileSystemQuoteItemTemplates*](#reconcilesystemquoteitemtemplates)
   - [*CreateQuoteTemplate*](#createquotetemplate)
+  - [*RenameQuoteTemplate*](#renamequotetemplate)
+  - [*DeleteQuoteTemplate*](#deletequotetemplate)
+  - [*CreateQuoteTemplateVariation*](#createquotetemplatevariation)
   - [*CreateQuoteItemTemplateConfig*](#createquoteitemtemplateconfig)
   - [*UpdateQuoteItemTemplateConfig*](#updatequoteitemtemplateconfig)
   - [*CreateQuoteItemTemplateWithUnit*](#createquoteitemtemplatewithunit)
@@ -155,6 +160,11 @@ export interface ListMyCompaniesData {
     businessNumber?: string | null;
     phoneNumber?: string | null;
     primaryContactId?: UUIDString | null;
+    quoteTemplateId?: UUIDString | null;
+    quoteTemplate?: {
+      id: UUIDString;
+      name: string;
+    } & QuoteTemplate_Key;
     createdAt: TimestampString;
     updatedAt: TimestampString;
   } & Company_Key)[];
@@ -261,6 +271,11 @@ export interface GetMyCompanyData {
     businessNumber?: string | null;
     phoneNumber?: string | null;
     primaryContactId?: UUIDString | null;
+    quoteTemplateId?: UUIDString | null;
+    quoteTemplate?: {
+      id: UUIDString;
+      name: string;
+    } & QuoteTemplate_Key;
     createdAt: TimestampString;
     updatedAt: TimestampString;
     contacts: ({
@@ -1039,6 +1054,7 @@ export interface ListQuoteTemplatesForTeamData {
   quoteTemplates: ({
     id: UUIDString;
     name: string;
+    isDefault: boolean;
     createdAt: TimestampString;
     updatedAt: TimestampString;
   } & QuoteTemplate_Key)[];
@@ -1513,6 +1529,7 @@ The `GetQuoteReadiness` query requires an argument of type `GetQuoteReadinessVar
 ```typescript
 export interface GetQuoteReadinessVariables {
   projectId: UUIDString;
+  quoteTemplateId: UUIDString;
 }
 ```
 ### Return Type
@@ -1528,6 +1545,10 @@ export interface GetQuoteReadinessData {
     salesStatus: string;
     pageCount: number;
     extractedTextJson?: string | null;
+    company?: {
+      id: UUIDString;
+      quoteTemplateId?: UUIDString | null;
+    } & Company_Key;
   } & Project_Key;
   floorplanPages: ({
     id: UUIDString;
@@ -1573,13 +1594,14 @@ import { connectorConfig, getQuoteReadiness, GetQuoteReadinessVariables } from '
 // The `GetQuoteReadiness` query requires an argument of type `GetQuoteReadinessVariables`:
 const getQuoteReadinessVars: GetQuoteReadinessVariables = {
   projectId: ..., 
+  quoteTemplateId: ..., 
 };
 
 // Call the `getQuoteReadiness()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await getQuoteReadiness(getQuoteReadinessVars);
 // Variables can be defined inline as well.
-const { data } = await getQuoteReadiness({ projectId: ..., });
+const { data } = await getQuoteReadiness({ projectId: ..., quoteTemplateId: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -1609,12 +1631,13 @@ import { connectorConfig, getQuoteReadinessRef, GetQuoteReadinessVariables } fro
 // The `GetQuoteReadiness` query requires an argument of type `GetQuoteReadinessVariables`:
 const getQuoteReadinessVars: GetQuoteReadinessVariables = {
   projectId: ..., 
+  quoteTemplateId: ..., 
 };
 
 // Call the `getQuoteReadinessRef()` function to get a reference to the query.
 const ref = getQuoteReadinessRef(getQuoteReadinessVars);
 // Variables can be defined inline as well.
-const ref = getQuoteReadinessRef({ projectId: ..., });
+const ref = getQuoteReadinessRef({ projectId: ..., quoteTemplateId: ..., });
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2544,6 +2567,227 @@ const ref = clearMyCompanyPrimaryContactRef({ companyId: ..., });
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
 const ref = clearMyCompanyPrimaryContactRef(dataConnect, clearMyCompanyPrimaryContactVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.company_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.company_update);
+});
+```
+
+## AssignQuoteTemplateToCompany
+You can execute the `AssignQuoteTemplateToCompany` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+assignQuoteTemplateToCompany(vars: AssignQuoteTemplateToCompanyVariables): MutationPromise<AssignQuoteTemplateToCompanyData, AssignQuoteTemplateToCompanyVariables>;
+
+interface AssignQuoteTemplateToCompanyRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: AssignQuoteTemplateToCompanyVariables): MutationRef<AssignQuoteTemplateToCompanyData, AssignQuoteTemplateToCompanyVariables>;
+}
+export const assignQuoteTemplateToCompanyRef: AssignQuoteTemplateToCompanyRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+assignQuoteTemplateToCompany(dc: DataConnect, vars: AssignQuoteTemplateToCompanyVariables): MutationPromise<AssignQuoteTemplateToCompanyData, AssignQuoteTemplateToCompanyVariables>;
+
+interface AssignQuoteTemplateToCompanyRef {
+  ...
+  (dc: DataConnect, vars: AssignQuoteTemplateToCompanyVariables): MutationRef<AssignQuoteTemplateToCompanyData, AssignQuoteTemplateToCompanyVariables>;
+}
+export const assignQuoteTemplateToCompanyRef: AssignQuoteTemplateToCompanyRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the assignQuoteTemplateToCompanyRef:
+```typescript
+const name = assignQuoteTemplateToCompanyRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `AssignQuoteTemplateToCompany` mutation requires an argument of type `AssignQuoteTemplateToCompanyVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface AssignQuoteTemplateToCompanyVariables {
+  companyId: UUIDString;
+  quoteTemplateId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `AssignQuoteTemplateToCompany` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `AssignQuoteTemplateToCompanyData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface AssignQuoteTemplateToCompanyData {
+  company_update?: Company_Key | null;
+}
+```
+### Using `AssignQuoteTemplateToCompany`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, assignQuoteTemplateToCompany, AssignQuoteTemplateToCompanyVariables } from '@generated/data-connector-web';
+
+// The `AssignQuoteTemplateToCompany` mutation requires an argument of type `AssignQuoteTemplateToCompanyVariables`:
+const assignQuoteTemplateToCompanyVars: AssignQuoteTemplateToCompanyVariables = {
+  companyId: ..., 
+  quoteTemplateId: ..., 
+};
+
+// Call the `assignQuoteTemplateToCompany()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await assignQuoteTemplateToCompany(assignQuoteTemplateToCompanyVars);
+// Variables can be defined inline as well.
+const { data } = await assignQuoteTemplateToCompany({ companyId: ..., quoteTemplateId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await assignQuoteTemplateToCompany(dataConnect, assignQuoteTemplateToCompanyVars);
+
+console.log(data.company_update);
+
+// Or, you can use the `Promise` API.
+assignQuoteTemplateToCompany(assignQuoteTemplateToCompanyVars).then((response) => {
+  const data = response.data;
+  console.log(data.company_update);
+});
+```
+
+### Using `AssignQuoteTemplateToCompany`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, assignQuoteTemplateToCompanyRef, AssignQuoteTemplateToCompanyVariables } from '@generated/data-connector-web';
+
+// The `AssignQuoteTemplateToCompany` mutation requires an argument of type `AssignQuoteTemplateToCompanyVariables`:
+const assignQuoteTemplateToCompanyVars: AssignQuoteTemplateToCompanyVariables = {
+  companyId: ..., 
+  quoteTemplateId: ..., 
+};
+
+// Call the `assignQuoteTemplateToCompanyRef()` function to get a reference to the mutation.
+const ref = assignQuoteTemplateToCompanyRef(assignQuoteTemplateToCompanyVars);
+// Variables can be defined inline as well.
+const ref = assignQuoteTemplateToCompanyRef({ companyId: ..., quoteTemplateId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = assignQuoteTemplateToCompanyRef(dataConnect, assignQuoteTemplateToCompanyVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.company_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.company_update);
+});
+```
+
+## ClearCompanyQuoteTemplate
+You can execute the `ClearCompanyQuoteTemplate` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+clearCompanyQuoteTemplate(vars: ClearCompanyQuoteTemplateVariables): MutationPromise<ClearCompanyQuoteTemplateData, ClearCompanyQuoteTemplateVariables>;
+
+interface ClearCompanyQuoteTemplateRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ClearCompanyQuoteTemplateVariables): MutationRef<ClearCompanyQuoteTemplateData, ClearCompanyQuoteTemplateVariables>;
+}
+export const clearCompanyQuoteTemplateRef: ClearCompanyQuoteTemplateRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+clearCompanyQuoteTemplate(dc: DataConnect, vars: ClearCompanyQuoteTemplateVariables): MutationPromise<ClearCompanyQuoteTemplateData, ClearCompanyQuoteTemplateVariables>;
+
+interface ClearCompanyQuoteTemplateRef {
+  ...
+  (dc: DataConnect, vars: ClearCompanyQuoteTemplateVariables): MutationRef<ClearCompanyQuoteTemplateData, ClearCompanyQuoteTemplateVariables>;
+}
+export const clearCompanyQuoteTemplateRef: ClearCompanyQuoteTemplateRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the clearCompanyQuoteTemplateRef:
+```typescript
+const name = clearCompanyQuoteTemplateRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ClearCompanyQuoteTemplate` mutation requires an argument of type `ClearCompanyQuoteTemplateVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ClearCompanyQuoteTemplateVariables {
+  companyId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `ClearCompanyQuoteTemplate` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ClearCompanyQuoteTemplateData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ClearCompanyQuoteTemplateData {
+  company_update?: Company_Key | null;
+}
+```
+### Using `ClearCompanyQuoteTemplate`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, clearCompanyQuoteTemplate, ClearCompanyQuoteTemplateVariables } from '@generated/data-connector-web';
+
+// The `ClearCompanyQuoteTemplate` mutation requires an argument of type `ClearCompanyQuoteTemplateVariables`:
+const clearCompanyQuoteTemplateVars: ClearCompanyQuoteTemplateVariables = {
+  companyId: ..., 
+};
+
+// Call the `clearCompanyQuoteTemplate()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await clearCompanyQuoteTemplate(clearCompanyQuoteTemplateVars);
+// Variables can be defined inline as well.
+const { data } = await clearCompanyQuoteTemplate({ companyId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await clearCompanyQuoteTemplate(dataConnect, clearCompanyQuoteTemplateVars);
+
+console.log(data.company_update);
+
+// Or, you can use the `Promise` API.
+clearCompanyQuoteTemplate(clearCompanyQuoteTemplateVars).then((response) => {
+  const data = response.data;
+  console.log(data.company_update);
+});
+```
+
+### Using `ClearCompanyQuoteTemplate`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, clearCompanyQuoteTemplateRef, ClearCompanyQuoteTemplateVariables } from '@generated/data-connector-web';
+
+// The `ClearCompanyQuoteTemplate` mutation requires an argument of type `ClearCompanyQuoteTemplateVariables`:
+const clearCompanyQuoteTemplateVars: ClearCompanyQuoteTemplateVariables = {
+  companyId: ..., 
+};
+
+// Call the `clearCompanyQuoteTemplateRef()` function to get a reference to the mutation.
+const ref = clearCompanyQuoteTemplateRef(clearCompanyQuoteTemplateVars);
+// Variables can be defined inline as well.
+const ref = clearCompanyQuoteTemplateRef({ companyId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = clearCompanyQuoteTemplateRef(dataConnect, clearCompanyQuoteTemplateVars);
 
 // Call `executeMutation()` on the reference to execute the mutation.
 // You can use the `await` keyword to wait for the promise to resolve.
@@ -5249,6 +5493,809 @@ console.log(data.quoteTemplate_insert);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.quoteTemplate_insert);
+});
+```
+
+## RenameQuoteTemplate
+You can execute the `RenameQuoteTemplate` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+renameQuoteTemplate(vars: RenameQuoteTemplateVariables): MutationPromise<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
+
+interface RenameQuoteTemplateRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: RenameQuoteTemplateVariables): MutationRef<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
+}
+export const renameQuoteTemplateRef: RenameQuoteTemplateRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+renameQuoteTemplate(dc: DataConnect, vars: RenameQuoteTemplateVariables): MutationPromise<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
+
+interface RenameQuoteTemplateRef {
+  ...
+  (dc: DataConnect, vars: RenameQuoteTemplateVariables): MutationRef<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
+}
+export const renameQuoteTemplateRef: RenameQuoteTemplateRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the renameQuoteTemplateRef:
+```typescript
+const name = renameQuoteTemplateRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `RenameQuoteTemplate` mutation requires an argument of type `RenameQuoteTemplateVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface RenameQuoteTemplateVariables {
+  id: UUIDString;
+  name: string;
+}
+```
+### Return Type
+Recall that executing the `RenameQuoteTemplate` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `RenameQuoteTemplateData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface RenameQuoteTemplateData {
+  quoteTemplate_update?: QuoteTemplate_Key | null;
+}
+```
+### Using `RenameQuoteTemplate`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, renameQuoteTemplate, RenameQuoteTemplateVariables } from '@generated/data-connector-web';
+
+// The `RenameQuoteTemplate` mutation requires an argument of type `RenameQuoteTemplateVariables`:
+const renameQuoteTemplateVars: RenameQuoteTemplateVariables = {
+  id: ..., 
+  name: ..., 
+};
+
+// Call the `renameQuoteTemplate()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await renameQuoteTemplate(renameQuoteTemplateVars);
+// Variables can be defined inline as well.
+const { data } = await renameQuoteTemplate({ id: ..., name: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await renameQuoteTemplate(dataConnect, renameQuoteTemplateVars);
+
+console.log(data.quoteTemplate_update);
+
+// Or, you can use the `Promise` API.
+renameQuoteTemplate(renameQuoteTemplateVars).then((response) => {
+  const data = response.data;
+  console.log(data.quoteTemplate_update);
+});
+```
+
+### Using `RenameQuoteTemplate`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, renameQuoteTemplateRef, RenameQuoteTemplateVariables } from '@generated/data-connector-web';
+
+// The `RenameQuoteTemplate` mutation requires an argument of type `RenameQuoteTemplateVariables`:
+const renameQuoteTemplateVars: RenameQuoteTemplateVariables = {
+  id: ..., 
+  name: ..., 
+};
+
+// Call the `renameQuoteTemplateRef()` function to get a reference to the mutation.
+const ref = renameQuoteTemplateRef(renameQuoteTemplateVars);
+// Variables can be defined inline as well.
+const ref = renameQuoteTemplateRef({ id: ..., name: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = renameQuoteTemplateRef(dataConnect, renameQuoteTemplateVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quoteTemplate_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteTemplate_update);
+});
+```
+
+## DeleteQuoteTemplate
+You can execute the `DeleteQuoteTemplate` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+deleteQuoteTemplate(vars: DeleteQuoteTemplateVariables): MutationPromise<DeleteQuoteTemplateData, DeleteQuoteTemplateVariables>;
+
+interface DeleteQuoteTemplateRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteQuoteTemplateVariables): MutationRef<DeleteQuoteTemplateData, DeleteQuoteTemplateVariables>;
+}
+export const deleteQuoteTemplateRef: DeleteQuoteTemplateRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deleteQuoteTemplate(dc: DataConnect, vars: DeleteQuoteTemplateVariables): MutationPromise<DeleteQuoteTemplateData, DeleteQuoteTemplateVariables>;
+
+interface DeleteQuoteTemplateRef {
+  ...
+  (dc: DataConnect, vars: DeleteQuoteTemplateVariables): MutationRef<DeleteQuoteTemplateData, DeleteQuoteTemplateVariables>;
+}
+export const deleteQuoteTemplateRef: DeleteQuoteTemplateRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteQuoteTemplateRef:
+```typescript
+const name = deleteQuoteTemplateRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeleteQuoteTemplate` mutation requires an argument of type `DeleteQuoteTemplateVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeleteQuoteTemplateVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeleteQuoteTemplate` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeleteQuoteTemplateData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeleteQuoteTemplateData {
+  company_updateMany: number;
+  quoteItemTemplateConfig_deleteMany: number;
+  quoteTemplate_delete?: QuoteTemplate_Key | null;
+}
+```
+### Using `DeleteQuoteTemplate`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deleteQuoteTemplate, DeleteQuoteTemplateVariables } from '@generated/data-connector-web';
+
+// The `DeleteQuoteTemplate` mutation requires an argument of type `DeleteQuoteTemplateVariables`:
+const deleteQuoteTemplateVars: DeleteQuoteTemplateVariables = {
+  id: ..., 
+};
+
+// Call the `deleteQuoteTemplate()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deleteQuoteTemplate(deleteQuoteTemplateVars);
+// Variables can be defined inline as well.
+const { data } = await deleteQuoteTemplate({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deleteQuoteTemplate(dataConnect, deleteQuoteTemplateVars);
+
+console.log(data.company_updateMany);
+console.log(data.quoteItemTemplateConfig_deleteMany);
+console.log(data.quoteTemplate_delete);
+
+// Or, you can use the `Promise` API.
+deleteQuoteTemplate(deleteQuoteTemplateVars).then((response) => {
+  const data = response.data;
+  console.log(data.company_updateMany);
+  console.log(data.quoteItemTemplateConfig_deleteMany);
+  console.log(data.quoteTemplate_delete);
+});
+```
+
+### Using `DeleteQuoteTemplate`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deleteQuoteTemplateRef, DeleteQuoteTemplateVariables } from '@generated/data-connector-web';
+
+// The `DeleteQuoteTemplate` mutation requires an argument of type `DeleteQuoteTemplateVariables`:
+const deleteQuoteTemplateVars: DeleteQuoteTemplateVariables = {
+  id: ..., 
+};
+
+// Call the `deleteQuoteTemplateRef()` function to get a reference to the mutation.
+const ref = deleteQuoteTemplateRef(deleteQuoteTemplateVars);
+// Variables can be defined inline as well.
+const ref = deleteQuoteTemplateRef({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deleteQuoteTemplateRef(dataConnect, deleteQuoteTemplateVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.company_updateMany);
+console.log(data.quoteItemTemplateConfig_deleteMany);
+console.log(data.quoteTemplate_delete);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.company_updateMany);
+  console.log(data.quoteItemTemplateConfig_deleteMany);
+  console.log(data.quoteTemplate_delete);
+});
+```
+
+## CreateQuoteTemplateVariation
+You can execute the `CreateQuoteTemplateVariation` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+createQuoteTemplateVariation(vars: CreateQuoteTemplateVariationVariables): MutationPromise<CreateQuoteTemplateVariationData, CreateQuoteTemplateVariationVariables>;
+
+interface CreateQuoteTemplateVariationRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateQuoteTemplateVariationVariables): MutationRef<CreateQuoteTemplateVariationData, CreateQuoteTemplateVariationVariables>;
+}
+export const createQuoteTemplateVariationRef: CreateQuoteTemplateVariationRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+createQuoteTemplateVariation(dc: DataConnect, vars: CreateQuoteTemplateVariationVariables): MutationPromise<CreateQuoteTemplateVariationData, CreateQuoteTemplateVariationVariables>;
+
+interface CreateQuoteTemplateVariationRef {
+  ...
+  (dc: DataConnect, vars: CreateQuoteTemplateVariationVariables): MutationRef<CreateQuoteTemplateVariationData, CreateQuoteTemplateVariationVariables>;
+}
+export const createQuoteTemplateVariationRef: CreateQuoteTemplateVariationRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createQuoteTemplateVariationRef:
+```typescript
+const name = createQuoteTemplateVariationRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `CreateQuoteTemplateVariation` mutation requires an argument of type `CreateQuoteTemplateVariationVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface CreateQuoteTemplateVariationVariables {
+  quoteTemplateId: UUIDString;
+  name: string;
+  includeItem1?: boolean | null;
+  item1ItemTemplateId?: UUIDString | null;
+  item1Enabled?: boolean | null;
+  item1UnitPriceCents?: number | null;
+  item1MaterialUnitPriceCents?: number | null;
+  item1LabourUnitPriceCents?: number | null;
+  includeItem2?: boolean | null;
+  item2ItemTemplateId?: UUIDString | null;
+  item2Enabled?: boolean | null;
+  item2UnitPriceCents?: number | null;
+  item2MaterialUnitPriceCents?: number | null;
+  item2LabourUnitPriceCents?: number | null;
+  includeItem3?: boolean | null;
+  item3ItemTemplateId?: UUIDString | null;
+  item3Enabled?: boolean | null;
+  item3UnitPriceCents?: number | null;
+  item3MaterialUnitPriceCents?: number | null;
+  item3LabourUnitPriceCents?: number | null;
+  includeItem4?: boolean | null;
+  item4ItemTemplateId?: UUIDString | null;
+  item4Enabled?: boolean | null;
+  item4UnitPriceCents?: number | null;
+  item4MaterialUnitPriceCents?: number | null;
+  item4LabourUnitPriceCents?: number | null;
+  includeItem5?: boolean | null;
+  item5ItemTemplateId?: UUIDString | null;
+  item5Enabled?: boolean | null;
+  item5UnitPriceCents?: number | null;
+  item5MaterialUnitPriceCents?: number | null;
+  item5LabourUnitPriceCents?: number | null;
+  includeItem6?: boolean | null;
+  item6ItemTemplateId?: UUIDString | null;
+  item6Enabled?: boolean | null;
+  item6UnitPriceCents?: number | null;
+  item6MaterialUnitPriceCents?: number | null;
+  item6LabourUnitPriceCents?: number | null;
+  includeItem7?: boolean | null;
+  item7ItemTemplateId?: UUIDString | null;
+  item7Enabled?: boolean | null;
+  item7UnitPriceCents?: number | null;
+  item7MaterialUnitPriceCents?: number | null;
+  item7LabourUnitPriceCents?: number | null;
+  includeItem8?: boolean | null;
+  item8ItemTemplateId?: UUIDString | null;
+  item8Enabled?: boolean | null;
+  item8UnitPriceCents?: number | null;
+  item8MaterialUnitPriceCents?: number | null;
+  item8LabourUnitPriceCents?: number | null;
+  includeItem9?: boolean | null;
+  item9ItemTemplateId?: UUIDString | null;
+  item9Enabled?: boolean | null;
+  item9UnitPriceCents?: number | null;
+  item9MaterialUnitPriceCents?: number | null;
+  item9LabourUnitPriceCents?: number | null;
+  includeItem10?: boolean | null;
+  item10ItemTemplateId?: UUIDString | null;
+  item10Enabled?: boolean | null;
+  item10UnitPriceCents?: number | null;
+  item10MaterialUnitPriceCents?: number | null;
+  item10LabourUnitPriceCents?: number | null;
+  includeItem11?: boolean | null;
+  item11ItemTemplateId?: UUIDString | null;
+  item11Enabled?: boolean | null;
+  item11UnitPriceCents?: number | null;
+  item11MaterialUnitPriceCents?: number | null;
+  item11LabourUnitPriceCents?: number | null;
+  includeItem12?: boolean | null;
+  item12ItemTemplateId?: UUIDString | null;
+  item12Enabled?: boolean | null;
+  item12UnitPriceCents?: number | null;
+  item12MaterialUnitPriceCents?: number | null;
+  item12LabourUnitPriceCents?: number | null;
+  includeItem13?: boolean | null;
+  item13ItemTemplateId?: UUIDString | null;
+  item13Enabled?: boolean | null;
+  item13UnitPriceCents?: number | null;
+  item13MaterialUnitPriceCents?: number | null;
+  item13LabourUnitPriceCents?: number | null;
+  includeItem14?: boolean | null;
+  item14ItemTemplateId?: UUIDString | null;
+  item14Enabled?: boolean | null;
+  item14UnitPriceCents?: number | null;
+  item14MaterialUnitPriceCents?: number | null;
+  item14LabourUnitPriceCents?: number | null;
+  includeItem15?: boolean | null;
+  item15ItemTemplateId?: UUIDString | null;
+  item15Enabled?: boolean | null;
+  item15UnitPriceCents?: number | null;
+  item15MaterialUnitPriceCents?: number | null;
+  item15LabourUnitPriceCents?: number | null;
+  includeItem16?: boolean | null;
+  item16ItemTemplateId?: UUIDString | null;
+  item16Enabled?: boolean | null;
+  item16UnitPriceCents?: number | null;
+  item16MaterialUnitPriceCents?: number | null;
+  item16LabourUnitPriceCents?: number | null;
+  includeItem17?: boolean | null;
+  item17ItemTemplateId?: UUIDString | null;
+  item17Enabled?: boolean | null;
+  item17UnitPriceCents?: number | null;
+  item17MaterialUnitPriceCents?: number | null;
+  item17LabourUnitPriceCents?: number | null;
+  includeItem18?: boolean | null;
+  item18ItemTemplateId?: UUIDString | null;
+  item18Enabled?: boolean | null;
+  item18UnitPriceCents?: number | null;
+  item18MaterialUnitPriceCents?: number | null;
+  item18LabourUnitPriceCents?: number | null;
+  includeItem19?: boolean | null;
+  item19ItemTemplateId?: UUIDString | null;
+  item19Enabled?: boolean | null;
+  item19UnitPriceCents?: number | null;
+  item19MaterialUnitPriceCents?: number | null;
+  item19LabourUnitPriceCents?: number | null;
+  includeItem20?: boolean | null;
+  item20ItemTemplateId?: UUIDString | null;
+  item20Enabled?: boolean | null;
+  item20UnitPriceCents?: number | null;
+  item20MaterialUnitPriceCents?: number | null;
+  item20LabourUnitPriceCents?: number | null;
+}
+```
+### Return Type
+Recall that executing the `CreateQuoteTemplateVariation` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `CreateQuoteTemplateVariationData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface CreateQuoteTemplateVariationData {
+  quoteTemplate_insert: QuoteTemplate_Key;
+  item1: QuoteItemTemplateConfig_Key;
+  item2: QuoteItemTemplateConfig_Key;
+  item3: QuoteItemTemplateConfig_Key;
+  item4: QuoteItemTemplateConfig_Key;
+  item5: QuoteItemTemplateConfig_Key;
+  item6: QuoteItemTemplateConfig_Key;
+  item7: QuoteItemTemplateConfig_Key;
+  item8: QuoteItemTemplateConfig_Key;
+  item9: QuoteItemTemplateConfig_Key;
+  item10: QuoteItemTemplateConfig_Key;
+  item11: QuoteItemTemplateConfig_Key;
+  item12: QuoteItemTemplateConfig_Key;
+  item13: QuoteItemTemplateConfig_Key;
+  item14: QuoteItemTemplateConfig_Key;
+  item15: QuoteItemTemplateConfig_Key;
+  item16: QuoteItemTemplateConfig_Key;
+  item17: QuoteItemTemplateConfig_Key;
+  item18: QuoteItemTemplateConfig_Key;
+  item19: QuoteItemTemplateConfig_Key;
+  item20: QuoteItemTemplateConfig_Key;
+}
+```
+### Using `CreateQuoteTemplateVariation`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, createQuoteTemplateVariation, CreateQuoteTemplateVariationVariables } from '@generated/data-connector-web';
+
+// The `CreateQuoteTemplateVariation` mutation requires an argument of type `CreateQuoteTemplateVariationVariables`:
+const createQuoteTemplateVariationVars: CreateQuoteTemplateVariationVariables = {
+  quoteTemplateId: ..., 
+  name: ..., 
+  includeItem1: ..., // optional
+  item1ItemTemplateId: ..., // optional
+  item1Enabled: ..., // optional
+  item1UnitPriceCents: ..., // optional
+  item1MaterialUnitPriceCents: ..., // optional
+  item1LabourUnitPriceCents: ..., // optional
+  includeItem2: ..., // optional
+  item2ItemTemplateId: ..., // optional
+  item2Enabled: ..., // optional
+  item2UnitPriceCents: ..., // optional
+  item2MaterialUnitPriceCents: ..., // optional
+  item2LabourUnitPriceCents: ..., // optional
+  includeItem3: ..., // optional
+  item3ItemTemplateId: ..., // optional
+  item3Enabled: ..., // optional
+  item3UnitPriceCents: ..., // optional
+  item3MaterialUnitPriceCents: ..., // optional
+  item3LabourUnitPriceCents: ..., // optional
+  includeItem4: ..., // optional
+  item4ItemTemplateId: ..., // optional
+  item4Enabled: ..., // optional
+  item4UnitPriceCents: ..., // optional
+  item4MaterialUnitPriceCents: ..., // optional
+  item4LabourUnitPriceCents: ..., // optional
+  includeItem5: ..., // optional
+  item5ItemTemplateId: ..., // optional
+  item5Enabled: ..., // optional
+  item5UnitPriceCents: ..., // optional
+  item5MaterialUnitPriceCents: ..., // optional
+  item5LabourUnitPriceCents: ..., // optional
+  includeItem6: ..., // optional
+  item6ItemTemplateId: ..., // optional
+  item6Enabled: ..., // optional
+  item6UnitPriceCents: ..., // optional
+  item6MaterialUnitPriceCents: ..., // optional
+  item6LabourUnitPriceCents: ..., // optional
+  includeItem7: ..., // optional
+  item7ItemTemplateId: ..., // optional
+  item7Enabled: ..., // optional
+  item7UnitPriceCents: ..., // optional
+  item7MaterialUnitPriceCents: ..., // optional
+  item7LabourUnitPriceCents: ..., // optional
+  includeItem8: ..., // optional
+  item8ItemTemplateId: ..., // optional
+  item8Enabled: ..., // optional
+  item8UnitPriceCents: ..., // optional
+  item8MaterialUnitPriceCents: ..., // optional
+  item8LabourUnitPriceCents: ..., // optional
+  includeItem9: ..., // optional
+  item9ItemTemplateId: ..., // optional
+  item9Enabled: ..., // optional
+  item9UnitPriceCents: ..., // optional
+  item9MaterialUnitPriceCents: ..., // optional
+  item9LabourUnitPriceCents: ..., // optional
+  includeItem10: ..., // optional
+  item10ItemTemplateId: ..., // optional
+  item10Enabled: ..., // optional
+  item10UnitPriceCents: ..., // optional
+  item10MaterialUnitPriceCents: ..., // optional
+  item10LabourUnitPriceCents: ..., // optional
+  includeItem11: ..., // optional
+  item11ItemTemplateId: ..., // optional
+  item11Enabled: ..., // optional
+  item11UnitPriceCents: ..., // optional
+  item11MaterialUnitPriceCents: ..., // optional
+  item11LabourUnitPriceCents: ..., // optional
+  includeItem12: ..., // optional
+  item12ItemTemplateId: ..., // optional
+  item12Enabled: ..., // optional
+  item12UnitPriceCents: ..., // optional
+  item12MaterialUnitPriceCents: ..., // optional
+  item12LabourUnitPriceCents: ..., // optional
+  includeItem13: ..., // optional
+  item13ItemTemplateId: ..., // optional
+  item13Enabled: ..., // optional
+  item13UnitPriceCents: ..., // optional
+  item13MaterialUnitPriceCents: ..., // optional
+  item13LabourUnitPriceCents: ..., // optional
+  includeItem14: ..., // optional
+  item14ItemTemplateId: ..., // optional
+  item14Enabled: ..., // optional
+  item14UnitPriceCents: ..., // optional
+  item14MaterialUnitPriceCents: ..., // optional
+  item14LabourUnitPriceCents: ..., // optional
+  includeItem15: ..., // optional
+  item15ItemTemplateId: ..., // optional
+  item15Enabled: ..., // optional
+  item15UnitPriceCents: ..., // optional
+  item15MaterialUnitPriceCents: ..., // optional
+  item15LabourUnitPriceCents: ..., // optional
+  includeItem16: ..., // optional
+  item16ItemTemplateId: ..., // optional
+  item16Enabled: ..., // optional
+  item16UnitPriceCents: ..., // optional
+  item16MaterialUnitPriceCents: ..., // optional
+  item16LabourUnitPriceCents: ..., // optional
+  includeItem17: ..., // optional
+  item17ItemTemplateId: ..., // optional
+  item17Enabled: ..., // optional
+  item17UnitPriceCents: ..., // optional
+  item17MaterialUnitPriceCents: ..., // optional
+  item17LabourUnitPriceCents: ..., // optional
+  includeItem18: ..., // optional
+  item18ItemTemplateId: ..., // optional
+  item18Enabled: ..., // optional
+  item18UnitPriceCents: ..., // optional
+  item18MaterialUnitPriceCents: ..., // optional
+  item18LabourUnitPriceCents: ..., // optional
+  includeItem19: ..., // optional
+  item19ItemTemplateId: ..., // optional
+  item19Enabled: ..., // optional
+  item19UnitPriceCents: ..., // optional
+  item19MaterialUnitPriceCents: ..., // optional
+  item19LabourUnitPriceCents: ..., // optional
+  includeItem20: ..., // optional
+  item20ItemTemplateId: ..., // optional
+  item20Enabled: ..., // optional
+  item20UnitPriceCents: ..., // optional
+  item20MaterialUnitPriceCents: ..., // optional
+  item20LabourUnitPriceCents: ..., // optional
+};
+
+// Call the `createQuoteTemplateVariation()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await createQuoteTemplateVariation(createQuoteTemplateVariationVars);
+// Variables can be defined inline as well.
+const { data } = await createQuoteTemplateVariation({ quoteTemplateId: ..., name: ..., includeItem1: ..., item1ItemTemplateId: ..., item1Enabled: ..., item1UnitPriceCents: ..., item1MaterialUnitPriceCents: ..., item1LabourUnitPriceCents: ..., includeItem2: ..., item2ItemTemplateId: ..., item2Enabled: ..., item2UnitPriceCents: ..., item2MaterialUnitPriceCents: ..., item2LabourUnitPriceCents: ..., includeItem3: ..., item3ItemTemplateId: ..., item3Enabled: ..., item3UnitPriceCents: ..., item3MaterialUnitPriceCents: ..., item3LabourUnitPriceCents: ..., includeItem4: ..., item4ItemTemplateId: ..., item4Enabled: ..., item4UnitPriceCents: ..., item4MaterialUnitPriceCents: ..., item4LabourUnitPriceCents: ..., includeItem5: ..., item5ItemTemplateId: ..., item5Enabled: ..., item5UnitPriceCents: ..., item5MaterialUnitPriceCents: ..., item5LabourUnitPriceCents: ..., includeItem6: ..., item6ItemTemplateId: ..., item6Enabled: ..., item6UnitPriceCents: ..., item6MaterialUnitPriceCents: ..., item6LabourUnitPriceCents: ..., includeItem7: ..., item7ItemTemplateId: ..., item7Enabled: ..., item7UnitPriceCents: ..., item7MaterialUnitPriceCents: ..., item7LabourUnitPriceCents: ..., includeItem8: ..., item8ItemTemplateId: ..., item8Enabled: ..., item8UnitPriceCents: ..., item8MaterialUnitPriceCents: ..., item8LabourUnitPriceCents: ..., includeItem9: ..., item9ItemTemplateId: ..., item9Enabled: ..., item9UnitPriceCents: ..., item9MaterialUnitPriceCents: ..., item9LabourUnitPriceCents: ..., includeItem10: ..., item10ItemTemplateId: ..., item10Enabled: ..., item10UnitPriceCents: ..., item10MaterialUnitPriceCents: ..., item10LabourUnitPriceCents: ..., includeItem11: ..., item11ItemTemplateId: ..., item11Enabled: ..., item11UnitPriceCents: ..., item11MaterialUnitPriceCents: ..., item11LabourUnitPriceCents: ..., includeItem12: ..., item12ItemTemplateId: ..., item12Enabled: ..., item12UnitPriceCents: ..., item12MaterialUnitPriceCents: ..., item12LabourUnitPriceCents: ..., includeItem13: ..., item13ItemTemplateId: ..., item13Enabled: ..., item13UnitPriceCents: ..., item13MaterialUnitPriceCents: ..., item13LabourUnitPriceCents: ..., includeItem14: ..., item14ItemTemplateId: ..., item14Enabled: ..., item14UnitPriceCents: ..., item14MaterialUnitPriceCents: ..., item14LabourUnitPriceCents: ..., includeItem15: ..., item15ItemTemplateId: ..., item15Enabled: ..., item15UnitPriceCents: ..., item15MaterialUnitPriceCents: ..., item15LabourUnitPriceCents: ..., includeItem16: ..., item16ItemTemplateId: ..., item16Enabled: ..., item16UnitPriceCents: ..., item16MaterialUnitPriceCents: ..., item16LabourUnitPriceCents: ..., includeItem17: ..., item17ItemTemplateId: ..., item17Enabled: ..., item17UnitPriceCents: ..., item17MaterialUnitPriceCents: ..., item17LabourUnitPriceCents: ..., includeItem18: ..., item18ItemTemplateId: ..., item18Enabled: ..., item18UnitPriceCents: ..., item18MaterialUnitPriceCents: ..., item18LabourUnitPriceCents: ..., includeItem19: ..., item19ItemTemplateId: ..., item19Enabled: ..., item19UnitPriceCents: ..., item19MaterialUnitPriceCents: ..., item19LabourUnitPriceCents: ..., includeItem20: ..., item20ItemTemplateId: ..., item20Enabled: ..., item20UnitPriceCents: ..., item20MaterialUnitPriceCents: ..., item20LabourUnitPriceCents: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await createQuoteTemplateVariation(dataConnect, createQuoteTemplateVariationVars);
+
+console.log(data.quoteTemplate_insert);
+console.log(data.item1);
+console.log(data.item2);
+console.log(data.item3);
+console.log(data.item4);
+console.log(data.item5);
+console.log(data.item6);
+console.log(data.item7);
+console.log(data.item8);
+console.log(data.item9);
+console.log(data.item10);
+console.log(data.item11);
+console.log(data.item12);
+console.log(data.item13);
+console.log(data.item14);
+console.log(data.item15);
+console.log(data.item16);
+console.log(data.item17);
+console.log(data.item18);
+console.log(data.item19);
+console.log(data.item20);
+
+// Or, you can use the `Promise` API.
+createQuoteTemplateVariation(createQuoteTemplateVariationVars).then((response) => {
+  const data = response.data;
+  console.log(data.quoteTemplate_insert);
+  console.log(data.item1);
+  console.log(data.item2);
+  console.log(data.item3);
+  console.log(data.item4);
+  console.log(data.item5);
+  console.log(data.item6);
+  console.log(data.item7);
+  console.log(data.item8);
+  console.log(data.item9);
+  console.log(data.item10);
+  console.log(data.item11);
+  console.log(data.item12);
+  console.log(data.item13);
+  console.log(data.item14);
+  console.log(data.item15);
+  console.log(data.item16);
+  console.log(data.item17);
+  console.log(data.item18);
+  console.log(data.item19);
+  console.log(data.item20);
+});
+```
+
+### Using `CreateQuoteTemplateVariation`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, createQuoteTemplateVariationRef, CreateQuoteTemplateVariationVariables } from '@generated/data-connector-web';
+
+// The `CreateQuoteTemplateVariation` mutation requires an argument of type `CreateQuoteTemplateVariationVariables`:
+const createQuoteTemplateVariationVars: CreateQuoteTemplateVariationVariables = {
+  quoteTemplateId: ..., 
+  name: ..., 
+  includeItem1: ..., // optional
+  item1ItemTemplateId: ..., // optional
+  item1Enabled: ..., // optional
+  item1UnitPriceCents: ..., // optional
+  item1MaterialUnitPriceCents: ..., // optional
+  item1LabourUnitPriceCents: ..., // optional
+  includeItem2: ..., // optional
+  item2ItemTemplateId: ..., // optional
+  item2Enabled: ..., // optional
+  item2UnitPriceCents: ..., // optional
+  item2MaterialUnitPriceCents: ..., // optional
+  item2LabourUnitPriceCents: ..., // optional
+  includeItem3: ..., // optional
+  item3ItemTemplateId: ..., // optional
+  item3Enabled: ..., // optional
+  item3UnitPriceCents: ..., // optional
+  item3MaterialUnitPriceCents: ..., // optional
+  item3LabourUnitPriceCents: ..., // optional
+  includeItem4: ..., // optional
+  item4ItemTemplateId: ..., // optional
+  item4Enabled: ..., // optional
+  item4UnitPriceCents: ..., // optional
+  item4MaterialUnitPriceCents: ..., // optional
+  item4LabourUnitPriceCents: ..., // optional
+  includeItem5: ..., // optional
+  item5ItemTemplateId: ..., // optional
+  item5Enabled: ..., // optional
+  item5UnitPriceCents: ..., // optional
+  item5MaterialUnitPriceCents: ..., // optional
+  item5LabourUnitPriceCents: ..., // optional
+  includeItem6: ..., // optional
+  item6ItemTemplateId: ..., // optional
+  item6Enabled: ..., // optional
+  item6UnitPriceCents: ..., // optional
+  item6MaterialUnitPriceCents: ..., // optional
+  item6LabourUnitPriceCents: ..., // optional
+  includeItem7: ..., // optional
+  item7ItemTemplateId: ..., // optional
+  item7Enabled: ..., // optional
+  item7UnitPriceCents: ..., // optional
+  item7MaterialUnitPriceCents: ..., // optional
+  item7LabourUnitPriceCents: ..., // optional
+  includeItem8: ..., // optional
+  item8ItemTemplateId: ..., // optional
+  item8Enabled: ..., // optional
+  item8UnitPriceCents: ..., // optional
+  item8MaterialUnitPriceCents: ..., // optional
+  item8LabourUnitPriceCents: ..., // optional
+  includeItem9: ..., // optional
+  item9ItemTemplateId: ..., // optional
+  item9Enabled: ..., // optional
+  item9UnitPriceCents: ..., // optional
+  item9MaterialUnitPriceCents: ..., // optional
+  item9LabourUnitPriceCents: ..., // optional
+  includeItem10: ..., // optional
+  item10ItemTemplateId: ..., // optional
+  item10Enabled: ..., // optional
+  item10UnitPriceCents: ..., // optional
+  item10MaterialUnitPriceCents: ..., // optional
+  item10LabourUnitPriceCents: ..., // optional
+  includeItem11: ..., // optional
+  item11ItemTemplateId: ..., // optional
+  item11Enabled: ..., // optional
+  item11UnitPriceCents: ..., // optional
+  item11MaterialUnitPriceCents: ..., // optional
+  item11LabourUnitPriceCents: ..., // optional
+  includeItem12: ..., // optional
+  item12ItemTemplateId: ..., // optional
+  item12Enabled: ..., // optional
+  item12UnitPriceCents: ..., // optional
+  item12MaterialUnitPriceCents: ..., // optional
+  item12LabourUnitPriceCents: ..., // optional
+  includeItem13: ..., // optional
+  item13ItemTemplateId: ..., // optional
+  item13Enabled: ..., // optional
+  item13UnitPriceCents: ..., // optional
+  item13MaterialUnitPriceCents: ..., // optional
+  item13LabourUnitPriceCents: ..., // optional
+  includeItem14: ..., // optional
+  item14ItemTemplateId: ..., // optional
+  item14Enabled: ..., // optional
+  item14UnitPriceCents: ..., // optional
+  item14MaterialUnitPriceCents: ..., // optional
+  item14LabourUnitPriceCents: ..., // optional
+  includeItem15: ..., // optional
+  item15ItemTemplateId: ..., // optional
+  item15Enabled: ..., // optional
+  item15UnitPriceCents: ..., // optional
+  item15MaterialUnitPriceCents: ..., // optional
+  item15LabourUnitPriceCents: ..., // optional
+  includeItem16: ..., // optional
+  item16ItemTemplateId: ..., // optional
+  item16Enabled: ..., // optional
+  item16UnitPriceCents: ..., // optional
+  item16MaterialUnitPriceCents: ..., // optional
+  item16LabourUnitPriceCents: ..., // optional
+  includeItem17: ..., // optional
+  item17ItemTemplateId: ..., // optional
+  item17Enabled: ..., // optional
+  item17UnitPriceCents: ..., // optional
+  item17MaterialUnitPriceCents: ..., // optional
+  item17LabourUnitPriceCents: ..., // optional
+  includeItem18: ..., // optional
+  item18ItemTemplateId: ..., // optional
+  item18Enabled: ..., // optional
+  item18UnitPriceCents: ..., // optional
+  item18MaterialUnitPriceCents: ..., // optional
+  item18LabourUnitPriceCents: ..., // optional
+  includeItem19: ..., // optional
+  item19ItemTemplateId: ..., // optional
+  item19Enabled: ..., // optional
+  item19UnitPriceCents: ..., // optional
+  item19MaterialUnitPriceCents: ..., // optional
+  item19LabourUnitPriceCents: ..., // optional
+  includeItem20: ..., // optional
+  item20ItemTemplateId: ..., // optional
+  item20Enabled: ..., // optional
+  item20UnitPriceCents: ..., // optional
+  item20MaterialUnitPriceCents: ..., // optional
+  item20LabourUnitPriceCents: ..., // optional
+};
+
+// Call the `createQuoteTemplateVariationRef()` function to get a reference to the mutation.
+const ref = createQuoteTemplateVariationRef(createQuoteTemplateVariationVars);
+// Variables can be defined inline as well.
+const ref = createQuoteTemplateVariationRef({ quoteTemplateId: ..., name: ..., includeItem1: ..., item1ItemTemplateId: ..., item1Enabled: ..., item1UnitPriceCents: ..., item1MaterialUnitPriceCents: ..., item1LabourUnitPriceCents: ..., includeItem2: ..., item2ItemTemplateId: ..., item2Enabled: ..., item2UnitPriceCents: ..., item2MaterialUnitPriceCents: ..., item2LabourUnitPriceCents: ..., includeItem3: ..., item3ItemTemplateId: ..., item3Enabled: ..., item3UnitPriceCents: ..., item3MaterialUnitPriceCents: ..., item3LabourUnitPriceCents: ..., includeItem4: ..., item4ItemTemplateId: ..., item4Enabled: ..., item4UnitPriceCents: ..., item4MaterialUnitPriceCents: ..., item4LabourUnitPriceCents: ..., includeItem5: ..., item5ItemTemplateId: ..., item5Enabled: ..., item5UnitPriceCents: ..., item5MaterialUnitPriceCents: ..., item5LabourUnitPriceCents: ..., includeItem6: ..., item6ItemTemplateId: ..., item6Enabled: ..., item6UnitPriceCents: ..., item6MaterialUnitPriceCents: ..., item6LabourUnitPriceCents: ..., includeItem7: ..., item7ItemTemplateId: ..., item7Enabled: ..., item7UnitPriceCents: ..., item7MaterialUnitPriceCents: ..., item7LabourUnitPriceCents: ..., includeItem8: ..., item8ItemTemplateId: ..., item8Enabled: ..., item8UnitPriceCents: ..., item8MaterialUnitPriceCents: ..., item8LabourUnitPriceCents: ..., includeItem9: ..., item9ItemTemplateId: ..., item9Enabled: ..., item9UnitPriceCents: ..., item9MaterialUnitPriceCents: ..., item9LabourUnitPriceCents: ..., includeItem10: ..., item10ItemTemplateId: ..., item10Enabled: ..., item10UnitPriceCents: ..., item10MaterialUnitPriceCents: ..., item10LabourUnitPriceCents: ..., includeItem11: ..., item11ItemTemplateId: ..., item11Enabled: ..., item11UnitPriceCents: ..., item11MaterialUnitPriceCents: ..., item11LabourUnitPriceCents: ..., includeItem12: ..., item12ItemTemplateId: ..., item12Enabled: ..., item12UnitPriceCents: ..., item12MaterialUnitPriceCents: ..., item12LabourUnitPriceCents: ..., includeItem13: ..., item13ItemTemplateId: ..., item13Enabled: ..., item13UnitPriceCents: ..., item13MaterialUnitPriceCents: ..., item13LabourUnitPriceCents: ..., includeItem14: ..., item14ItemTemplateId: ..., item14Enabled: ..., item14UnitPriceCents: ..., item14MaterialUnitPriceCents: ..., item14LabourUnitPriceCents: ..., includeItem15: ..., item15ItemTemplateId: ..., item15Enabled: ..., item15UnitPriceCents: ..., item15MaterialUnitPriceCents: ..., item15LabourUnitPriceCents: ..., includeItem16: ..., item16ItemTemplateId: ..., item16Enabled: ..., item16UnitPriceCents: ..., item16MaterialUnitPriceCents: ..., item16LabourUnitPriceCents: ..., includeItem17: ..., item17ItemTemplateId: ..., item17Enabled: ..., item17UnitPriceCents: ..., item17MaterialUnitPriceCents: ..., item17LabourUnitPriceCents: ..., includeItem18: ..., item18ItemTemplateId: ..., item18Enabled: ..., item18UnitPriceCents: ..., item18MaterialUnitPriceCents: ..., item18LabourUnitPriceCents: ..., includeItem19: ..., item19ItemTemplateId: ..., item19Enabled: ..., item19UnitPriceCents: ..., item19MaterialUnitPriceCents: ..., item19LabourUnitPriceCents: ..., includeItem20: ..., item20ItemTemplateId: ..., item20Enabled: ..., item20UnitPriceCents: ..., item20MaterialUnitPriceCents: ..., item20LabourUnitPriceCents: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = createQuoteTemplateVariationRef(dataConnect, createQuoteTemplateVariationVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quoteTemplate_insert);
+console.log(data.item1);
+console.log(data.item2);
+console.log(data.item3);
+console.log(data.item4);
+console.log(data.item5);
+console.log(data.item6);
+console.log(data.item7);
+console.log(data.item8);
+console.log(data.item9);
+console.log(data.item10);
+console.log(data.item11);
+console.log(data.item12);
+console.log(data.item13);
+console.log(data.item14);
+console.log(data.item15);
+console.log(data.item16);
+console.log(data.item17);
+console.log(data.item18);
+console.log(data.item19);
+console.log(data.item20);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteTemplate_insert);
+  console.log(data.item1);
+  console.log(data.item2);
+  console.log(data.item3);
+  console.log(data.item4);
+  console.log(data.item5);
+  console.log(data.item6);
+  console.log(data.item7);
+  console.log(data.item8);
+  console.log(data.item9);
+  console.log(data.item10);
+  console.log(data.item11);
+  console.log(data.item12);
+  console.log(data.item13);
+  console.log(data.item14);
+  console.log(data.item15);
+  console.log(data.item16);
+  console.log(data.item17);
+  console.log(data.item18);
+  console.log(data.item19);
+  console.log(data.item20);
 });
 ```
 

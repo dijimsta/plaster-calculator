@@ -9,6 +9,11 @@ query ListMyCompanies @auth(level: USER) {
         businessNumber
         phoneNumber
         primaryContactId
+        quoteTemplateId
+        quoteTemplate {
+            id
+            name
+        }
         createdAt
         updatedAt
     }
@@ -26,6 +31,11 @@ query GetMyCompany($id: UUID!) @auth(level: USER) {
         businessNumber
         phoneNumber
         primaryContactId
+        quoteTemplateId
+        quoteTemplate {
+            id
+            name
+        }
         createdAt
         updatedAt
         contacts: companyContacts_on_company(orderBy: [{ createdAt: ASC }]) {
