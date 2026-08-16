@@ -19,7 +19,12 @@ const QuestionInputSchema = z.object({
 
 const AnswerQuestionnaireInputSchema = z.object({
     questions: z.array(QuestionInputSchema),
-    rooms: z.array(RoomSummaryInputSchema),
+    // False before floorplan pages exist (e.g. the project-creation wizard's
+    // clarifications step, which runs before page selection). In that case
+    // `rooms` is omitted and `ocrText` is always empty, since both are derived
+    // from analyzed pages; only `pdfText` carries signal.
+    hasPages: z.boolean(),
+    rooms: z.array(RoomSummaryInputSchema).optional(),
     ocrText: z.string(),
     pdfText: z.string(),
 });
@@ -98,10 +103,7 @@ function logAiDebug(title: string, sections: Record<string, string>): void {
 
 function buildPrompt(input: AnswerQuestionnaireInput): string {
     return [
-        "## Room-by-room computed data",
-        JSON.stringify(input.rooms, null, 2),
-        "## OCR-detected text from the floor plan drawing",
-        input.ocrText || "(none)",
+        ...buildGeometrySections(input),
         "## Text extracted from the uploaded PDF",
         input.pdfText || "(none)",
         "## Questions to answer",
@@ -109,4 +111,22 @@ function buildPrompt(input: AnswerQuestionnaireInput): string {
         "Answer each question in `questions` and return one entry per question ID in " +
             "the same order.",
     ].join("\n\n");
+}
+
+function buildGeometrySections(input: AnswerQuestionnaireInput): string[] {
+    if (!input.hasPages) {
+        return [
+            "## Floor plan pages have not been processed yet",
+            "No room geometry or OCR text is available for this project yet — it's still " +
+                "at the plan-upload stage, before pages are analyzed. Answer only from the " +
+                "extracted PDF text below.",
+        ];
+    }
+
+    return [
+        "## Room-by-room computed data",
+        JSON.stringify(input.rooms ?? [], null, 2),
+        "## OCR-detected text from the floor plan drawing",
+        input.ocrText || "(none)",
+    ];
 }

@@ -11,18 +11,46 @@ import { requireAuth } from "./auth.js";
 import { requireOwnedProject } from "./ownership.js";
 import { analyzeFloorplanPageCore } from "./page-analysis.js";
 import { extractPdfText } from "./pdf-text-extraction.js";
+import { createAnswerQuestionnaireService } from "./questionnaire-answer-domain.js";
+import type { AnswerQuestionnaireDependencies } from "./questionnaire-answer-domain.js";
 import { LONG_RUNNING_TIMEOUT_SECONDS } from "./types.js";
 import type { ProjectIdRequest, ProjectWithPages } from "./types.js";
 import { readRequiredString } from "./validation.js";
-
-// Bounds the OCR/PDF text sent to the model per call. Large multi-page spec
-// PDFs could otherwise blow context/cost; exact budget to tune empirically.
-const MAX_TEXT_CHARACTERS = 20_000;
 
 interface ExtractedPdfPage {
     readonly pageNumber: number;
     readonly text: string;
 }
+
+const defaultDependencies: AnswerQuestionnaireDependencies = {
+    getProject: requireOwnedProject,
+    getQuestions: async (projectId) => {
+        const response =
+            await DataConnector.getProjectQuestionnaireQuestionsForProject({
+                projectId,
+            });
+        const questions = response.data.projectQuestionnaire?.questions ?? [];
+        return questions.map((question) => ({
+            id: question.id,
+            label: question.label,
+        }));
+    },
+    ensurePagesAnalyzed,
+    resolveExtractedText,
+    buildRoomSummaries: (project) =>
+        project.pages.flatMap((page) => buildRoomSummary(page)),
+    generate: (input) => answerQuestionnaireFlow(input),
+    updateAnswer: async (questionId, answer) => {
+        await DataConnector.updateProjectQuestionnaireQuestionAiAnswer({
+            id: questionId,
+            answer,
+            answerSource: AI_SUGGESTED_ANSWER_SOURCE,
+        });
+    },
+};
+
+const answerQuestionnaireService =
+    createAnswerQuestionnaireService(defaultDependencies);
 
 export const answerQuestionnaireWithAI = onCall<
     ProjectIdRequest,
@@ -43,66 +71,7 @@ export async function answerQuestionnaire(
     projectId: string,
     uid: string,
 ): Promise<{ updatedCount: number }> {
-    let project = await requireOwnedProject(projectId, uid);
-
-    const questionsResponse =
-        await DataConnector.getProjectQuestionnaireQuestionsForProject({
-            projectId,
-        });
-    const questions =
-        questionsResponse.data.projectQuestionnaire?.questions ?? [];
-    if (questions.length === 0) {
-        throw new HttpsError(
-            "failed-precondition",
-            "Add at least one question before auto-filling.",
-        );
-    }
-
-    try {
-        project = await ensurePagesAnalyzed(project, projectId, uid);
-
-        const pdfText = await resolveExtractedText(project);
-        const ocrText = buildOcrText(project);
-        const rooms = project.pages.flatMap((page) => buildRoomSummary(page));
-
-        const { answers } = await answerQuestionnaireFlow({
-            questions: questions.map((question) => ({
-                id: question.id,
-                label: question.label,
-            })),
-            rooms,
-            ocrText: truncate(ocrText, MAX_TEXT_CHARACTERS),
-            pdfText: truncate(pdfText, MAX_TEXT_CHARACTERS),
-        });
-
-        const answeredQuestions = answers.filter(
-            (answer): answer is { questionId: string; answer: string } =>
-                answer.answer != null,
-        );
-
-        await Promise.all(
-            answeredQuestions.map((answer) =>
-                DataConnector.updateProjectQuestionnaireQuestionAiAnswer({
-                    id: answer.questionId,
-                    answer: answer.answer,
-                    answerSource: AI_SUGGESTED_ANSWER_SOURCE,
-                }),
-            ),
-        );
-
-        return { updatedCount: answeredQuestions.length };
-    } catch (error) {
-        logger.error("answerQuestionnaireWithAI failed", {
-            projectId,
-            questionCount: questions.length,
-        });
-        throw error instanceof HttpsError
-            ? error
-            : new HttpsError(
-                  "internal",
-                  "AI auto-fill failed. Please try again.",
-              );
-    }
+    return answerQuestionnaireService.run(projectId, uid);
 }
 
 async function ensurePagesAnalyzed(
@@ -163,17 +132,6 @@ function flattenExtractedText(extractedTextJson: string): string {
         .map((page) => page.text)
         .filter((text) => text.length > 0)
         .join("\n\n");
-}
-
-function buildOcrText(project: ProjectWithPages): string {
-    return project.pages
-        .map((page) => page.ocrTextContent)
-        .filter((text): text is string => Boolean(text))
-        .join("\n");
-}
-
-function truncate(text: string, maxCharacters: number): string {
-    return text.length > maxCharacters ? text.slice(0, maxCharacters) : text;
 }
 
 async function fetchOriginalPdf(originalUrl: string): Promise<Buffer> {
