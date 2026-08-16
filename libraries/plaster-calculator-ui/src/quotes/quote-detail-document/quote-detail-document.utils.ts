@@ -49,8 +49,7 @@ export class QuoteDetailDocumentUtils {
      * `measurementPlasterType` are free-text columns on the `QuantitySource`
      * table rather than a closed union this library can see, so this
      * humanizes the raw value instead of translating it through a fixed key
-     * map — unlike `quoteTemplateForm.quantitySourceDescription`, which can
-     * do that because it's keyed by the closed `QuoteItemSystemKey` union.
+     * map.
      * Falls back to a translated label for a manually-entered line with no
      * recorded provenance.
      */
