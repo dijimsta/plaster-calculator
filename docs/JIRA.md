@@ -49,6 +49,17 @@ When breaking an Epic into child Tasks, size each one so it ships safely on its 
 
 Write each Task's description using the **Task template**, below.
 
+### Delivering an Epic as a stack
+
+When an agent delivers an Epic's child Tasks as a `gh stack` (one branch/PR per Task, in dependency order), implement
+each Task in its own subagent rather than one subagent working through the whole stack — this keeps each subagent's
+context focused on a single Task's ticket description and files, instead of accumulating the full epic's context
+across every layer. Run these subagents **sequentially, not in parallel**: stacked branches share one working tree,
+so the next Task's branch depends on the previous one's commit already existing. After each subagent commits, rebase
+the stack (`gh stack rebase --no-trunk` is enough if nothing has been pushed yet) before checking out the next
+branch — creating all stack branches with a single `gh stack init` does not chain their commits automatically, so
+skipping this leaves upper branches missing the lower branches' work until an explicit rebase.
+
 ### Task template
 
 Use this structure for a Task's description, scoped to exactly what this one ticket covers in the single app,
