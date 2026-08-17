@@ -49,6 +49,17 @@ When breaking an Epic into child Tasks, size each one so it ships safely on its 
 
 Write each Task's description using the **Task template**, below.
 
+### Delivering an Epic as a stack
+
+When an agent delivers an Epic's child Tasks as a `gh stack` (one branch/PR per Task, in dependency order), implement
+each Task in its own subagent rather than one subagent working through the whole stack — this keeps each subagent's
+context focused on a single Task's ticket description and files, instead of accumulating the full epic's context
+across every layer. Run these subagents **sequentially, not in parallel**: stacked branches share one working tree,
+so the next Task's branch depends on the previous one's commit already existing. After each subagent commits, rebase
+the stack (`gh stack rebase --no-trunk` is enough if nothing has been pushed yet) before checking out the next
+branch — creating all stack branches with a single `gh stack init` does not chain their commits automatically, so
+skipping this leaves upper branches missing the lower branches' work until an explicit rebase.
+
 ### Task template
 
 Use this structure for a Task's description, scoped to exactly what this one ticket covers in the single app,
@@ -75,6 +86,10 @@ Link to the Epic or related Tasks for context that belongs to them instead of re
 Tickets move through three statuses: To Do, In Progress, Done.
 
 - Move a ticket to **In Progress** when you start actively working on it, not when it's created or assigned to you.
+  When a batch of tickets is queued up together — e.g. one PR per child Task in a stack delivering an Epic —
+  transition each child only as work on its own branch begins, not all of them up front when the batch starts. Doing
+  them all at once makes an Epic's real progress unreadable: it looks fully in review when only the first few
+  Tasks have any code behind them.
 - Move a ticket to **Done** when the work has shipped — merged to `main` (and deployed, if applicable) — not when a
   PR is opened or approved. Transition it as you finish the change, not as an afterthought.
 - If you stop working on a ticket before it's done (blocked, reprioritized, etc.), move it back to **To Do** rather
@@ -88,6 +103,10 @@ updating the child Task:
 
 - An Epic moves to **In Progress** once its first child Task starts, and stays In Progress as long as any child Task
   is open.
+- If the Epic delivers a Jira Product Discovery Idea (its summary or description references a `PCPD-*` key, or the
+  Idea's own description links to this Epic), transition that Idea to **Delivery** in the same sitting — see
+  [Idea status](JIRA-PRODUCT-DISCOVERY.md#idea-status). It's easy to update the Epic and forget the Idea sits one
+  level further up; check for one explicitly rather than assuming there isn't one.
 - Don't mark an Epic **Done** until every child Task under it is Done — check the child list, don't assume.
 - When you close out the last open Task under an Epic, transition the Epic itself in the same sitting. It's easy to
   update the Task and walk away without circling back.
