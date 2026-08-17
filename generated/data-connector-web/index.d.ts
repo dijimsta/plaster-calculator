@@ -1016,6 +1016,16 @@ export interface GetQuoteReadinessData {
     company?: {
       id: UUIDString;
       quoteTemplateId?: UUIDString | null;
+      companyName: string;
+      phoneNumber?: string | null;
+      businessNumber?: string | null;
+      primaryContactId?: UUIDString | null;
+      primaryContact?: {
+        id: UUIDString;
+        name: string;
+        email?: string | null;
+        phoneNumber?: string | null;
+      } & CompanyContact_Key;
     } & Company_Key;
   } & Project_Key;
   floorplanPages: ({

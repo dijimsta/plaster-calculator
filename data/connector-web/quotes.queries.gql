@@ -231,7 +231,12 @@ query GetQuoteById($id: UUID!) @auth(level: USER) {
 # `project` also selects `company { id quoteTemplateId }` so the caller can
 # resolve which template a project's company is assigned to (or confirm it
 # should fall back to the default) in this same round trip, rather than a
-# separate query just to read that one field.
+# separate query just to read that one field. `company` (WORK-220) also
+# selects `companyName`, `phoneNumber`, `businessNumber`, `primaryContactId`,
+# and `primaryContact { id name email phoneNumber }` so the readiness gate's
+# `COMPANY_CONTACT_DETAILS` check (WORK-221) can judge whether the project's
+# company is contactable — the readiness gate is one query per evaluation by
+# design, so this data has to come through here rather than a second read.
 #
 # `quoteItemTemplateConfigs` (WORK-191) is now scoped to exactly one
 # `$quoteTemplateId` rather than every config belonging to the team: a team
@@ -258,6 +263,16 @@ query GetQuoteReadiness($projectId: UUID!, $quoteTemplateId: UUID!)
         company {
             id
             quoteTemplateId
+            companyName
+            phoneNumber
+            businessNumber
+            primaryContactId
+            primaryContact {
+                id
+                name
+                email
+                phoneNumber
+            }
         }
     }
     floorplanPages(
