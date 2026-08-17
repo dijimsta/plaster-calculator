@@ -6,8 +6,8 @@ import type {
 /**
  * Decides whether a keyword-conditional `QuoteItemTemplate` belongs on a
  * generated quote, by matching its `keywords` against a project's plan
- * text (see `ProjectPlanTextCorpusUtils.buildSearchableCorpus()` for how a
- * caller builds that text out of `Project.extractedTextJson` and the
+ * text (see `buildSearchableCorpus()` in `project-plan-text.utils.ts` for
+ * how a caller builds that text out of `Project.extractedTextJson` and the
  * project's pages' `ocrTextContent`).
  *
  * Matching rules, chosen to make "matched 'raised ceiling'" a trustworthy
@@ -27,64 +27,60 @@ import type {
  *   text) for not falsely matching "raised" inside "unraised", which would
  *   otherwise misrepresent what was actually found in the plan.
  */
-export class QuoteItemKeywordMatcherUtils {
-    /**
-     * `template.hasKeywords === false` means the template is unconditional
-     * — it always belongs on the quote, and there is nothing to match — so
-     * this short-circuits without searching `searchText` at all, returning
-     * `matches: true` and an empty `matchedKeywords`.
-     *
-     * Otherwise, matches every one of `template.keywords` against
-     * `searchText` independently; `matches` is `true` when at least one
-     * keyword hit, and `matchedKeywords` lists every keyword that did (in
-     * `template.keywords` order), for `QuoteItem.matchedKeywords`
-     * provenance.
-     */
-    public static match(
-        template: QuoteItemKeywordMatchable,
-        searchText: string,
-    ): QuoteItemKeywordMatchResult {
-        if (!template.hasKeywords) {
-            return { matches: true, matchedKeywords: [] };
-        }
 
-        const matchedKeywords = template.keywords.filter((keyword) =>
-            QuoteItemKeywordMatcherUtils.phraseMatches(keyword, searchText),
-        );
-
-        return { matches: matchedKeywords.length > 0, matchedKeywords };
+/**
+ * `template.hasKeywords === false` means the template is unconditional
+ * — it always belongs on the quote, and there is nothing to match — so
+ * this short-circuits without searching `searchText` at all, returning
+ * `matches: true` and an empty `matchedKeywords`.
+ *
+ * Otherwise, matches every one of `template.keywords` against
+ * `searchText` independently; `matches` is `true` when at least one
+ * keyword hit, and `matchedKeywords` lists every keyword that did (in
+ * `template.keywords` order), for `QuoteItem.matchedKeywords`
+ * provenance.
+ */
+export function match(
+    template: QuoteItemKeywordMatchable,
+    searchText: string,
+): QuoteItemKeywordMatchResult {
+    if (!template.hasKeywords) {
+        return { matches: true, matchedKeywords: [] };
     }
 
-    /** Whether `keyword` appears as a whole-word, in-order phrase in `text`. */
-    private static phraseMatches(keyword: string, text: string): boolean {
-        const pattern =
-            QuoteItemKeywordMatcherUtils.buildPhrasePattern(keyword);
-        return pattern !== null && pattern.test(text);
-    }
+    const matchedKeywords = template.keywords.filter((keyword) =>
+        phraseMatches(keyword, searchText),
+    );
 
-    /**
-     * Builds a case-insensitive regex matching `keyword`'s words, in order,
-     * separated by one or more whitespace characters in the source text,
-     * bounded by `\b` at the phrase's start and end so it only matches
-     * whole words. Returns `null` for a keyword with no words (empty or
-     * all-whitespace) — treated as never matching rather than matching
-     * everything.
-     */
-    private static buildPhrasePattern(keyword: string): RegExp | null {
-        const words = keyword
-            .trim()
-            .split(/\s+/)
-            .filter((word) => word.length > 0);
-        if (words.length === 0) return null;
+    return { matches: matchedKeywords.length > 0, matchedKeywords };
+}
 
-        const escapedWords = words.map((word) =>
-            QuoteItemKeywordMatcherUtils.escapeRegExp(word),
-        );
-        return new RegExp(`\\b${escapedWords.join("\\s+")}\\b`, "i");
-    }
+/** Whether `keyword` appears as a whole-word, in-order phrase in `text`. */
+function phraseMatches(keyword: string, text: string): boolean {
+    const pattern = buildPhrasePattern(keyword);
+    return pattern !== null && pattern.test(text);
+}
 
-    /** Escapes regex metacharacters so `value` matches only itself literally. */
-    private static escapeRegExp(value: string): string {
-        return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    }
+/**
+ * Builds a case-insensitive regex matching `keyword`'s words, in order,
+ * separated by one or more whitespace characters in the source text,
+ * bounded by `\b` at the phrase's start and end so it only matches
+ * whole words. Returns `null` for a keyword with no words (empty or
+ * all-whitespace) — treated as never matching rather than matching
+ * everything.
+ */
+function buildPhrasePattern(keyword: string): RegExp | null {
+    const words = keyword
+        .trim()
+        .split(/\s+/)
+        .filter((word) => word.length > 0);
+    if (words.length === 0) return null;
+
+    const escapedWords = words.map((word) => escapeRegExp(word));
+    return new RegExp(`\\b${escapedWords.join("\\s+")}\\b`, "i");
+}
+
+/** Escapes regex metacharacters so `value` matches only itself literally. */
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

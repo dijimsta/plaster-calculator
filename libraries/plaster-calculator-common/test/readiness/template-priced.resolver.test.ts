@@ -1,10 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import {
-    QuoteItemInclusionUtils,
-    resolveTemplatePriced,
-} from "../../src/index.ts";
+import { resolveInclusion, resolveTemplatePriced } from "../../src/index.ts";
 
 import {
     page,
@@ -67,7 +64,7 @@ test("resolveTemplatePriced fails for a variation with an unpriced included line
     // The default template is fully priced and enables both items - on its
     // own it would pass TEMPLATE_PRICED. The variation actually pricing
     // this quote reuses the default's `enabled` (via
-    // QuoteItemInclusionUtils.resolveInclusion, per the single include-rule
+    // resolveInclusion(), per the single include-rule
     // contract) but has its own, unpriced, unitPriceCents for "Cornice".
     // Readiness must be evaluated against the variation's prices, not the
     // default's, so it still fails.
@@ -96,14 +93,8 @@ test("resolveTemplatePriced fails for a variation with an unpriced included line
     });
 
     const variationConfigsForReadiness = [
-        QuoteItemInclusionUtils.resolveInclusion(
-            variationSkimCoat,
-            defaultSkimCoat,
-        ),
-        QuoteItemInclusionUtils.resolveInclusion(
-            variationCornice,
-            defaultCornice,
-        ),
+        resolveInclusion(variationSkimCoat, defaultSkimCoat),
+        resolveInclusion(variationCornice, defaultCornice),
     ];
 
     const result = resolveTemplatePriced({
