@@ -36,6 +36,37 @@ query ListQuoteTemplatesForTeam @auth(level: USER) {
     }
 }
 
+# Reads the calling team's `QuoteAppearance` row — letterhead, output detail,
+# and terms for generated quote documents (WORK-201). Scoped by
+# `teamId: { eq_expr: "auth.token.teamId" }`, the same team-scoping pattern
+# `ListQuoteTemplatesForTeam` above and `GetMyTeam`
+# (connector-web/teams.queries.gql) use: a plain `where` filter on the plural
+# field rather than a `@check`ed keyed lookup, so a team that has never
+# opened the settings tab (no row saved yet) gets back an empty list instead
+# of an error — the caller falls back to defaults rather than handling a
+# thrown error.
+query GetMyQuoteAppearance @auth(level: USER) {
+    quoteAppearances(where: { teamId: { eq_expr: "auth.token.teamId" } }) {
+        teamId
+        logoStoragePath
+        businessName
+        abn
+        licenceNumber
+        address
+        phoneNumber
+        email
+        accentColor
+        pricingDetail
+        showScopeOfWork
+        showTakeoffSummary
+        showSignatureBlock
+        validForDays
+        terms
+        createdAt
+        updatedAt
+    }
+}
+
 query ListQuoteItemTemplateConfigsForQuoteTemplate($quoteTemplateId: UUID!)
 @auth(level: USER) {
     quoteTemplate(key: { id: $quoteTemplateId })
@@ -110,6 +141,13 @@ query ListQuotesForTeam @auth(level: USER) {
 # above, and — like `GetQuoteReadiness`'s `project` — is not `@redact`ed
 # because the caller needs its fields back, not just its validated
 # existence.
+#
+# `appearance` (WORK-201) is a sibling root field, not nested under `quote`:
+# `QuoteAppearance` has no `@ref` relation to `Quote` or `Project` to nest
+# through (it relates only to `Team`, which neither `quote` nor `project`
+# selects as an object here), so it's fetched the same way
+# `GetMyQuoteAppearance` fetches it — `teamId: { eq_expr: "auth.token.teamId" }`
+# — in the same round trip the legacy quote route needs it in.
 query GetQuoteById($id: UUID!) @auth(level: USER) {
     quote(key: { id: $id })
         @check(
@@ -155,6 +193,27 @@ query GetQuoteById($id: UUID!) @auth(level: USER) {
             createdAt
             updatedAt
         }
+    }
+    appearance: quoteAppearances(
+        where: { teamId: { eq_expr: "auth.token.teamId" } }
+    ) {
+        teamId
+        logoStoragePath
+        businessName
+        abn
+        licenceNumber
+        address
+        phoneNumber
+        email
+        accentColor
+        pricingDetail
+        showScopeOfWork
+        showTakeoffSummary
+        showSignatureBlock
+        validForDays
+        terms
+        createdAt
+        updatedAt
     }
 }
 
@@ -278,6 +337,13 @@ query GetQuoteReadiness($projectId: UUID!, $quoteTemplateId: UUID!)
 # (nothing generated, or a project that predates WORK-145) rather than
 # erroring — exactly the "no quote yet" case this query needs to support,
 # since the Quote tab must render a "not generated" state, not an error.
+#
+# `appearance` (WORK-201) is a sibling root field, not nested under
+# `project`, for the same reason `GetQuoteById` fetches it as a sibling of
+# `quote`: `QuoteAppearance` has no `@ref` relation to `Project` to nest
+# through, so it's fetched the same team-scoped way `GetMyQuoteAppearance`
+# does — in the same round trip so the Quote tab gets it alongside the quote
+# itself.
 query GetProjectQuote($projectId: UUID!) @auth(level: USER) {
     project(key: { id: $projectId })
         @check(
@@ -325,5 +391,26 @@ query GetProjectQuote($projectId: UUID!) @auth(level: USER) {
                 updatedAt
             }
         }
+    }
+    appearance: quoteAppearances(
+        where: { teamId: { eq_expr: "auth.token.teamId" } }
+    ) {
+        teamId
+        logoStoragePath
+        businessName
+        abn
+        licenceNumber
+        address
+        phoneNumber
+        email
+        accentColor
+        pricingDetail
+        showScopeOfWork
+        showTakeoffSummary
+        showSignatureBlock
+        validForDays
+        terms
+        createdAt
+        updatedAt
     }
 }

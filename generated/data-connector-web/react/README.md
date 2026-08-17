@@ -26,6 +26,7 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetProjectQuestionnaire*](#getprojectquestionnaire)
   - [*ListQuoteItemTemplates*](#listquoteitemtemplates)
   - [*ListQuoteTemplatesForTeam*](#listquotetemplatesforteam)
+  - [*GetMyQuoteAppearance*](#getmyquoteappearance)
   - [*ListQuoteItemTemplateConfigsForQuoteTemplate*](#listquoteitemtemplateconfigsforquotetemplate)
   - [*ListQuotesForTeam*](#listquotesforteam)
   - [*GetQuoteById*](#getquotebyid)
@@ -75,6 +76,8 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*CreateQuoteItemWithUnit*](#createquoteitemwithunit)
   - [*DeleteQuoteItem*](#deletequoteitem)
   - [*CreateQuoteWithItems*](#createquotewithitems)
+  - [*UpsertMyQuoteAppearance*](#upsertmyquoteappearance)
+  - [*UpdateMyQuoteAppearanceLogo*](#updatemyquoteappearancelogo)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
   - [*UpsertMyUserSignature*](#upsertmyusersignature)
 
@@ -945,6 +948,93 @@ export default function ListQuoteTemplatesForTeamComponent() {
 }
 ```
 
+## GetMyQuoteAppearance
+You can execute the `GetMyQuoteAppearance` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetMyQuoteAppearance(dc: DataConnect, options?: useDataConnectQueryOptions<GetMyQuoteAppearanceData>): UseDataConnectQueryResult<GetMyQuoteAppearanceData, undefined>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetMyQuoteAppearance(options?: useDataConnectQueryOptions<GetMyQuoteAppearanceData>): UseDataConnectQueryResult<GetMyQuoteAppearanceData, undefined>;
+```
+
+### Variables
+The `GetMyQuoteAppearance` Query has no variables.
+### Return Type
+Recall that calling the `GetMyQuoteAppearance` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetMyQuoteAppearance` Query is of type `GetMyQuoteAppearanceData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetMyQuoteAppearanceData {
+  quoteAppearances: ({
+    teamId: string;
+    logoStoragePath?: string | null;
+    businessName?: string | null;
+    abn?: string | null;
+    licenceNumber?: string | null;
+    address?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    accentColor?: string | null;
+    pricingDetail: string;
+    showScopeOfWork: boolean;
+    showTakeoffSummary: boolean;
+    showSignatureBlock: boolean;
+    validForDays: number;
+    terms?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteAppearance_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetMyQuoteAppearance`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig } from '@generated/data-connector-web';
+import { useGetMyQuoteAppearance } from '@generated/data-connector-web/react'
+
+export default function GetMyQuoteAppearanceComponent() {
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetMyQuoteAppearance();
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetMyQuoteAppearance(dataConnect);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetMyQuoteAppearance(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetMyQuoteAppearance(dataConnect, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.quoteAppearances);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
 ## ListQuoteItemTemplateConfigsForQuoteTemplate
 You can execute the `ListQuoteItemTemplateConfigsForQuoteTemplate` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
 
@@ -1198,6 +1288,25 @@ export interface GetQuoteByIdData {
       updatedAt: TimestampString;
     } & QuoteItem_Key)[];
   } & Quote_Key;
+  appearance: ({
+    teamId: string;
+    logoStoragePath?: string | null;
+    businessName?: string | null;
+    abn?: string | null;
+    licenceNumber?: string | null;
+    address?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    accentColor?: string | null;
+    pricingDetail: string;
+    showScopeOfWork: boolean;
+    showTakeoffSummary: boolean;
+    showSignatureBlock: boolean;
+    validForDays: number;
+    terms?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteAppearance_Key)[];
 }
 ```
 
@@ -1247,6 +1356,7 @@ export default function GetQuoteByIdComponent() {
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
     console.log(query.data.quote);
+    console.log(query.data.appearance);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
@@ -1453,6 +1563,25 @@ export interface GetProjectQuoteData {
       } & QuoteItem_Key)[];
     } & Quote_Key;
   } & Project_Key;
+  appearance: ({
+    teamId: string;
+    logoStoragePath?: string | null;
+    businessName?: string | null;
+    abn?: string | null;
+    licenceNumber?: string | null;
+    address?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    accentColor?: string | null;
+    pricingDetail: string;
+    showScopeOfWork: boolean;
+    showTakeoffSummary: boolean;
+    showSignatureBlock: boolean;
+    validForDays: number;
+    terms?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteAppearance_Key)[];
 }
 ```
 
@@ -1502,6 +1631,7 @@ export default function GetProjectQuoteComponent() {
   // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
   if (query.isSuccess) {
     console.log(query.data.project);
+    console.log(query.data.appearance);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
@@ -6646,6 +6776,224 @@ export default function CreateQuoteWithItemsComponent() {
     console.log(mutation.data.item18);
     console.log(mutation.data.item19);
     console.log(mutation.data.item20);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpsertMyQuoteAppearance
+You can execute the `UpsertMyQuoteAppearance` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpsertMyQuoteAppearance(options?: useDataConnectMutationOptions<UpsertMyQuoteAppearanceData, FirebaseError, UpsertMyQuoteAppearanceVariables>): UseDataConnectMutationResult<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpsertMyQuoteAppearance(dc: DataConnect, options?: useDataConnectMutationOptions<UpsertMyQuoteAppearanceData, FirebaseError, UpsertMyQuoteAppearanceVariables>): UseDataConnectMutationResult<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+```
+
+### Variables
+The `UpsertMyQuoteAppearance` Mutation requires an argument of type `UpsertMyQuoteAppearanceVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpsertMyQuoteAppearanceVariables {
+  logoStoragePath?: string | null;
+  businessName?: string | null;
+  abn?: string | null;
+  licenceNumber?: string | null;
+  address?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  accentColor?: string | null;
+  pricingDetail: string;
+  showScopeOfWork: boolean;
+  showTakeoffSummary: boolean;
+  showSignatureBlock: boolean;
+  validForDays: number;
+  terms?: string | null;
+}
+```
+### Return Type
+Recall that calling the `UpsertMyQuoteAppearance` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpsertMyQuoteAppearance` Mutation is of type `UpsertMyQuoteAppearanceData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpsertMyQuoteAppearanceData {
+  quoteAppearance_upsert: QuoteAppearance_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpsertMyQuoteAppearance`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpsertMyQuoteAppearanceVariables } from '@generated/data-connector-web';
+import { useUpsertMyQuoteAppearance } from '@generated/data-connector-web/react'
+
+export default function UpsertMyQuoteAppearanceComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpsertMyQuoteAppearance();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpsertMyQuoteAppearance(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpsertMyQuoteAppearance(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpsertMyQuoteAppearance(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpsertMyQuoteAppearance` Mutation requires an argument of type `UpsertMyQuoteAppearanceVariables`:
+  const upsertMyQuoteAppearanceVars: UpsertMyQuoteAppearanceVariables = {
+    logoStoragePath: ..., // optional
+    businessName: ..., // optional
+    abn: ..., // optional
+    licenceNumber: ..., // optional
+    address: ..., // optional
+    phoneNumber: ..., // optional
+    email: ..., // optional
+    accentColor: ..., // optional
+    pricingDetail: ..., 
+    showScopeOfWork: ..., 
+    showTakeoffSummary: ..., 
+    showSignatureBlock: ..., 
+    validForDays: ..., 
+    terms: ..., // optional
+  };
+  mutation.mutate(upsertMyQuoteAppearanceVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ logoStoragePath: ..., businessName: ..., abn: ..., licenceNumber: ..., address: ..., phoneNumber: ..., email: ..., accentColor: ..., pricingDetail: ..., showScopeOfWork: ..., showTakeoffSummary: ..., showSignatureBlock: ..., validForDays: ..., terms: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(upsertMyQuoteAppearanceVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.quoteAppearance_upsert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpdateMyQuoteAppearanceLogo
+You can execute the `UpdateMyQuoteAppearanceLogo` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpdateMyQuoteAppearanceLogo(options?: useDataConnectMutationOptions<UpdateMyQuoteAppearanceLogoData, FirebaseError, UpdateMyQuoteAppearanceLogoVariables | void>): UseDataConnectMutationResult<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpdateMyQuoteAppearanceLogo(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateMyQuoteAppearanceLogoData, FirebaseError, UpdateMyQuoteAppearanceLogoVariables | void>): UseDataConnectMutationResult<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+```
+
+### Variables
+The `UpdateMyQuoteAppearanceLogo` Mutation has an optional argument of type `UpdateMyQuoteAppearanceLogoVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpdateMyQuoteAppearanceLogoVariables {
+  logoStoragePath?: string | null;
+}
+```
+### Return Type
+Recall that calling the `UpdateMyQuoteAppearanceLogo` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateMyQuoteAppearanceLogo` Mutation is of type `UpdateMyQuoteAppearanceLogoData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpdateMyQuoteAppearanceLogoData {
+  quoteAppearance_upsert: QuoteAppearance_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpdateMyQuoteAppearanceLogo`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpdateMyQuoteAppearanceLogoVariables } from '@generated/data-connector-web';
+import { useUpdateMyQuoteAppearanceLogo } from '@generated/data-connector-web/react'
+
+export default function UpdateMyQuoteAppearanceLogoComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpdateMyQuoteAppearanceLogo();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpdateMyQuoteAppearanceLogo(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateMyQuoteAppearanceLogo(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateMyQuoteAppearanceLogo(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpdateMyQuoteAppearanceLogo` Mutation has an optional argument of type `UpdateMyQuoteAppearanceLogoVariables`:
+  const updateMyQuoteAppearanceLogoVars: UpdateMyQuoteAppearanceLogoVariables = {
+    logoStoragePath: ..., // optional
+  };
+  mutation.mutate(updateMyQuoteAppearanceLogoVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ logoStoragePath: ..., });
+  // Since all variables are optional for this Mutation, you can omit the `UpdateMyQuoteAppearanceLogoVariables` argument.
+  mutation.mutate();
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  // Since all variables are optional for this Mutation, you can provide options without providing any variables.
+  // To do so, you must pass `undefined` where you would normally pass the variables.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(updateMyQuoteAppearanceLogoVars /** or undefined */, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.quoteAppearance_upsert);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }

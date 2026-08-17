@@ -773,6 +773,28 @@ export interface GetMyCompanyVariables {
   id: UUIDString;
 }
 
+export interface GetMyQuoteAppearanceData {
+  quoteAppearances: ({
+    teamId: string;
+    logoStoragePath?: string | null;
+    businessName?: string | null;
+    abn?: string | null;
+    licenceNumber?: string | null;
+    address?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    accentColor?: string | null;
+    pricingDetail: string;
+    showScopeOfWork: boolean;
+    showTakeoffSummary: boolean;
+    showSignatureBlock: boolean;
+    validForDays: number;
+    terms?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteAppearance_Key)[];
+}
+
 export interface GetMyTeamData {
   teamMembers: ({
     teamId: string;
@@ -872,6 +894,25 @@ export interface GetProjectQuoteData {
       } & QuoteItem_Key)[];
     } & Quote_Key;
   } & Project_Key;
+  appearance: ({
+    teamId: string;
+    logoStoragePath?: string | null;
+    businessName?: string | null;
+    abn?: string | null;
+    licenceNumber?: string | null;
+    address?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    accentColor?: string | null;
+    pricingDetail: string;
+    showScopeOfWork: boolean;
+    showTakeoffSummary: boolean;
+    showSignatureBlock: boolean;
+    validForDays: number;
+    terms?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteAppearance_Key)[];
 }
 
 export interface GetProjectQuoteVariables {
@@ -939,6 +980,25 @@ export interface GetQuoteByIdData {
       updatedAt: TimestampString;
     } & QuoteItem_Key)[];
   } & Quote_Key;
+  appearance: ({
+    teamId: string;
+    logoStoragePath?: string | null;
+    businessName?: string | null;
+    abn?: string | null;
+    licenceNumber?: string | null;
+    address?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    accentColor?: string | null;
+    pricingDetail: string;
+    showScopeOfWork: boolean;
+    showTakeoffSummary: boolean;
+    showSignatureBlock: boolean;
+    validForDays: number;
+    terms?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteAppearance_Key)[];
 }
 
 export interface GetQuoteByIdVariables {
@@ -1296,6 +1356,14 @@ export interface UpdateMyCompanyVariables {
   phoneNumber?: string | null;
 }
 
+export interface UpdateMyQuoteAppearanceLogoData {
+  quoteAppearance_upsert: QuoteAppearance_Key;
+}
+
+export interface UpdateMyQuoteAppearanceLogoVariables {
+  logoStoragePath?: string | null;
+}
+
 export interface UpdateProjectQuestionnaireQuestionAnswerData {
   projectQuestionnaireQuestion_update?: ProjectQuestionnaireQuestion_Key | null;
 }
@@ -1401,6 +1469,27 @@ export interface UpdateQuoteStatusData {
 export interface UpdateQuoteStatusVariables {
   id: UUIDString;
   status: string;
+}
+
+export interface UpsertMyQuoteAppearanceData {
+  quoteAppearance_upsert: QuoteAppearance_Key;
+}
+
+export interface UpsertMyQuoteAppearanceVariables {
+  logoStoragePath?: string | null;
+  businessName?: string | null;
+  abn?: string | null;
+  licenceNumber?: string | null;
+  address?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  accentColor?: string | null;
+  pricingDetail: string;
+  showScopeOfWork: boolean;
+  showTakeoffSummary: boolean;
+  showSignatureBlock: boolean;
+  validForDays: number;
+  terms?: string | null;
 }
 
 export interface UpsertMyUserSettingsData {
@@ -1999,6 +2088,30 @@ export const createQuoteWithItemsRef: CreateQuoteWithItemsRef;
 export function createQuoteWithItems(vars: CreateQuoteWithItemsVariables): MutationPromise<CreateQuoteWithItemsData, CreateQuoteWithItemsVariables>;
 export function createQuoteWithItems(dc: DataConnect, vars: CreateQuoteWithItemsVariables): MutationPromise<CreateQuoteWithItemsData, CreateQuoteWithItemsVariables>;
 
+interface UpsertMyQuoteAppearanceRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpsertMyQuoteAppearanceVariables): MutationRef<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpsertMyQuoteAppearanceVariables): MutationRef<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+  operationName: string;
+}
+export const upsertMyQuoteAppearanceRef: UpsertMyQuoteAppearanceRef;
+
+export function upsertMyQuoteAppearance(vars: UpsertMyQuoteAppearanceVariables): MutationPromise<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+export function upsertMyQuoteAppearance(dc: DataConnect, vars: UpsertMyQuoteAppearanceVariables): MutationPromise<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+
+interface UpdateMyQuoteAppearanceLogoRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars?: UpdateMyQuoteAppearanceLogoVariables): MutationRef<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars?: UpdateMyQuoteAppearanceLogoVariables): MutationRef<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+  operationName: string;
+}
+export const updateMyQuoteAppearanceLogoRef: UpdateMyQuoteAppearanceLogoRef;
+
+export function updateMyQuoteAppearanceLogo(vars?: UpdateMyQuoteAppearanceLogoVariables): MutationPromise<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+export function updateMyQuoteAppearanceLogo(dc: DataConnect, vars?: UpdateMyQuoteAppearanceLogoVariables): MutationPromise<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+
 interface ListQuoteItemTemplatesRef {
   /* Allow users to create refs without passing in DataConnect */
   (): QueryRef<ListQuoteItemTemplatesData, undefined>;
@@ -2022,6 +2135,18 @@ export const listQuoteTemplatesForTeamRef: ListQuoteTemplatesForTeamRef;
 
 export function listQuoteTemplatesForTeam(options?: ExecuteQueryOptions): QueryPromise<ListQuoteTemplatesForTeamData, undefined>;
 export function listQuoteTemplatesForTeam(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuoteTemplatesForTeamData, undefined>;
+
+interface GetMyQuoteAppearanceRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetMyQuoteAppearanceData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<GetMyQuoteAppearanceData, undefined>;
+  operationName: string;
+}
+export const getMyQuoteAppearanceRef: GetMyQuoteAppearanceRef;
+
+export function getMyQuoteAppearance(options?: ExecuteQueryOptions): QueryPromise<GetMyQuoteAppearanceData, undefined>;
+export function getMyQuoteAppearance(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetMyQuoteAppearanceData, undefined>;
 
 interface ListQuoteItemTemplateConfigsForQuoteTemplateRef {
   /* Allow users to create refs without passing in DataConnect */

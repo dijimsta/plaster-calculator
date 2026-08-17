@@ -1,4 +1,4 @@
-import { createMyCompanyRef, updateMyCompanyRef, setMyCompanyPrimaryContactRef, clearMyCompanyPrimaryContactRef, assignQuoteTemplateToCompanyRef, clearCompanyQuoteTemplateRef, deleteMyCompanyRef, createMyCompanyContactRef, updateMyCompanyContactRef, deleteMyCompanyContactRef, listMyCompaniesRef, getMyCompanyRef, listMyCompanyContactsRef, createQuestionnaireTemplateRef, createQuestionnaireTemplateQuestionRef, updateQuestionnaireTemplateNameRef, updateQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateRef, ensureProjectQuestionnaireRef, applyQuestionnaireTemplateToProjectRef, batchApplyQuestionnaireTemplateToProjectRef, createProjectQuestionnaireQuestionRef, updateProjectQuestionnaireQuestionRef, updateProjectQuestionnaireQuestionAnswerRef, updateProjectQuestionnaireQuestionAnswerSourceRef, deleteProjectQuestionnaireQuestionRef, listQuestionnaireTemplatesRef, getQuestionnaireTemplateRef, listProjectQuestionnairesRef, getProjectQuestionnaireRef, reconcileSystemQuoteItemTemplatesRef, createQuoteTemplateRef, renameQuoteTemplateRef, deleteQuoteTemplateRef, createQuoteTemplateVariationRef, createQuoteItemTemplateConfigRef, updateQuoteItemTemplateConfigRef, createQuoteItemTemplateWithUnitRef, updateQuoteItemTemplateWithUnitRef, deleteQuoteItemTemplateRef, updateQuoteStatusRef, updateQuoteDetailsRef, updateQuoteItemRef, createQuoteItemWithUnitRef, deleteQuoteItemRef, createQuoteWithItemsRef, listQuoteItemTemplatesRef, listQuoteTemplatesForTeamRef, listQuoteItemTemplateConfigsForQuoteTemplateRef, listQuotesForTeamRef, getQuoteByIdRef, getQuoteReadinessRef, getProjectQuoteRef, getMyTeamRef, upsertMyUserSettingsRef, upsertMyUserSignatureRef, getMyUserSettingsRef, getMyUserSignatureRef, connectorConfig } from '../../esm/index.esm.js';
+import { createMyCompanyRef, updateMyCompanyRef, setMyCompanyPrimaryContactRef, clearMyCompanyPrimaryContactRef, assignQuoteTemplateToCompanyRef, clearCompanyQuoteTemplateRef, deleteMyCompanyRef, createMyCompanyContactRef, updateMyCompanyContactRef, deleteMyCompanyContactRef, listMyCompaniesRef, getMyCompanyRef, listMyCompanyContactsRef, createQuestionnaireTemplateRef, createQuestionnaireTemplateQuestionRef, updateQuestionnaireTemplateNameRef, updateQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateQuestionRef, deleteQuestionnaireTemplateRef, ensureProjectQuestionnaireRef, applyQuestionnaireTemplateToProjectRef, batchApplyQuestionnaireTemplateToProjectRef, createProjectQuestionnaireQuestionRef, updateProjectQuestionnaireQuestionRef, updateProjectQuestionnaireQuestionAnswerRef, updateProjectQuestionnaireQuestionAnswerSourceRef, deleteProjectQuestionnaireQuestionRef, listQuestionnaireTemplatesRef, getQuestionnaireTemplateRef, listProjectQuestionnairesRef, getProjectQuestionnaireRef, reconcileSystemQuoteItemTemplatesRef, createQuoteTemplateRef, renameQuoteTemplateRef, deleteQuoteTemplateRef, createQuoteTemplateVariationRef, createQuoteItemTemplateConfigRef, updateQuoteItemTemplateConfigRef, createQuoteItemTemplateWithUnitRef, updateQuoteItemTemplateWithUnitRef, deleteQuoteItemTemplateRef, updateQuoteStatusRef, updateQuoteDetailsRef, updateQuoteItemRef, createQuoteItemWithUnitRef, deleteQuoteItemRef, createQuoteWithItemsRef, upsertMyQuoteAppearanceRef, updateMyQuoteAppearanceLogoRef, listQuoteItemTemplatesRef, listQuoteTemplatesForTeamRef, getMyQuoteAppearanceRef, listQuoteItemTemplateConfigsForQuoteTemplateRef, listQuotesForTeamRef, getQuoteByIdRef, getQuoteReadinessRef, getProjectQuoteRef, getMyTeamRef, upsertMyUserSettingsRef, upsertMyUserSignatureRef, getMyUserSettingsRef, getMyUserSignatureRef, connectorConfig } from '../../esm/index.esm.js';
 import { validateArgs, CallerSdkTypeEnum } from 'firebase/data-connect';
 import { useDataConnectQuery, useDataConnectMutation, validateReactArgs } from '@tanstack-query-firebase/react/data-connect';
 
@@ -364,6 +364,22 @@ export function useCreateQuoteWithItems(dcOrOptions, options) {
   return useDataConnectMutation(refFactory, inputOpts, CallerSdkTypeEnum.GeneratedReact);
 }
 
+export function useUpsertMyQuoteAppearance(dcOrOptions, options) {
+  const { dc: dcInstance, vars: inputOpts } = validateArgs(connectorConfig, dcOrOptions, options);
+  function refFactory(vars) {
+    return upsertMyQuoteAppearanceRef(dcInstance, vars);
+  }
+  return useDataConnectMutation(refFactory, inputOpts, CallerSdkTypeEnum.GeneratedReact);
+}
+
+export function useUpdateMyQuoteAppearanceLogo(dcOrOptions, options) {
+  const { dc: dcInstance, vars: inputOpts } = validateArgs(connectorConfig, dcOrOptions, options);
+  function refFactory(vars) {
+    return updateMyQuoteAppearanceLogoRef(dcInstance, vars);
+  }
+  return useDataConnectMutation(refFactory, inputOpts, CallerSdkTypeEnum.GeneratedReact);
+}
+
 
 export function useListQuoteItemTemplates(dcOrOptions, options) {
   const { dc: dcInstance, options: inputOpts } = validateReactArgs(connectorConfig, dcOrOptions, options);
@@ -374,6 +390,12 @@ export function useListQuoteItemTemplates(dcOrOptions, options) {
 export function useListQuoteTemplatesForTeam(dcOrOptions, options) {
   const { dc: dcInstance, options: inputOpts } = validateReactArgs(connectorConfig, dcOrOptions, options);
   const ref = listQuoteTemplatesForTeamRef(dcInstance);
+  return useDataConnectQuery(ref, inputOpts, CallerSdkTypeEnum.GeneratedReact);
+}
+
+export function useGetMyQuoteAppearance(dcOrOptions, options) {
+  const { dc: dcInstance, options: inputOpts } = validateReactArgs(connectorConfig, dcOrOptions, options);
+  const ref = getMyQuoteAppearanceRef(dcInstance);
   return useDataConnectQuery(ref, inputOpts, CallerSdkTypeEnum.GeneratedReact);
 }
 
