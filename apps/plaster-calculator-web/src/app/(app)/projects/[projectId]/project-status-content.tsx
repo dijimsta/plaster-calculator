@@ -44,7 +44,7 @@ interface ProjectStatusContentProps {
     readonly load: () => Promise<void>;
     readonly project: ProjectDetail;
     readonly salesStatusPanel: ReactNode;
-    readonly saveCompany: () => Promise<void>;
+    readonly saveCompany: (companyId?: string) => Promise<void>;
     readonly savingCompany: boolean;
     readonly selectedPage: ProjectDetail["pages"][number] | null;
     readonly selectedPageId: string | null;

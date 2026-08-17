@@ -8,6 +8,7 @@ import type { CompanyDraftFieldsProps } from "./company.types.js";
 export function CompanyDraftFields({
     draft,
     setDraft,
+    nameInputRef,
 }: CompanyDraftFieldsProps) {
     const { t } = useAppTranslation();
 
@@ -19,6 +20,7 @@ export function CompanyDraftFields({
                 </label>
                 <input
                     id="company-name"
+                    ref={nameInputRef}
                     className={ui.input}
                     value={draft.companyName}
                     onChange={(event) =>

@@ -13,6 +13,7 @@ import type {
 } from "./dashboard.types.js";
 
 export function NewProjectForm({
+    companyCreatePending,
     companyId,
     dragActive,
     file,
@@ -21,6 +22,8 @@ export function NewProjectForm({
     name,
     handleDrop,
     handleFileSelection,
+    onCompanyCreated,
+    setCompanyCreatePending,
     setCompanyId,
     setDragActive,
     setName,
@@ -48,6 +51,8 @@ export function NewProjectForm({
             <CompanySelect
                 selectedCompanyId={companyId}
                 onChange={setCompanyId}
+                onCreated={onCompanyCreated}
+                onCreatePendingChange={setCompanyCreatePending}
                 disabled={loading}
                 label={t("newProjectForm.companyLabel")}
                 placeholder={t("newProjectForm.companyPlaceholder")}
@@ -95,7 +100,10 @@ export function NewProjectForm({
                     </Text>
                 </label>
             </div>
-            <Button variant="primary" disabled={!file || loading}>
+            <Button
+                variant="primary"
+                disabled={!file || loading || companyCreatePending}
+            >
                 <Upload size={18} /> {t("newProjectForm.upload")}
             </Button>
             {message && (

@@ -1,11 +1,12 @@
 "use client";
 
 import { useCompaniesService } from "@libraries/plaster-calculator-web-core";
-import { Button, Paragraph } from "@libraries/uikit-web";
+import { Badge, Box, Button, Paragraph } from "@libraries/uikit-web";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { CompanySelect } from "../../../components/company-select.js";
+import { useAppTranslation } from "../../../i18n/index.ts";
 import { ui } from "../../../lib/styles.js";
 import type { CompanyDetail } from "../../../types.js";
 
@@ -13,7 +14,7 @@ interface ProjectCompanyPanelProps {
     readonly companyId: string | null;
     readonly draftCompanyId: string | null;
     readonly isSaving: boolean;
-    readonly saveCompany: () => Promise<void>;
+    readonly saveCompany: (companyId?: string) => Promise<void>;
     readonly setDraftCompanyId: (companyId: string | null) => void;
 }
 
@@ -48,13 +49,27 @@ export function ProjectCompanyPanel({
         }
     }
 
-    async function save(): Promise<void> {
+    async function save(overrideCompanyId?: string): Promise<void> {
         try {
-            await saveCompany();
+            await saveCompany(overrideCompanyId);
             setIsEditing(false);
         } catch {
             // Parent page owns the visible error state.
         }
+    }
+
+    /**
+     * A company created inline from the picker must be linked to the
+     * project immediately, without a page refresh: set the draft id and the
+     * loaded company detail directly (rather than waiting on `loadCompany`'s
+     * refetch), then save using the created id -- passing it explicitly
+     * rather than relying on `draftCompanyId` state, which won't have
+     * updated yet within this same call.
+     */
+    function handleCreated(created: CompanyDetail): void {
+        setDraftCompanyId(created.id);
+        setCompany(created);
+        void save(created.id);
     }
 
     function cancelEdit(): void {
@@ -69,6 +84,7 @@ export function ProjectCompanyPanel({
                     <CompanySelect
                         selectedCompanyId={draftCompanyId}
                         onChange={setDraftCompanyId}
+                        onCreated={handleCreated}
                         disabled={isSaving}
                         label="Project company"
                         placeholder="Search company by company name"
@@ -124,6 +140,8 @@ function CompanySummary({
     readonly company: CompanyDetail | null;
     readonly error: string;
 }) {
+    const { t } = useAppTranslation();
+
     if (error) return <p className={ui.error}>{error}</p>;
     if (!company)
         return (
@@ -131,9 +149,26 @@ function CompanySummary({
                 Loading company...
             </Paragraph>
         );
+    // Same rule as the COMPANY_CONTACT_DETAILS readiness check: met by a
+    // phone number, or a primary contact with an email.
+    const primaryContact = company.contacts.find(
+        (contact) => contact.id === company.primaryContactId,
+    );
+    const hasContactDetails = Boolean(
+        company.phoneNumber || primaryContact?.email,
+    );
     return (
         <div className={ui.metric}>
-            <strong>{company.companyName}</strong>
+            <Box direction="row" gap="xs" align="center">
+                <strong>{company.companyName}</strong>
+                {!hasContactDetails && (
+                    <Badge color="yellow" dot size="xs">
+                        {t(
+                            "projectStatusContent.companyPanel.noContactDetails",
+                        )}
+                    </Badge>
+                )}
+            </Box>
             <Paragraph textSize="sm" variant="muted">
                 {company.businessNumber || company.phoneNumber || "No details"}
             </Paragraph>

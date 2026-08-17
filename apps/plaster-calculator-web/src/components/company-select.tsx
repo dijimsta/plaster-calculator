@@ -31,6 +31,7 @@ export function CompanySelect({
     placeholder,
     selectedCompanyLabel = null,
     onCreated,
+    onCreatePendingChange,
 }: CompanySelectProps) {
     const { t } = useAppTranslation();
     const resolvedLabel = label ?? t("companySelect.label");
@@ -118,6 +119,7 @@ export function CompanySelect({
             return;
         }
         setIsSubmittingCreate(true);
+        onCreatePendingChange?.(true);
         setCreateError("");
         try {
             const created = await companiesService.createCompany({
@@ -137,6 +139,7 @@ export function CompanySelect({
             );
         } finally {
             setIsSubmittingCreate(false);
+            onCreatePendingChange?.(false);
         }
     }
 

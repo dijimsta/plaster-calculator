@@ -10,6 +10,13 @@ export interface CompanySelectProps {
     readonly placeholder?: string;
     readonly selectedCompanyLabel?: string | null;
     readonly onCreated?: (company: CompanyDetail) => void;
+    /**
+     * Fires whenever an inline company creation starts or finishes. Callers
+     * that submit their own form around this component (e.g. the upload
+     * form) can use this to hold off submitting until an in-flight create
+     * has resolved and its id has landed via `onChange`/`onCreated`.
+     */
+    readonly onCreatePendingChange?: (isPending: boolean) => void;
 }
 
 export interface CompanySelectMenuProps {
