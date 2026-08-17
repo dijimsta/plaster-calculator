@@ -14,6 +14,7 @@ export type QuestionnaireTemplateCardProps = {
     readonly onOpen: () => void;
     readonly onDuplicate: () => void;
     readonly onDelete: () => void;
+    readonly isDuplicating?: boolean;
 };
 
 type TemplateHeaderProps = {
@@ -26,6 +27,7 @@ export function QuestionnaireTemplateCard({
     onOpen,
     onDuplicate,
     onDelete,
+    isDuplicating = false,
 }: QuestionnaireTemplateCardProps): ReactElement {
     const { t } = useQuestionnairesTranslation();
     return (
@@ -36,6 +38,7 @@ export function QuestionnaireTemplateCard({
                     onOpen={onOpen}
                     onDuplicate={onDuplicate}
                     onDelete={onDelete}
+                    isDuplicating={isDuplicating}
                 />
             </Box>
 
@@ -67,9 +70,10 @@ function TemplateActions({
     onOpen,
     onDuplicate,
     onDelete,
+    isDuplicating,
 }: Pick<
     QuestionnaireTemplateCardProps,
-    "onOpen" | "onDuplicate" | "onDelete"
+    "onOpen" | "onDuplicate" | "onDelete" | "isDuplicating"
 >): ReactElement {
     const { t } = useQuestionnairesTranslation();
     return (
@@ -86,6 +90,7 @@ function TemplateActions({
                 icon={<Copy size={16} aria-hidden="true" />}
                 label={t("questionnaireTemplateCard.duplicateTemplate")}
                 onClick={onDuplicate}
+                disabled={isDuplicating}
             />
             <Button
                 variant="dangerSoft"

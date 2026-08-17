@@ -9,6 +9,7 @@ export type QuestionnaireTemplateCardGridListProps = {
     readonly onOpen: (template: QuestionnaireTemplate) => void;
     readonly onDuplicate: (template: QuestionnaireTemplate) => void;
     readonly onDelete: (template: QuestionnaireTemplate) => void;
+    readonly duplicatingTemplateIds?: ReadonlySet<string>;
 };
 
 /** Renders questionnaire templates as a responsive grid of cards. */
@@ -17,6 +18,7 @@ export function QuestionnaireTemplateCardGridList({
     onOpen,
     onDuplicate,
     onDelete,
+    duplicatingTemplateIds,
 }: QuestionnaireTemplateCardGridListProps): ReactElement {
     return (
         <GridList>
@@ -27,6 +29,7 @@ export function QuestionnaireTemplateCardGridList({
                         onOpen={() => onOpen(template)}
                         onDuplicate={() => onDuplicate(template)}
                         onDelete={() => onDelete(template)}
+                        isDuplicating={duplicatingTemplateIds?.has(template.id)}
                     />
                 </GridList.Item>
             ))}
