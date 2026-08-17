@@ -12,7 +12,11 @@ import {
     GenerateQuoteError,
     type UseGenerateQuoteResult,
 } from "./generate-quote.types.ts";
-import { GenerateQuoteUtils } from "./generate-quote.utils.ts";
+import {
+    build,
+    buildPageTakeoffInputs,
+    buildTemplateConfigs,
+} from "./generate-quote.utils.ts";
 import { useQuoteReadiness } from "./use-quote-readiness.hook.ts";
 
 const dataConnect = FirebaseService.getDataConnect(
@@ -38,10 +42,10 @@ function buildProjectSearchText(
  * `defaultTemplateConfigs` — rather than re-fetching or re-resolving any of
  * that itself, so readiness and generation always agree on which
  * `QuoteTemplate` priced a project's take-off. `generate()` delegates all
- * take-off/match/price/slot-mapping logic to `GenerateQuoteUtils`, matching
- * `useSaveQuoteTemplate()`'s "thin hook, pure utils" split.
+ * take-off/match/price/slot-mapping logic to `generate-quote.utils.ts`,
+ * matching `useSaveQuoteTemplate()`'s "thin hook, pure utils" split.
  *
- * `GenerateQuoteUtils.build()` refuses to run at all — no
+ * `build()` (`generate-quote.utils.ts`) refuses to run at all — no
  * `CreateQuoteWithItems` call — when the readiness gate isn't met, the
  * pricing template hasn't resolved yet, or matching+quantity-resolution
  * produced more than `CreateQuoteWithItems`'s 20 slots can hold; every
@@ -65,15 +69,13 @@ export function useGenerateQuote(projectId: string): UseGenerateQuoteResult {
             }
 
             const quoteId = crypto.randomUUID();
-            const result = GenerateQuoteUtils.build({
+            const result = build({
                 isReady,
                 projectId,
                 quoteId,
                 quoteTemplateId,
-                pages: GenerateQuoteUtils.buildPageTakeoffInputs(
-                    data?.floorplanPages ?? [],
-                ),
-                templateConfigs: GenerateQuoteUtils.buildTemplateConfigs(
+                pages: buildPageTakeoffInputs(data?.floorplanPages ?? []),
+                templateConfigs: buildTemplateConfigs(
                     data?.quoteItemTemplateConfigs ?? [],
                     defaultTemplateConfigs,
                 ),

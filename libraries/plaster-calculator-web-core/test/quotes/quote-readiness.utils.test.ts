@@ -7,7 +7,7 @@ import {
     MANUAL_ANSWER_SOURCE,
 } from "@libraries/plaster-calculator-common";
 
-import { QuoteReadinessUtils } from "../../src/quotes/quote-readiness.utils.ts";
+import { evaluate, isReady } from "../../src/quotes/quote-readiness.utils.ts";
 
 type QueryProject = NonNullable<GetQuoteReadinessData["project"]>;
 type QueryCompany = NonNullable<QueryProject["company"]>;
@@ -114,26 +114,20 @@ function contactableCompany(): QueryCompany {
 test("evaluate() reports COMPANY_CONTACT_DETAILS unmet for a company with no phone and no contactable primary contact, but isReady() stays true", () => {
     const data = readyDataFixture(uncontactableCompany());
 
-    const results = QuoteReadinessUtils.evaluate(
-        data,
-        data.quoteItemTemplateConfigs,
-    );
+    const results = evaluate(data, data.quoteItemTemplateConfigs);
 
     const companyResult = results.find(
         (result) => result.checkId === COMPANY_CONTACT_DETAILS_CHECK_ID,
     );
     assert.ok(companyResult, "expected a COMPANY_CONTACT_DETAILS result");
     assert.equal(companyResult.isMet, false);
-    assert.equal(QuoteReadinessUtils.isReady(results), true);
+    assert.equal(isReady(results), true);
 });
 
 test("evaluate() reports COMPANY_CONTACT_DETAILS met for a company with a contactable primary contact", () => {
     const data = readyDataFixture(contactableCompany());
 
-    const results = QuoteReadinessUtils.evaluate(
-        data,
-        data.quoteItemTemplateConfigs,
-    );
+    const results = evaluate(data, data.quoteItemTemplateConfigs);
 
     const companyResult = results.find(
         (result) => result.checkId === COMPANY_CONTACT_DETAILS_CHECK_ID,

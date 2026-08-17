@@ -3,7 +3,7 @@ import test from "node:test";
 
 import type { GetQuoteReadinessData } from "@generated/data-connector-web";
 
-import { GenerateQuoteUtils } from "../../src/quotes/generate-quote.utils.ts";
+import { buildTemplateConfigs } from "../../src/quotes/generate-quote.utils.ts";
 
 const WALL_QUANTITY_SOURCE_ID = "qs-wall-standard";
 
@@ -12,7 +12,7 @@ type QueryTemplateConfig =
 
 /**
  * A raw `GetQuoteReadiness` `quoteItemTemplateConfigs` row — the shape
- * `GenerateQuoteUtils.buildTemplateConfigs()` actually receives for a
+ * `buildTemplateConfigs()` actually receives for a
  * `QuoteTemplate` (the resolved pricing template, or the team's default),
  * before it's mapped onto `GenerateQuoteTemplateConfig`.
  */
@@ -50,10 +50,7 @@ test("buildTemplateConfigs prices from the variation when the company is assigne
         queryTemplateConfigFixture({ unitPriceCents: 1000 }),
     ];
 
-    const configs = GenerateQuoteUtils.buildTemplateConfigs(
-        variationConfigs,
-        defaultConfigs,
-    );
+    const configs = buildTemplateConfigs(variationConfigs, defaultConfigs);
 
     assert.equal(configs.length, 1);
     assert.equal(configs[0]?.unitPriceCents, 1500);
@@ -64,10 +61,7 @@ test("buildTemplateConfigs prices from the default when the company has no varia
         queryTemplateConfigFixture({ unitPriceCents: 1000 }),
     ];
 
-    const configs = GenerateQuoteUtils.buildTemplateConfigs(
-        defaultConfigs,
-        defaultConfigs,
-    );
+    const configs = buildTemplateConfigs(defaultConfigs, defaultConfigs);
 
     assert.equal(configs.length, 1);
     assert.equal(configs[0]?.unitPriceCents, 1000);
@@ -81,10 +75,7 @@ test("buildTemplateConfigs keeps an item excluded on the default off a variation
         queryTemplateConfigFixture({ enabled: false, unitPriceCents: 1000 }),
     ];
 
-    const configs = GenerateQuoteUtils.buildTemplateConfigs(
-        variationConfigs,
-        defaultConfigs,
-    );
+    const configs = buildTemplateConfigs(variationConfigs, defaultConfigs);
 
     assert.equal(configs.length, 0);
 });
@@ -99,10 +90,7 @@ test("buildTemplateConfigs drops an item the variation prices but the default ne
     ];
     const defaultConfigs: readonly QueryTemplateConfig[] = [];
 
-    const configs = GenerateQuoteUtils.buildTemplateConfigs(
-        variationConfigs,
-        defaultConfigs,
-    );
+    const configs = buildTemplateConfigs(variationConfigs, defaultConfigs);
 
     assert.equal(configs.length, 0);
 });

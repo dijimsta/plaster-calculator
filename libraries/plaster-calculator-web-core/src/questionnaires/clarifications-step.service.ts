@@ -5,7 +5,10 @@ import type {
     ClarificationsStepDependencies,
 } from "./clarifications-step.types.ts";
 import { ClarificationsStepError } from "./clarifications-step.types.ts";
-import { ClarificationsStepUtils } from "./clarifications-step.utils.ts";
+import {
+    buildBatchApplyTemplateVariables,
+    nextPositionAfter,
+} from "./clarifications-step.utils.ts";
 import type { QuestionnairesService } from "./questionnaires.service.ts";
 
 /**
@@ -56,9 +59,8 @@ export class ClarificationsStepService {
     ): Promise<void> {
         const questions =
             await this.dependencies.getTemplateQuestions(sourceTemplateId);
-        const startingPosition =
-            ClarificationsStepUtils.nextPositionAfter(existingRows);
-        const result = ClarificationsStepUtils.buildBatchApplyTemplateVariables(
+        const startingPosition = nextPositionAfter(existingRows);
+        const result = buildBatchApplyTemplateVariables(
             projectId,
             sourceTemplateId,
             questions,
@@ -89,7 +91,7 @@ export class ClarificationsStepService {
             id: crypto.randomUUID(),
             projectId,
             label,
-            position: ClarificationsStepUtils.nextPositionAfter(existingRows),
+            position: nextPositionAfter(existingRows),
         });
         await this.dependencies.refresh();
     }

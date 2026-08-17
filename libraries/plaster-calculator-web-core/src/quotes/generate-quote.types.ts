@@ -7,11 +7,11 @@ import type { FirebaseError } from "firebase/app";
 
 /**
  * One enabled `QuoteItemTemplateConfig`, joined to its `QuoteItemTemplate`,
- * as needed by `GenerateQuoteUtils`. This is a minimal local shape rather
- * than the generated `GetQuoteReadinessData` type, matching the pattern
- * `ReadinessQuoteItemTemplateConfig` (`@libraries/plaster-calculator-common`)
+ * as needed by `generate-quote.utils.ts`. This is a minimal local shape
+ * rather than the generated `GetQuoteReadinessData` type, matching the
+ * pattern `ReadinessQuoteItemTemplateConfig` (`@libraries/plaster-calculator-common`)
  * already uses for the same underlying query — callers map their Data
- * Connect query results onto it via `GenerateQuoteUtils.buildTemplateConfigs()`.
+ * Connect query results onto it via `buildTemplateConfigs()`.
  *
  * `materialUnitPriceCents`/`labourUnitPriceCents` are always `0` when built
  * from `GetQuoteReadiness` today: that query (`data/connector-web/quotes.
@@ -39,8 +39,9 @@ export type GenerateQuoteTemplateConfig = {
 
 /**
  * One `QuoteItemTemplateConfig` that survived keyword matching and quantity
- * resolution with a non-zero quantity — i.e. one line `GenerateQuoteUtils.
- * buildMutationVariables()` will place into a `CreateQuoteWithItems` slot.
+ * resolution with a non-zero quantity — i.e. one line
+ * `buildMutationVariables()` (`generate-quote.utils.ts`) will place into a
+ * `CreateQuoteWithItems` slot.
  */
 export type ResolvedQuoteItem = {
     readonly sourceTemplateId: string;
@@ -56,7 +57,7 @@ export type ResolvedQuoteItem = {
 };
 
 /**
- * Everything `GenerateQuoteUtils.build()` needs to decide whether — and
+ * Everything `build()` (`generate-quote.utils.ts`) needs to decide whether — and
  * what — to generate. `isReady` is the quote readiness gate's `isReady`
  * (`useQuoteReadiness()`); `build()` refuses to produce mutation variables
  * at all when it is `false`, rather than relying on the caller to remember
@@ -84,7 +85,7 @@ export type GenerateQuoteInput = {
 };
 
 /**
- * Why `GenerateQuoteUtils.build()`/`buildMutationVariables()` refused to
+ * Why `build()`/`buildMutationVariables()` (`generate-quote.utils.ts`) refused to
  * produce mutation variables:
  * - `NOT_READY`: the quote readiness gate (`useQuoteReadiness()`) is not
  *   met, so `generate()` must not call `CreateQuoteWithItems` at all.
@@ -98,7 +99,7 @@ export type GenerateQuoteInput = {
 export type GenerateQuoteFailureReason =
     "NOT_READY" | "NO_ITEMS" | "TOO_MANY_ITEMS";
 
-/** The outcome of `GenerateQuoteUtils.build()`/`buildMutationVariables()`. */
+/** The outcome of `build()`/`buildMutationVariables()` (`generate-quote.utils.ts`). */
 export type GenerateQuoteResult =
     | {
           readonly ok: true;
@@ -112,8 +113,9 @@ export type GenerateQuoteResult =
       };
 
 /**
- * Thrown by `useGenerateQuote()`'s mutation when `GenerateQuoteUtils.build()`
- * refuses to run, so the failure surfaces through the same `error` field a
+ * Thrown by `useGenerateQuote()`'s mutation when `build()`
+ * (`generate-quote.utils.ts`) refuses to run, so the failure surfaces
+ * through the same `error` field a
  * `CreateQuoteWithItems` network/`@check` failure would, rather than a
  * separate rejection path a caller would have to check for specially.
  */
