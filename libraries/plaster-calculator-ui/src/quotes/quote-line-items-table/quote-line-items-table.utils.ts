@@ -1,3 +1,5 @@
+import { formatQuantityText } from "@libraries/utilities";
+
 import type { useQuotesTranslation } from "../i18n/index.ts";
 
 import type {
@@ -19,10 +21,7 @@ export class QuoteLineItemsTableUtils {
      * `quantity` itself is a plain (non-cents) `number` rather than money.
      */
     public static quantityDisplayText(row: QuoteLineItemsTableRow): string {
-        const quantityText = QuoteLineItemsTableUtils.formatQuantity(
-            row.quantity,
-        );
-        return quantityText;
+        return formatQuantityText(row.quantity);
     }
 
     /**
@@ -85,10 +84,6 @@ export class QuoteLineItemsTableUtils {
         return t("quoteLineItemsTable.provenanceMatchedKeywords", {
             keywords,
         });
-    }
-
-    private static formatQuantity(quantity: number): string {
-        return String(Number(quantity.toFixed(2)));
     }
 
     /**
