@@ -8,12 +8,12 @@ import { editableScopes } from "./user-scopes.js";
 type InkInputHandler = Parameters<typeof useInput>[0];
 type InkInputKey = Parameters<InkInputHandler>[1];
 
-interface UserDetailScreenProps {
+type UserDetailScreenProps = {
     readonly user: AuthUserSummary;
     readonly onBack: () => void;
     readonly onUserUpdated: (updatedUser: AuthUserSummary) => void;
     readonly onExit: () => void;
-}
+};
 
 export function UserDetailScreen({
     user,
