@@ -12,6 +12,8 @@ The current public API provides `UsersService` for reading and updating validate
 - Reusable Node.js and Firebase Admin implementations belong here.
 - Firebase Functions handlers, CLI screens, routing, and application composition remain in their consuming packages.
 - Browser code and React UI dependencies do not belong here.
+- Do not import React, UIKit, Next.js, or browser-only APIs.
+- Surface invalid security data and infrastructure failures clearly.
 
 ## Build
 

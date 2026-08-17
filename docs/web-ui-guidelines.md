@@ -23,3 +23,16 @@ Applies to the web app, Storybook, `plaster-calculator-ui`, and `uikit-web`.
 - Shared UI libraries remain framework-agnostic: no Next.js imports, `"use client"`, routing, or app dependencies.
   Consuming apps declare framework boundaries.
 - Stories live in `apps/storybook-web` and import UI libraries only through public package entry points.
+
+## Component styling
+
+Keep component class names in a sibling `*.styles.ts` file rather than inline in the component. When styling pushes
+a component over a complexity limit, extract the class names and style-selection logic before splitting the
+component into smaller internal components.
+
+## Storybook stories
+
+Do not factor story render logic out into wrapper components (e.g. a local `function ResponsiveNavbar() {...}` used
+by multiple stories). Each story's `render` function must be self-contained, including any `useState` calls, so the
+code can be copy-pasted directly out of Storybook and used as-is. Prefer duplicating markup across stories over
+sharing it through a helper component.

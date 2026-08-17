@@ -34,3 +34,9 @@ pnpm build
 pnpm lint
 pnpm format
 ```
+
+## Conventions
+
+- Keep stories under `src/stories/`, organised by public component or domain namespace.
+- Run `pnpm --filter @apps/storybook-web build` in addition to the root checks when changing Storybook
+  configuration.

@@ -70,3 +70,11 @@ pnpm build
 pnpm lint
 pnpm format
 ```
+
+## Conventions
+
+- Export deployed functions from `src/index.ts`; keep global initialization in `src/bootstrap.ts`.
+- Keep handlers focused and extract validation, ownership, mapping, and domain operations.
+- Preserve Node.js 24 ESM, `us-west1`, App Check enforcement, and runtime limits unless deployment policy explicitly
+  changes.
+- The bundle command generates `dist/` and rewrites deployment metadata; use it only in the deployment workflow.

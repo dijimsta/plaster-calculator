@@ -12,8 +12,9 @@ integration.
 - Use `@libraries/plaster-calculator-common` contracts indirectly through domain UI or add an explicit dependency when
   application code needs those public contracts directly.
 
-Application-specific presentation must follow `AGENTS.md`: do not add raw Tailwind classes, inline styles, or new
-app-owned style helpers. Extend UIKit when a reusable presentation capability is missing.
+Application-specific presentation must follow the [web UI guidelines](../../docs/web-ui-guidelines.md): do not add
+raw Tailwind classes, inline styles, or new app-owned style helpers. Extend UIKit when a reusable presentation
+capability is missing.
 
 ## Development
 
@@ -35,3 +36,11 @@ pnpm format
 ```
 
 Do not commit local environment files, Firebase credentials, or generated `.next` output.
+
+## Conventions
+
+- Keep Next.js routing, client boundaries, Firebase browser adapters, and app composition here.
+- Do not add entries in `src/lib/styles.ts`; migrate existing app styles when touched.
+- Keep Firebase configuration and environment access under `src/firebase/`; never commit credentials or local env
+  files.
+- Keep data access behind focused modules under `src/lib/api/` or injected service implementations.
