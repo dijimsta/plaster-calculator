@@ -6,7 +6,7 @@ import * as logger from "firebase-functions/logger";
 
 import { requireAuth } from "./auth.js";
 import { toDetail } from "./mappers.js";
-import { requireOwnedProject } from "./ownership.js";
+import { requireOwnedProject, requireOwnedProjectSummary } from "./ownership.js";
 import { analyseProjectPages } from "./processing-pages.js";
 import { processingStrategies } from "./processing-strategies.js";
 import { isOwnedPageSourcePath, requireStorageImage } from "./storage.js";
@@ -15,7 +15,7 @@ import type {
     ProcessingStrategyInfo,
     ProcessProjectRequest,
     ProjectDetail,
-    ProjectWithPages,
+    ProjectDetailsRow,
 } from "./types.js";
 import {
     isRecord,
@@ -43,7 +43,7 @@ export const processProject = onCall<
             request.data.projectId,
             "Project ID",
         );
-        const project = await requireOwnedProject(projectId, auth.uid);
+        const project = await requireOwnedProjectSummary(projectId, auth.uid);
         const pageNumbers = readPageNumbers(request.data.pageNumbers, project);
         const strategy = selectProcessingStrategy(
             readOptionalString(request.data.strategyKey),
@@ -114,7 +114,7 @@ function selectProcessingStrategy(strategyKey: string | undefined) {
     );
 }
 
-function readPageNumbers(value: unknown, project: ProjectWithPages) {
+function readPageNumbers(value: unknown, project: ProjectDetailsRow) {
     if (!Array.isArray(value) || value.length === 0) {
         return [1];
     }

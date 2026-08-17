@@ -26,11 +26,26 @@ export async function requireTeamMember(teamId: string, userId: string) {
 }
 
 export async function requireOwnedProject(projectId: string, userId: string) {
-    // TODO: Add a lightweight ownership helper backed by getProjectById for
-    // callsites that do not need floorplan pages.
     const response = await DataConnector.getProjectDetailsById({
         id: projectId,
     });
+    const project = response.data.project;
+    if (!project || project.teamId !== (await requireTeamId(userId))) {
+        throw new HttpsError("not-found", "Project was not found.");
+    }
+
+    return project;
+}
+
+/**
+ * Lightweight variant of {@link requireOwnedProject} for callsites that only
+ * need top-level project fields, not the full floorplan-pages array.
+ */
+export async function requireOwnedProjectSummary(
+    projectId: string,
+    userId: string,
+) {
+    const response = await DataConnector.getProjectById({ id: projectId });
     const project = response.data.project;
     if (!project || project.teamId !== (await requireTeamId(userId))) {
         throw new HttpsError("not-found", "Project was not found.");

@@ -5,7 +5,11 @@ import { HttpsError, onCall } from "firebase-functions/https";
 
 import { requireAuth } from "./auth.js";
 import { toDetail, toPage } from "./mappers.js";
-import { requireFloorplanPage, requireOwnedProject } from "./ownership.js";
+import {
+    requireFloorplanPage,
+    requireOwnedProject,
+    requireOwnedProjectSummary,
+} from "./ownership.js";
 import {
     ensureFileDownloadUrl,
     isOwnedPageSourcePath,
@@ -33,7 +37,7 @@ export const getFloorplanPage = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const projectId = readRequiredString(request.data.projectId, "Project ID");
-    await requireOwnedProject(projectId, auth.uid);
+    await requireOwnedProjectSummary(projectId, auth.uid);
     return toPage(
         await requireFloorplanPage(
             projectId,
@@ -48,7 +52,7 @@ export const updateFloorplanPage = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const projectId = readRequiredString(request.data.projectId, "Project ID");
-    await requireOwnedProject(projectId, auth.uid);
+    await requireOwnedProjectSummary(projectId, auth.uid);
 
     const page = await requireFloorplanPage(
         projectId,

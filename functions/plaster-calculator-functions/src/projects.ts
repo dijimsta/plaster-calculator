@@ -9,6 +9,7 @@ import { toDetail, toDetailWithDownloadUrls, toSummary } from "./mappers.js";
 import {
     requireOwnedCompany,
     requireOwnedProject,
+    requireOwnedProjectSummary,
     requireTeamId,
     requireTeamMember,
 } from "./ownership.js";
@@ -312,7 +313,7 @@ async function updateOwnedProject(
         scope: nextNullableProjectField(updates, "scope", project.scope),
     });
 
-    const updatedProject = await requireOwnedProject(projectId, userId);
+    const updatedProject = await requireOwnedProjectSummary(projectId, userId);
     await syncQuoteReminderForStatusUpdate(
         updates,
         nextSalesStatus,

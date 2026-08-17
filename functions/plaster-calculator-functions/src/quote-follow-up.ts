@@ -8,13 +8,13 @@ import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import { requireTeamId } from "./ownership.js";
 import type { ProjectUpdateFields } from "./project-fields.js";
 import { getUserSettingsOrDefault } from "./settings.js";
-import type { ProjectWithPages } from "./types.js";
+import type { ProjectDetailsRow } from "./types.js";
 import { hasField, toReminderStatus } from "./validation.js";
 
 const quoteFollowUpReminderPrefix = "Follow up quote for ";
 
 export async function upsertAutoQuoteReminder(
-    project: ProjectWithPages,
+    project: ProjectDetailsRow,
     userId: string,
 ) {
     const settings = await getUserSettingsOrDefault(userId);
@@ -89,7 +89,7 @@ export async function findOpenProjectReminder(
 export async function syncQuoteReminderForStatusUpdate(
     updates: ProjectUpdateFields,
     salesStatus: SalesStatus,
-    project: ProjectWithPages,
+    project: ProjectDetailsRow,
     projectId: string,
     userId: string,
 ) {

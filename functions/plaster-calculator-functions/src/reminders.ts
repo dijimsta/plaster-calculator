@@ -9,7 +9,7 @@ import { requireAuth } from "./auth.js";
 import { toReminder } from "./mappers.js";
 import {
     requireOwnedCompany,
-    requireOwnedProject,
+    requireOwnedProjectSummary,
     requireOwnedReminder,
     requireTeamId,
     requireTeamMember,
@@ -58,7 +58,7 @@ export const listProjectReminders = onCall<
 >(async (request) => {
     const auth = requireAuth(request);
     const projectId = readRequiredString(request.data.projectId, "Project ID");
-    await requireOwnedProject(projectId, auth.uid);
+    await requireOwnedProjectSummary(projectId, auth.uid);
     const response = await DataConnector.listProjectReminders({
         projectId,
     });
@@ -70,7 +70,7 @@ export const listProjectReminders = onCall<
 export const createReminder = onCall<CreateReminderRequest, Promise<Reminder>>(
     async (request) => {
         const auth = requireAuth(request);
-        const project = await requireOwnedProject(
+        const project = await requireOwnedProjectSummary(
             readRequiredString(request.data.projectId, "Project ID"),
             auth.uid,
         );
