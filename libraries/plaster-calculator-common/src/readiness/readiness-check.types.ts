@@ -5,8 +5,9 @@ import type { ProjectDetail } from "../projects/schemas/project-detail.schema.ts
  * - `BLOCK`: the project cannot be priced until the check is met.
  * - `WARN`: the project can still be priced, but the user should be nudged.
  *
- * Every v1 check is `BLOCK`; `WARN` exists so the first warning-level check
- * can be added without a type change.
+ * Every check through WORK-129 is `BLOCK`; `COMPANY_CONTACT_DETAILS`
+ * (WORK-221) is the first `WARN` check — the project can still be priced
+ * while it's unmet, unlike a `BLOCK` check.
  */
 export const READINESS_CHECK_SEVERITIES = ["BLOCK", "WARN"] as const;
 export type ReadinessCheckSeverity =
@@ -62,16 +63,36 @@ export type ReadinessQuestionnaireAnswer = {
 };
 
 /**
+ * A project's company, as needed by the "company contact details" readiness
+ * check. See the note on `ReadinessQuoteItemTemplateConfig` about why this
+ * isn't `CompanyDetail` from `../companies/schemas/index.ts` — only the
+ * fields the resolver needs, not the full company and contact entities.
+ * `primaryContact*` fields come from whichever `CompanyContact` the company
+ * treats as primary, if any; `null` when the company has no primary contact.
+ */
+export type ReadinessCompany = {
+    readonly id: string;
+    readonly companyName: string;
+    readonly phoneNumber: string | null;
+    readonly businessNumber: string | null;
+    readonly primaryContactName: string | null;
+    readonly primaryContactEmail: string | null;
+    readonly primaryContactPhone: string | null;
+};
+
+/**
  * Data a `ReadinessCheck` resolver needs to evaluate whether a project is
  * ready to be quoted. `quoteItemTemplateConfigs` and `questionnaireAnswers`
  * were added by WORK-129 alongside the concrete resolvers that need them;
- * this shape can keep growing the same way as future checks need more data,
- * without changing the registry or its consumers.
+ * `company` was added the same way by WORK-221. This shape can keep growing
+ * as future checks need more data, without changing the registry or its
+ * consumers.
  */
 export type ReadinessCheckInput = {
     readonly project: ProjectDetail;
     readonly quoteItemTemplateConfigs?: readonly ReadinessQuoteItemTemplateConfig[];
     readonly questionnaireAnswers?: readonly ReadinessQuestionnaireAnswer[];
+    readonly company?: ReadinessCompany;
 };
 
 /**
@@ -91,6 +112,8 @@ export type ReadinessAffectedItem = {
     readonly quoteItemTemplateLabel?: string;
     readonly questionId?: string;
     readonly questionLabel?: string;
+    readonly companyId?: string;
+    readonly companyName?: string;
 };
 
 /**

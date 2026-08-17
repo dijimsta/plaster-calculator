@@ -1,9 +1,11 @@
 import {
     ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID,
     CEILING_HEIGHT_SET_CHECK_ID,
+    COMPANY_CONTACT_DETAILS_CHECK_ID,
     INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
     resolveAssumedWallTypesConfirmed,
     resolveCeilingHeightSet,
+    resolveCompanyContactDetails,
     resolveInferredAnswersConfirmed,
     resolveRoomsMeasured,
     resolveScaleApplied,
@@ -24,12 +26,16 @@ import type { ReadinessCheck } from "./readiness-check.types.ts";
  * here (with its resolver) — no change to the code that consumes the
  * registry.
  *
- * Every v1 check (WORK-129) is `severity: "BLOCK"` per the ticket. `fixMode`
+ * Every check through WORK-129 is `severity: "BLOCK"` per that ticket;
+ * `COMPANY_CONTACT_DETAILS` (WORK-221) is `WARN` — the project can still be
+ * priced while it's unmet, so it nudges rather than blocks. `fixMode`
  * reflects where each check's fix control sends the user: the two
  * floorplan-editor checks (scale applied, rooms measured) deep-link to the
- * floorplan editor, where WORK-139 builds their fix targets; the remaining
- * checks are inline because their fix controls (WORK-134) act directly in
- * the gate, with no separate screen to navigate to.
+ * floorplan editor, where WORK-139 builds their fix targets; most of the
+ * remaining checks are inline because their fix controls (WORK-134) act
+ * directly in the gate, with no separate screen to navigate to.
+ * `COMPANY_CONTACT_DETAILS` also deep-links, to wherever the company's
+ * contact details get edited (WORK-223).
  */
 export const READINESS_CHECKS: readonly ReadinessCheck[] = [
     {
@@ -79,5 +85,11 @@ export const READINESS_CHECKS: readonly ReadinessCheck[] = [
         severity: "BLOCK",
         fixMode: "INLINE",
         resolve: resolveAssumedWallTypesConfirmed,
+    },
+    {
+        id: COMPANY_CONTACT_DETAILS_CHECK_ID,
+        severity: "WARN",
+        fixMode: "DEEP_LINK",
+        resolve: resolveCompanyContactDetails,
     },
 ];
