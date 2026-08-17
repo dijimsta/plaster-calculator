@@ -17,8 +17,9 @@ import {
     GenerateQuoteError,
     useGenerateQuote,
 } from "@libraries/plaster-calculator-web-core";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryFetchPolicy } from "firebase/data-connect";
+import { getDownloadURL, ref } from "firebase/storage";
 import { useCallback, useMemo } from "react";
 
 import type { ProjectDetail } from "../../../../../types.js";
@@ -28,6 +29,33 @@ import { QuoteTabUtils } from "./quote-tab.utils.js";
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
 );
+
+const LOGO_URL_QUERY_KEY_PREFIX = "quote-appearance-logo-url" as const;
+
+/**
+ * Resolves `appearance.logoStoragePath` into a fetchable download URL --
+ * the same Firebase Storage mechanism `QuoteAppearanceService.uploadLogo()`
+ * (`@libraries/plaster-calculator-web-core`) uses right after an upload,
+ * `getDownloadURL(ref(storage, path))`. Skips the request entirely when no
+ * logo is configured (`null`); returns `undefined` while a configured
+ * logo's URL is still resolving -- both of which
+ * `QuoteDetailDocumentProps.logoUrl` already treats as "omit the logo" (see
+ * its doc comment), so a not-yet-resolved logo simply doesn't render yet
+ * rather than erroring.
+ */
+function useQuoteAppearanceLogoUrl(
+    logoStoragePath: string | null,
+): string | null | undefined {
+    const { data } = useQuery({
+        queryKey: [LOGO_URL_QUERY_KEY_PREFIX, logoStoragePath],
+        queryFn: () =>
+            getDownloadURL(
+                ref(FirebaseService.getStorage(), logoStoragePath as string),
+            ),
+        enabled: logoStoragePath !== null,
+    });
+    return logoStoragePath === null ? null : data;
+}
 
 export type ProjectQuoteState = {
     readonly document: QuoteDetailDocumentProps | null;
@@ -68,17 +96,25 @@ export function useProjectQuoteState(
     );
     const queryClient = useQueryClient();
     const quote = data?.project?.quote ?? null;
+    const appearance = useMemo(
+        () => QuoteTabUtils.toAppearance(data?.appearance[0]),
+        [data?.appearance],
+    );
+    const logoUrl = useQuoteAppearanceLogoUrl(appearance.logoStoragePath);
 
     const document = useMemo(
         () =>
             quote && project
-                ? QuoteTabUtils.toDocumentProps(
+                ? QuoteTabUtils.toDocumentProps({
                       quote,
-                      project.name,
-                      project.companyName ?? null,
-                  )
+                      projectName: project.name,
+                      companyName: project.companyName ?? null,
+                      appearance,
+                      logoUrl,
+                      scopeOfWorkText: project.scope,
+                  })
                 : null,
-        [project, quote],
+        [appearance, logoUrl, project, quote],
     );
     const editableValues = useMemo(
         () => (quote ? QuoteTabUtils.toEditableValues(quote) : null),
