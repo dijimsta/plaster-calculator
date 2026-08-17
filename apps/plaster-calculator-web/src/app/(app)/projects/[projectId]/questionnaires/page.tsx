@@ -5,6 +5,7 @@ import {
     AddQuestionsFromTemplateDrawer,
     GenerateQuestionnaireEmailModal,
     ProjectQuestionnaireQuestionList,
+    SaveQuestionnaireTemplateFromProjectModal,
     useQuestionnairesTranslation,
 } from "@libraries/plaster-calculator-ui";
 import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
@@ -13,7 +14,14 @@ import {
     useProjectsService,
 } from "@libraries/plaster-calculator-web-core";
 import { Box, Button, EmptyState } from "@libraries/uikit-web";
-import { ClipboardList, FilePenLine, Mail, Plus, Sparkles } from "lucide-react";
+import {
+    ClipboardList,
+    FilePenLine,
+    Mail,
+    Plus,
+    Save,
+    Sparkles,
+} from "lucide-react";
 import { use, useCallback, useEffect, useState } from "react";
 
 import { ui } from "../../../../../lib/styles.js";
@@ -31,6 +39,10 @@ import {
     useSaveProjectQuestionnaireQuestionAnswerCallback,
 } from "./page.hooks.js";
 import { ProjectScopeEditor } from "./project-scope-editor.js";
+import {
+    useSaveProjectQuestionnaireAsTemplateCallback,
+    useSourceTemplateQuestionOrigins,
+} from "./save-questionnaire-template.hooks.js";
 
 export default function ProjectQuestionnairesPage({
     params,
@@ -51,6 +63,8 @@ export default function ProjectQuestionnairesPage({
     );
     const [isAddingQuestion, setAddingQuestion] = useState(false);
     const [isAutoFilling, setAutoFilling] = useState(false);
+    const [isSaveTemplateModalOpen, setSaveTemplateModalOpen] = useState(false);
+    const [isSavingTemplate, setSavingTemplate] = useState(false);
 
     const load = useCallback(async (): Promise<void> => {
         try {
@@ -88,8 +102,13 @@ export default function ProjectQuestionnairesPage({
         }
     }
 
-    const { questions } = useProjectQuestionnaireQuestions(projectId);
+    const { questions, sourceTemplateId } =
+        useProjectQuestionnaireQuestions(projectId);
     const templates = useQuestionnaireTemplates();
+    const saveTemplateModalQuestions = useSourceTemplateQuestionOrigins(
+        questions,
+        sourceTemplateId,
+    );
     const addQuestion = useAddProjectQuestionnaireQuestionCallback(
         projectId,
         questions,
@@ -105,6 +124,8 @@ export default function ProjectQuestionnairesPage({
     const confirmAnswer =
         useConfirmProjectQuestionnaireQuestionAnswerCallback(projectId);
     const answerWithAi = useAnswerQuestionnaireWithAiCallback(projectId);
+    const saveAsTemplate =
+        useSaveProjectQuestionnaireAsTemplateCallback(questions);
     const emailModal = useGenerateQuestionnaireEmailModal(
         project?.companyId ?? null,
         questions,
@@ -130,6 +151,13 @@ export default function ProjectQuestionnairesPage({
         setAutoFilling(true);
         await answerWithAi();
         setAutoFilling(false);
+    }
+
+    async function handleSaveAsTemplate(name: string): Promise<void> {
+        setSavingTemplate(true);
+        await saveAsTemplate(name);
+        setSavingTemplate(false);
+        setSaveTemplateModalOpen(false);
     }
 
     return (
@@ -169,6 +197,14 @@ export default function ProjectQuestionnairesPage({
                         onClick={emailModal.openModal}
                     >
                         {t("projectQuestionnairesPage.generateEmail")}
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        icon={<Save size={18} aria-hidden="true" />}
+                        disabled={questions.length === 0}
+                        onClick={() => setSaveTemplateModalOpen(true)}
+                    >
+                        {t("saveQuestionnaireTemplateFromProjectModal.title")}
                     </Button>
                     <Button
                         variant="secondary"
@@ -215,6 +251,17 @@ export default function ProjectQuestionnairesPage({
                 isSaving={isAddingQuestion}
                 onClose={() => setAddQuestionModalOpen(false)}
                 onAdd={(label) => void handleAddQuestion(label)}
+            />
+            <SaveQuestionnaireTemplateFromProjectModal
+                open={isSaveTemplateModalOpen}
+                isSaving={isSavingTemplate}
+                onClose={() => setSaveTemplateModalOpen(false)}
+                defaultName={project?.name ?? ""}
+                questions={saveTemplateModalQuestions}
+                existingTemplateNames={templates.map(
+                    (template) => template.name,
+                )}
+                onSave={(name) => void handleSaveAsTemplate(name)}
             />
             <GenerateQuestionnaireEmailModal
                 open={emailModal.isOpen}
