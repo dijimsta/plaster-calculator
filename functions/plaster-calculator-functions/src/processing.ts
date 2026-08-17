@@ -6,7 +6,10 @@ import * as logger from "firebase-functions/logger";
 
 import { requireAuth } from "./auth.js";
 import { toDetail } from "./mappers.js";
-import { requireOwnedProject, requireOwnedProjectSummary } from "./ownership.js";
+import {
+    requireOwnedProject,
+    requireOwnedProjectSummary,
+} from "./ownership.js";
 import { analyseProjectPages } from "./processing-pages.js";
 import { processingStrategies } from "./processing-strategies.js";
 import { isOwnedPageSourcePath, requireStorageImage } from "./storage.js";
