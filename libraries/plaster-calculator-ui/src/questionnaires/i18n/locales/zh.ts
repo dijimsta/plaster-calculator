@@ -163,5 +163,21 @@ export const zh = createTranslationResource(
             questionLabelFieldLabel: "标签",
             addQuestion: "添加澄清项",
         }),
+        saveQuestionnaireTemplateFromProjectModal: Object.freeze({
+            title: "另存为澄清模板",
+            description: "将此项目的澄清项另存为可复用的澄清模板。",
+            nameLabel: "澄清模板名称",
+            duplicateNameWarning:
+                "已存在同名的澄清模板。保存后将创建第二个同名模板。",
+            questionsLabel: "澄清项",
+            // zh has a single plural form (CLDR "other"); `_one` mirrors
+            // `_other` verbatim, matching the note on quoteCount above.
+            clarificationCount_one: "{{count}} 项澄清",
+            clarificationCount_other: "{{count}} 项澄清",
+            answersStayOnProject: "答案将保留在此项目中。",
+            addedOnProject: "在此项目中添加",
+            save: "保存模板",
+            saving: "正在保存…",
+        }),
     }),
 );

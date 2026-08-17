@@ -161,4 +161,19 @@ export const en = Object.freeze({
         questionLabelFieldLabel: "Label",
         addQuestion: "Add clarification",
     }),
+    saveQuestionnaireTemplateFromProjectModal: Object.freeze({
+        title: "Save as clarification template",
+        description:
+            "Save this project's clarifications as a reusable clarification template.",
+        nameLabel: "Clarification template name",
+        duplicateNameWarning:
+            "A clarification template with this name already exists. Saving will create a second template with the same name.",
+        questionsLabel: "Clarifications",
+        clarificationCount_one: "{{count}} clarification",
+        clarificationCount_other: "{{count}} clarifications",
+        answersStayOnProject: "Answers stay on this project.",
+        addedOnProject: "Added on this project",
+        save: "Save template",
+        saving: "Saving...",
+    }),
 });
