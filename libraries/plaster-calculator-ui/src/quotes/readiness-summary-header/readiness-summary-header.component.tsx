@@ -50,8 +50,8 @@ export type ReadinessSummaryHeaderProps = {
  * `COMPANY_CONTACT_DETAILS`, WORK-221/223) shows as an advisory row in the
  * checklist below, but never flips this header's ready/not-ready state or
  * its unmet count; see `isReady`/`unmetCount` below, which mirror
- * `QuoteReadinessUtils.isReady()` (`plaster-calculator-web-core`) rather
- * than importing it, since that util isn't part of that package's public
+ * `isReady()` (`quote-readiness.utils.ts`, `plaster-calculator-web-core`)
+ * rather than importing it, since that util isn't part of that package's public
  * surface. A check missing from `results` entirely counts as unmet, same
  * as that util's rule, so the header starts blocked before the readiness
  * query has loaded.

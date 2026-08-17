@@ -9,8 +9,8 @@ export class QuoteTemplateListUtils {
     /**
      * Maps up to `MAX_VARIATION_ITEMS` of the default template's items onto
      * `CreateQuoteTemplateVariation`'s fixed `includeItemN`/`itemN*` slots --
-     * the same dynamic-key-building shape `GenerateQuoteUtils.buildMutationVariables()`
-     * (`plaster-calculator-web-core`) uses for `CreateQuoteWithItems`'s
+     * the same dynamic-key-building shape `buildMutationVariables()`
+     * (`generate-quote.utils.ts`, `plaster-calculator-web-core`) uses for `CreateQuoteWithItems`'s
      * identically-shaped slots, for the same reason: a GraphQL mutation
      * document can't accept a variable-length list of table rows, so a
      * fixed number of aliased slots switched on by `@include` is the only
