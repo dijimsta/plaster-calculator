@@ -7,5 +7,6 @@ export * from "./edit-questionnaire-template-drawer/index.ts";
 export * from "./project-questionnaire-question-list/index.ts";
 export * from "./add-project-questionnaire-question-modal/index.ts";
 export * from "./add-questions-from-template-drawer/index.ts";
+export * from "./save-questionnaire-template-from-project-modal/index.ts";
 export * from "./clarifications-step/index.ts";
 export * from "./generate-questionnaire-email-modal/index.ts";
