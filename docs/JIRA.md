@@ -75,6 +75,10 @@ Link to the Epic or related Tasks for context that belongs to them instead of re
 Tickets move through three statuses: To Do, In Progress, Done.
 
 - Move a ticket to **In Progress** when you start actively working on it, not when it's created or assigned to you.
+  When a batch of tickets is queued up together — e.g. one PR per child Task in a stack delivering an Epic —
+  transition each child only as work on its own branch begins, not all of them up front when the batch starts. Doing
+  them all at once makes an Epic's real progress unreadable: it looks fully in review when only the first few
+  Tasks have any code behind them.
 - Move a ticket to **Done** when the work has shipped — merged to `main` (and deployed, if applicable) — not when a
   PR is opened or approved. Transition it as you finish the change, not as an afterthought.
 - If you stop working on a ticket before it's done (blocked, reprioritized, etc.), move it back to **To Do** rather
@@ -88,6 +92,10 @@ updating the child Task:
 
 - An Epic moves to **In Progress** once its first child Task starts, and stays In Progress as long as any child Task
   is open.
+- If the Epic delivers a Jira Product Discovery Idea (its summary or description references a `PCPD-*` key, or the
+  Idea's own description links to this Epic), transition that Idea to **Delivery** in the same sitting — see
+  [Idea status](JIRA-PRODUCT-DISCOVERY.md#idea-status). It's easy to update the Epic and forget the Idea sits one
+  level further up; check for one explicitly rather than assuming there isn't one.
 - Don't mark an Epic **Done** until every child Task under it is Done — check the child list, don't assume.
 - When you close out the last open Task under an Epic, transition the Epic itself in the same sitting. It's easy to
   update the Task and walk away without circling back.
