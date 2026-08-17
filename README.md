@@ -35,6 +35,7 @@ are Firebase Data Connect SDK output — see [Generated directories](CONTRIBUTIN
 | `generate:dataconnect`                | Regenerates the Firebase Data Connect SDK output under `generated/`.                      |
 | `lint`                                | Lints all files with ESLint, applying fixes.                                              |
 | `lint:check`                          | Lints all files without applying fixes.                                                   |
+| `prepare`                             | Installs Git hooks via Husky. Runs automatically after `install`.                         |
 | `start`                               | Builds `floorplan-analyzer` and all TypeScript packages, then starts the emulator suite.  |
 | `storybook`                           | Starts Storybook in watch mode (shortcut for `@apps/storybook-web`'s `storybook` script). |
 

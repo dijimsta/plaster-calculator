@@ -36,16 +36,6 @@ UIKit props are deliberate component APIs, not extensions of React DOM attribute
 `className` or raw accessibility attributes. Add an owned visual or semantic prop when consumers need a new capability;
 UIKit is responsible for translating that prop into styling, HTML semantics, and accessibility attributes.
 
-## Build
-
-From the repository root:
-
-```bash
-pnpm build
-pnpm lint
-pnpm format
-```
-
 ## Conventions
 
 - Do not depend on Plaster Calculator domains, services, Firebase, Next.js, or app code.

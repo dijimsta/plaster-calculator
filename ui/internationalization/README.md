@@ -21,13 +21,3 @@ depending on Plaster Calculator domain code.
 
 - Do not depend on Plaster Calculator domains, services, Firebase, Next.js, or app code.
 - Export public APIs through `src/index.ts`.
-
-## Build
-
-From the repository root:
-
-```bash
-pnpm build
-pnpm lint
-pnpm format
-```

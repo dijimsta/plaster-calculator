@@ -3,16 +3,6 @@
 `@libraries/plaster-calculator-web-core` contains reusable browser and Firebase client SDK adapters for Plaster
 Calculator. It bridges platform-neutral contracts from `plaster-calculator-common` to browser-side infrastructure.
 
-## Build
-
-From the repository root:
-
-```bash
-pnpm build
-pnpm lint
-pnpm format
-```
-
 ## Conventions
 
 - Keep reusable browser and Firebase client SDK adapters here. Own each service's implementation alongside its React

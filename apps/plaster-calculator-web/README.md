@@ -27,14 +27,6 @@ pnpm --filter @apps/plaster-calculator-web dev
 The Firebase emulator suite starts this command automatically for App Hosting when running the repository emulator
 workflow.
 
-## Build and verification
-
-```bash
-pnpm build
-pnpm lint
-pnpm format
-```
-
 Do not commit local environment files, Firebase credentials, or generated `.next` output.
 
 ## Conventions

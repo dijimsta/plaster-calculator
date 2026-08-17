@@ -26,16 +26,6 @@ specifying whether Firebase, HTTP, or an in-memory stub performs the work.
 Service contracts use domain data and must not encode loading spinners, toast behaviour, React state, or transport
 details. Production implementations belong in their consuming application or infrastructure library.
 
-## Build
-
-From the repository root:
-
-```bash
-pnpm build
-pnpm lint
-pnpm format
-```
-
 ## Conventions
 
 - Keep this package platform-neutral: no React, UIKit, Next.js, Firebase, browser-only APIs, or app code.

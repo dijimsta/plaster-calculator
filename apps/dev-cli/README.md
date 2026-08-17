@@ -23,16 +23,6 @@ Because bundling mutates the target `package.json`, use it only as part of the i
 the resulting changes when running it manually. The command always rewrites the manifest in the directory passed to
 `--dir`, even when it is invoked from another working directory.
 
-## Build
-
-From the repository root:
-
-```bash
-pnpm build
-pnpm lint
-pnpm format
-```
-
 ## Conventions
 
 - Keep commands focused on repository tooling, not application runtime logic.
