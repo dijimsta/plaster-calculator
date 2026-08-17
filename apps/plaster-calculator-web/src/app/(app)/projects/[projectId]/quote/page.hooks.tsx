@@ -42,9 +42,17 @@ import { useRouter } from "next/navigation.js";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
 
-import { FloorplanDeepLinkUtils } from "../floorplan-deep-link.utils.js";
+import { buildHref } from "../floorplan-deep-link.utils.js";
 
-import { QuoteReadinessFixUtils } from "./quote-readiness-fix.utils.js";
+import {
+    currentCeilingHeightMm,
+    currentQuestionnaireAnswer,
+    currentReferencePoints,
+    currentUnitPriceCents,
+    currentWallBoardType,
+    pageDefaultCeilingHeightMm,
+    patchArea,
+} from "./quote-readiness-fix.utils.js";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -61,7 +69,7 @@ const dataConnect = FirebaseService.getDataConnect(
  * replaces the whole JSON blob whenever `overlay` is present in the
  * request) — the safety here comes entirely from re-reading the page
  * immediately before this specific write and only ever changing the one
- * area this control owns (`QuoteReadinessFixUtils.patchArea`). A fix to
+ * area this control owns (`patchArea`, from `quote-readiness-fix.utils.js`). A fix to
  * room A and a fix to room B each start from a fresh read and only touch
  * their own area, so neither clobbers the other's change; every other
  * overlay field, and every other area, passes through untouched.
@@ -80,7 +88,7 @@ function useUpdateAreaOverlayFieldCallback(
             }
 
             const page = await projectsService.getPage(projectId, pageId);
-            const nextOverlay = QuoteReadinessFixUtils.patchArea(
+            const nextOverlay = patchArea(
                 parseOverlay(page.overlay),
                 areaId,
                 patch,
@@ -89,8 +97,7 @@ function useUpdateAreaOverlayFieldCallback(
                 overlay: nextOverlay,
                 scaleMmPerPx: page.scaleMmPerPx,
                 ceilingHeightMm: page.ceilingHeightMm,
-                referencePoints:
-                    QuoteReadinessFixUtils.currentReferencePoints(page),
+                referencePoints: currentReferencePoints(page),
                 referenceLengthMm: page.referenceLengthMm,
             });
             await refresh();
@@ -235,7 +242,7 @@ export function useQuoteReadinessFixControlRenderer(
                     return (
                         <FloorplanDeepLinkFixControl
                             item={item}
-                            href={FloorplanDeepLinkUtils.buildHref(
+                            href={buildHref(
                                 projectId,
                                 item.pageNumber,
                                 "scale",
@@ -249,7 +256,7 @@ export function useQuoteReadinessFixControlRenderer(
                     return (
                         <FloorplanDeepLinkFixControl
                             item={item}
-                            href={FloorplanDeepLinkUtils.buildHref(
+                            href={buildHref(
                                 projectId,
                                 item.pageNumber,
                                 "draw-room",
@@ -263,10 +270,7 @@ export function useQuoteReadinessFixControlRenderer(
                     return (
                         <WallBoardTypeFixControl
                             item={item}
-                            value={QuoteReadinessFixUtils.currentWallBoardType(
-                                readinessData,
-                                item,
-                            )}
+                            value={currentWallBoardType(readinessData, item)}
                             onChange={(value) =>
                                 updateAreaField(item, { wallBoardType: value })
                             }
@@ -276,11 +280,8 @@ export function useQuoteReadinessFixControlRenderer(
                     return (
                         <CeilingHeightFixControl
                             item={item}
-                            value={QuoteReadinessFixUtils.currentCeilingHeightMm(
-                                readinessData,
-                                item,
-                            )}
-                            pageDefaultHeightMm={QuoteReadinessFixUtils.pageDefaultCeilingHeightMm(
+                            value={currentCeilingHeightMm(readinessData, item)}
+                            pageDefaultHeightMm={pageDefaultCeilingHeightMm(
                                 readinessData,
                                 item,
                             )}
@@ -295,7 +296,7 @@ export function useQuoteReadinessFixControlRenderer(
                     return (
                         <UnitPriceFixControl
                             item={item}
-                            valueCents={QuoteReadinessFixUtils.currentUnitPriceCents(
+                            valueCents={currentUnitPriceCents(
                                 readinessData,
                                 item,
                             )}
@@ -322,7 +323,7 @@ export function useQuoteReadinessFixControlRenderer(
                             label={t(
                                 "readinessCheckList.checkLabels.INFERRED_ANSWERS_CONFIRMED",
                             )}
-                            value={QuoteReadinessFixUtils.currentQuestionnaireAnswer(
+                            value={currentQuestionnaireAnswer(
                                 readinessData,
                                 item,
                             )}
@@ -336,10 +337,7 @@ export function useQuoteReadinessFixControlRenderer(
                             label={t(
                                 "readinessCheckList.checkLabels.ASSUMED_WALL_TYPES_CONFIRMED",
                             )}
-                            value={QuoteReadinessFixUtils.currentWallBoardType(
-                                readinessData,
-                                item,
-                            )}
+                            value={currentWallBoardType(readinessData, item)}
                             onConfirm={() =>
                                 updateAreaField(item, {
                                     wallBoardTypeConfirmedAt:

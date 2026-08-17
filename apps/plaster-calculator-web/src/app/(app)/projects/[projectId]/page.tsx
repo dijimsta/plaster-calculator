@@ -11,7 +11,7 @@ import { useSalesStatusLabel } from "../../../../lib/sales-status.js";
 import { ui } from "../../../../lib/styles.js";
 import type { ProjectDetail } from "../../../../types.js";
 
-import { FloorplanDeepLinkUtils } from "./floorplan-deep-link.utils.js";
+import { parsePageNumber, parseTool } from "./floorplan-deep-link.utils.js";
 import { ProjectHeader } from "./project-page-header.js";
 import { ProjectSalesStatusControl } from "./project-sales-status-control.js";
 import { ProjectStatusContent } from "./project-status-content.js";
@@ -32,12 +32,8 @@ export default function ProjectPage({
     // should pick the initial page/tool and then get out of the way, not
     // keep re-applying itself if the URL is inspected again later or the
     // user navigates within the editor.
-    const [deepLinkPageNumber] = useState(() =>
-        FloorplanDeepLinkUtils.parsePageNumber(searchParams),
-    );
-    const [deepLinkTool] = useState(() =>
-        FloorplanDeepLinkUtils.parseTool(searchParams),
-    );
+    const [deepLinkPageNumber] = useState(() => parsePageNumber(searchParams));
+    const [deepLinkTool] = useState(() => parseTool(searchParams));
     const [project, setProject] = useState<ProjectDetail | null>(null);
     const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
     const [error, setError] = useState("");

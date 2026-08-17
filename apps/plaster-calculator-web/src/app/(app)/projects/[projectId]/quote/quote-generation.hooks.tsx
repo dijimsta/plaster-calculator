@@ -24,7 +24,11 @@ import { useCallback, useMemo } from "react";
 
 import type { ProjectDetail } from "../../../../../types.js";
 
-import { QuoteTabUtils } from "./quote-tab.utils.js";
+import {
+    toAppearance,
+    toDocumentProps,
+    toEditableValues,
+} from "./quote-tab.utils.js";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -80,7 +84,7 @@ export type ProjectQuoteState = {
  * Reads back `GetProjectQuote` — the Quote tab's "does this project already
  * have a generated quote" query, independent of whether generation just
  * happened in this session or the tab is simply being revisited. Maps the
- * query's quote onto the printable detail document via `QuoteTabUtils`.
+ * query's quote onto the printable detail document via `quote-tab.utils.js`.
  * `refresh()` reads the query from the server and updates its shared cache —
  * `useGenerateQuoteAction` below calls it once `CreateQuoteWithItems`
  * resolves, since that mutation has no automatic cache relationship to this
@@ -97,7 +101,7 @@ export function useProjectQuoteState(
     const queryClient = useQueryClient();
     const quote = data?.project?.quote ?? null;
     const appearance = useMemo(
-        () => QuoteTabUtils.toAppearance(data?.appearance[0]),
+        () => toAppearance(data?.appearance[0]),
         [data?.appearance],
     );
     const logoUrl = useQuoteAppearanceLogoUrl(appearance.logoStoragePath);
@@ -105,7 +109,7 @@ export function useProjectQuoteState(
     const document = useMemo(
         () =>
             quote && project
-                ? QuoteTabUtils.toDocumentProps({
+                ? toDocumentProps({
                       quote,
                       projectName: project.name,
                       companyName: project.companyName ?? null,
@@ -117,7 +121,7 @@ export function useProjectQuoteState(
         [appearance, logoUrl, project, quote],
     );
     const editableValues = useMemo(
-        () => (quote ? QuoteTabUtils.toEditableValues(quote) : null),
+        () => (quote ? toEditableValues(quote) : null),
         [quote],
     );
     const refresh = useCallback(async (): Promise<void> => {

@@ -9,7 +9,7 @@ import { useNotificationsManager } from "@libraries/uikit-web";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
-import { QuoteQueryKeyUtils } from "./quote-query-key.utils.js";
+import { forProjectQuote, forQuotesForTeam } from "./quote-query-key.utils.js";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -89,14 +89,10 @@ export function useSaveProjectQuote(projectId: string): SaveProjectQuoteState {
                 ]);
                 await Promise.all([
                     queryClient.invalidateQueries({
-                        queryKey: QuoteQueryKeyUtils.forProjectQuote(
-                            dataConnect,
-                            projectId,
-                        ),
+                        queryKey: forProjectQuote(dataConnect, projectId),
                     }),
                     queryClient.invalidateQueries({
-                        queryKey:
-                            QuoteQueryKeyUtils.forQuotesForTeam(dataConnect),
+                        queryKey: forQuotesForTeam(dataConnect),
                     }),
                 ]);
                 notify({
@@ -107,10 +103,7 @@ export function useSaveProjectQuote(projectId: string): SaveProjectQuoteState {
                 return true;
             } catch {
                 await queryClient.invalidateQueries({
-                    queryKey: QuoteQueryKeyUtils.forProjectQuote(
-                        dataConnect,
-                        projectId,
-                    ),
+                    queryKey: forProjectQuote(dataConnect, projectId),
                 });
                 notify({
                     intent: "error",
