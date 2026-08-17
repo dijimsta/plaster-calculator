@@ -25,6 +25,7 @@ export {
     completeReminder,
     createReminder,
     listDueReminders,
+    listOpenReminders,
     listProjectReminders,
     updateReminder,
 } from "./reminders.js";
