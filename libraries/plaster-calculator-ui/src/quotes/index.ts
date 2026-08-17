@@ -1,5 +1,6 @@
 export * from "./i18n/index.ts";
 export * from "./editable-quote-form/index.ts";
+export * from "./quote-appearance-panel/index.ts";
 export * from "./quote-detail-document/index.ts";
 export * from "./quote-line-items-table/index.ts";
 export * from "./quote-status-badge/index.ts";

@@ -1,6 +1,7 @@
 import { createTranslationResource } from "@ui/internationalization";
 
 import { en } from "./en.ts";
+import { quoteAppearancePanel } from "./zh/quote-appearance-panel.ts";
 
 export const zh = createTranslationResource(
     en,
@@ -136,6 +137,7 @@ export const zh = createTranslationResource(
             saveErrorTitle: "无法保存报价模板",
             saveErrorDescription: "保存时出现问题，请重试。",
         }),
+        quoteAppearancePanel,
         quoteTemplateForm: Object.freeze({
             defaultItemsTitle: "默认项目",
             defaultItemsDescription:

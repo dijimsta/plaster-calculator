@@ -1,3 +1,5 @@
+import { quoteAppearancePanel } from "./en/quote-appearance-panel.ts";
+
 export const en = Object.freeze({
     common: Object.freeze({
         cancel: "Cancel",
@@ -133,6 +135,7 @@ export const en = Object.freeze({
         saveErrorDescription:
             "Something went wrong while saving. Please try again.",
     }),
+    quoteAppearancePanel,
     quoteTemplateForm: Object.freeze({
         defaultItemsTitle: "Default items",
         defaultItemsDescription:
