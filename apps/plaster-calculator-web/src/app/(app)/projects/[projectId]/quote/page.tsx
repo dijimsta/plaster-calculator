@@ -2,7 +2,6 @@
 
 import "@libraries/plaster-calculator-ui/quote-detail-document.print.css";
 
-import { DRAFT_QUOTE_STATUS } from "@libraries/plaster-calculator-common";
 import { usePrintQuoteDocument } from "@libraries/plaster-calculator-ui";
 import { useQuoteReadiness } from "@libraries/plaster-calculator-web-core";
 import { useSearchParams } from "next/navigation.js";
@@ -60,9 +59,7 @@ export default function ProjectQuoteReadinessPage({
                     <ProjectQuoteActions
                         projectId={projectId}
                         quoteId={projectQuote.quoteId}
-                        status={
-                            projectQuote.document?.status ?? DRAFT_QUOTE_STATUS
-                        }
+                        status={projectQuote.status}
                         hasQuote={projectQuote.hasQuote}
                         hasDocument={projectQuote.document !== null}
                         isSaving={editor.isSaving}

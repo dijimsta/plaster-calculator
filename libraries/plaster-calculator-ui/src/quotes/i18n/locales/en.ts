@@ -51,6 +51,7 @@ export const en = Object.freeze({
         accepted: "Accepted",
     }),
     quoteDetailDocument: Object.freeze({
+        title: "QUOTE",
         noReference: "No reference",
         noCompany: "No company",
         manualLineItem: "Manually entered",
@@ -59,6 +60,20 @@ export const en = Object.freeze({
         columnQuantity: "Qty",
         columnUnitPrice: "Unit price",
         columnAmount: "Amount",
+        logoAlt: "Company logo",
+        abnLabel: "ABN {{abn}}",
+        licenceLabel: "Licence {{licenceNumber}}",
+        validUntil: "Valid until {{date}}",
+        scopeOfWorkTitle: "Scope of work",
+        takeoffSummaryTitle: "Take-off summary",
+        termsTitle: "Terms",
+        lumpSumDescription: "Plastering works — as quoted",
+        signatureBlockTitle: "Acceptance",
+        signatureBlockDescription:
+            "By signing below, you accept this quote and its terms.",
+        signatureLabel: "Signature",
+        printedNameLabel: "Printed name",
+        dateLabel: "Date",
     }),
     quoteLineItemsTable: Object.freeze({
         tableLabel: "Line items",
