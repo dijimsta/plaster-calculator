@@ -81,10 +81,13 @@ New to the repo? This gets a full local environment running with one command: `p
 | Firebase CLI | latest                                          | `npm install -g firebase-tools`                                                                       |
 | uv           | latest                                          | Manages the Python venv for the `floorplan-analyzer` function; `brew install uv`                      |
 | LM Studio    | latest                                          | Runs the questionnaire AI flow locally instead of Vertex AI; [download](https://lmstudio.ai/download) |
+| Git LFS      | latest                                          | Fetches the `floorplan-analyzer` model weights (`*.pth`/`*.pkl`); `brew install git-lfs`              |
 
 ### First-time setup
 
 ```bash
+git lfs install                  # one-time, registers the LFS smudge filter for this repo
+git lfs pull                     # fetches the floorplan-analyzer model weights
 nvm use                          # or install Node 24.15.0 another way
 corepack enable                  # installs the pinned pnpm version
 pnpm install
