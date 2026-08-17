@@ -5,6 +5,7 @@ export interface QuestionnaireTemplatesPageState {
     readonly isDeleting: boolean;
     readonly templatePendingDeletion: QuestionnaireTemplate | null;
     readonly templateBeingEdited: QuestionnaireTemplate | null;
+    readonly duplicatingTemplateIds: ReadonlySet<string>;
 }
 
 export type QuestionnaireTemplatesPageAction =
@@ -24,7 +25,10 @@ export type QuestionnaireTemplatesPageAction =
     | { readonly type: "cancelDelete" }
     | { readonly type: "deleteStarted" }
     | { readonly type: "deleteSucceeded" }
-    | { readonly type: "deleteFailed" };
+    | { readonly type: "deleteFailed" }
+    | { readonly type: "duplicateStarted"; readonly templateId: string }
+    | { readonly type: "duplicateSucceeded"; readonly templateId: string }
+    | { readonly type: "duplicateFailed"; readonly templateId: string };
 
 export function createInitialQuestionnaireTemplatesPageState(): QuestionnaireTemplatesPageState {
     return {
@@ -32,7 +36,17 @@ export function createInitialQuestionnaireTemplatesPageState(): QuestionnaireTem
         isDeleting: false,
         templatePendingDeletion: null,
         templateBeingEdited: null,
+        duplicatingTemplateIds: new Set(),
     };
+}
+
+function withoutDuplicatingTemplateId(
+    duplicatingTemplateIds: ReadonlySet<string>,
+    templateId: string,
+): ReadonlySet<string> {
+    const next = new Set(duplicatingTemplateIds);
+    next.delete(templateId);
+    return next;
 }
 
 export function questionnaireTemplatesPageReducer(
@@ -71,6 +85,22 @@ export function questionnaireTemplatesPageReducer(
                 ...state,
                 isDeleting: false,
                 templatePendingDeletion: null,
+            };
+        case "duplicateStarted":
+            return {
+                ...state,
+                duplicatingTemplateIds: new Set(
+                    state.duplicatingTemplateIds,
+                ).add(action.templateId),
+            };
+        case "duplicateSucceeded":
+        case "duplicateFailed":
+            return {
+                ...state,
+                duplicatingTemplateIds: withoutDuplicatingTemplateId(
+                    state.duplicatingTemplateIds,
+                    action.templateId,
+                ),
             };
     }
 }

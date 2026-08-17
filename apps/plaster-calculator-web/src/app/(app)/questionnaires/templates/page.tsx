@@ -22,6 +22,7 @@ import { useReducer } from "react";
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../../i18n/index.ts";
 
+import { useDuplicateQuestionnaireTemplateCallback } from "./duplicate-template.hooks.js";
 import {
     useConfirmDeleteCallback,
     useCreateQuestionnaireTemplateCallback,
@@ -53,6 +54,10 @@ export default function QuestionnaireTemplatesPage() {
         dispatch,
     );
     const deleteTemplate = useDeleteQuestionnaireTemplateCallback(
+        refreshTemplates,
+        dispatch,
+    );
+    const duplicateTemplate = useDuplicateQuestionnaireTemplateCallback(
         refreshTemplates,
         dispatch,
     );
@@ -141,10 +146,11 @@ export default function QuestionnaireTemplatesPage() {
                     onOpen={(template) =>
                         dispatch({ type: "requestEdit", template })
                     }
-                    onDuplicate={() => undefined}
+                    onDuplicate={(template) => void duplicateTemplate(template)}
                     onDelete={(template) =>
                         dispatch({ type: "requestDelete", template })
                     }
+                    duplicatingTemplateIds={state.duplicatingTemplateIds}
                 />
             )}
             <NewQuestionnaireTemplateDrawer
