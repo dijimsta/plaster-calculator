@@ -9,7 +9,6 @@ export type BundleCommandOptions = {
 @Command({ name: "bundle", description: "Bundle for Firebase Functions" })
 export class BundleCommand extends CommandRunner {
     public constructor(private readonly bundleService: BundleService) {
-        console.log("Initializing BundleCommand");
         super();
     }
 
