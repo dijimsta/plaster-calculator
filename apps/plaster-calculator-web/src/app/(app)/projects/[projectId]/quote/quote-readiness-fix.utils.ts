@@ -6,7 +6,7 @@ import type {
     Point,
     WallBoardType,
 } from "@libraries/plaster-calculator-common";
-import { BoardMaterialsHelper } from "@libraries/plaster-calculator-common";
+import { normalizeWallBoardType } from "@libraries/plaster-calculator-common";
 import {
     parseOverlay,
     parseReferencePoints,
@@ -92,9 +92,9 @@ export class QuoteReadinessFixUtils {
 
     /** `WallBoardTypeFixControl`'s starting value for `item`'s area — its
      * explicit wall board type if set, otherwise the same legacy/defaulted
-     * fallback `BoardMaterialsHelper`/the `WALL_TYPE_SET` resolver already
-     * use, so the control never opens on a value the readiness check itself
-     * wouldn't recognise as set. */
+     * fallback `normalizeWallBoardType()`/the `WALL_TYPE_SET` resolver
+     * already use, so the control never opens on a value the readiness
+     * check itself wouldn't recognise as set. */
     public static currentWallBoardType(
         readinessData: GetQuoteReadinessData | undefined,
         item: ReadinessAffectedItem,
@@ -104,7 +104,7 @@ export class QuoteReadinessFixUtils {
             item.pageId,
             item.areaId,
         );
-        return BoardMaterialsHelper.normalizeWallBoardType(
+        return normalizeWallBoardType(
             area?.wallBoardType,
             area?.wallPlasterType,
         );
