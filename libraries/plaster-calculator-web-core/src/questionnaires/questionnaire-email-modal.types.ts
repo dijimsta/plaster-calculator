@@ -4,16 +4,16 @@
  * type) so both in-flight wizard rows and persisted scope-of-work rows can
  * be passed in.
  */
-export interface QuestionnaireEmailClarification {
+export type QuestionnaireEmailClarification = {
     readonly label: string;
     readonly answer?: string | null;
-}
+};
 
-export interface GenerateQuestionnaireEmailModalState {
+export type GenerateQuestionnaireEmailModalState = {
     readonly isOpen: boolean;
     readonly subject: string;
     readonly body: string;
     readonly mailtoHref: string;
     readonly openModal: () => void;
     readonly closeModal: () => void;
-}
+};

@@ -20,34 +20,34 @@ import type { AnswerSource } from "@libraries/plaster-calculator-common";
 export type ClarificationRowStatus = "ON_PLAN" | "UNCHECKED" | "ASK_BUILDER";
 
 /** One persisted `ProjectQuestionnaireQuestion` row, plus its derived status. */
-export interface ClarificationRow {
+export type ClarificationRow = {
     readonly id: string;
     readonly label: string;
     readonly position: number;
     readonly answer: string | null;
     readonly answerSource: AnswerSource;
     readonly status: ClarificationRowStatus;
-}
+};
 
 /** The subset of `GetProjectQuestionnaire`'s question shape the step needs to derive `ClarificationRow`s from. */
-export interface RawClarificationQuestion {
+export type RawClarificationQuestion = {
     readonly id: string;
     readonly label: string;
     readonly position: number;
     readonly answer?: string | null;
     readonly answerSource?: string | null;
-}
+};
 
 /** One entry in the template picker — a minimal projection of `ListQuestionnaireTemplates`'s result. */
-export interface ClarificationsTemplateOption {
+export type ClarificationsTemplateOption = {
     readonly id: string;
     readonly name: string;
-}
+};
 
 /** One question copied out of a template, as read from `GetQuestionnaireTemplate`. */
-export interface ClarificationsTemplateQuestion {
+export type ClarificationsTemplateQuestion = {
     readonly label: string;
-}
+};
 
 /**
  * Why `ClarificationsStepUtils.buildBatchApplyTemplateVariables()` refused
@@ -92,7 +92,7 @@ export class ClarificationsStepError extends Error {
  * split `questionnaire-answer-domain.ts` (functions package) uses for
  * `answerQuestionnaireWithAI` server-side.
  */
-export interface ClarificationsStepDependencies {
+export type ClarificationsStepDependencies = {
     getTemplateQuestions(
         templateId: string,
     ): Promise<readonly ClarificationsTemplateQuestion[]>;
@@ -114,4 +114,4 @@ export interface ClarificationsStepDependencies {
     }): Promise<unknown>;
     deleteQuestion(input: { id: string; projectId: string }): Promise<unknown>;
     refresh(): Promise<void>;
-}
+};

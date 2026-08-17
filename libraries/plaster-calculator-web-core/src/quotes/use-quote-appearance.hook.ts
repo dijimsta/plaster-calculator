@@ -7,7 +7,7 @@ import { quoteAppearanceService } from "./quote-appearance.service.ts";
 
 const quoteAppearanceQueryKey = ["quote-appearance"] as const;
 
-export interface UseQuoteAppearanceResult {
+export type UseQuoteAppearanceResult = {
     readonly appearance: QuoteAppearance | undefined;
     readonly loading: boolean;
     readonly saving: boolean;
@@ -18,7 +18,7 @@ export interface UseQuoteAppearanceResult {
     readonly uploadingLogo: boolean;
     readonly uploadLogo: (file: File) => Promise<string>;
     readonly removeLogo: () => Promise<void>;
-}
+};
 
 /**
  * Reads and saves the calling team's `QuoteAppearance` settings, shaped

@@ -6,9 +6,9 @@ import type { PropsWithChildren, ReactElement } from "react";
 import { CompaniesServiceContext } from "./companies.context.ts";
 import { CompaniesService } from "./companies.service.ts";
 
-export interface CompaniesServiceProviderProps extends PropsWithChildren {
+export type CompaniesServiceProviderProps = PropsWithChildren & {
     readonly companiesService?: CompaniesService;
-}
+};
 
 export function CompaniesServiceProvider({
     children,

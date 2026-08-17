@@ -6,9 +6,9 @@ import type { PropsWithChildren, ReactElement } from "react";
 import { ProjectsServiceContext } from "./projects.context.ts";
 import { ProjectsService } from "./projects.service.ts";
 
-export interface ProjectsServiceProviderProps extends PropsWithChildren {
+export type ProjectsServiceProviderProps = PropsWithChildren & {
     readonly projectsService?: ProjectsService;
-}
+};
 
 export function ProjectsServiceProvider({
     children,

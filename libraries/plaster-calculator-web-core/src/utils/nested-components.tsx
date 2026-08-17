@@ -1,8 +1,8 @@
 import type { ComponentType, PropsWithChildren, ReactElement } from "react";
 
-export interface NestedComponentsProps extends PropsWithChildren {
+export type NestedComponentsProps = PropsWithChildren & {
     readonly components: readonly ComponentType<PropsWithChildren>[];
-}
+};
 
 /**
  * Nests components in declaration order instead of hand-nested JSX.
