@@ -44,6 +44,7 @@ export function useQuestionnaireTemplates(): readonly QuestionnaireTemplate[] {
 
 export function useProjectQuestionnaireQuestions(projectId: string): {
     readonly questions: readonly ProjectQuestionnaireQuestion[];
+    readonly sourceTemplateId: string | null;
     readonly isLoading: boolean;
 } {
     const { data, isLoading } = DataConnectorReact.useGetProjectQuestionnaire(
@@ -58,6 +59,7 @@ export function useProjectQuestionnaireQuestions(projectId: string): {
                 answerSource: AnswerSourceSchema.parse(question.answerSource),
             }),
         ),
+        sourceTemplateId: data?.projectQuestionnaire?.sourceTemplateId ?? null,
         isLoading,
     };
 }
