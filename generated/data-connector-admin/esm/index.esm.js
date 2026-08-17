@@ -144,6 +144,12 @@ export function listDueReminders(dcOrVarsOrOptions, varsOrOptions, options) {
   return dcInstance.executeQuery('ListDueReminders', inputVars, inputOpts);
 }
 
+export function listOpenReminders(dcOrVarsOrOptions, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
+  dcInstance.useGen(true);
+  return dcInstance.executeQuery('ListOpenReminders', inputVars, inputOpts);
+}
+
 export function listProjectReminders(dcOrVarsOrOptions, varsOrOptions, options) {
   const { dc: dcInstance, vars: inputVars, options: inputOpts} = validateAdminArgs(connectorConfig, dcOrVarsOrOptions, varsOrOptions, options, true, true);
   dcInstance.useGen(true);

@@ -21,6 +21,25 @@ query ListDueReminders($teamId: String!) @auth(level: NO_ACCESS) {
     }
 }
 
+query ListOpenReminders($teamId: String!) @auth(level: NO_ACCESS) {
+    reminders(
+        where: { teamId: { eq: $teamId }, status: { eq: "OPEN" } }
+        orderBy: [{ dueAt: ASC }]
+    ) {
+        id
+        teamId
+        assignee
+        projectId
+        companyId
+        name
+        status
+        dueAt
+        completedAt
+        createdAt
+        updatedAt
+    }
+}
+
 query ListProjectReminders($projectId: UUID!) @auth(level: NO_ACCESS) {
     reminders(
         where: { projectId: { eq: $projectId } }
