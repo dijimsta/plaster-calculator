@@ -16,7 +16,10 @@ import {
     useProjectQuotePageProject,
 } from "./project-quote-page.hooks.js";
 import { ProjectQuoteActions } from "./quote-detail-actions.js";
-import { useAutoPrintOnMount } from "./quote-detail.hooks.js";
+import {
+    useAutoPrintOnMount,
+    useQuoteDocumentPrintTrigger,
+} from "./quote-detail.hooks.js";
 import {
     useGenerateQuoteAction,
     useProjectQuoteState,
@@ -37,9 +40,13 @@ export default function ProjectQuoteReadinessPage({
     const { isGenerating, errorMessage, handleGenerateQuote } =
         useGenerateQuoteAction(projectId, projectQuote.refresh);
     const { printQuoteDocument } = usePrintQuoteDocument();
+    const printQuoteDocumentWhenReady = useQuoteDocumentPrintTrigger(
+        printQuoteDocument,
+        projectQuote.document?.appearance.logoStoragePath != null,
+    );
 
     useAutoPrintOnMount(
-        printQuoteDocument,
+        printQuoteDocumentWhenReady,
         searchParams.get("print") === "1",
         projectQuote.document !== null,
     );
@@ -63,7 +70,7 @@ export default function ProjectQuoteReadinessPage({
                         hasQuote={projectQuote.hasQuote}
                         hasDocument={projectQuote.document !== null}
                         isSaving={editor.isSaving}
-                        onDownload={printQuoteDocument}
+                        onDownload={printQuoteDocumentWhenReady}
                     />
                 }
             />
