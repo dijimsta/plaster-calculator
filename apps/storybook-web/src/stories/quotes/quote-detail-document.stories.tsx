@@ -9,6 +9,7 @@ import {
     QUOTE_DETAIL_DOCUMENT_APPEARANCE_LUMP_SUM,
     QUOTE_DETAIL_DOCUMENT_LINE_ITEMS,
     QUOTE_DETAIL_DOCUMENT_LONG_LINE_ITEMS,
+    QUOTE_DETAIL_DOCUMENT_SAMPLE_LOGO_URL,
     QUOTE_DETAIL_DOCUMENT_SCOPE_OF_WORK_TEXT,
     QUOTE_DETAIL_DOCUMENT_TAKEOFF_SUMMARY_TEXT,
 } from "./quote-detail-document.stubs.ts";
@@ -54,6 +55,20 @@ export const LumpSum: Story = {
     name: "Lump sum — single description and total",
     args: {
         appearance: QUOTE_DETAIL_DOCUMENT_APPEARANCE_LUMP_SUM,
+    },
+};
+
+export const WithLogo: Story = {
+    name: "With a letterhead logo",
+    parameters: {
+        docs: {
+            description: {
+                story: "Every other story here omits `logoUrl`, matching a team that hasn't uploaded a logo -- this story is the same letterhead with one added.",
+            },
+        },
+    },
+    args: {
+        logoUrl: QUOTE_DETAIL_DOCUMENT_SAMPLE_LOGO_URL,
     },
 };
 
