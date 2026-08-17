@@ -26,6 +26,15 @@ export class RemindersService {
         return ListRemindersResponseSchema.parse(data).reminders;
     }
 
+    public async listOpenReminders(): Promise<Reminder[]> {
+        const listOpenRemindersCallable = httpsCallable(
+            this.functions,
+            "listOpenReminders",
+        );
+        const { data } = await listOpenRemindersCallable();
+        return ListRemindersResponseSchema.parse(data).reminders;
+    }
+
     public async listProjectReminders(projectId: string): Promise<Reminder[]> {
         const listProjectRemindersCallable = httpsCallable(
             this.functions,
