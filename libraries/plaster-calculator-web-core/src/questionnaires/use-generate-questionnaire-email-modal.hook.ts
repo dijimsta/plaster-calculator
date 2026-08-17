@@ -1,6 +1,6 @@
 "use client";
 
-import { EmailTemplateBuilder } from "@libraries/plaster-calculator-common";
+import { buildEmailTemplate } from "@libraries/plaster-calculator-common";
 import type {
     EmailTemplate,
     UserSignature,
@@ -66,7 +66,8 @@ function buildEmailContent(
     contact: CompanyContact | undefined,
 ): EmailTemplate | null {
     if (!signature) return null;
-    return new EmailTemplateBuilder(signature.signature).build(
+    return buildEmailTemplate(
+        signature.signature,
         unansweredClarifications,
         contact?.name,
     );

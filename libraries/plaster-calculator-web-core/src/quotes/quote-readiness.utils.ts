@@ -2,8 +2,8 @@ import type { GetQuoteReadinessData } from "@generated/data-connector-web";
 import {
     OverlaySchema,
     PDF_UPLOAD_TYPE,
-    QuoteItemInclusionUtils,
     READINESS_CHECKS,
+    resolveInclusion,
     type FloorplanPage,
     type ProjectDetail,
     type ReadinessCheckInput,
@@ -72,7 +72,7 @@ export class QuoteReadinessUtils {
     /**
      * `data.quoteItemTemplateConfigs` are the template actually pricing
      * this project's own rows — each carries its own `enabled` column, but
-     * per `QuoteItemInclusionUtils.resolveInclusion()`'s design, only the
+     * per `resolveInclusion()`'s design, only the
      * default template decides whether an item goes on a quote. Every row
      * is resolved against `defaultTemplateConfigsByItemTemplateId` before
      * being mapped onto `ReadinessQuoteItemTemplateConfig`: an item missing
@@ -98,15 +98,12 @@ export class QuoteReadinessUtils {
             ),
             quoteItemTemplateConfigs: data.quoteItemTemplateConfigs.map(
                 (config) => {
-                    const resolved = QuoteItemInclusionUtils.resolveInclusion(
-                        config,
-                        {
-                            enabled:
-                                defaultConfigsByItemTemplateId.get(
-                                    config.itemTemplateId,
-                                )?.enabled ?? false,
-                        },
-                    );
+                    const resolved = resolveInclusion(config, {
+                        enabled:
+                            defaultConfigsByItemTemplateId.get(
+                                config.itemTemplateId,
+                            )?.enabled ?? false,
+                    });
                     return {
                         quoteItemTemplateId: resolved.itemTemplateId,
                         label: resolved.itemTemplate.name,
@@ -157,7 +154,8 @@ export class QuoteReadinessUtils {
      * `GetQuoteReadiness` only fetches the subset of `ProjectSummary`
      * documented on the query itself (id, teamId, name, salesStatus,
      * pageCount), by design. Of the nine readiness resolvers, none read
-     * anything off `project` besides `pages` (via `ReadinessCheckUtils`) —
+     * anything off `project` besides `pages` (via `readiness-check.
+     * utils.ts`) —
      * `COMPANY_CONTACT_DETAILS` (WORK-221/222) is the one exception, but it
      * reads `company` off the top-level `ReadinessCheckInput`
      * (`buildCompany()`, below), not off `project` itself. So the remaining
@@ -190,8 +188,8 @@ export class QuoteReadinessUtils {
 
     /**
      * `FloorplanPage.overlay` is the only per-page field the resolvers read
-     * besides `scaleMmPerPx`/`ceilingHeightMm` (via `ReadinessCheckUtils`),
-     * so the rest of `FloorplanPageSchema`'s required fields are inert
+     * besides `scaleMmPerPx`/`ceilingHeightMm` (via `readiness-check.
+     * utils.ts`), so the rest of `FloorplanPageSchema`'s required fields are inert
      * placeholders here too — see `buildProjectDetail`.
      */
     private static buildFloorplanPage(page: QueryFloorplanPage): FloorplanPage {
@@ -213,12 +211,12 @@ export class QuoteReadinessUtils {
 
     /**
      * Validates `overlayJson` through `OverlaySchema` and returns it
-     * unchanged if valid, so downstream area-parsing
-     * (`ReadinessCheckUtils.activeAreasForPage()`) gets exactly what it
-     * already expects: a JSON string it can re-parse, or `null`. Null,
-     * unparsable, and schema-invalid JSON all degrade to `null` rather than
-     * throwing — `ReadinessCheckUtils.parseOverlayAreas()` already treats a
-     * `null` overlay as zero areas, which is what makes `ROOMS_MEASURED`
+     * unchanged if valid, so downstream area-parsing (`activeAreasForPage()`
+     * in `readiness-check.utils.ts`) gets exactly what it already expects: a
+     * JSON string it can re-parse, or `null`. Null, unparsable, and
+     * schema-invalid JSON all degrade to `null` rather than throwing —
+     * `parseOverlayAreas()` already treats a `null` overlay as zero areas,
+     * which is what makes `ROOMS_MEASURED`
      * (and the other area-level checks) correctly report "unmet" for a
      * malformed page instead of crashing the whole gate.
      */

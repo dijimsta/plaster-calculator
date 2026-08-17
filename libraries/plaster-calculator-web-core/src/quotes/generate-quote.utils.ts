@@ -3,10 +3,10 @@ import type {
     GetQuoteReadinessData,
 } from "@generated/data-connector-web";
 import {
-    QuoteItemInclusionUtils,
-    QuoteItemKeywordMatcherUtils,
-    ReadinessCheckUtils,
-    TakeoffRollupUtils,
+    match,
+    parseOverlayAreas,
+    resolveInclusion,
+    rollup,
     type PageTakeoffInput,
     type QuantitySourceDefinition,
     type TakeoffRollupResult,
@@ -73,8 +73,8 @@ export class GenerateQuoteUtils {
      * The full orchestration: refuses outright when `input.isReady` is
      * `false` (the readiness gate is not merely advisory — see
      * `GenerateQuoteFailureReason`'s doc comment), otherwise rolls up
-     * `input.pages` via `TakeoffRollupUtils.rollup()`, resolves+filters
-     * quote items via `resolveQuoteItems()`, and hands the result to
+     * `input.pages` via `rollup()`, resolves+filters quote items via
+     * `resolveQuoteItems()`, and hands the result to
      * `buildMutationVariables()`.
      */
     public static build(input: GenerateQuoteInput): GenerateQuoteResult {
@@ -87,7 +87,7 @@ export class GenerateQuoteUtils {
             };
         }
 
-        const rollupResults = TakeoffRollupUtils.rollup(
+        const rollupResults = rollup(
             input.pages,
             GenerateQuoteUtils.quantitySources(input.templateConfigs),
         );
@@ -104,8 +104,8 @@ export class GenerateQuoteUtils {
     }
 
     /**
-     * Matches every `templateConfigs` entry against `searchText`
-     * (`QuoteItemKeywordMatcherUtils.match()`) and resolves its quantity
+     * Matches every `templateConfigs` entry against `searchText` (`match()`
+     * in `@libraries/plaster-calculator-common`) and resolves its quantity
      * (`resolveQuantityFor()`), keeping only the ones that both match *and*
      * resolve to a non-zero quantity — a quote should not carry a $0 line
      * for a metric this plan doesn't have, matched keywords or not.
@@ -185,11 +185,10 @@ export class GenerateQuoteUtils {
 
     /**
      * Maps `GetQuoteReadiness`'s `floorplanPages` onto `PageTakeoffInput`,
-     * reusing `ReadinessCheckUtils.parseOverlayAreas()` (`@libraries/
-     * plaster-calculator-common`) for the same defensive
-     * "malformed/absent overlay JSON -> no areas, not a crash" parsing the
-     * readiness gate itself already relies on, rather than re-implementing
-     * overlay parsing here.
+     * reusing `parseOverlayAreas()` (`@libraries/plaster-calculator-common`)
+     * for the same defensive "malformed/absent overlay JSON -> no areas, not
+     * a crash" parsing the readiness gate itself already relies on, rather
+     * than re-implementing overlay parsing here.
      */
     public static buildPageTakeoffInputs(
         floorplanPages: readonly QueryFloorplanPage[],
@@ -197,11 +196,7 @@ export class GenerateQuoteUtils {
         return floorplanPages.map((page) => ({
             pageId: page.id,
             overlay: {
-                areas: [
-                    ...ReadinessCheckUtils.parseOverlayAreas(
-                        page.overlayJson ?? null,
-                    ),
-                ],
+                areas: [...parseOverlayAreas(page.overlayJson ?? null)],
             },
             scaleMmPerPx: page.scaleMmPerPx ?? null,
             pageHeightMm: page.ceilingHeightMm ?? null,
@@ -213,9 +208,9 @@ export class GenerateQuoteUtils {
      * template actually pricing this quote (`configs` — the project's
      * company's assigned variation, or the team's default template when it
      * has none) onto `GenerateQuoteTemplateConfig`, resolving each item's
-     * inclusion via `QuoteItemInclusionUtils.resolveInclusion()`
-     * (`@libraries/plaster-calculator-common`) against
-     * `defaultTemplateConfigs` — the team's default template's own
+     * inclusion via `resolveInclusion()` (`@libraries/
+     * plaster-calculator-common`) against `defaultTemplateConfigs` — the
+     * team's default template's own
      * configs — rather than trusting `configs`' own `enabled` column. That
      * single rule ("the default decides whether an item goes on a quote,
      * not the variation pricing it") is why a variation can carry a
@@ -243,7 +238,7 @@ export class GenerateQuoteUtils {
         );
         return configs
             .map((config) =>
-                QuoteItemInclusionUtils.resolveInclusion(config, {
+                resolveInclusion(config, {
                     enabled:
                         defaultConfigsByItemTemplateId.get(
                             config.itemTemplateId,
@@ -281,10 +276,7 @@ export class GenerateQuoteUtils {
         rollupResults: readonly TakeoffRollupResult[],
         searchText: string,
     ): ResolvedQuoteItem | null {
-        const matchResult = QuoteItemKeywordMatcherUtils.match(
-            config,
-            searchText,
-        );
+        const matchResult = match(config, searchText);
         if (!matchResult.matches) return null;
 
         const quantity = GenerateQuoteUtils.resolveQuantityFor(

@@ -17,8 +17,9 @@ import type { FirebaseError } from "firebase/app";
  * from `GetQuoteReadiness` today: that query (`data/connector-web/quotes.
  * queries.gql`) only selects `unitPriceCents` on `quoteItemTemplateConfigs`,
  * not the other two `QuoteItemTemplateConfig` price columns. `unitPriceCents`
- * is the field `QuoteTotalsUtils` actually prices a quote line from, so this
- * doesn't affect a generated quote's totals — but the material/labour
+ * is the field the quote-totals helpers (`quote-totals.utils.ts`) actually
+ * price a quote line from, so this doesn't affect a generated quote's
+ * totals — but the material/labour
  * breakdown will read as `0` until a future ticket extends that query (out
  * of scope here: this package cannot add Data Connect queries).
  */
