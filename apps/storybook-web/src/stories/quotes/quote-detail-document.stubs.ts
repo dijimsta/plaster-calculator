@@ -134,6 +134,18 @@ export const QUOTE_DETAIL_DOCUMENT_APPEARANCE_ALL_BLOCKS: QuoteAppearance = {
     showSignatureBlock: true,
 };
 
+/**
+ * A small inline SVG letterhead logo -- a self-contained data URI rather
+ * than a hosted image, so this story never depends on network access (see
+ * `Avatar`'s own story, `apps/storybook-web/src/stories/elements/avatar.stories.tsx`,
+ * for the alternative of a hosted sample image; a letterhead logo has no
+ * equivalent stable, license-free hosted source to reuse). Matches
+ * `QUOTE_DETAIL_DOCUMENT_APPEARANCE`'s accent colour and stands in for
+ * "Coastal Plastering Co."'s monogram.
+ */
+export const QUOTE_DETAIL_DOCUMENT_SAMPLE_LOGO_URL =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iIzI1NjNlYiIvPjx0ZXh0IHg9IjMyIiB5PSI0MiIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNQPC90ZXh0Pjwvc3ZnPg==";
+
 export const QUOTE_DETAIL_DOCUMENT_SCOPE_OF_WORK_TEXT =
     "Supply and install 10mm plasterboard to all internal walls and ceilings as per plan, including 90mm cove cornice throughout. Wet-area walls to receive 6mm villaboard. Excludes painting.";
 
