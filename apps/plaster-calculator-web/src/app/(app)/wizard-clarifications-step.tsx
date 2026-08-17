@@ -21,11 +21,11 @@ import { useState } from "react";
  */
 const FIND_ANSWERS_CREDIT_COST = 1;
 
-interface WizardClarificationsStepProps {
+type WizardClarificationsStepProps = {
     /** The project created earlier in the wizard (on upload) -- clarifications persist against it as the user goes. */
     readonly projectId: string;
     readonly companyId: string | null;
-}
+};
 
 /**
  * Step 2 of the new-project wizard: bridges `useClarificationsStep`'s

@@ -46,12 +46,12 @@ export type FollowUpReminderRow = Readonly<{
     companyName: string | null;
 }>;
 
-export interface UseFollowUpRemindersOptions {
+export type UseFollowUpRemindersOptions = {
     /** Projects the dashboard already loaded, used to resolve each reminder's project/company name. */
     readonly projects: ProjectSummary[];
-}
+};
 
-export interface UseFollowUpRemindersResult {
+export type UseFollowUpRemindersResult = {
     readonly rows: FollowUpReminderRow[];
     readonly openCount: number;
     readonly overdueCount: number;
@@ -70,7 +70,7 @@ export interface UseFollowUpRemindersResult {
         action: "snoozed" | "rescheduled",
     ) => Promise<void>;
     readonly undoReminder: (reminderId: string) => Promise<void>;
-}
+};
 
 export function useFollowUpReminders({
     projects,

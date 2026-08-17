@@ -10,7 +10,7 @@ import type { CompanyContact, CompanyDetail } from "../../../types.js";
 import type { ContactDraft } from "./company.types.js";
 import { ContactRow } from "./contact-row.js";
 
-interface ContactsPanelProps {
+type ContactsPanelProps = {
     readonly company: CompanyDetail;
     readonly editContactDraft: ContactDraft;
     readonly editContactId: string | null;
@@ -19,7 +19,7 @@ interface ContactsPanelProps {
     readonly saveContact: (contactId: string) => Promise<void>;
     readonly setEditContactDraft: (draft: ContactDraft) => void;
     readonly setEditContactId: (contactId: string | null) => void;
-}
+};
 
 export function ContactsPanel({
     company,

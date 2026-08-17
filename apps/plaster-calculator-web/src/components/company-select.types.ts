@@ -2,7 +2,7 @@ import type { FormEvent } from "react";
 
 import type { CompanyDetail, CompanySummary } from "../types.js";
 
-export interface CompanySelectProps {
+export type CompanySelectProps = {
     readonly selectedCompanyId: string | null;
     readonly onChange: (companyId: string | null) => void;
     readonly disabled?: boolean;
@@ -17,15 +17,15 @@ export interface CompanySelectProps {
      * has resolved and its id has landed via `onChange`/`onCreated`.
      */
     readonly onCreatePendingChange?: (isPending: boolean) => void;
-}
+};
 
-export interface CompanySelectMenuProps {
+export type CompanySelectMenuProps = {
     readonly error: string;
     readonly filtered: readonly CompanySummary[];
     readonly isLoading: boolean;
     readonly onSelect: (company: CompanySummary) => void;
     readonly onStartCreate: () => void;
-}
+};
 
 export type CompanyCreateDraft = {
     readonly companyName: string;
@@ -33,7 +33,7 @@ export type CompanyCreateDraft = {
     readonly phoneNumber: string;
 };
 
-export interface CompanyCreatePanelProps {
+export type CompanyCreatePanelProps = {
     readonly draft: CompanyCreateDraft;
     readonly setDraft: (draft: CompanyCreateDraft) => void;
     readonly error: string;
@@ -42,7 +42,7 @@ export interface CompanyCreatePanelProps {
     readonly onSubmit: (event: FormEvent) => void;
     readonly onUseSuggestion: (company: CompanySummary) => void;
     readonly onCancel: () => void;
-}
+};
 
 export const EMPTY_CREATE_DRAFT: CompanyCreateDraft = {
     companyName: "",

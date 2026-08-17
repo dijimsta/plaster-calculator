@@ -40,10 +40,10 @@ import {
 import { ContactsPanel } from "./contacts-panel.js";
 import { NewContactModal } from "./new-contact-modal.js";
 
-interface CompanyDetailViewProps {
+type CompanyDetailViewProps = {
     readonly companyId: string;
     readonly onCompanyDeleted: () => void;
-}
+};
 
 export function CompanyDetailView({
     companyId,

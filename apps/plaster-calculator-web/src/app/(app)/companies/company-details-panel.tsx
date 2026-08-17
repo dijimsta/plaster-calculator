@@ -11,14 +11,14 @@ import type { CompanyDetail } from "../../../types.js";
 import { CompanyDetailFields } from "./company-detail-fields.js";
 import type { CompanyDetailDraft } from "./company.types.js";
 
-interface CompanyDetailsPanelProps {
+type CompanyDetailsPanelProps = {
     readonly company: CompanyDetail;
     readonly draft: CompanyDetailDraft;
     readonly hasCompanyChanges: boolean;
     readonly removeCompany: () => Promise<void>;
     readonly saveCompany: (event: FormEvent) => Promise<void>;
     readonly setDraft: (draft: CompanyDetailDraft) => void;
-}
+};
 
 export function CompanyDetailsPanel({
     company,

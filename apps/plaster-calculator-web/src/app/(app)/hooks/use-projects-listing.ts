@@ -22,7 +22,7 @@ const ALL_SALES_STATUSES: readonly SalesStatus[] = [
 
 export type EnrichedProject = ProjectSummary & { companyName: string | null };
 
-export interface ProjectsListingState {
+export type ProjectsListingState = {
     readonly view: ProjectsView;
     readonly statusFilter: StatusFilter;
     readonly query: string;
@@ -50,7 +50,7 @@ export interface ProjectsListingState {
     readonly setProcessingProjectId: (projectId: string | null) => void;
     readonly setRenameValue: (value: string) => void;
     readonly setRenamingId: (projectId: string | null) => void;
-}
+};
 
 export function useProjectsListing(): ProjectsListingState {
     const projectsService = useProjectsService();

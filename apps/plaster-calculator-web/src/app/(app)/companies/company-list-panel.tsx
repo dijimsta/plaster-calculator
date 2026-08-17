@@ -25,12 +25,12 @@ import type { CompanySummary } from "../../../types.js";
 import { CompanyRow } from "./company-row.js";
 import { filterCompanies } from "./company.utils.js";
 
-interface CompanyListPanelProps {
+type CompanyListPanelProps = {
     readonly refreshKey: number;
     /** Invoked with the trimmed search term when the user asks to create a
      * company from an empty search result. */
     readonly onCreateFromSearch: (name: string) => void;
-}
+};
 
 export function CompanyListPanel({
     refreshKey,

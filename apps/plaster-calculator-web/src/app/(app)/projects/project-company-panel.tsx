@@ -10,13 +10,13 @@ import { useAppTranslation } from "../../../i18n/index.ts";
 import { ui } from "../../../lib/styles.js";
 import type { CompanyDetail } from "../../../types.js";
 
-interface ProjectCompanyPanelProps {
+type ProjectCompanyPanelProps = {
     readonly companyId: string | null;
     readonly draftCompanyId: string | null;
     readonly isSaving: boolean;
     readonly saveCompany: (companyId?: string) => Promise<void>;
     readonly setDraftCompanyId: (companyId: string | null) => void;
-}
+};
 
 export function ProjectCompanyPanel({
     companyId,

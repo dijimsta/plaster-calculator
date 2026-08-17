@@ -12,10 +12,10 @@ import type { UseDashboardUploadResult } from "./hooks/use-dashboard-upload.js";
 import { PdfPageModalContent } from "./pdf-page-modal-content.js";
 import { WizardClarificationsStep } from "./wizard-clarifications-step.js";
 
-interface NewProjectWizardProps {
+type NewProjectWizardProps = {
     readonly upload: UseDashboardUploadResult;
     readonly progressMessage: string;
-}
+};
 
 /**
  * Hosts the new-project wizard once an upload starts: step 1 recaps what's

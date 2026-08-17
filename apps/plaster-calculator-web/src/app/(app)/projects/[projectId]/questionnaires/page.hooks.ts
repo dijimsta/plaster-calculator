@@ -19,13 +19,13 @@ const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
 );
 
-export interface ProjectQuestionnaireQuestion {
+export type ProjectQuestionnaireQuestion = {
     readonly id: string;
     readonly label: string;
     readonly position: number;
     readonly answer?: string | null;
     readonly answerSource?: AnswerSource;
-}
+};
 
 function nextPositionAfter(
     questions: readonly ProjectQuestionnaireQuestion[],

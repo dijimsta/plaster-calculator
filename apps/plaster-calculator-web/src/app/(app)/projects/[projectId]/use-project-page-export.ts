@@ -15,7 +15,7 @@ import type { ProjectDetail } from "../../../../types.js";
 
 type Notifications = ReturnType<typeof useNotificationsManager>;
 
-interface UseProjectPageExportOptions {
+type UseProjectPageExportOptions = {
     readonly project: ProjectDetail | null;
     readonly setProject: (
         updater: (current: ProjectDetail | null) => ProjectDetail | null,
@@ -26,9 +26,9 @@ interface UseProjectPageExportOptions {
     readonly projectsService: ProjectsService;
     readonly notify: Notifications["notify"];
     readonly dismiss: Notifications["dismiss"];
-}
+};
 
-interface UseProjectPageExportResult {
+type UseProjectPageExportResult = {
     readonly pageDrafts: Record<string, PageValidationInput>;
     readonly switchingPage: boolean;
     readonly validationIssues: ValidationIssue[];
@@ -36,7 +36,7 @@ interface UseProjectPageExportResult {
     readonly selectPage: (pageId: string) => Promise<void>;
     readonly validateAndExport: () => Promise<void>;
     readonly resetForProjectLoad: () => void;
-}
+};
 
 export function useProjectPageExport({
     project,
