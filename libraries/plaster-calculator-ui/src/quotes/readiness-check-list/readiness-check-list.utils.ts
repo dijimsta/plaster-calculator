@@ -5,6 +5,7 @@ import type {
 import {
     ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID,
     CEILING_HEIGHT_SET_CHECK_ID,
+    COMPANY_CONTACT_DETAILS_CHECK_ID,
     INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
     ROOMS_MEASURED_CHECK_ID,
     SCALE_APPLIED_CHECK_ID,
@@ -58,6 +59,10 @@ export class ReadinessCheckListUtils {
                 return t(
                     "readinessCheckList.checkLabels.ASSUMED_WALL_TYPES_CONFIRMED",
                 );
+            case COMPANY_CONTACT_DETAILS_CHECK_ID:
+                return t(
+                    "readinessCheckList.checkLabels.COMPANY_CONTACT_DETAILS",
+                );
             default:
                 return checkId;
         }
@@ -67,8 +72,9 @@ export class ReadinessCheckListUtils {
      * Names an affected item's location in human-readable terms, e.g.
      * `"Page 2 — Living Room"`, never a raw id. Falls back through the
      * entity types a `ReadinessAffectedItem` can describe — page/room,
-     * quote item template, questionnaire question — and finally to a
-     * translated generic label for a check with no location to report.
+     * quote item template, questionnaire question, company — and finally
+     * to a translated generic label for a check with no location to
+     * report.
      */
     public static affectedItemLocation(
         item: ReadinessAffectedItem,
@@ -86,6 +92,11 @@ export class ReadinessCheckListUtils {
         }
         if (item.quoteItemTemplateLabel) return item.quoteItemTemplateLabel;
         if (item.questionLabel) return item.questionLabel;
+        if (item.companyName) {
+            return t("readinessCheckList.companyLocation", {
+                companyName: item.companyName,
+            });
+        }
         return t("readinessCheckList.defaultAffectedItemLocation");
     }
 
@@ -104,6 +115,7 @@ export class ReadinessCheckListUtils {
             item.areaId,
             item.quoteItemTemplateId,
             item.questionId,
+            item.companyId,
         ].filter((part): part is string => part != null);
         return idParts.length > 0 ? idParts.join(":") : `item-${index}`;
     }

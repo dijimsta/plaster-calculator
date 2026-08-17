@@ -138,7 +138,7 @@ function ReadinessCheckAlert({
 }: ReadinessCheckRowProps): ReactElement {
     return (
         <Alert
-            intent={result?.isMet ? "success" : "error"}
+            intent={checkStatusIntent(result?.isMet ?? false, check.severity)}
             variant="light-with-border"
         >
             <ReadinessCheckRow
@@ -148,6 +148,31 @@ function ReadinessCheckAlert({
             />
         </Alert>
     );
+}
+
+/**
+ * Maps a check's met/unmet state and severity onto the `Alert`/`Badge`
+ * intent that reads as blocking vs. advisory: unmet `WARN` checks (e.g.
+ * `COMPANY_CONTACT_DETAILS`, WORK-221/223) read as a nudge rather than a
+ * blocker, the same "warn" treatment used elsewhere in the app (e.g.
+ * `save-questionnaire-template-from-project-modal`'s `Alert`) rather than
+ * `error`'s.
+ */
+function checkStatusIntent(
+    isMet: boolean,
+    severity: ReadinessCheck["severity"],
+): "success" | "warn" | "error" {
+    if (isMet) return "success";
+    return severity === "WARN" ? "warn" : "error";
+}
+
+/** Same mapping as `checkStatusIntent`, onto `Badge`'s color palette. */
+function checkStatusBadgeColor(
+    isMet: boolean,
+    severity: ReadinessCheck["severity"],
+): "green" | "yellow" | "red" {
+    if (isMet) return "green";
+    return severity === "WARN" ? "yellow" : "red";
 }
 
 /**
@@ -212,7 +237,10 @@ function ReadinessCheckRowHeader({
                     </Text>
                 )}
             </Box>
-            <Badge color={isMet ? "green" : "red"} variant="pill-with-border">
+            <Badge
+                color={checkStatusBadgeColor(isMet, check.severity)}
+                variant="pill-with-border"
+            >
                 {isMet
                     ? t("readinessCheckList.metBadge")
                     : t("readinessCheckList.unmetBadge", {
