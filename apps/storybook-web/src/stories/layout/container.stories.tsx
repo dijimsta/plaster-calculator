@@ -20,19 +20,13 @@ export default meta;
 
 type Story = StoryObj<typeof Container>;
 
-function ExampleContent(): React.ReactElement {
-    return (
-        <Card>
-            <Card.Title>Project summary</Card.Title>
-            <Card.Footer>Container content</Card.Footer>
-        </Card>
-    );
-}
-
 export const Wide: Story = {
     render: () => (
         <Container>
-            <ExampleContent />
+            <Card>
+                <Card.Title>Project summary</Card.Title>
+                <Card.Footer>Container content</Card.Footer>
+            </Card>
         </Container>
     ),
 };
@@ -40,7 +34,10 @@ export const Wide: Story = {
 export const Narrow: Story = {
     render: () => (
         <Container size="narrow">
-            <ExampleContent />
+            <Card>
+                <Card.Title>Project summary</Card.Title>
+                <Card.Footer>Container content</Card.Footer>
+            </Card>
         </Container>
     ),
 };
@@ -48,7 +45,10 @@ export const Narrow: Story = {
 export const ResponsiveBreakpoint: Story = {
     render: () => (
         <Container size="responsive" padding="responsive">
-            <ExampleContent />
+            <Card>
+                <Card.Title>Project summary</Card.Title>
+                <Card.Footer>Container content</Card.Footer>
+            </Card>
         </Container>
     ),
 };

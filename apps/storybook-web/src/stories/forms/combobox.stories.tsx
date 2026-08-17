@@ -42,28 +42,24 @@ export default meta;
 
 type Story = StoryObj<typeof Combobox>;
 
-function ControlledCombobox(
-    args: Omit<React.ComponentProps<typeof Combobox>, "value">,
-) {
-    const [value, setValue] = useState<string | null>(null);
-    return (
-        <div className="grid gap-1.5">
-            <Label htmlFor="combobox-story">Assigned to</Label>
-            <Combobox
-                {...args}
-                id="combobox-story"
-                value={value}
-                onChange={(nextValue) => {
-                    setValue(nextValue);
-                    args.onChange?.(nextValue);
-                }}
-            />
-        </div>
-    );
-}
-
 export const Default: Story = {
-    render: (args) => <ControlledCombobox {...args} />,
+    render: (args) => {
+        const [value, setValue] = useState<string | null>(null);
+        return (
+            <div className="grid gap-1.5">
+                <Label htmlFor="combobox-story">Assigned to</Label>
+                <Combobox
+                    {...args}
+                    id="combobox-story"
+                    value={value}
+                    onChange={(nextValue) => {
+                        setValue(nextValue);
+                        args.onChange?.(nextValue);
+                    }}
+                />
+            </div>
+        );
+    },
     args: {
         options: people,
         placeholder: "Search...",
@@ -71,7 +67,23 @@ export const Default: Story = {
 };
 
 export const WithPreselectedValue: Story = {
-    render: (args) => <ControlledCombobox {...args} />,
+    render: (args) => {
+        const [value, setValue] = useState<string | null>(null);
+        return (
+            <div className="grid gap-1.5">
+                <Label htmlFor="combobox-story">Assigned to</Label>
+                <Combobox
+                    {...args}
+                    id="combobox-story"
+                    value={value}
+                    onChange={(nextValue) => {
+                        setValue(nextValue);
+                        args.onChange?.(nextValue);
+                    }}
+                />
+            </div>
+        );
+    },
     args: {
         options: people,
         placeholder: "Search...",

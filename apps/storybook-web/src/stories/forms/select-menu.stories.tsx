@@ -37,36 +37,43 @@ export default meta;
 
 type Story = StoryObj<typeof SelectMenu>;
 
-function ControlledSelectMenu(
-    args: Omit<React.ComponentProps<typeof SelectMenu>, "value">,
-) {
-    const [value, setValue] = useState(args.options[0]?.value ?? "");
-    return (
-        <SelectMenu
-            {...args}
-            value={value}
-            onChange={(event) => {
-                setValue(event.target.value);
-                args.onChange?.(event);
-            }}
-        />
-    );
-}
-
 export const Default: Story = {
-    render: (args) => (
-        <div className="grid gap-1.5">
-            <Label htmlFor="select-default">Location</Label>
-            <ControlledSelectMenu id="select-default" {...args} />
-        </div>
-    ),
+    render: (args) => {
+        const [value, setValue] = useState(args.options[0]?.value ?? "");
+        return (
+            <div className="grid gap-1.5">
+                <Label htmlFor="select-default">Location</Label>
+                <SelectMenu
+                    {...args}
+                    id="select-default"
+                    value={value}
+                    onChange={(event) => {
+                        setValue(event.target.value);
+                        args.onChange?.(event);
+                    }}
+                />
+            </div>
+        );
+    },
     args: {
         options: locations,
     },
 };
 
 export const WithoutLabel: Story = {
-    render: (args) => <ControlledSelectMenu {...args} />,
+    render: (args) => {
+        const [value, setValue] = useState(args.options[0]?.value ?? "");
+        return (
+            <SelectMenu
+                {...args}
+                value={value}
+                onChange={(event) => {
+                    setValue(event.target.value);
+                    args.onChange?.(event);
+                }}
+            />
+        );
+    },
     args: {
         options: locations,
     },
