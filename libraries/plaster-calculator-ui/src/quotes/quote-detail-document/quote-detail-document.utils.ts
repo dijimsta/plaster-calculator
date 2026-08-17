@@ -68,6 +68,50 @@ export class QuoteDetailDocumentUtils {
             : source;
     }
 
+    /**
+     * Joins the letterhead's ABN and licence number into one line (e.g.
+     * "ABN 12 345 678 901 · Licence 123456"), omitting whichever of the two
+     * `appearance` leaves `null` ("not filled in yet" — see
+     * `QuoteAppearanceSchema`'s doc comment). Returns `null` when neither is
+     * set, so the caller can omit the line entirely rather than render an
+     * empty one.
+     */
+    public static abnLicenceLine(
+        abn: string | null,
+        licenceNumber: string | null,
+        t: QuotesTFunction,
+    ): string | null {
+        const parts: readonly (string | null)[] = [
+            abn ? t("quoteDetailDocument.abnLabel", { abn }) : null,
+            licenceNumber
+                ? t("quoteDetailDocument.licenceLabel", { licenceNumber })
+                : null,
+        ];
+        const presentParts = parts.filter(
+            (part): part is string => part !== null,
+        );
+        return presentParts.length > 0 ? presentParts.join(" · ") : null;
+    }
+
+    /**
+     * Derives the quote's valid-until date from `issuedAt` plus
+     * `appearance.validForDays` at render time -- `Quote` has no stored
+     * expiry field, and none should be added for this (see WORK-204's
+     * ticket description); the letterhead always computes it fresh from
+     * these two existing values.
+     */
+    public static validUntilLabel(
+        issuedAt: string,
+        validForDays: number,
+        t: QuotesTFunction,
+    ): string {
+        const validUntil = new Date(issuedAt);
+        validUntil.setDate(validUntil.getDate() + validForDays);
+        return t("quoteDetailDocument.validUntil", {
+            date: validUntil.toLocaleDateString(),
+        });
+    }
+
     private static humanize(value: string): string {
         return value
             .toLowerCase()

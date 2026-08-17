@@ -2,6 +2,11 @@
 
 import * as DataConnector from "@generated/data-connector-web";
 import * as DataConnectorReact from "@generated/data-connector-web/react";
+import {
+    DRAFT_QUOTE_STATUS,
+    QuoteStatusSchema,
+    type QuoteStatus,
+} from "@libraries/plaster-calculator-common";
 import type {
     EditableQuoteFormValues,
     QuoteDetailDocumentProps,
@@ -28,6 +33,15 @@ export type ProjectQuoteState = {
     readonly document: QuoteDetailDocumentProps | null;
     readonly editableValues: EditableQuoteFormValues | null;
     readonly quoteId: string | null;
+    /**
+     * The quote's workflow status, independent of `document` -- the
+     * printable `QuoteDetailDocument` deliberately carries no status
+     * (WORK-204: a document sent to a builder has no business showing this
+     * team's internal state), but the page chrome around it (the mark
+     * as sent/accepted actions) still needs it. Defaults to
+     * `DRAFT_QUOTE_STATUS` when there's no quote yet.
+     */
+    readonly status: QuoteStatus;
     readonly hasQuote: boolean;
     readonly isLoading: boolean;
     readonly error: unknown;
@@ -89,6 +103,9 @@ export function useProjectQuoteState(
         document,
         editableValues,
         quoteId: quote?.id ?? null,
+        status: quote
+            ? QuoteStatusSchema.parse(quote.status)
+            : DRAFT_QUOTE_STATUS,
         hasQuote: quote !== null,
         isLoading,
         error: error ?? null,

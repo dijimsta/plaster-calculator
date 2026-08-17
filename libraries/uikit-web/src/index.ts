@@ -71,6 +71,7 @@ export type {
 export { Combobox } from "./forms/combobox/index.ts";
 export type { ComboboxOption, ComboboxProps } from "./forms/combobox/index.ts";
 export { Divider } from "./layout/divider/index.ts";
+export type { DividerProps } from "./layout/divider/index.ts";
 export { Grid } from "./layout/grid/index.ts";
 export type { GridProps, GridTemplateColumns } from "./layout/grid/index.ts";
 export {

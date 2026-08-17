@@ -1,5 +1,5 @@
 import type { GetProjectQuoteData } from "@generated/data-connector-web";
-import { QuoteStatusSchema } from "@libraries/plaster-calculator-common";
+import { resolveQuoteAppearance } from "@libraries/plaster-calculator-common";
 import type {
     EditableQuoteFormValues,
     QuoteDetailDocumentProps,
@@ -40,7 +40,11 @@ export class QuoteTabUtils {
             projectName,
             companyName,
             issuedAt: quote.issuedAt ?? quote.createdAt,
-            status: QuoteStatusSchema.parse(quote.status),
+            // Placeholder: `QuoteAppearance` isn't threaded through this
+            // call site yet (that's WORK-205/206's job) -- defaulting keeps
+            // this branch compiling standalone with the team's real
+            // letterhead settings applied once those tickets wire it up.
+            appearance: resolveQuoteAppearance(undefined),
             lineItems: quote.items.map((item) => ({
                 id: item.id,
                 name: item.name,
