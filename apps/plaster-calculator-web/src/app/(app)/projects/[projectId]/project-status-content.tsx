@@ -18,6 +18,7 @@ import { cx, ui } from "../../../../lib/styles.js";
 import type { ProjectDetail } from "../../../../types.js";
 import { ProjectCompanyPanel } from "../project-company-panel.js";
 
+import { ProjectFollowUpPanel } from "./project-follow-up-panel.js";
 import { ProjectPageTabs } from "./project-page-tabs.js";
 
 const dynamic = DynamicModule.default;
@@ -105,13 +106,7 @@ export function ProjectStatusContent({
     if (project.salesStatus === "QUOTE_SUBMITTED") {
         return (
             <section className={cx(ui.editorShell, "items-start")}>
-                <div className={cx(ui.panel, ui.stack)}>
-                    <h2>Quote follow-up</h2>
-                    <Paragraph textSize="sm" variant="muted">
-                        Reminder workflow placeholder. Follow-up reminders will
-                        be configured here later.
-                    </Paragraph>
-                </div>
+                <ProjectFollowUpPanel projectId={project.id} />
                 {inspectorPanel}
             </section>
         );

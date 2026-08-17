@@ -5,6 +5,7 @@ import { appMetadataByLanguage } from "../language.ts";
 import { en } from "./en.ts";
 import { zhUserPage } from "./user-page.zh.ts";
 import { needsFollowUp } from "./zh/needs-follow-up.ts";
+import { followUp as projectFollowUp } from "./zh/project-follow-up.ts";
 import { projects } from "./zh/projects.ts";
 
 export const zh = createTranslationResource(
@@ -284,6 +285,7 @@ export const zh = createTranslationResource(
             companySectionTitle: "公司",
             projectWon: "项目已成交",
             projectLost: "项目已流失",
+            followUp: projectFollowUp,
         }),
         salesStatus: Object.freeze({
             label: "销售状态",

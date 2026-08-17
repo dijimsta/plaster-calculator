@@ -1,6 +1,7 @@
 import { appMetadataByLanguage } from "../language.ts";
 
 import { needsFollowUp } from "./en/needs-follow-up.ts";
+import { followUp as projectFollowUp } from "./en/project-follow-up.ts";
 import { projects } from "./en/projects.ts";
 import { enUserPage } from "./user-page.en.ts";
 
@@ -286,6 +287,7 @@ export const en = Object.freeze({
         companySectionTitle: "Company",
         projectWon: "Project won",
         projectLost: "Project lost",
+        followUp: projectFollowUp,
     }),
     salesStatus: Object.freeze({
         label: "Sales status",
