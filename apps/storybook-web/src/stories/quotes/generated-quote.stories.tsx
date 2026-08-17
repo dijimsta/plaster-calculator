@@ -1,4 +1,9 @@
-import { QuoteTotalsUtils } from "@libraries/plaster-calculator-common";
+import {
+    gstCents as computeGstCents,
+    lineAmountCents,
+    subtotalCents as computeSubtotalCents,
+    totalIncGstCents as computeTotalIncGstCents,
+} from "@libraries/plaster-calculator-common";
 import {
     QuoteLineItemsTable,
     QuoteTotalsBlock,
@@ -76,11 +81,11 @@ export const TypicalQuote: Story = {
             },
         ];
         const lineAmountsCents = rows.map((row) =>
-            QuoteTotalsUtils.lineAmountCents(row.quantity, row.unitPriceCents),
+            lineAmountCents(row.quantity, row.unitPriceCents),
         );
-        const subtotalCents = QuoteTotalsUtils.subtotalCents(lineAmountsCents);
-        const gstCents = QuoteTotalsUtils.gstCents(subtotalCents);
-        const totalIncGstCents = QuoteTotalsUtils.totalIncGstCents(
+        const subtotalCents = computeSubtotalCents(lineAmountsCents);
+        const gstCents = computeGstCents(subtotalCents);
+        const totalIncGstCents = computeTotalIncGstCents(
             subtotalCents,
             gstCents,
         );
@@ -138,11 +143,11 @@ export const KeywordMatchedExtras: Story = {
             },
         ];
         const lineAmountsCents = rows.map((row) =>
-            QuoteTotalsUtils.lineAmountCents(row.quantity, row.unitPriceCents),
+            lineAmountCents(row.quantity, row.unitPriceCents),
         );
-        const subtotalCents = QuoteTotalsUtils.subtotalCents(lineAmountsCents);
-        const gstCents = QuoteTotalsUtils.gstCents(subtotalCents);
-        const totalIncGstCents = QuoteTotalsUtils.totalIncGstCents(
+        const subtotalCents = computeSubtotalCents(lineAmountsCents);
+        const gstCents = computeGstCents(subtotalCents);
+        const totalIncGstCents = computeTotalIncGstCents(
             subtotalCents,
             gstCents,
         );
@@ -178,11 +183,11 @@ export const SingleLineQuote: Story = {
             },
         ];
         const lineAmountsCents = rows.map((row) =>
-            QuoteTotalsUtils.lineAmountCents(row.quantity, row.unitPriceCents),
+            lineAmountCents(row.quantity, row.unitPriceCents),
         );
-        const subtotalCents = QuoteTotalsUtils.subtotalCents(lineAmountsCents);
-        const gstCents = QuoteTotalsUtils.gstCents(subtotalCents);
-        const totalIncGstCents = QuoteTotalsUtils.totalIncGstCents(
+        const subtotalCents = computeSubtotalCents(lineAmountsCents);
+        const gstCents = computeGstCents(subtotalCents);
+        const totalIncGstCents = computeTotalIncGstCents(
             subtotalCents,
             gstCents,
         );
@@ -237,11 +242,11 @@ export const LongItemName: Story = {
             },
         ];
         const lineAmountsCents = rows.map((row) =>
-            QuoteTotalsUtils.lineAmountCents(row.quantity, row.unitPriceCents),
+            lineAmountCents(row.quantity, row.unitPriceCents),
         );
-        const subtotalCents = QuoteTotalsUtils.subtotalCents(lineAmountsCents);
-        const gstCents = QuoteTotalsUtils.gstCents(subtotalCents);
-        const totalIncGstCents = QuoteTotalsUtils.totalIncGstCents(
+        const subtotalCents = computeSubtotalCents(lineAmountsCents);
+        const gstCents = computeGstCents(subtotalCents);
+        const totalIncGstCents = computeTotalIncGstCents(
             subtotalCents,
             gstCents,
         );
