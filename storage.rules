@@ -14,6 +14,26 @@ service firebase.storage {
       allow update: if false;
     }
 
+    // Team-scoped assets, e.g. the quote appearance letterhead logo
+    // (`teams/{teamId}/quote-appearance/logo.{ext}`, WORK-203). Membership
+    // is verified the same way Data Connect's `@auth` expressions verify it
+    // server-side (`auth.token.teamId`, e.g. `GetMyQuoteAppearance` in
+    // `data/connector-web/quotes.queries.gql`): the `teamId` custom claim
+    // `setCustomUserClaims()` stamps onto a member's ID token
+    // (`functions/plaster-calculator-functions/src/team-members-domain.ts`),
+    // compared against the path segment.
+    match /teams/{teamId}/quote-appearance/{allPaths=**} {
+      allow read, delete: if request.auth != null
+        && request.auth.token.teamId == teamId;
+      allow create, update: if request.auth != null
+        && request.auth.token.teamId == teamId
+        && request.resource.size < 5 * 1024 * 1024
+        && (
+          request.resource.contentType == 'image/png'
+          || request.resource.contentType == 'image/svg+xml'
+        );
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }
