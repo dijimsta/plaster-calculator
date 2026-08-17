@@ -1,12 +1,15 @@
 "use client";
 
-import clsx from "clsx";
 import { useId } from "react";
 import type { ChangeEventHandler, ReactElement } from "react";
+
+import { chevron, root, selectClassName } from "./select-menu.styles.ts";
 
 export type SelectMenuOption = {
     readonly value: string;
     readonly label: string;
+    /** Renders this option as unselectable, e.g. a "Mixed" placeholder. */
+    readonly disabled?: boolean;
 };
 
 export type SelectMenuProps = {
@@ -18,6 +21,8 @@ export type SelectMenuProps = {
     readonly name?: string;
     readonly disabled?: boolean;
     readonly required?: boolean;
+    /** Applies error styling, mirroring `Input`'s `invalid` prop. */
+    readonly invalid?: boolean;
     readonly onChange?: ChangeEventHandler<HTMLSelectElement>;
 };
 
@@ -30,13 +35,14 @@ export function SelectMenu({
     name,
     disabled,
     required,
+    invalid = false,
     onChange,
 }: SelectMenuProps): ReactElement {
     const generatedId = useId();
     const id = externalId ?? generatedId;
 
     return (
-        <div className={clsx("grid", "grid-cols-1")}>
+        <div className={root}>
             <select
                 id={id}
                 value={value}
@@ -45,40 +51,16 @@ export function SelectMenu({
                 disabled={disabled}
                 required={required}
                 aria-label={label}
+                aria-invalid={invalid ? true : undefined}
                 onChange={onChange}
-                className={clsx(
-                    "col-start-1",
-                    "row-start-1",
-                    "w-full",
-                    "appearance-none",
-                    "rounded-md",
-                    "bg-white",
-                    "py-2",
-                    "pr-8",
-                    "pl-3",
-                    "text-base",
-                    "text-gray-900",
-                    "outline-1",
-                    "-outline-offset-1",
-                    "outline-gray-300",
-                    "focus:outline-2",
-                    "focus:-outline-offset-2",
-                    "focus:outline-indigo-600",
-                    "*:text-gray-900",
-                    "sm:text-sm/6",
-                    "dark:bg-white/5",
-                    "dark:text-white",
-                    "dark:outline-white/10",
-                    "dark:*:text-gray-400",
-                    "dark:focus:outline-indigo-500",
-                    "disabled:cursor-not-allowed",
-                    "disabled:bg-gray-100",
-                    "disabled:text-gray-400",
-                    "dark:disabled:bg-white/10",
-                )}
+                className={selectClassName(invalid)}
             >
                 {options.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <option
+                        key={option.value}
+                        value={option.value}
+                        disabled={option.disabled}
+                    >
                         {option.label}
                     </option>
                 ))}
@@ -87,18 +69,7 @@ export function SelectMenu({
                 viewBox="0 0 16 16"
                 fill="currentColor"
                 aria-hidden="true"
-                className={clsx(
-                    "pointer-events-none",
-                    "col-start-1",
-                    "row-start-1",
-                    "mr-2",
-                    "size-5",
-                    "self-center",
-                    "justify-self-end",
-                    "text-gray-500",
-                    "sm:size-4",
-                    "dark:text-gray-400",
-                )}
+                className={chevron}
             >
                 <path
                     fillRule="evenodd"
