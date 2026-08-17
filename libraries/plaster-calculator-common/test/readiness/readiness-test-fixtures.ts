@@ -3,6 +3,7 @@ import type {
     FloorplanPage,
     Point,
     ProjectDetail,
+    ReadinessCompany,
     ReadinessQuestionnaireAnswer,
     ReadinessQuoteItemTemplateConfig,
 } from "../../src/index.ts";
@@ -101,6 +102,21 @@ export function questionnaireAnswer(
         label: "Is the ceiling raked?",
         answer: "Yes",
         answerSource: MANUAL_ANSWER_SOURCE,
+        ...overrides,
+    };
+}
+
+export function company(
+    overrides: Partial<ReadinessCompany> = {},
+): ReadinessCompany {
+    return {
+        id: uniqueId("company"),
+        companyName: "Acme Plastering",
+        phoneNumber: "555-0100",
+        businessNumber: null,
+        primaryContactName: null,
+        primaryContactEmail: null,
+        primaryContactPhone: null,
         ...overrides,
     };
 }

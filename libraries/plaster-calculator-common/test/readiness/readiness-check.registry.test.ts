@@ -4,6 +4,7 @@ import test from "node:test";
 import {
     ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID,
     CEILING_HEIGHT_SET_CHECK_ID,
+    COMPANY_CONTACT_DETAILS_CHECK_ID,
     INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
     READINESS_CHECKS,
     ROOMS_MEASURED_CHECK_ID,
@@ -13,9 +14,8 @@ import {
     WALL_TYPE_SET_CHECK_ID,
 } from "../../src/index.ts";
 
-test("READINESS_CHECKS registers all checks as BLOCK severity", () => {
-    assert.equal(READINESS_CHECKS.length, 8);
-    assert.ok(READINESS_CHECKS.every((check) => check.severity === "BLOCK"));
+test("READINESS_CHECKS registers every check in order, with COMPANY_CONTACT_DETAILS as the sole WARN", () => {
+    assert.equal(READINESS_CHECKS.length, 9);
     assert.deepEqual(
         READINESS_CHECKS.map((check) => check.id),
         [
@@ -27,6 +27,13 @@ test("READINESS_CHECKS registers all checks as BLOCK severity", () => {
             TEMPLATE_UNIT_SET_CHECK_ID,
             INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
             ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID,
+            COMPANY_CONTACT_DETAILS_CHECK_ID,
         ],
+    );
+    assert.deepEqual(
+        READINESS_CHECKS.filter((check) => check.severity !== "BLOCK").map(
+            (check) => check.id,
+        ),
+        [COMPANY_CONTACT_DETAILS_CHECK_ID],
     );
 });
