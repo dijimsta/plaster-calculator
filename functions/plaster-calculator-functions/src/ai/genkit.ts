@@ -32,9 +32,9 @@ export const ai = isEmulator()
           model: vertexAI.model("gemini-2.5-flash"),
       });
 
-interface LmStudioModelsResponse {
+type LmStudioModelsResponse = {
     readonly data?: ReadonlyArray<{ readonly id: string }>;
-}
+};
 
 /**
  * Checks that the local LM Studio server is reachable and has the configured

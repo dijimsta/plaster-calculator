@@ -12,15 +12,15 @@ import type { ProjectWithPages } from "./types.js";
 // PDFs could otherwise blow context/cost; exact budget to tune empirically.
 export const MAX_TEXT_CHARACTERS = 20_000;
 
-export interface QuestionnaireQuestion {
+export type QuestionnaireQuestion = {
     readonly id: string;
     readonly label: string;
-}
+};
 
-interface AnsweredQuestion {
+type AnsweredQuestion = {
     readonly questionId: string;
     readonly answer: string;
-}
+};
 
 /**
  * External effects `answerQuestionnaire` needs, injected so the branching logic
@@ -28,7 +28,7 @@ interface AnsweredQuestion {
  * tested without a live Firestore/Data Connect/genkit stack. Production wiring
  * lives in `questionnaire-ai.ts`.
  */
-export interface AnswerQuestionnaireDependencies {
+export type AnswerQuestionnaireDependencies = {
     getProject(projectId: string, uid: string): Promise<ProjectWithPages>;
     getQuestions(projectId: string): Promise<QuestionnaireQuestion[]>;
     /** Runs inline floorplan analysis for any pages that still need it. Only called when pages exist. */
@@ -45,7 +45,7 @@ export interface AnswerQuestionnaireDependencies {
         input: AnswerQuestionnaireInput,
     ): Promise<AnswerQuestionnaireOutput>;
     updateAnswer(questionId: string, answer: string): Promise<void>;
-}
+};
 
 export function createAnswerQuestionnaireService(
     dependencies: AnswerQuestionnaireDependencies,

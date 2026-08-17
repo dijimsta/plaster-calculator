@@ -14,7 +14,7 @@ import {
 } from "./storage.js";
 import type { ProcessingStrategy, ProjectDetailsRow } from "./types.js";
 
-export interface AnalyzedPageData {
+export type AnalyzedPageData = {
     readonly overlayJson: string;
     readonly ocrTextContent: string | null;
     readonly previewImagePath: string;
@@ -22,7 +22,7 @@ export interface AnalyzedPageData {
     readonly processingStrategy: string;
     readonly rawFloorplanPath: string;
     readonly rawJsonPath: string;
-}
+};
 
 export async function analyseProjectPages(
     uid: string,

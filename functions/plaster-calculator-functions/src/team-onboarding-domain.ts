@@ -1,21 +1,21 @@
 import { TEAM_OWNER_ROLE } from "@libraries/plaster-calculator-common";
 import { HttpsError } from "firebase-functions/https";
 
-interface Membership {
+type Membership = {
     teamId: string;
-}
+};
 
-interface AuthUser {
+type AuthUser = {
     displayName?: string;
     email?: string;
     customClaims?: Record<string, unknown>;
-}
+};
 
-export interface TeamResult {
+export type TeamResult = {
     teamId: string;
-}
+};
 
-export interface TeamOnboardingDependencies {
+export type TeamOnboardingDependencies = {
     getMemberships(userId: string): Promise<Membership[]>;
     getAuthUser(userId: string): Promise<AuthUser>;
     upsertTeam(input: {
@@ -33,7 +33,7 @@ export interface TeamOnboardingDependencies {
         claims: Record<string, unknown>,
     ): Promise<void>;
     acceptInvitation(userId: string, token: unknown): Promise<TeamResult>;
-}
+};
 
 export function createTeamOnboardingService(
     dependencies: TeamOnboardingDependencies,

@@ -170,12 +170,12 @@ async function writeAnalysisState(
     });
 }
 
-interface AnalysisSettings {
+type AnalysisSettings = {
     readonly scaleMmPerPx: number | null;
     readonly ceilingHeightMm: number | null;
     readonly referencePointsJson: string | null;
     readonly referenceLengthMm: number | null;
-}
+};
 
 function readAnalysisSettings(
     data: AnalyzeFloorplanPageRequest,
