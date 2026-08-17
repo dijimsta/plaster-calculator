@@ -29,6 +29,9 @@
             "path": "../../libraries/uikit-web/tsconfig.build.json"
         },
         {
+            "path": "../../libraries/utilities/tsconfig.build.json"
+        },
+        {
             "path": "../../ui/internationalization/tsconfig.build.json"
         }
     ]
