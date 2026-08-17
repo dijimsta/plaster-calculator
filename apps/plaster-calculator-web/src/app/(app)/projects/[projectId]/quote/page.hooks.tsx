@@ -10,6 +10,7 @@ import type {
 import {
     ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID,
     CEILING_HEIGHT_SET_CHECK_ID,
+    COMPANY_CONTACT_DETAILS_CHECK_ID,
     INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
     MANUAL_ANSWER_SOURCE,
     ROOMS_MEASURED_CHECK_ID,
@@ -21,6 +22,7 @@ import {
 import type { ReadinessCheckListRenderFixControl } from "@libraries/plaster-calculator-ui";
 import {
     CeilingHeightFixControl,
+    CompanyContactDetailsFixControl,
     ConfirmFixControl,
     FloorplanDeepLinkFixControl,
     parseOverlay,
@@ -36,6 +38,7 @@ import {
     useQuoteReadiness,
 } from "@libraries/plaster-calculator-web-core";
 import { QueryFetchPolicy } from "firebase/data-connect";
+import { useRouter } from "next/navigation.js";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
 
@@ -194,7 +197,17 @@ function useConfirmAnswerSourceCallback(
  * success — without a full page reload, since `refresh()` just re-runs the
  * `GetQuoteReadiness` query. `SCALE_APPLIED` and `ROOMS_MEASURED` are
  * `DEEP_LINK` checks and stay unchanged from WORK-139: their fix is a link
- * to the floorplan editor, not a value submitted here.
+ * to the floorplan editor, not a value submitted here. `COMPANY_CONTACT_DETAILS`
+ * (WORK-226) is the same idea, but routes to `/companies/{companyId}`
+ * instead of the floorplan editor — since `CompanyContactDetailsFixControl`
+ * calls back into the app rather than rendering a plain `href` (its
+ * destination may become a dialog scoped to one company rather than a
+ * stable route), that navigation happens via `useRouter().push()` here
+ * instead of a built `href` like the floorplan cases use. No `refresh()`
+ * call is needed for either: leaving this page unmounts it, and returning
+ * remounts `useQuoteReadiness`, which re-fetches `GetQuoteReadiness` fresh
+ * (react-query's default `refetchOnMount` behaviour) the same way the
+ * floorplan deep links already rely on.
  *
  * Each control's starting value (e.g. the room's current wall board type)
  * is sourced from `useQuoteReadiness(projectId).data` directly (WORK-191),
@@ -209,6 +222,7 @@ export function useQuoteReadinessFixControlRenderer(
     projectId: string,
 ): ReadinessCheckListRenderFixControl {
     const { t } = useQuotesTranslation();
+    const router = useRouter();
     const { data: readinessData } = useQuoteReadiness(projectId);
     const updateAreaField = useUpdateAreaOverlayFieldCallback(projectId);
     const updateUnitPrice = useUpdateUnitPriceCallback(projectId);
@@ -292,6 +306,15 @@ export function useQuoteReadinessFixControlRenderer(
                     );
                 case TEMPLATE_UNIT_SET_CHECK_ID:
                     return <QuoteTemplateDeepLinkFixControl />;
+                case COMPANY_CONTACT_DETAILS_CHECK_ID:
+                    return (
+                        <CompanyContactDetailsFixControl
+                            item={item}
+                            onFix={(companyId) =>
+                                router.push(`/companies/${companyId}`)
+                            }
+                        />
+                    );
                 case INFERRED_ANSWERS_CONFIRMED_CHECK_ID:
                     return (
                         <ConfirmFixControl
@@ -333,6 +356,7 @@ export function useQuoteReadinessFixControlRenderer(
             confirmAnswerSource,
             projectId,
             readinessData,
+            router,
             t,
             updateAreaField,
             updateUnitPrice,
