@@ -1,5 +1,16 @@
 # plaster-calculator
 
+## Jira
+
+See [docs/JIRA.md](docs/JIRA.md) for how we use Jira for software project tickets, and
+[docs/JIRA-PRODUCT-DISCOVERY.md](docs/JIRA-PRODUCT-DISCOVERY.md) for Jira Product Discovery conventions — including
+keeping ticket status accurate in both.
+
+| Project                                                              | Type                         | Description                                                                                                |
+| -------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [WORK](https://inivi.atlassian.net/browse/WORK) (The Workspace)      | Jira software                | Delivery tracking for engineering work across the monorepo — Epics, Tasks, and Subtasks.                   |
+| [PCPD](https://inivi.atlassian.net/browse/PCPD) (Plaster Calculator) | Jira Product Discovery (JPD) | Product discovery for Plaster Calculator features, from initial idea through delivery and measured impact. |
+
 ## Getting Started
 
 New to the repo? This gets a full local environment running with one command: `pnpm start`.

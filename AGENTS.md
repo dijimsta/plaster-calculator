@@ -69,10 +69,12 @@ Document generated code elsewhere (e.g. the connector's schema/source directory)
 
 ## Jira
 
-Jira tickets are optional.
+See [docs/JIRA.md](docs/JIRA.md) for how we use Jira for software project tickets — Epics, Tasks, and Subtasks,
+including ticket templates and keeping status accurate — and
+[docs/JIRA-PRODUCT-DISCOVERY.md](docs/JIRA-PRODUCT-DISCOVERY.md) for Jira Product Discovery (JPD) Ideas.
 
-If a ticket exists, include it in branch names, PR titles, and commit messages. If there is no ticket, use plain
-descriptive names and titles. Do not interrupt normal work to ask whether Jira should be used.
+Include the issue key in branch names, PR titles, and commit messages when a ticket exists. If there is no ticket,
+use plain descriptive names and titles. Do not interrupt normal work to ask whether Jira should be used.
 
 Examples:
 
@@ -87,7 +89,8 @@ Add login endpoint
 For commit messages, append the issue key in square brackets at the end of the subject when a ticket exists. Omit it
 when there is no ticket.
 
-Before starting work on a ticket, transition it to "In Progress".
+Before starting work on a ticket, transition it to "In Progress" — see
+[Keeping status accurate](docs/JIRA.md#keeping-status-accurate).
 
 ## Commit Messages
 
