@@ -76,6 +76,13 @@ Append the Jira issue key in brackets when applicable:
 <description> [<Jira-issue-key>]
 ```
 
+`gh stack submit --auto` only follows this convention when a branch has a single commit (it reuses that commit's
+subject as the title). A branch with multiple commits gets a humanized version of the branch name instead — e.g.
+`quote-appearance-connector-WORK-201` became "quote appearance connector WORK 201", with no bracketed issue key and
+the squash-merge commit inheriting that same title. Check every PR's title after `submit --auto`
+(`gh pr view <number> --json title`) and fix any multi-commit branch's title with `gh pr edit <number> --title`
+before merging, the same pass as the description fix above.
+
 ### Descriptions
 
 Before creating or updating a pull request description, read and follow
