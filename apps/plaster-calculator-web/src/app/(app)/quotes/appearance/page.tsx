@@ -1,20 +1,14 @@
 "use client";
 
-import {
-    QuoteTemplatePanel,
-    useQuotesTranslation,
-} from "@libraries/plaster-calculator-ui";
+import { QuoteAppearancePanel } from "@libraries/plaster-calculator-ui";
 import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
 import { Home } from "lucide-react";
-import { useRouter } from "next/navigation.js";
 
 import { RoutedBreadcrumbItem } from "../../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../../i18n/index.ts";
 import { QuotesTabsNavigation } from "../quotes-tabs-navigation.component.js";
 
-export default function QuoteTemplatePage() {
-    const router = useRouter();
-    const { t } = useQuotesTranslation();
+export default function QuoteAppearancePage() {
     const { t: tApp } = useAppTranslation();
 
     return (
@@ -32,29 +26,24 @@ export default function QuoteTemplatePage() {
                             {tApp("quotes.title")}
                         </RoutedBreadcrumbItem>
                         <Breadcrumb.Item current>
-                            {tApp("quotes.templateTab")}
+                            {tApp("quotes.appearanceTab")}
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </PageHeading.Breadcrumbs>
                 <PageHeading.Content>
                     <PageHeading.Title>
-                        {tApp("quotes.templateTab")}
+                        {tApp("quotes.appearanceTab")}
                     </PageHeading.Title>
                     <PageHeading.Description>
-                        {t("quoteTemplatePage.description")}
+                        {tApp("quotes.appearanceDescription")}
                     </PageHeading.Description>
                 </PageHeading.Content>
                 <PageHeading.Navigation>
-                    <QuotesTabsNavigation current="template" />
+                    <QuotesTabsNavigation current="appearance" />
                 </PageHeading.Navigation>
             </PageHeading>
             <Box direction="column" gap="lg" padding="md">
-                <QuoteTemplatePanel
-                    onCancel={() => router.push("/quotes")}
-                    onOpenVariation={(variationId) =>
-                        router.push(`/quotes/template/${variationId}`)
-                    }
-                />
+                <QuoteAppearancePanel />
             </Box>
         </>
     );

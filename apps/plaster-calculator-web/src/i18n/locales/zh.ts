@@ -123,6 +123,9 @@ export const zh = createTranslationResource(
             title: "报价",
             allQuotesTab: "全部报价",
             templateTab: "报价模板",
+            appearanceTab: "报价外观",
+            appearanceDescription:
+                "设置每份生成报价所使用的信头、徽标、强调色和条款。",
         }),
         companies: Object.freeze({
             title: "公司",

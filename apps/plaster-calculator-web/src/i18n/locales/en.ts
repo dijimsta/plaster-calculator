@@ -121,6 +121,9 @@ export const en = Object.freeze({
         title: "Quotes",
         allQuotesTab: "All quotes",
         templateTab: "Quote template",
+        appearanceTab: "Quote appearance",
+        appearanceDescription:
+            "Set the letterhead, logo, accent colour, and terms used on every generated quote.",
     }),
     companies: Object.freeze({
         title: "Companies",
