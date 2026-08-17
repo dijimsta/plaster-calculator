@@ -1,5 +1,6 @@
 import { appMetadataByLanguage } from "../language.ts";
 
+import { needsFollowUp } from "./en/needs-follow-up.ts";
 import { projects } from "./en/projects.ts";
 import { enUserPage } from "./user-page.en.ts";
 
@@ -246,6 +247,7 @@ export const en = Object.freeze({
         saved: "Settings saved.",
         unableToSave: "Unable to save settings.",
     }),
+    needsFollowUp,
     emailSignature: Object.freeze({
         title: "Email signature",
         description:

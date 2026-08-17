@@ -14,6 +14,8 @@ import { ui } from "../../lib/styles.js";
 
 import { useDashboardProjects } from "./hooks/use-dashboard-projects.js";
 import { useDashboardUpload } from "./hooks/use-dashboard-upload.js";
+import { useFollowUpReminders } from "./hooks/use-follow-up-reminders.js";
+import { NeedsFollowUpPanel } from "./needs-follow-up-panel.js";
 import { NewProjectForm } from "./new-project-form.js";
 import { NewProjectWizard } from "./new-project-wizard.js";
 import { ProjectHistory } from "./project-history.js";
@@ -25,6 +27,9 @@ export default function HomePage() {
         refresh: projects.refresh,
         setMessage: projects.setMessage,
         setProcessingProjectId: projects.setProcessingProjectId,
+    });
+    const followUpReminders = useFollowUpReminders({
+        projects: projects.filtered,
     });
 
     return (
@@ -48,6 +53,7 @@ export default function HomePage() {
                 </PageHeading.Content>
             </PageHeading>
             <Box direction="column" gap="lg" padding="md">
+                <NeedsFollowUpPanel {...followUpReminders} />
                 {projects.processingProjectId && (
                     <Alert
                         intent="info"

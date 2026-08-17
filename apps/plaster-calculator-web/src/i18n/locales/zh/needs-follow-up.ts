@@ -1,0 +1,50 @@
+export const needsFollowUp = Object.freeze({
+    title: "待跟进",
+    openCount: "{{count}} 项待办",
+    overdueBadge: "{{count}} 项已逾期",
+    scopeLabel: "跟进范围",
+    scope: Object.freeze({
+        mine: "我的",
+        team: "团队",
+    }),
+    loading: "正在加载待跟进事项...",
+    unassigned: "未分配",
+    dueToday: "今天到期",
+    dueInDay: "{{count}} 天后到期",
+    dueInDays: "{{count}} 天后到期",
+    overdueByDay: "已逾期 {{count}} 天",
+    overdueByDays: "已逾期 {{count}} 天",
+    emptyMine: Object.freeze({
+        title: "暂无分配给您的跟进事项",
+        description: "当您的项目状态变为已提交报价后，提醒将显示在此处。",
+    }),
+    emptyTeam: Object.freeze({
+        title: "团队暂无待跟进事项",
+        description: "当项目状态变为已提交报价后，提醒将显示在此处。",
+    }),
+    actions: Object.freeze({
+        done: "完成",
+        snooze: "延后 3 天",
+        reschedule: "重新安排",
+        rescheduleLabel: "重新安排到期日期",
+        options: Object.freeze({
+            tomorrow: "明天",
+            in3Days: "3 天后",
+            nextWeek: "下周",
+            custom: "自定义日期…",
+        }),
+        setDate: "设置日期",
+        cancel: "取消",
+    }),
+    confirmations: Object.freeze({
+        done: "已标记为完成。",
+        cancelled: "跟进已取消。",
+        snoozed: "已延后至 {{date}}。",
+        rescheduled: "已重新安排至 {{date}}。",
+        undo: "撤销",
+    }),
+    errors: Object.freeze({
+        unableToLoad: "无法加载待跟进事项",
+        tryAgain: "重试",
+    }),
+});

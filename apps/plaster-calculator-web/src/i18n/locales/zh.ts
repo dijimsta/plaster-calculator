@@ -4,6 +4,7 @@ import { appMetadataByLanguage } from "../language.ts";
 
 import { en } from "./en.ts";
 import { zhUserPage } from "./user-page.zh.ts";
+import { needsFollowUp } from "./zh/needs-follow-up.ts";
 import { projects } from "./zh/projects.ts";
 
 export const zh = createTranslationResource(
@@ -245,6 +246,7 @@ export const zh = createTranslationResource(
             saved: "设置已保存。",
             unableToSave: "无法保存设置。",
         }),
+        needsFollowUp,
         emailSignature: Object.freeze({
             title: "电子邮件签名",
             description: "这些信息用于生成添加到外发电子邮件中的签名。",
