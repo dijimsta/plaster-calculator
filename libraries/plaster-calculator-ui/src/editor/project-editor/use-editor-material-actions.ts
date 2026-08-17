@@ -1,5 +1,6 @@
 import {
-    BoardMaterialsHelper,
+    normalizeWallBoardProfile,
+    normalizeWallBoardType,
     type AreaPolygon,
     type EdgeOverride,
     type Overlay,
@@ -136,13 +137,8 @@ function materialValue(area: AreaPolygon, field: MaterialField) {
         return normalizeCeilingBoardType(area.ceilingPlasterType);
     }
     if (field === "wallBoardProfile") {
-        return BoardMaterialsHelper.normalizeWallBoardProfile(
-            area.wallBoardProfile,
-        );
+        return normalizeWallBoardProfile(area.wallBoardProfile);
     }
 
-    return BoardMaterialsHelper.normalizeWallBoardType(
-        area.wallBoardType,
-        area.wallPlasterType,
-    );
+    return normalizeWallBoardType(area.wallBoardType, area.wallPlasterType);
 }

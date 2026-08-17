@@ -1,5 +1,6 @@
 import {
-    BoardMaterialsHelper,
+    normalizeWallBoardProfile,
+    normalizeWallBoardType,
     WALL_BOARD_PROFILES,
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
@@ -41,7 +42,7 @@ export function BoardControls({
                         error={areaIssue(selectedArea.id, "wallBoardProfile")}
                         label={t("selectionBoardControls.wallProfileLabel")}
                         options={WALL_BOARD_PROFILES}
-                        value={BoardMaterialsHelper.normalizeWallBoardProfile(
+                        value={normalizeWallBoardProfile(
                             selectedArea.wallBoardProfile,
                         )}
                         onChange={(value) =>
@@ -53,7 +54,7 @@ export function BoardControls({
                         error={areaIssue(selectedArea.id, "wallBoardType")}
                         label={t("selectionBoardControls.wallBoardLabel")}
                         options={WALL_BOARD_TYPES}
-                        value={BoardMaterialsHelper.normalizeWallBoardType(
+                        value={normalizeWallBoardType(
                             selectedArea.wallBoardType,
                             selectedArea.wallPlasterType,
                         )}

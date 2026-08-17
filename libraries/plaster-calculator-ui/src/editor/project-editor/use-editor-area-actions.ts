@@ -1,5 +1,6 @@
 import {
-    OverlayGeometryHelper,
+    clamp,
+    pointAt,
     type Point,
 } from "@libraries/plaster-calculator-common";
 
@@ -84,12 +85,12 @@ export function useEditorAreaActions(options: AreaActionsOptions) {
         });
         const width = 220;
         const height = 160;
-        const x = OverlayGeometryHelper.clamp(
+        const x = clamp(
             Math.round(center[0] - width / 2),
             0,
             Math.max(0, imageWidth - width),
         );
-        const y = OverlayGeometryHelper.clamp(
+        const y = clamp(
             Math.round(center[1] - height / 2),
             0,
             Math.max(0, imageHeight - height),
@@ -142,11 +143,8 @@ export function useEditorAreaActions(options: AreaActionsOptions) {
                 ? selectedEdge.edgeIndex
                 : (selectedPoint ?? 0);
         const nextIndex = (anchorIndex + 1) % selectedArea.points.length;
-        const a = OverlayGeometryHelper.pointAt(
-            selectedArea.points,
-            anchorIndex,
-        );
-        const b = OverlayGeometryHelper.pointAt(selectedArea.points, nextIndex);
+        const a = pointAt(selectedArea.points, anchorIndex);
+        const b = pointAt(selectedArea.points, nextIndex);
         const point: Point = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
         updateArea(selectedArea.id, (area) => ({
             ...area,

@@ -1,4 +1,4 @@
-import { OverlayGeometryHelper } from "@libraries/plaster-calculator-common";
+import { pointAt } from "@libraries/plaster-calculator-common";
 import type {
     AreaPolygon,
     Overlay,
@@ -213,8 +213,7 @@ function movedPointFromDrag(
     const snapshotArea =
         drag.before.areas.find((item) => item.id === area.id) ?? area;
     const originalPoint =
-        snapshotArea.points[pointIndex] ??
-        OverlayGeometryHelper.pointAt(area.points, pointIndex);
+        snapshotArea.points[pointIndex] ?? pointAt(area.points, pointIndex);
     const pointerPoint: Point = [
         originalPoint[0] + offset.dx,
         originalPoint[1] + offset.dy,
@@ -228,14 +227,11 @@ function snapDraggedPoint(
     pointer: Point,
     zoom: number,
 ): { point: Point; guide: SnapGuide } {
-    const previous = OverlayGeometryHelper.pointAt(
+    const previous = pointAt(
         area.points,
         (pointIndex - 1 + area.points.length) % area.points.length,
     );
-    const next = OverlayGeometryHelper.pointAt(
-        area.points,
-        (pointIndex + 1) % area.points.length,
-    );
+    const next = pointAt(area.points, (pointIndex + 1) % area.points.length);
     return snapToReferences(pointer, [previous, next], zoom);
 }
 

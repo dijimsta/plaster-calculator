@@ -1,7 +1,7 @@
 import {
     DEFAULT_WALL_BOARD_PROFILE,
     DEFAULT_WALL_BOARD_TYPE,
-    OverlayGeometryHelper,
+    pathLengthBetween,
     type AreaPolygon,
     type Point,
 } from "@libraries/plaster-calculator-common";
@@ -58,18 +58,8 @@ export function pointsRemovedByStraighten(
     a: number,
     b: number,
 ): Set<number> {
-    const forwardLength = OverlayGeometryHelper.pathLengthBetween(
-        area.points,
-        a,
-        b,
-        1,
-    );
-    const backwardLength = OverlayGeometryHelper.pathLengthBetween(
-        area.points,
-        b,
-        a,
-        1,
-    );
+    const forwardLength = pathLengthBetween(area.points, a, b, 1);
+    const backwardLength = pathLengthBetween(area.points, b, a, 1);
     const removeForward = forwardLength <= backwardLength;
     const removed = new Set<number>();
     if (removeForward) {

@@ -1,4 +1,9 @@
-import { QuoteTotalsUtils } from "@libraries/plaster-calculator-common";
+import {
+    gstCents as computeGstCents,
+    lineAmountCents,
+    subtotalCents as computeSubtotalCents,
+    totalIncGstCents,
+} from "@libraries/plaster-calculator-common";
 
 import type { useQuotesTranslation } from "../i18n/index.ts";
 
@@ -21,25 +26,22 @@ export type QuoteDetailDocumentTotals = {
  * imports one name.
  */
 export class QuoteDetailDocumentUtils {
-    /** Rolls `lineItems` up into subtotal/GST/total using `QuoteTotalsUtils`. */
+    /**
+     * Rolls `lineItems` up into subtotal/GST/total using the quote-totals
+     * helpers (`quote-totals.utils.ts`).
+     */
     public static totals(
         lineItems: readonly QuoteDetailDocumentLineItem[],
     ): QuoteDetailDocumentTotals {
         const lineAmountsCents = lineItems.map((item) =>
-            QuoteTotalsUtils.lineAmountCents(
-                item.quantity,
-                item.unitPriceCents,
-            ),
+            lineAmountCents(item.quantity, item.unitPriceCents),
         );
-        const subtotalCents = QuoteTotalsUtils.subtotalCents(lineAmountsCents);
-        const gstCents = QuoteTotalsUtils.gstCents(subtotalCents);
+        const subtotalCents = computeSubtotalCents(lineAmountsCents);
+        const gstCents = computeGstCents(subtotalCents);
         return {
             subtotalCents,
             gstCents,
-            totalIncGstCents: QuoteTotalsUtils.totalIncGstCents(
-                subtotalCents,
-                gstCents,
-            ),
+            totalIncGstCents: totalIncGstCents(subtotalCents, gstCents),
         };
     }
 

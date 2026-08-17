@@ -7,20 +7,21 @@ import { useQuotesTranslation } from "../i18n/index.ts";
 import { quoteTotalsBlockRowStyles } from "./quote-totals-block.styles.ts";
 
 export type QuoteTotalsBlockProps = {
-    /** In integer cents (see `QuoteTotalsUtils`). */
+    /** In integer cents (see `quote-totals.utils.ts`). */
     readonly subtotalCents: number;
-    /** In integer cents (see `QuoteTotalsUtils`). */
+    /** In integer cents (see `quote-totals.utils.ts`). */
     readonly gstCents: number;
-    /** In integer cents (see `QuoteTotalsUtils`). */
+    /** In integer cents (see `quote-totals.utils.ts`). */
     readonly totalIncGstCents: number;
 };
 
 /**
  * Subtotal / GST / total-inc-GST rows, right-aligned with the total row
  * visually emphasised. Takes already-computed cents -- callers derive them
- * via `QuoteTotalsUtils` -- so this component does no currency maths itself,
- * only formatting via `CurrencyUtils`. Reusable by both the project Quote
- * tab (WORK-151) and `QuoteDetailDocument`.
+ * via the quote-totals helpers (`quote-totals.utils.ts`) -- so this
+ * component does no currency maths itself, only formatting via
+ * `CurrencyUtils`. Reusable by both the project Quote tab (WORK-151) and
+ * `QuoteDetailDocument`.
  */
 export function QuoteTotalsBlock({
     subtotalCents,

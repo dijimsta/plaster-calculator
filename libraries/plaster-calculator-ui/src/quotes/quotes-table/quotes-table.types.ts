@@ -14,7 +14,7 @@ export type QuotesTableRow = {
     readonly projectName: string;
     readonly companyName: string | null;
     readonly status: QuoteStatus;
-    /** Total including GST, in integer cents (see `QuoteTotalsUtils`). */
+    /** Total including GST, in integer cents (see `quote-totals.utils.ts`). */
     readonly totalIncGstCents: number;
     /** ISO 8601 timestamp the quote was created. */
     readonly createdAt: string;
