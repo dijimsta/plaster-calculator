@@ -17,6 +17,13 @@ The `.husky/pre-commit` hook (installed by `pnpm install` through the `prepare` 
 rejects the commit if any of them fail. Running them yourself first lets you fix problems before the commit is
 rejected, rather than finding out at commit time.
 
+CI (`.github/workflows/checks.yml`) gates on more than the three root commands above: it also runs
+`pnpm --filter @apps/plaster-calculator-web build` and `pnpm --filter @apps/storybook-web build` (the root `pnpm
+build` only type-checks via TS project references — it does not run `next build` or `storybook build`), plus `uv
+run ruff check functions/floorplan-analyzer/` and `uv run ruff format --check functions/floorplan-analyzer/` for
+the Python function. Run the matching local command before pushing changes that touch those areas, since a clean
+root `pnpm build`/`lint`/`format` alone doesn't guarantee CI will pass for them.
+
 These checks must also be run before opening a pull request. If any check modifies files (e.g. prettier rewrites),
 stage and commit those changes before creating the PR.
 
@@ -110,9 +117,12 @@ statements can reduce measured complexity.
 ## Generated directories
 
 The `generated/` directory (e.g. `generated/data-connector-admin`) holds Firebase Data Connect SDK output. Do not
-add manual files there, including README.md or AGENTS.md — `firebase dataconnect:sdk:generate` fails with
-"unexpected file" if the output directory contains anything other than the `.ts`/`.js`/`.json` files it produces.
-Document generated code elsewhere (e.g. the connector's schema/source directory) instead.
+add manual files there — `firebase dataconnect:sdk:generate` fails with "unexpected file" if the output directory
+contains anything other than what the generator itself produces. For the React SDK variant
+(`generated/data-connector-web`), that includes `README.md` and the `.guides/` directory alongside the
+`.ts`/`.js`/`.json` files; these carry a banner noting they're regenerated alongside the SDK and are not
+hand-maintained. Document any additional generated-code context elsewhere (e.g. the connector's schema/source
+directory) instead of editing files under `generated/` directly.
 
 ## Commit messages
 
