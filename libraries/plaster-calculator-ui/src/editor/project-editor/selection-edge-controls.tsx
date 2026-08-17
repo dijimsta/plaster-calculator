@@ -18,7 +18,7 @@ import { cx, ui } from "./project-editor.styles.js";
 import { MaterialSelect } from "./selection-board-controls.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 
-interface SelectedEdgeControlsProps {
+type SelectedEdgeControlsProps = {
     readonly clearSelectedEdgeOverride: () => void;
     readonly renderCeilingControls: (area: AreaPolygon) => ReactNode;
     readonly selectedArea: AreaPolygon | null;
@@ -31,7 +31,7 @@ interface SelectedEdgeControlsProps {
         value: string,
     ) => void;
     readonly setSelectedEdgeNoPlaster: (noPlaster: boolean) => void;
-}
+};
 
 export function SelectedEdgeControls({
     clearSelectedEdgeOverride,

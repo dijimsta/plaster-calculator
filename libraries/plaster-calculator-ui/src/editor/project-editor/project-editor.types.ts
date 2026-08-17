@@ -18,7 +18,7 @@ import type { PageValidationInput, ValidationIssue } from "./validation.js";
 export const EDITOR_INITIAL_TOOLS = ["scale", "draw-room"] as const;
 export type EditorInitialTool = (typeof EDITOR_INITIAL_TOOLS)[number];
 
-export interface ProjectEditorProps {
+export type ProjectEditorProps = {
     readonly project: ProjectDetail;
     readonly page: FloorplanPage;
     readonly onSaved: () => void | Promise<void>;
@@ -38,14 +38,14 @@ export interface ProjectEditorProps {
      * caller) leaves tool selection exactly as it already defaults.
      */
     readonly initialTool?: EditorInitialTool | null;
-}
+};
 
 export type OverlayMode = "walls" | "ceilings" | "both";
 
 export type SnapGuide = { x?: number; y?: number } | null;
 
-export interface DragState {
+export type DragState = {
     readonly before: Overlay;
     readonly startClientX: number;
     readonly startClientY: number;
-}
+};

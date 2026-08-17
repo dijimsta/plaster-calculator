@@ -15,7 +15,7 @@ import type { SelectedEdge } from "./use-editor-selection.js";
 import { ValidationMessage } from "./validation-message.js";
 import type { ValidationIssue } from "./validation.js";
 
-interface CeilingControlsProps {
+type CeilingControlsProps = {
     readonly area: AreaPolygon;
     readonly ceilingHeightMm: number | null;
     readonly selectedEdge: SelectedEdge | null;
@@ -30,7 +30,7 @@ interface CeilingControlsProps {
         value: string,
     ) => void;
     readonly setSelectedAreaHeight: (value: string) => void;
-}
+};
 
 export function CeilingControls({
     area,
@@ -99,12 +99,12 @@ export function CeilingControls({
     );
 }
 
-interface FlatCeilingHeightFieldProps {
+type FlatCeilingHeightFieldProps = {
     readonly ceilingHeightMm: number | null;
     readonly error: string;
     readonly value: number | null | undefined;
     readonly setSelectedAreaHeight: (value: string) => void;
-}
+};
 
 function FlatCeilingHeightField({
     ceilingHeightMm,
@@ -133,7 +133,7 @@ function FlatCeilingHeightField({
     );
 }
 
-interface RakedCeilingFieldsProps {
+type RakedCeilingFieldsProps = {
     readonly areaId: string;
     readonly raked: AreaPolygon["rakedCeiling"];
     readonly selectedEdge: SelectedEdge | null;
@@ -146,7 +146,7 @@ interface RakedCeilingFieldsProps {
         field: "lowHeightMm" | "highHeightMm",
         value: string,
     ) => void;
-}
+};
 
 function RakedCeilingFields({
     areaId,
@@ -211,7 +211,7 @@ function RakedCeilingFields({
     );
 }
 
-interface RakedHeightFieldProps {
+type RakedHeightFieldProps = {
     readonly label: string;
     readonly field: "lowHeightMm" | "highHeightMm";
     readonly error: string;
@@ -220,7 +220,7 @@ interface RakedHeightFieldProps {
         field: "lowHeightMm" | "highHeightMm",
         value: string,
     ) => void;
-}
+};
 
 function RakedHeightField({
     label,

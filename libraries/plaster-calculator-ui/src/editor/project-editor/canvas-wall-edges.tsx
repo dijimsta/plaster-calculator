@@ -19,7 +19,7 @@ const HIGH_EDGE_COLOR = activeTheme.editor.highEdge;
 
 type RakedEdgeRole = "low" | "high" | null;
 
-interface CanvasWallEdgesProps {
+type CanvasWallEdgesProps = {
     readonly overlayMode: OverlayMode;
     readonly selectedAreaIds: string[];
     readonly selectedEdge: SelectedEdge | null;
@@ -27,7 +27,7 @@ interface CanvasWallEdgesProps {
     readonly selectedPointIndexes: number[];
     readonly visibleAreas: AreaPolygon[];
     readonly zoom: number;
-}
+};
 
 export function CanvasWallEdges({
     overlayMode,

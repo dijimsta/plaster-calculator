@@ -9,15 +9,15 @@ import type { RefObject } from "react";
 import type { OverlayMode, SnapGuide } from "./project-editor.types.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 
-export interface ScrollDragState {
+export type ScrollDragState = {
     x: number;
     y: number;
     scrollLeft: number;
     scrollTop: number;
     moved: boolean;
-}
+};
 
-export interface EditorCanvasProps {
+export type EditorCanvasProps = {
     readonly canvasWrapRef: RefObject<HTMLDivElement | null>;
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;
     readonly draftPointer: Point | null;
@@ -54,4 +54,4 @@ export interface EditorCanvasProps {
     readonly setOverlay: (overlay: Overlay) => void;
     readonly setReferencePoints: (points: Point[]) => void;
     readonly setSnapGuide: (guide: SnapGuide) => void;
-}
+};

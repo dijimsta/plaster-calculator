@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-interface EditorImageState {
+type EditorImageState = {
     readonly image: HTMLImageElement | null;
     readonly imageError: string;
-}
+};
 
 export function useEditorImage(imageUrl: string): EditorImageState {
     const [image, setImage] = useState<HTMLImageElement | null>(null);

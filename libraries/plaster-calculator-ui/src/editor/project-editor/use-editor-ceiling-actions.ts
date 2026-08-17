@@ -6,12 +6,12 @@ import {
 import type { UpdateArea } from "./use-editor-actions.types.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 
-interface CeilingActionsOptions {
+type CeilingActionsOptions = {
     readonly ceilingHeightMm: number | null;
     readonly selectedArea: AreaPolygon | null;
     readonly selectedEdge: SelectedEdge | null;
     readonly updateArea: UpdateArea;
-}
+};
 
 export function useEditorCeilingActions({
     ceilingHeightMm,

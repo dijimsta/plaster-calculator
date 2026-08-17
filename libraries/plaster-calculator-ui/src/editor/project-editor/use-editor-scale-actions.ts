@@ -3,7 +3,7 @@ import type { RefObject } from "react";
 
 import type { ViewportSize } from "./use-editor-actions.types.js";
 
-interface ScaleActionsOptions {
+type ScaleActionsOptions = {
     readonly canvasWrapRef: RefObject<HTMLDivElement | null>;
     readonly imageHeight: number;
     readonly imageWidth: number;
@@ -18,7 +18,7 @@ interface ScaleActionsOptions {
     readonly setScaleMmPerPx: (value: number | null) => void;
     readonly setStatus: (status: string) => void;
     readonly setZoom: (zoom: number) => void;
-}
+};
 
 export function useEditorScaleActions({
     canvasWrapRef,

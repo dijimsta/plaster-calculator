@@ -13,7 +13,7 @@ import type { SelectedEdge } from "./use-editor-selection.js";
 export type MaterialField =
     "wallBoardProfile" | "wallBoardType" | "ceilingPlasterType";
 
-interface MaterialActionsOptions {
+type MaterialActionsOptions = {
     readonly commit: (next: Overlay) => void;
     readonly overlay: Overlay;
     readonly selectedArea: AreaPolygon | null;
@@ -21,7 +21,7 @@ interface MaterialActionsOptions {
     readonly selectedAreas: AreaPolygon[];
     readonly selectedEdge: SelectedEdge | null;
     readonly updateArea: UpdateArea;
-}
+};
 
 export function useEditorMaterialActions({
     commit,

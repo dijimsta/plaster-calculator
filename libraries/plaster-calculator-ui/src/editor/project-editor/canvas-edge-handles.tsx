@@ -11,7 +11,7 @@ import { Line } from "react-konva";
 import { cloneOverlay } from "./overlay-serialization.js";
 import type { DragState } from "./project-editor.types.js";
 
-interface CanvasEdgeHandlesProps {
+type CanvasEdgeHandlesProps = {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;
     readonly isDrawingFreeShape: boolean;
     readonly isSettingReference: boolean;
@@ -21,7 +21,7 @@ interface CanvasEdgeHandlesProps {
     readonly selectEdge: (areaId: string, edgeIndex: number) => void;
     readonly setDirty: (dirty: boolean) => void;
     readonly setOverlay: (overlay: Overlay) => void;
-}
+};
 
 export function CanvasEdgeHandles({
     commitFromSnapshot,

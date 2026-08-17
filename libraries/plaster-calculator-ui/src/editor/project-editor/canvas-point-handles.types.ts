@@ -7,7 +7,7 @@ import type { RefObject } from "react";
 import type { SnapGuide } from "./project-editor.types.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 
-export interface CanvasPointHandlesProps {
+export type CanvasPointHandlesProps = {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;
     readonly isDrawingFreeShape: boolean;
     readonly isSettingReference: boolean;
@@ -22,4 +22,4 @@ export interface CanvasPointHandlesProps {
     readonly setDirty: (dirty: boolean) => void;
     readonly setOverlay: (overlay: Overlay) => void;
     readonly setSnapGuide: (guide: SnapGuide) => void;
-}
+};

@@ -8,9 +8,9 @@ import { Box, Text } from "@libraries/uikit-web";
 import { BOARD_SWATCH_CLASSES } from "./board-materials.js";
 import { cx, ui } from "./project-editor.styles.js";
 
-interface EditorLegendProps {
+type EditorLegendProps = {
     readonly visibleAreas: AreaPolygon[];
-}
+};
 
 export function EditorLegend({ visibleAreas }: EditorLegendProps) {
     const legendBoardTypes = wallBoardTypesInUse(visibleAreas);

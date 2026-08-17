@@ -21,7 +21,7 @@ import type { MaterialField } from "./use-editor-material-actions.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 import type { ValidationIssue } from "./validation.js";
 
-interface SelectionPanelProps {
+type SelectionPanelProps = {
     readonly areaIssue: (
         areaId: string,
         field: ValidationIssue["field"],
@@ -48,7 +48,7 @@ interface SelectionPanelProps {
         areaId: string,
         updater: (area: AreaPolygon) => AreaPolygon,
     ) => void;
-}
+};
 
 export function SelectionPanel({
     areaIssue,

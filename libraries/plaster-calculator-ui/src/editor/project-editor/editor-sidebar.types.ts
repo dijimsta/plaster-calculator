@@ -10,17 +10,17 @@ import type { MaterialField } from "./use-editor-material-actions.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 import type { ValidationIssue } from "./validation.js";
 
-export interface EditorSummary {
+export type EditorSummary = {
     readonly wallTotals: [string, number][];
     readonly ceilingTotals: [string, number][];
-}
+};
 
-export interface SelectionMetrics {
+export type SelectionMetrics = {
     readonly wallLengthM: number;
     readonly ceilingAreaM2: number;
-}
+};
 
-export interface EditorSidebarProps {
+export type EditorSidebarProps = {
     readonly page: FloorplanPage;
     readonly status: string;
     readonly dirty: boolean;
@@ -71,4 +71,4 @@ export interface EditorSidebarProps {
         areaId: string,
         updater: (area: AreaPolygon) => AreaPolygon,
     ) => void;
-}
+};

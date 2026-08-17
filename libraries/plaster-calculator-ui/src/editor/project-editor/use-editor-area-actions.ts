@@ -20,7 +20,7 @@ import {
     viewportCenterInImage,
 } from "./use-editor-area-actions.utils.js";
 
-interface AreaActionsOptions extends Pick<
+type AreaActionsOptions = Pick<
     EditorActionsOptions,
     | "canvasWrapRef"
     | "commit"
@@ -44,9 +44,9 @@ interface AreaActionsOptions extends Pick<
     | "setSelectedPointIndexes"
     | "setSnapGuide"
     | "setStatus"
-> {
+> & {
     readonly updateArea: UpdateArea;
-}
+};
 
 export function useEditorAreaActions(options: AreaActionsOptions) {
     const {

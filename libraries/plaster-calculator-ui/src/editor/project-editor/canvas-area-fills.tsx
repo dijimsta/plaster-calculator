@@ -11,7 +11,7 @@ import { colorFor, normalizeCeilingBoardType } from "./board-materials.js";
 import { cloneOverlay } from "./overlay-serialization.js";
 import type { DragState, OverlayMode } from "./project-editor.types.js";
 
-interface CanvasAreaFillsProps {
+type CanvasAreaFillsProps = {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;
     readonly isDrawingFreeShape: boolean;
     readonly isSettingReference: boolean;
@@ -23,7 +23,7 @@ interface CanvasAreaFillsProps {
     readonly selectArea: (areaId: string, additive: boolean) => void;
     readonly setDirty: (dirty: boolean) => void;
     readonly setOverlay: (overlay: Overlay) => void;
-}
+};
 
 export function CanvasAreaFills({
     commitFromSnapshot,

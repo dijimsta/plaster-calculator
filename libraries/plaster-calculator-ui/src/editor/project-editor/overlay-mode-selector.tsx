@@ -6,10 +6,10 @@ import type { OverlayMode } from "./project-editor.types.js";
 
 const OVERLAY_MODES: OverlayMode[] = ["walls", "ceilings", "both"];
 
-export interface OverlayModeSelectorProps {
+export type OverlayModeSelectorProps = {
     readonly overlayMode: OverlayMode;
     readonly onSetOverlayMode: (mode: OverlayMode) => void;
-}
+};
 
 export function OverlayModeSelector({
     overlayMode,

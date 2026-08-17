@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-export interface SelectedEdge {
+export type SelectedEdge = {
     readonly areaId: string;
     readonly edgeIndex: number;
-}
+};
 
-interface EditorSelectionState {
+type EditorSelectionState = {
     readonly selectedAreaId: string | null;
     readonly selectedAreaIds: string[];
     readonly selectedEdge: SelectedEdge | null;
@@ -21,7 +21,7 @@ interface EditorSelectionState {
     readonly setSelectedEdge: (edge: SelectedEdge | null) => void;
     readonly setSelectedPoint: (index: number | null) => void;
     readonly setSelectedPointIndexes: (indexes: number[]) => void;
-}
+};
 
 export function useEditorSelection(): EditorSelectionState {
     const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);

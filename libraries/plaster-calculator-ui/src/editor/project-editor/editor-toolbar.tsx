@@ -23,7 +23,7 @@ import { OverlayModeSelector } from "./overlay-mode-selector.js";
 import { ui } from "./project-editor.styles.js";
 import type { OverlayMode } from "./project-editor.types.js";
 
-interface EditorToolbarProps {
+type EditorToolbarProps = {
     readonly addMenuOpen: boolean;
     readonly autoSaving: boolean;
     readonly dirty: boolean;
@@ -51,7 +51,7 @@ interface EditorToolbarProps {
     readonly onStraightenSelectedPoints: () => void;
     readonly onUndo: () => void;
     readonly hasSelection: () => boolean;
-}
+};
 
 export function EditorToolbar({
     addMenuOpen,

@@ -7,17 +7,17 @@ import type { RefObject } from "react";
 
 import type { SelectedEdge } from "./use-editor-selection.js";
 
-export interface ViewportSize {
+export type ViewportSize = {
     readonly width: number;
     readonly height: number;
-}
+};
 
 export type UpdateArea = (
     areaId: string,
     updater: (area: AreaPolygon) => AreaPolygon,
 ) => void;
 
-export interface EditorActionsOptions {
+export type EditorActionsOptions = {
     readonly canvasWrapRef: RefObject<HTMLDivElement | null>;
     readonly ceilingHeightMm: number | null;
     readonly commit: (next: Overlay) => void;
@@ -51,4 +51,4 @@ export interface EditorActionsOptions {
     readonly setSnapGuide: (guide: null) => void;
     readonly setStatus: (status: string) => void;
     readonly setZoom: (zoom: number) => void;
-}
+};
