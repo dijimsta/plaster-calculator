@@ -4,13 +4,46 @@ export function cx(
     return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * Presentation for this subtree that public `@libraries/uikit-web` APIs
+ * cannot express yet (see `docs/web-ui-guidelines.md`'s Presentation
+ * section). Every entry here is a deliberately-kept gap, not an oversight:
+ *
+ * - `editorShell` / `editorLeftPanel` / `editorCanvasContainer` /
+ *   `editorRightPanel`: the two-pane editor shell needs a fixed-width
+ *   (320px) sidebar column with a custom `max-[980px]` breakpoint collapse,
+ *   plus regions that must receive `inert` directly (no UIKit layout
+ *   primitive forwards `inert` or an arbitrary `ref`). `Grid` only supports
+ *   discrete equal column counts; `SidebarLayout` is a full-page app shell
+ *   with a mobile hamburger/backdrop, not a nested two-pane layout.
+ * - `canvasWrap`: the scrollable canvas viewport needs a raw `ref` (read
+ *   directly by the scroll-drag handlers in `editor-canvas.tsx`) and a
+ *   responsive height. `Box` doesn't forward refs or support arbitrary/
+ *   responsive sizing.
+ * - `popoverMenu`: an anchored, absolutely-positioned dropdown of buttons.
+ *   UIKit's `overlays/` components are all full-screen/modal (`Backdrop`,
+ *   `BusyOverlay`, `Drawer`, `ModalDialog`, `Notification`) -- there's no
+ *   small inline popover/menu primitive.
+ * - `editorLegend`: a `border-t`-separated footer row. `Box` has no border
+ *   capability.
+ * - `areaList` / `areaRow` / `areaRowActive`: a scrollable, multi-selectable
+ *   (ctrl/cmd-click additive selection) list of buttons with an
+ *   active/selected highlight. `StackedList` has no selection-state styling
+ *   or max-height scrolling; `RadioGroup`'s list variants are single-choice
+ *   only, the wrong semantics for additive multi-select.
+ * - `metric`: a compact, soft-bordered single-line stat readout (e.g. "Wall
+ *   length: 3.2 m"). UIKit's only bordered-box primitive is `Card`, which
+ *   this codebase otherwise only nests once per panel as an outer container
+ *   (see `readiness-summary-header.component.tsx`), not repeated inline for
+ *   dense stat rows -- and its padding/shadow are heavier than this needs.
+ *
+ * See the PR description for the full list, including gaps noted inline at
+ * their call sites instead of here (e.g. the toolbar's fieldset-disable
+ * pattern, the legend's colour swatch).
+ */
 export const activeTheme = {
     active: "border-slate-900 ring-2 ring-slate-200 dark:border-slate-100 dark:ring-slate-700",
     canvasBg: "bg-slate-200 dark:bg-slate-800",
-    controlBg: "bg-white dark:bg-slate-900",
-    danger: "text-red-700 dark:text-red-400",
-    dangerBorder: "border-red-600",
-    dangerRing: "ring-2 ring-red-200 dark:ring-red-950",
     editor: {
         boardColors: {
             "10mm Plasterboard": {
@@ -87,14 +120,9 @@ export const activeTheme = {
         selectedPoint: "#7c3aed",
         stageBg: "#f1f5f9",
     },
-    fieldText: "text-slate-500 dark:text-slate-400",
-    fieldTextNested: "[&_label]:text-slate-500 dark:[&_label]:text-slate-400",
-    focus: "focus:border-slate-500 focus:ring-2 focus:ring-slate-300 dark:focus:border-slate-400 dark:focus:ring-slate-700",
     line: "border-slate-200 dark:border-slate-800",
-    muted: "text-slate-500 dark:text-slate-400",
     panelBg: "bg-white dark:bg-slate-900",
     softBg: "bg-slate-100 dark:bg-slate-800",
-    text: "text-slate-900 dark:text-slate-100",
 } as const;
 
 type Theme = typeof activeTheme;
@@ -107,13 +135,6 @@ function createUi(theme: Theme) {
             theme.line,
         ),
         areaRowActive: theme.active,
-        button: cx(
-            "inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border px-3 py-[9px] outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-45",
-            theme.line,
-            theme.focus,
-        ),
-        buttonDefault: cx(theme.controlBg, theme.text),
-        buttonRow: "flex flex-wrap gap-2",
         canvasWrap: cx(
             "flex-1 min-h-[560px] overflow-auto rounded-lg border max-[980px]:h-[70vh]",
             theme.canvasBg,
@@ -132,31 +153,12 @@ function createUi(theme: Theme) {
         editorRightPanel: "min-h-0",
         editorShell:
             "grid grid-cols-[minmax(0,1fr)_320px] grid-rows-[minmax(0,1fr)] flex-1 min-h-0 max-[980px]:grid-cols-1",
-        editorToolbar: "mb-3 flex flex-wrap items-center justify-between gap-2",
-        error: cx("text-sm", theme.danger),
-        field: cx(
-            "grid gap-1.5 [&_label]:text-[13px] [&_label]:font-bold",
-            theme.fieldTextNested,
-        ),
-        fieldError: cx("text-xs font-bold", theme.danger),
-        input: cx(
-            "min-h-[42px] w-full rounded-lg border px-3 py-2.5 outline-none",
-            theme.softBg,
-            theme.line,
-            theme.text,
-            theme.focus,
-        ),
-        inputInvalid: cx(theme.dangerBorder, theme.dangerRing),
-        label: cx("text-[13px] font-bold", theme.fieldText),
         metric: cx("rounded-lg border p-2.5", theme.softBg, theme.line),
-        muted: cx("text-sm", theme.muted),
         popoverMenu: cx(
             "absolute left-0 top-[46px] z-10 grid min-w-[170px] gap-1.5 rounded-lg border p-2 shadow-lg",
             theme.panelBg,
             theme.line,
         ),
-        stack: "grid gap-3.5",
-        validationCta: "grid items-start gap-2.5",
     };
 }
 

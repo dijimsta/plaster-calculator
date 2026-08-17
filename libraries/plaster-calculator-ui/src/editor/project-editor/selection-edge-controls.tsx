@@ -8,7 +8,8 @@ import type {
     AreaPolygon,
     EdgeOverride,
 } from "@libraries/plaster-calculator-common";
-import { Button } from "@libraries/uikit-web";
+import { Box, Button, Checkbox, Label } from "@libraries/uikit-web";
+import { useId } from "react";
 import type { ReactNode } from "react";
 
 import { useEditorTranslation } from "../i18n/index.js";
@@ -44,8 +45,16 @@ export function SelectedEdgeControls({
     setSelectedEdgeNoPlaster,
 }: SelectedEdgeControlsProps) {
     const { t } = useEditorTranslation();
+    const noPlasterCheckboxId = useId();
+    const wallTypeDisabled = isEdgeWallTypeDisabled(
+        selectedEdgeOverride,
+        selectedEdgeArea,
+    );
+
     return (
         <>
+            {/* `ui.metric` is a deliberately-kept gap -- see
+                `project-editor.styles.ts`. */}
             <div className={ui.metric}>
                 Edge {selectedEdge.edgeIndex + 1} selected in{" "}
                 {selectedEdgeArea.label}
@@ -56,28 +65,26 @@ export function SelectedEdgeControls({
                 selectedAreaIds={selectedAreaIds}
                 selectedEdgeArea={selectedEdgeArea}
             />
-            <label className={cx(ui.button, ui.buttonDefault, "justify-start")}>
-                <input
-                    type="checkbox"
+            <Box align="center" gap="sm">
+                <Checkbox
+                    id={noPlasterCheckboxId}
                     checked={isNoPlaster(selectedEdgeOverride)}
                     onChange={(event) =>
                         setSelectedEdgeNoPlaster(event.target.checked)
                     }
                 />
-                No plaster
-            </label>
+                <Label htmlFor={noPlasterCheckboxId}>No plaster</Label>
+            </Box>
+            {/* `className="contents"` + `"opacity-60"` are a
+                deliberately-kept gap, same as the toolbar's fieldset (see
+                `editor-toolbar.tsx`): the native `<fieldset disabled>`
+                cascade-disables both selects below when the edge's wall
+                type doesn't apply, and `contents` neutralizes its default
+                block box; `opacity-60` dims the pair to match. UIKit has no
+                "disable a group of children" primitive. */}
             <fieldset
-                className={cx(
-                    "contents",
-                    isEdgeWallTypeDisabled(
-                        selectedEdgeOverride,
-                        selectedEdgeArea,
-                    ) && "opacity-60",
-                )}
-                disabled={isEdgeWallTypeDisabled(
-                    selectedEdgeOverride,
-                    selectedEdgeArea,
-                )}
+                className={cx("contents", wallTypeDisabled && "opacity-60")}
+                disabled={wallTypeDisabled}
             >
                 <MaterialSelect
                     label={t("selectionBoardControls.wallProfileLabel")}

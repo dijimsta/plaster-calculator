@@ -6,14 +6,15 @@ import type {
     AreaPolygon,
     EdgeOverride,
 } from "@libraries/plaster-calculator-common";
-import { Paragraph } from "@libraries/uikit-web";
+import { Box, Checkbox, Input, Label, Paragraph } from "@libraries/uikit-web";
+import { useId } from "react";
 import type { ReactNode } from "react";
 
 import { useEditorTranslation } from "../i18n/index.js";
 
 import { CEILING_BOARD_TYPES } from "./board-materials.js";
 import type { SelectionMetrics } from "./editor-sidebar.types.js";
-import { cx, ui } from "./project-editor.styles.js";
+import { ui } from "./project-editor.styles.js";
 import { BoardControls, MaterialSelect } from "./selection-board-controls.js";
 import { SelectedEdgeControls } from "./selection-edge-controls.js";
 import type { MaterialField } from "./use-editor-material-actions.js";
@@ -69,7 +70,7 @@ export function SelectionPanel({
     updateArea,
 }: SelectionPanelProps) {
     return (
-        <div className={ui.stack}>
+        <Box direction="column" gap="md">
             <SelectionPanelContent
                 areaIssue={areaIssue}
                 clearSelectedEdgeOverride={clearSelectedEdgeOverride}
@@ -89,7 +90,7 @@ export function SelectionPanel({
                 toggleOutdoor={toggleOutdoor}
                 updateArea={updateArea}
             />
-        </div>
+        </Box>
     );
 }
 
@@ -173,6 +174,8 @@ function MultiAreaControls({
     const { t } = useEditorTranslation();
     return (
         <>
+            {/* `ui.metric` is a deliberately-kept gap -- see
+                `project-editor.styles.ts`. */}
             <div className={ui.metric}>
                 {selectedAreaIds.length} areas selected. Material changes apply
                 to all selected areas.
@@ -225,17 +228,14 @@ function SingleAreaControls({
     | "updateArea"
 >) {
     const { t } = useEditorTranslation();
+    const outdoorCheckboxId = useId();
     if (!selectedArea) return null;
     return (
         <>
-            <div className={ui.field}>
-                <label>{t("selectionPanel.areaLabelField")}</label>
-                <input
-                    className={cx(
-                        ui.input,
-                        areaIssue(selectedArea.id, "areaLabel") &&
-                            ui.inputInvalid,
-                    )}
+            <Box direction="column" gap="xs">
+                <Label>{t("selectionPanel.areaLabelField")}</Label>
+                <Input
+                    invalid={Boolean(areaIssue(selectedArea.id, "areaLabel"))}
                     value={selectedArea.label}
                     onChange={(event) =>
                         updateArea(selectedArea.id, (area) => ({
@@ -245,15 +245,15 @@ function SingleAreaControls({
                     }
                 />
                 {fieldError(areaIssue(selectedArea.id, "areaLabel"))}
-            </div>
-            <label className={cx(ui.button, ui.buttonDefault, "justify-start")}>
-                <input
-                    type="checkbox"
+            </Box>
+            <Box align="center" gap="sm">
+                <Checkbox
+                    id={outdoorCheckboxId}
                     checked={!!selectedArea.isOutdoor}
                     onChange={toggleOutdoor}
                 />
-                Outdoor area
-            </label>
+                <Label htmlFor={outdoorCheckboxId}>Outdoor area</Label>
+            </Box>
             {renderCeilingControls(selectedArea)}
             <BoardControls
                 areaIssue={areaIssue}
@@ -262,6 +262,8 @@ function SingleAreaControls({
                 setMaterial={setMaterial}
             />
             {fieldError(areaIssue(selectedArea.id, "polygon"))}
+            {/* `ui.metric` is a deliberately-kept gap -- see
+                `project-editor.styles.ts`. */}
             <div className={ui.metric}>
                 Selected points: {selectedPointIndexes.length}
             </div>

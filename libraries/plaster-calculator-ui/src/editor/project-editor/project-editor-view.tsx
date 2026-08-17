@@ -91,6 +91,12 @@ export function ProjectEditorView({
     onAnalyze,
 }: ProjectEditorViewProps) {
     return (
+        // `ui.editorShell` / `ui.editorLeftPanel` are deliberately-kept
+        // gaps: this two-pane shell needs a fixed 320px sidebar column with
+        // a custom `max-[980px]` breakpoint collapse, which neither `Grid`
+        // (discrete equal columns only) nor `SidebarLayout` (a full-page
+        // shell with a mobile hamburger/backdrop) can express. See
+        // `project-editor.styles.ts`.
         <section className={ui.editorShell}>
             <div className={ui.editorLeftPanel}>
                 <EditorToolbar
@@ -129,6 +135,11 @@ export function ProjectEditorView({
                         Analysis is running. Editing is temporarily disabled.
                     </Paragraph>
                 )}
+                {/* `ui.editorCanvasContainer` / `ui.editorRightPanel` below
+                    are deliberately-kept gaps: both need `inert` applied
+                    directly to the DOM node, and no UIKit layout primitive
+                    forwards `inert` (or any passthrough DOM attribute). See
+                    `project-editor.styles.ts`. */}
                 <div inert={analyzing} className={ui.editorCanvasContainer}>
                     <EditorCanvas
                         canvasWrapRef={canvasWrapRef}

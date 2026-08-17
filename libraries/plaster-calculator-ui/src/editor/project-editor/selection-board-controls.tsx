@@ -5,6 +5,8 @@ import {
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
+import { Box, Label, SelectMenu } from "@libraries/uikit-web";
+import type { SelectMenuOption } from "@libraries/uikit-web";
 import type { ReactNode } from "react";
 
 import { useEditorTranslation } from "../i18n/index.js";
@@ -13,7 +15,6 @@ import {
     CEILING_BOARD_TYPES,
     normalizeCeilingBoardType,
 } from "./board-materials.js";
-import { cx, ui } from "./project-editor.styles.js";
 import type { MaterialField } from "./use-editor-material-actions.js";
 import type { ValidationIssue } from "./validation.js";
 
@@ -96,24 +97,23 @@ export function MaterialSelect({
     readonly value: string;
     readonly onChange: (value: string) => void;
 }) {
+    const selectOptions: SelectMenuOption[] = showMixedOption
+        ? [
+              { value: "", label: "Mixed", disabled: true },
+              ...options.map((type) => ({ value: type, label: type })),
+          ]
+        : options.map((type) => ({ value: type, label: type }));
+
     return (
-        <div className={ui.field}>
-            <label>{label}</label>
-            <select
-                className={cx(ui.input, error && ui.inputInvalid)}
+        <Box direction="column" gap="xs">
+            <Label>{label}</Label>
+            <SelectMenu
+                options={selectOptions}
                 value={value}
+                invalid={Boolean(error)}
                 onChange={(event) => onChange(event.target.value)}
-            >
-                {showMixedOption && (
-                    <option value="" disabled>
-                        Mixed
-                    </option>
-                )}
-                {options.map((type) => (
-                    <option key={type}>{type}</option>
-                ))}
-            </select>
+            />
             {fieldError?.(error)}
-        </div>
+        </Box>
     );
 }

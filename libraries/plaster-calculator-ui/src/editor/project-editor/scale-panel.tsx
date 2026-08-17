@@ -1,11 +1,11 @@
 import type { Point } from "@libraries/plaster-calculator-common";
-import { Button, Paragraph } from "@libraries/uikit-web";
+import { Box, Button, Input, Label, Paragraph } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { useEditorTranslation } from "../i18n/index.js";
 
-import { cx, ui } from "./project-editor.styles.js";
+import { ui } from "./project-editor.styles.js";
 import type { ValidationIssue } from "./validation.js";
 
 interface ScalePanelProps {
@@ -41,8 +41,8 @@ export function ScalePanel({
 }: ScalePanelProps) {
     const { t } = useEditorTranslation();
     return (
-        <div className={ui.stack}>
-            <div className={ui.buttonRow}>
+        <Box direction="column" gap="md">
+            <Box direction="row" wrap gap="sm">
                 <Button
                     variant={isSettingReference ? "primary" : "secondary"}
                     onClick={
@@ -65,7 +65,7 @@ export function ScalePanel({
                 >
                     Reset
                 </Button>
-            </div>
+            </Box>
             <Paragraph textSize="sm" variant="muted">
                 {isSettingReference
                     ? t("scalePanel.clickTwoPoints")
@@ -73,13 +73,10 @@ export function ScalePanel({
                           points: referencePoints.length,
                       })}
             </Paragraph>
-            <div className={ui.field}>
-                <label>{t("scalePanel.referenceLengthLabel")}</label>
-                <input
-                    className={cx(
-                        ui.input,
-                        pageIssue("reference") && ui.inputInvalid,
-                    )}
+            <Box direction="column" gap="xs">
+                <Label>{t("scalePanel.referenceLengthLabel")}</Label>
+                <Input
+                    invalid={Boolean(pageIssue("reference"))}
                     value={referenceLengthMm}
                     onChange={(event) => {
                         setReferenceLengthMm(event.target.value);
@@ -88,7 +85,7 @@ export function ScalePanel({
                     type="number"
                 />
                 {fieldError(pageIssue("reference"))}
-            </div>
+            </Box>
             <Button
                 variant="primary"
                 onClick={applyScale}
@@ -103,10 +100,12 @@ export function ScalePanel({
             >
                 Apply scale to all pages
             </Button>
+            {/* `ui.metric` is a deliberately-kept gap -- see
+                `project-editor.styles.ts`. */}
             <div className={ui.metric}>
                 Scale:{" "}
                 {scaleMmPerPx ? `${scaleMmPerPx.toFixed(3)} mm/px` : "not set"}
             </div>
-        </div>
+        </Box>
     );
 }

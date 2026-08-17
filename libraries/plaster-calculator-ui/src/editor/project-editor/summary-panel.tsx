@@ -1,4 +1,4 @@
-import { Button, Paragraph } from "@libraries/uikit-web";
+import { Box, Button, Paragraph, Text } from "@libraries/uikit-web";
 import { MousePointer2 } from "lucide-react";
 
 import { useEditorTranslation } from "../i18n/index.js";
@@ -20,47 +20,52 @@ export function SummaryPanel({
 }: SummaryPanelProps) {
     const { t } = useEditorTranslation();
     return (
-        <div className={ui.stack}>
+        <Box direction="column" gap="md">
             {!summary && (
-                <div className={ui.validationCta}>
-                    <p className={pageIssue("reference") ? ui.error : ui.muted}>
+                <Box direction="column" align="start" gap="sm">
+                    <Paragraph
+                        textSize="sm"
+                        variant={pageIssue("reference") ? "danger" : "muted"}
+                    >
                         {pageIssue("reference") ||
                             t("summaryPanel.unavailable")}
-                    </p>
+                    </Paragraph>
                     <Button variant="primary" onClick={startReferenceMode}>
                         <MousePointer2 size={18} /> Set reference
                     </Button>
-                </div>
+                </Box>
             )}
             {summary && (
                 <>
-                    <div className={ui.field}>
-                        <span className={ui.label}>
+                    <Box direction="column" gap="xs">
+                        <Text size="sm" weight="semibold" variant="muted">
                             {t("summaryPanel.wallLength")}
-                        </span>
+                        </Text>
                         {summary.wallTotals.length === 0 && (
                             <Paragraph textSize="sm" variant="muted">
                                 No counted wall lengths.
                             </Paragraph>
                         )}
                         {summary.wallTotals.map(([type, total]) => (
+                            // `ui.metric` is a deliberately-kept gap -- see
+                            // `project-editor.styles.ts`.
                             <div className={ui.metric} key={`wall-${type}`}>
                                 {type}: {total.toFixed(2)} m
                             </div>
                         ))}
-                    </div>
-                    <div className={ui.field}>
-                        <span className={ui.label}>
+                    </Box>
+                    <Box direction="column" gap="xs">
+                        <Text size="sm" weight="semibold" variant="muted">
                             {t("summaryPanel.ceilingArea")}
-                        </span>
+                        </Text>
                         {summary.ceilingTotals.map(([type, total]) => (
                             <div className={ui.metric} key={`ceiling-${type}`}>
                                 {type}: {total.toFixed(2)} m2
                             </div>
                         ))}
-                    </div>
+                    </Box>
                 </>
             )}
-        </div>
+        </Box>
     );
 }

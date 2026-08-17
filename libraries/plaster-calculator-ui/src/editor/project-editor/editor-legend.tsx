@@ -17,9 +17,18 @@ export function EditorLegend({ visibleAreas }: EditorLegendProps) {
     if (legendBoardTypes.length === 0) return null;
 
     return (
+        // `ui.editorLegend` is a deliberately-kept gap: `Box` has no
+        // border capability, and this footer needs a `border-t` separator
+        // from the canvas above it. See `project-editor.styles.ts`.
         <footer className={ui.editorLegend}>
             {legendBoardTypes.map((type) => (
                 <Box align="center" gap="xs" key={type}>
+                    {/* This colour swatch is a deliberately-kept gap: it
+                        maps an open, per-domain-value palette (13 board
+                        materials) to a small colour square. `Avatar`,
+                        `IconTile`, and `Badge` all expose fixed, closed
+                        semantic-colour sets, not an arbitrary colour swatch
+                        primitive. */}
                     <span
                         className={cx(
                             "inline-block h-3 w-3 rounded",

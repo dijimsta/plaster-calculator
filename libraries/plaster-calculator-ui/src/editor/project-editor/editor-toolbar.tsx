@@ -1,5 +1,5 @@
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
-import { Button } from "@libraries/uikit-web";
+import { Box, Button } from "@libraries/uikit-web";
 import {
     AlignHorizontalJustifyCenter,
     CopyPlus,
@@ -85,9 +85,16 @@ export function EditorToolbar({
     const { t } = useEditorTranslation();
 
     return (
-        <div className={ui.editorToolbar}>
+        <Box direction="row" wrap align="center" justify="between" gap="sm">
+            {/* `className="contents"` is a functional CSS reset, not
+                decoration: it neutralizes the native `<fieldset>`'s default
+                block box so cascading `disabled={analyzing}` to every
+                control below doesn't break this row's flex layout. UIKit
+                has no "disable a group of children" primitive (`ButtonGroup`
+                visually joins buttons but doesn't propagate `disabled`), so
+                this stays a deliberately-kept gap. */}
             <fieldset className="contents" disabled={analyzing}>
-                <div className={ui.buttonRow}>
+                <Box direction="row" wrap gap="sm">
                     <Button
                         variant="secondary"
                         icon={<Undo2 size={18} aria-hidden="true" />}
@@ -146,8 +153,8 @@ export function EditorToolbar({
                         selectedPointCount={selectedPointCount}
                         onDeleteSelection={onDeleteSelection}
                     />
-                </div>
-                <div className={ui.buttonRow}>
+                </Box>
+                <Box direction="row" wrap gap="sm">
                     <Button
                         variant="secondary"
                         icon={<Minus size={18} aria-hidden="true" />}
@@ -177,13 +184,17 @@ export function EditorToolbar({
                         saving={saving}
                         onSave={onSave}
                     />
-                </div>
+                </Box>
             </fieldset>
             <Button
                 variant="secondary"
                 onClick={onAnalyze}
                 disabled={analyzing}
             >
+                {/* `className="animate-spin"` on this leaf Lucide icon is a
+                    deliberately-kept gap: no UIKit component exposes a
+                    spinner/loading treatment (`Button` has no `loading`
+                    prop). */}
                 {analyzing ? (
                     <Loader2 className="animate-spin" size={18} />
                 ) : (
@@ -191,7 +202,7 @@ export function EditorToolbar({
                 )}
                 {analyzing ? "Analyzing..." : "Analyze"}
             </Button>
-        </div>
+        </Box>
     );
 }
 
@@ -205,6 +216,11 @@ function AddAreaControls({
     "addMenuOpen" | "onAddRectangle" | "onSetAddMenuOpen" | "onStartFreeShape"
 >) {
     return (
+        // `className="relative"` + `ui.popoverMenu` are a deliberately-kept
+        // gap: an anchored, absolutely-positioned dropdown of buttons has no
+        // UIKit equivalent -- `overlays/` only has full-screen/modal
+        // components (`Backdrop`, `BusyOverlay`, `Drawer`, `ModalDialog`,
+        // `Notification`), not a small inline popover/menu primitive.
         <div className="relative">
             <Button
                 variant="secondary"
@@ -272,6 +288,8 @@ function SaveButtonIcon({
     autoSaving,
     saving,
 }: Pick<EditorToolbarProps, "autoSaving" | "saving">) {
+    // See the `analyzing` icon above: no UIKit spinner/loading treatment
+    // exists yet, so this leaf icon keeps its own spin animation.
     return saving || autoSaving ? (
         <Loader2 className="animate-spin" size={18} />
     ) : (
