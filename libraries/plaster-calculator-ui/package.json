@@ -10,7 +10,8 @@
     },
     "main": "./out/index.js",
     "scripts": {
-        "build": "tsc --build tsconfig.build.json"
+        "build": "tsc --build tsconfig.build.json",
+        "prepare": "pnpm build"
     },
     "dependencies": {
         "@generated/data-connector-web": "workspace:*",

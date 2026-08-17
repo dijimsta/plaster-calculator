@@ -10,6 +10,7 @@
         "deploy": "firebase deploy --only functions",
         "genkit:ui": "genkit start -- tsx --watch src/ai/index.ts",
         "logs": "firebase functions:log",
+        "prepare": "pnpm build",
         "test": "node --test"
     },
     "dependencies": {
