@@ -9,7 +9,13 @@ import {
     Paragraph,
     Text,
 } from "@libraries/uikit-web";
-import { Building2, LoaderCircle, RefreshCcw, Search } from "lucide-react";
+import {
+    Building2,
+    LoaderCircle,
+    Plus,
+    RefreshCcw,
+    Search,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { useAppTranslation } from "../../../i18n/index.ts";
@@ -21,9 +27,15 @@ import { filterCompanies } from "./company.utils.js";
 
 interface CompanyListPanelProps {
     readonly refreshKey: number;
+    /** Invoked with the trimmed search term when the user asks to create a
+     * company from an empty search result. */
+    readonly onCreateFromSearch: (name: string) => void;
 }
 
-export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
+export function CompanyListPanel({
+    refreshKey,
+    onCreateFromSearch,
+}: CompanyListPanelProps) {
     const companiesService = useCompaniesService();
     const { t } = useAppTranslation();
     const [companies, setCompanies] = useState<CompanySummary[]>([]);
@@ -108,6 +120,27 @@ export function CompanyListPanel({ refreshKey }: CompanyListPanelProps) {
                         <EmptyState
                             icon={<Building2 />}
                             title={t("companies.list.emptyStateTitle")}
+                            actions={
+                                query.trim() ? (
+                                    <Button
+                                        variant="secondary"
+                                        icon={
+                                            <Plus
+                                                size={16}
+                                                aria-hidden="true"
+                                            />
+                                        }
+                                        onClick={() =>
+                                            onCreateFromSearch(query.trim())
+                                        }
+                                        type="button"
+                                    >
+                                        {t("companies.list.createFromSearch", {
+                                            name: query.trim(),
+                                        })}
+                                    </Button>
+                                ) : undefined
+                            }
                         />
                     )}
                 </div>

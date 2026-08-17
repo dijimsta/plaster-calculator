@@ -83,6 +83,7 @@ export const en = Object.freeze({
         chooseDifferentFile: "Click to choose a different file",
         browseFileInstruction: "Click to browse from your computer",
         upload: "Upload",
+        companyCreated: "{{name}} created and selected.",
     }),
     pdfPageModal: Object.freeze({
         title: "Which pages do you annotate walls on?",
@@ -147,6 +148,7 @@ export const en = Object.freeze({
             loading: "Loading companies...",
             emptyStateTitle: "No companies found",
             unableToLoad: "Unable to load companies",
+            createFromSearch: 'Create "{{name}}"',
         }),
         newCompany: Object.freeze({
             title: "New Company",
@@ -283,6 +285,9 @@ export const en = Object.freeze({
         projectWon: "Project won",
         projectLost: "Project lost",
         followUp: projectFollowUp,
+        companyPanel: Object.freeze({
+            noContactDetails: "No contact details",
+        }),
     }),
     salesStatus: Object.freeze({
         label: "Sales status",

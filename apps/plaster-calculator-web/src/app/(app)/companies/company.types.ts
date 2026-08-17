@@ -1,3 +1,5 @@
+import type { RefObject } from "react";
+
 import type { CompanyContact } from "../../../types.js";
 
 export interface CompanyDraft {
@@ -21,6 +23,9 @@ export interface ContactDraft {
 export interface CompanyDraftFieldsProps {
     readonly draft: CompanyDraft;
     readonly setDraft: (draft: CompanyDraft) => void;
+    /** Focuses the company name field on mount, e.g. when the draft was
+     * seeded from a Companies-page search that found no match. */
+    readonly nameInputRef?: RefObject<HTMLInputElement | null>;
 }
 
 export interface CompanyDetailFieldsProps {

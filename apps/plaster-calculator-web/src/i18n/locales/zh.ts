@@ -85,6 +85,7 @@ export const zh = createTranslationResource(
             chooseDifferentFile: "点击选择其他文件",
             browseFileInstruction: "点击从电脑中浏览文件",
             upload: "上传",
+            companyCreated: "已创建并选中 {{name}}。",
         }),
         pdfPageModal: Object.freeze({
             title: "您在哪些页面上标注墙体？",
@@ -149,6 +150,7 @@ export const zh = createTranslationResource(
                 loading: "正在加载公司...",
                 emptyStateTitle: "未找到公司",
                 unableToLoad: "无法加载公司",
+                createFromSearch: "创建“{{name}}”",
             }),
             newCompany: Object.freeze({
                 title: "新建公司",
@@ -281,6 +283,9 @@ export const zh = createTranslationResource(
             projectWon: "项目已成交",
             projectLost: "项目已流失",
             followUp: projectFollowUp,
+            companyPanel: Object.freeze({
+                noContactDetails: "无联系方式",
+            }),
         }),
         salesStatus: Object.freeze({
             label: "销售状态",

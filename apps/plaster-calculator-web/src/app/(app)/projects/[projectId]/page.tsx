@@ -133,13 +133,18 @@ export default function ProjectPage({
         }
     }
 
-    async function saveCompany(): Promise<void> {
-        if (!project || !companyId) return;
+    async function saveCompany(overrideCompanyId?: string): Promise<void> {
+        // `overrideCompanyId` lets a caller link a company whose id hasn't
+        // reached `companyId` state yet -- e.g. right after creating one
+        // inline, where waiting for the next render would risk this call
+        // still reading the pre-creation (null) value.
+        const targetCompanyId = overrideCompanyId ?? companyId;
+        if (!project || !targetCompanyId) return;
         setSavingCompany(true);
         try {
             const updated = await projectsService.updateProject({
                 projectId: project.id,
-                companyId,
+                companyId: targetCompanyId,
             });
             setProject(updated);
             setError("");

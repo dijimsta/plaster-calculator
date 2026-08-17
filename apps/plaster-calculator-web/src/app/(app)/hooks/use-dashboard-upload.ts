@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation.js";
 import type { PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { useState, type DragEvent, type FormEvent } from "react";
 
+import { useAppTranslation } from "../../../i18n/index.ts";
 import {
     loadPdfDocument,
     renderPdfPageSourcePng,
@@ -12,6 +13,7 @@ import {
     revokePdfPreviews,
     type PdfPagePreview,
 } from "../../../lib/pdf.js";
+import type { CompanyDetail } from "../../../types.js";
 import type { PageUploadProgress } from "../dashboard.types.js";
 
 /** One-based step of the new-project wizard: details -> clarifications -> pages (PDF uploads only). */
@@ -34,8 +36,10 @@ export function useDashboardUpload({
 }: DashboardUploadOptions) {
     const projectsService = useProjectsService();
     const router = useRouter();
+    const { t } = useAppTranslation();
     const [name, setName] = useState("");
     const [companyId, setCompanyId] = useState<string | null>(null);
+    const [companyCreatePending, setCompanyCreatePending] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -75,7 +79,12 @@ export function useDashboardUpload({
 
     async function submit(event: FormEvent) {
         event.preventDefault();
-        if (!file) return;
+        // An inline company creation (started from the picker) must resolve
+        // and land its id in `companyId` before the project is created --
+        // otherwise the upload would go out company-less and need a
+        // follow-up patch. `companyCreatePending` is set for the duration of
+        // that create call by `CompanySelect`'s `onCreatePendingChange`.
+        if (!file || companyCreatePending) return;
         cleanupPdfModal();
         setLoading(true);
         setWizardOpen(true);
@@ -186,6 +195,14 @@ export function useDashboardUpload({
         }
     }
 
+    /** Confirms a company created inline from the picker -- its id already
+     * reached `companyId` via `CompanySelect`'s `onChange`. */
+    function handleCompanyCreated(created: CompanyDetail): void {
+        setMessage(
+            t("newProjectForm.companyCreated", { name: created.companyName }),
+        );
+    }
+
     function handleFileSelection(nextFile?: File | null) {
         if (!nextFile) return;
         setFile(nextFile);
@@ -236,6 +253,7 @@ export function useDashboardUpload({
     }
 
     return {
+        companyCreatePending,
         companyId,
         dragActive,
         draftProjectId,
@@ -253,9 +271,11 @@ export function useDashboardUpload({
         finishWizard,
         goToPagesStep,
         goToWizardStep,
+        handleCompanyCreated,
         handleDrop,
         handleFileSelection,
         processSelectedPdfPages,
+        setCompanyCreatePending,
         setCompanyId,
         setDragActive,
         setName,

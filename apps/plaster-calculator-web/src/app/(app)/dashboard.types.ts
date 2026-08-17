@@ -2,7 +2,7 @@ import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 
 import type { PdfPagePreview } from "../../lib/pdf.js";
-import type { ProjectSummary } from "../../types.js";
+import type { CompanyDetail, ProjectSummary } from "../../types.js";
 
 export interface PageUploadProgress {
     readonly current: number;
@@ -11,6 +11,7 @@ export interface PageUploadProgress {
 }
 
 export interface NewProjectFormProps {
+    readonly companyCreatePending: boolean;
     readonly companyId: string | null;
     readonly dragActive: boolean;
     readonly file: File | null;
@@ -19,6 +20,8 @@ export interface NewProjectFormProps {
     readonly name: string;
     readonly handleDrop: (event: DragEvent<HTMLLabelElement>) => void;
     readonly handleFileSelection: (file?: File | null) => void;
+    readonly onCompanyCreated: (company: CompanyDetail) => void;
+    readonly setCompanyCreatePending: (isPending: boolean) => void;
     readonly setCompanyId: (companyId: string | null) => void;
     readonly setDragActive: (active: boolean) => void;
     readonly setName: (name: string) => void;
