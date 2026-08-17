@@ -36,3 +36,11 @@ Start the interactive CLI:
 ```bash
 pnpm exec admin-cli
 ```
+
+## Conventions
+
+- Keep Ink terminal UI and navigation here; reusable Firebase Admin operations belong in
+  [Node Core](../../libraries/plaster-calculator-node-core/README.md).
+- Do not import browser or web UI packages.
+- Validate identifiers and claims before writes. Show the target and destructive scope.
+- Represent asynchronous loading, empty, error, and success states explicitly.

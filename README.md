@@ -1,5 +1,61 @@
 # plaster-calculator
 
+## Packages
+
+| Package                                                                             | Description                                                                          |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [`@apps/admin-cli`](apps/admin-cli)                                                 | Internal command-line tooling for Plaster Calculator administration.                 |
+| [`@apps/dev-cli`](apps/dev-cli)                                                     | Repository development and deployment tooling, exposed through the `dev-cli` binary. |
+| [`@apps/plaster-calculator-web`](apps/plaster-calculator-web)                       | Next.js web application for Plaster Calculator.                                      |
+| [`@apps/storybook-web`](apps/storybook-web)                                         | Production-like component workshop for the workspace's web UI libraries.             |
+| [`@functions/plaster-calculator-functions`](functions/plaster-calculator-functions) | Node.js 24 Firebase Functions backend for Plaster Calculator.                        |
+| [`@libraries/plaster-calculator-common`](libraries/plaster-calculator-common)       | Platform-neutral domain contracts shared by browser and Node.js packages.            |
+| [`@libraries/plaster-calculator-node-core`](libraries/plaster-calculator-node-core) | Reusable Node.js services and adapters for Plaster Calculator.                       |
+| [`@libraries/plaster-calculator-ui`](libraries/plaster-calculator-ui)               | Reusable, domain-aware React patterns for Plaster Calculator applications.           |
+| [`@libraries/plaster-calculator-web-core`](libraries/plaster-calculator-web-core)   | Reusable browser and Firebase client SDK adapters for Plaster Calculator.            |
+| [`@libraries/uikit-web`](libraries/uikit-web)                                       | Framework- and application-agnostic React component library for web interfaces.      |
+| [`@libraries/utilities`](libraries/utilities)                                       | Framework-agnostic shared utility functions.                                         |
+| [`@ui/internationalization`](ui/internationalization)                               | Framework- and application-agnostic internationalization layer for web interfaces.   |
+
+The `floorplan-analyzer` Firebase Function (`functions/floorplan-analyzer`) is a Python package, outside the pnpm
+workspace — see [floorplan-analyzer local setup](#floorplan-analyzer-local-setup) below. The `generated/` packages
+are Firebase Data Connect SDK output — see [Generated directories](CONTRIBUTING.md#generated-directories).
+
+## Commands
+
+| Script                                | Description                                                                               |
+| ------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `build`                               | Builds packages that reference `tsconfig.build.json`.                                     |
+| `deploy:dataconnect`                  | Deploys the Firebase Data Connect schema and connectors.                                  |
+| `deploy:functions:floorplan-analyzer` | Deploys the `floorplan-analyzer` Firebase Function.                                       |
+| `deploy:storage`                      | Deploys Firebase Storage rules.                                                           |
+| `emulators:start`                     | Starts the Firebase Local Emulator Suite, importing/exporting local emulator data.        |
+| `format`                              | Formats all files with Prettier.                                                          |
+| `format:check`                        | Checks formatting without writing changes.                                                |
+| `generate:dataconnect`                | Regenerates the Firebase Data Connect SDK output under `generated/`.                      |
+| `lint`                                | Lints all files with ESLint, applying fixes.                                              |
+| `lint:check`                          | Lints all files without applying fixes.                                                   |
+| `start`                               | Builds `floorplan-analyzer` and all TypeScript packages, then starts the emulator suite.  |
+| `storybook`                           | Starts Storybook in watch mode (shortcut for `@apps/storybook-web`'s `storybook` script). |
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines, including commit message requirements.
+
+## Style guide
+
+See the guideline docs under `docs/` for code-level conventions not enforced by Prettier or ESLint:
+
+- [docs/typescript-guidelines.md](docs/typescript-guidelines.md) — applies to all handwritten TypeScript packages.
+- [docs/web-ui-guidelines.md](docs/web-ui-guidelines.md) — the web app, Storybook, `plaster-calculator-ui`, and
+  `uikit-web`.
+- [docs/firebase-admin-guidelines.md](docs/firebase-admin-guidelines.md) — server and administrative packages using
+  the Firebase Admin SDK.
+- [docs/service-architecture.md](docs/service-architecture.md) — shared domain contracts, infrastructure
+  implementations, and Storybook stubs.
+- [docs/cors-callable-functions.md](docs/cors-callable-functions.md) — diagnosing CORS errors on Firebase callable
+  functions.
+
 ## Jira
 
 See [docs/JIRA.md](docs/JIRA.md) for how we use Jira for software project tickets, and

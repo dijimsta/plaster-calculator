@@ -67,3 +67,10 @@ pnpm build
 pnpm lint
 pnpm format
 ```
+
+## Conventions
+
+- Organise reusable domain molecules and organisms by domain namespace; apps own pages and routing (see
+  [Atomic design boundary](#atomic-design-boundary)).
+- Keep domain UI framework-agnostic (see [Framework boundary](#framework-boundary)) and export public APIs through
+  package barrels.
