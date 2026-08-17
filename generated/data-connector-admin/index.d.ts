@@ -402,6 +402,26 @@ export interface ListDueRemindersVariables {
   teamId: string;
 }
 
+export interface ListOpenRemindersData {
+  reminders: ({
+    id: UUIDString;
+    teamId: string;
+    assignee?: string | null;
+    projectId: UUIDString;
+    companyId?: UUIDString | null;
+    name: string;
+    status: string;
+    dueAt: TimestampString;
+    completedAt?: TimestampString | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & Reminder_Key)[];
+}
+
+export interface ListOpenRemindersVariables {
+  teamId: string;
+}
+
 export interface ListPendingTeamInvitationsData {
   teamInvitations: ({
     teamId: string;
@@ -879,6 +899,11 @@ export function updateReminder(vars: UpdateReminderVariables, options?: Operatio
 export function listDueReminders(dc: DataConnect, vars: ListDueRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListDueRemindersData>>;
 /** Generated Node Admin SDK operation action function for the 'ListDueReminders' Query. Allow users to pass in custom DataConnect instances. */
 export function listDueReminders(vars: ListDueRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListDueRemindersData>>;
+
+/** Generated Node Admin SDK operation action function for the 'ListOpenReminders' Query. Allow users to execute without passing in DataConnect. */
+export function listOpenReminders(dc: DataConnect, vars: ListOpenRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListOpenRemindersData>>;
+/** Generated Node Admin SDK operation action function for the 'ListOpenReminders' Query. Allow users to pass in custom DataConnect instances. */
+export function listOpenReminders(vars: ListOpenRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListOpenRemindersData>>;
 
 /** Generated Node Admin SDK operation action function for the 'ListProjectReminders' Query. Allow users to execute without passing in DataConnect. */
 export function listProjectReminders(dc: DataConnect, vars: ListProjectRemindersVariables, options?: OperationOptions): Promise<ExecuteOperationResponse<ListProjectRemindersData>>;
