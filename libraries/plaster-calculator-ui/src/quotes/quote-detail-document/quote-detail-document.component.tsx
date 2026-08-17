@@ -9,7 +9,7 @@ import { QuoteDetailDocumentLetterhead } from "./quote-detail-document-letterhea
 import { QuoteDetailDocumentPricingTable } from "./quote-detail-document-pricing-table.component.tsx";
 import { QuoteDetailDocumentSignatureBlock } from "./quote-detail-document-signature-block.component.tsx";
 import type { QuoteDetailDocumentLineItem } from "./quote-detail-document.types.ts";
-import { QuoteDetailDocumentUtils } from "./quote-detail-document.utils.ts";
+import { totals as computeTotals } from "./quote-detail-document.utils.ts";
 
 /**
  * DOM id of the document's root `Card`. The print stylesheet (WORK-118)
@@ -78,7 +78,7 @@ export function QuoteDetailDocument({
     takeoffSummaryText,
     printOnly = false,
 }: QuoteDetailDocumentProps): ReactElement {
-    const totals = QuoteDetailDocumentUtils.totals(lineItems);
+    const totals = computeTotals(lineItems);
 
     return (
         <Card

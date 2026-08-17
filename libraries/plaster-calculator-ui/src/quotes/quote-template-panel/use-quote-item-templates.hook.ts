@@ -12,7 +12,12 @@ import { QueryFetchPolicy } from "firebase/data-connect";
 import { useEffect, useMemo, useRef } from "react";
 
 import type { QuoteTemplateItem } from "./quote-template-panel.types.ts";
-import { QuoteTemplatePanelUtils } from "./quote-template-panel.utils.ts";
+import {
+    mapUnitPricesByItemTemplateId,
+    mergeQuoteItemTemplates,
+    resolveBackfillPriceCents,
+    resolveDefaultTemplateContext,
+} from "./quote-template-panel.utils.ts";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -32,7 +37,7 @@ type DefaultTemplateBackfillPrices = {
  * *other* template (a variation) -- the default's own configs, read only
  * for their price. Split out of `useQuoteItemTemplates()` to keep that
  * hook's own branching within this file's complexity limit; see
- * `QuoteTemplatePanelUtils.resolveBackfillPriceCents()`, the caller of
+ * `resolveBackfillPriceCents()` (`quote-template-panel.utils.ts`), the caller of
  * `defaultPriceByItemTemplateId`, for why a variation needs this at all.
  */
 function useDefaultTemplateBackfillPrices(
@@ -44,7 +49,7 @@ function useDefaultTemplateBackfillPrices(
         defaultTemplateId,
         isDefaultTemplate,
         needsDefaultPricesForBackfill,
-    } = QuoteTemplatePanelUtils.resolveDefaultTemplateContext(
+    } = resolveDefaultTemplateContext(
         quoteTemplateId,
         templatesData?.quoteTemplates ?? [],
     );
@@ -56,7 +61,7 @@ function useDefaultTemplateBackfillPrices(
         );
     const defaultPriceByItemTemplateId = useMemo(
         () =>
-            QuoteTemplatePanelUtils.mapUnitPricesByItemTemplateId(
+            mapUnitPricesByItemTemplateId(
                 defaultConfigsData?.quoteItemTemplateConfigs ?? [],
             ),
         [defaultConfigsData],
@@ -115,7 +120,7 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
 
     const itemTemplates = itemTemplatesData?.quoteItemTemplates ?? [];
     const configs = configsData?.quoteItemTemplateConfigs ?? [];
-    const mergedItems = QuoteTemplatePanelUtils.mergeQuoteItemTemplates(
+    const mergedItems = mergeQuoteItemTemplates(
         quoteTemplateId ?? "",
         itemTemplates,
         configs,
@@ -200,12 +205,11 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
                 createItemTemplateConfig({
                     quoteTemplateId: activeQuoteTemplateId,
                     itemTemplateId,
-                    unitPriceCents:
-                        QuoteTemplatePanelUtils.resolveBackfillPriceCents(
-                            isDefaultTemplate,
-                            itemTemplateId,
-                            defaultPriceByItemTemplateId,
-                        ),
+                    unitPriceCents: resolveBackfillPriceCents(
+                        isDefaultTemplate,
+                        itemTemplateId,
+                        defaultPriceByItemTemplateId,
+                    ),
                     materialUnitPriceCents: 0,
                     labourUnitPriceCents: 0,
                 }),

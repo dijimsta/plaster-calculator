@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QueryFetchPolicy } from "firebase/data-connect";
 import { useCallback } from "react";
 
-import { QuoteTemplateListUtils } from "./quote-template-list.utils.ts";
+import { buildVariationVariables } from "./quote-template-list.utils.ts";
 import type {
     QuoteTemplate,
     QuoteTemplateItem,
@@ -76,7 +76,7 @@ export function useQuoteTemplateList(
                 return;
             }
             await createVariationMutation(
-                QuoteTemplateListUtils.buildVariationVariables(
+                buildVariationVariables(
                     crypto.randomUUID(),
                     name,
                     defaultTemplateItems,

@@ -4,7 +4,10 @@ import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 
-import { QuoteDetailDocumentUtils } from "./quote-detail-document.utils.ts";
+import {
+    abnLicenceLine as buildAbnLicenceLine,
+    validUntilLabel,
+} from "./quote-detail-document.utils.ts";
 
 export type QuoteDetailDocumentLetterheadProps = {
     readonly appearance: QuoteAppearance;
@@ -45,11 +48,7 @@ export function QuoteDetailDocumentLetterhead({
                     {new Date(issuedAt).toLocaleDateString()}
                 </Text>
                 <Text size="sm" variant="muted">
-                    {QuoteDetailDocumentUtils.validUntilLabel(
-                        issuedAt,
-                        appearance.validForDays,
-                        t,
-                    )}
+                    {validUntilLabel(issuedAt, appearance.validForDays, t)}
                 </Text>
             </Box>
         </Box>
@@ -66,7 +65,7 @@ function QuoteDetailDocumentLetterheadIssuer({
     logoUrl,
 }: QuoteDetailDocumentLetterheadIssuerProps): ReactElement {
     const { t } = useQuotesTranslation();
-    const abnLicenceLine = QuoteDetailDocumentUtils.abnLicenceLine(
+    const abnLicenceLine = buildAbnLicenceLine(
         appearance.abn,
         appearance.licenceNumber,
         t,

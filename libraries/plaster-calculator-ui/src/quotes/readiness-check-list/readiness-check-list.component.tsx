@@ -18,7 +18,11 @@ import { useId, useState } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 
-import { ReadinessCheckListUtils } from "./readiness-check-list.utils.ts";
+import {
+    affectedItemKey,
+    affectedItemLocation,
+    checkTitle,
+} from "./readiness-check-list.utils.ts";
 
 /**
  * Renders the fix control for one affected item of one check. A row never
@@ -226,9 +230,7 @@ function ReadinessCheckRowHeader({
     return (
         <Box direction="row" justify="between" align="center" wrap>
             <Box direction="column" gap="xs">
-                <Text size="base">
-                    {ReadinessCheckListUtils.checkTitle(check.id, t)}
-                </Text>
+                <Text size="base">{checkTitle(check.id, t)}</Text>
                 {!isMet && (
                     <Text size="sm" variant="muted">
                         {check.fixMode === "INLINE"
@@ -300,10 +302,7 @@ function ReadinessCheckRowItems({
                 <Box direction="column" gap="xs">
                     {itemsToRender.map((item, index) => (
                         <ReadinessAffectedItemRow
-                            key={ReadinessCheckListUtils.affectedItemKey(
-                                item,
-                                index,
-                            )}
+                            key={affectedItemKey(item, index)}
                             item={item}
                             check={check}
                             renderFixControl={renderFixControl}
@@ -330,9 +329,7 @@ function ReadinessAffectedItemRow({
 
     return (
         <Box direction="row" justify="between" align="center" gap="sm" wrap>
-            <Text size="sm">
-                {ReadinessCheckListUtils.affectedItemLocation(item, t)}
-            </Text>
+            <Text size="sm">{affectedItemLocation(item, t)}</Text>
             {renderFixControl?.(item, check)}
         </Box>
     );

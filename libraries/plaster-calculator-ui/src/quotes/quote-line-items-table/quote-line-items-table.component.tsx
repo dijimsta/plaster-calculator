@@ -6,7 +6,10 @@ import type { ReactElement } from "react";
 import { useQuotesTranslation } from "../i18n/index.ts";
 
 import type { QuoteLineItemsTableRow } from "./quote-line-items-table.types.ts";
-import { QuoteLineItemsTableUtils } from "./quote-line-items-table.utils.ts";
+import {
+    provenanceLabel,
+    quantityDisplayText,
+} from "./quote-line-items-table.utils.ts";
 
 export type QuoteLineItemsTableProps = {
     readonly rows: readonly QuoteLineItemsTableRow[];
@@ -76,13 +79,11 @@ function QuoteLineItemsTableBodyRow({
                 <Box direction="column" gap="xs">
                     <Text size="base">{row.name}</Text>
                     <Text size="sm" variant="muted">
-                        {QuoteLineItemsTableUtils.provenanceLabel(row, t)}
+                        {provenanceLabel(row, t)}
                     </Text>
                 </Box>
             </Table.Cell>
-            <Table.Cell align="end">
-                {QuoteLineItemsTableUtils.quantityDisplayText(row)}
-            </Table.Cell>
+            <Table.Cell align="end">{quantityDisplayText(row)}</Table.Cell>
             <Table.Cell align="end">{row.unit ?? ""}</Table.Cell>
             <Table.Cell align="end">
                 {centsToAudDisplayText(row.unitPriceCents)}

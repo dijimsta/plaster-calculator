@@ -22,7 +22,7 @@ import { useQuoteItemTemplates } from "../quote-template-panel/use-quote-item-te
 
 import { QuoteTemplateVariationCompanyList } from "./quote-template-variation-company-list.component.tsx";
 import type { QuoteTemplateVariationFormValues } from "./quote-template-variation-editor.types.ts";
-import { QuoteTemplateVariationEditorUtils } from "./quote-template-variation-editor.utils.ts";
+import { buildFormValues } from "./quote-template-variation-editor.utils.ts";
 import { QuoteTemplateVariationForm } from "./quote-template-variation-form.component.tsx";
 import { useQuoteTemplateVariationCompanies } from "./use-quote-template-variation-companies.hook.ts";
 import { useSaveQuoteTemplateVariationPrices } from "./use-save-quote-template-variation-prices.hook.ts";
@@ -93,11 +93,7 @@ export function QuoteTemplateVariationEditor({
         [defaultTemplateItems],
     );
     const initialValues = useMemo(
-        () =>
-            QuoteTemplateVariationEditorUtils.buildFormValues(
-                items,
-                defaultPriceByItemTemplateId,
-            ),
+        () => buildFormValues(items, defaultPriceByItemTemplateId),
         [items, defaultPriceByItemTemplateId],
     );
     const formItemKey = [
