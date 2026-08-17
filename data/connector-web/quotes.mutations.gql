@@ -1765,3 +1765,72 @@ mutation CreateQuoteWithItems(
         }
     ) @include(if: $includeItem20)
 }
+
+# Upserts the calling team's `QuoteAppearance` row in one call, covering
+# every field — letterhead, output detail, and terms for generated quote
+# documents (WORK-201). Follows `UpsertMyUserSignature`
+# (connector-web/users.mutations.gql) exactly: `teamId_expr:
+# "auth.token.teamId"` derives the row's key from the caller's token rather
+# than a client-supplied id, so a team can only ever upsert its own row, and
+# `updatedAt_expr` stamps `request.time` the same way every other mutation in
+# this file does. A single mutation over the whole record, rather than one
+# per field group, so the settings tab's save button is one round trip.
+mutation UpsertMyQuoteAppearance(
+    $logoStoragePath: String
+    $businessName: String
+    $abn: String
+    $licenceNumber: String
+    $address: String
+    $phoneNumber: String
+    $email: String
+    $accentColor: String
+    $pricingDetail: String!
+    $showScopeOfWork: Boolean!
+    $showTakeoffSummary: Boolean!
+    $showSignatureBlock: Boolean!
+    $validForDays: Int!
+    $terms: String
+) @auth(level: USER) {
+    quoteAppearance_upsert(
+        data: {
+            teamId_expr: "auth.token.teamId"
+            logoStoragePath: $logoStoragePath
+            businessName: $businessName
+            abn: $abn
+            licenceNumber: $licenceNumber
+            address: $address
+            phoneNumber: $phoneNumber
+            email: $email
+            accentColor: $accentColor
+            pricingDetail: $pricingDetail
+            showScopeOfWork: $showScopeOfWork
+            showTakeoffSummary: $showTakeoffSummary
+            showSignatureBlock: $showSignatureBlock
+            validForDays: $validForDays
+            terms: $terms
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+# Writes `logoStoragePath` alone, leaving every other `QuoteAppearance` field
+# untouched — the same partial-field upsert shape `EnsureProjectQuestionnaire`
+# (connector-web/questionnaires.mutations.gql) uses for
+# `projectQuestionnaire_upsert(data: { projectId: $projectId, updatedAt_expr:
+# "request.time" })`: only the fields present in `data` are written, so an
+# existing row's other settings survive a logo-only save. Nullable, so
+# passing `null` clears a previously-uploaded logo without a full
+# `UpsertMyQuoteAppearance` call. Still an upsert rather than a plain
+# `quoteAppearance_update`: a team can upload a logo before it has ever saved
+# any other appearance setting, and an `_update` would fail outright against
+# a row that doesn't exist yet.
+mutation UpdateMyQuoteAppearanceLogo($logoStoragePath: String)
+@auth(level: USER) {
+    quoteAppearance_upsert(
+        data: {
+            teamId_expr: "auth.token.teamId"
+            logoStoragePath: $logoStoragePath
+            updatedAt_expr: "request.time"
+        }
+    )
+}
