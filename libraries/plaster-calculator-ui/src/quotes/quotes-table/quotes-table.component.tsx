@@ -1,5 +1,5 @@
 import { Box, Button, EmptyState, Table, Text } from "@libraries/uikit-web";
-import { CurrencyUtils } from "@libraries/utilities";
+import { centsToDollarsText } from "@libraries/utilities";
 import { Download, Receipt } from "lucide-react";
 import type { ReactElement } from "react";
 
@@ -104,7 +104,7 @@ function QuotesTableBodyRow({
                 <QuoteStatusBadge status={row.status} />
             </Table.Cell>
             <Table.Cell align="end">
-                ${CurrencyUtils.centsToDollarsText(row.totalIncGstCents)}
+                ${centsToDollarsText(row.totalIncGstCents)}
             </Table.Cell>
             <Table.Cell align="end">
                 {new Date(row.createdAt).toLocaleDateString()}

@@ -6,7 +6,7 @@ import {
     lineAmountCents,
 } from "@libraries/plaster-calculator-common";
 import { Box, Table, Text } from "@libraries/uikit-web";
-import { CurrencyUtils } from "@libraries/utilities";
+import { centsToAudDisplayText } from "@libraries/utilities";
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
@@ -105,10 +105,10 @@ function FullLineItemsRow({
             <Table.Cell align="end">{item.quantity}</Table.Cell>
             <Table.Cell align="end">{item.unit ?? ""}</Table.Cell>
             <Table.Cell align="end">
-                {CurrencyUtils.centsToAudDisplayText(item.unitPriceCents)}
+                {centsToAudDisplayText(item.unitPriceCents)}
             </Table.Cell>
             <Table.Cell align="end">
-                {CurrencyUtils.centsToAudDisplayText(
+                {centsToAudDisplayText(
                     lineAmountCents(item.quantity, item.unitPriceCents),
                 )}
             </Table.Cell>
@@ -142,7 +142,7 @@ function AmountsOnlyTable({ lineItems }: LineItemsProps): ReactElement {
                     <Table.Row key={item.id} avoidBreakInside>
                         <Table.Cell wrap>{item.name}</Table.Cell>
                         <Table.Cell align="end">
-                            {CurrencyUtils.centsToAudDisplayText(
+                            {centsToAudDisplayText(
                                 lineAmountCents(
                                     item.quantity,
                                     item.unitPriceCents,
@@ -187,7 +187,7 @@ function LumpSumTable({
                         {t("quoteDetailDocument.lumpSumDescription")}
                     </Table.Cell>
                     <Table.Cell align="end">
-                        {CurrencyUtils.centsToAudDisplayText(totalCents)}
+                        {centsToAudDisplayText(totalCents)}
                     </Table.Cell>
                 </Table.Row>
             </Table.Body>
