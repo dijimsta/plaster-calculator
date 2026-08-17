@@ -61,16 +61,6 @@ Deploy through the repository Firebase workflow or, when intentionally targeting
 pnpm --filter @functions/plaster-calculator-functions deploy
 ```
 
-## Verification
-
-Before committing, run:
-
-```bash
-pnpm build
-pnpm lint
-pnpm format
-```
-
 ## Conventions
 
 - Export deployed functions from `src/index.ts`; keep global initialization in `src/bootstrap.ts`.

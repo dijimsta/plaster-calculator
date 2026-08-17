@@ -58,16 +58,6 @@ The library is React-aware but application-framework-agnostic. Do not add Next.j
 Stories live in `apps/storybook-web` and import this package through `@libraries/plaster-calculator-ui`. Stories should
 exercise meaningful domain and service states with local stubs.
 
-## Build
-
-From the repository root:
-
-```bash
-pnpm build
-pnpm lint
-pnpm format
-```
-
 ## Conventions
 
 - Organise reusable domain molecules and organisms by domain namespace; apps own pages and routing (see

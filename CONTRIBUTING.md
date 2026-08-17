@@ -13,6 +13,10 @@ pnpm format
 Run lint before format — lint may reorder or rewrite code that format would then need to fix. All three must pass
 with no errors before the commit is made. If you cannot run them yourself, ask the user to do it first.
 
+The `.husky/pre-commit` hook (installed by `pnpm install` through the `prepare` script) also runs these checks and
+rejects the commit if any of them fail. Running them yourself first lets you fix problems before the commit is
+rejected, rather than finding out at commit time.
+
 These checks must also be run before opening a pull request. If any check modifies files (e.g. prettier rewrites),
 stage and commit those changes before creating the PR.
 
@@ -96,8 +100,11 @@ Document generated code elsewhere (e.g. the connector's schema/source directory)
 
 ## Commit messages
 
-All commits must use the [Conventional Commits](https://www.conventionalcommits.org/) format, appending the Jira
-issue key in brackets when applicable:
+This repository uses [Conventional Commits](https://www.conventionalcommits.org/) and enforces the
+[`@commitlint/config-conventional`](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional)
+rules with a Git commit hook.
+
+All commits must use this format, appending the Jira issue key in brackets when applicable:
 
 ```text
 <type>[optional scope]: <description> [<Jira-issue-key>]
