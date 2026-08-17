@@ -1,5 +1,6 @@
 import { appMetadataByLanguage } from "../language.ts";
 
+import { companySelect } from "./en/company-select.ts";
 import { needsFollowUp } from "./en/needs-follow-up.ts";
 import { followUp as projectFollowUp } from "./en/project-follow-up.ts";
 import { projects } from "./en/projects.ts";
@@ -47,13 +48,7 @@ export const en = Object.freeze({
         }),
         logOut: "Log out",
     }),
-    companySelect: Object.freeze({
-        label: "Company",
-        placeholder: "Search companies",
-        unableToLoadCompanies: "Unable to load companies",
-        clearCompany: "Clear company",
-        noCompanyDetails: "No company details",
-    }),
+    companySelect,
     themeSettingsControl: Object.freeze({
         legend: "Colour theme",
         modeLabels: Object.freeze({

@@ -1,29 +1,27 @@
 "use client";
 
 import { useCompaniesService } from "@libraries/plaster-calculator-web-core";
-import { Button, Paragraph, Text } from "@libraries/uikit-web";
-import { LoaderCircle, Search, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Button } from "@libraries/uikit-web";
+import { Search, X } from "lucide-react";
+import { useMemo, useRef, useState, type FormEvent } from "react";
 
 import { useAppTranslation } from "../i18n/index.ts";
 import { cx, ui } from "../lib/styles.js";
 import type { CompanySummary } from "../types.js";
 
-interface CompanySelectProps {
-    readonly selectedCompanyId: string | null;
-    readonly onChange: (companyId: string | null) => void;
-    readonly disabled?: boolean;
-    readonly label?: string;
-    readonly placeholder?: string;
-    readonly selectedCompanyLabel?: string | null;
-}
-
-interface CompanySelectMenuProps {
-    readonly error: string;
-    readonly filtered: readonly CompanySummary[];
-    readonly isLoading: boolean;
-    readonly onSelect: (company: CompanySummary) => void;
-}
+import { CompanyCreatePanel } from "./company-select-create-panel.js";
+import { CompanySelectMenu } from "./company-select-menu.js";
+import {
+    EMPTY_CREATE_DRAFT,
+    type CompanyCreateDraft,
+    type CompanySelectProps,
+} from "./company-select.types.js";
+import {
+    companyInputValue,
+    filterCompanies,
+    findNearMatches,
+    trimmedOrNull,
+} from "./company-select.utils.js";
 
 export function CompanySelect({
     selectedCompanyId,
@@ -32,6 +30,7 @@ export function CompanySelect({
     label,
     placeholder,
     selectedCompanyLabel = null,
+    onCreated,
 }: CompanySelectProps) {
     const { t } = useAppTranslation();
     const resolvedLabel = label ?? t("companySelect.label");
@@ -42,6 +41,20 @@ export function CompanySelect({
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [isCreating, setIsCreating] = useState(false);
+    const [createDraft, setCreateDraft] =
+        useState<CompanyCreateDraft>(EMPTY_CREATE_DRAFT);
+    const [createError, setCreateError] = useState("");
+    const [isSubmittingCreate, setIsSubmittingCreate] = useState(false);
+
+    // Closing the popover on blur is deferred so a click on a menu button can
+    // preventDefault its mousedown and keep focus on the search input (see
+    // below). Once create mode renders its own inputs, focus genuinely moves
+    // to them, which would otherwise trigger this same deferred close mid-
+    // edit. The ref lets the deferred callback re-check the latest mode
+    // rather than the mode captured when blur fired.
+    const isCreatingRef = useRef(isCreating);
+    isCreatingRef.current = isCreating;
 
     const selectedCompany = useMemo(
         () => companies?.find((company) => company.id === selectedCompanyId),
@@ -50,6 +63,10 @@ export function CompanySelect({
     const filtered = useMemo(
         () => filterCompanies(companies ?? [], query),
         [companies, query],
+    );
+    const nearMatches = useMemo(
+        () => findNearMatches(companies ?? [], createDraft.companyName),
+        [companies, createDraft.companyName],
     );
 
     async function ensureLoaded(): Promise<void> {
@@ -73,12 +90,54 @@ export function CompanySelect({
         onChange(company.id);
         setQuery(company.companyName);
         setIsOpen(false);
+        setIsCreating(false);
     }
 
     function clearCompany(): void {
         onChange(null);
         setQuery("");
         setIsOpen(false);
+    }
+
+    function startCreate(): void {
+        setCreateDraft({ ...EMPTY_CREATE_DRAFT, companyName: query.trim() });
+        setCreateError("");
+        setIsCreating(true);
+    }
+
+    function cancelCreate(): void {
+        setIsCreating(false);
+        setCreateError("");
+    }
+
+    async function submitCreate(event: FormEvent): Promise<void> {
+        event.preventDefault();
+        const companyName = createDraft.companyName.trim();
+        if (!companyName) {
+            setCreateError(t("companySelect.nameRequired"));
+            return;
+        }
+        setIsSubmittingCreate(true);
+        setCreateError("");
+        try {
+            const created = await companiesService.createCompany({
+                companyName,
+                businessNumber: trimmedOrNull(createDraft.businessNumber),
+                phoneNumber: trimmedOrNull(createDraft.phoneNumber),
+            });
+            setCompanies((current) => [...(current ?? []), created]);
+            onCreated?.(created);
+            selectCompany(created);
+            setCreateDraft(EMPTY_CREATE_DRAFT);
+        } catch (err) {
+            setCreateError(
+                err instanceof Error
+                    ? err.message
+                    : t("companySelect.unableToCreateCompany"),
+            );
+        } finally {
+            setIsSubmittingCreate(false);
+        }
     }
 
     return (
@@ -100,7 +159,9 @@ export function CompanySelect({
                         selectedCompanyLabel,
                     )}
                     onBlur={() => {
-                        window.setTimeout(() => setIsOpen(false), 120);
+                        window.setTimeout(() => {
+                            if (!isCreatingRef.current) setIsOpen(false);
+                        }, 120);
                     }}
                     onChange={(event) => {
                         setQuery(event.target.value);
@@ -138,92 +199,28 @@ export function CompanySelect({
                 <div
                     className={cx(ui.popoverMenu, "left-0 right-0 top-[74px]")}
                 >
-                    <CompanySelectMenu
-                        error={error}
-                        filtered={filtered}
-                        isLoading={isLoading}
-                        onSelect={selectCompany}
-                    />
+                    {isCreating ? (
+                        <CompanyCreatePanel
+                            draft={createDraft}
+                            setDraft={setCreateDraft}
+                            error={createError}
+                            isSubmitting={isSubmittingCreate}
+                            suggestions={nearMatches}
+                            onSubmit={submitCreate}
+                            onUseSuggestion={selectCompany}
+                            onCancel={cancelCreate}
+                        />
+                    ) : (
+                        <CompanySelectMenu
+                            error={error}
+                            filtered={filtered}
+                            isLoading={isLoading}
+                            onSelect={selectCompany}
+                            onStartCreate={startCreate}
+                        />
+                    )}
                 </div>
             )}
         </div>
-    );
-}
-
-function CompanySelectMenu({
-    error,
-    filtered,
-    isLoading,
-    onSelect,
-}: CompanySelectMenuProps) {
-    const { t } = useAppTranslation();
-
-    if (isLoading) {
-        return (
-            <div className="flex items-center gap-2">
-                <LoaderCircle className="animate-spin" size={16} />
-                <Text size="sm" variant="muted">
-                    Loading companies...
-                </Text>
-            </div>
-        );
-    }
-
-    if (error) {
-        return <p className={ui.error}>{error}</p>;
-    }
-
-    if (filtered.length === 0) {
-        return (
-            <Paragraph textSize="sm" variant="muted">
-                No matching companies.
-            </Paragraph>
-        );
-    }
-
-    return (
-        <>
-            {filtered.map((company) => (
-                <Button
-                    key={company.id}
-                    variant="secondary"
-                    align="start"
-                    fullWidth
-                    onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => onSelect(company)}
-                    type="button"
-                >
-                    <span className="grid gap-0.5">
-                        <strong>{company.companyName}</strong>
-                        <Text size="sm" variant="muted">
-                            {company.businessNumber ||
-                                company.phoneNumber ||
-                                t("companySelect.noCompanyDetails")}
-                        </Text>
-                    </span>
-                </Button>
-            ))}
-        </>
-    );
-}
-
-function companyInputValue(
-    isOpen: boolean,
-    query: string,
-    selectedCompany: CompanySummary | undefined,
-    selectedCompanyLabel: string | null,
-): string {
-    if (isOpen) return query;
-    return selectedCompany?.companyName ?? selectedCompanyLabel ?? query;
-}
-
-function filterCompanies(
-    companies: readonly CompanySummary[],
-    query: string,
-): CompanySummary[] {
-    const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return [...companies];
-    return companies.filter((company) =>
-        company.companyName.toLowerCase().includes(normalizedQuery),
     );
 }

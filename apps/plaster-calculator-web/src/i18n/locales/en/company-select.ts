@@ -1,0 +1,17 @@
+export const companySelect = Object.freeze({
+    label: "Company",
+    placeholder: "Search companies",
+    unableToLoadCompanies: "Unable to load companies",
+    clearCompany: "Clear company",
+    noCompanyDetails: "No company details",
+    addNewCompany: "Add a new company",
+    newCompanyNameLabel: "Company name",
+    newCompanyBusinessNumberLabel: "Business number",
+    newCompanyPhoneLabel: "Phone number",
+    nameRequired: "Company name is required",
+    unableToCreateCompany: "Unable to create company",
+    createCompany: "Create company",
+    cancel: "Cancel",
+    similarCompaniesHeading: "Similar companies",
+    useThisCompany: "Use this one",
+});
