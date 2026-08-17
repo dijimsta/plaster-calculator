@@ -19,6 +19,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetProjectQuestionnaire*](#getprojectquestionnaire)
   - [*ListQuoteItemTemplates*](#listquoteitemtemplates)
   - [*ListQuoteTemplatesForTeam*](#listquotetemplatesforteam)
+  - [*GetMyQuoteAppearance*](#getmyquoteappearance)
   - [*ListQuoteItemTemplateConfigsForQuoteTemplate*](#listquoteitemtemplateconfigsforquotetemplate)
   - [*ListQuotesForTeam*](#listquotesforteam)
   - [*GetQuoteById*](#getquotebyid)
@@ -68,6 +69,8 @@ This README will guide you through the process of using the generated JavaScript
   - [*CreateQuoteItemWithUnit*](#createquoteitemwithunit)
   - [*DeleteQuoteItem*](#deletequoteitem)
   - [*CreateQuoteWithItems*](#createquotewithitems)
+  - [*UpsertMyQuoteAppearance*](#upsertmyquoteappearance)
+  - [*UpdateMyQuoteAppearanceLogo*](#updatemyquoteappearancelogo)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
   - [*UpsertMyUserSignature*](#upsertmyusersignature)
 
@@ -1111,6 +1114,115 @@ executeQuery(ref).then((response) => {
 });
 ```
 
+## GetMyQuoteAppearance
+You can execute the `GetMyQuoteAppearance` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+getMyQuoteAppearance(options?: ExecuteQueryOptions): QueryPromise<GetMyQuoteAppearanceData, undefined>;
+
+interface GetMyQuoteAppearanceRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetMyQuoteAppearanceData, undefined>;
+}
+export const getMyQuoteAppearanceRef: GetMyQuoteAppearanceRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getMyQuoteAppearance(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetMyQuoteAppearanceData, undefined>;
+
+interface GetMyQuoteAppearanceRef {
+  ...
+  (dc: DataConnect): QueryRef<GetMyQuoteAppearanceData, undefined>;
+}
+export const getMyQuoteAppearanceRef: GetMyQuoteAppearanceRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getMyQuoteAppearanceRef:
+```typescript
+const name = getMyQuoteAppearanceRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetMyQuoteAppearance` query has no variables.
+### Return Type
+Recall that executing the `GetMyQuoteAppearance` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetMyQuoteAppearanceData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetMyQuoteAppearanceData {
+  quoteAppearances: ({
+    teamId: string;
+    logoStoragePath?: string | null;
+    businessName?: string | null;
+    abn?: string | null;
+    licenceNumber?: string | null;
+    address?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    accentColor?: string | null;
+    pricingDetail: string;
+    showScopeOfWork: boolean;
+    showTakeoffSummary: boolean;
+    showSignatureBlock: boolean;
+    validForDays: number;
+    terms?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteAppearance_Key)[];
+}
+```
+### Using `GetMyQuoteAppearance`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getMyQuoteAppearance } from '@generated/data-connector-web';
+
+
+// Call the `getMyQuoteAppearance()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getMyQuoteAppearance();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getMyQuoteAppearance(dataConnect);
+
+console.log(data.quoteAppearances);
+
+// Or, you can use the `Promise` API.
+getMyQuoteAppearance().then((response) => {
+  const data = response.data;
+  console.log(data.quoteAppearances);
+});
+```
+
+### Using `GetMyQuoteAppearance`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getMyQuoteAppearanceRef } from '@generated/data-connector-web';
+
+
+// Call the `getMyQuoteAppearanceRef()` function to get a reference to the query.
+const ref = getMyQuoteAppearanceRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getMyQuoteAppearanceRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.quoteAppearances);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteAppearances);
+});
+```
+
 ## ListQuoteItemTemplateConfigsForQuoteTemplate
 You can execute the `ListQuoteItemTemplateConfigsForQuoteTemplate` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
@@ -1429,6 +1541,25 @@ export interface GetQuoteByIdData {
       updatedAt: TimestampString;
     } & QuoteItem_Key)[];
   } & Quote_Key;
+  appearance: ({
+    teamId: string;
+    logoStoragePath?: string | null;
+    businessName?: string | null;
+    abn?: string | null;
+    licenceNumber?: string | null;
+    address?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    accentColor?: string | null;
+    pricingDetail: string;
+    showScopeOfWork: boolean;
+    showTakeoffSummary: boolean;
+    showSignatureBlock: boolean;
+    validForDays: number;
+    terms?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteAppearance_Key)[];
 }
 ```
 ### Using `GetQuoteById`'s action shortcut function
@@ -1453,11 +1584,13 @@ const dataConnect = getDataConnect(connectorConfig);
 const { data } = await getQuoteById(dataConnect, getQuoteByIdVars);
 
 console.log(data.quote);
+console.log(data.appearance);
 
 // Or, you can use the `Promise` API.
 getQuoteById(getQuoteByIdVars).then((response) => {
   const data = response.data;
   console.log(data.quote);
+  console.log(data.appearance);
 });
 ```
 
@@ -1486,11 +1619,13 @@ const ref = getQuoteByIdRef(dataConnect, getQuoteByIdVars);
 const { data } = await executeQuery(ref);
 
 console.log(data.quote);
+console.log(data.appearance);
 
 // Or, you can use the `Promise` API.
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.quote);
+  console.log(data.appearance);
 });
 ```
 
@@ -1748,6 +1883,25 @@ export interface GetProjectQuoteData {
       } & QuoteItem_Key)[];
     } & Quote_Key;
   } & Project_Key;
+  appearance: ({
+    teamId: string;
+    logoStoragePath?: string | null;
+    businessName?: string | null;
+    abn?: string | null;
+    licenceNumber?: string | null;
+    address?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    accentColor?: string | null;
+    pricingDetail: string;
+    showScopeOfWork: boolean;
+    showTakeoffSummary: boolean;
+    showSignatureBlock: boolean;
+    validForDays: number;
+    terms?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+  } & QuoteAppearance_Key)[];
 }
 ```
 ### Using `GetProjectQuote`'s action shortcut function
@@ -1772,11 +1926,13 @@ const dataConnect = getDataConnect(connectorConfig);
 const { data } = await getProjectQuote(dataConnect, getProjectQuoteVars);
 
 console.log(data.project);
+console.log(data.appearance);
 
 // Or, you can use the `Promise` API.
 getProjectQuote(getProjectQuoteVars).then((response) => {
   const data = response.data;
   console.log(data.project);
+  console.log(data.appearance);
 });
 ```
 
@@ -1805,11 +1961,13 @@ const ref = getProjectQuoteRef(dataConnect, getProjectQuoteVars);
 const { data } = await executeQuery(ref);
 
 console.log(data.project);
+console.log(data.appearance);
 
 // Or, you can use the `Promise` API.
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.project);
+  console.log(data.appearance);
 });
 ```
 
@@ -8363,6 +8521,267 @@ executeMutation(ref).then((response) => {
   console.log(data.item18);
   console.log(data.item19);
   console.log(data.item20);
+});
+```
+
+## UpsertMyQuoteAppearance
+You can execute the `UpsertMyQuoteAppearance` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+upsertMyQuoteAppearance(vars: UpsertMyQuoteAppearanceVariables): MutationPromise<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+
+interface UpsertMyQuoteAppearanceRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpsertMyQuoteAppearanceVariables): MutationRef<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+}
+export const upsertMyQuoteAppearanceRef: UpsertMyQuoteAppearanceRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+upsertMyQuoteAppearance(dc: DataConnect, vars: UpsertMyQuoteAppearanceVariables): MutationPromise<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+
+interface UpsertMyQuoteAppearanceRef {
+  ...
+  (dc: DataConnect, vars: UpsertMyQuoteAppearanceVariables): MutationRef<UpsertMyQuoteAppearanceData, UpsertMyQuoteAppearanceVariables>;
+}
+export const upsertMyQuoteAppearanceRef: UpsertMyQuoteAppearanceRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the upsertMyQuoteAppearanceRef:
+```typescript
+const name = upsertMyQuoteAppearanceRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpsertMyQuoteAppearance` mutation requires an argument of type `UpsertMyQuoteAppearanceVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpsertMyQuoteAppearanceVariables {
+  logoStoragePath?: string | null;
+  businessName?: string | null;
+  abn?: string | null;
+  licenceNumber?: string | null;
+  address?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  accentColor?: string | null;
+  pricingDetail: string;
+  showScopeOfWork: boolean;
+  showTakeoffSummary: boolean;
+  showSignatureBlock: boolean;
+  validForDays: number;
+  terms?: string | null;
+}
+```
+### Return Type
+Recall that executing the `UpsertMyQuoteAppearance` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpsertMyQuoteAppearanceData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpsertMyQuoteAppearanceData {
+  quoteAppearance_upsert: QuoteAppearance_Key;
+}
+```
+### Using `UpsertMyQuoteAppearance`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, upsertMyQuoteAppearance, UpsertMyQuoteAppearanceVariables } from '@generated/data-connector-web';
+
+// The `UpsertMyQuoteAppearance` mutation requires an argument of type `UpsertMyQuoteAppearanceVariables`:
+const upsertMyQuoteAppearanceVars: UpsertMyQuoteAppearanceVariables = {
+  logoStoragePath: ..., // optional
+  businessName: ..., // optional
+  abn: ..., // optional
+  licenceNumber: ..., // optional
+  address: ..., // optional
+  phoneNumber: ..., // optional
+  email: ..., // optional
+  accentColor: ..., // optional
+  pricingDetail: ..., 
+  showScopeOfWork: ..., 
+  showTakeoffSummary: ..., 
+  showSignatureBlock: ..., 
+  validForDays: ..., 
+  terms: ..., // optional
+};
+
+// Call the `upsertMyQuoteAppearance()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await upsertMyQuoteAppearance(upsertMyQuoteAppearanceVars);
+// Variables can be defined inline as well.
+const { data } = await upsertMyQuoteAppearance({ logoStoragePath: ..., businessName: ..., abn: ..., licenceNumber: ..., address: ..., phoneNumber: ..., email: ..., accentColor: ..., pricingDetail: ..., showScopeOfWork: ..., showTakeoffSummary: ..., showSignatureBlock: ..., validForDays: ..., terms: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await upsertMyQuoteAppearance(dataConnect, upsertMyQuoteAppearanceVars);
+
+console.log(data.quoteAppearance_upsert);
+
+// Or, you can use the `Promise` API.
+upsertMyQuoteAppearance(upsertMyQuoteAppearanceVars).then((response) => {
+  const data = response.data;
+  console.log(data.quoteAppearance_upsert);
+});
+```
+
+### Using `UpsertMyQuoteAppearance`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, upsertMyQuoteAppearanceRef, UpsertMyQuoteAppearanceVariables } from '@generated/data-connector-web';
+
+// The `UpsertMyQuoteAppearance` mutation requires an argument of type `UpsertMyQuoteAppearanceVariables`:
+const upsertMyQuoteAppearanceVars: UpsertMyQuoteAppearanceVariables = {
+  logoStoragePath: ..., // optional
+  businessName: ..., // optional
+  abn: ..., // optional
+  licenceNumber: ..., // optional
+  address: ..., // optional
+  phoneNumber: ..., // optional
+  email: ..., // optional
+  accentColor: ..., // optional
+  pricingDetail: ..., 
+  showScopeOfWork: ..., 
+  showTakeoffSummary: ..., 
+  showSignatureBlock: ..., 
+  validForDays: ..., 
+  terms: ..., // optional
+};
+
+// Call the `upsertMyQuoteAppearanceRef()` function to get a reference to the mutation.
+const ref = upsertMyQuoteAppearanceRef(upsertMyQuoteAppearanceVars);
+// Variables can be defined inline as well.
+const ref = upsertMyQuoteAppearanceRef({ logoStoragePath: ..., businessName: ..., abn: ..., licenceNumber: ..., address: ..., phoneNumber: ..., email: ..., accentColor: ..., pricingDetail: ..., showScopeOfWork: ..., showTakeoffSummary: ..., showSignatureBlock: ..., validForDays: ..., terms: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = upsertMyQuoteAppearanceRef(dataConnect, upsertMyQuoteAppearanceVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quoteAppearance_upsert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteAppearance_upsert);
+});
+```
+
+## UpdateMyQuoteAppearanceLogo
+You can execute the `UpdateMyQuoteAppearanceLogo` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+updateMyQuoteAppearanceLogo(vars?: UpdateMyQuoteAppearanceLogoVariables): MutationPromise<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+
+interface UpdateMyQuoteAppearanceLogoRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars?: UpdateMyQuoteAppearanceLogoVariables): MutationRef<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+}
+export const updateMyQuoteAppearanceLogoRef: UpdateMyQuoteAppearanceLogoRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateMyQuoteAppearanceLogo(dc: DataConnect, vars?: UpdateMyQuoteAppearanceLogoVariables): MutationPromise<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+
+interface UpdateMyQuoteAppearanceLogoRef {
+  ...
+  (dc: DataConnect, vars?: UpdateMyQuoteAppearanceLogoVariables): MutationRef<UpdateMyQuoteAppearanceLogoData, UpdateMyQuoteAppearanceLogoVariables>;
+}
+export const updateMyQuoteAppearanceLogoRef: UpdateMyQuoteAppearanceLogoRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateMyQuoteAppearanceLogoRef:
+```typescript
+const name = updateMyQuoteAppearanceLogoRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateMyQuoteAppearanceLogo` mutation has an optional argument of type `UpdateMyQuoteAppearanceLogoVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateMyQuoteAppearanceLogoVariables {
+  logoStoragePath?: string | null;
+}
+```
+### Return Type
+Recall that executing the `UpdateMyQuoteAppearanceLogo` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateMyQuoteAppearanceLogoData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateMyQuoteAppearanceLogoData {
+  quoteAppearance_upsert: QuoteAppearance_Key;
+}
+```
+### Using `UpdateMyQuoteAppearanceLogo`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateMyQuoteAppearanceLogo, UpdateMyQuoteAppearanceLogoVariables } from '@generated/data-connector-web';
+
+// The `UpdateMyQuoteAppearanceLogo` mutation has an optional argument of type `UpdateMyQuoteAppearanceLogoVariables`:
+const updateMyQuoteAppearanceLogoVars: UpdateMyQuoteAppearanceLogoVariables = {
+  logoStoragePath: ..., // optional
+};
+
+// Call the `updateMyQuoteAppearanceLogo()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateMyQuoteAppearanceLogo(updateMyQuoteAppearanceLogoVars);
+// Variables can be defined inline as well.
+const { data } = await updateMyQuoteAppearanceLogo({ logoStoragePath: ..., });
+// Since all variables are optional for this mutation, you can omit the `UpdateMyQuoteAppearanceLogoVariables` argument.
+const { data } = await updateMyQuoteAppearanceLogo();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateMyQuoteAppearanceLogo(dataConnect, updateMyQuoteAppearanceLogoVars);
+
+console.log(data.quoteAppearance_upsert);
+
+// Or, you can use the `Promise` API.
+updateMyQuoteAppearanceLogo(updateMyQuoteAppearanceLogoVars).then((response) => {
+  const data = response.data;
+  console.log(data.quoteAppearance_upsert);
+});
+```
+
+### Using `UpdateMyQuoteAppearanceLogo`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateMyQuoteAppearanceLogoRef, UpdateMyQuoteAppearanceLogoVariables } from '@generated/data-connector-web';
+
+// The `UpdateMyQuoteAppearanceLogo` mutation has an optional argument of type `UpdateMyQuoteAppearanceLogoVariables`:
+const updateMyQuoteAppearanceLogoVars: UpdateMyQuoteAppearanceLogoVariables = {
+  logoStoragePath: ..., // optional
+};
+
+// Call the `updateMyQuoteAppearanceLogoRef()` function to get a reference to the mutation.
+const ref = updateMyQuoteAppearanceLogoRef(updateMyQuoteAppearanceLogoVars);
+// Variables can be defined inline as well.
+const ref = updateMyQuoteAppearanceLogoRef({ logoStoragePath: ..., });
+// Since all variables are optional for this mutation, you can omit the `UpdateMyQuoteAppearanceLogoVariables` argument.
+const ref = updateMyQuoteAppearanceLogoRef();
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateMyQuoteAppearanceLogoRef(dataConnect, updateMyQuoteAppearanceLogoVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quoteAppearance_upsert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteAppearance_upsert);
 });
 ```
 
