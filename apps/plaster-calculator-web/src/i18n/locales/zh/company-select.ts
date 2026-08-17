@@ -1,0 +1,17 @@
+export const companySelect = Object.freeze({
+    label: "公司",
+    placeholder: "搜索公司",
+    unableToLoadCompanies: "无法加载公司",
+    clearCompany: "清除公司",
+    noCompanyDetails: "暂无公司详情",
+    addNewCompany: "添加新公司",
+    newCompanyNameLabel: "公司名称",
+    newCompanyBusinessNumberLabel: "统一社会信用代码",
+    newCompanyPhoneLabel: "电话号码",
+    nameRequired: "公司名称为必填项",
+    unableToCreateCompany: "无法创建公司",
+    createCompany: "创建公司",
+    cancel: "取消",
+    similarCompaniesHeading: "相似公司",
+    useThisCompany: "使用此公司",
+});
