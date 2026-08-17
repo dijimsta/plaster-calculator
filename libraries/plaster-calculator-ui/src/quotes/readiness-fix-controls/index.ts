@@ -1,5 +1,7 @@
 export { CeilingHeightFixControl } from "./ceiling-height-fix-control.component.tsx";
 export type { CeilingHeightFixControlProps } from "./ceiling-height-fix-control.component.tsx";
+export { CompanyContactDetailsFixControl } from "./company-contact-details-fix-control.component.tsx";
+export type { CompanyContactDetailsFixControlProps } from "./company-contact-details-fix-control.component.tsx";
 export { ConfirmFixControl } from "./confirm-fix-control.component.tsx";
 export type { ConfirmFixControlProps } from "./confirm-fix-control.component.tsx";
 export { FloorplanDeepLinkFixControl } from "./floorplan-deep-link-fix-control.component.tsx";

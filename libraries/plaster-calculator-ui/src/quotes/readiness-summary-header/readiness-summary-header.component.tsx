@@ -19,7 +19,13 @@ import { ReadinessCheckList } from "../readiness-check-list/index.ts";
 export type ReadinessSummaryHeaderProps = {
     readonly results: readonly ReadinessResult[];
     readonly onGenerateQuote: () => void;
-    readonly summaryChecks?: readonly ReadinessCheck[];
+    /**
+     * The full readiness-check registry (e.g. `READINESS_CHECKS`), in
+     * registry order. Doubles as the summary checklist's row source (see
+     * `ReadinessCheckList` below) and as the severity lookup this header
+     * needs to tell a blocking check from a `WARN` one — see `isReady()`.
+     */
+    readonly summaryChecks: readonly ReadinessCheck[];
     readonly renderFixControl?: ReadinessCheckListRenderFixControl;
     /**
      * Set while a generation request (`useGenerateQuote()`,
@@ -39,21 +45,34 @@ export type ReadinessSummaryHeaderProps = {
  * "blocked" vs. "ready" from `results` and renders the Generate quote
  * action, but owns no data fetching; a connected container (WORK-151)
  * supplies `results` from `useQuoteReadiness()` and `isGenerating` from
- * `useGenerateQuote()`. v1 has no `WARN`-severity checks, so there are only
- * two states here rather than a third "warning" state. An empty `results`
- * array (e.g. before the readiness query has loaded) is treated as blocked,
- * matching `QuoteReadinessUtils.isReady()`'s "missing result counts as
- * unmet" rule in `plaster-calculator-web-core`.
+ * `useGenerateQuote()`. Still only two header states (ready/not-ready)
+ * rather than a third "warning" one — an unmet `WARN` check (e.g.
+ * `COMPANY_CONTACT_DETAILS`, WORK-221/223) shows as an advisory row in the
+ * checklist below, but never flips this header's ready/not-ready state or
+ * its unmet count; see `isReady`/`unmetCount` below, which mirror
+ * `QuoteReadinessUtils.isReady()` (`plaster-calculator-web-core`) rather
+ * than importing it, since that util isn't part of that package's public
+ * surface. A check missing from `results` entirely counts as unmet, same
+ * as that util's rule, so the header starts blocked before the readiness
+ * query has loaded.
  */
 export function ReadinessSummaryHeader({
     results,
     onGenerateQuote,
-    summaryChecks = [],
+    summaryChecks,
     renderFixControl,
     isGenerating = false,
 }: ReadinessSummaryHeaderProps): ReactElement {
-    const unmetCount = results.filter((result) => !result.isMet).length;
-    const isReady = results.length > 0 && unmetCount === 0;
+    const isReady = summaryChecks.every((check) => {
+        if (check.severity !== "BLOCK") return true;
+        const result = results.find((entry) => entry.checkId === check.id);
+        return result?.isMet ?? false;
+    });
+    const unmetCount = summaryChecks.filter((check) => {
+        if (check.severity !== "BLOCK") return false;
+        const result = results.find((entry) => entry.checkId === check.id);
+        return !(result?.isMet ?? false);
+    }).length;
 
     return (
         <Card>
