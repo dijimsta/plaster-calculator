@@ -4,9 +4,8 @@ import {
     QuotesTable,
     useQuotesTranslation,
 } from "@libraries/plaster-calculator-ui";
-import { Box, Breadcrumb, PageHeading, Tabs, Text } from "@libraries/uikit-web";
+import { Box, Breadcrumb, PageHeading, Text } from "@libraries/uikit-web";
 import { LoaderCircle, Home } from "lucide-react";
-import { default as LinkModule } from "next/link.js";
 
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../i18n/index.ts";
@@ -17,8 +16,7 @@ import {
     useOpenQuoteCallback,
     useQuotesListState,
 } from "./page.hooks.js";
-
-const Link = LinkModule.default;
+import { QuotesTabsNavigation } from "./quotes-tabs-navigation.component.js";
 
 export default function QuotesPage() {
     const { t } = useQuotesTranslation();
@@ -52,18 +50,7 @@ export default function QuotesPage() {
                     </PageHeading.Description>
                 </PageHeading.Content>
                 <PageHeading.Navigation>
-                    <Tabs>
-                        <Tabs.Item current>
-                            <Link href="/quotes">
-                                {tApp("quotes.allQuotesTab")}
-                            </Link>
-                        </Tabs.Item>
-                        <Tabs.Item>
-                            <Link href="/quotes/template">
-                                {tApp("quotes.templateTab")}
-                            </Link>
-                        </Tabs.Item>
-                    </Tabs>
+                    <QuotesTabsNavigation current="all-quotes" />
                 </PageHeading.Navigation>
             </PageHeading>
             <Box direction="column" gap="lg" padding="md">

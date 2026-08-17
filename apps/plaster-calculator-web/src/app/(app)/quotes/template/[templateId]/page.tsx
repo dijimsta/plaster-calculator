@@ -7,16 +7,14 @@ import {
     useQuotesTranslation,
 } from "@libraries/plaster-calculator-ui";
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
-import { Box, Breadcrumb, PageHeading, Tabs } from "@libraries/uikit-web";
+import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
 import { Home } from "lucide-react";
-import { default as LinkModule } from "next/link.js";
 import { useRouter } from "next/navigation.js";
 import { use } from "react";
 
 import { RoutedBreadcrumbItem } from "../../../../../components/routed-breadcrumb-item.js";
 import { useAppTranslation } from "../../../../../i18n/index.ts";
-
-const Link = LinkModule.default;
+import { QuotesTabsNavigation } from "../../quotes-tabs-navigation.component.js";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -80,18 +78,7 @@ export default function QuoteTemplateVariationPage({
                     </PageHeading.Description>
                 </PageHeading.Content>
                 <PageHeading.Navigation>
-                    <Tabs>
-                        <Tabs.Item>
-                            <Link href="/quotes">
-                                {tApp("quotes.allQuotesTab")}
-                            </Link>
-                        </Tabs.Item>
-                        <Tabs.Item current>
-                            <Link href="/quotes/template">
-                                {tApp("quotes.templateTab")}
-                            </Link>
-                        </Tabs.Item>
-                    </Tabs>
+                    <QuotesTabsNavigation current="template" />
                 </PageHeading.Navigation>
             </PageHeading>
             <Box direction="column" gap="lg" padding="md">
