@@ -1,13 +1,13 @@
 import type { EmailSignature } from "./schemas/email-signature.schema.ts";
 
-export interface EmailTemplateQuestion {
+export type EmailTemplateQuestion = {
     readonly label: string;
-}
+};
 
-export interface EmailTemplate {
+export type EmailTemplate = {
     readonly subject: string;
     readonly body: string;
-}
+};
 
 const SCOPE_OF_WORK_INTRO =
     "Before we start, it would be really great if you could advise the following scope of work for this project:";

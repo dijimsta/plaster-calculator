@@ -5,9 +5,9 @@ import {
     type QuestionnaireCompletionState,
 } from "./schemas/completion-state.schema.ts";
 
-export interface QuestionnaireAnswerState {
+export type QuestionnaireAnswerState = {
     readonly answer?: string | null;
-}
+};
 
 export class QuestionnaireCompletionStateHelper {
     public static countAnswered(
