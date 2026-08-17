@@ -7,11 +7,13 @@ import {
     type FloorplanPage,
     type ProjectDetail,
     type ReadinessCheckInput,
+    type ReadinessCompany,
     type ReadinessResult,
     type SalesStatus,
 } from "@libraries/plaster-calculator-common";
 
 type QueryProject = NonNullable<GetQuoteReadinessData["project"]>;
+type QueryCompany = NonNullable<QueryProject["company"]>;
 type QueryFloorplanPage = GetQuoteReadinessData["floorplanPages"][number];
 type QueryTemplateConfig =
     GetQuoteReadinessData["quoteItemTemplateConfigs"][number];
@@ -124,6 +126,29 @@ export class QuoteReadinessUtils {
                     answerSource: question.answerSource,
                 }),
             ),
+            company: QuoteReadinessUtils.buildCompany(data.project.company),
+        };
+    }
+
+    /**
+     * Maps `GetQuoteReadiness`'s `project.company` (widened by WORK-220)
+     * onto `ReadinessCompany`, for `COMPANY_CONTACT_DETAILS` (WORK-221).
+     * `undefined` when the project has no company, matching
+     * `ReadinessCheckInput.company`'s optionality — the check itself treats
+     * a missing company as "nothing to chase" and reports met.
+     */
+    private static buildCompany(
+        company: QueryCompany | null | undefined,
+    ): ReadinessCompany | undefined {
+        if (!company) return undefined;
+        return {
+            id: company.id,
+            companyName: company.companyName,
+            phoneNumber: company.phoneNumber ?? null,
+            businessNumber: company.businessNumber ?? null,
+            primaryContactName: company.primaryContact?.name ?? null,
+            primaryContactEmail: company.primaryContact?.email ?? null,
+            primaryContactPhone: company.primaryContact?.phoneNumber ?? null,
         };
     }
 
@@ -131,12 +156,15 @@ export class QuoteReadinessUtils {
      * `ReadinessCheckInput.project` is a full `ProjectDetail`, but
      * `GetQuoteReadiness` only fetches the subset of `ProjectSummary`
      * documented on the query itself (id, teamId, name, salesStatus,
-     * pageCount), by design. None of the seven readiness resolvers read
-     * anything off `project` besides `pages` (via `ReadinessCheckUtils`), so
-     * the remaining `ProjectSummary` fields are filled with inert
-     * placeholders here rather than fetched. If a future check starts
-     * reading one of them (e.g. `status`), extend the query and this
-     * mapping together — not just the resolver.
+     * pageCount), by design. Of the nine readiness resolvers, none read
+     * anything off `project` besides `pages` (via `ReadinessCheckUtils`) —
+     * `COMPANY_CONTACT_DETAILS` (WORK-221/222) is the one exception, but it
+     * reads `company` off the top-level `ReadinessCheckInput`
+     * (`buildCompany()`, below), not off `project` itself. So the remaining
+     * `ProjectSummary` fields here are still filled with inert placeholders
+     * rather than fetched. If a future check starts reading one of them
+     * (e.g. `status`), extend the query and this mapping together — not
+     * just the resolver.
      */
     private static buildProjectDetail(
         project: QueryProject,
