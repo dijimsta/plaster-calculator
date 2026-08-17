@@ -1,6 +1,8 @@
 import {
-    OverlayGeometryHelper,
+    ceilingAreaM2ForArea,
+    effectiveFlatHeight,
     OverlaySchema,
+    wallLengthByType,
     type AreaPolygon,
 } from "@libraries/plaster-calculator-common";
 
@@ -43,31 +45,23 @@ function summarizeArea(
     pageCeilingHeightMm: number | null,
 ): RoomSummary {
     const roomType = area.sourceRoomType ?? null;
-    const ceilingHeightMm = OverlayGeometryHelper.effectiveFlatHeight(
-        area,
-        pageCeilingHeightMm,
-    );
+    const ceilingHeightMm = effectiveFlatHeight(area, pageCeilingHeightMm);
     const heightM = ceilingHeightMm != null ? ceilingHeightMm / 1000 : null;
 
     const wallAreaM2ByType: Record<string, number> = {};
     if (heightM != null) {
-        OverlayGeometryHelper.wallLengthByType(area).forEach(
-            ({ type, lengthPx }) => {
-                const lengthM = (lengthPx * scaleMmPerPx) / 1000;
-                wallAreaM2ByType[type] =
-                    (wallAreaM2ByType[type] ?? 0) + lengthM * heightM;
-            },
-        );
+        wallLengthByType(area).forEach(({ type, lengthPx }) => {
+            const lengthM = (lengthPx * scaleMmPerPx) / 1000;
+            wallAreaM2ByType[type] =
+                (wallAreaM2ByType[type] ?? 0) + lengthM * heightM;
+        });
     }
 
     return {
         label: area.label,
         roomType,
         isWetArea: roomType != null && WET_AREA_ROOM_TYPES.has(roomType),
-        ceilingAreaM2: OverlayGeometryHelper.ceilingAreaM2ForArea(
-            area,
-            scaleMmPerPx,
-        ),
+        ceilingAreaM2: ceilingAreaM2ForArea(area, scaleMmPerPx),
         wallAreaM2ByType,
         ceilingHeightMm,
         ceilingMode: area.ceilingMode ?? "flat",
