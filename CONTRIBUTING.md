@@ -82,6 +82,15 @@ Before creating or updating a pull request description, read and follow
 [.github/pull_request_template.md](.github/pull_request_template.md). Preserve its headings and order, complete
 every applicable section, and remove only sections that the template marks as optional.
 
+`gh stack submit --auto` (see the `gh-stack` skill) does not fill this template — it leaves each PR with the raw,
+unfilled template placeholders as the body, regardless of the branch's actual commits. After running it, check every
+PR's description (`gh pr view <number> --json body`) and rewrite any that are still the raw template with
+`gh pr edit <number> --body-file <file>`, following the template properly for that branch's actual change.
+
+`gh stack submit --auto` also creates every PR as a **draft**, which blocks merging even after CI passes. Before
+merging a stack, confirm none of its PRs are still drafts (`gh pr view <number> --json isDraft`) and mark any that
+are with `gh pr ready <number>` — or pass `--open` to `submit` up front to skip the draft state entirely.
+
 ## Configuration guardrails
 
 Do not loosen, disable, or override TypeScript, ESLint, formatting, or styling configuration to make errors
