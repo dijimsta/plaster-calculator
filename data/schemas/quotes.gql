@@ -122,3 +122,44 @@ type SupplierQuoteItemPrice @table(key: ["supplierId", "templateId"]) {
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
+
+# Team-scoped appearance settings for generated quote documents: letterhead,
+# output detail, and terms. One row per team, following the same
+# one-row-per-owner pattern as UserSettings/UserSignature, keyed on team
+# instead of user. Nothing here is snapshotted onto Quote — appearance is
+# presentation, read live when a document renders, so reprinting an old
+# quote picks up the team's current branding. This is intended.
+type QuoteAppearance @table(key: "teamId") {
+    team: Team! @unique @ref(fields: "teamId", references: "id")
+    teamId: String!
+
+    # Letterhead. Nullable with no defaults, rather than "" defaults: "not
+    # filled in yet" must stay distinguishable from "deliberately blank" so
+    # the document can omit a line instead of printing an empty one.
+    # Firebase Storage path (as used by ProjectsService.uploadProject), not
+    # a download URL, since URLs expire.
+    logoStoragePath: String
+    businessName: String
+    abn: String
+    licenceNumber: String
+    address: String
+    phoneNumber: String
+    email: String
+    accentColor: String
+
+    # Output. Non-null with defaults so a team that never opens the
+    # settings tab still gets a coherent document. pricingDetail will
+    # reference a closed vocabulary once it lands in
+    # plaster-calculator-common.
+    pricingDetail: String! @default(value: "FULL_LINE_ITEMS")
+    showScopeOfWork: Boolean! @default(value: true)
+    showTakeoffSummary: Boolean! @default(value: false)
+    showSignatureBlock: Boolean! @default(value: false)
+
+    # Terms
+    validForDays: Int! @default(value: 30)
+    terms: String
+
+    createdAt: Timestamp! @default(expr: "request.time")
+    updatedAt: Timestamp! @default(expr: "request.time")
+}

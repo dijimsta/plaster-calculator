@@ -1159,6 +1159,11 @@ export interface QuestionnaireTemplate_Key {
   __typename?: 'QuestionnaireTemplate_Key';
 }
 
+export interface QuoteAppearance_Key {
+  teamId: string;
+  __typename?: 'QuoteAppearance_Key';
+}
+
 export interface QuoteItemTemplateConfig_Key {
   quoteTemplateId: UUIDString;
   itemTemplateId: UUIDString;
