@@ -118,3 +118,12 @@ export const WithSecondaryNavigation: Story = {
         </VerticalNavigation>
     ),
 };
+
+export const Rail: Story = {
+    ...WithSecondaryNavigation,
+    parameters: {
+        viewport: {
+            defaultViewport: "mobile1",
+        },
+    },
+};
