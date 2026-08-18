@@ -45,9 +45,12 @@ export class TeamsService {
         return InitializeMyTeamResponseSchema.parse(data).teamId;
     }
 
-    public async listMyTeamMembers(): Promise<ListMyTeamMembersResponse> {
+    public async listMyTeamMembers(options?: {
+        limit?: number;
+        offset?: number;
+    }): Promise<ListMyTeamMembersResponse> {
         const callable = httpsCallable(this.functions, "listMyTeamMembers");
-        const { data } = await callable();
+        const { data } = await callable(options);
         return ListMyTeamMembersResponseSchema.parse(data);
     }
 
@@ -82,12 +85,15 @@ export class TeamsService {
         return UpdateTeamNameResponseSchema.parse(data);
     }
 
-    public async listPendingTeamInvitations(): Promise<ListPendingTeamInvitationsResponse> {
+    public async listPendingTeamInvitations(options?: {
+        limit?: number;
+        offset?: number;
+    }): Promise<ListPendingTeamInvitationsResponse> {
         const callable = httpsCallable(
             this.functions,
             "listPendingTeamInvitations",
         );
-        const { data } = await callable();
+        const { data } = await callable(options);
         return ListPendingTeamInvitationsResponseSchema.parse(data);
     }
 
