@@ -5,7 +5,7 @@ import * as DataConnectorReact from "@generated/data-connector-web/react";
 import type { QuotesTableRow } from "@libraries/plaster-calculator-ui";
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { useRouter } from "next/navigation.js";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { toRows } from "./quotes-list.utils.js";
 
@@ -13,20 +13,41 @@ const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
 );
 
+/** Quotes shown per page. */
+const PAGE_SIZE = 20;
+
 export type QuotesListState = {
     readonly rows: readonly QuotesTableRow[];
     readonly isLoading: boolean;
     readonly error: unknown;
+    readonly page: number;
+    readonly pageCount: number;
+    readonly setPage: (page: number) => void;
 };
 
+/**
+ * There's no total-count query backing the quotes list, so pagination uses
+ * the fetch-one-extra-row technique: request `PAGE_SIZE + 1` rows and, if
+ * the extra row comes back, report another page exists without a separate
+ * count query.
+ */
 export function useQuotesListState(): QuotesListState {
-    const { data, isLoading, error } =
-        DataConnectorReact.useListQuotesForTeam(dataConnect);
+    const [page, setPage] = useState(1);
+    const { data, isLoading, error } = DataConnectorReact.useListQuotesForTeam(
+        dataConnect,
+        { limit: PAGE_SIZE + 1, offset: (page - 1) * PAGE_SIZE },
+    );
+
+    const quotes = data?.quotes ?? [];
+    const hasNextPage = quotes.length > PAGE_SIZE;
 
     return {
-        rows: toRows(data?.quotes),
+        rows: toRows(hasNextPage ? quotes.slice(0, PAGE_SIZE) : quotes),
         isLoading,
         error: error ?? null,
+        page,
+        pageCount: hasNextPage ? page + 1 : page,
+        setPage,
     };
 }
 
