@@ -119,6 +119,8 @@ export type ProjectIdRequest = {
 
 export type ListProjectsRequest = {
     salesStatus?: unknown;
+    limit?: unknown;
+    offset?: unknown;
 };
 
 export type RenameProjectRequest = ProjectIdRequest & {
@@ -136,6 +138,8 @@ export type UpdateProjectRequest = ProjectIdRequest & {
 
 export type CompanyIdRequest = {
     companyId?: unknown;
+    limit?: unknown;
+    offset?: unknown;
 };
 
 export type ReminderIdRequest = {
