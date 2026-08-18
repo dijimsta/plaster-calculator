@@ -123,7 +123,7 @@ function TeamContent({
                 members={team.data.members}
                 onRequestRemove={onRequestRemove}
             />
-            {team.pageCount > 1 && (
+            {!team.isLoading && team.pageCount > 1 && (
                 <Pagination
                     page={team.page}
                     pageCount={team.pageCount}
