@@ -74,7 +74,9 @@ export function RecentProjectsPanel({
                                                 <Building2 />
                                             </IconTile>
                                             <Box direction="column" gap="xs">
-                                                <strong>{project.name}</strong>
+                                                <Text weight="semibold">
+                                                    {project.name}
+                                                </Text>
                                                 {project.companyName && (
                                                     <Text
                                                         size="sm"
