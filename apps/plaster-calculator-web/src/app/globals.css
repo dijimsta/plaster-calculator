@@ -1,5 +1,11 @@
 @import "tailwindcss";
 @source "../../node_modules/@libraries/uikit-web";
+/* `Grid` (`@libraries/uikit-web`) builds its `grid-cols-N`/breakpoint-prefixed
+   classes at runtime via string concatenation, so Tailwind's static scanner
+   never sees the finished class name as literal text and would otherwise
+   never generate the CSS for it. This forces every combination Grid's
+   default theme actually supports (columns 1-12) to exist. */
+@source inline("{,sm:,md:,lg:,xl:,2xl:}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12}");
 
 body {
     font-family: var(--font-family-sans);
