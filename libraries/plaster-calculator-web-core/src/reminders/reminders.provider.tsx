@@ -6,9 +6,9 @@ import type { PropsWithChildren, ReactElement } from "react";
 import { RemindersServiceContext } from "./reminders.context.ts";
 import { RemindersService } from "./reminders.service.ts";
 
-export interface RemindersServiceProviderProps extends PropsWithChildren {
+export type RemindersServiceProviderProps = PropsWithChildren & {
     readonly remindersService?: RemindersService;
-}
+};
 
 export function RemindersServiceProvider({
     children,

@@ -6,9 +6,9 @@ import type { PropsWithChildren, ReactElement } from "react";
 import { SettingsServiceContext } from "./settings.context.ts";
 import { SettingsService } from "./settings.service.ts";
 
-export interface SettingsServiceProviderProps extends PropsWithChildren {
+export type SettingsServiceProviderProps = PropsWithChildren & {
     readonly settingsService?: SettingsService;
-}
+};
 
 export function SettingsServiceProvider({
     children,

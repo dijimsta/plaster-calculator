@@ -7,17 +7,17 @@ import { useTeamsService } from "../teams/teams.hooks.ts";
 
 import { initializeUserTeam } from "./initialize-user-team.ts";
 
-interface InitializationState {
+type InitializationState = {
     uid?: string;
     status: "idle" | "loading" | "ready" | "error";
     error?: unknown;
-}
+};
 
-export interface EnsureUserTeamResult {
+export type EnsureUserTeamResult = {
     initialized: boolean;
     error: unknown;
     retry(): void;
-}
+};
 
 export function useEnsureUserTeam(
     user: User | null | undefined,

@@ -6,9 +6,9 @@ import type { PropsWithChildren, ReactElement } from "react";
 import { QuestionnairesServiceContext } from "./questionnaires.context.ts";
 import { QuestionnairesService } from "./questionnaires.service.ts";
 
-export interface QuestionnairesServiceProviderProps extends PropsWithChildren {
+export type QuestionnairesServiceProviderProps = PropsWithChildren & {
     readonly questionnairesService?: QuestionnairesService;
-}
+};
 
 export function QuestionnairesServiceProvider({
     children,

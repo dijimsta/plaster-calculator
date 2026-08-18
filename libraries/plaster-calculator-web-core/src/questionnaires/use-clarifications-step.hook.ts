@@ -24,7 +24,7 @@ const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
 );
 
-export interface UseClarificationsStepResult {
+export type UseClarificationsStepResult = {
     /** The team's templates for the picker, most recently updated first (`ListQuestionnaireTemplates`'s own ordering). */
     readonly templates: readonly ClarificationsTemplateOption[];
     /** Defaults to `templates[0]?.id ?? null` until `selectTemplate()` is called; `null` is the "start from scratch" option. */
@@ -55,18 +55,18 @@ export interface UseClarificationsStepResult {
     readonly isRunningAi: boolean;
     readonly aiError: Error | null;
     readonly lastAiResult: AnswerQuestionnaireWithAiResponse | null;
-}
+};
 
-interface ClarificationsTemplatePickerState {
+type ClarificationsTemplatePickerState = {
     readonly templates: readonly ClarificationsTemplateOption[];
     readonly selectedTemplateId: string | null;
     readonly selectTemplate: (templateId: string | null) => void;
-}
+};
 
-interface ClarificationsRowsState {
+type ClarificationsRowsState = {
     readonly rows: readonly ClarificationRow[];
     readonly isLoading: boolean;
-}
+};
 
 /** The picker's template list, plus a selection that defaults to the most recently updated template until the caller picks explicitly (including "start from scratch", `null`). */
 function useClarificationsTemplatePicker(): ClarificationsTemplatePickerState {

@@ -10,7 +10,7 @@ import { userSignaturesService } from "./user-signatures.service.ts";
 
 const userSignatureQueryKey = ["user-signature"] as const;
 
-export interface UseUserSignatureResult {
+export type UseUserSignatureResult = {
     readonly signature: UserSignature | undefined;
     readonly loading: boolean;
     readonly saving: boolean;
@@ -18,7 +18,7 @@ export interface UseUserSignatureResult {
     readonly saveSignature: (
         payload: Partial<EmailSignature>,
     ) => Promise<UserSignature>;
-}
+};
 
 export function useUserSignature(): UseUserSignatureResult {
     const queryClient = useQueryClient();

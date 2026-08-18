@@ -7,9 +7,9 @@ import type { PropsWithChildren, ReactElement } from "react";
 import { TeamsServiceContext } from "./teams.context.ts";
 import { TeamsService } from "./teams.service.ts";
 
-export interface TeamsServiceProviderProps extends PropsWithChildren {
+export type TeamsServiceProviderProps = PropsWithChildren & {
     readonly teamsService?: TeamsService;
-}
+};
 
 export function TeamsServiceProvider({
     children,

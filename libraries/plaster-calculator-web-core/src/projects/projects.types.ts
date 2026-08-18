@@ -40,14 +40,14 @@ export type ProcessProjectRequest = {
     pageImagePaths?: Record<number, string>;
 };
 
-export interface AnalyzeFloorplanPageRequest {
+export type AnalyzeFloorplanPageRequest = {
     readonly projectId: string;
     readonly pageId: string;
     readonly scaleMmPerPx: number | null;
     readonly ceilingHeightMm: number | null;
     readonly referencePoints: string | null;
     readonly referenceLengthMm: number | null;
-}
+};
 
 export type SavePageOverlayRequest = {
     projectId: string;
