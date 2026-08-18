@@ -2,10 +2,8 @@
 
 import { useQuoteAppearance } from "@libraries/plaster-calculator-web-core";
 import {
-    Button,
-    Card,
+    Box,
     FormLayout,
-    FormLayoutActions,
     Grid,
     Paragraph,
     useNotificationsManager,
@@ -17,6 +15,7 @@ import { useQuotesTranslation } from "../i18n/index.ts";
 
 import { QuoteAppearanceBuilderSection } from "./quote-appearance-builder-section.component.tsx";
 import { QuoteAppearanceLetterheadSection } from "./quote-appearance-letterhead-section.component.tsx";
+import { QUOTE_APPEARANCE_FORM_ID } from "./quote-appearance-panel.constants.ts";
 import type { QuoteAppearanceFormValues } from "./quote-appearance-panel.types.ts";
 import {
     buildQuoteAppearanceSavePayload,
@@ -26,21 +25,20 @@ import {
 import { QuoteAppearancePreview } from "./quote-appearance-preview.component.tsx";
 import { QuoteAppearanceTermsSection } from "./quote-appearance-terms-section.component.tsx";
 
-const FORM_ID = "quote-appearance-form";
-
 /**
  * The team's quote appearance settings: letterhead, logo, accent colour,
  * what a builder sees on a generated quote, and terms/footer -- settings
  * from a single team-wide `QuoteAppearance` row (WORK-200), never per-quote
  * (this panel's copy is deliberately silent on ever changing pricing detail
- * for one quote before sending; see `PCPD-26`). Settings live on the left
- * (`QuoteAppearanceLetterheadSection`/`QuoteAppearanceBuilderSection`/
- * `QuoteAppearanceTermsSection` -- split into their own components purely to
- * keep this file under this workspace's `max-lines` limit, not because they
- * own any state); a live preview (`QuoteAppearancePreview`) lives on the
- * right, re-rendered from this panel's own in-progress form values on every
- * change -- never from what `useQuoteAppearance()` last saved -- so every
- * control's effect on the printed document is visible before saving.
+ * for one quote before sending; see `PCPD-26`). Settings live on the left,
+ * each its own `Card` (`QuoteAppearanceLetterheadSection`/
+ * `QuoteAppearanceBuilderSection`/`QuoteAppearanceTermsSection` -- split
+ * into their own components purely to keep this file under this workspace's
+ * `max-lines` limit, not because they own any state); a live preview
+ * (`QuoteAppearancePreview`) lives on the right, re-rendered from this
+ * panel's own in-progress form values on every change -- never from what
+ * `useQuoteAppearance()` last saved -- so every control's effect on the
+ * printed document is visible before saving.
  *
  * Owns its form state as plain local state (`QuoteAppearanceFormValues`)
  * rather than `react-hook-form` (used elsewhere in this package, e.g.
@@ -49,6 +47,15 @@ const FORM_ID = "quote-appearance-form";
  * `react-hook-form`'s extra machinery. Holds no GraphQL queries of its own
  * -- `useQuoteAppearance()` (WORK-203) is this panel's only data dependency,
  * for both reading and saving.
+ *
+ * Renders no submit button of its own -- `QuoteAppearanceSaveButton` lives
+ * in the host page's header actions instead, wired to this same `<form>`
+ * via `QUOTE_APPEARANCE_FORM_ID` and the native `form` attribute, so saving
+ * doesn't require scrolling back down to the bottom of a long settings
+ * page. That button observes save-pending state through
+ * `useQuoteAppearanceSaving()` rather than this panel's own `saving`,
+ * since it's a sibling, not a descendant, of this `<form>` -- see that
+ * hook's doc comment (`@libraries/plaster-calculator-web-core`).
  */
 export function QuoteAppearancePanel(): ReactElement {
     const { t } = useQuotesTranslation();
@@ -144,53 +151,44 @@ export function QuoteAppearancePanel(): ReactElement {
 
     const disabled = saving;
 
-    return (
-        <Card>
-            <Card.Title>{t("quoteAppearancePanel.title")}</Card.Title>
-            <Paragraph measure="narrow" textSize="sm" variant="muted">
-                {t("quoteAppearancePanel.description")}
+    if (loading || !values) {
+        return (
+            <Paragraph textSize="sm" variant="muted">
+                {t("quoteAppearancePanel.loading")}
             </Paragraph>
-            {loading || !values ? (
-                <Paragraph textSize="sm" variant="muted">
-                    {t("quoteAppearancePanel.loading")}
-                </Paragraph>
-            ) : (
-                <Grid columns={{ xs: 1, lg: 2 }}>
-                    <FormLayout id={FORM_ID} onSubmit={handleSubmit}>
-                        <QuoteAppearanceLetterheadSection
-                            values={values}
-                            disabled={disabled}
-                            onChange={updateValues}
-                            logoUrl={logoUrl}
-                            hasSavedLogo={Boolean(appearance?.logoStoragePath)}
-                            uploadingLogo={uploadingLogo}
-                            onUploadLogo={handleUploadLogo}
-                            onRemoveLogo={handleRemoveLogo}
-                        />
-                        <QuoteAppearanceBuilderSection
-                            values={values}
-                            disabled={disabled}
-                            onChange={updateValues}
-                        />
-                        <QuoteAppearanceTermsSection
-                            values={values}
-                            disabled={disabled}
-                            onChange={updateValues}
-                        />
-                        <FormLayoutActions>
-                            <Button type="submit" disabled={disabled}>
-                                {saving
-                                    ? t("quoteAppearancePanel.saving")
-                                    : t("quoteAppearancePanel.saveButton")}
-                            </Button>
-                        </FormLayoutActions>
-                    </FormLayout>
-                    <QuoteAppearancePreview
-                        appearance={previewAppearanceFromFormValues(values)}
+        );
+    }
+
+    return (
+        <Grid columns={{ xs: 1, lg: 2 }} gap="lg">
+            <FormLayout id={QUOTE_APPEARANCE_FORM_ID} onSubmit={handleSubmit}>
+                <Box direction="column" gap="lg">
+                    <QuoteAppearanceLetterheadSection
+                        values={values}
+                        disabled={disabled}
+                        onChange={updateValues}
                         logoUrl={logoUrl}
+                        hasSavedLogo={Boolean(appearance?.logoStoragePath)}
+                        uploadingLogo={uploadingLogo}
+                        onUploadLogo={handleUploadLogo}
+                        onRemoveLogo={handleRemoveLogo}
                     />
-                </Grid>
-            )}
-        </Card>
+                    <QuoteAppearanceBuilderSection
+                        values={values}
+                        disabled={disabled}
+                        onChange={updateValues}
+                    />
+                    <QuoteAppearanceTermsSection
+                        values={values}
+                        disabled={disabled}
+                        onChange={updateValues}
+                    />
+                </Box>
+            </FormLayout>
+            <QuoteAppearancePreview
+                appearance={previewAppearanceFromFormValues(values)}
+                logoUrl={logoUrl}
+            />
+        </Grid>
     );
 }

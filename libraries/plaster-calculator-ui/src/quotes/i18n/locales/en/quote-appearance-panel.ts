@@ -3,9 +3,6 @@
 // (`../../../quote-appearance-panel/`) is this domain's largest settings
 // panel, and its copy pushed the combined locale object over budget.
 export const quoteAppearancePanel = Object.freeze({
-    title: "Quote appearance",
-    description:
-        "These settings apply to every quote your team sends -- they can't be changed for an individual quote before sending. Changes here don't affect quotes already sent.",
     loading: "Loading quote appearance...",
     saveButton: "Save changes",
     saving: "Saving...",
@@ -15,11 +12,10 @@ export const quoteAppearancePanel = Object.freeze({
     saveErrorDescription:
         "Something went wrong while saving. Please try again.",
     previewTitle: "Preview",
-    previewDescription:
-        "A live preview using sample line items, updating as you change the settings on the left.",
-    letterheadSectionTitle: "Letterhead",
+    previewSubtitle: "Quote #{{reference}} · sample data",
+    letterheadSectionTitle: "Your business",
     letterheadSectionDescription:
-        "Shown at the top of every quote your team sends.",
+        "Shown in the header of every quote you send.",
     logoLabel: "Logo",
     logoDescriptionEmpty: "No logo uploaded. PNG or SVG, up to 5 MB.",
     logoDescriptionSaved: "Logo saved. Upload a new file to preview it here.",
@@ -36,13 +32,11 @@ export const quoteAppearancePanel = Object.freeze({
         "Something went wrong while removing the logo. Try again.",
     businessNameLabel: "Business name",
     abnLabel: "ABN",
-    licenceNumberLabel: "Licence number",
+    licenceNumberLabel: "Licence no.",
     addressLabel: "Address",
-    phoneNumberLabel: "Phone number",
+    phoneNumberLabel: "Phone",
     emailLabel: "Email",
     accentColorLabel: "Accent colour",
-    accentColorDescription:
-        "Used for the divider under your letterhead on every quote.",
     accentColorSwatches: Object.freeze({
         gray: "Slate",
         blue: "Ocean blue",
@@ -53,30 +47,26 @@ export const quoteAppearancePanel = Object.freeze({
         red: "Brick red",
     }),
     builderSectionTitle: "What the builder sees",
-    builderSectionDescription: "Applies to every quote your team sends.",
+    builderSectionDescription: "Defaults for new quotes your team sends.",
     pricingDetailLegend: "Pricing detail",
-    pricingDetailDescription:
-        "Choose how much pricing detail appears on every quote.",
     pricingDetailFullLineItemsLabel: "Full line items",
     pricingDetailFullLineItemsConsequence:
-        "The builder sees every item, quantity, and rate.",
-    pricingDetailAmountsOnlyLabel: "Amounts only",
-    pricingDetailAmountsOnlyConsequence:
-        "The builder sees each item's amount, but not its quantity or rate.",
+        "Every item with quantity, rate and amount.",
+    pricingDetailAmountsOnlyLabel: "Line items, amounts only",
+    pricingDetailAmountsOnlyConsequence: "Items listed, rates hidden.",
     pricingDetailLumpSumLabel: "Lump sum",
-    pricingDetailLumpSumConsequence:
-        "The builder sees a single total, with no item breakdown.",
+    pricingDetailLumpSumConsequence: "One total for the whole job.",
     showScopeOfWorkLabel: "Scope of work",
-    showScopeOfWorkDescription:
-        "Show a scope-of-work summary above the pricing table.",
+    showScopeOfWorkDescription: "Written description above the pricing.",
     showTakeoffSummaryLabel: "Take-off summary",
-    showTakeoffSummaryDescription: "Show a take-off summary below the totals.",
+    showTakeoffSummaryDescription:
+        "Measured areas and lengths behind the price.",
     showSignatureBlockLabel: "Acceptance signature block",
-    showSignatureBlockDescription:
-        "Add a signature, printed name, and date line for the builder to accept.",
+    showSignatureBlockDescription: "Space for the builder to sign and date.",
     termsSectionTitle: "Terms & footer",
     termsSectionDescription: "Printed at the bottom of every quote.",
-    validForDaysLabel: "Valid for (days)",
+    validForDaysLabel: "Quote valid for",
+    validForDaysSuffix: "days from issue",
     termsLabel: "Terms",
     termsPlaceholder: "e.g. Payment due within 14 days of acceptance.",
 });

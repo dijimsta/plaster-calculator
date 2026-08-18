@@ -1,8 +1,16 @@
 import type { QuoteAppearance } from "@libraries/plaster-calculator-common";
-import { Box, Card, Divider, Paragraph, Text } from "@libraries/uikit-web";
+import {
+    Box,
+    Card,
+    Divider,
+    Grid,
+    Paragraph,
+    Text,
+} from "@libraries/uikit-web";
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
+import { QuoteAppearanceCaption } from "../quote-appearance-panel/quote-appearance-caption.component.tsx";
 import { QuoteTotalsBlock } from "../quote-totals-block/index.ts";
 
 import { QuoteDetailDocumentLetterhead } from "./quote-detail-document-letterhead.component.tsx";
@@ -92,7 +100,10 @@ export function QuoteDetailDocument({
                     reference={reference}
                     issuedAt={issuedAt}
                 />
-                <Divider color={appearance.accentColor ?? undefined} />
+                <Divider
+                    color={appearance.accentColor ?? undefined}
+                    thickness="thick"
+                />
                 <QuoteDetailDocumentRecipient
                     projectName={projectName}
                     companyName={companyName}
@@ -127,7 +138,11 @@ type QuoteDetailDocumentRecipientProps = {
     readonly companyName: string | null;
 };
 
-/** Who the quote is for -- the project and, when known, the company. */
+/**
+ * Who the quote is for -- the company (or "no company" when unset) and the
+ * project, side by side under uppercase "PREPARED FOR"/"PROJECT" captions
+ * (`Text`'s `uppercase` prop).
+ */
 function QuoteDetailDocumentRecipient({
     projectName,
     companyName,
@@ -135,11 +150,34 @@ function QuoteDetailDocumentRecipient({
     const { t } = useQuotesTranslation();
 
     return (
+        <Grid columns={{ xs: 1, sm: 2 }} gap="lg">
+            <QuoteDetailDocumentRecipientColumn
+                caption={t("quoteDetailDocument.preparedForLabel")}
+                value={companyName ?? t("quoteDetailDocument.noCompany")}
+            />
+            <QuoteDetailDocumentRecipientColumn
+                caption={t("quoteDetailDocument.projectLabel")}
+                value={projectName}
+            />
+        </Grid>
+    );
+}
+
+type QuoteDetailDocumentRecipientColumnProps = {
+    readonly caption: string;
+    readonly value: string;
+};
+
+function QuoteDetailDocumentRecipientColumn({
+    caption,
+    value,
+}: QuoteDetailDocumentRecipientColumnProps): ReactElement {
+    return (
         <Box direction="column" gap="xs">
-            <Text weight="semibold">{projectName}</Text>
-            <Text size="sm" variant="muted">
-                {companyName ?? t("quoteDetailDocument.noCompany")}
+            <Text size="xs" weight="semibold" variant="muted" uppercase>
+                {caption}
             </Text>
+            <Text weight="semibold">{value}</Text>
         </Box>
     );
 }
@@ -149,14 +187,14 @@ type QuoteDetailDocumentTextBlockProps = {
     readonly text: string;
 };
 
-/** A titled paragraph -- shared by the scope-of-work, take-off summary, and terms blocks. */
+/** A captioned paragraph -- shared by the scope-of-work, take-off summary, and terms blocks. */
 function QuoteDetailDocumentTextBlock({
     title,
     text,
 }: QuoteDetailDocumentTextBlockProps): ReactElement {
     return (
         <Box direction="column" gap="xs">
-            <Text weight="semibold">{title}</Text>
+            <QuoteAppearanceCaption>{title}</QuoteAppearanceCaption>
             <Paragraph textSize="sm" variant="muted">
                 {text}
             </Paragraph>
@@ -187,7 +225,12 @@ function QuoteDetailDocumentScopeOfWork({
     );
 }
 
-/** Below the totals, gated by `appearance.showTakeoffSummary`. */
+/**
+ * Below the totals, gated by `appearance.showTakeoffSummary`. Set off in
+ * its own shaded `Card` (`variant="subtle"`) rather than sitting flush with
+ * the rest of the document -- it's measured/derived content, not something
+ * the team wrote, so it reads as a distinct block.
+ */
 function QuoteDetailDocumentTakeoffSummary({
     appearance,
     text,
@@ -198,10 +241,12 @@ function QuoteDetailDocumentTakeoffSummary({
         return null;
     }
     return (
-        <QuoteDetailDocumentTextBlock
-            title={t("quoteDetailDocument.takeoffSummaryTitle")}
-            text={text}
-        />
+        <Card variant="subtle">
+            <QuoteDetailDocumentTextBlock
+                title={t("quoteDetailDocument.takeoffSummaryTitle")}
+                text={text}
+            />
+        </Card>
     );
 }
 
@@ -209,7 +254,11 @@ function QuoteDetailDocumentTakeoffSummary({
  * Printed under the totals from `appearance.terms`. Omitted entirely when
  * there's no terms text -- empty or whitespace-only counts as none, per
  * `QuoteAppearanceSchema`'s doc comment on why `terms` defaults to `""`
- * rather than placeholder copy.
+ * rather than placeholder copy. Carries its own leading `Divider` (rather
+ * than one placed unconditionally between this and the take-off summary
+ * above it) so the rule only appears when there's actually a terms block
+ * to separate from whatever precedes it, regardless of whether that's the
+ * take-off summary, the totals, or the pricing table.
  */
 function QuoteDetailDocumentTerms({
     appearance,
@@ -223,9 +272,12 @@ function QuoteDetailDocumentTerms({
         return null;
     }
     return (
-        <QuoteDetailDocumentTextBlock
-            title={t("quoteDetailDocument.termsTitle")}
-            text={termsText}
-        />
+        <Box direction="column" gap="lg">
+            <Divider />
+            <QuoteDetailDocumentTextBlock
+                title={t("quoteDetailDocument.termsTitle")}
+                text={termsText}
+            />
+        </Box>
     );
 }

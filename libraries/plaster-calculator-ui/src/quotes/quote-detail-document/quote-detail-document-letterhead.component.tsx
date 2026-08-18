@@ -1,11 +1,12 @@
 import type { QuoteAppearance } from "@libraries/plaster-calculator-common";
-import { Avatar, Box, Card, Text } from "@libraries/uikit-web";
+import { Avatar, Box, Heading3, Text } from "@libraries/uikit-web";
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 
 import {
     abnLicenceLine as buildAbnLicenceLine,
+    phoneEmailLine as buildPhoneEmailLine,
     validUntilLabel,
 } from "./quote-detail-document.utils.ts";
 
@@ -22,10 +23,11 @@ export type QuoteDetailDocumentLetterheadProps = {
 };
 
 /**
- * Left: logo, business name, address, phone, email, and an ABN/licence
- * line -- every field but the logo is nullable ("not filled in yet",
+ * Left: logo, business name, address, a combined phone/email line
+ * (`phoneEmailLine`), and a combined ABN/licence line (`abnLicenceLine`) --
+ * every field but the logo is nullable ("not filled in yet",
  * `QuoteAppearanceSchema`), so each renders only when present. Right:
- * "QUOTE", reference, date, and computed validity.
+ * "QUOTE", a combined reference/date line, and computed validity.
  */
 export function QuoteDetailDocumentLetterhead({
     appearance,
@@ -42,9 +44,9 @@ export function QuoteDetailDocumentLetterhead({
                 logoUrl={logoUrl}
             />
             <Box direction="column" gap="xs" align="end">
-                <Card.Title>{t("quoteDetailDocument.title")}</Card.Title>
-                <Text>{reference ?? t("quoteDetailDocument.noReference")}</Text>
-                <Text size="sm" variant="muted">
+                <Heading3>{t("quoteDetailDocument.title")}</Heading3>
+                <Text>
+                    {reference ?? t("quoteDetailDocument.noReference")} ·{" "}
                     {new Date(issuedAt).toLocaleDateString()}
                 </Text>
                 <Text size="sm" variant="muted">
@@ -69,6 +71,10 @@ function QuoteDetailDocumentLetterheadIssuer({
         appearance.abn,
         appearance.licenceNumber,
         t,
+    );
+    const phoneEmailLine = buildPhoneEmailLine(
+        appearance.phoneNumber,
+        appearance.email,
     );
 
     return (
@@ -99,14 +105,9 @@ function QuoteDetailDocumentLetterheadIssuer({
                     {appearance.address}
                 </Text>
             )}
-            {appearance.phoneNumber && (
+            {phoneEmailLine && (
                 <Text size="sm" variant="muted">
-                    {appearance.phoneNumber}
-                </Text>
-            )}
-            {appearance.email && (
-                <Text size="sm" variant="muted">
-                    {appearance.email}
+                    {phoneEmailLine}
                 </Text>
             )}
             {abnLicenceLine && (
