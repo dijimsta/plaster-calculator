@@ -123,22 +123,22 @@ Below are examples of how to use the `data-connector-web` connector's generated 
 ## ListMyCompanies
 You can execute the `ListMyCompanies` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-listMyCompanies(options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, undefined>;
+listMyCompanies(vars?: ListMyCompaniesVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, ListMyCompaniesVariables>;
 
 interface ListMyCompaniesRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListMyCompaniesData, undefined>;
+  (vars?: ListMyCompaniesVariables): QueryRef<ListMyCompaniesData, ListMyCompaniesVariables>;
 }
 export const listMyCompaniesRef: ListMyCompaniesRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
 ```typescript
-listMyCompanies(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, undefined>;
+listMyCompanies(dc: DataConnect, vars?: ListMyCompaniesVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, ListMyCompaniesVariables>;
 
 interface ListMyCompaniesRef {
   ...
-  (dc: DataConnect): QueryRef<ListMyCompaniesData, undefined>;
+  (dc: DataConnect, vars?: ListMyCompaniesVariables): QueryRef<ListMyCompaniesData, ListMyCompaniesVariables>;
 }
 export const listMyCompaniesRef: ListMyCompaniesRef;
 ```
@@ -150,7 +150,15 @@ console.log(name);
 ```
 
 ### Variables
-The `ListMyCompanies` query has no variables.
+The `ListMyCompanies` query has an optional argument of type `ListMyCompaniesVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ListMyCompaniesVariables {
+  search?: string | null;
+  limit?: number | null;
+  offset?: number | null;
+}
+```
 ### Return Type
 Recall that executing the `ListMyCompanies` query returns a `QueryPromise` that resolves to an object with a `data` property.
 
@@ -178,21 +186,31 @@ export interface ListMyCompaniesData {
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, listMyCompanies } from '@generated/data-connector-web';
+import { connectorConfig, listMyCompanies, ListMyCompaniesVariables } from '@generated/data-connector-web';
 
+// The `ListMyCompanies` query has an optional argument of type `ListMyCompaniesVariables`:
+const listMyCompaniesVars: ListMyCompaniesVariables = {
+  search: ..., // optional
+  limit: ..., // optional
+  offset: ..., // optional
+};
 
 // Call the `listMyCompanies()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listMyCompanies(listMyCompaniesVars);
+// Variables can be defined inline as well.
+const { data } = await listMyCompanies({ search: ..., limit: ..., offset: ..., });
+// Since all variables are optional for this query, you can omit the `ListMyCompaniesVariables` argument.
 const { data } = await listMyCompanies();
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await listMyCompanies(dataConnect);
+const { data } = await listMyCompanies(dataConnect, listMyCompaniesVars);
 
 console.log(data.companies);
 
 // Or, you can use the `Promise` API.
-listMyCompanies().then((response) => {
+listMyCompanies(listMyCompaniesVars).then((response) => {
   const data = response.data;
   console.log(data.companies);
 });
@@ -202,15 +220,25 @@ listMyCompanies().then((response) => {
 
 ```typescript
 import { getDataConnect, executeQuery } from 'firebase/data-connect';
-import { connectorConfig, listMyCompaniesRef } from '@generated/data-connector-web';
+import { connectorConfig, listMyCompaniesRef, ListMyCompaniesVariables } from '@generated/data-connector-web';
 
+// The `ListMyCompanies` query has an optional argument of type `ListMyCompaniesVariables`:
+const listMyCompaniesVars: ListMyCompaniesVariables = {
+  search: ..., // optional
+  limit: ..., // optional
+  offset: ..., // optional
+};
 
 // Call the `listMyCompaniesRef()` function to get a reference to the query.
+const ref = listMyCompaniesRef(listMyCompaniesVars);
+// Variables can be defined inline as well.
+const ref = listMyCompaniesRef({ search: ..., limit: ..., offset: ..., });
+// Since all variables are optional for this query, you can omit the `ListMyCompaniesVariables` argument.
 const ref = listMyCompaniesRef();
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = listMyCompaniesRef(dataConnect);
+const ref = listMyCompaniesRef(dataConnect, listMyCompaniesVars);
 
 // Call `executeQuery()` on the reference to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
