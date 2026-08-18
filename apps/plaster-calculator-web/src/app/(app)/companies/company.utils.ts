@@ -14,21 +14,6 @@ export function optionalValue(value: string): string | null {
     return value.trim() || null;
 }
 
-export function filterCompanies(
-    companies: readonly CompanySummary[],
-    query: string,
-): CompanySummary[] {
-    const q = query.trim().toLowerCase();
-    if (!q) return [...companies];
-    return companies.filter((company) =>
-        [
-            company.companyName,
-            company.businessNumber ?? "",
-            company.phoneNumber ?? "",
-        ].some((value) => value.toLowerCase().includes(q)),
-    );
-}
-
 export function toCompanyDraft(company: CompanySummary): CompanyDraft {
     return {
         companyName: company.companyName,

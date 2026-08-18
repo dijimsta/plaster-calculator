@@ -133,6 +133,7 @@ export const en = Object.freeze({
             emptyStateTitle: "No companies found",
             unableToLoad: "Unable to load companies",
             createFromSearch: 'Create "{{name}}"',
+            paginationLabel: "Company list pagination",
         }),
         newCompany: Object.freeze({
             title: "New Company",
