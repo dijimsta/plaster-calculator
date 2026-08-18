@@ -1,6 +1,7 @@
 import "../src/styles.css";
 
 import {
+    companiesTranslations,
     projectsTranslations,
     questionnairesTranslations,
     quotesTranslations,
@@ -15,6 +16,7 @@ const preview: Preview = {
         (Story) => (
             <I18nProvider
                 translations={[
+                    companiesTranslations,
                     projectsTranslations,
                     questionnairesTranslations,
                     quotesTranslations,
