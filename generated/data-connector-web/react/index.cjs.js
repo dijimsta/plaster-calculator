@@ -225,9 +225,9 @@ exports.useGetQuestionnaireTemplate = function useGetQuestionnaireTemplate(dcOrV
   return useDataConnectQuery(ref, inputOpts, CallerSdkTypeEnum.GeneratedReact);
 }
 
-exports.useListProjectQuestionnaires = function useListProjectQuestionnaires(dcOrOptions, options) {
-  const { dc: dcInstance, options: inputOpts } = validateReactArgs(connectorConfig, dcOrOptions, options);
-  const ref = listProjectQuestionnairesRef(dcInstance);
+exports.useListProjectQuestionnaires = function useListProjectQuestionnaires(dcOrVars, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateReactArgs(connectorConfig, dcOrVars, varsOrOptions, options, true, false);
+  const ref = listProjectQuestionnairesRef(dcInstance, inputVars);
   return useDataConnectQuery(ref, inputOpts, CallerSdkTypeEnum.GeneratedReact);
 }
 
