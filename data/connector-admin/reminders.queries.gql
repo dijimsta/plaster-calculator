@@ -21,10 +21,13 @@ query ListDueReminders($teamId: String!) @auth(level: NO_ACCESS) {
     }
 }
 
-query ListOpenReminders($teamId: String!) @auth(level: NO_ACCESS) {
+query ListOpenReminders($teamId: String!, $limit: Int, $offset: Int)
+@auth(level: NO_ACCESS) {
     reminders(
         where: { teamId: { eq: $teamId }, status: { eq: "OPEN" } }
         orderBy: [{ dueAt: ASC }]
+        limit: $limit
+        offset: $offset
     ) {
         id
         teamId
