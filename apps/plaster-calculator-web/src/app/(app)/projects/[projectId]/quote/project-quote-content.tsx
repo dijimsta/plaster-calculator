@@ -5,7 +5,10 @@ import {
     ReadinessSummaryHeader,
     useQuotesTranslation,
 } from "@libraries/plaster-calculator-ui";
-import type { ReadinessCheckListRenderFixControl } from "@libraries/plaster-calculator-ui";
+import type {
+    ReadinessCheckListRenderCheckFooter,
+    ReadinessCheckListRenderFixControl,
+} from "@libraries/plaster-calculator-ui";
 import type { useQuoteReadiness } from "@libraries/plaster-calculator-web-core";
 import { Box, Text } from "@libraries/uikit-web";
 import { LoaderCircle } from "lucide-react";
@@ -20,6 +23,7 @@ export type ProjectQuoteContentProps = {
     readonly projectError: string;
     readonly readiness: ReturnType<typeof useQuoteReadiness>;
     readonly renderFixControl: ReadinessCheckListRenderFixControl;
+    readonly renderCheckFooter: ReadinessCheckListRenderCheckFooter;
     readonly projectQuote: ProjectQuoteState;
     readonly editor: ProjectQuoteEditorState;
     readonly isGenerating: boolean;
@@ -31,6 +35,7 @@ export function ProjectQuoteContent({
     projectError,
     readiness,
     renderFixControl,
+    renderCheckFooter,
     projectQuote,
     editor,
     isGenerating,
@@ -43,6 +48,7 @@ export function ProjectQuoteContent({
             <ReadinessContent
                 readiness={readiness}
                 renderFixControl={renderFixControl}
+                renderCheckFooter={renderCheckFooter}
                 isGenerating={isGenerating}
                 generationErrorMessage={generationErrorMessage}
                 onGenerateQuote={onGenerateQuote}
@@ -55,6 +61,7 @@ export function ProjectQuoteContent({
 function ReadinessContent({
     readiness,
     renderFixControl,
+    renderCheckFooter,
     isGenerating,
     generationErrorMessage,
     onGenerateQuote,
@@ -62,6 +69,7 @@ function ReadinessContent({
     ProjectQuoteContentProps,
     | "readiness"
     | "renderFixControl"
+    | "renderCheckFooter"
     | "isGenerating"
     | "generationErrorMessage"
     | "onGenerateQuote"
@@ -91,6 +99,7 @@ function ReadinessContent({
                 isGenerating={isGenerating}
                 summaryChecks={READINESS_CHECKS}
                 renderFixControl={renderFixControl}
+                renderCheckFooter={renderCheckFooter}
             />
             {generationErrorMessage && (
                 <p className={ui.error}>{generationErrorMessage}</p>

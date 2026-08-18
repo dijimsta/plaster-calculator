@@ -13,7 +13,10 @@ import {
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
-import type { ReadinessCheckListRenderFixControl } from "../readiness-check-list/index.ts";
+import type {
+    ReadinessCheckListRenderCheckFooter,
+    ReadinessCheckListRenderFixControl,
+} from "../readiness-check-list/index.ts";
 import { ReadinessCheckList } from "../readiness-check-list/index.ts";
 
 export type ReadinessSummaryHeaderProps = {
@@ -27,6 +30,7 @@ export type ReadinessSummaryHeaderProps = {
      */
     readonly summaryChecks: readonly ReadinessCheck[];
     readonly renderFixControl?: ReadinessCheckListRenderFixControl;
+    readonly renderCheckFooter?: ReadinessCheckListRenderCheckFooter;
     /**
      * Set while a generation request (`useGenerateQuote()`,
      * `@libraries/plaster-calculator-web-core`) is in flight — WORK-151's
@@ -61,6 +65,7 @@ export function ReadinessSummaryHeader({
     onGenerateQuote,
     summaryChecks,
     renderFixControl,
+    renderCheckFooter,
     isGenerating = false,
 }: ReadinessSummaryHeaderProps): ReactElement {
     const isReady = summaryChecks.every((check) => {
@@ -86,6 +91,7 @@ export function ReadinessSummaryHeader({
                         checks={summaryChecks}
                         results={results}
                         renderFixControl={renderFixControl}
+                        renderCheckFooter={renderCheckFooter}
                         variant="alerts"
                     />
                 )}

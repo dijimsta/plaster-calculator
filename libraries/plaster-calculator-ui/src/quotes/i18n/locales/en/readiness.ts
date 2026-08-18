@@ -67,6 +67,8 @@ export const readinessFixControls = Object.freeze({
         label: "Unit price",
         labelWithTemplate: "Unit price — {{template}}",
         error: "Couldn't update the unit price. Try again.",
+        saveAll_one: "Save {{count}} price",
+        saveAll_other: "Save {{count}} prices",
     }),
     confirmError: "Couldn't confirm. Try again.",
     setTemplateUnits: "Set template units",

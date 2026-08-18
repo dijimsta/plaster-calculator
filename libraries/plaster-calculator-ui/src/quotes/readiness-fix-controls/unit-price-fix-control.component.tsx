@@ -1,12 +1,10 @@
 import type { ReadinessAffectedItem } from "@libraries/plaster-calculator-common";
-import { Badge, Box, Button, Input } from "@libraries/uikit-web";
+import { Box, Input } from "@libraries/uikit-web";
 import { centsToDollarsText, dollarsTextToCents } from "@libraries/utilities";
 import { useId, useState } from "react";
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
-
-import { useFixControlSubmission } from "./use-fix-control-submission.hook.ts";
 
 const DOLLARS_TEXT_PATTERN = /^\d+(\.\d{1,2})?$/;
 
@@ -16,19 +14,24 @@ export type UnitPriceFixControlProps = {
     /** This template's current/proposed unit price in cents, always shown
      * formatted as dollars rather than left blank. */
     readonly valueCents: number;
-    readonly onChange: (unitPriceCents: number) => void | Promise<void>;
+    /**
+     * Called on every keystroke with the parsed price, or `undefined` while
+     * the current text doesn't parse as a valid price. Unlike the other
+     * inline fix controls, this one commits nothing itself — "template
+     * priced" can flag many affected items at once, so each input only
+     * reports its live draft upward and a single shared
+     * `UnitPriceBatchSaveControl` (this check's `renderCheckFooter`) submits
+     * every draft together.
+     */
+    readonly onChange: (unitPriceCents: number | undefined) => void;
 };
 
 /**
  * Inline fix control for the "template priced" readiness check: a cents
  * input, scoped to one `QuoteItemTemplateConfig` via `item`. Displays and
  * edits the price as dollars (matching `QuoteTemplateFormPriceInput`'s
- * convention elsewhere in this package) but, unlike that form field, commits
- * via an explicit Save action rather than on every keystroke — this
- * control's `onChange` can reject, and a keystroke-driven submit would fire
- * a write attempt (and a pending/error state) on every character typed.
- * Owns only its own pending/error state via `useFixControlSubmission`, so a
- * rejected `onChange` here never touches a sibling control's state.
+ * convention elsewhere in this package). Purely a controlled input with no
+ * submit action or pending/error state of its own — see `onChange` above.
  */
 export function UnitPriceFixControl({
     item,
@@ -38,9 +41,6 @@ export function UnitPriceFixControl({
     const id = useId();
     const { t } = useQuotesTranslation();
     const [text, setText] = useState(() => centsToDollarsText(valueCents));
-    const { isPending, error, run } = useFixControlSubmission(
-        t("readinessFixControls.unitPrice.error"),
-    );
     const label = item.quoteItemTemplateLabel
         ? t("readinessFixControls.unitPrice.labelWithTemplate", {
               template: item.quoteItemTemplateLabel,
@@ -49,40 +49,25 @@ export function UnitPriceFixControl({
     const isValid = DOLLARS_TEXT_PATTERN.test(text.trim());
 
     return (
-        <Box direction="column" gap="xs">
-            <Box direction="row" align="center" gap="xs" wrap>
-                <Input
-                    id={id}
-                    label={label}
-                    type="text"
-                    inputMode="decimal"
-                    leadingAddon="$"
-                    value={text}
-                    disabled={isPending}
-                    invalid={!isValid}
-                    onChange={(event) => setText(event.target.value)}
-                />
-                <Button
-                    type="button"
-                    variant="secondary"
-                    size="small"
-                    disabled={isPending || !isValid}
-                    onClick={() =>
-                        void run(() => onChange(dollarsTextToCents(text)))
-                    }
-                >
-                    {isPending
-                        ? t("readinessFixControls.saving")
-                        : t("readinessFixControls.save")}
-                </Button>
-            </Box>
-            {error && (
-                <Box status>
-                    <Badge color="red" size="sm">
-                        {error}
-                    </Badge>
-                </Box>
-            )}
+        <Box direction="row" align="center" gap="xs" wrap>
+            <Input
+                id={id}
+                label={label}
+                type="text"
+                inputMode="decimal"
+                leadingAddon="$"
+                value={text}
+                invalid={!isValid}
+                onChange={(event) => {
+                    const nextText = event.target.value;
+                    setText(nextText);
+                    onChange(
+                        DOLLARS_TEXT_PATTERN.test(nextText.trim())
+                            ? dollarsTextToCents(nextText)
+                            : undefined,
+                    );
+                }}
+            />
         </Box>
     );
 }

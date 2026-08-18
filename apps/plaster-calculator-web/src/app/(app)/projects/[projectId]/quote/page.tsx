@@ -34,7 +34,8 @@ export default function ProjectQuoteReadinessPage({
     const searchParams = useSearchParams();
     const projectState = useProjectQuotePageProject(projectId);
     const readiness = useQuoteReadiness(projectId);
-    const renderFixControl = useQuoteReadinessFixControlRenderer(projectId);
+    const { renderFixControl, renderCheckFooter } =
+        useQuoteReadinessFixControlRenderer(projectId);
     const projectQuote = useProjectQuoteState(projectId, projectState.project);
     const editor = useProjectQuoteEditor(projectId, projectQuote);
     const { isGenerating, errorMessage, handleGenerateQuote } =
@@ -78,6 +79,7 @@ export default function ProjectQuoteReadinessPage({
                 projectError={projectState.error}
                 readiness={readiness}
                 renderFixControl={renderFixControl}
+                renderCheckFooter={renderCheckFooter}
                 projectQuote={projectQuote}
                 editor={editor}
                 isGenerating={isGenerating}

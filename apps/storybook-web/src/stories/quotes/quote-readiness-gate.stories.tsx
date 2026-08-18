@@ -12,6 +12,7 @@ import {
     CeilingHeightFixControl,
     ConfirmFixControl,
     ReadinessSummaryHeader,
+    UnitPriceBatchSaveControl,
     UnitPriceFixControl,
     WallBoardTypeFixControl,
 } from "@libraries/plaster-calculator-ui";
@@ -48,12 +49,21 @@ export const FullyBlocked: Story = {
     name: "Fully blocked",
     render: () => {
         const handleFixControlChange = fn();
+        const handleSaveAllPrices = fn();
 
         return (
             <ReadinessSummaryHeader
                 results={FULLY_BLOCKED_RESULTS}
                 onGenerateQuote={fn()}
                 summaryChecks={READINESS_CHECKS}
+                renderCheckFooter={(check) =>
+                    check.id === TEMPLATE_PRICED_CHECK_ID ? (
+                        <UnitPriceBatchSaveControl
+                            itemCount={1}
+                            onSaveAll={async () => handleSaveAllPrices()}
+                        />
+                    ) : null
+                }
                 renderFixControl={(item, check: ReadinessCheck) => {
                     switch (check.id) {
                         case WALL_TYPE_SET_CHECK_ID:
@@ -114,22 +124,34 @@ export const FullyBlocked: Story = {
 
 export const OneCheckUnmet: Story = {
     name: "One check unmet",
-    render: () => (
-        <ReadinessSummaryHeader
-            results={ONE_CHECK_UNMET_RESULTS}
-            onGenerateQuote={fn()}
-            summaryChecks={READINESS_CHECKS}
-            renderFixControl={(item, check: ReadinessCheck) =>
-                check.id === TEMPLATE_PRICED_CHECK_ID ? (
-                    <UnitPriceFixControl
-                        item={item}
-                        valueCents={0}
-                        onChange={fn()}
-                    />
-                ) : null
-            }
-        />
-    ),
+    render: () => {
+        const handleSaveAllPrices = fn();
+
+        return (
+            <ReadinessSummaryHeader
+                results={ONE_CHECK_UNMET_RESULTS}
+                onGenerateQuote={fn()}
+                summaryChecks={READINESS_CHECKS}
+                renderFixControl={(item, check: ReadinessCheck) =>
+                    check.id === TEMPLATE_PRICED_CHECK_ID ? (
+                        <UnitPriceFixControl
+                            item={item}
+                            valueCents={0}
+                            onChange={fn()}
+                        />
+                    ) : null
+                }
+                renderCheckFooter={(check) =>
+                    check.id === TEMPLATE_PRICED_CHECK_ID ? (
+                        <UnitPriceBatchSaveControl
+                            itemCount={1}
+                            onSaveAll={async () => handleSaveAllPrices()}
+                        />
+                    ) : null
+                }
+            />
+        );
+    },
 };
 
 export const Ready: Story = {
