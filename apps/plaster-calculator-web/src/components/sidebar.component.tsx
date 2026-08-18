@@ -21,6 +21,7 @@ import { signOut } from "firebase/auth";
 import * as Icons from "lucide-react";
 import { default as LinkModule } from "next/link.js";
 import { usePathname, useRouter } from "next/navigation.js";
+import { useState } from "react";
 import type { PropsWithChildren } from "react";
 
 import { useAppTranslation } from "../i18n/index.ts";
@@ -58,6 +59,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
     const initials = useUserInitials();
     const team = useMyTeamSummary();
     const { t } = useAppTranslation();
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     async function handleLogout() {
         await signOut(FirebaseService.getAuth());
@@ -77,19 +79,37 @@ export default function Sidebar({ children }: PropsWithChildren) {
     return (
         <SidebarLayout>
             <SidebarLayout.Sidebar>
-                <SidebarNavigation>
+                <SidebarNavigation
+                    collapsed={isSidebarCollapsed}
+                    onCollapsedChange={setIsSidebarCollapsed}
+                >
                     <SidebarNavigation.Header>
-                        <Link href="/">
-                            <Box direction="row" align="center" gap="sm">
-                                <IconTile size="sm" tone="dark">
-                                    <Icons.Layers
-                                        size={16}
-                                        aria-hidden="true"
-                                    />
-                                </IconTile>
-                                <Text size="sm">Plaster Calculator</Text>
-                            </Box>
-                        </Link>
+                        <Box
+                            direction="row"
+                            align="center"
+                            justify={isSidebarCollapsed ? "center" : "between"}
+                        >
+                            {!isSidebarCollapsed && (
+                                <Link href="/">
+                                    <Box
+                                        direction="row"
+                                        align="center"
+                                        gap="sm"
+                                    >
+                                        <IconTile size="sm" tone="dark">
+                                            <Icons.Layers
+                                                size={16}
+                                                aria-hidden="true"
+                                            />
+                                        </IconTile>
+                                        <Text size="sm">
+                                            Plaster Calculator
+                                        </Text>
+                                    </Box>
+                                </Link>
+                            )}
+                            <SidebarNavigation.CollapseButton />
+                        </Box>
                     </SidebarNavigation.Header>
                     <SidebarNavigation.Body>
                         <VerticalNavigation
@@ -116,39 +136,57 @@ export default function Sidebar({ children }: PropsWithChildren) {
                         </VerticalNavigation>
                     </SidebarNavigation.Body>
                     <SidebarNavigation.Footer>
-                        <Box direction="row" align="center">
-                            <Avatar
-                                initials={initials}
-                                shape="circular"
-                                size="sm"
-                            />
-                            <Box grow>
+                        {isSidebarCollapsed ? (
+                            <Box direction="column" align="center" gap="sm">
                                 <ButtonLink href="/user" variant="ghost">
-                                    <Box direction="column" align="start">
-                                        <Text size="sm">{displayName}</Text>
-                                        <Text size="xs" variant="muted">
-                                            {team === undefined
-                                                ? userFallback
-                                                : `${
-                                                      team.role === "OWNER"
-                                                          ? t(
-                                                                "sidebar.roleLabels.owner",
-                                                            )
-                                                          : t(
-                                                                "sidebar.roleLabels.member",
-                                                            )
-                                                  } · ${team.name}`}
-                                        </Text>
-                                    </Box>
+                                    <Avatar
+                                        initials={initials}
+                                        shape="circular"
+                                        size="sm"
+                                    />
                                 </ButtonLink>
+                                <Button
+                                    variant="secondary"
+                                    icon={<Icons.LogOut aria-hidden="true" />}
+                                    label={t("sidebar.logOut")}
+                                    onClick={handleLogout}
+                                />
                             </Box>
-                            <Button
-                                variant="secondary"
-                                icon={<Icons.LogOut aria-hidden="true" />}
-                                label={t("sidebar.logOut")}
-                                onClick={handleLogout}
-                            />
-                        </Box>
+                        ) : (
+                            <Box direction="row" align="center">
+                                <Avatar
+                                    initials={initials}
+                                    shape="circular"
+                                    size="sm"
+                                />
+                                <Box grow>
+                                    <ButtonLink href="/user" variant="ghost">
+                                        <Box direction="column" align="start">
+                                            <Text size="sm">{displayName}</Text>
+                                            <Text size="xs" variant="muted">
+                                                {team === undefined
+                                                    ? userFallback
+                                                    : `${
+                                                          team.role === "OWNER"
+                                                              ? t(
+                                                                    "sidebar.roleLabels.owner",
+                                                                )
+                                                              : t(
+                                                                    "sidebar.roleLabels.member",
+                                                                )
+                                                      } · ${team.name}`}
+                                            </Text>
+                                        </Box>
+                                    </ButtonLink>
+                                </Box>
+                                <Button
+                                    variant="secondary"
+                                    icon={<Icons.LogOut aria-hidden="true" />}
+                                    label={t("sidebar.logOut")}
+                                    onClick={handleLogout}
+                                />
+                            </Box>
+                        )}
                     </SidebarNavigation.Footer>
                 </SidebarNavigation>
             </SidebarLayout.Sidebar>

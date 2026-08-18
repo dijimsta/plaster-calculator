@@ -1,8 +1,10 @@
 export const styles = {
     root: "flex h-dvh overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100",
     backdrop: "fixed inset-0 z-40 border-0 bg-slate-950/60 p-0 lg:hidden",
+    // Width is intentionally owned by the sidebar's content (e.g. SidebarNavigation, which
+    // transitions its own width when collapsed to a rail) — do not reintroduce a fixed w-* here.
     sidebar:
-        "fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col border-r border-slate-200 bg-white transition-transform duration-200 ease-out dark:border-slate-800 dark:bg-slate-900 lg:static lg:translate-x-0",
+        "fixed inset-y-0 left-0 z-50 flex shrink-0 flex-col border-r border-slate-200 bg-white transition-transform duration-200 ease-out dark:border-slate-800 dark:bg-slate-900 lg:static lg:translate-x-0",
     sidebarOpen: "translate-x-0",
     sidebarClosed: "-translate-x-full",
     closeButton:
