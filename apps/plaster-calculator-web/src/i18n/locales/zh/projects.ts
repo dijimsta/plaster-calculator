@@ -13,6 +13,7 @@ export const projects = Object.freeze({
     refresh: "刷新",
     refreshTitle: "刷新项目",
     emptyStateTitle: "没有符合筛选条件的项目",
+    paginationLabel: "项目列表分页",
     tableHeaders: Object.freeze({
         project: "项目",
         company: "公司",

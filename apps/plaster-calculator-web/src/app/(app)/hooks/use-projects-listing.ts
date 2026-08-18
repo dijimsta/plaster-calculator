@@ -8,11 +8,17 @@ import { useEffect, useMemo, useState } from "react";
 
 import type { ProjectSummary } from "../../../types.js";
 
+import { usePaginatedStatusProjects } from "./use-paginated-status-projects.js";
 import {
+    enrichProject,
+    matchesQuery,
     mergeProjects,
     projectNotificationAction,
     upsertProject,
 } from "./use-projects-listing.utils.js";
+import type { EnrichedProject } from "./use-projects-listing.utils.js";
+
+export type { EnrichedProject } from "./use-projects-listing.utils.js";
 
 export type StatusFilter = "ALL" | "QUOTING" | "QUOTE_SUBMITTED";
 export type ProjectsView = "list" | "board";
@@ -23,8 +29,6 @@ const ALL_SALES_STATUSES: readonly SalesStatus[] = [
     "WON",
     "LOST",
 ];
-
-export type EnrichedProject = ProjectSummary & { companyName: string | null };
 
 export type ProjectsListingState = {
     readonly view: ProjectsView;
@@ -37,6 +41,10 @@ export type ProjectsListingState = {
     readonly quoteSubmittedCount: number;
     readonly filtered: EnrichedProject[];
     readonly resultCount: number;
+    readonly page: number;
+    readonly pageCount: number;
+    readonly paginatedProjects: EnrichedProject[];
+    readonly paginatedLoading: boolean;
     readonly renameValue: string;
     readonly renamingId: string | null;
     readonly processingProjectId: string | null;
@@ -50,6 +58,7 @@ export type ProjectsListingState = {
     readonly setView: (view: ProjectsView) => void;
     readonly setStatusFilter: (filter: StatusFilter) => void;
     readonly setQuery: (query: string) => void;
+    readonly setPage: (page: number) => void;
     readonly clearFilters: () => void;
     readonly setProcessingProjectId: (projectId: string | null) => void;
     readonly setRenameValue: (value: string) => void;
@@ -74,6 +83,21 @@ export function useProjectsListing(): ProjectsListingState {
     >(null);
     const [renamingId, setRenamingId] = useState<string | null>(null);
     const [renameValue, setRenameValue] = useState("");
+
+    // The board view and the "ALL" status tab need projects across every sales
+    // status at once (for the board's columns and the tab badge counts), which
+    // only the unbounded `refresh()` fetch below can provide without a
+    // dedicated count query. A single specific status tab in list view, though,
+    // can be bounded and paginated on its own — that separate, bounded fetch
+    // lives in this dedicated hook rather than duplicating this one's logic.
+    const { page, pageCount, paginatedProjects, paginatedLoading, setPage } =
+        usePaginatedStatusProjects(
+            projectsService,
+            statusFilter,
+            query,
+            companyNames,
+            notify,
+        );
 
     useEffect(() => {
         void refresh();
@@ -232,13 +256,7 @@ export function useProjectsListing(): ProjectsListingState {
     }
 
     const enriched = useMemo<EnrichedProject[]>(
-        () =>
-            projects.map((project) => ({
-                ...project,
-                companyName: project.companyId
-                    ? (companyNames.get(project.companyId) ?? null)
-                    : null,
-            })),
+        () => projects.map((project) => enrichProject(project, companyNames)),
         [companyNames, projects],
     );
 
@@ -254,18 +272,11 @@ export function useProjectsListing(): ProjectsListingState {
     );
 
     const filtered = useMemo<EnrichedProject[]>(() => {
-        const q = query.trim().toLowerCase();
         const byStatus =
             statusFilter === "ALL"
                 ? enriched
                 : enriched.filter((p) => p.salesStatus === statusFilter);
-        if (!q) return byStatus;
-        return byStatus.filter(
-            (p) =>
-                p.name.toLowerCase().includes(q) ||
-                p.originalFileName.toLowerCase().includes(q) ||
-                (p.companyName?.toLowerCase().includes(q) ?? false),
-        );
+        return byStatus.filter((p) => matchesQuery(p, query));
     }, [enriched, statusFilter, query]);
 
     const resultCount = filtered.length;
@@ -281,6 +292,10 @@ export function useProjectsListing(): ProjectsListingState {
         quoteSubmittedCount,
         filtered,
         resultCount,
+        page,
+        pageCount,
+        paginatedProjects,
+        paginatedLoading,
         renameValue,
         renamingId,
         processingProjectId,
@@ -291,6 +306,7 @@ export function useProjectsListing(): ProjectsListingState {
         setView,
         setStatusFilter,
         setQuery,
+        setPage,
         clearFilters,
         setProcessingProjectId,
         setRenameValue,

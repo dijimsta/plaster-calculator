@@ -13,6 +13,7 @@ export const projects = Object.freeze({
     refresh: "Refresh",
     refreshTitle: "Refresh projects",
     emptyStateTitle: "No projects match your filters",
+    paginationLabel: "Project list pagination",
     tableHeaders: Object.freeze({
         project: "Project",
         company: "Company",

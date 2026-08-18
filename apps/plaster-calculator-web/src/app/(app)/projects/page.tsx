@@ -11,6 +11,7 @@ import {
     EmptyState,
     Input,
     PageHeading,
+    Pagination,
     Tabs,
     Text,
 } from "@libraries/uikit-web";
@@ -32,6 +33,12 @@ import {
     type StatusFilter,
 } from "../hooks/use-projects-listing.js";
 
+import {
+    isSpecificStatusListView,
+    resolveIsLoading,
+    resolveTableProjects,
+    shouldShowPagination,
+} from "./projects-page.utils.js";
 import { ProjectsTable } from "./projects-table.js";
 
 const BOARD_STATUSES: readonly SalesStatus[] = [
@@ -56,6 +63,10 @@ export default function ProjectsPage() {
         quoteSubmittedCount,
         filtered,
         resultCount,
+        page,
+        pageCount,
+        paginatedProjects,
+        paginatedLoading,
         renameValue,
         renamingId,
         refresh,
@@ -65,12 +76,26 @@ export default function ProjectsPage() {
         setView,
         setStatusFilter,
         setQuery,
+        setPage,
         clearFilters,
         setRenamingId,
         setRenameValue,
     } = useProjectsListing();
 
     const filtersActive = statusFilter !== "ALL" || query !== "";
+
+    const isPaginatedListView = isSpecificStatusListView(view, statusFilter);
+    const tableProjects = resolveTableProjects(
+        isPaginatedListView,
+        paginatedProjects,
+        filtered,
+    );
+    const isLoading = resolveIsLoading(
+        projectsLoading,
+        isPaginatedListView,
+        paginatedLoading,
+    );
+    const showPagination = shouldShowPagination(isPaginatedListView, pageCount);
 
     const tableHeaders = [
         t("projects.tableHeaders.project"),
@@ -224,14 +249,14 @@ export default function ProjectsPage() {
                         Showing {resultCount} of {totalCount} projects
                     </Text>
                 </Box>
-                {projectsLoading ? (
+                {isLoading ? (
                     <Box align="center" justify="center" gap="sm" status>
                         <LoaderCircle className="animate-spin" size={24} />
                         <Text variant="muted">
                             {t("projects.loadingProjects")}
                         </Text>
                     </Box>
-                ) : filtered.length === 0 ? (
+                ) : tableProjects.length === 0 ? (
                     <EmptyState
                         icon={<FolderKanban />}
                         title={t("projects.emptyStateTitle")}
@@ -258,7 +283,7 @@ export default function ProjectsPage() {
                 ) : (
                     <ProjectsTable
                         headers={tableHeaders}
-                        projects={filtered}
+                        projects={tableProjects}
                         renamingId={renamingId}
                         renameValue={renameValue}
                         salesStatusLabel={salesStatusLabel}
@@ -269,6 +294,14 @@ export default function ProjectsPage() {
                         }}
                         onSaveRename={saveRename}
                         onDelete={removeProject}
+                    />
+                )}
+                {showPagination && (
+                    <Pagination
+                        page={page}
+                        pageCount={pageCount}
+                        onPageChange={setPage}
+                        label={t("projects.paginationLabel")}
                     />
                 )}
             </Box>
