@@ -136,6 +136,7 @@ export const zh = createTranslationResource(
                 emptyStateTitle: "未找到公司",
                 unableToLoad: "无法加载公司",
                 createFromSearch: "创建“{{name}}”",
+                paginationLabel: "公司列表分页",
             }),
             newCompany: Object.freeze({
                 title: "新建公司",

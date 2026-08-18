@@ -6,6 +6,7 @@ import {
     EmptyState,
     Input,
     Label,
+    Pagination,
     Paragraph,
     Text,
 } from "@libraries/uikit-web";
@@ -16,14 +17,18 @@ import {
     RefreshCcw,
     Search,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAppTranslation } from "../../../i18n/index.ts";
 import { cx, ui } from "../../../lib/styles.js";
 import type { CompanySummary } from "../../../types.js";
 
 import { CompanyRow } from "./company-row.js";
-import { filterCompanies } from "./company.utils.js";
+
+/** Companies shown per page. */
+const PAGE_SIZE = 20;
+/** How long to wait after the last keystroke before searching the server. */
+const SEARCH_DEBOUNCE_MS = 300;
 
 type CompanyListPanelProps = {
     readonly refreshKey: number;
@@ -40,23 +45,39 @@ export function CompanyListPanel({
     const { t } = useAppTranslation();
     const [companies, setCompanies] = useState<CompanySummary[]>([]);
     const [query, setQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
+    const [page, setPage] = useState(1);
+    const [pageCount, setPageCount] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        void refresh();
-    }, [refreshKey, companiesService]);
+        const timeoutId = setTimeout(() => {
+            setDebouncedQuery(query);
+        }, SEARCH_DEBOUNCE_MS);
+        return () => clearTimeout(timeoutId);
+    }, [query]);
 
-    const filtered = useMemo(
-        () => filterCompanies(companies, query),
-        [companies, query],
-    );
+    useEffect(() => {
+        setPage(1);
+    }, [debouncedQuery]);
+
+    useEffect(() => {
+        void refresh();
+    }, [refreshKey, debouncedQuery, page, companiesService]);
+
     async function refresh(): Promise<void> {
         setIsLoading(true);
         setMessage("");
         try {
-            const nextCompanies = await companiesService.listCompanies();
-            setCompanies(nextCompanies);
+            const nextCompanies = await companiesService.listCompanies({
+                search: debouncedQuery || undefined,
+                limit: PAGE_SIZE + 1,
+                offset: (page - 1) * PAGE_SIZE,
+            });
+            const hasNextPage = nextCompanies.length > PAGE_SIZE;
+            setCompanies(nextCompanies.slice(0, PAGE_SIZE));
+            setPageCount(hasNextPage ? page + 1 : page);
         } catch (error) {
             setMessage(
                 error instanceof Error
@@ -113,15 +134,15 @@ export function CompanyListPanel({
                 </div>
             ) : (
                 <div className={ui.projectList}>
-                    {filtered.map((company) => (
+                    {companies.map((company) => (
                         <CompanyRow key={company.id} company={company} />
                     ))}
-                    {filtered.length === 0 && (
+                    {companies.length === 0 && (
                         <EmptyState
                             icon={<Building2 />}
                             title={t("companies.list.emptyStateTitle")}
                             actions={
-                                query.trim() ? (
+                                debouncedQuery.trim() ? (
                                     <Button
                                         variant="secondary"
                                         icon={
@@ -131,12 +152,14 @@ export function CompanyListPanel({
                                             />
                                         }
                                         onClick={() =>
-                                            onCreateFromSearch(query.trim())
+                                            onCreateFromSearch(
+                                                debouncedQuery.trim(),
+                                            )
                                         }
                                         type="button"
                                     >
                                         {t("companies.list.createFromSearch", {
-                                            name: query.trim(),
+                                            name: debouncedQuery.trim(),
                                         })}
                                     </Button>
                                 ) : undefined
@@ -144,6 +167,14 @@ export function CompanyListPanel({
                         />
                     )}
                 </div>
+            )}
+            {!isLoading && pageCount > 1 && (
+                <Pagination
+                    page={page}
+                    pageCount={pageCount}
+                    onPageChange={setPage}
+                    label={t("companies.list.paginationLabel")}
+                />
             )}
         </section>
     );
