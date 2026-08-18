@@ -15,6 +15,7 @@ import {
     MANUAL_ANSWER_SOURCE,
     ROOMS_MEASURED_CHECK_ID,
     SCALE_APPLIED_CHECK_ID,
+    TEMPLATE_HAS_ENABLED_ITEMS_CHECK_ID,
     TEMPLATE_PRICED_CHECK_ID,
     TEMPLATE_UNIT_SET_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
@@ -305,8 +306,18 @@ export function useQuoteReadinessFixControlRenderer(
                             }
                         />
                     );
+                case TEMPLATE_HAS_ENABLED_ITEMS_CHECK_ID:
+                    return (
+                        <QuoteTemplateDeepLinkFixControl
+                            label={t("readinessFixControls.manageQuoteItems")}
+                        />
+                    );
                 case TEMPLATE_UNIT_SET_CHECK_ID:
-                    return <QuoteTemplateDeepLinkFixControl />;
+                    return (
+                        <QuoteTemplateDeepLinkFixControl
+                            label={t("readinessFixControls.setTemplateUnits")}
+                        />
+                    );
                 case COMPANY_CONTACT_DETAILS_CHECK_ID:
                     return (
                         <CompanyContactDetailsFixControl

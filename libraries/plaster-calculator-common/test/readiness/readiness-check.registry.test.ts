@@ -9,13 +9,14 @@ import {
     READINESS_CHECKS,
     ROOMS_MEASURED_CHECK_ID,
     SCALE_APPLIED_CHECK_ID,
+    TEMPLATE_HAS_ENABLED_ITEMS_CHECK_ID,
     TEMPLATE_PRICED_CHECK_ID,
     TEMPLATE_UNIT_SET_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
 } from "../../src/index.ts";
 
 test("READINESS_CHECKS registers every check in order, with COMPANY_CONTACT_DETAILS as the sole WARN", () => {
-    assert.equal(READINESS_CHECKS.length, 9);
+    assert.equal(READINESS_CHECKS.length, 10);
     assert.deepEqual(
         READINESS_CHECKS.map((check) => check.id),
         [
@@ -23,6 +24,7 @@ test("READINESS_CHECKS registers every check in order, with COMPANY_CONTACT_DETA
             ROOMS_MEASURED_CHECK_ID,
             WALL_TYPE_SET_CHECK_ID,
             CEILING_HEIGHT_SET_CHECK_ID,
+            TEMPLATE_HAS_ENABLED_ITEMS_CHECK_ID,
             TEMPLATE_PRICED_CHECK_ID,
             TEMPLATE_UNIT_SET_CHECK_ID,
             INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
