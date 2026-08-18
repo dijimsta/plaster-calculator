@@ -24,6 +24,12 @@ export type PendingInvitation = {
     updatedAt: string;
 };
 
+/** Bounds for a single page of an ordered list. Omit either field for an unbounded call. */
+export type ListPageOptions = Readonly<{
+    limit?: number;
+    offset?: number;
+}>;
+
 export type AuthUser = {
     email?: string;
     customClaims?: Record<string, unknown>;
@@ -50,6 +56,7 @@ export type TeamInvitationDependencies = {
     listPendingInvitations(
         teamId: string,
         now: string,
+        options?: ListPageOptions,
     ): Promise<PendingInvitation[]>;
     getInvitationByTokenHash(
         tokenHash: string,

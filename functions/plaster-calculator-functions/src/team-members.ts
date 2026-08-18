@@ -11,9 +11,14 @@ import type {
     TeamAuthUser,
     TeamMembersDependencies,
 } from "./team-members-domain.js";
-import { isRecord } from "./validation.js";
+import { isRecord, readNullableNumber } from "./validation.js";
 
 const AUTH_BATCH_SIZE = 100;
+
+type ListMyTeamMembersRequest = {
+    limit?: unknown;
+    offset?: unknown;
+};
 
 const defaultDependencies: TeamMembersDependencies = {
     getMemberships: async (userId) => {
@@ -22,8 +27,12 @@ const defaultDependencies: TeamMembersDependencies = {
         });
         return response.data.teamMembers;
     },
-    listMembers: async (teamId) => {
-        const response = await DataConnector.listTeamMembers({ teamId });
+    listMembers: async (teamId, options) => {
+        const response = await DataConnector.listTeamMembers({
+            teamId,
+            limit: options?.limit,
+            offset: options?.offset,
+        });
         return response.data.teamMembers;
     },
     getMember: async (teamId, userId) => {
@@ -48,10 +57,17 @@ const defaultDependencies: TeamMembersDependencies = {
 
 const teamMembersService = createTeamMembersService(defaultDependencies);
 
-export const listMyTeamMembers = onCall(async (request) => {
-    const auth = requireAuth(request);
-    return teamMembersService.list(auth.uid);
-});
+export const listMyTeamMembers = onCall<ListMyTeamMembersRequest>(
+    async (request) => {
+        const auth = requireAuth(request);
+        const limit = readNullableNumber(request.data.limit, "Limit");
+        const offset = readNullableNumber(request.data.offset, "Offset");
+        return teamMembersService.list(auth.uid, {
+            limit: limit ?? undefined,
+            offset: offset ?? undefined,
+        });
+    },
+);
 
 export const removeTeamMember = onCall(async (request) => {
     const auth = requireAuth(request);

@@ -12,6 +12,7 @@ import {
 } from "./team-invitation-acceptance.js";
 import type {
     AuthUser,
+    ListPageOptions,
     Membership,
     TeamInvitationDependencies,
 } from "./team-invitation-types.js";
@@ -19,6 +20,7 @@ import type {
 export type {
     AuthUser,
     Invitation,
+    ListPageOptions,
     Membership,
     PendingInvitation,
     TeamInvitationDependencies,
@@ -119,13 +121,14 @@ export function createTeamInvitationService(
                 path: buildInvitationPath(token),
             };
         },
-        listPending: async (userId: string) => {
+        listPending: async (userId: string, options?: ListPageOptions) => {
             const teamId = selectOwnerTeamId(
                 await dependencies.getMemberships(userId),
             );
             const invitations = await dependencies.listPendingInvitations(
                 teamId,
                 dependencies.now().toISOString(),
+                options,
             );
             return {
                 invitations: invitations.map((invitation) => ({
