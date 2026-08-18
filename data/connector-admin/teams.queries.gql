@@ -19,16 +19,26 @@ query GetTeamMember($teamId: String!, $userId: String!)
     }
 }
 
-query ListTeamMembers($teamId: String!) @auth(level: NO_ACCESS) {
-    teamMembers(where: { teamId: { eq: $teamId } }) {
+query ListTeamMembers($teamId: String!, $limit: Int, $offset: Int)
+@auth(level: NO_ACCESS) {
+    teamMembers(
+        where: { teamId: { eq: $teamId } }
+        orderBy: [{ createdAt: ASC }]
+        limit: $limit
+        offset: $offset
+    ) {
         teamId
         userId
         role
     }
 }
 
-query ListPendingTeamInvitations($teamId: String!, $now: Timestamp!)
-@auth(level: NO_ACCESS) {
+query ListPendingTeamInvitations(
+    $teamId: String!
+    $now: Timestamp!
+    $limit: Int
+    $offset: Int
+) @auth(level: NO_ACCESS) {
     teamInvitations(
         where: {
             teamId: { eq: $teamId }
@@ -36,6 +46,8 @@ query ListPendingTeamInvitations($teamId: String!, $now: Timestamp!)
             expiresAt: { gt: $now }
         }
         orderBy: [{ createdAt: DESC }]
+        limit: $limit
+        offset: $offset
     ) {
         teamId
         email

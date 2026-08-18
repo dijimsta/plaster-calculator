@@ -436,6 +436,8 @@ export interface ListPendingTeamInvitationsData {
 export interface ListPendingTeamInvitationsVariables {
   teamId: string;
   now: TimestampString;
+  limit?: number | null;
+  offset?: number | null;
 }
 
 export interface ListProjectRemindersData {
@@ -521,6 +523,8 @@ export interface ListTeamMembersData {
 
 export interface ListTeamMembersVariables {
   teamId: string;
+  limit?: number | null;
+  offset?: number | null;
 }
 
 export interface ProjectQuestionnaireQuestion_Key {
