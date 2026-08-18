@@ -25,7 +25,7 @@ export type ProjectReminderRow =
 export type UploadType = "PDF" | "IMAGE";
 export type ProjectStatus = "DRAFT" | "PROCESSING" | "READY" | "FAILED";
 
-export interface ProjectSummary {
+export type ProjectSummary = {
     id: string;
     companyId: string | null;
     name: string;
@@ -40,9 +40,9 @@ export interface ProjectSummary {
     pageCount: number;
     teamId?: string | null;
     assignee?: string | null;
-}
+};
 
-export interface FloorplanPage {
+export type FloorplanPage = {
     id: string;
     pageNumber: number;
     status: ProjectStatus;
@@ -57,22 +57,22 @@ export interface FloorplanPage {
     processingStrategy?: string | null;
     processingMetadata?: string | null;
     updatedAt: string;
-}
+};
 
-export interface ProjectDetail extends ProjectSummary {
+export type ProjectDetail = ProjectSummary & {
     scope: string | null;
     pages: FloorplanPage[];
-}
+};
 
-export interface UserSettings {
+export type UserSettings = {
     ownerId: string;
     quoteFollowUpEnabled: boolean;
     quoteFollowUpDays: number;
     createdAt: string | null;
     updatedAt: string | null;
-}
+};
 
-export interface Reminder {
+export type Reminder = {
     id: string;
     teamId?: string | null;
     projectId: string;
@@ -84,23 +84,23 @@ export interface Reminder {
     completedAt: string | null;
     createdAt: string;
     updatedAt: string;
-}
+};
 
-export interface ProcessingStrategyInfo {
+export type ProcessingStrategyInfo = {
     key: string;
     label: string;
     description: string;
     defaultStrategy: boolean;
-}
+};
 
-export interface UploadResponse {
+export type UploadResponse = {
     projectId: string;
     uploadType: UploadType;
     pageCount: number;
     status: ProjectStatus;
-}
+};
 
-export interface CreateProjectFromUploadRequest {
+export type CreateProjectFromUploadRequest = {
     projectId?: unknown;
     companyId?: unknown;
     name?: unknown;
@@ -111,102 +111,102 @@ export interface CreateProjectFromUploadRequest {
     storagePath?: unknown;
     pageCount?: unknown;
     assignee?: unknown;
-}
+};
 
-export interface ProjectIdRequest {
+export type ProjectIdRequest = {
     projectId?: unknown;
-}
+};
 
-export interface ListProjectsRequest {
+export type ListProjectsRequest = {
     salesStatus?: unknown;
-}
+};
 
-export interface RenameProjectRequest extends ProjectIdRequest {
+export type RenameProjectRequest = ProjectIdRequest & {
     name?: unknown;
-}
+};
 
-export interface UpdateProjectRequest extends ProjectIdRequest {
+export type UpdateProjectRequest = ProjectIdRequest & {
     name?: unknown;
     companyId?: unknown;
     address?: unknown;
     salesStatus?: unknown;
     assignee?: unknown;
     scope?: unknown;
-}
+};
 
-export interface CompanyIdRequest {
+export type CompanyIdRequest = {
     companyId?: unknown;
-}
+};
 
-export interface ReminderIdRequest {
+export type ReminderIdRequest = {
     reminderId?: unknown;
-}
+};
 
-export interface CreateReminderRequest extends ProjectIdRequest {
+export type CreateReminderRequest = ProjectIdRequest & {
     companyId?: unknown;
     name?: unknown;
     dueAt?: unknown;
     assignee?: unknown;
-}
+};
 
-export interface UpdateReminderRequest extends ReminderIdRequest {
+export type UpdateReminderRequest = ReminderIdRequest & {
     companyId?: unknown;
     name?: unknown;
     dueAt?: unknown;
     status?: unknown;
     assignee?: unknown;
-}
+};
 
-export interface ProcessProjectRequest extends ProjectIdRequest {
+export type ProcessProjectRequest = ProjectIdRequest & {
     pageNumbers?: unknown;
     strategyKey?: unknown;
     pageImagePaths?: unknown;
-}
+};
 
-export interface InitializeFloorplanPagesRequest extends ProjectIdRequest {
+export type InitializeFloorplanPagesRequest = ProjectIdRequest & {
     pageImagePaths?: unknown;
-}
+};
 
-export interface AnalyzeFloorplanPageRequest extends ProjectIdRequest {
+export type AnalyzeFloorplanPageRequest = ProjectIdRequest & {
     pageId?: unknown;
     scaleMmPerPx?: unknown;
     ceilingHeightMm?: unknown;
     referencePoints?: unknown;
     referenceLengthMm?: unknown;
-}
+};
 
-export interface UpdateFloorplanPageRequest extends ProjectIdRequest {
+export type UpdateFloorplanPageRequest = ProjectIdRequest & {
     pageId?: unknown;
     overlay?: unknown;
     scaleMmPerPx?: unknown;
     ceilingHeightMm?: unknown;
     referencePoints?: unknown;
     referenceLengthMm?: unknown;
-}
+};
 
-export interface UpdateFloorplanPagesRequest extends ProjectIdRequest {
+export type UpdateFloorplanPagesRequest = ProjectIdRequest & {
     scaleMmPerPx?: unknown;
     ceilingHeightMm?: unknown;
-}
+};
 
-export interface ExportProjectCsvResponse {
+export type ExportProjectCsvResponse = {
     fileName: string;
     mimeType: "text/csv";
     csv: string;
-}
+};
 export const FLOORPLAN_ANALYZER_REGION = "us-west1";
 export const LONG_RUNNING_TIMEOUT_SECONDS = 60 * 60;
 
 export type FloorplanAnalyzerEndpoint =
     "ocr_flood_fill_smoothed" | "ocr_flood_fill" | "xixi_process";
 
-export interface ProcessingStrategy extends ProcessingStrategyInfo {
+export type ProcessingStrategy = ProcessingStrategyInfo & {
     endpoint: FloorplanAnalyzerEndpoint;
     queryParams: Record<string, string>;
     polygonsKey: "rooms" | "walls";
-}
+};
 
-export interface AnalyzerPolygon {
+export type AnalyzerPolygon = {
     id?: number;
     label?: string;
     polygon?: number[][];
@@ -217,9 +217,9 @@ export interface AnalyzerPolygon {
     perimeter_px?: number;
     approx_length_px?: number;
     is_hole?: boolean;
-}
+};
 
-export interface AnalyzerResult {
+export type AnalyzerResult = {
     image_size_px?: { width: number; height: number };
     rooms?: AnalyzerPolygon[];
     walls?: AnalyzerPolygon[];
@@ -229,16 +229,16 @@ export interface AnalyzerResult {
     ocr_detected_text?: { text: string; confidence: number }[];
     room_count?: number;
     wall_count?: number;
-}
+};
 
-export interface EdgeOverride {
+export type EdgeOverride = {
     wallBoardProfile?: string;
     wallBoardType?: string;
     wallPlasterType?: string;
     noPlaster?: boolean;
-}
+};
 
-export interface OverlayArea {
+export type OverlayArea = {
     id: string;
     label: string;
     points: [number, number][];
@@ -254,12 +254,12 @@ export interface OverlayArea {
     sourceAreaPx?: number;
     sourceApproxLengthPx?: number;
     sourceIsHole?: boolean;
-}
+};
 
-export interface OverlayDocument {
+export type OverlayDocument = {
     sourceFile?: string;
     imageSizePx?: { width: number; height: number };
     areas: OverlayArea[];
-}
+};
 export type JsonRecord = Record<string, unknown>;
 export type Point = [number, number];

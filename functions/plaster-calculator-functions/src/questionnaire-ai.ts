@@ -17,10 +17,10 @@ import { LONG_RUNNING_TIMEOUT_SECONDS } from "./types.js";
 import type { ProjectIdRequest, ProjectWithPages } from "./types.js";
 import { readRequiredString } from "./validation.js";
 
-interface ExtractedPdfPage {
+type ExtractedPdfPage = {
     readonly pageNumber: number;
     readonly text: string;
-}
+};
 
 const defaultDependencies: AnswerQuestionnaireDependencies = {
     getProject: requireOwnedProject,

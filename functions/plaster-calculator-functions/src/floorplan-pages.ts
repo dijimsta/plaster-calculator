@@ -163,10 +163,10 @@ export const initializeFloorplanPages = onCall<
     },
 );
 
-interface PageImageEntry {
+type PageImageEntry = {
     readonly pageNumber: number;
     readonly path: unknown;
-}
+};
 
 function readPageImageEntries(
     value: Record<string, unknown>,

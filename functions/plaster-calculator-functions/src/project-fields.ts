@@ -2,14 +2,14 @@ import type { SalesStatus } from "@libraries/plaster-calculator-common";
 
 import { hasField, toSalesStatus } from "./validation.js";
 
-export interface ProjectUpdateFields {
+export type ProjectUpdateFields = {
     name?: string;
     companyId?: string | null;
     address?: string | null;
     assignee?: string | null;
     scope?: string | null;
     salesStatus?: SalesStatus;
-}
+};
 
 export function nextNullableProjectField(
     updates: ProjectUpdateFields,

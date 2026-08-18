@@ -31,7 +31,7 @@ export type TeamAuthUser = Readonly<{
     customClaims?: Readonly<Record<string, unknown>>;
 }>;
 
-export interface TeamMembersDependencies {
+export type TeamMembersDependencies = {
     getMemberships(userId: string): Promise<readonly TeamMembership[]>;
     listMembers(teamId: string): Promise<readonly TeamMembership[]>;
     getMember(teamId: string, userId: string): Promise<TeamMembership | null>;
@@ -44,7 +44,7 @@ export interface TeamMembersDependencies {
         userId: string,
         claims: Readonly<Record<string, unknown>>,
     ): Promise<void>;
-}
+};
 
 export type TeamMembersService = Readonly<{
     list(userId: string): Promise<ListMyTeamMembersResponse>;

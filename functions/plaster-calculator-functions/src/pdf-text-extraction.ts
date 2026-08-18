@@ -7,10 +7,10 @@ type TextContentItem = Awaited<
     ReturnType<PDFPageProxy["getTextContent"]>
 >["items"][number];
 
-export interface ExtractedPdfPage {
+export type ExtractedPdfPage = {
     readonly pageNumber: number;
     readonly text: string;
-}
+};
 
 export async function extractPdfText(
     pdfBytes: Buffer,

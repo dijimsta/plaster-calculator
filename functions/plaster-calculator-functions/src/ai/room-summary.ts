@@ -10,7 +10,7 @@ type ProjectPage = ProjectWithPages["pages"][number];
 
 const WET_AREA_ROOM_TYPES = new Set(["Bath", "Toilet", "Laundry"]);
 
-export interface RoomSummary {
+export type RoomSummary = {
     readonly label: string;
     readonly roomType: string | null;
     readonly isWetArea: boolean;
@@ -18,7 +18,7 @@ export interface RoomSummary {
     readonly wallAreaM2ByType: Record<string, number>;
     readonly ceilingHeightMm: number | null;
     readonly ceilingMode: "flat" | "raked";
-}
+};
 
 export function buildRoomSummary(page: ProjectPage): RoomSummary[] {
     if (!page.overlayJson || page.scaleMmPerPx == null) {

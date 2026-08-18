@@ -114,11 +114,11 @@ type Point = [number, number];
 type PageValues = Map<number, number>;
 type MaterialValues = Map<string, PageValues>;
 
-interface ExportMatrix {
+type ExportMatrix = {
     pageNumbers: number[];
     wallValues: MaterialValues;
     ceilingValues: MaterialValues;
-}
+};
 
 export function ceilingColumn(area: JsonRecord) {
     const ceilingType = normalizeCeilingBoardType(area["ceilingPlasterType"]);

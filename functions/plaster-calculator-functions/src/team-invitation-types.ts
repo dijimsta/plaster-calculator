@@ -1,9 +1,9 @@
-export interface Membership {
+export type Membership = {
     teamId: string;
     role: string;
-}
+};
 
-export interface Invitation {
+export type Invitation = {
     teamId: string;
     email: string;
     tokenHash: string;
@@ -13,23 +13,23 @@ export interface Invitation {
     acceptedByUserId?: string | null;
     createdAt: string;
     updatedAt: string;
-}
+};
 
-export interface PendingInvitation {
+export type PendingInvitation = {
     teamId: string;
     email: string;
     invitedByUserId: string;
     expiresAt: string;
     createdAt: string;
     updatedAt: string;
-}
+};
 
-export interface AuthUser {
+export type AuthUser = {
     email?: string;
     customClaims?: Record<string, unknown>;
-}
+};
 
-export interface TeamInvitationDependencies {
+export type TeamInvitationDependencies = {
     now(): Date;
     generateToken(): string;
     getMemberships(userId: string): Promise<Membership[]>;
@@ -60,4 +60,4 @@ export interface TeamInvitationDependencies {
         tokenHash: string;
         userId: string;
     }): Promise<void>;
-}
+};
