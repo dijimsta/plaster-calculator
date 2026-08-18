@@ -1,12 +1,12 @@
 "use client";
 
+import { CompanyContactFormFields } from "@libraries/plaster-calculator-ui";
 import { Button, ModalDialog } from "@libraries/uikit-web";
 import { type FormEvent } from "react";
 
 import { useAppTranslation } from "../../../i18n/index.ts";
 
 import type { ContactDraft } from "./company.types.js";
-import { ContactFormFields } from "./contact-form-fields.js";
 
 type NewContactModalProps = {
     readonly contactDraft: ContactDraft;
@@ -42,10 +42,13 @@ export function NewContactModal({
             }
         >
             <form id={FORM_ID} onSubmit={save}>
-                <ContactFormFields
-                    draft={contactDraft}
-                    setDraft={setContactDraft}
+                <CompanyContactFormFields
+                    idPrefix="new-contact"
+                    values={contactDraft}
                     showPrimaryCheckbox
+                    onChange={(patch) =>
+                        setContactDraft({ ...contactDraft, ...patch })
+                    }
                 />
             </form>
         </ModalDialog>

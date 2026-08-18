@@ -1,6 +1,7 @@
 "use client";
 
 import {
+    companiesTranslations,
     editorTranslations,
     projectsTranslations,
     questionnairesTranslations,
@@ -20,6 +21,7 @@ export function AppTranslationsProvider({
         <I18nProvider
             translations={[
                 appTranslations,
+                companiesTranslations,
                 editorTranslations,
                 projectsTranslations,
                 questionnairesTranslations,

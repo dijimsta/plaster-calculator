@@ -1,6 +1,8 @@
+import type {
+    CompanyContactFormValues,
+    CompanyDetailFormValues,
+} from "@libraries/plaster-calculator-ui";
 import type { RefObject } from "react";
-
-import type { CompanyContact } from "../../../types.js";
 
 export type CompanyDraft = {
     readonly companyName: string;
@@ -8,17 +10,9 @@ export type CompanyDraft = {
     readonly phoneNumber: string;
 };
 
-export type CompanyDetailDraft = CompanyDraft & {
-    readonly primaryContactId: string;
-};
+export type CompanyDetailDraft = CompanyDetailFormValues;
 
-export type ContactDraft = {
-    readonly name: string;
-    readonly email: string;
-    readonly phoneNumber: string;
-    readonly role: string;
-    readonly makePrimary: boolean;
-};
+export type ContactDraft = CompanyContactFormValues;
 
 export type CompanyDraftFieldsProps = {
     readonly draft: CompanyDraft;
@@ -26,18 +20,6 @@ export type CompanyDraftFieldsProps = {
     /** Focuses the company name field on mount, e.g. when the draft was
      * seeded from a Companies-page search that found no match. */
     readonly nameInputRef?: RefObject<HTMLInputElement | null>;
-};
-
-export type CompanyDetailFieldsProps = {
-    readonly contacts: readonly CompanyContact[];
-    readonly draft: CompanyDetailDraft;
-    readonly setDraft: (draft: CompanyDetailDraft) => void;
-};
-
-export type ContactFieldsProps = {
-    readonly draft: ContactDraft;
-    readonly setDraft: (draft: ContactDraft) => void;
-    readonly showPrimaryCheckbox?: boolean;
 };
 
 export const EMPTY_ACCOUNT_DRAFT: CompanyDraft = {

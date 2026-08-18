@@ -123,15 +123,6 @@ export const en = Object.freeze({
             companyName: "Company name",
             businessNumber: "ACN/ABN",
             phoneNumber: "Phone number",
-            primaryContact: "Primary contact",
-            noPrimaryContact: "No primary contact",
-        }),
-        contactFields: Object.freeze({
-            name: "Name",
-            email: "Email",
-            phoneNumber: "Phone number",
-            role: "Role",
-            makePrimary: "Make this contact the primary contact",
         }),
         list: Object.freeze({
             title: "Company List",
@@ -170,22 +161,7 @@ export const en = Object.freeze({
             loading: "Loading company...",
             notFound: "Company not found",
         }),
-        detailsPanel: Object.freeze({
-            title: "Company Details",
-            save: "Save company",
-            deleteTitle: "Delete company",
-            delete: "Delete",
-        }),
         pricingPanel: Object.freeze({
-            title: "Pricing",
-            fieldLabel: "Quote template",
-            useDefaultOption: "Use the default",
-            defaultTemplateOption: "{{name}} (default)",
-            usesDefaultDescription:
-                "Uses the default. Quotes for this company are priced with your team's default template.",
-            assignedDescription:
-                "Quotes for this company are priced with {{name}}.",
-            unnamedTemplateFallback: "an unnamed template",
             clearedNotification: "Now uses the default template.",
             assignedNotification: "Quote template updated.",
             unableToSave: "Unable to update the quote template",
@@ -199,22 +175,6 @@ export const en = Object.freeze({
             noPhone: "No phone",
             primaryContactSet: "Primary contact set",
             noPrimaryContact: "No primary contact",
-        }),
-        contactsPanel: Object.freeze({
-            title: "Contacts",
-            add: "Add contact",
-            emptyStateTitle: "No contacts yet",
-        }),
-        contactRow: Object.freeze({
-            edit: "Edit contact",
-            email: "Email {{name}}",
-            delete: "Delete contact",
-            primarySuffix: " (Primary)",
-            noEmail: "No email",
-            noPhone: "No phone",
-            noRole: "No role",
-            save: "Save",
-            cancelEdit: "Cancel edit",
         }),
         newContact: Object.freeze({
             title: "New Contact",
