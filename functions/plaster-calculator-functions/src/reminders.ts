@@ -16,6 +16,7 @@ import {
 } from "./ownership.js";
 import type {
     CreateReminderRequest,
+    ListOpenRemindersRequest,
     ProjectIdRequest,
     Reminder,
     ReminderIdRequest,
@@ -24,6 +25,7 @@ import type {
 import {
     hasField,
     readDueAt,
+    readNullableNumber,
     readOptionalNullableString,
     readReminderStatus,
     readRequiredString,
@@ -42,12 +44,17 @@ export const listDueReminders = onCall<
 });
 
 export const listOpenReminders = onCall<
-    unknown,
+    ListOpenRemindersRequest,
     Promise<{ reminders: Reminder[] }>
 >(async (request) => {
     const auth = requireAuth(request);
+    const data = request.data ?? {};
+    const limit = readNullableNumber(data.limit, "Limit");
+    const offset = readNullableNumber(data.offset, "Offset");
     const response = await DataConnector.listOpenReminders({
         teamId: await requireTeamId(auth.uid),
+        limit,
+        offset,
     });
     return { reminders: response.data.reminders.map(toReminder) };
 });

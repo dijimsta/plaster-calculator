@@ -146,6 +146,11 @@ export type ReminderIdRequest = {
     reminderId?: unknown;
 };
 
+export type ListOpenRemindersRequest = {
+    limit?: unknown;
+    offset?: unknown;
+};
+
 export type CreateReminderRequest = ProjectIdRequest & {
     companyId?: unknown;
     name?: unknown;
