@@ -53,8 +53,8 @@ export const listOpenReminders = onCall<
     const offset = readNullableNumber(data.offset, "Offset");
     const response = await DataConnector.listOpenReminders({
         teamId: await requireTeamId(auth.uid),
-        limit,
-        offset,
+        limit: limit ?? undefined,
+        offset: offset ?? undefined,
     });
     return { reminders: response.data.reminders.map(toReminder) };
 });
