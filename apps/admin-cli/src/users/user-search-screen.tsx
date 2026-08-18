@@ -7,12 +7,12 @@ import { formatScopes } from "./user-scopes.js";
 type InkInputHandler = Parameters<typeof useInput>[0];
 type InkInputKey = Parameters<InkInputHandler>[1];
 
-interface UserSearchScreenProps {
+type UserSearchScreenProps = {
     readonly users: AuthUserSummary[];
     readonly onBack: () => void;
     readonly onExit: () => void;
     readonly onSelect: (user: AuthUserSummary) => void;
-}
+};
 
 export function UserSearchScreen({
     users,
