@@ -413,9 +413,9 @@ exports.useListQuoteItemTemplateConfigsForQuoteTemplate = function useListQuoteI
   return useDataConnectQuery(ref, inputOpts, CallerSdkTypeEnum.GeneratedReact);
 }
 
-exports.useListQuotesForTeam = function useListQuotesForTeam(dcOrOptions, options) {
-  const { dc: dcInstance, options: inputOpts } = validateReactArgs(connectorConfig, dcOrOptions, options);
-  const ref = listQuotesForTeamRef(dcInstance);
+exports.useListQuotesForTeam = function useListQuotesForTeam(dcOrVars, varsOrOptions, options) {
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateReactArgs(connectorConfig, dcOrVars, varsOrOptions, options, true, false);
+  const ref = listQuotesForTeamRef(dcInstance, inputVars);
   return useDataConnectQuery(ref, inputOpts, CallerSdkTypeEnum.GeneratedReact);
 }
 

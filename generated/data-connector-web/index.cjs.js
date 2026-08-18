@@ -774,17 +774,17 @@ exports.listQuoteItemTemplateConfigsForQuoteTemplate = function listQuoteItemTem
 }
 ;
 
-const listQuotesForTeamRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+const listQuotesForTeamRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars);
   dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListQuotesForTeam');
+  return queryRef(dcInstance, 'ListQuotesForTeam', inputVars);
 }
 listQuotesForTeamRef.operationName = 'ListQuotesForTeam';
 exports.listQuotesForTeamRef = listQuotesForTeamRef;
 
-exports.listQuotesForTeam = function listQuotesForTeam(dcOrOptions, options) {
+exports.listQuotesForTeam = function listQuotesForTeam(dcOrVars, varsOrOptions, options) {
   
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, false);
   return executeQuery(listQuotesForTeamRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 ;

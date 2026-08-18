@@ -1381,22 +1381,22 @@ executeQuery(ref).then((response) => {
 ## ListQuotesForTeam
 You can execute the `ListQuotesForTeam` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-listQuotesForTeam(options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, undefined>;
+listQuotesForTeam(vars?: ListQuotesForTeamVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, ListQuotesForTeamVariables>;
 
 interface ListQuotesForTeamRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListQuotesForTeamData, undefined>;
+  (vars?: ListQuotesForTeamVariables): QueryRef<ListQuotesForTeamData, ListQuotesForTeamVariables>;
 }
 export const listQuotesForTeamRef: ListQuotesForTeamRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
 ```typescript
-listQuotesForTeam(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, undefined>;
+listQuotesForTeam(dc: DataConnect, vars?: ListQuotesForTeamVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, ListQuotesForTeamVariables>;
 
 interface ListQuotesForTeamRef {
   ...
-  (dc: DataConnect): QueryRef<ListQuotesForTeamData, undefined>;
+  (dc: DataConnect, vars?: ListQuotesForTeamVariables): QueryRef<ListQuotesForTeamData, ListQuotesForTeamVariables>;
 }
 export const listQuotesForTeamRef: ListQuotesForTeamRef;
 ```
@@ -1408,7 +1408,14 @@ console.log(name);
 ```
 
 ### Variables
-The `ListQuotesForTeam` query has no variables.
+The `ListQuotesForTeam` query has an optional argument of type `ListQuotesForTeamVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ListQuotesForTeamVariables {
+  limit?: number | null;
+  offset?: number | null;
+}
+```
 ### Return Type
 Recall that executing the `ListQuotesForTeam` query returns a `QueryPromise` that resolves to an object with a `data` property.
 
@@ -1439,21 +1446,30 @@ export interface ListQuotesForTeamData {
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, listQuotesForTeam } from '@generated/data-connector-web';
+import { connectorConfig, listQuotesForTeam, ListQuotesForTeamVariables } from '@generated/data-connector-web';
 
+// The `ListQuotesForTeam` query has an optional argument of type `ListQuotesForTeamVariables`:
+const listQuotesForTeamVars: ListQuotesForTeamVariables = {
+  limit: ..., // optional
+  offset: ..., // optional
+};
 
 // Call the `listQuotesForTeam()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listQuotesForTeam(listQuotesForTeamVars);
+// Variables can be defined inline as well.
+const { data } = await listQuotesForTeam({ limit: ..., offset: ..., });
+// Since all variables are optional for this query, you can omit the `ListQuotesForTeamVariables` argument.
 const { data } = await listQuotesForTeam();
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await listQuotesForTeam(dataConnect);
+const { data } = await listQuotesForTeam(dataConnect, listQuotesForTeamVars);
 
 console.log(data.quotes);
 
 // Or, you can use the `Promise` API.
-listQuotesForTeam().then((response) => {
+listQuotesForTeam(listQuotesForTeamVars).then((response) => {
   const data = response.data;
   console.log(data.quotes);
 });
@@ -1463,15 +1479,24 @@ listQuotesForTeam().then((response) => {
 
 ```typescript
 import { getDataConnect, executeQuery } from 'firebase/data-connect';
-import { connectorConfig, listQuotesForTeamRef } from '@generated/data-connector-web';
+import { connectorConfig, listQuotesForTeamRef, ListQuotesForTeamVariables } from '@generated/data-connector-web';
 
+// The `ListQuotesForTeam` query has an optional argument of type `ListQuotesForTeamVariables`:
+const listQuotesForTeamVars: ListQuotesForTeamVariables = {
+  limit: ..., // optional
+  offset: ..., // optional
+};
 
 // Call the `listQuotesForTeamRef()` function to get a reference to the query.
+const ref = listQuotesForTeamRef(listQuotesForTeamVars);
+// Variables can be defined inline as well.
+const ref = listQuotesForTeamRef({ limit: ..., offset: ..., });
+// Since all variables are optional for this query, you can omit the `ListQuotesForTeamVariables` argument.
 const ref = listQuotesForTeamRef();
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = listQuotesForTeamRef(dataConnect);
+const ref = listQuotesForTeamRef(dataConnect, listQuotesForTeamVars);
 
 // Call `executeQuery()` on the reference to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.

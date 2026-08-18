@@ -1162,15 +1162,22 @@ export default function ListQuoteItemTemplateConfigsForQuoteTemplateComponent() 
 You can execute the `ListQuotesForTeam` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
 
 ```javascript
-useListQuotesForTeam(dc: DataConnect, options?: useDataConnectQueryOptions<ListQuotesForTeamData>): UseDataConnectQueryResult<ListQuotesForTeamData, undefined>;
+useListQuotesForTeam(dc: DataConnect, vars?: ListQuotesForTeamVariables, options?: useDataConnectQueryOptions<ListQuotesForTeamData>): UseDataConnectQueryResult<ListQuotesForTeamData, ListQuotesForTeamVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Query hook function.
 ```javascript
-useListQuotesForTeam(options?: useDataConnectQueryOptions<ListQuotesForTeamData>): UseDataConnectQueryResult<ListQuotesForTeamData, undefined>;
+useListQuotesForTeam(vars?: ListQuotesForTeamVariables, options?: useDataConnectQueryOptions<ListQuotesForTeamData>): UseDataConnectQueryResult<ListQuotesForTeamData, ListQuotesForTeamVariables>;
 ```
 
 ### Variables
-The `ListQuotesForTeam` Query has no variables.
+The `ListQuotesForTeam` Query has an optional argument of type `ListQuotesForTeamVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ListQuotesForTeamVariables {
+  limit?: number | null;
+  offset?: number | null;
+}
+```
 ### Return Type
 Recall that calling the `ListQuotesForTeam` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
 
@@ -1206,26 +1213,40 @@ To learn more about the `UseQueryResult` object, see the [TanStack React Query d
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig } from '@generated/data-connector-web';
+import { connectorConfig, ListQuotesForTeamVariables } from '@generated/data-connector-web';
 import { useListQuotesForTeam } from '@generated/data-connector-web/react'
 
 export default function ListQuotesForTeamComponent() {
+  // The `useListQuotesForTeam` Query hook has an optional argument of type `ListQuotesForTeamVariables`:
+  const listQuotesForTeamVars: ListQuotesForTeamVariables = {
+    limit: ..., // optional
+    offset: ..., // optional
+  };
+
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useListQuotesForTeam(listQuotesForTeamVars);
+  // Variables can be defined inline as well.
+  const query = useListQuotesForTeam({ limit: ..., offset: ..., });
+  // Since all variables are optional for this Query, you can omit the `ListQuotesForTeamVariables` argument.
+  // (as long as you don't want to provide any `options`!)
   const query = useListQuotesForTeam();
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const query = useListQuotesForTeam(dataConnect);
+  const query = useListQuotesForTeam(dataConnect, listQuotesForTeamVars);
 
   // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
   const options = { staleTime: 5 * 1000 };
-  const query = useListQuotesForTeam(options);
+  const query = useListQuotesForTeam(listQuotesForTeamVars, options);
+  // If you'd like to provide options without providing any variables, you must
+  // pass `undefined` where you would normally pass the variables.
+  const query = useListQuotesForTeam(undefined, options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = { staleTime: 5 * 1000 };
-  const query = useListQuotesForTeam(dataConnect, options);
+  const query = useListQuotesForTeam(dataConnect, listQuotesForTeamVars /** or undefined */, options);
 
   // Then, you can render your component dynamically based on the status of the Query.
   if (query.isPending) {
