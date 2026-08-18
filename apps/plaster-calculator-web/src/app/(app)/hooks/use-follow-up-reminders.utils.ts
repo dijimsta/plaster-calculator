@@ -1,4 +1,5 @@
 import type { Reminder } from "@libraries/plaster-calculator-common";
+import type { RemindersService } from "@libraries/plaster-calculator-web-core";
 
 import type { ProjectSummary } from "../../../types.js";
 
@@ -8,6 +9,38 @@ import type {
 } from "./use-follow-up-reminders.ts";
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/**
+ * Reminders fetched per "Load more" page. A bit more generous than a typical
+ * list page: the panel filters client-side by assignee (see
+ * `use-follow-up-reminders.ts`), so a larger team-wide page improves the
+ * odds the "Mine" scope finds something without excessive clicking.
+ */
+export const FOLLOW_UP_REMINDERS_PAGE_SIZE = 20;
+
+export type ReminderPage = Readonly<{
+    reminders: Reminder[];
+    hasMore: boolean;
+}>;
+
+/**
+ * Fetches one page of open reminders, requesting one row past the page size
+ * so the response length reveals whether more reminders remain without a
+ * separate total-count query.
+ */
+export async function fetchOpenRemindersPage(
+    remindersService: RemindersService,
+    offset: number,
+): Promise<ReminderPage> {
+    const results = await remindersService.listOpenReminders({
+        limit: FOLLOW_UP_REMINDERS_PAGE_SIZE + 1,
+        offset,
+    });
+    return {
+        reminders: results.slice(0, FOLLOW_UP_REMINDERS_PAGE_SIZE),
+        hasMore: results.length > FOLLOW_UP_REMINDERS_PAGE_SIZE,
+    };
+}
 
 export function upsertReminder(
     reminders: readonly Reminder[],
