@@ -31,9 +31,18 @@ export type TeamAuthUser = Readonly<{
     customClaims?: Readonly<Record<string, unknown>>;
 }>;
 
+/** Bounds for a single page of an ordered list. Omit either field for an unbounded call. */
+export type ListPageOptions = Readonly<{
+    limit?: number;
+    offset?: number;
+}>;
+
 export type TeamMembersDependencies = {
     getMemberships(userId: string): Promise<readonly TeamMembership[]>;
-    listMembers(teamId: string): Promise<readonly TeamMembership[]>;
+    listMembers(
+        teamId: string,
+        options?: ListPageOptions,
+    ): Promise<readonly TeamMembership[]>;
     getMember(teamId: string, userId: string): Promise<TeamMembership | null>;
     deleteMember(teamId: string, userId: string): Promise<void>;
     updateTeamName(teamId: string, name: string): Promise<void>;
@@ -47,7 +56,10 @@ export type TeamMembersDependencies = {
 };
 
 export type TeamMembersService = Readonly<{
-    list(userId: string): Promise<ListMyTeamMembersResponse>;
+    list(
+        userId: string,
+        options?: ListPageOptions,
+    ): Promise<ListMyTeamMembersResponse>;
     remove(userId: string, input: unknown): Promise<RemoveTeamMemberResponse>;
     updateName(userId: string, input: unknown): Promise<UpdateTeamNameResponse>;
 }>;
@@ -56,12 +68,13 @@ export function createTeamMembersService(
     dependencies: TeamMembersDependencies,
 ): TeamMembersService {
     return {
-        async list(userId) {
+        async list(userId, options) {
             const currentMembership = selectMembership(
                 await dependencies.getMemberships(userId),
             );
             const memberships = await dependencies.listMembers(
                 currentMembership.teamId,
+                options,
             );
             const authUsers = await dependencies.listAuthUsers(
                 memberships.map((member) => member.userId),
@@ -69,11 +82,25 @@ export function createTeamMembersService(
             const usersById = new Map(
                 authUsers.map((user) => [user.uid, user] as const),
             );
-            const members = memberships
-                .map((member) =>
-                    toTeamMember(member, usersById.get(member.userId)),
-                )
-                .toSorted(compareTeamMembers);
+            const mappedMembers = memberships.map((member) =>
+                toTeamMember(member, usersById.get(member.userId)),
+            );
+            const isPaginated =
+                options?.limit !== undefined || options?.offset !== undefined;
+            // Data Connect orders this query by createdAt ASC, so a paginated
+            // page is only a contiguous, correct slice of that same order.
+            // Re-sorting by role + alphabetical display name (below) after
+            // fetching an unbounded result works today, but applying it to a
+            // single page would scatter members across pages, since display
+            // name/email live in Firebase Auth, not the TeamMember table, so
+            // Data Connect's orderBy can't express that ordering itself. So a
+            // paginated call intentionally skips the re-sort and returns
+            // members in createdAt-ASC (join) order instead of
+            // owner-first-then-alphabetical; only the unbounded call keeps
+            // today's exact sorted behavior.
+            const members = isPaginated
+                ? mappedMembers
+                : mappedMembers.toSorted(compareTeamMembers);
 
             return ListMyTeamMembersResponseSchema.parse({
                 currentUserRole: currentMembership.role,

@@ -9,7 +9,12 @@ import { onCall } from "firebase-functions/https";
 import { requireAuth } from "./auth.js";
 import { createTeamInvitationService } from "./team-invitation-domain.js";
 import type { TeamInvitationDependencies } from "./team-invitation-domain.js";
-import { isRecord } from "./validation.js";
+import { isRecord, readNullableNumber } from "./validation.js";
+
+type ListPendingTeamInvitationsRequest = {
+    limit?: unknown;
+    offset?: unknown;
+};
 
 const defaultDependencies: TeamInvitationDependencies = {
     now: () => new Date(),
@@ -39,10 +44,12 @@ const defaultDependencies: TeamInvitationDependencies = {
     revokeInvitation: async (teamId, email, now) => {
         await DataConnector.revokeTeamInvitation({ teamId, email, now });
     },
-    listPendingInvitations: async (teamId, now) => {
+    listPendingInvitations: async (teamId, now, options) => {
         const response = await DataConnector.listPendingTeamInvitations({
             teamId,
             now,
+            limit: options?.limit,
+            offset: options?.offset,
         });
         return response.data.teamInvitations;
     },
@@ -65,10 +72,16 @@ export const createTeamInvitation = onCall(async (request) => {
     return teamInvitationService.create(auth.uid, data["email"], data["role"]);
 });
 
-export const listPendingTeamInvitations = onCall(async (request) => {
-    const auth = requireAuth(request);
-    return teamInvitationService.listPending(auth.uid);
-});
+export const listPendingTeamInvitations =
+    onCall<ListPendingTeamInvitationsRequest>(async (request) => {
+        const auth = requireAuth(request);
+        const limit = readNullableNumber(request.data.limit, "Limit");
+        const offset = readNullableNumber(request.data.offset, "Offset");
+        return teamInvitationService.listPending(auth.uid, {
+            limit: limit ?? undefined,
+            offset: offset ?? undefined,
+        });
+    });
 
 export const revokeTeamInvitation = onCall(async (request) => {
     const auth = requireAuth(request);
