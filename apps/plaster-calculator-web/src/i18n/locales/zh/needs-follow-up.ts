@@ -11,6 +11,8 @@ export const needsFollowUp = Object.freeze({
         team: "团队",
     }),
     loading: "正在加载待跟进事项...",
+    loadMore: "加载更多",
+    loadingMore: "正在加载更多...",
     unassigned: "未分配",
     dueToday: "今天到期",
     dueInDay: "{{count}} 天后到期",

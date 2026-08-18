@@ -149,11 +149,14 @@ type FollowUpPanelBodyProps = UseFollowUpRemindersResult & {
 function FollowUpPanelBody({
     rows,
     isLoading,
+    isLoadingMore,
+    hasMore,
     error,
     scope,
     confirmations,
     pendingReminderIds,
     refresh,
+    loadMore,
     completeReminder,
     cancelReminder,
     updateReminderDueDate,
@@ -212,6 +215,20 @@ function FollowUpPanelBody({
                 />
             ))}
             {rows.length === 0 && <FollowUpEmptyState scope={scope} />}
+            {hasMore && (
+                <Box direction="row" justify="center">
+                    <Button
+                        variant="secondary"
+                        size="small"
+                        disabled={isLoadingMore}
+                        onClick={loadMore}
+                    >
+                        {isLoadingMore
+                            ? t("needsFollowUp.loadingMore")
+                            : t("needsFollowUp.loadMore")}
+                    </Button>
+                </Box>
+            )}
         </div>
     );
 }

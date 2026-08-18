@@ -11,6 +11,8 @@ export const needsFollowUp = Object.freeze({
         team: "Team",
     }),
     loading: "Loading follow-ups...",
+    loadMore: "Load more",
+    loadingMore: "Loading more...",
     unassigned: "Unassigned",
     dueToday: "Due today",
     dueInDay: "Due in {{count}} day",

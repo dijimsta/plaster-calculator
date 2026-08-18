@@ -16,6 +16,7 @@ import type { ProjectSummary } from "../../../types.js";
 
 import {
     errorMessage,
+    fetchOpenRemindersPage,
     getDueInDays,
     toFollowUpRow,
     upsertReminder,
@@ -56,12 +57,15 @@ export type UseFollowUpRemindersResult = {
     readonly openCount: number;
     readonly overdueCount: number;
     readonly isLoading: boolean;
+    readonly isLoadingMore: boolean;
+    readonly hasMore: boolean;
     readonly error: string | null;
     readonly scope: FollowUpScope;
     readonly confirmations: ReadonlyMap<string, FollowUpReminderConfirmation>;
     readonly pendingReminderIds: ReadonlySet<string>;
     readonly setScope: (scope: FollowUpScope) => void;
     readonly refresh: () => Promise<void>;
+    readonly loadMore: () => void;
     readonly completeReminder: (reminder: Reminder) => Promise<void>;
     readonly cancelReminder: (reminder: Reminder) => Promise<void>;
     readonly updateReminderDueDate: (
@@ -79,8 +83,10 @@ export function useFollowUpReminders({
     const user = useUser();
     const { notify } = useNotificationsManager();
     const [reminders, setReminders] = useState<Reminder[]>([]);
-    const [scope, setScope] = useState<FollowUpScope>("mine");
+    const [scopeState, setScopeState] = useState<FollowUpScope>("mine");
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [hasMore, setHasMore] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [confirmations, setConfirmations] = useState<
         ReadonlyMap<string, FollowUpReminderConfirmation>
@@ -91,11 +97,18 @@ export function useFollowUpReminders({
 
     const currentUserId = user?.uid ?? null;
 
+    // Resets to a fresh first page: used on mount and by explicit reloads
+    // (the error state's "Try again" and a scope switch, below). Mutations
+    // (complete/cancel/reschedule/undo) update the accumulated list in place
+    // via `upsertReminder` instead of calling this, so they don't discard
+    // pages the user has already loaded.
     const refresh = useCallback(async () => {
         setIsLoading(true);
         setError(null);
         try {
-            setReminders(await remindersService.listOpenReminders());
+            const page = await fetchOpenRemindersPage(remindersService, 0);
+            setReminders(page.reminders);
+            setHasMore(page.hasMore);
             setConfirmations(new Map());
         } catch (loadError) {
             setError(errorMessage(loadError, "Unable to load follow-ups."));
@@ -107,6 +120,39 @@ export function useFollowUpReminders({
     useEffect(() => {
         void refresh();
     }, [refresh]);
+
+    // `ListOpenReminders` has no server-side assignee filter, so switching
+    // scope can't just re-query for "my" reminders -- it re-runs the same
+    // team-wide query from a clean offset 0, discarding whatever was loaded
+    // for the previous scope, so each scope starts from an unbiased first
+    // page rather than data the other scope happened to load first.
+    const setScope = useCallback(
+        (nextScope: FollowUpScope) => {
+            setScopeState(nextScope);
+            void refresh();
+        },
+        [refresh],
+    );
+
+    const loadMore = useCallback(async () => {
+        setIsLoadingMore(true);
+        try {
+            const page = await fetchOpenRemindersPage(
+                remindersService,
+                reminders.length,
+            );
+            setReminders((current) => [...current, ...page.reminders]);
+            setHasMore(page.hasMore);
+        } catch (loadMoreError) {
+            notify({
+                intent: "error",
+                title: "Unable to load more follow-ups",
+                description: errorMessage(loadMoreError),
+            });
+        } finally {
+            setIsLoadingMore(false);
+        }
+    }, [notify, remindersService, reminders.length]);
 
     const performAction = useCallback(
         async (
@@ -224,7 +270,8 @@ export function useFollowUpReminders({
     const rows = useMemo(() => {
         const visible = reminders.filter(
             (reminder) =>
-                (scope === "team" || reminder.assignee === currentUserId) &&
+                (scopeState === "team" ||
+                    reminder.assignee === currentUserId) &&
                 (reminder.status === OPEN_REMINDER_STATUS ||
                     confirmations.has(reminder.id)),
         );
@@ -235,8 +282,12 @@ export function useFollowUpReminders({
                     new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime(),
             )
             .map((reminder) => toFollowUpRow(reminder, projectsById));
-    }, [reminders, scope, currentUserId, confirmations, projectsById]);
+    }, [reminders, scopeState, currentUserId, confirmations, projectsById]);
 
+    // Counts reflect what's been loaded so far for the current scope, not a
+    // true team-wide total -- `ListOpenReminders` has no total-count query,
+    // and this reads as normal progressive loading under "Load more" (counts
+    // grow as more pages load) rather than a bug.
     const openRows = rows.filter(
         (row) => row.reminder.status === OPEN_REMINDER_STATUS,
     );
@@ -250,12 +301,15 @@ export function useFollowUpReminders({
         openCount,
         overdueCount,
         isLoading,
+        isLoadingMore,
+        hasMore,
         error,
-        scope,
+        scope: scopeState,
         confirmations,
         pendingReminderIds,
         setScope,
         refresh,
+        loadMore: () => void loadMore(),
         completeReminder,
         cancelReminder,
         updateReminderDueDate,
