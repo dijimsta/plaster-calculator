@@ -50,13 +50,6 @@ export default function CompaniesPage() {
 
             <Box direction="column" padding="md">
                 <section className={cx(ui.layoutGrid, "items-start")}>
-                    <NewCompanyPanel
-                        key={newCompanySeed.token}
-                        initialName={newCompanySeed.name}
-                        onCreated={() =>
-                            setCompanyListRefreshKey((current) => current + 1)
-                        }
-                    />
                     <CompanyListPanel
                         refreshKey={companyListRefreshKey}
                         onCreateFromSearch={(name) =>
@@ -64,6 +57,13 @@ export default function CompaniesPage() {
                                 name,
                                 token: current.token + 1,
                             }))
+                        }
+                    />
+                    <NewCompanyPanel
+                        key={newCompanySeed.token}
+                        initialName={newCompanySeed.name}
+                        onCreated={() =>
+                            setCompanyListRefreshKey((current) => current + 1)
                         }
                     />
                 </section>
