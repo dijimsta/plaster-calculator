@@ -48,7 +48,7 @@ export type FollowUpReminderRow = Readonly<{
 
 export type UseFollowUpRemindersOptions = {
     /** Projects the dashboard already loaded, used to resolve each reminder's project/company name. */
-    readonly projects: ProjectSummary[];
+    readonly projects: readonly ProjectSummary[];
 };
 
 export type UseFollowUpRemindersResult = {

@@ -7,10 +7,10 @@ import type { ReactElement } from "react";
 
 import { useAppTranslation } from "../../../../i18n/index.ts";
 import { cx, ui } from "../../../../lib/styles.js";
+import { useFollowUpWindowDays } from "../../hooks/use-follow-up-window-days.js";
 
 import { ProjectFollowUpOpenState } from "./project-follow-up-open-state.js";
 import { ProjectFollowUpOutcomeState } from "./project-follow-up-outcome-state.js";
-import { useFollowUpWindowDays } from "./use-follow-up-window-days.js";
 import { useProjectFollowUp } from "./use-project-follow-up.js";
 
 export type ProjectFollowUpPanelProps = Readonly<{

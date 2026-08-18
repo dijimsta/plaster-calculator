@@ -2,6 +2,9 @@ export const needsFollowUp = Object.freeze({
     title: "待跟进",
     openCount: "{{count}} 项待办",
     overdueBadge: "{{count}} 项已逾期",
+    description: "已发送的报价，将在提交后 {{count}} 天进行跟进。",
+    expand: "展开待跟进事项",
+    collapse: "收起待跟进事项",
     scopeLabel: "跟进范围",
     scope: Object.freeze({
         mine: "我的",

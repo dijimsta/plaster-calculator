@@ -1,8 +1,9 @@
-import type { SalesStatus } from "@libraries/plaster-calculator-common";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 
 import type { PdfPagePreview } from "../../lib/pdf.js";
-import type { CompanyDetail, ProjectSummary } from "../../types.js";
+import type { CompanyDetail } from "../../types.js";
+
+import type { EnrichedProject } from "./hooks/use-projects-listing.js";
 
 export type PageUploadProgress = {
     readonly current: number;
@@ -28,25 +29,15 @@ export type NewProjectFormProps = {
     readonly submit: (event: FormEvent) => void;
 };
 
-export type ProjectHistoryProps = {
-    readonly activeSalesStatus: Extract<
-        SalesStatus,
-        "QUOTING" | "QUOTE_SUBMITTED"
-    >;
-    readonly filtered: ProjectSummary[];
-    readonly projectsLoading: boolean;
-    readonly query: string;
-    readonly renameValue: string;
-    readonly renamingId: string | null;
-    readonly refresh: () => Promise<void>;
-    readonly removeProject: (project: ProjectSummary) => void;
-    readonly saveRename: (projectId: string) => void;
-    readonly setQuery: (query: string) => void;
-    readonly setActiveSalesStatus: (
-        status: Extract<SalesStatus, "QUOTING" | "QUOTE_SUBMITTED">,
-    ) => void;
-    readonly setRenamingId: (projectId: string | null) => void;
-    readonly setRenameValue: (value: string) => void;
+export type NeedsAttentionPanelProps = {
+    readonly projects: readonly EnrichedProject[];
+    readonly loading: boolean;
+    readonly activeProjectsCount: number;
+};
+
+export type RecentProjectsPanelProps = {
+    readonly projects: readonly EnrichedProject[];
+    readonly loading: boolean;
 };
 
 export type PdfPageModalContentProps = {

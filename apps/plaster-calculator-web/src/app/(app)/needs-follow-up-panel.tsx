@@ -8,10 +8,11 @@ import {
     Button,
     ButtonGroup,
     EmptyState,
+    Heading6,
     Text,
 } from "@libraries/uikit-web";
-import { BellRing, LoaderCircle } from "lucide-react";
-import type { ReactElement } from "react";
+import { BellRing, ChevronDown, ChevronUp, LoaderCircle } from "lucide-react";
+import { useState, type ReactElement } from "react";
 
 import { useAppTranslation } from "../../i18n/index.ts";
 import { cx, ui } from "../../lib/styles.js";
@@ -21,6 +22,7 @@ import type {
     FollowUpScope,
     UseFollowUpRemindersResult,
 } from "./hooks/use-follow-up-reminders.js";
+import { useFollowUpWindowDays } from "./hooks/use-follow-up-window-days.js";
 import { useTeamMembers } from "./user/team/use-team-members.js";
 
 export type NeedsFollowUpPanelProps = UseFollowUpRemindersResult;
@@ -33,6 +35,14 @@ export function NeedsFollowUpPanel(
     const membersById = new Map(
         (team.data?.members ?? []).map((member) => [member.userId, member]),
     );
+    // `null` means the user hasn't chosen yet -- follow the data (collapsed
+    // until there's something open to show). Once they toggle it explicitly,
+    // that choice sticks regardless of scope or count changes.
+    const [expandedOverride, setExpandedOverride] = useState<boolean | null>(
+        null,
+    );
+    const expanded =
+        expandedOverride ?? (!props.isLoading && props.openCount > 0);
 
     return (
         <section className={cx(ui.panel, ui.stack)}>
@@ -41,8 +51,12 @@ export function NeedsFollowUpPanel(
                 overdueCount={props.overdueCount}
                 scope={props.scope}
                 setScope={props.setScope}
+                expanded={expanded}
+                onToggleExpanded={() => setExpandedOverride(!expanded)}
             />
-            <FollowUpPanelBody {...props} membersById={membersById} />
+            {expanded && (
+                <FollowUpPanelBody {...props} membersById={membersById} />
+            )}
         </section>
     );
 }
@@ -52,6 +66,8 @@ type FollowUpPanelHeaderProps = Readonly<{
     overdueCount: number;
     scope: FollowUpScope;
     setScope: (scope: FollowUpScope) => void;
+    expanded: boolean;
+    onToggleExpanded: () => void;
 }>;
 
 function FollowUpPanelHeader({
@@ -59,43 +75,70 @@ function FollowUpPanelHeader({
     overdueCount,
     scope,
     setScope,
+    expanded,
+    onToggleExpanded,
 }: FollowUpPanelHeaderProps): ReactElement {
     const { t } = useAppTranslation();
+    const windowDays = useFollowUpWindowDays();
 
     return (
-        <div className={ui.editorToolbar}>
-            <Box direction="column" gap="xs">
-                <h2>{t("needsFollowUp.title")}</h2>
-                <Box direction="row" align="center" gap="sm" wrap>
-                    <Text size="sm" variant="muted">
-                        {t("needsFollowUp.openCount", { count: openCount })}
-                    </Text>
-                    {overdueCount > 0 && (
-                        <Badge color="yellow" dot size="xs">
-                            {t("needsFollowUp.overdueBadge", {
-                                count: overdueCount,
-                            })}
-                        </Badge>
-                    )}
-                </Box>
+        <Box direction="row" align="center" justify="between" gap="sm" wrap>
+            <Box direction="row" align="center" gap="sm" wrap>
+                <Heading6>{t("needsFollowUp.title")}</Heading6>
+                <Badge color="gray" size="xs">
+                    {t("needsFollowUp.openCount", { count: openCount })}
+                </Badge>
+                {overdueCount > 0 && (
+                    <Badge color="yellow" dot size="xs">
+                        {t("needsFollowUp.overdueBadge", {
+                            count: overdueCount,
+                        })}
+                    </Badge>
+                )}
             </Box>
-            <ButtonGroup label={t("needsFollowUp.scopeLabel")}>
+            <Box direction="row" align="center" gap="md" wrap>
+                {windowDays !== null && (
+                    <Text size="sm" variant="muted">
+                        {t("needsFollowUp.description", {
+                            count: windowDays,
+                        })}
+                    </Text>
+                )}
+                <ButtonGroup label={t("needsFollowUp.scopeLabel")}>
+                    <Button
+                        variant={scope === "mine" ? "primary" : "secondary"}
+                        size="small"
+                        onClick={() => setScope("mine")}
+                    >
+                        {t("needsFollowUp.scope.mine")}
+                    </Button>
+                    <Button
+                        variant={scope === "team" ? "primary" : "secondary"}
+                        size="small"
+                        onClick={() => setScope("team")}
+                    >
+                        {t("needsFollowUp.scope.team")}
+                    </Button>
+                </ButtonGroup>
                 <Button
-                    variant={scope === "mine" ? "primary" : "secondary"}
+                    variant="secondary"
                     size="small"
-                    onClick={() => setScope("mine")}
-                >
-                    {t("needsFollowUp.scope.mine")}
-                </Button>
-                <Button
-                    variant={scope === "team" ? "primary" : "secondary"}
-                    size="small"
-                    onClick={() => setScope("team")}
-                >
-                    {t("needsFollowUp.scope.team")}
-                </Button>
-            </ButtonGroup>
-        </div>
+                    icon={
+                        expanded ? (
+                            <ChevronUp size={16} aria-hidden="true" />
+                        ) : (
+                            <ChevronDown size={16} aria-hidden="true" />
+                        )
+                    }
+                    label={t(
+                        expanded
+                            ? "needsFollowUp.collapse"
+                            : "needsFollowUp.expand",
+                    )}
+                    onClick={onToggleExpanded}
+                />
+            </Box>
+        </Box>
     );
 }
 
