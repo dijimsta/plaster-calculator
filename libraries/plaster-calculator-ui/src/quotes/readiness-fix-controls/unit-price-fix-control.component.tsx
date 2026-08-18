@@ -1,6 +1,6 @@
 import type { ReadinessAffectedItem } from "@libraries/plaster-calculator-common";
 import { Badge, Box, Button, Input } from "@libraries/uikit-web";
-import { CurrencyUtils } from "@libraries/utilities";
+import { centsToDollarsText, dollarsTextToCents } from "@libraries/utilities";
 import { useId, useState } from "react";
 import type { ReactElement } from "react";
 
@@ -37,9 +37,7 @@ export function UnitPriceFixControl({
 }: UnitPriceFixControlProps): ReactElement {
     const id = useId();
     const { t } = useQuotesTranslation();
-    const [text, setText] = useState(() =>
-        CurrencyUtils.centsToDollarsText(valueCents),
-    );
+    const [text, setText] = useState(() => centsToDollarsText(valueCents));
     const { isPending, error, run } = useFixControlSubmission(
         t("readinessFixControls.unitPrice.error"),
     );
@@ -70,9 +68,7 @@ export function UnitPriceFixControl({
                     size="small"
                     disabled={isPending || !isValid}
                     onClick={() =>
-                        void run(() =>
-                            onChange(CurrencyUtils.dollarsTextToCents(text)),
-                        )
+                        void run(() => onChange(dollarsTextToCents(text)))
                     }
                 >
                     {isPending

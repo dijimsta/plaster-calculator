@@ -1,4 +1,4 @@
-import { CurrencyUtils } from "@libraries/utilities";
+import { centsToAudDisplayText } from "@libraries/utilities";
 
 import type { QuoteTemplateItem } from "../quote-template-panel/quote-template-panel.types.ts";
 
@@ -57,9 +57,7 @@ export class QuoteTemplateVariationEditorUtils {
         }
         return {
             kind: deltaCents > 0 ? "increase" : "decrease",
-            amountDisplayText: CurrencyUtils.centsToAudDisplayText(
-                Math.abs(deltaCents),
-            ),
+            amountDisplayText: centsToAudDisplayText(Math.abs(deltaCents)),
         };
     }
 }

@@ -1,5 +1,5 @@
 import { Box, Text } from "@libraries/uikit-web";
-import { CurrencyUtils } from "@libraries/utilities";
+import { centsToAudDisplayText } from "@libraries/utilities";
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
@@ -20,8 +20,8 @@ export type QuoteTotalsBlockProps = {
  * visually emphasised. Takes already-computed cents -- callers derive them
  * via the quote-totals helpers (`quote-totals.utils.ts`) -- so this
  * component does no currency maths itself, only formatting via
- * `CurrencyUtils`. Reusable by both the project Quote tab (WORK-151) and
- * `QuoteDetailDocument`.
+ * `centsToAudDisplayText`. Reusable by both the project Quote tab (WORK-151)
+ * and `QuoteDetailDocument`.
  */
 export function QuoteTotalsBlock({
     subtotalCents,
@@ -68,9 +68,7 @@ function QuoteTotalsBlockRow({
             <Text size={textSize} variant={labelVariant}>
                 {label}
             </Text>
-            <Text size={textSize}>
-                {CurrencyUtils.centsToAudDisplayText(amountCents)}
-            </Text>
+            <Text size={textSize}>{centsToAudDisplayText(amountCents)}</Text>
         </Box>
     );
 }

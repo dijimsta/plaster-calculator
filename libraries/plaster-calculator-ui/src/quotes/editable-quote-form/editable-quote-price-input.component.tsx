@@ -1,5 +1,5 @@
 import { Input } from "@libraries/uikit-web";
-import { CurrencyUtils } from "@libraries/utilities";
+import { centsToDollarsText, dollarsTextToCents } from "@libraries/utilities";
 import { useState } from "react";
 import type { ReactElement } from "react";
 
@@ -20,9 +20,7 @@ export function EditableQuotePriceInput({
     onChange,
     onBlur,
 }: EditableQuotePriceInputProps): ReactElement {
-    const [text, setText] = useState(() =>
-        CurrencyUtils.centsToDollarsText(value),
-    );
+    const [text, setText] = useState(() => centsToDollarsText(value));
 
     return (
         <Input
@@ -35,10 +33,10 @@ export function EditableQuotePriceInput({
             disabled={disabled}
             onChange={(event) => {
                 setText(event.target.value);
-                onChange(CurrencyUtils.dollarsTextToCents(event.target.value));
+                onChange(dollarsTextToCents(event.target.value));
             }}
             onBlur={() => {
-                setText(CurrencyUtils.centsToDollarsText(value));
+                setText(centsToDollarsText(value));
                 onBlur?.();
             }}
         />
