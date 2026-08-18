@@ -14,5 +14,7 @@ export const en = Object.freeze({
         emptyColumn: "Drop a project here",
         noCompany: "No company",
         updatedAt: "Updated {{date}}",
+        moreCardsCount: "+{{count}} more",
+        viewAllInTable: "View all in table",
     }),
 });
