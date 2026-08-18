@@ -26,12 +26,15 @@ export class RemindersService {
         return ListRemindersResponseSchema.parse(data).reminders;
     }
 
-    public async listOpenReminders(): Promise<Reminder[]> {
+    public async listOpenReminders(options?: {
+        limit?: number;
+        offset?: number;
+    }): Promise<Reminder[]> {
         const listOpenRemindersCallable = httpsCallable(
             this.functions,
             "listOpenReminders",
         );
-        const { data } = await listOpenRemindersCallable();
+        const { data } = await listOpenRemindersCallable(options);
         return ListRemindersResponseSchema.parse(data).reminders;
     }
 
