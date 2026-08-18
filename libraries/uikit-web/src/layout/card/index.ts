@@ -1,5 +1,6 @@
 export { Card } from "./card.component.tsx";
 export type {
+    CardOverflow,
     CardProps,
     CardVariant,
     CardVisibility,

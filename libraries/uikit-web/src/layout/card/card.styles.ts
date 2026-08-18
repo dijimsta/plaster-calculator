@@ -1,5 +1,5 @@
 export const styles = Object.freeze({
-    root: "overflow-hidden rounded-lg ring-1",
+    root: "rounded-lg ring-1",
     variants: Object.freeze({
         default:
             "bg-white p-6 shadow-sm ring-gray-900/5 dark:bg-slate-900 dark:ring-white/10",
@@ -8,6 +8,13 @@ export const styles = Object.freeze({
     visibility: Object.freeze({
         "visible": "",
         "print-only": "hidden print:block",
+    }),
+    overflow: Object.freeze({
+        hidden: "overflow-hidden",
+        // Lets content that must escape the card's bounds -- an absolutely
+        // positioned dropdown/popover field, for example -- render without
+        // being clipped by the rounded corners.
+        visible: "overflow-visible",
     }),
     header: "flex items-center justify-between",
     body: "mt-4 flex flex-col gap-3",

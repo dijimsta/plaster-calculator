@@ -65,6 +65,7 @@ export const valueTones = Object.freeze({
     default: "text-gray-900 dark:text-white",
     info: "text-blue-600 dark:text-blue-400",
     success: "text-green-600 dark:text-green-400",
+    warning: "text-amber-600 dark:text-amber-400",
 });
 
 export type StatsValueTone =
