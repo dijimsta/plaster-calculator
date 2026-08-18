@@ -165,10 +165,8 @@ function createUi(theme: Theme) {
         ),
         inputInvalid: cx(theme.dangerBorder, theme.dangerRing),
         label: cx("text-[13px] font-bold", theme.fieldText),
-        layoutGrid: cx(
-            contentWidth,
-            "grid grid-cols-[minmax(380px,0.34fr)_minmax(0,1fr)] gap-[18px] max-[980px]:grid-cols-1",
-        ),
+        layoutGrid:
+            "grid items-start grid-cols-[minmax(420px,1.3fr)_minmax(360px,1fr)] gap-[18px] max-[980px]:grid-cols-1",
         metric: cx("rounded-lg border p-2.5", theme.softBg, theme.line),
         muted: cx("text-sm", theme.muted),
         panel: cx(

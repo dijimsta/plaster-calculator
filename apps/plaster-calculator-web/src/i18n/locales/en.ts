@@ -1,6 +1,7 @@
 import { appMetadataByLanguage } from "../language.ts";
 
 import { companySelect } from "./en/company-select.ts";
+import { home } from "./en/home.ts";
 import { needsFollowUp } from "./en/needs-follow-up.ts";
 import { followUp as projectFollowUp } from "./en/project-follow-up.ts";
 import { projects } from "./en/projects.ts";
@@ -64,21 +65,13 @@ export const en = Object.freeze({
             zh: "中文",
         }),
     }),
-    home: Object.freeze({
-        title: "Home",
-        projectProcessingAlert: Object.freeze({
-            title: "Project processing",
-            description:
-                "This list will update automatically when processing is complete.",
-        }),
-    }),
+    home,
     newProjectForm: Object.freeze({
         title: "New Project",
         projectNameLabel: "Address or project name",
         projectNamePlaceholder: "12 Example Street",
         companyLabel: "Company",
         companyPlaceholder: "Search company by company name",
-        fileLabel: "PDF or image file",
         dropFileInstruction: "Drop a PDF or image here",
         chooseDifferentFile: "Click to choose a different file",
         browseFileInstruction: "Click to browse from your computer",
@@ -262,9 +255,6 @@ export const en = Object.freeze({
         saving: "Saving...",
         save: "Save email signature",
         saved: "Email signature saved.",
-    }),
-    projectHistory: Object.freeze({
-        noStatusProjects: "No {{status}} projects",
     }),
     projectPage: Object.freeze({
         confirmStatusChange: "Change status to {{status}}?",

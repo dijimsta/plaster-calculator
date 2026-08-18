@@ -3,13 +3,21 @@ import type { ReactElement, ReactNode } from "react";
 import {
     boxClassName,
     type BoxAlign,
+    type BoxBasis,
     type BoxDirection,
     type BoxGap,
     type BoxJustify,
     type BoxPadding,
 } from "./box.styles.ts";
 
-export type { BoxAlign, BoxDirection, BoxGap, BoxJustify, BoxPadding };
+export type {
+    BoxAlign,
+    BoxBasis,
+    BoxDirection,
+    BoxGap,
+    BoxJustify,
+    BoxPadding,
+};
 
 export type BoxProps = {
     readonly direction?: BoxDirection;
@@ -20,6 +28,13 @@ export type BoxProps = {
     /** Shorthand for flex-1 + min-w-0. Use when this Box should grow to fill
      * its parent and its children may need to truncate. */
     readonly grow?: boolean;
+    /**
+     * Pins this Box to a fixed share of its flex parent's main axis (e.g.
+     * "1/3") instead of sizing to content. Combine with a sibling `grow`
+     * Box so the two divide a row unevenly -- the `grow` sibling absorbs
+     * whatever space this one doesn't claim.
+     */
+    readonly basis?: BoxBasis;
     /** Allows flex items to wrap onto multiple lines. */
     readonly wrap?: boolean;
     /** Allows this Box to shrink and scroll vertically within its parent. */
@@ -36,6 +51,7 @@ export function Box({
     gap,
     padding,
     grow = false,
+    basis,
     wrap = false,
     scroll = false,
     status = false,
@@ -46,6 +62,7 @@ export function Box({
             {...statusProps(status)}
             className={boxClassName({
                 align,
+                basis,
                 direction,
                 gap,
                 grow,

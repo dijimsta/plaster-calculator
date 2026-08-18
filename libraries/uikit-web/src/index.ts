@@ -158,6 +158,7 @@ export { GitHubIcon, GoogleIcon } from "./elements/icons/index.ts";
 export { IconTile } from "./elements/icon-tile/index.ts";
 export type {
     IconTileProps,
+    IconTileShape,
     IconTileSize,
     IconTileTone,
 } from "./elements/icon-tile/index.ts";

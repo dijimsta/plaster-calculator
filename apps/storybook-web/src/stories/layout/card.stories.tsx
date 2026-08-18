@@ -109,3 +109,36 @@ export const WithFooterOnly: Story = {
         </Card>
     ),
 };
+
+export const OverflowVisible: Story = {
+    parameters: {
+        docs: {
+            description: {
+                story: 'Set overflow="visible" when the card hosts an absolutely positioned dropdown or popover field that must render past the card\'s rounded-corner bounds instead of being clipped by them.',
+            },
+        },
+    },
+    render: () => (
+        <Card overflow="visible">
+            <Card.Title>Company</Card.Title>
+            <Card.Body>
+                <Label>Search company by company name</Label>
+                <div className="relative">
+                    <SelectMenu
+                        options={[
+                            { value: "", label: "Search…" },
+                            { value: "sterling", label: "Sterling Homes" },
+                        ]}
+                    />
+                    <div className="absolute left-0 right-0 top-[46px] z-10 grid gap-1.5 rounded-lg border border-gray-200 bg-white p-2 shadow-lg dark:border-white/10 dark:bg-slate-900">
+                        <Button variant="secondary">Sterling Homes</Button>
+                        <Button variant="secondary">Aspen Living</Button>
+                        <Button variant="secondary">
+                            Coastline Developments
+                        </Button>
+                    </div>
+                </div>
+            </Card.Body>
+        </Card>
+    ),
+};

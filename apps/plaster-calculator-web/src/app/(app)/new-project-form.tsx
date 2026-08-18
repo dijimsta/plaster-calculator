@@ -1,6 +1,14 @@
 "use client";
 
-import { Button, Input, Label, Text } from "@libraries/uikit-web";
+import {
+    Box,
+    Button,
+    Card,
+    IconTile,
+    Input,
+    Label,
+    Text,
+} from "@libraries/uikit-web";
 import { Upload } from "lucide-react";
 
 import { CompanySelect } from "../../components/company-select.js";
@@ -30,93 +38,102 @@ export function NewProjectForm({
     submit,
 }: NewProjectFormProps) {
     const { t } = useAppTranslation();
+    const isErrorMessage =
+        message.includes("failed") || message.includes("Unable");
 
     return (
-        <form
-            className={cx(ui.panel, ui.stack, "self-start")}
-            onSubmit={submit}
-        >
-            <h2>{t("newProjectForm.title")}</h2>
-            <div className={ui.field}>
-                <Label htmlFor="name">
-                    {t("newProjectForm.projectNameLabel")}
-                </Label>
-                <Input
-                    id="name"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    placeholder={t("newProjectForm.projectNamePlaceholder")}
-                />
-            </div>
-            <CompanySelect
-                selectedCompanyId={companyId}
-                onChange={setCompanyId}
-                onCreated={onCompanyCreated}
-                onCreatePendingChange={setCompanyCreatePending}
-                disabled={loading}
-                label={t("newProjectForm.companyLabel")}
-                placeholder={t("newProjectForm.companyPlaceholder")}
-            />
-            <div className={ui.field}>
-                <span className={ui.label}>
-                    {t("newProjectForm.fileLabel")}
-                </span>
-                <label
-                    className={cx(
-                        ui.fileDropzone,
-                        dragActive && ui.fileDropzoneActive,
+        <Card overflow="visible">
+            <form onSubmit={submit}>
+                <Card.Title>{t("newProjectForm.title")}</Card.Title>
+                <Card.Body>
+                    <Box direction="row" gap="md" wrap>
+                        <Box direction="column" grow>
+                            <div className={ui.field}>
+                                <Label htmlFor="name">
+                                    {t("newProjectForm.projectNameLabel")}
+                                </Label>
+                                <Input
+                                    id="name"
+                                    value={name}
+                                    onChange={(event) =>
+                                        setName(event.target.value)
+                                    }
+                                    placeholder={t(
+                                        "newProjectForm.projectNamePlaceholder",
+                                    )}
+                                />
+                            </div>
+                        </Box>
+                        <Box direction="column" basis="2/5">
+                            <CompanySelect
+                                selectedCompanyId={companyId}
+                                onChange={setCompanyId}
+                                onCreated={onCompanyCreated}
+                                onCreatePendingChange={setCompanyCreatePending}
+                                disabled={loading}
+                                label={t("newProjectForm.companyLabel")}
+                                placeholder={t(
+                                    "newProjectForm.companyPlaceholder",
+                                )}
+                            />
+                        </Box>
+                    </Box>
+                    <label
+                        className={cx(
+                            ui.fileDropzone,
+                            dragActive && ui.fileDropzoneActive,
+                        )}
+                        htmlFor="file"
+                        onDragEnter={(event) => {
+                            event.preventDefault();
+                            setDragActive(true);
+                        }}
+                        onDragOver={(event) => {
+                            event.preventDefault();
+                            setDragActive(true);
+                        }}
+                        onDragLeave={() => setDragActive(false)}
+                        onDrop={handleDrop}
+                    >
+                        <input
+                            id="file"
+                            type="file"
+                            accept="application/pdf,image/*"
+                            className={ui.hiddenFileInput}
+                            onChange={(event: FileInputChange) =>
+                                handleFileSelection(event.target.files?.[0])
+                            }
+                        />
+                        <IconTile size="lg" tone="indigoSoft">
+                            <Upload size={24} />
+                        </IconTile>
+                        <strong>
+                            {file
+                                ? file.name
+                                : t("newProjectForm.dropFileInstruction")}
+                        </strong>
+                        <Text size="sm" variant="muted">
+                            {file
+                                ? t("newProjectForm.chooseDifferentFile")
+                                : t("newProjectForm.browseFileInstruction")}
+                        </Text>
+                    </label>
+                    <Button
+                        variant="primary"
+                        disabled={!file || loading || companyCreatePending}
+                    >
+                        <Upload size={18} /> {t("newProjectForm.upload")}
+                    </Button>
+                    {message && (
+                        <Text
+                            size="sm"
+                            variant={isErrorMessage ? "danger" : "muted"}
+                        >
+                            {message}
+                        </Text>
                     )}
-                    htmlFor="file"
-                    onDragEnter={(event) => {
-                        event.preventDefault();
-                        setDragActive(true);
-                    }}
-                    onDragOver={(event) => {
-                        event.preventDefault();
-                        setDragActive(true);
-                    }}
-                    onDragLeave={() => setDragActive(false)}
-                    onDrop={handleDrop}
-                >
-                    <input
-                        id="file"
-                        type="file"
-                        accept="application/pdf,image/*"
-                        className={ui.hiddenFileInput}
-                        onChange={(event: FileInputChange) =>
-                            handleFileSelection(event.target.files?.[0])
-                        }
-                    />
-                    <Upload size={28} />
-                    <strong>
-                        {file
-                            ? file.name
-                            : t("newProjectForm.dropFileInstruction")}
-                    </strong>
-                    <Text size="sm" variant="muted">
-                        {file
-                            ? t("newProjectForm.chooseDifferentFile")
-                            : t("newProjectForm.browseFileInstruction")}
-                    </Text>
-                </label>
-            </div>
-            <Button
-                variant="primary"
-                disabled={!file || loading || companyCreatePending}
-            >
-                <Upload size={18} /> {t("newProjectForm.upload")}
-            </Button>
-            {message && (
-                <p
-                    className={
-                        message.includes("failed") || message.includes("Unable")
-                            ? ui.error
-                            : ui.muted
-                    }
-                >
-                    {message}
-                </p>
-            )}
-        </form>
+                </Card.Body>
+            </form>
+        </Card>
     );
 }

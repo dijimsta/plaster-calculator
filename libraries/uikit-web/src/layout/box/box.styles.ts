@@ -51,8 +51,18 @@ export const growStyle = "flex-1 min-w-0";
 export const wrapStyle = "flex-wrap";
 export const scrollStyle = "min-h-0 overflow-y-auto";
 
+export const bases = Object.freeze({
+    "1/3": "basis-1/3",
+    "2/5": "basis-2/5",
+    "1/2": "basis-1/2",
+    "2/3": "basis-2/3",
+});
+
+export type BoxBasis = keyof typeof bases;
+
 export type BoxClassNameOptions = {
     readonly align?: BoxAlign;
+    readonly basis?: BoxBasis;
     readonly direction: BoxDirection;
     readonly gap?: BoxGap;
     readonly grow: boolean;
@@ -64,6 +74,7 @@ export type BoxClassNameOptions = {
 
 export function boxClassName({
     align,
+    basis,
     direction,
     gap,
     grow,
@@ -80,6 +91,7 @@ export function boxClassName({
         gap !== undefined && gaps[gap],
         padding !== undefined && paddings[padding],
         grow && growStyle,
+        basis !== undefined && bases[basis],
         wrap && wrapStyle,
         scroll && scrollStyle,
     );

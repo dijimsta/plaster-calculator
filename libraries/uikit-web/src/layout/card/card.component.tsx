@@ -5,6 +5,7 @@ import { styles } from "./card.styles.ts";
 
 export type CardVariant = "default" | "subtle";
 export type CardVisibility = keyof typeof styles.visibility;
+export type CardOverflow = keyof typeof styles.overflow;
 
 export type CardProps = {
     /**
@@ -15,6 +16,12 @@ export type CardProps = {
     readonly id?: string;
     readonly variant?: CardVariant;
     readonly visibility?: CardVisibility;
+    /**
+     * Whether content may render past the card's rounded-corner bounds.
+     * Defaults to "hidden". Set to "visible" when the card hosts an
+     * absolutely positioned dropdown/popover that must escape it.
+     */
+    readonly overflow?: CardOverflow;
     readonly children?: ReactNode;
 };
 
@@ -22,6 +29,7 @@ export function Card({
     id,
     variant = "default",
     visibility = "visible",
+    overflow = "hidden",
     children,
 }: CardProps): ReactElement {
     return (
@@ -31,6 +39,7 @@ export function Card({
                 styles.root,
                 styles.variants[variant],
                 styles.visibility[visibility],
+                styles.overflow[overflow],
             )}
         >
             {children}

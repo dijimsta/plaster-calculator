@@ -2,6 +2,9 @@ export const needsFollowUp = Object.freeze({
     title: "Needs follow-up",
     openCount: "{{count}} open",
     overdueBadge: "{{count}} overdue",
+    description: "Quotes you sent, chased {{count}} days after submitting.",
+    expand: "Expand follow-ups",
+    collapse: "Collapse follow-ups",
     scopeLabel: "Follow-up scope",
     scope: Object.freeze({
         mine: "Mine",

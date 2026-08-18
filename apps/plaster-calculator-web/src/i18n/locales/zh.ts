@@ -5,6 +5,7 @@ import { appMetadataByLanguage } from "../language.ts";
 import { en } from "./en.ts";
 import { zhUserPage } from "./user-page.zh.ts";
 import { companySelect } from "./zh/company-select.ts";
+import { home } from "./zh/home.ts";
 import { needsFollowUp } from "./zh/needs-follow-up.ts";
 import { followUp as projectFollowUp } from "./zh/project-follow-up.ts";
 import { projects } from "./zh/projects.ts";
@@ -67,20 +68,13 @@ export const zh = createTranslationResource(
                 zh: "中文",
             }),
         }),
-        home: Object.freeze({
-            title: "首页",
-            projectProcessingAlert: Object.freeze({
-                title: "项目处理中",
-                description: "处理完成后此列表将自动更新。",
-            }),
-        }),
+        home,
         newProjectForm: Object.freeze({
             title: "新建项目",
             projectNameLabel: "地址或项目名称",
             projectNamePlaceholder: "示例街道 12 号",
             companyLabel: "公司",
             companyPlaceholder: "按公司名称搜索",
-            fileLabel: "PDF 或图片文件",
             dropFileInstruction: "将 PDF 或图片拖放到此处",
             chooseDifferentFile: "点击选择其他文件",
             browseFileInstruction: "点击从电脑中浏览文件",
@@ -260,9 +254,6 @@ export const zh = createTranslationResource(
             saving: "正在保存...",
             save: "保存电子邮件签名",
             saved: "电子邮件签名已保存。",
-        }),
-        projectHistory: Object.freeze({
-            noStatusProjects: "没有{{status}}的项目",
         }),
         projectPage: Object.freeze({
             confirmStatusChange: "将状态更改为{{status}}？",

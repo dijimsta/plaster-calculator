@@ -1,42 +1,37 @@
 "use client";
 
-import {
-    Alert,
-    Box,
-    Breadcrumb,
-    BusyOverlay,
-    PageHeading,
-} from "@libraries/uikit-web";
+import { Alert, Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
 import { Home } from "lucide-react";
+import { useState } from "react";
 
 import { useAppTranslation } from "../../i18n/index.ts";
 import { ui } from "../../lib/styles.js";
 
-import { useDashboardProjects } from "./hooks/use-dashboard-projects.js";
+import { DashboardStats } from "./dashboard-stats.js";
+import { useDashboardOverview } from "./hooks/use-dashboard-overview.js";
 import { useDashboardUpload } from "./hooks/use-dashboard-upload.js";
 import { useFollowUpReminders } from "./hooks/use-follow-up-reminders.js";
+import { NeedsAttentionPanel } from "./needs-attention-panel.js";
 import { NeedsFollowUpPanel } from "./needs-follow-up-panel.js";
 import { NewProjectForm } from "./new-project-form.js";
 import { NewProjectWizard } from "./new-project-wizard.js";
-import { ProjectHistory } from "./project-history.js";
+import { RecentProjectsPanel } from "./recent-projects-panel.js";
 
 export default function HomePage() {
     const { t } = useAppTranslation();
-    const projects = useDashboardProjects();
+    const [message, setMessage] = useState("");
+    const overview = useDashboardOverview();
     const upload = useDashboardUpload({
-        refresh: projects.refresh,
-        setMessage: projects.setMessage,
-        setProcessingProjectId: projects.setProcessingProjectId,
+        refresh: overview.refresh,
+        setMessage,
+        setProcessingProjectId: overview.setProcessingProjectId,
     });
     const followUpReminders = useFollowUpReminders({
-        projects: projects.filtered,
+        projects: overview.allProjects,
     });
 
     return (
         <>
-            {projects.busyMessage && (
-                <BusyOverlay message={projects.busyMessage} />
-            )}
             <PageHeading>
                 <PageHeading.Breadcrumbs>
                     <Breadcrumb>
@@ -54,7 +49,13 @@ export default function HomePage() {
             </PageHeading>
             <Box direction="column" gap="lg" padding="md">
                 <NeedsFollowUpPanel {...followUpReminders} />
-                {projects.processingProjectId && (
+                <DashboardStats
+                    activeProjectsCount={overview.activeProjectsCount}
+                    awaitingBuilderCount={overview.awaitingBuilderCount}
+                    readyToQuoteCount={overview.readyToQuoteCount}
+                    companiesCount={overview.companiesCount}
+                />
+                {overview.processingProjectId && (
                     <Alert
                         intent="info"
                         title={t("home.projectProcessingAlert.title")}
@@ -69,7 +70,7 @@ export default function HomePage() {
                         dragActive={upload.dragActive}
                         file={upload.file}
                         loading={upload.loading}
-                        message={projects.message}
+                        message={message}
                         name={upload.name}
                         handleDrop={upload.handleDrop}
                         handleFileSelection={upload.handleFileSelection}
@@ -80,26 +81,17 @@ export default function HomePage() {
                         setName={upload.setName}
                         submit={upload.submit}
                     />
-                    <ProjectHistory
-                        activeSalesStatus={projects.activeSalesStatus}
-                        filtered={projects.filtered}
-                        projectsLoading={projects.projectsLoading}
-                        query={projects.query}
-                        renameValue={projects.renameValue}
-                        renamingId={projects.renamingId}
-                        refresh={projects.refresh}
-                        removeProject={projects.removeProject}
-                        saveRename={projects.saveRename}
-                        setActiveSalesStatus={projects.setActiveSalesStatus}
-                        setQuery={projects.setQuery}
-                        setRenamingId={projects.setRenamingId}
-                        setRenameValue={projects.setRenameValue}
+                    <NeedsAttentionPanel
+                        projects={overview.needsAttentionProjects}
+                        loading={overview.projectsLoading}
+                        activeProjectsCount={overview.activeProjectsCount}
                     />
                 </section>
-                <NewProjectWizard
-                    upload={upload}
-                    progressMessage={projects.message}
+                <RecentProjectsPanel
+                    projects={overview.recentProjects}
+                    loading={overview.projectsLoading}
                 />
+                <NewProjectWizard upload={upload} progressMessage={message} />
             </Box>
         </>
     );
