@@ -1,7 +1,13 @@
-query ListMyCompanies @auth(level: USER) {
+query ListMyCompanies($search: String, $limit: Int, $offset: Int)
+@auth(level: USER) {
     companies(
-        where: { teamId: { eq_expr: "auth.token.teamId" } }
+        where: {
+            teamId: { eq_expr: "auth.token.teamId" }
+            companyName: { contains: $search }
+        }
         orderBy: [{ updatedAt: DESC }]
+        limit: $limit
+        offset: $offset
     ) {
         id
         teamId

@@ -125,16 +125,16 @@ export function deleteMyCompanyContact(dcOrVars, vars) {
   return executeMutation(deleteMyCompanyContactRef(dcInstance, inputVars));
 }
 
-export const listMyCompaniesRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+export const listMyCompaniesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars);
   dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListMyCompanies');
+  return queryRef(dcInstance, 'ListMyCompanies', inputVars);
 }
 listMyCompaniesRef.operationName = 'ListMyCompanies';
 
-export function listMyCompanies(dcOrOptions, options) {
+export function listMyCompanies(dcOrVars, varsOrOptions, options) {
   
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, false);
   return executeQuery(listMyCompaniesRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 

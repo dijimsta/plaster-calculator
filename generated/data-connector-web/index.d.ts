@@ -1086,6 +1086,12 @@ export interface ListMyCompaniesData {
   } & Company_Key)[];
 }
 
+export interface ListMyCompaniesVariables {
+  search?: string | null;
+  limit?: number | null;
+  offset?: number | null;
+}
+
 export interface ListMyCompanyContactsData {
   companyContacts: ({
     id: UUIDString;
@@ -1665,15 +1671,15 @@ export function deleteMyCompanyContact(dc: DataConnect, vars: DeleteMyCompanyCon
 
 interface ListMyCompaniesRef {
   /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListMyCompaniesData, undefined>;
+  (vars?: ListMyCompaniesVariables): QueryRef<ListMyCompaniesData, ListMyCompaniesVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListMyCompaniesData, undefined>;
+  (dc: DataConnect, vars?: ListMyCompaniesVariables): QueryRef<ListMyCompaniesData, ListMyCompaniesVariables>;
   operationName: string;
 }
 export const listMyCompaniesRef: ListMyCompaniesRef;
 
-export function listMyCompanies(options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, undefined>;
-export function listMyCompanies(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, undefined>;
+export function listMyCompanies(vars?: ListMyCompaniesVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, ListMyCompaniesVariables>;
+export function listMyCompanies(dc: DataConnect, vars?: ListMyCompaniesVariables, options?: ExecuteQueryOptions): QueryPromise<ListMyCompaniesData, ListMyCompaniesVariables>;
 
 interface GetMyCompanyRef {
   /* Allow users to create refs without passing in DataConnect */

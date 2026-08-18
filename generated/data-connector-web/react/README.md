@@ -176,15 +176,23 @@ Below are examples of how to use the `data-connector-web` connector's generated 
 You can execute the `ListMyCompanies` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
 
 ```javascript
-useListMyCompanies(dc: DataConnect, options?: useDataConnectQueryOptions<ListMyCompaniesData>): UseDataConnectQueryResult<ListMyCompaniesData, undefined>;
+useListMyCompanies(dc: DataConnect, vars?: ListMyCompaniesVariables, options?: useDataConnectQueryOptions<ListMyCompaniesData>): UseDataConnectQueryResult<ListMyCompaniesData, ListMyCompaniesVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Query hook function.
 ```javascript
-useListMyCompanies(options?: useDataConnectQueryOptions<ListMyCompaniesData>): UseDataConnectQueryResult<ListMyCompaniesData, undefined>;
+useListMyCompanies(vars?: ListMyCompaniesVariables, options?: useDataConnectQueryOptions<ListMyCompaniesData>): UseDataConnectQueryResult<ListMyCompaniesData, ListMyCompaniesVariables>;
 ```
 
 ### Variables
-The `ListMyCompanies` Query has no variables.
+The `ListMyCompanies` Query has an optional argument of type `ListMyCompaniesVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ListMyCompaniesVariables {
+  search?: string | null;
+  limit?: number | null;
+  offset?: number | null;
+}
+```
 ### Return Type
 Recall that calling the `ListMyCompanies` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
 
@@ -217,26 +225,41 @@ To learn more about the `UseQueryResult` object, see the [TanStack React Query d
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig } from '@generated/data-connector-web';
+import { connectorConfig, ListMyCompaniesVariables } from '@generated/data-connector-web';
 import { useListMyCompanies } from '@generated/data-connector-web/react'
 
 export default function ListMyCompaniesComponent() {
+  // The `useListMyCompanies` Query hook has an optional argument of type `ListMyCompaniesVariables`:
+  const listMyCompaniesVars: ListMyCompaniesVariables = {
+    search: ..., // optional
+    limit: ..., // optional
+    offset: ..., // optional
+  };
+
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useListMyCompanies(listMyCompaniesVars);
+  // Variables can be defined inline as well.
+  const query = useListMyCompanies({ search: ..., limit: ..., offset: ..., });
+  // Since all variables are optional for this Query, you can omit the `ListMyCompaniesVariables` argument.
+  // (as long as you don't want to provide any `options`!)
   const query = useListMyCompanies();
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const query = useListMyCompanies(dataConnect);
+  const query = useListMyCompanies(dataConnect, listMyCompaniesVars);
 
   // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
   const options = { staleTime: 5 * 1000 };
-  const query = useListMyCompanies(options);
+  const query = useListMyCompanies(listMyCompaniesVars, options);
+  // If you'd like to provide options without providing any variables, you must
+  // pass `undefined` where you would normally pass the variables.
+  const query = useListMyCompanies(undefined, options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = { staleTime: 5 * 1000 };
-  const query = useListMyCompanies(dataConnect, options);
+  const query = useListMyCompanies(dataConnect, listMyCompaniesVars /** or undefined */, options);
 
   // Then, you can render your component dynamically based on the status of the Query.
   if (query.isPending) {
