@@ -7,12 +7,8 @@ import { Controller, useForm } from "react-hook-form";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 
-export type QuoteTemplateNameDialogMode = "create" | "rename";
-
 export type QuoteTemplateNameDialogProps = {
     readonly open: boolean;
-    readonly mode: QuoteTemplateNameDialogMode;
-    readonly initialName: string;
     readonly isSaving: boolean;
     readonly onClose: () => void;
     readonly onSubmit: (name: string) => void;
@@ -23,18 +19,12 @@ type QuoteTemplateNameFormValues = {
 };
 
 /**
- * Names a new quote template variation, or renames an existing one --
- * `mode` only changes copy, both submit a trimmed, non-empty `name`. Callers
- * that render this for a specific existing template (rename) should key the
- * instance by that template's id so `initialName` is picked up fresh each
- * time a different template is renamed, matching `QuoteTemplateForm`'s own
- * `key`-remount-over-`reset()` convention for syncing form state to a new
- * record.
+ * Names a new quote template variation. Renaming an existing template no
+ * longer goes through this dialog -- `QuoteTemplateDetailCard` edits the
+ * currently-open template's name inline -- so this only ever creates.
  */
 export function QuoteTemplateNameDialog({
     open,
-    mode,
-    initialName,
     isSaving,
     onClose,
     onSubmit,
@@ -46,7 +36,7 @@ export function QuoteTemplateNameDialog({
         formState: { isValid },
     } = useForm<QuoteTemplateNameFormValues>({
         mode: "onChange",
-        defaultValues: { name: initialName },
+        defaultValues: { name: "" },
     });
     const formId = useId();
     const inputId = useId();
@@ -55,22 +45,16 @@ export function QuoteTemplateNameDialog({
         onSubmit(name.trim());
     }
 
-    const title =
-        mode === "create"
-            ? t("quoteTemplateList.createDialogTitle")
-            : t("quoteTemplateList.renameDialogTitle");
     const submitLabel = isSaving
         ? t("quoteTemplateList.savingAction")
-        : mode === "create"
-          ? t("quoteTemplateList.createSubmit")
-          : t("quoteTemplateList.renameSubmit");
+        : t("quoteTemplateList.createSubmit");
 
     return (
         <ModalDialog
             open={open}
             onClose={onClose}
             size="sm"
-            title={title}
+            title={t("quoteTemplateList.createDialogTitle")}
             footer={
                 <>
                     <Button

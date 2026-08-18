@@ -1,8 +1,12 @@
 import {
+    SYSTEM_QUOTE_ITEM_TEMPLATE_SCOPE,
+    TEAM_QUOTE_ITEM_TEMPLATE_SCOPE,
+} from "@libraries/plaster-calculator-common";
+import {
     Button,
+    Card,
     FormLayout,
     FormLayoutActions,
-    FormLayoutField,
     Table,
 } from "@libraries/uikit-web";
 import type { ReactElement } from "react";
@@ -56,41 +60,95 @@ export function QuoteTemplateVariationForm({
         ? t("quoteTemplateForm.saving")
         : t("quoteTemplateForm.saveChanges");
 
+    const itemsWithIndex = initialValues.items.map((item, index) => ({
+        item,
+        index,
+    }));
+    const defaultItems = itemsWithIndex.filter(
+        ({ item }) => item.scope === SYSTEM_QUOTE_ITEM_TEMPLATE_SCOPE,
+    );
+    const customItems = itemsWithIndex.filter(
+        ({ item }) => item.scope === TEAM_QUOTE_ITEM_TEMPLATE_SCOPE,
+    );
+
     return (
         <FormLayout id={formId} onSubmit={handleSubmit(onSubmit)}>
-            <FormLayoutField label="" span="full">
-                <Table
-                    label={t("quoteTemplateVariationEditor.itemsTableLabel")}
-                >
-                    <Table.Head>
-                        <Table.Row>
-                            <Table.Header>
-                                {t("quoteTemplateForm.itemNameLabel")}
-                            </Table.Header>
-                            <Table.Header fit>
-                                {t("quoteTemplateForm.unitLabel")}
-                            </Table.Header>
-                            <Table.Header>
-                                {t("quoteTemplateForm.keywordsLabel")}
-                            </Table.Header>
-                            <Table.Header fit>
-                                {t("quoteTemplateForm.priceLabel")}
-                            </Table.Header>
-                        </Table.Row>
-                    </Table.Head>
-                    <Table.Body>
-                        {initialValues.items.map((item, index) => (
-                            <QuoteTemplateVariationItemRow
-                                key={item.itemTemplateId}
-                                formId={formId}
-                                index={index}
-                                item={item}
-                                control={control}
-                            />
-                        ))}
-                    </Table.Body>
-                </Table>
-            </FormLayoutField>
+            <Card>
+                <Card.Title>
+                    {t("quoteTemplateForm.defaultItemsTitle")}
+                </Card.Title>
+                <Card.Body>
+                    <Table
+                        label={t(
+                            "quoteTemplateVariationEditor.itemsTableLabel",
+                        )}
+                    >
+                        <Table.Head>
+                            <Table.Row>
+                                <Table.Header>
+                                    {t("quoteTemplateForm.itemNameLabel")}
+                                </Table.Header>
+                                <Table.Header fit>
+                                    {t("quoteTemplateForm.unitLabel")}
+                                </Table.Header>
+                                <Table.Header fit>
+                                    {t("quoteTemplateForm.priceLabel")}
+                                </Table.Header>
+                            </Table.Row>
+                        </Table.Head>
+                        <Table.Body>
+                            {defaultItems.map(({ item, index }) => (
+                                <QuoteTemplateVariationItemRow
+                                    key={item.itemTemplateId}
+                                    formId={formId}
+                                    index={index}
+                                    item={item}
+                                    control={control}
+                                />
+                            ))}
+                        </Table.Body>
+                    </Table>
+                </Card.Body>
+            </Card>
+            {customItems.length > 0 && (
+                <Card>
+                    <Card.Title>
+                        {t("quoteTemplateForm.customItemsTitle")}
+                    </Card.Title>
+                    <Card.Body>
+                        <Table
+                            label={t(
+                                "quoteTemplateVariationEditor.itemsTableLabel",
+                            )}
+                        >
+                            <Table.Head>
+                                <Table.Row>
+                                    <Table.Header>
+                                        {t("quoteTemplateForm.itemNameLabel")}
+                                    </Table.Header>
+                                    <Table.Header fit>
+                                        {t("quoteTemplateForm.unitLabel")}
+                                    </Table.Header>
+                                    <Table.Header fit>
+                                        {t("quoteTemplateForm.priceLabel")}
+                                    </Table.Header>
+                                </Table.Row>
+                            </Table.Head>
+                            <Table.Body>
+                                {customItems.map(({ item, index }) => (
+                                    <QuoteTemplateVariationItemRow
+                                        key={item.itemTemplateId}
+                                        formId={formId}
+                                        index={index}
+                                        item={item}
+                                        control={control}
+                                    />
+                                ))}
+                            </Table.Body>
+                        </Table>
+                    </Card.Body>
+                </Card>
+            )}
             <FormLayoutActions>
                 <Button
                     type="button"

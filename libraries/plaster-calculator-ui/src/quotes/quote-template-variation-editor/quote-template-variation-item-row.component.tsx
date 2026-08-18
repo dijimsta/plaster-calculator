@@ -17,12 +17,16 @@ export type QuoteTemplateVariationItemRowProps = {
 };
 
 /**
- * One item on a variation: name, unit and keywords read-only (this screen
- * has no add/remove/include-on-quotes controls -- see this folder's
+ * One item on a variation: name and unit read-only (this screen has no
+ * add/remove/include-on-quotes controls -- see this folder's
  * `quote-template-variation-form.component.tsx` doc comment), price the
  * only editable cell, and a rate delta against the default rendered
  * underneath the price input so a negotiated line is visible without
- * opening the default template.
+ * opening the default template. Matches `QuoteTemplateForm`'s item row
+ * column order (Item / Unit / Price); when this item has keywords, they
+ * render read-only in a second, full-width row underneath -- the same
+ * "keywords as their own row" treatment `QuoteTemplateFormCustomItemRow`
+ * uses, rather than a dedicated Keywords column most rows leave empty.
  */
 export function QuoteTemplateVariationItemRow({
     formId,
@@ -31,53 +35,57 @@ export function QuoteTemplateVariationItemRow({
     control,
 }: QuoteTemplateVariationItemRowProps): ReactElement {
     const { t } = useQuotesTranslation();
+    const showKeywords = item.hasKeywords && item.keywords.length > 0;
 
     return (
-        <Table.Row>
-            <Table.Cell>
-                <Text size="base">{item.name}</Text>
-            </Table.Cell>
-            <Table.Cell fit>
-                {item.unit ? (
-                    <Text size="sm">{item.unit}</Text>
-                ) : (
-                    <Text size="sm" variant="muted">
-                        {t("quoteTemplateForm.unitNotSet")}
-                    </Text>
-                )}
-            </Table.Cell>
-            <Table.Cell>
-                {item.hasKeywords && item.keywords.length > 0 ? (
-                    <Text size="sm">{item.keywords.join(", ")}</Text>
-                ) : (
-                    <Text size="sm" variant="muted">
-                        —
-                    </Text>
-                )}
-            </Table.Cell>
-            <Table.Cell fit>
-                <Controller
-                    name={`items.${index}.unitPriceCents`}
-                    control={control}
-                    render={({ field }) => (
-                        <Box direction="column" gap="xs">
-                            <QuoteTemplateFormPriceInput
-                                id={`${formId}-variation-item-${item.itemTemplateId}-price`}
-                                label={t("quoteTemplateForm.priceLabel")}
-                                value={field.value}
-                                onChange={field.onChange}
-                                onBlur={field.onBlur}
-                            />
-                            <RateDeltaText
-                                deltaCents={
-                                    field.value - item.defaultUnitPriceCents
-                                }
-                            />
-                        </Box>
+        <>
+            <Table.Row>
+                <Table.Cell>
+                    <Text size="base">{item.name}</Text>
+                </Table.Cell>
+                <Table.Cell fit>
+                    {item.unit ? (
+                        <Text size="sm">{item.unit}</Text>
+                    ) : (
+                        <Text size="sm" variant="muted">
+                            {t("quoteTemplateForm.unitNotSet")}
+                        </Text>
                     )}
-                />
-            </Table.Cell>
-        </Table.Row>
+                </Table.Cell>
+                <Table.Cell fit>
+                    <Controller
+                        name={`items.${index}.unitPriceCents`}
+                        control={control}
+                        render={({ field }) => (
+                            <Box direction="column" gap="xs">
+                                <QuoteTemplateFormPriceInput
+                                    id={`${formId}-variation-item-${item.itemTemplateId}-price`}
+                                    label={t("quoteTemplateForm.priceLabel")}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                />
+                                <RateDeltaText
+                                    deltaCents={
+                                        field.value - item.defaultUnitPriceCents
+                                    }
+                                />
+                            </Box>
+                        )}
+                    />
+                </Table.Cell>
+            </Table.Row>
+            {showKeywords && (
+                <Table.Row>
+                    <Table.Cell colSpan={3}>
+                        <Text size="xs" variant="muted">
+                            {t("quoteTemplateForm.keywordsLabel")}:{" "}
+                        </Text>
+                        <Text size="sm">{item.keywords.join(", ")}</Text>
+                    </Table.Cell>
+                </Table.Row>
+            )}
+        </>
     );
 }
 

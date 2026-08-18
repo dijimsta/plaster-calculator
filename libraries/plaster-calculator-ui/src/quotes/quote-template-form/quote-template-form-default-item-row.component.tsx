@@ -1,4 +1,4 @@
-import { Table, Text } from "@libraries/uikit-web";
+import { Box, Table, Text } from "@libraries/uikit-web";
 import type { ReactElement } from "react";
 import { Controller } from "react-hook-form";
 import type { Control } from "react-hook-form";
@@ -22,11 +22,21 @@ export function QuoteTemplateFormDefaultItemRow({
     control,
 }: QuoteTemplateFormDefaultItemRowProps): ReactElement {
     const { t } = useQuotesTranslation();
+    const description = item.systemKey
+        ? t(`systemItemDescriptions.${item.systemKey}`, { defaultValue: "" })
+        : "";
 
     return (
         <Table.Row>
             <Table.Cell>
-                <Text size="base">{item.name}</Text>
+                <Box direction="column">
+                    <Text size="base">{item.name}</Text>
+                    {description !== "" && (
+                        <Text size="sm" variant="muted">
+                            {description}
+                        </Text>
+                    )}
+                </Box>
             </Table.Cell>
             <Table.Cell fit>
                 {item.unit ? (

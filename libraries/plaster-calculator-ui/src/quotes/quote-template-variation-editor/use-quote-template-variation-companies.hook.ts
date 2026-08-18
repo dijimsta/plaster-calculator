@@ -5,7 +5,14 @@ import type { CompanySummary } from "@libraries/plaster-calculator-web-core";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
-const QUOTE_TEMPLATE_VARIATION_COMPANIES_QUERY_KEY = [
+/**
+ * Exported so `use-quote-template-company-assignments.hook.ts`
+ * (`quote-template-panel/`) can read the same team-wide company list under
+ * one shared cache entry, instead of issuing a second `listCompanies()`
+ * fetch when the card grid and an open variation's "Applies to" list are
+ * both mounted together.
+ */
+export const QUOTE_TEMPLATE_VARIATION_COMPANIES_QUERY_KEY = [
     "quoteTemplateVariationCompanies",
 ];
 

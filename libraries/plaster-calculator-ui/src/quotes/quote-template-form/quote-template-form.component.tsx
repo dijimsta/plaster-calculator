@@ -1,10 +1,10 @@
 import {
     Box,
     Button,
+    Card,
     FormLayout,
     FormLayoutActions,
-    FormLayoutField,
-    FormLayoutSection,
+    Paragraph,
     Table,
 } from "@libraries/uikit-web";
 import { Plus } from "lucide-react";
@@ -71,11 +71,14 @@ export function QuoteTemplateForm({
 
     return (
         <FormLayout id={formId} onSubmit={handleSubmit(onSubmit)}>
-            <FormLayoutSection
-                title={t("quoteTemplateForm.defaultItemsTitle")}
-                description={t("quoteTemplateForm.defaultItemsDescription")}
-            >
-                <FormLayoutField label="" span="full">
+            <Card>
+                <Card.Title>
+                    {t("quoteTemplateForm.defaultItemsTitle")}
+                </Card.Title>
+                <Paragraph measure="narrow" textSize="sm" variant="muted">
+                    {t("quoteTemplateForm.defaultItemsDescription")}
+                </Paragraph>
+                <Card.Body>
                     <Table label={t("quoteTemplateForm.defaultItemsTitle")}>
                         <Table.Head>
                             <Table.Row>
@@ -102,64 +105,68 @@ export function QuoteTemplateForm({
                             ))}
                         </Table.Body>
                     </Table>
-                </FormLayoutField>
-            </FormLayoutSection>
-            <FormLayoutSection
-                title={t("quoteTemplateForm.customItemsTitle")}
-                description={t("quoteTemplateForm.customItemsDescription")}
-            >
-                <FormLayoutField label="" span="full">
-                    <Box direction="column" gap="sm">
-                        <Table label={t("quoteTemplateForm.customItemsTitle")}>
-                            <Table.Head>
-                                <Table.Row>
-                                    <Table.Header>
-                                        {t("quoteTemplateForm.itemNameLabel")}
-                                    </Table.Header>
-                                    <Table.Header>
-                                        {t(
-                                            "quoteTemplateForm.includeOnQuotesLabel",
-                                        )}
-                                    </Table.Header>
-                                    <Table.Header>
-                                        {t("quoteTemplateForm.keywordsLabel")}
-                                    </Table.Header>
-                                    <Table.Header fit>
-                                        {t("quoteTemplateForm.unitLabel")}
-                                    </Table.Header>
-                                    <Table.Header fit>
-                                        {t("quoteTemplateForm.priceLabel")}
-                                    </Table.Header>
-                                    <Table.Header fit />
-                                </Table.Row>
-                            </Table.Head>
-                            <Table.Body>
-                                {fields.map((item, index) => (
-                                    <QuoteTemplateFormCustomItemRow
-                                        key={item.fieldKey}
-                                        formId={formId}
-                                        fieldKey={item.fieldKey}
-                                        index={index}
-                                        control={control}
-                                        onRemove={() => remove(index)}
-                                    />
-                                ))}
-                            </Table.Body>
-                        </Table>
-                        <Box>
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                disabled={disabled}
-                                icon={<Plus size={16} aria-hidden="true" />}
-                                onClick={() => append(EMPTY_CUSTOM_ITEM)}
-                            >
-                                {t("quoteTemplateForm.addItem")}
-                            </Button>
-                        </Box>
+                </Card.Body>
+            </Card>
+            <Card>
+                <Card.Header>
+                    <Box direction="column" gap="xs">
+                        <Card.Title>
+                            {t("quoteTemplateForm.customItemsTitle")}
+                        </Card.Title>
+                        <Paragraph
+                            measure="narrow"
+                            textSize="sm"
+                            variant="muted"
+                        >
+                            {t("quoteTemplateForm.customItemsDescription")}
+                        </Paragraph>
                     </Box>
-                </FormLayoutField>
-            </FormLayoutSection>
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        disabled={disabled}
+                        icon={<Plus size={16} aria-hidden="true" />}
+                        onClick={() => append(EMPTY_CUSTOM_ITEM)}
+                    >
+                        {t("quoteTemplateForm.addItem")}
+                    </Button>
+                </Card.Header>
+                <Card.Body>
+                    <Table label={t("quoteTemplateForm.customItemsTitle")}>
+                        <Table.Head>
+                            <Table.Row>
+                                <Table.Header>
+                                    {t("quoteTemplateForm.itemNameLabel")}
+                                </Table.Header>
+                                <Table.Header fit>
+                                    {t("quoteTemplateForm.unitLabel")}
+                                </Table.Header>
+                                <Table.Header>
+                                    {t(
+                                        "quoteTemplateForm.includeOnQuotesLabel",
+                                    )}
+                                </Table.Header>
+                                <Table.Header fit>
+                                    {t("quoteTemplateForm.priceLabel")}
+                                </Table.Header>
+                                <Table.Header fit />
+                            </Table.Row>
+                        </Table.Head>
+                        <Table.Body>
+                            {fields.map((item, index) => (
+                                <QuoteTemplateFormCustomItemRow
+                                    key={item.fieldKey}
+                                    formId={formId}
+                                    fieldKey={item.fieldKey}
+                                    index={index}
+                                    control={control}
+                                    onRemove={() => remove(index)}
+                                />
+                            ))}
+                        </Table.Body>
+                    </Table>
+                </Card.Body>
+            </Card>
             <FormLayoutActions>
                 <Button
                     type="button"

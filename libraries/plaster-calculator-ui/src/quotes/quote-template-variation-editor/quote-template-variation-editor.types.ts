@@ -1,3 +1,5 @@
+import type { QuoteItemTemplateScope } from "@libraries/plaster-calculator-common";
+
 /**
  * A variation's own prices-only item row: `name`/`unit`/`hasKeywords`/
  * `keywords` render read-only (the same values the default already fixed
@@ -6,10 +8,13 @@
  * `unitPriceCents` is the only editable field. `defaultUnitPriceCents` is
  * the default template's *current* price for this same item, carried
  * alongside so the row can render a rate delta ("+$12.00" / "same as
- * default") without a second lookup at render time.
+ * default") without a second lookup at render time. `scope` splits the flat
+ * `items` list into "Default items" / "Custom items" sections the same way
+ * `QuoteTemplateForm` does, so both screens present the same shape.
  */
 export type QuoteTemplateVariationItemFormValue = {
     readonly itemTemplateId: string;
+    readonly scope: QuoteItemTemplateScope;
     readonly name: string;
     readonly unit: string;
     readonly hasKeywords: boolean;
