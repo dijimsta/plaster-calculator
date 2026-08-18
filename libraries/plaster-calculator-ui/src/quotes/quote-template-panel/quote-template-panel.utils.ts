@@ -1,7 +1,11 @@
 import * as DataConnector from "@generated/data-connector-web";
 import { QuoteItemTemplateScopeSchema } from "@libraries/plaster-calculator-common";
 import type { QueryClient } from "@tanstack/react-query";
-import { QueryFetchPolicy, type DataConnect } from "firebase/data-connect";
+import {
+    DataConnectOperationError,
+    QueryFetchPolicy,
+    type DataConnect,
+} from "firebase/data-connect";
 
 import type { QuoteTemplateFormValues } from "../quote-template-form/index.ts";
 
@@ -238,6 +242,30 @@ export function resolveBackfillPriceCents(
         return 0;
     }
     return defaultPriceByItemTemplateId.get(itemTemplateId) ?? 0;
+}
+
+/**
+ * True when `error` is a `QuoteItemTemplateConfig` insert failing because a
+ * row for this (quoteTemplateId, itemTemplateId) pair already exists.
+ * `useQuoteItemTemplates`'s backfill effect guards against re-entering
+ * itself within one component instance (`isBackfillingRef`), but a route
+ * transition can briefly leave an old and a new `QuoteTemplatePanel`
+ * instance mounted at once (e.g. navigating from `/quotes/template` to
+ * `/quotes/template/[id]` after clicking a variation card) -- each with its
+ * own ref, each independently backfilling the same missing config. The
+ * desired end state (the row existing) is already achieved by whichever
+ * insert won that race, so this isn't a real failure for the backfill
+ * effect to surface.
+ */
+export function isDuplicateConfigInsertError(error: unknown): boolean {
+    return (
+        error instanceof DataConnectOperationError &&
+        error.response.errors.some((responseError) =>
+            responseError.message.includes(
+                'duplicate key value violates unique constraint "quote_item_template_config_pkey"',
+            ),
+        )
+    );
 }
 
 export async function refreshQuoteTemplateItems(

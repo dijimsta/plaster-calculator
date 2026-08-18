@@ -3,7 +3,7 @@ import type { ReactElement, ReactNode } from "react";
 
 import { styles } from "./card.styles.ts";
 
-export type CardVariant = "default" | "subtle";
+export type CardVariant = "default" | "subtle" | "dashed";
 export type CardVisibility = keyof typeof styles.visibility;
 export type CardOverflow = keyof typeof styles.overflow;
 
@@ -22,6 +22,20 @@ export type CardProps = {
      * absolutely positioned dropdown/popover that must escape it.
      */
     readonly overflow?: CardOverflow;
+    /**
+     * Highlights this card as the currently-selected option in a set of
+     * cards -- e.g. one of several selectable template cards. Purely
+     * visual; pair with `onClick` and, where the cards represent mutually
+     * exclusive options, `aria-pressed` is set for you.
+     */
+    readonly selected?: boolean;
+    /**
+     * Makes the whole card an activation target: the root renders as a
+     * `<button type="button">` instead of a `<div>`, with hover/focus
+     * styling and keyboard support included. Omit for a purely
+     * presentational card.
+     */
+    readonly onClick?: () => void;
     readonly children?: ReactNode;
 };
 
@@ -30,18 +44,35 @@ export function Card({
     variant = "default",
     visibility = "visible",
     overflow = "hidden",
+    selected = false,
+    onClick,
     children,
 }: CardProps): ReactElement {
+    const className = clsx(
+        styles.root,
+        styles.variants[variant],
+        styles.visibility[visibility],
+        styles.overflow[overflow],
+        onClick && styles.interactive,
+        selected && styles.selected,
+    );
+
+    if (onClick) {
+        return (
+            <button
+                id={id}
+                type="button"
+                aria-pressed={selected}
+                className={className}
+                onClick={onClick}
+            >
+                {children}
+            </button>
+        );
+    }
+
     return (
-        <div
-            id={id}
-            className={clsx(
-                styles.root,
-                styles.variants[variant],
-                styles.visibility[visibility],
-                styles.overflow[overflow],
-            )}
-        >
+        <div id={id} className={className}>
             {children}
         </div>
     );

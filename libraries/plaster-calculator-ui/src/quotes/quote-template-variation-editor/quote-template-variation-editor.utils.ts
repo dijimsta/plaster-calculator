@@ -28,6 +28,7 @@ export function buildFormValues(
     return {
         items: items.map((item) => ({
             itemTemplateId: item.itemTemplateId,
+            scope: item.scope,
             name: item.name,
             unit: item.unit ?? "",
             hasKeywords: item.hasKeywords,
@@ -57,5 +58,35 @@ export function describeRateDelta(deltaCents: number): RateDelta {
     return {
         kind: deltaCents > 0 ? "increase" : "decrease",
         amountDisplayText: centsToAudDisplayText(Math.abs(deltaCents)),
+    };
+}
+
+export type RatePercentDelta = {
+    readonly kind: RateDeltaKind;
+    /** Formatted absolute percent text (e.g. `"8.1%"`), empty when `kind` is `"same"`. */
+    readonly percentDisplayText: string;
+};
+
+/**
+ * The percent counterpart of `describeRateDelta`, for
+ * `QuoteTemplateCard`'s summary line ("−8.1% vs default") rather than a
+ * dollar amount. `undefined` when there's no default price to compare
+ * against (a zero or missing `defaultPriceCents`), since a percent of
+ * nothing isn't a meaningful delta.
+ */
+export function describeRatePercentDelta(
+    deltaCents: number,
+    defaultPriceCents: number,
+): RatePercentDelta | undefined {
+    if (defaultPriceCents === 0) {
+        return undefined;
+    }
+    if (deltaCents === 0) {
+        return { kind: "same", percentDisplayText: "" };
+    }
+    const percent = (Math.abs(deltaCents) / defaultPriceCents) * 100;
+    return {
+        kind: deltaCents > 0 ? "increase" : "decrease",
+        percentDisplayText: `${percent.toFixed(1)}%`,
     };
 }

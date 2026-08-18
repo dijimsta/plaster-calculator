@@ -129,10 +129,6 @@ export const en = Object.freeze({
             "The default items and pricing used when quotes are generated from a project.",
     }),
     quoteTemplatePanel: Object.freeze({
-        title: "Quote templates",
-        description:
-            "Adjust the default item prices and add custom items that should appear on every quote. Variations reuse the default's item list, units and keywords -- only their prices differ.",
-        defaultEditorTitle: "Default template",
         loading: "Loading quote template...",
         saveSuccessTitle: "Quote template saved",
         saveSuccessDescription: "Your changes have been saved.",
@@ -164,19 +160,12 @@ export const en = Object.freeze({
         saving: "Saving...",
     }),
     quoteTemplateList: Object.freeze({
-        tableLabel: "Quote templates",
-        nameColumn: "Name",
-        loading: "Loading quote templates...",
         defaultBadge: "Default",
-        openAction: "Open {{name}}",
-        renameAction: "Rename {{name}}",
         deleteAction: "Delete {{name}}",
-        addVariation: "Add variation",
+        addVariation: "New variation",
         nameLabel: "Template name",
         createDialogTitle: "New quote template variation",
-        renameDialogTitle: "Rename quote template",
         createSubmit: "Create",
-        renameSubmit: "Rename",
         savingAction: "Saving...",
         deleteDialogTitle: 'Delete "{{name}}"?',
         deleteDialogDescription:
@@ -198,7 +187,6 @@ export const en = Object.freeze({
         openVariationToReprice: "Open {{name}} to re-price",
     }),
     quoteTemplateVariationEditor: Object.freeze({
-        backAction: "Back to templates",
         itemsTableLabel: "Variation items",
         rateDeltaSame: "Same as default",
         rateDeltaIncrease: "+{{amount}} vs default",
@@ -225,6 +213,39 @@ export const en = Object.freeze({
             '{{company}} is currently priced with "{{fromTemplate}}". Adding it here will move it to "{{toTemplate}}" instead.',
         moveCompanyConfirm: "Move company",
         movingCompanyAction: "Moving...",
+    }),
+    quoteTemplateCard: Object.freeze({
+        wallsRate: "Walls {{price}}/{{unit}}",
+        percentDeltaIncrease: "+{{amount}} vs default",
+        percentDeltaDecrease: "−{{amount}} vs default",
+        defaultAppliesTo_one:
+            "Fallback for {{count}} company with no variation of their own",
+        defaultAppliesTo_other:
+            "Fallback for {{count}} companies with no variation of their own",
+        defaultAppliesToDescription:
+            "Every company without a variation of their own is quoted on these rates.",
+        noFallbackCompanies: "No companies are on this template yet.",
+        newVariationDescription: "Starts as a copy of the default",
+        teamDefaultTemplate: "Team default template",
+        setAsTeamDefault: "Set as team default",
+        setAsDefaultErrorTitle: "Couldn't set as default",
+        setAsDefaultErrorDescription:
+            "Something went wrong while updating the team default. Try again.",
+    }),
+    systemItemDescriptions: Object.freeze({
+        PLASTERBOARD_10MM: "Wall run — standard board",
+        PLASTERBOARD_13MM: "Wall run — heavy-duty board",
+        VILLABOARD_9MM: "Wall run — wet areas",
+        VILLABOARD_6MM: "Wall run — wet areas, light duty",
+        ACOUSTIC_SOUNDCHEK_10MM: "Wall run — acoustic rated",
+        ACOUSTIC_SOUNDCHEK_13MM: "Wall run — acoustic rated, heavy-duty",
+        WATER_RESISTANT_10MM: "Wall run — water resistant",
+        WATER_RESISTANT_13MM: "Wall run — water resistant, heavy-duty",
+        FIRE_RESISTANT_DRY_13MM: "Wall run — fire rated, dry areas",
+        FIRE_RESISTANT_DRY_16MM: "Wall run — fire rated, dry areas, heavy-duty",
+        FIRE_RESISTANT_WET_13MM: "Wall run — fire rated, wet areas",
+        FIRE_RESISTANT_WET_16MM: "Wall run — fire rated, wet areas, heavy-duty",
+        FLEXIBLE_BOARD_6_5MM: "Wall run — curved surfaces",
     }),
     projectQuoteReadinessPage: Object.freeze({
         unableToLoadProject: "Unable to load project",

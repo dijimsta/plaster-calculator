@@ -13,6 +13,7 @@ import { useEffect, useMemo, useRef } from "react";
 
 import type { QuoteTemplateItem } from "./quote-template-panel.types.ts";
 import {
+    isDuplicateConfigInsertError,
     mapUnitPricesByItemTemplateId,
     mergeQuoteItemTemplates,
     resolveBackfillPriceCents,
@@ -201,19 +202,27 @@ export function useQuoteItemTemplates(quoteTemplateId: string | null): {
         isBackfillingRef.current = true;
         const activeQuoteTemplateId = quoteTemplateId;
         void Promise.all(
-            missingConfigItemTemplateIds.split(",").map((itemTemplateId) =>
-                createItemTemplateConfig({
-                    quoteTemplateId: activeQuoteTemplateId,
-                    itemTemplateId,
-                    unitPriceCents: resolveBackfillPriceCents(
-                        isDefaultTemplate,
-                        itemTemplateId,
-                        defaultPriceByItemTemplateId,
-                    ),
-                    materialUnitPriceCents: 0,
-                    labourUnitPriceCents: 0,
+            missingConfigItemTemplateIds
+                .split(",")
+                .map(async (itemTemplateId) => {
+                    try {
+                        await createItemTemplateConfig({
+                            quoteTemplateId: activeQuoteTemplateId,
+                            itemTemplateId,
+                            unitPriceCents: resolveBackfillPriceCents(
+                                isDefaultTemplate,
+                                itemTemplateId,
+                                defaultPriceByItemTemplateId,
+                            ),
+                            materialUnitPriceCents: 0,
+                            labourUnitPriceCents: 0,
+                        });
+                    } catch (error) {
+                        if (!isDuplicateConfigInsertError(error)) {
+                            throw error;
+                        }
+                    }
                 }),
-            ),
         )
             .then(async () => {
                 const ref =

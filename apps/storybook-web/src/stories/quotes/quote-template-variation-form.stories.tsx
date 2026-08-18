@@ -1,3 +1,7 @@
+import {
+    SYSTEM_QUOTE_ITEM_TEMPLATE_SCOPE,
+    TEAM_QUOTE_ITEM_TEMPLATE_SCOPE,
+} from "@libraries/plaster-calculator-common";
 import { QuoteTemplateVariationForm } from "@libraries/plaster-calculator-ui";
 import type { QuoteTemplateVariationFormValues } from "@libraries/plaster-calculator-ui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -7,6 +11,7 @@ const SAMPLE_VALUES: QuoteTemplateVariationFormValues = {
     items: [
         {
             itemTemplateId: "f47826e8-6f88-451c-9377-8635b4c7ac04",
+            scope: SYSTEM_QUOTE_ITEM_TEMPLATE_SCOPE,
             name: "10mm Plasterboard",
             unit: "m²",
             hasKeywords: false,
@@ -16,6 +21,7 @@ const SAMPLE_VALUES: QuoteTemplateVariationFormValues = {
         },
         {
             itemTemplateId: "1f28456f-d936-4adb-afc9-43d9767a44b2",
+            scope: SYSTEM_QUOTE_ITEM_TEMPLATE_SCOPE,
             name: "13mm Plasterboard",
             unit: "m²",
             hasKeywords: false,
@@ -25,6 +31,7 @@ const SAMPLE_VALUES: QuoteTemplateVariationFormValues = {
         },
         {
             itemTemplateId: "a4642ab3-300a-483b-96f4-0b00da347714",
+            scope: SYSTEM_QUOTE_ITEM_TEMPLATE_SCOPE,
             name: "9mm Villaboard",
             unit: "m²",
             hasKeywords: false,
@@ -34,6 +41,7 @@ const SAMPLE_VALUES: QuoteTemplateVariationFormValues = {
         },
         {
             itemTemplateId: "6d1c9e2b-3f7a-4b8e-9f1a-2c5d6e7f8a9b",
+            scope: TEAM_QUOTE_ITEM_TEMPLATE_SCOPE,
             name: "Insulation batts",
             unit: "m²",
             hasKeywords: true,

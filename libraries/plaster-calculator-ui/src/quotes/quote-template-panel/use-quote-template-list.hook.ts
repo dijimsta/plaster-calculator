@@ -27,14 +27,13 @@ export type UseQuoteTemplateListResult = {
     readonly createVariation: (name: string) => Promise<void>;
     readonly renameTemplate: (id: string, name: string) => Promise<void>;
     readonly deleteTemplate: (id: string) => Promise<void>;
+    /** Promotes a variation to the team's default, demoting whichever template currently holds it (`SetQuoteTemplateAsDefault`). */
+    readonly setAsDefault: (id: string) => Promise<void>;
 };
 
 /**
- * Data + mutations for `QuoteTemplateList`: the team's full template roster,
- * and create-variation/rename/delete. There is no "make default" mutation
- * here or anywhere else in this ticket -- the default is whichever
- * `QuoteTemplate` has `isDefault: true`, fixed at first-use creation
- * (`useActiveQuoteTemplate`).
+ * Data + mutations for the template card grid: the team's full template
+ * roster, and create-variation/rename/delete/set-as-default.
  *
  * `createVariation` copies `defaultTemplateItems` (the default's full,
  * currently-loaded item list -- system + custom, from `useQuoteItemTemplates`)
@@ -54,6 +53,8 @@ export function useQuoteTemplateList(
         DataConnectorReact.useRenameQuoteTemplate(dataConnect);
     const { mutateAsync: deleteMutation, isPending: isDeleting } =
         DataConnectorReact.useDeleteQuoteTemplate(dataConnect);
+    const { mutateAsync: setAsDefaultMutation, isPending: isSettingAsDefault } =
+        DataConnectorReact.useSetQuoteTemplateAsDefault(dataConnect);
     const queryClient = useQueryClient();
 
     const refresh = useCallback(async (): Promise<void> => {
@@ -108,12 +109,22 @@ export function useQuoteTemplateList(
         [deleteMutation, refresh],
     );
 
+    const setAsDefault = useCallback(
+        async (id: string): Promise<void> => {
+            await setAsDefaultMutation({ id });
+            await refresh();
+        },
+        [setAsDefaultMutation, refresh],
+    );
+
     return {
         templates: data?.quoteTemplates ?? [],
         isLoading,
-        isMutating: isCreating || isRenaming || isDeleting,
+        isMutating:
+            isCreating || isRenaming || isDeleting || isSettingAsDefault,
         createVariation,
         renameTemplate,
         deleteTemplate,
+        setAsDefault,
     };
 }

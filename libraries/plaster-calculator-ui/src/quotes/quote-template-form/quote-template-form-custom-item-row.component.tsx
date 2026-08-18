@@ -3,7 +3,6 @@ import {
     Input,
     SelectMenu,
     Table,
-    Text,
     Textarea,
 } from "@libraries/uikit-web";
 import { Trash2 } from "lucide-react";
@@ -25,6 +24,9 @@ export type QuoteTemplateFormCustomItemRowProps = {
     readonly onRemove: () => void;
 };
 
+/** Columns in `QuoteTemplateForm`'s custom items table header, for the keywords sub-row's `colSpan`. */
+const CUSTOM_ITEM_COLUMN_COUNT = 5;
+
 type IncludeOnQuotesValue =
     "keywordMatch" | "includeByDefault" | "dontIncludeByDefault";
 
@@ -38,6 +40,15 @@ function includeOnQuotesValue(
     return enabled ? "includeByDefault" : "dontIncludeByDefault";
 }
 
+/**
+ * One custom item: name, unit, an include-on-quotes rule, price, and
+ * remove. Matches `QuoteTemplateFormDefaultItemRow`'s Item/Unit/Price column
+ * order rather than the include-rule/keywords columns coming first. When
+ * the include rule is keyword-match, the keywords themselves render in a
+ * second, full-width row underneath instead of their own column -- most
+ * rows leave that column empty, so it reads better as an expandable detail
+ * than a column every row reserves space for.
+ */
 export function QuoteTemplateFormCustomItemRow({
     formId,
     fieldKey,
@@ -48,159 +59,163 @@ export function QuoteTemplateFormCustomItemRow({
     const { t } = useQuotesTranslation();
 
     return (
-        <Table.Row>
-            <Table.Cell>
-                <Controller
-                    name={`customItems.${index}.name`}
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            id={`${formId}-custom-item-${fieldKey}-name`}
-                            label={t("quoteTemplateForm.itemNameLabel")}
-                            value={field.value}
-                            onChange={field.onChange}
-                            onBlur={field.onBlur}
-                            required
-                        />
-                    )}
-                />
-            </Table.Cell>
-            <Table.Cell>
-                <Controller
-                    name={`customItems.${index}.hasKeywords`}
-                    control={control}
-                    render={({ field: hasKeywordsField }) => (
-                        <Controller
-                            name={`customItems.${index}.enabled`}
-                            control={control}
-                            render={({ field: enabledField }) => (
-                                <SelectMenu
-                                    id={`${formId}-custom-item-${fieldKey}-include`}
-                                    label={t(
-                                        "quoteTemplateForm.includeOnQuotesLabel",
-                                    )}
-                                    options={[
-                                        {
-                                            value: "keywordMatch",
-                                            label: t(
-                                                "quoteTemplateForm.includeWhenKeywordsMatch",
-                                            ),
-                                        },
-                                        {
-                                            value: "includeByDefault",
-                                            label: t(
-                                                "quoteTemplateForm.includeByDefault",
-                                            ),
-                                        },
-                                        {
-                                            value: "dontIncludeByDefault",
-                                            label: t(
-                                                "quoteTemplateForm.dontIncludeByDefault",
-                                            ),
-                                        },
-                                    ]}
-                                    value={includeOnQuotesValue(
-                                        hasKeywordsField.value,
-                                        enabledField.value,
-                                    )}
-                                    onChange={(
-                                        event: ChangeEvent<HTMLSelectElement>,
-                                    ) => {
-                                        const value = event.target
-                                            .value as IncludeOnQuotesValue;
-                                        if (value === "keywordMatch") {
-                                            hasKeywordsField.onChange(true);
-                                            return;
-                                        }
-                                        hasKeywordsField.onChange(false);
-                                        enabledField.onChange(
-                                            value === "includeByDefault",
-                                        );
-                                    }}
-                                />
-                            )}
-                        />
-                    )}
-                />
-            </Table.Cell>
-            <Table.Cell>
-                <Controller
-                    name={`customItems.${index}.hasKeywords`}
-                    control={control}
-                    render={({ field: hasKeywordsField }) =>
-                        hasKeywordsField.value ? (
+        <>
+            <Table.Row>
+                <Table.Cell>
+                    <Controller
+                        name={`customItems.${index}.name`}
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                id={`${formId}-custom-item-${fieldKey}-name`}
+                                label={t("quoteTemplateForm.itemNameLabel")}
+                                value={field.value}
+                                onChange={field.onChange}
+                                onBlur={field.onBlur}
+                                required
+                            />
+                        )}
+                    />
+                </Table.Cell>
+                <Table.Cell fit>
+                    <Controller
+                        name={`customItems.${index}.unit`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                            <QuoteUnitInput
+                                id={`${formId}-custom-item-${fieldKey}-unit`}
+                                value={field.value}
+                                required
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                </Table.Cell>
+                <Table.Cell>
+                    <Controller
+                        name={`customItems.${index}.hasKeywords`}
+                        control={control}
+                        render={({ field: hasKeywordsField }) => (
                             <Controller
-                                name={`customItems.${index}.keywords`}
+                                name={`customItems.${index}.enabled`}
                                 control={control}
-                                render={({ field }) => (
-                                    <Textarea
-                                        id={`${formId}-custom-item-${fieldKey}-keywords`}
+                                render={({ field: enabledField }) => (
+                                    <SelectMenu
+                                        id={`${formId}-custom-item-${fieldKey}-include`}
                                         label={t(
-                                            "quoteTemplateForm.keywordsLabel",
+                                            "quoteTemplateForm.includeOnQuotesLabel",
                                         )}
-                                        value={field.value.join(",")}
-                                        onChange={(event) =>
-                                            field.onChange(
-                                                event.target.value.split(","),
-                                            )
-                                        }
-                                        onBlur={field.onBlur}
-                                        placeholder={t(
-                                            "quoteTemplateForm.keywordsPlaceholder",
+                                        options={[
+                                            {
+                                                value: "keywordMatch",
+                                                label: t(
+                                                    "quoteTemplateForm.includeWhenKeywordsMatch",
+                                                ),
+                                            },
+                                            {
+                                                value: "includeByDefault",
+                                                label: t(
+                                                    "quoteTemplateForm.includeByDefault",
+                                                ),
+                                            },
+                                            {
+                                                value: "dontIncludeByDefault",
+                                                label: t(
+                                                    "quoteTemplateForm.dontIncludeByDefault",
+                                                ),
+                                            },
+                                        ]}
+                                        value={includeOnQuotesValue(
+                                            hasKeywordsField.value,
+                                            enabledField.value,
                                         )}
-                                        rows={1}
+                                        onChange={(
+                                            event: ChangeEvent<HTMLSelectElement>,
+                                        ) => {
+                                            const value = event.target
+                                                .value as IncludeOnQuotesValue;
+                                            if (value === "keywordMatch") {
+                                                hasKeywordsField.onChange(true);
+                                                return;
+                                            }
+                                            hasKeywordsField.onChange(false);
+                                            enabledField.onChange(
+                                                value === "includeByDefault",
+                                            );
+                                        }}
                                     />
                                 )}
                             />
-                        ) : (
-                            <Text size="sm" variant="muted">
-                                —
-                            </Text>
-                        )
-                    }
-                />
-            </Table.Cell>
-            <Table.Cell fit>
-                <Controller
-                    name={`customItems.${index}.unit`}
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                        <QuoteUnitInput
-                            id={`${formId}-custom-item-${fieldKey}-unit`}
-                            value={field.value}
-                            required
-                            onChange={field.onChange}
-                        />
-                    )}
-                />
-            </Table.Cell>
-            <Table.Cell fit>
-                <Controller
-                    name={`customItems.${index}.unitPriceCents`}
-                    control={control}
-                    render={({ field }) => (
-                        <QuoteTemplateFormPriceInput
-                            id={`${formId}-custom-item-${fieldKey}-price`}
-                            label={t("quoteTemplateForm.priceLabel")}
-                            value={field.value}
-                            onChange={field.onChange}
-                            onBlur={field.onBlur}
-                        />
-                    )}
-                />
-            </Table.Cell>
-            <Table.Cell fit>
-                <Button
-                    type="button"
-                    variant="ghost"
-                    icon={<Trash2 size={16} aria-hidden="true" />}
-                    label={t("quoteTemplateForm.removeItem", {
-                        number: index + 1,
-                    })}
-                    onClick={onRemove}
-                />
-            </Table.Cell>
-        </Table.Row>
+                        )}
+                    />
+                </Table.Cell>
+                <Table.Cell fit>
+                    <Controller
+                        name={`customItems.${index}.unitPriceCents`}
+                        control={control}
+                        render={({ field }) => (
+                            <QuoteTemplateFormPriceInput
+                                id={`${formId}-custom-item-${fieldKey}-price`}
+                                label={t("quoteTemplateForm.priceLabel")}
+                                value={field.value}
+                                onChange={field.onChange}
+                                onBlur={field.onBlur}
+                            />
+                        )}
+                    />
+                </Table.Cell>
+                <Table.Cell fit>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        icon={<Trash2 size={16} aria-hidden="true" />}
+                        label={t("quoteTemplateForm.removeItem", {
+                            number: index + 1,
+                        })}
+                        onClick={onRemove}
+                    />
+                </Table.Cell>
+            </Table.Row>
+            <Controller
+                name={`customItems.${index}.hasKeywords`}
+                control={control}
+                render={({ field: hasKeywordsField }) =>
+                    hasKeywordsField.value ? (
+                        <Table.Row>
+                            <Table.Cell colSpan={CUSTOM_ITEM_COLUMN_COUNT}>
+                                <Controller
+                                    name={`customItems.${index}.keywords`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Textarea
+                                            id={`${formId}-custom-item-${fieldKey}-keywords`}
+                                            label={t(
+                                                "quoteTemplateForm.keywordsLabel",
+                                            )}
+                                            value={field.value.join(",")}
+                                            onChange={(event) =>
+                                                field.onChange(
+                                                    event.target.value.split(
+                                                        ",",
+                                                    ),
+                                                )
+                                            }
+                                            onBlur={field.onBlur}
+                                            placeholder={t(
+                                                "quoteTemplateForm.keywordsPlaceholder",
+                                            )}
+                                            rows={1}
+                                        />
+                                    )}
+                                />
+                            </Table.Cell>
+                        </Table.Row>
+                    ) : (
+                        <></>
+                    )
+                }
+            />
+        </>
     );
 }

@@ -110,6 +110,50 @@ export const WithFooterOnly: Story = {
     ),
 };
 
+export const Dashed: Story = {
+    parameters: {
+        docs: {
+            description: {
+                story: 'Use variant="dashed" for an "add new" affordance card sitting alongside a set of real ones.',
+            },
+        },
+    },
+    render: () => (
+        <Card variant="dashed" onClick={() => {}}>
+            <Card.Title>+ New variation</Card.Title>
+            <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                Starts as a copy of the default
+            </p>
+        </Card>
+    ),
+};
+
+export const SelectableCards: Story = {
+    parameters: {
+        docs: {
+            description: {
+                story: "Set onClick to make a card an activation target (it renders as a button) and selected to highlight the currently-open one -- e.g. a row of template cards where one is open below.",
+            },
+        },
+    },
+    render: () => (
+        <div className="grid grid-cols-2 gap-4">
+            <Card selected onClick={() => {}}>
+                <Card.Title>Standard rates</Card.Title>
+                <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                    Walls $74/LM
+                </p>
+            </Card>
+            <Card onClick={() => {}}>
+                <Card.Title>Sterling Homes rates</Card.Title>
+                <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                    Walls $68/LM
+                </p>
+            </Card>
+        </div>
+    ),
+};
+
 export const OverflowVisible: Story = {
     parameters: {
         docs: {

@@ -132,10 +132,6 @@ export const zh = createTranslationResource(
             description: "生成项目报价时使用的默认项目和价格。",
         }),
         quoteTemplatePanel: Object.freeze({
-            title: "报价模板",
-            description:
-                "调整默认项目价格，并添加应出现在每份报价单中的自定义项目。变体沿用默认模板的项目列表、单位和关键词——仅价格不同。",
-            defaultEditorTitle: "默认模板",
             loading: "正在加载报价模板...",
             saveSuccessTitle: "报价模板已保存",
             saveSuccessDescription: "您的更改已保存。",
@@ -166,19 +162,12 @@ export const zh = createTranslationResource(
             saving: "正在保存...",
         }),
         quoteTemplateList: Object.freeze({
-            tableLabel: "报价模板",
-            nameColumn: "名称",
-            loading: "正在加载报价模板...",
             defaultBadge: "默认",
-            openAction: "打开{{name}}",
-            renameAction: "重命名{{name}}",
             deleteAction: "删除{{name}}",
-            addVariation: "添加变体",
+            addVariation: "新建变体",
             nameLabel: "模板名称",
             createDialogTitle: "新建报价模板变体",
-            renameDialogTitle: "重命名报价模板",
             createSubmit: "创建",
-            renameSubmit: "重命名",
             savingAction: "正在保存...",
             deleteDialogTitle: "删除“{{name}}”？",
             deleteDialogDescription:
@@ -197,7 +186,6 @@ export const zh = createTranslationResource(
             openVariationToReprice: "打开{{name}}以重新定价",
         }),
         quoteTemplateVariationEditor: Object.freeze({
-            backAction: "返回模板列表",
             itemsTableLabel: "变体项目",
             rateDeltaSame: "与默认相同",
             rateDeltaIncrease: "较默认 +{{amount}}",
@@ -222,6 +210,38 @@ export const zh = createTranslationResource(
                 "{{company}}目前使用“{{fromTemplate}}”定价。在此添加将改为使用“{{toTemplate}}”。",
             moveCompanyConfirm: "移动公司",
             movingCompanyAction: "正在移动...",
+        }),
+        quoteTemplateCard: Object.freeze({
+            wallsRate: "墙面 {{price}}/{{unit}}",
+            percentDeltaIncrease: "较默认 +{{amount}}",
+            percentDeltaDecrease: "较默认 −{{amount}}",
+            // zh has a single plural form (CLDR "other"); `_one` mirrors
+            // `_other` verbatim, matching the note on quotesTable.quoteCount above.
+            defaultAppliesTo_one: "{{count}} 家没有自己变体的公司的后备模板",
+            defaultAppliesTo_other: "{{count}} 家没有自己变体的公司的后备模板",
+            defaultAppliesToDescription: "没有自己变体的公司均按此费率报价。",
+            noFallbackCompanies: "目前没有公司使用此模板。",
+            newVariationDescription: "以默认模板为起点创建副本",
+            teamDefaultTemplate: "团队默认模板",
+            setAsTeamDefault: "设为团队默认",
+            setAsDefaultErrorTitle: "无法设为默认",
+            setAsDefaultErrorDescription:
+                "更新团队默认模板时出现问题，请重试。",
+        }),
+        systemItemDescriptions: Object.freeze({
+            PLASTERBOARD_10MM: "墙面 — 标准板材",
+            PLASTERBOARD_13MM: "墙面 — 加厚板材",
+            VILLABOARD_9MM: "墙面 — 潮湿区域",
+            VILLABOARD_6MM: "墙面 — 潮湿区域，轻型",
+            ACOUSTIC_SOUNDCHEK_10MM: "墙面 — 隔音板材",
+            ACOUSTIC_SOUNDCHEK_13MM: "墙面 — 隔音板材，加厚",
+            WATER_RESISTANT_10MM: "墙面 — 防水板材",
+            WATER_RESISTANT_13MM: "墙面 — 防水板材，加厚",
+            FIRE_RESISTANT_DRY_13MM: "墙面 — 防火板材，干燥区域",
+            FIRE_RESISTANT_DRY_16MM: "墙面 — 防火板材，干燥区域，加厚",
+            FIRE_RESISTANT_WET_13MM: "墙面 — 防火板材，潮湿区域",
+            FIRE_RESISTANT_WET_16MM: "墙面 — 防火板材，潮湿区域，加厚",
+            FLEXIBLE_BOARD_6_5MM: "墙面 — 弧形墙面",
         }),
         projectQuoteReadinessPage: Object.freeze({
             unableToLoadProject: "无法加载项目",

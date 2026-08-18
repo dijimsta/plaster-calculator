@@ -56,6 +56,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*ReconcileSystemQuoteItemTemplates*](#reconcilesystemquoteitemtemplates)
   - [*CreateQuoteTemplate*](#createquotetemplate)
   - [*RenameQuoteTemplate*](#renamequotetemplate)
+  - [*SetQuoteTemplateAsDefault*](#setquotetemplateasdefault)
   - [*DeleteQuoteTemplate*](#deletequotetemplate)
   - [*CreateQuoteTemplateVariation*](#createquotetemplatevariation)
   - [*CreateQuoteItemTemplateConfig*](#createquoteitemtemplateconfig)
@@ -5772,6 +5773,120 @@ console.log(data.quoteTemplate_update);
 // Or, you can use the `Promise` API.
 executeMutation(ref).then((response) => {
   const data = response.data;
+  console.log(data.quoteTemplate_update);
+});
+```
+
+## SetQuoteTemplateAsDefault
+You can execute the `SetQuoteTemplateAsDefault` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+setQuoteTemplateAsDefault(vars: SetQuoteTemplateAsDefaultVariables): MutationPromise<SetQuoteTemplateAsDefaultData, SetQuoteTemplateAsDefaultVariables>;
+
+interface SetQuoteTemplateAsDefaultRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: SetQuoteTemplateAsDefaultVariables): MutationRef<SetQuoteTemplateAsDefaultData, SetQuoteTemplateAsDefaultVariables>;
+}
+export const setQuoteTemplateAsDefaultRef: SetQuoteTemplateAsDefaultRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+setQuoteTemplateAsDefault(dc: DataConnect, vars: SetQuoteTemplateAsDefaultVariables): MutationPromise<SetQuoteTemplateAsDefaultData, SetQuoteTemplateAsDefaultVariables>;
+
+interface SetQuoteTemplateAsDefaultRef {
+  ...
+  (dc: DataConnect, vars: SetQuoteTemplateAsDefaultVariables): MutationRef<SetQuoteTemplateAsDefaultData, SetQuoteTemplateAsDefaultVariables>;
+}
+export const setQuoteTemplateAsDefaultRef: SetQuoteTemplateAsDefaultRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the setQuoteTemplateAsDefaultRef:
+```typescript
+const name = setQuoteTemplateAsDefaultRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `SetQuoteTemplateAsDefault` mutation requires an argument of type `SetQuoteTemplateAsDefaultVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface SetQuoteTemplateAsDefaultVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `SetQuoteTemplateAsDefault` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `SetQuoteTemplateAsDefaultData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface SetQuoteTemplateAsDefaultData {
+  quoteTemplate_updateMany: number;
+  quoteTemplate_update?: QuoteTemplate_Key | null;
+}
+```
+### Using `SetQuoteTemplateAsDefault`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, setQuoteTemplateAsDefault, SetQuoteTemplateAsDefaultVariables } from '@generated/data-connector-web';
+
+// The `SetQuoteTemplateAsDefault` mutation requires an argument of type `SetQuoteTemplateAsDefaultVariables`:
+const setQuoteTemplateAsDefaultVars: SetQuoteTemplateAsDefaultVariables = {
+  id: ..., 
+};
+
+// Call the `setQuoteTemplateAsDefault()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await setQuoteTemplateAsDefault(setQuoteTemplateAsDefaultVars);
+// Variables can be defined inline as well.
+const { data } = await setQuoteTemplateAsDefault({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await setQuoteTemplateAsDefault(dataConnect, setQuoteTemplateAsDefaultVars);
+
+console.log(data.quoteTemplate_updateMany);
+console.log(data.quoteTemplate_update);
+
+// Or, you can use the `Promise` API.
+setQuoteTemplateAsDefault(setQuoteTemplateAsDefaultVars).then((response) => {
+  const data = response.data;
+  console.log(data.quoteTemplate_updateMany);
+  console.log(data.quoteTemplate_update);
+});
+```
+
+### Using `SetQuoteTemplateAsDefault`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, setQuoteTemplateAsDefaultRef, SetQuoteTemplateAsDefaultVariables } from '@generated/data-connector-web';
+
+// The `SetQuoteTemplateAsDefault` mutation requires an argument of type `SetQuoteTemplateAsDefaultVariables`:
+const setQuoteTemplateAsDefaultVars: SetQuoteTemplateAsDefaultVariables = {
+  id: ..., 
+};
+
+// Call the `setQuoteTemplateAsDefaultRef()` function to get a reference to the mutation.
+const ref = setQuoteTemplateAsDefaultRef(setQuoteTemplateAsDefaultVars);
+// Variables can be defined inline as well.
+const ref = setQuoteTemplateAsDefaultRef({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = setQuoteTemplateAsDefaultRef(dataConnect, setQuoteTemplateAsDefaultVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quoteTemplate_updateMany);
+console.log(data.quoteTemplate_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quoteTemplate_updateMany);
   console.log(data.quoteTemplate_update);
 });
 ```
