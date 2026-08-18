@@ -78,6 +78,42 @@ export const Default: Story = {
     ),
 };
 
+export const CardsVariant: Story = {
+    parameters: {
+        docs: {
+            description: {
+                story: 'variant="cards" renders each item as its own separated, hoverable card instead of one divided block -- use it for rows that link out individually, like a "recent items" list.',
+            },
+        },
+    },
+    render: () => (
+        <div className="mx-auto max-w-3xl">
+            <StackedList variant="cards">
+                {jobs.map((job) => (
+                    <StackedList.Item key={job.name} variant="cards">
+                        <a
+                            href="#"
+                            className="flex items-center justify-between gap-4"
+                        >
+                            <div className="min-w-0 flex-auto">
+                                <h3 className="truncate text-sm font-semibold leading-6 text-gray-900">
+                                    {job.name}
+                                </h3>
+                                <p className="mt-1 truncate text-sm leading-5 text-gray-500">
+                                    {job.description}
+                                </p>
+                            </div>
+                            <div className="shrink-0 text-sm leading-6 text-gray-500">
+                                {job.date}
+                            </div>
+                        </a>
+                    </StackedList.Item>
+                ))}
+            </StackedList>
+        </div>
+    ),
+};
+
 export const WithLinks: Story = {
     render: () => (
         <div className="mx-auto max-w-3xl">
