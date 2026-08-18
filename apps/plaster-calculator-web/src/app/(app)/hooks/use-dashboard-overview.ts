@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import type { ProjectSummary } from "../../../types.js";
 
+import { useDashboardPanels } from "./use-dashboard-panels.js";
 import type { EnrichedProject } from "./use-projects-listing.js";
 import {
     mergeProjects,
@@ -22,9 +23,6 @@ const ALL_SALES_STATUSES: readonly SalesStatus[] = [
     "LOST",
 ];
 
-const RECENT_PROJECTS_LIMIT = 4;
-const NEEDS_ATTENTION_LIMIT = 4;
-
 export type DashboardOverviewState = {
     readonly allProjects: readonly EnrichedProject[];
     readonly projectsLoading: boolean;
@@ -35,6 +33,7 @@ export type DashboardOverviewState = {
     readonly companiesCount: number;
     readonly recentProjects: readonly EnrichedProject[];
     readonly needsAttentionProjects: readonly EnrichedProject[];
+    readonly panelsLoading: boolean;
     readonly refresh: () => Promise<void>;
     readonly setProcessingProjectId: (projectId: string | null) => void;
 };
@@ -52,6 +51,13 @@ export function useDashboardOverview(): DashboardOverviewState {
     const [processingProjectId, setProcessingProjectId] = useState<
         string | null
     >(null);
+
+    // The two panels below need only a handful of the most recent projects,
+    // not the full unbounded fetch this hook otherwise does for accurate
+    // stat counts -- see useDashboardPanels for why that fetch stays
+    // separate rather than replacing the unbounded one.
+    const { recentProjects, needsAttentionProjects, panelsLoading } =
+        useDashboardPanels(projectsService, companyNames, notify);
 
     useEffect(() => {
         void refresh();
@@ -179,19 +185,6 @@ export function useDashboardOverview(): DashboardOverviewState {
         [enriched],
     );
 
-    const recentProjects = useMemo(
-        () =>
-            [...enriched].sort(byUpdatedAtDesc).slice(0, RECENT_PROJECTS_LIMIT),
-        [enriched],
-    );
-    const needsAttentionProjects = useMemo(
-        () =>
-            [...awaitingBuilderProjects]
-                .sort(byUpdatedAtDesc)
-                .slice(0, NEEDS_ATTENTION_LIMIT),
-        [awaitingBuilderProjects],
-    );
-
     return {
         allProjects: enriched,
         projectsLoading,
@@ -202,11 +195,8 @@ export function useDashboardOverview(): DashboardOverviewState {
         companiesCount: companyNames.size,
         recentProjects,
         needsAttentionProjects,
+        panelsLoading,
         refresh,
         setProcessingProjectId,
     };
-}
-
-function byUpdatedAtDesc(a: ProjectSummary, b: ProjectSummary): number {
-    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
 }
