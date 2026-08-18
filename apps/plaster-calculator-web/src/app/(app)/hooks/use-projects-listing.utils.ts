@@ -3,6 +3,32 @@ import { createElement } from "react";
 
 import type { ProjectSummary } from "../../../types.js";
 
+export type EnrichedProject = ProjectSummary & { companyName: string | null };
+
+/** Enriches a project with its company's display name, if any. */
+export function enrichProject(
+    project: ProjectSummary,
+    companyNames: ReadonlyMap<string, string>,
+): EnrichedProject {
+    return {
+        ...project,
+        companyName: project.companyId
+            ? (companyNames.get(project.companyId) ?? null)
+            : null,
+    };
+}
+
+/** Whether a project matches a free-text search query, case-insensitively. */
+export function matchesQuery(project: EnrichedProject, query: string): boolean {
+    const q = query.trim().toLowerCase();
+    if (!q) return true;
+    return (
+        project.name.toLowerCase().includes(q) ||
+        project.originalFileName.toLowerCase().includes(q) ||
+        (project.companyName?.toLowerCase().includes(q) ?? false)
+    );
+}
+
 /** Merges same-project results from parallel per-status `listProjects` calls, deduping by id. */
 export function mergeProjects(...lists: ProjectSummary[][]): ProjectSummary[] {
     const seen = new Set<string>();
