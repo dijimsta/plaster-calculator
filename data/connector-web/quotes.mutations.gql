@@ -389,6 +389,41 @@ mutation RenameQuoteTemplate($id: UUID!, $name: String!)
     )
 }
 
+# Promotes a `QuoteTemplate` to the team's default, demoting whichever
+# template currently holds `isDefault: true` (there is always exactly one --
+# `CreateQuoteTemplate` sets it on creation, and this mutation is the only
+# other place `isDefault` changes). `isDefault` carries no database-level
+# uniqueness constraint, so both writes happen in the same `@transaction` as
+# `RenameQuoteTemplate`/`DeleteQuoteTemplate` above: clearing the old default
+# and setting the new one always lands together, never leaving the team with
+# zero or two defaults. Clearing by `where: { isDefault: { eq: true } }`
+# rather than by a previously-fetched id also makes this idempotent -- if
+# `$id` already is the default, the clear touches it and the following
+# update sets it straight back to true.
+mutation SetQuoteTemplateAsDefault($id: UUID!) @auth(level: USER) @transaction {
+    query @redact {
+        quoteTemplate(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote template"
+            ) {
+            id
+            teamId
+        }
+    }
+    quoteTemplate_updateMany(
+        where: {
+            teamId: { eq_expr: "auth.token.teamId" }
+            isDefault: { eq: true }
+        }
+        data: { isDefault: false, updatedAt_expr: "request.time" }
+    )
+    quoteTemplate_update(
+        id: $id
+        data: { isDefault: true, updatedAt_expr: "request.time" }
+    )
+}
+
 # Deletes a `QuoteTemplate`. Any `Company` currently assigned to it (via
 # `Company.quoteTemplateId`, added in WORK-190) has that assignment cleared
 # first — `company_updateMany` sets `quoteTemplateId: null`, which means

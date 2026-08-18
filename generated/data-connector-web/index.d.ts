@@ -1314,6 +1314,15 @@ export interface SetMyCompanyPrimaryContactVariables {
   contactId: UUIDString;
 }
 
+export interface SetQuoteTemplateAsDefaultData {
+  quoteTemplate_updateMany: number;
+  quoteTemplate_update?: QuoteTemplate_Key | null;
+}
+
+export interface SetQuoteTemplateAsDefaultVariables {
+  id: UUIDString;
+}
+
 export interface SupplierQuoteItemPrice_Key {
   supplierId: UUIDString;
   templateId: UUIDString;
@@ -1941,6 +1950,18 @@ export const renameQuoteTemplateRef: RenameQuoteTemplateRef;
 
 export function renameQuoteTemplate(vars: RenameQuoteTemplateVariables): MutationPromise<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
 export function renameQuoteTemplate(dc: DataConnect, vars: RenameQuoteTemplateVariables): MutationPromise<RenameQuoteTemplateData, RenameQuoteTemplateVariables>;
+
+interface SetQuoteTemplateAsDefaultRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: SetQuoteTemplateAsDefaultVariables): MutationRef<SetQuoteTemplateAsDefaultData, SetQuoteTemplateAsDefaultVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: SetQuoteTemplateAsDefaultVariables): MutationRef<SetQuoteTemplateAsDefaultData, SetQuoteTemplateAsDefaultVariables>;
+  operationName: string;
+}
+export const setQuoteTemplateAsDefaultRef: SetQuoteTemplateAsDefaultRef;
+
+export function setQuoteTemplateAsDefault(vars: SetQuoteTemplateAsDefaultVariables): MutationPromise<SetQuoteTemplateAsDefaultData, SetQuoteTemplateAsDefaultVariables>;
+export function setQuoteTemplateAsDefault(dc: DataConnect, vars: SetQuoteTemplateAsDefaultVariables): MutationPromise<SetQuoteTemplateAsDefaultData, SetQuoteTemplateAsDefaultVariables>;
 
 interface DeleteQuoteTemplateRef {
   /* Allow users to create refs without passing in DataConnect */

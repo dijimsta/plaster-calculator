@@ -490,6 +490,20 @@ exports.renameQuoteTemplate = function renameQuoteTemplate(dcOrVars, vars) {
 }
 ;
 
+const setQuoteTemplateAsDefaultRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'SetQuoteTemplateAsDefault', inputVars);
+}
+setQuoteTemplateAsDefaultRef.operationName = 'SetQuoteTemplateAsDefault';
+exports.setQuoteTemplateAsDefaultRef = setQuoteTemplateAsDefaultRef;
+
+exports.setQuoteTemplateAsDefault = function setQuoteTemplateAsDefault(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(setQuoteTemplateAsDefaultRef(dcInstance, inputVars));
+}
+;
+
 const deleteQuoteTemplateRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
