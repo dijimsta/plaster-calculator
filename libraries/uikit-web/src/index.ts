@@ -71,9 +71,15 @@ export type {
 export { Combobox } from "./forms/combobox/index.ts";
 export type { ComboboxOption, ComboboxProps } from "./forms/combobox/index.ts";
 export { Divider } from "./layout/divider/index.ts";
-export type { DividerProps } from "./layout/divider/index.ts";
+export type { DividerProps, DividerThickness } from "./layout/divider/index.ts";
+export { FilePickerButton } from "./forms/file-picker-button/index.ts";
+export type { FilePickerButtonProps } from "./forms/file-picker-button/index.ts";
 export { Grid } from "./layout/grid/index.ts";
-export type { GridProps, GridTemplateColumns } from "./layout/grid/index.ts";
+export type {
+    GridGap,
+    GridProps,
+    GridTemplateColumns,
+} from "./layout/grid/index.ts";
 export {
     Heading1,
     Heading2,

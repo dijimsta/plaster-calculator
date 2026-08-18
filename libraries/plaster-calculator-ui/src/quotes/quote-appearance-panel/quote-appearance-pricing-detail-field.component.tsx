@@ -9,6 +9,8 @@ import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 
+import { QuoteAppearanceCaption } from "./quote-appearance-caption.component.tsx";
+
 export type QuoteAppearancePricingDetailFieldProps = {
     readonly value: QuotePricingDetail;
     readonly disabled?: boolean;
@@ -23,7 +25,10 @@ export type QuoteAppearancePricingDetailFieldProps = {
  * document doesn't support. Each option's `description` states the level's
  * consequence for the builder reading the quote in one line, per this
  * panel's copy constraint: what changes here is team-wide -- nothing here
- * implies a level can be swapped per quote before sending.
+ * implies a level can be swapped per quote before sending. Rendered as a
+ * `RadioGroup` "stacked-cards" -- full-width, individually rounded option
+ * cards whose selected option tints -- under a "Pricing detail" caption
+ * matching this panel's other field captions.
  */
 export function QuoteAppearancePricingDetailField({
     value,
@@ -35,8 +40,12 @@ export function QuoteAppearancePricingDetailField({
     return (
         <RadioGroup
             name="quote-appearance-pricing-detail"
-            legend={t("quoteAppearancePanel.pricingDetailLegend")}
-            description={t("quoteAppearancePanel.pricingDetailDescription")}
+            legend={
+                <QuoteAppearanceCaption>
+                    {t("quoteAppearancePanel.pricingDetailLegend")}
+                </QuoteAppearanceCaption>
+            }
+            variant="stacked-cards"
             disabled={disabled}
         >
             <RadioGroupOption

@@ -1,15 +1,14 @@
 import {
     Avatar,
-    Box,
     RadioGroup,
     RadioGroupOption,
-    Text,
     type AvatarColor,
 } from "@libraries/uikit-web";
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 
+import { QuoteAppearanceCaption } from "./quote-appearance-caption.component.tsx";
 import { QUOTE_APPEARANCE_ACCENT_COLOR_SWATCHES } from "./quote-appearance-panel.utils.ts";
 
 export type QuoteAppearanceAccentColorFieldProps = {
@@ -21,12 +20,17 @@ export type QuoteAppearanceAccentColorFieldProps = {
 /**
  * The team's accent-colour picker: a fixed set of swatches (see
  * `QUOTE_APPEARANCE_ACCENT_COLOR_SWATCHES`'s doc comment for why it's closed
- * rather than a free colour picker), rendered as a `RadioGroup` "small-cards"
- * layout so exactly one swatch is ever selected. Each option's visible
- * swatch is a small decorative `Avatar` in that swatch's own `avatarColor`
- * -- the only public UIKit API that paints a flat colour chip -- with an
- * empty `initials` string so it renders its coloured background with no
- * visible glyph.
+ * rather than a free colour picker), rendered as a `RadioGroup` "swatch"
+ * layout -- bare colour squares with a ring on the selected one, no card
+ * background or visible text -- so exactly one swatch is ever selected.
+ * Each option's visible swatch is a small decorative `Avatar` in that
+ * swatch's own `avatarColor` -- the only public UIKit API that paints a
+ * flat colour chip -- with an empty `initials` string so it renders its
+ * coloured background with no visible glyph, and `shape="square"` so it
+ * reads as a colour swatch rather than a person's avatar. The swatch's name
+ * (e.g. "Ocean blue") is passed as `description`, which the "swatch"
+ * variant uses only as the control's accessible name -- see
+ * `RadioGroupSwatchOption`'s own doc comment (`@libraries/uikit-web`).
  */
 export function QuoteAppearanceAccentColorField({
     value,
@@ -38,9 +42,12 @@ export function QuoteAppearanceAccentColorField({
     return (
         <RadioGroup
             name="quote-appearance-accent-color"
-            legend={t("quoteAppearancePanel.accentColorLabel")}
-            description={t("quoteAppearancePanel.accentColorDescription")}
-            variant="small-cards"
+            legend={
+                <QuoteAppearanceCaption>
+                    {t("quoteAppearancePanel.accentColorLabel")}
+                </QuoteAppearanceCaption>
+            }
+            variant="swatch"
             disabled={disabled}
         >
             {QUOTE_APPEARANCE_ACCENT_COLOR_SWATCHES.map((swatch) => (
@@ -50,17 +57,14 @@ export function QuoteAppearanceAccentColorField({
                     checked={value === swatch.value}
                     onChange={() => onChange(swatch.value)}
                     label={
-                        <Box direction="row" align="center" gap="xs">
-                            <Avatar
-                                color={swatch.avatarColor}
-                                initials=""
-                                size="xs"
-                            />
-                            <Text size="sm">
-                                {accentColorSwatchLabel(t, swatch.avatarColor)}
-                            </Text>
-                        </Box>
+                        <Avatar
+                            color={swatch.avatarColor}
+                            shape="square"
+                            initials=""
+                            size="sm"
+                        />
                     }
+                    description={accentColorSwatchLabel(t, swatch.avatarColor)}
                 />
             ))}
         </RadioGroup>

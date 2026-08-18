@@ -1,6 +1,9 @@
 "use client";
 
-import { QuoteAppearancePanel } from "@libraries/plaster-calculator-ui";
+import {
+    QuoteAppearancePanel,
+    QuoteAppearanceSaveButton,
+} from "@libraries/plaster-calculator-ui";
 import { Box, Breadcrumb, PageHeading } from "@libraries/uikit-web";
 import { Home } from "lucide-react";
 
@@ -38,6 +41,9 @@ export default function QuoteAppearancePage() {
                         {tApp("quotes.appearanceDescription")}
                     </PageHeading.Description>
                 </PageHeading.Content>
+                <PageHeading.Actions>
+                    <QuoteAppearanceSaveButton />
+                </PageHeading.Actions>
                 <PageHeading.Navigation>
                     <QuotesTabsNavigation current="appearance" />
                 </PageHeading.Navigation>

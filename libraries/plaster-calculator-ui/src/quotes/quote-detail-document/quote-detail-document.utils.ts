@@ -63,6 +63,21 @@ export function provenanceLabel(
 }
 
 /**
+ * Formats a line item's quantity with its unit folded into the same string
+ * (e.g. "128 m²"), rather than the pricing table's own separate Unit
+ * column this replaced -- the printed document's target design has no room
+ * for a fifth column, and the unit reads naturally beside the number it
+ * measures. Omits the unit entirely when the item doesn't have one (a
+ * manually-entered line with no recorded `unit`).
+ */
+export function quantityWithUnit(
+    quantity: number,
+    unit: string | null,
+): string {
+    return unit ? `${quantity} ${unit}` : `${quantity}`;
+}
+
+/**
  * Joins the letterhead's ABN and licence number into one line (e.g.
  * "ABN 12 345 678 901 · Licence 123456"), omitting whichever of the two
  * `appearance` leaves `null` ("not filled in yet" — see
@@ -81,6 +96,23 @@ export function abnLicenceLine(
             ? t("quoteDetailDocument.licenceLabel", { licenceNumber })
             : null,
     ];
+    const presentParts = parts.filter((part): part is string => part !== null);
+    return presentParts.length > 0 ? presentParts.join(" · ") : null;
+}
+
+/**
+ * Joins the letterhead's phone number and email onto one line (e.g.
+ * "0412 884 209 · quotes@fone.com.au"), omitting whichever `appearance`
+ * leaves `null`. Same "not filled in yet" and single-line-join shape as
+ * `abnLicenceLine`, kept as its own function since the two lines have
+ * unrelated content (contact details vs. registration numbers) that just
+ * happen to share this formatting.
+ */
+export function phoneEmailLine(
+    phoneNumber: string | null,
+    email: string | null,
+): string | null {
+    const parts: readonly (string | null)[] = [phoneNumber, email];
     const presentParts = parts.filter((part): part is string => part !== null);
     return presentParts.length > 0 ? presentParts.join(" · ") : null;
 }

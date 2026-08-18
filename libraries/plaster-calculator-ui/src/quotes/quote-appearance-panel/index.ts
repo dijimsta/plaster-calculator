@@ -1,8 +1,10 @@
 export { QuoteAppearancePanel } from "./quote-appearance-panel.component.tsx";
+export { QUOTE_APPEARANCE_FORM_ID } from "./quote-appearance-panel.constants.ts";
 export type {
     QuoteAppearanceAccentColorSwatch,
     QuoteAppearanceFormValues,
 } from "./quote-appearance-panel.types.ts";
+export { QuoteAppearanceSaveButton } from "./quote-appearance-save-button.component.tsx";
 export {
     buildQuoteAppearanceSavePayload,
     previewAppearanceFromFormValues,

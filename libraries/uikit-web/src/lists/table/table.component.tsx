@@ -9,6 +9,18 @@ export type TableProps = {
     readonly bordered?: boolean;
     readonly compact?: boolean;
     readonly striped?: boolean;
+    /**
+     * Wraps the table in a horizontally scrollable container when its
+     * content is wider than available space. Defaults to `true`. Set to
+     * `false` for a table that must never scroll -- e.g. a printed
+     * document, where a scrollbar can't be interacted with -- which also
+     * caps the table at its container's width (`constrainedTable`,
+     * `table.styles.ts`) so it wraps instead of silently overflowing into
+     * an ancestor that clips it. Pair it with `Table.Cell`'s own `wrap` on
+     * any column whose content could otherwise force the table wider than
+     * its container.
+     */
+    readonly scroll?: boolean;
     readonly label?: string;
     readonly children?: ReactNode;
 };
@@ -17,13 +29,14 @@ export function Table({
     bordered = false,
     compact = false,
     striped = false,
+    scroll = true,
     label,
     children,
 }: TableProps): ReactElement {
     return (
         <div
             className={clsx(
-                styles.container,
+                scroll && styles.container,
                 bordered && styles.borderedContainer,
             )}
         >
@@ -31,6 +44,7 @@ export function Table({
                 aria-label={label}
                 className={clsx(
                     styles.table,
+                    !scroll && styles.constrainedTable,
                     compact && styles.compactTable,
                     striped && styles.stripedTable,
                 )}

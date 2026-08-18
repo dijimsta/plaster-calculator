@@ -1,6 +1,17 @@
 export const panelOption =
     "relative flex cursor-pointer select-none gap-3 p-4 ring-1 ring-inset ring-transparent transition-colors [-webkit-tap-highlight-color:transparent] first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 has-[:checked]:z-10 has-[:checked]:bg-indigo-50 has-[:checked]:ring-indigo-600 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50 dark:hover:bg-white/5 dark:has-[:checked]:bg-indigo-500/10 dark:has-[:checked]:ring-indigo-500";
 
+/**
+ * Like `panelOption`, but each option is its own fully-rounded card with a
+ * always-visible border, rather than one option among several sharing a
+ * single seamless bordered container (`groupVariants.list`) -- pairs with
+ * `groupVariants["stacked-cards"]`'s `flex flex-col gap-3`, which gives
+ * each option room for its own corners instead of relying on
+ * `first:`/`last:` to round only the group's outer edges.
+ */
+export const stackedCardOption =
+    "relative flex cursor-pointer select-none gap-3 rounded-lg p-4 ring-1 ring-inset ring-gray-200 transition-colors [-webkit-tap-highlight-color:transparent] hover:bg-gray-50 has-[:checked]:bg-indigo-50 has-[:checked]:ring-indigo-600 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50 dark:ring-white/10 dark:hover:bg-white/5 dark:has-[:checked]:bg-indigo-500/10 dark:has-[:checked]:ring-indigo-500";
+
 export const panelOptionLayout = Object.freeze({
     default: "items-center",
     table: "grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_auto] items-center",

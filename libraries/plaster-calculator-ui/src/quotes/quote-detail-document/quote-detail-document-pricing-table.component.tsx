@@ -10,9 +10,13 @@ import { centsToAudDisplayText } from "@libraries/utilities";
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
+import { QuoteAppearanceCaption } from "../quote-appearance-panel/quote-appearance-caption.component.tsx";
 
 import type { QuoteDetailDocumentLineItem } from "./quote-detail-document.types.ts";
-import { provenanceLabel } from "./quote-detail-document.utils.ts";
+import {
+    provenanceLabel,
+    quantityWithUnit,
+} from "./quote-detail-document.utils.ts";
 
 export type QuoteDetailDocumentPricingTableProps = {
     readonly pricingDetail: QuotePricingDetail;
@@ -27,7 +31,10 @@ export type QuoteDetailDocumentPricingTableProps = {
  * `LUMP_SUM_PRICING_DETAIL` never put a line item's `quantity` or
  * `unitPriceCents` into rendered markup -- only the amount those values
  * compute to -- so a printed PDF or copy-pasted page can't leak a rate a
- * client wasn't meant to see.
+ * client wasn't meant to see. Every variant renders with `scroll={false}` --
+ * a scrollbar can't be interacted with on a printed page, so a table too
+ * wide for its container must wrap its content instead (the item name
+ * column's own `wrap`) rather than scroll off the edge.
  */
 export function QuoteDetailDocumentPricingTable({
     pricingDetail,
@@ -48,28 +55,37 @@ type LineItemsProps = {
     readonly lineItems: readonly QuoteDetailDocumentLineItem[];
 };
 
-/** Full detail: item with its quantity provenance, quantity, unit, rate, and amount. */
+/**
+ * Full detail: item with its quantity provenance, quantity (with its unit
+ * folded into the same cell via `quantityWithUnit` -- e.g. "128 m²" --
+ * rather than a separate Unit column), rate, and amount.
+ */
 function FullLineItemsTable({ lineItems }: LineItemsProps): ReactElement {
     const { t } = useQuotesTranslation();
 
     return (
-        <Table label={t("quoteDetailDocument.lineItemsLabel")}>
+        <Table label={t("quoteDetailDocument.lineItemsLabel")} scroll={false}>
             <Table.Head>
                 <Table.Row>
                     <Table.Header>
-                        {t("quoteDetailDocument.columnItem")}
+                        <QuoteAppearanceCaption>
+                            {t("quoteDetailDocument.columnItem")}
+                        </QuoteAppearanceCaption>
                     </Table.Header>
                     <Table.Header align="end">
-                        {t("quoteDetailDocument.columnQuantity")}
+                        <QuoteAppearanceCaption>
+                            {t("quoteDetailDocument.columnQuantity")}
+                        </QuoteAppearanceCaption>
                     </Table.Header>
                     <Table.Header align="end">
-                        {t("quoteUnitInput.label")}
+                        <QuoteAppearanceCaption>
+                            {t("quoteDetailDocument.columnUnitPrice")}
+                        </QuoteAppearanceCaption>
                     </Table.Header>
                     <Table.Header align="end">
-                        {t("quoteDetailDocument.columnUnitPrice")}
-                    </Table.Header>
-                    <Table.Header align="end">
-                        {t("quoteDetailDocument.columnAmount")}
+                        <QuoteAppearanceCaption>
+                            {t("quoteDetailDocument.columnAmount")}
+                        </QuoteAppearanceCaption>
                     </Table.Header>
                 </Table.Row>
             </Table.Head>
@@ -99,15 +115,18 @@ function FullLineItemsRow({
                     </Text>
                 </Box>
             </Table.Cell>
-            <Table.Cell align="end">{item.quantity}</Table.Cell>
-            <Table.Cell align="end">{item.unit ?? ""}</Table.Cell>
+            <Table.Cell align="end">
+                {quantityWithUnit(item.quantity, item.unit)}
+            </Table.Cell>
             <Table.Cell align="end">
                 {centsToAudDisplayText(item.unitPriceCents)}
             </Table.Cell>
             <Table.Cell align="end">
-                {centsToAudDisplayText(
-                    lineAmountCents(item.quantity, item.unitPriceCents),
-                )}
+                <Text weight="semibold">
+                    {centsToAudDisplayText(
+                        lineAmountCents(item.quantity, item.unitPriceCents),
+                    )}
+                </Text>
             </Table.Cell>
         </Table.Row>
     );
@@ -123,14 +142,18 @@ function AmountsOnlyTable({ lineItems }: LineItemsProps): ReactElement {
     const { t } = useQuotesTranslation();
 
     return (
-        <Table label={t("quoteDetailDocument.lineItemsLabel")}>
+        <Table label={t("quoteDetailDocument.lineItemsLabel")} scroll={false}>
             <Table.Head>
                 <Table.Row>
                     <Table.Header>
-                        {t("quoteDetailDocument.columnItem")}
+                        <QuoteAppearanceCaption>
+                            {t("quoteDetailDocument.columnItem")}
+                        </QuoteAppearanceCaption>
                     </Table.Header>
                     <Table.Header align="end">
-                        {t("quoteDetailDocument.columnAmount")}
+                        <QuoteAppearanceCaption>
+                            {t("quoteDetailDocument.columnAmount")}
+                        </QuoteAppearanceCaption>
                     </Table.Header>
                 </Table.Row>
             </Table.Head>
@@ -139,12 +162,14 @@ function AmountsOnlyTable({ lineItems }: LineItemsProps): ReactElement {
                     <Table.Row key={item.id} avoidBreakInside>
                         <Table.Cell wrap>{item.name}</Table.Cell>
                         <Table.Cell align="end">
-                            {centsToAudDisplayText(
-                                lineAmountCents(
-                                    item.quantity,
-                                    item.unitPriceCents,
-                                ),
-                            )}
+                            <Text weight="semibold">
+                                {centsToAudDisplayText(
+                                    lineAmountCents(
+                                        item.quantity,
+                                        item.unitPriceCents,
+                                    ),
+                                )}
+                            </Text>
                         </Table.Cell>
                     </Table.Row>
                 ))}
@@ -167,14 +192,18 @@ function LumpSumTable({
     const { t } = useQuotesTranslation();
 
     return (
-        <Table label={t("quoteDetailDocument.lineItemsLabel")}>
+        <Table label={t("quoteDetailDocument.lineItemsLabel")} scroll={false}>
             <Table.Head>
                 <Table.Row>
                     <Table.Header>
-                        {t("quoteDetailDocument.columnItem")}
+                        <QuoteAppearanceCaption>
+                            {t("quoteDetailDocument.columnItem")}
+                        </QuoteAppearanceCaption>
                     </Table.Header>
                     <Table.Header align="end">
-                        {t("quoteDetailDocument.columnAmount")}
+                        <QuoteAppearanceCaption>
+                            {t("quoteDetailDocument.columnAmount")}
+                        </QuoteAppearanceCaption>
                     </Table.Header>
                 </Table.Row>
             </Table.Head>
@@ -184,7 +213,9 @@ function LumpSumTable({
                         {t("quoteDetailDocument.lumpSumDescription")}
                     </Table.Cell>
                     <Table.Cell align="end">
-                        {centsToAudDisplayText(totalCents)}
+                        <Text weight="semibold">
+                            {centsToAudDisplayText(totalCents)}
+                        </Text>
                     </Table.Cell>
                 </Table.Row>
             </Table.Body>

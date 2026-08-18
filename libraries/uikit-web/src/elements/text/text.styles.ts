@@ -27,3 +27,5 @@ export type TextWeight =
 
 export const truncateStyle =
     "block overflow-hidden text-ellipsis whitespace-nowrap";
+
+export const uppercaseStyle = "uppercase tracking-wide";

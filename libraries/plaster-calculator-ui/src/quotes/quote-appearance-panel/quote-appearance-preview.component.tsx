@@ -1,10 +1,11 @@
 import type { QuoteAppearance } from "@libraries/plaster-calculator-common";
-import { Box, Paragraph, Text } from "@libraries/uikit-web";
+import { Box, Text } from "@libraries/uikit-web";
 import type { ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
 import { QuoteDetailDocument } from "../quote-detail-document/index.ts";
 
+import { QuoteAppearanceCaption } from "./quote-appearance-caption.component.tsx";
 import {
     QUOTE_APPEARANCE_PANEL_SAMPLE_COMPANY_NAME,
     QUOTE_APPEARANCE_PANEL_SAMPLE_ISSUED_AT,
@@ -32,7 +33,9 @@ export type QuoteAppearancePreviewProps = {
  * fixed sample line items authored for this panel
  * (`QUOTE_APPEARANCE_PANEL_SAMPLE_LINE_ITEMS`) -- reusing the actual printed
  * component is the point, so this preview can never drift from what a real
- * quote renders.
+ * quote renders. The header row states plainly that this is sample data
+ * (`QUOTE_APPEARANCE_PANEL_SAMPLE_REFERENCE`) rather than a real quote, in
+ * place of the longer explanatory sentence this used to carry.
  */
 export function QuoteAppearancePreview({
     appearance,
@@ -42,12 +45,16 @@ export function QuoteAppearancePreview({
 
     return (
         <Box direction="column" gap="sm">
-            <Text size="lg" weight="semibold">
-                {t("quoteAppearancePanel.previewTitle")}
-            </Text>
-            <Paragraph textSize="sm" variant="muted">
-                {t("quoteAppearancePanel.previewDescription")}
-            </Paragraph>
+            <Box direction="row" justify="between" align="center">
+                <QuoteAppearanceCaption>
+                    {t("quoteAppearancePanel.previewTitle")}
+                </QuoteAppearanceCaption>
+                <Text size="sm" variant="muted">
+                    {t("quoteAppearancePanel.previewSubtitle", {
+                        reference: QUOTE_APPEARANCE_PANEL_SAMPLE_REFERENCE,
+                    })}
+                </Text>
+            </Box>
             <QuoteDetailDocument
                 reference={QUOTE_APPEARANCE_PANEL_SAMPLE_REFERENCE}
                 projectName={QUOTE_APPEARANCE_PANEL_SAMPLE_PROJECT_NAME}

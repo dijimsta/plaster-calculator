@@ -4,13 +4,15 @@ import {
     Avatar,
     Box,
     Button,
+    FilePickerButton,
     FormLayoutField,
-    Input,
 } from "@libraries/uikit-web";
 import { useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 
 import { useQuotesTranslation } from "../i18n/index.ts";
+
+import { QuoteAppearanceCaption } from "./quote-appearance-caption.component.tsx";
 
 export type QuoteAppearanceLogoFieldProps = {
     /**
@@ -38,16 +40,16 @@ export type QuoteAppearanceLogoFieldProps = {
  * instead of a broken image; only a logo uploaded *this session* (returned
  * directly by `uploadLogo()`) gets an actual preview.
  *
- * Wraps a plain `Input` of `type="file"` -- UIKit has no dedicated
- * file-picker component yet, and this is the only control capable of
- * opening the OS file chooser, so this reuses the public, typed `Input` API
- * rather than adding raw markup or a custom-styled dropzone (see
- * `NewProjectForm`, `apps/plaster-calculator-web`, for the kind of
- * app-owned dropzone styling this library must not add). File-type/size
- * validation happens in `QuoteAppearanceService.uploadLogo()`
+ * Uses `FilePickerButton` (`@libraries/uikit-web`) rather than a plain
+ * `Input` of `type="file"` -- a native file input can't be restyled as a
+ * button directly, and this panel's target design calls for one, so this
+ * reuses that public, typed API rather than adding raw markup or a
+ * custom-styled dropzone (see `NewProjectForm`, `apps/plaster-calculator-web`,
+ * for the kind of app-owned dropzone styling this library must not add).
+ * File-type/size validation happens in `QuoteAppearanceService.uploadLogo()`
  * (`@libraries/plaster-calculator-web-core`); a rejected file surfaces
- * through this panel's own error notification rather than a client-side
- * `accept` filter, which `Input` doesn't expose.
+ * through this panel's own error notification rather than relying on the
+ * client-side `accept` filter alone.
  */
 export function QuoteAppearanceLogoField({
     logoUrl,
@@ -76,7 +78,11 @@ export function QuoteAppearanceLogoField({
 
     return (
         <FormLayoutField
-            label={t("quoteAppearancePanel.logoLabel")}
+            label={
+                <QuoteAppearanceCaption>
+                    {t("quoteAppearancePanel.logoLabel")}
+                </QuoteAppearanceCaption>
+            }
             description={logoStateDescription(t, hasLogo, logoUrl, uploading)}
         >
             <Box direction="row" align="center" gap="md" wrap>
@@ -87,17 +93,16 @@ export function QuoteAppearanceLogoField({
                     size="lg"
                 />
                 <Box direction="column" gap="xs">
-                    <Input
+                    <FilePickerButton
                         key={inputKey}
-                        type="file"
-                        label={
-                            hasLogo
-                                ? t("quoteAppearancePanel.replaceLogo")
-                                : t("quoteAppearancePanel.uploadLogo")
-                        }
+                        accept="image/png,image/svg+xml"
                         disabled={isDisabled}
                         onChange={handleFileChange}
-                    />
+                    >
+                        {hasLogo
+                            ? t("quoteAppearancePanel.replaceLogo")
+                            : t("quoteAppearancePanel.uploadLogo")}
+                    </FilePickerButton>
                     {hasLogo && (
                         <Box>
                             <Button
