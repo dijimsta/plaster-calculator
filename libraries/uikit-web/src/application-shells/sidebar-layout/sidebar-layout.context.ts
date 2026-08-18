@@ -8,10 +8,10 @@ import type {
     SidebarLayoutReducerState,
 } from "./sidebar-layout.reducer.ts";
 
-export interface SidebarLayoutContextValue {
+export type SidebarLayoutContextValue = {
     readonly dispatch: Dispatch<SidebarLayoutAction>;
     readonly state: SidebarLayoutReducerState;
-}
+};
 
 export const SidebarLayoutContext = createContext<
     SidebarLayoutContextValue | undefined

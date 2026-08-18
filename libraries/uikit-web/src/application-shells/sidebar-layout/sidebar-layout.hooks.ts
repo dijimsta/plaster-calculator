@@ -13,11 +13,11 @@ const focusableSelector = [
     '[tabindex]:not([tabindex="-1"])',
 ].join(",");
 
-export interface MobileSidebarEffectOptions {
+export type MobileSidebarEffectOptions = {
     readonly closeButtonRef: RefObject<HTMLButtonElement | null>;
     readonly previousFocusRef: RefObject<HTMLElement | null>;
     readonly sidebarRef: RefObject<HTMLElement | null>;
-}
+};
 
 export function useMobileSidebarEffect({
     closeButtonRef,

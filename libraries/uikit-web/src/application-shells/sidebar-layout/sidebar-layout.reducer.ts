@@ -1,21 +1,21 @@
-export interface SidebarLayoutReducerState {
+export type SidebarLayoutReducerState = {
     readonly isDesktop: boolean;
     readonly isSidebarOpen: boolean;
     readonly sidebarId: string;
-}
+};
 
-export interface SidebarLayoutCloseSidebarAction {
+export type SidebarLayoutCloseSidebarAction = {
     readonly type: "closeSidebar";
-}
+};
 
-export interface SidebarLayoutOpenSidebarAction {
+export type SidebarLayoutOpenSidebarAction = {
     readonly type: "openSidebar";
-}
+};
 
-export interface SidebarLayoutSetDesktopAction {
+export type SidebarLayoutSetDesktopAction = {
     readonly type: "setDesktop";
     readonly isDesktop: boolean;
-}
+};
 
 export type SidebarLayoutAction =
     | SidebarLayoutCloseSidebarAction
