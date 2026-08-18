@@ -83,13 +83,13 @@ export default function HomePage() {
                     />
                     <NeedsAttentionPanel
                         projects={overview.needsAttentionProjects}
-                        loading={overview.projectsLoading}
+                        loading={overview.panelsLoading}
                         activeProjectsCount={overview.activeProjectsCount}
                     />
                 </section>
                 <RecentProjectsPanel
                     projects={overview.recentProjects}
-                    loading={overview.projectsLoading}
+                    loading={overview.panelsLoading}
                 />
                 <NewProjectWizard upload={upload} progressMessage={message} />
             </Box>
