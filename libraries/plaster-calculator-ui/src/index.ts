@@ -1,3 +1,4 @@
+export * from "./companies/index.ts";
 export * from "./editor/index.ts";
 export * from "./projects/index.ts";
 export * from "./questionnaires/index.ts";
