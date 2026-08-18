@@ -10,6 +10,17 @@ export const styles = Object.freeze({
     borderedContainer:
         "rounded-lg border border-gray-200 shadow-sm dark:border-white/10",
     table: "min-w-full divide-y divide-gray-300 dark:divide-white/10",
+    /**
+     * Caps the table at its container's width when `scroll={false}`. The
+     * table's own `min-w-full` only sets a floor -- under the browser's
+     * default `table-layout: auto`, `white-space: nowrap` cells can still
+     * push the table's intrinsic width past 100%. With `scroll`'s
+     * `overflow-x-auto` wrapper, that excess just scrolls; without it, the
+     * table silently overflows into whatever ancestor clips it (e.g.
+     * `Card`'s own `overflow-hidden`), cutting off the last column's
+     * padding instead of scrolling.
+     */
+    constrainedTable: "max-w-full",
     compactTable:
         "[&_td]:px-2 [&_td]:py-2 [&_td:first-child]:pl-3 [&_td:last-child]:pr-3 [&_th]:px-2 [&_th]:py-2 [&_th:first-child]:pl-3 [&_th:last-child]:pr-3",
     stripedTable:

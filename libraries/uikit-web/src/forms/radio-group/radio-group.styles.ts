@@ -3,10 +3,12 @@ export const groupVariants = Object.freeze({
     "inline": "flex flex-wrap gap-x-6 gap-y-4",
     "cards": "grid gap-3 sm:grid-cols-3",
     "small-cards": "grid grid-cols-2 gap-3 sm:grid-cols-4",
+    "swatch": "flex flex-wrap gap-3",
     "segmented": "gap-x-1 rounded-lg bg-gray-100 p-1 dark:bg-white/5",
     "list": "overflow-hidden rounded-lg bg-white shadow-xs ring-1 ring-gray-900/5 [&>*+*]:border-t [&>*+*]:border-gray-200 dark:bg-white/5 dark:ring-white/10 dark:[&>*+*]:border-white/10",
     "list-right":
         "overflow-hidden rounded-lg bg-white shadow-xs ring-1 ring-gray-900/5 [&>*+*]:border-t [&>*+*]:border-gray-200 dark:bg-white/5 dark:ring-white/10 dark:[&>*+*]:border-white/10",
+    "stacked-cards": "flex flex-col gap-3",
     "table":
         "overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-white/5 [&>*+*]:border-t [&>*+*]:border-gray-200 dark:[&>*+*]:border-white/10",
 });

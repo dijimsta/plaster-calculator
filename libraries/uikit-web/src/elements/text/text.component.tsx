@@ -4,6 +4,7 @@ import type { ReactElement, ReactNode } from "react";
 import {
     sizes,
     truncateStyle,
+    uppercaseStyle,
     variants,
     weights,
     type TextSize,
@@ -18,6 +19,8 @@ export type TextProps = {
     readonly variant?: TextVariant;
     readonly weight?: TextWeight;
     readonly truncate?: boolean;
+    /** Renders the text as an uppercase, letter-spaced caption -- e.g. a field label styled as an eyebrow. */
+    readonly uppercase?: boolean;
     readonly id?: string;
     readonly children?: ReactNode;
 };
@@ -27,6 +30,7 @@ export function Text({
     variant = "default",
     weight = "normal",
     truncate = false,
+    uppercase = false,
     id,
     children,
 }: TextProps): ReactElement {
@@ -38,6 +42,7 @@ export function Text({
                 variants[variant],
                 weights[weight],
                 truncate && truncateStyle,
+                uppercase && uppercaseStyle,
             )}
         >
             {children}

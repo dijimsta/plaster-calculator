@@ -9,6 +9,7 @@ import type { CheckableControlProps } from "../form-control.types.ts";
 import { RadioGroupCardOption } from "./radio-group-card-option.component.tsx";
 import { RadioGroupDefaultOption } from "./radio-group-default-option.component.tsx";
 import { RadioGroupPanelOption } from "./radio-group-panel-option.component.tsx";
+import { RadioGroupSwatchOption } from "./radio-group-swatch-option.component.tsx";
 import {
     groupContentSpacingClassName,
     groupDescription,
@@ -114,56 +115,66 @@ export function RadioGroupOption({
         throw new Error("RadioGroupOption must be used within a RadioGroup.");
     }
 
-    if (
-        context.variant === "cards" ||
-        context.variant === "small-cards" ||
-        context.variant === "segmented"
-    ) {
-        return (
-            <RadioGroupCardOption
-                id={generatedId}
-                name={context.name}
-                value={value}
-                label={label}
-                description={description}
-                fullWidth={context.variant === "segmented" && context.fullWidth}
-                disabled={disabled}
-                variant={context.variant}
-                {...controlProps}
-            />
-        );
+    switch (context.variant) {
+        case "cards":
+        case "small-cards":
+        case "segmented":
+            return (
+                <RadioGroupCardOption
+                    id={generatedId}
+                    name={context.name}
+                    value={value}
+                    label={label}
+                    description={description}
+                    fullWidth={
+                        context.variant === "segmented" && context.fullWidth
+                    }
+                    disabled={disabled}
+                    variant={context.variant}
+                    {...controlProps}
+                />
+            );
+        case "swatch":
+            return (
+                <RadioGroupSwatchOption
+                    id={generatedId}
+                    name={context.name}
+                    value={value}
+                    label={label}
+                    description={description}
+                    disabled={disabled}
+                    {...controlProps}
+                />
+            );
+        case "list":
+        case "list-right":
+        case "table":
+        case "stacked-cards":
+            return (
+                <RadioGroupPanelOption
+                    id={generatedId}
+                    name={context.name}
+                    size={context.size}
+                    value={value}
+                    label={label}
+                    description={description}
+                    disabled={disabled}
+                    variant={context.variant}
+                    {...controlProps}
+                />
+            );
+        default:
+            return (
+                <RadioGroupDefaultOption
+                    id={generatedId}
+                    name={context.name}
+                    size={context.size}
+                    value={value}
+                    label={label}
+                    description={description}
+                    disabled={disabled}
+                    {...controlProps}
+                />
+            );
     }
-
-    if (
-        context.variant === "list" ||
-        context.variant === "list-right" ||
-        context.variant === "table"
-    ) {
-        return (
-            <RadioGroupPanelOption
-                id={generatedId}
-                name={context.name}
-                size={context.size}
-                value={value}
-                label={label}
-                description={description}
-                disabled={disabled}
-                variant={context.variant}
-                {...controlProps}
-            />
-        );
-    }
-
-    return (
-        <RadioGroupDefaultOption
-            id={generatedId}
-            name={context.name}
-            size={context.size}
-            value={value}
-            label={label}
-            description={description}
-            disabled={disabled}
-            {...controlProps}
-        />
-    );
 }
