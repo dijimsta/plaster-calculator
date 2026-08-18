@@ -17,6 +17,8 @@ import {
 import { Copy, Mail } from "lucide-react";
 import type { ReactElement } from "react";
 
+import { useAppTranslation } from "../../../../i18n/index.ts";
+
 import type { UseTeamInvitationsResult } from "./use-team-invitations.js";
 
 const INVITATION_ROLE_LABELS: Readonly<Record<TeamInvitationRole, string>> = {
@@ -76,32 +78,66 @@ function PendingInvitationsContent({
     }
 
     return (
-        <Table bordered compact label="Pending invitations">
-            <Table.Head>
-                <Table.Row>
-                    <Table.Header>Email</Table.Header>
-                    <Table.Header fit>Role</Table.Header>
-                    <Table.Header fit>Invited</Table.Header>
-                    <Table.Header fit>Expires</Table.Header>
-                    <Table.Header fit>Actions</Table.Header>
-                </Table.Row>
-            </Table.Head>
-            <Table.Body>
-                {invitations.data.map((invitation) => (
-                    <PendingInvitationRow
-                        key={invitation.email}
-                        invitation={invitation}
-                        copyingEmail={invitations.copyingEmail}
-                        revokingEmail={invitations.revokingEmail}
-                        isInviting={invitations.isInviting}
-                        onCopy={(pendingInvitation) =>
-                            void invitations.copyLink(pendingInvitation)
-                        }
-                        onRevoke={(email) => void invitations.revoke(email)}
-                    />
-                ))}
-            </Table.Body>
-        </Table>
+        <Box direction="column" gap="md">
+            <Table bordered compact label="Pending invitations">
+                <Table.Head>
+                    <Table.Row>
+                        <Table.Header>Email</Table.Header>
+                        <Table.Header fit>Role</Table.Header>
+                        <Table.Header fit>Invited</Table.Header>
+                        <Table.Header fit>Expires</Table.Header>
+                        <Table.Header fit>Actions</Table.Header>
+                    </Table.Row>
+                </Table.Head>
+                <Table.Body>
+                    {invitations.data.map((invitation) => (
+                        <PendingInvitationRow
+                            key={invitation.email}
+                            invitation={invitation}
+                            copyingEmail={invitations.copyingEmail}
+                            revokingEmail={invitations.revokingEmail}
+                            isInviting={invitations.isInviting}
+                            onCopy={(pendingInvitation) =>
+                                void invitations.copyLink(pendingInvitation)
+                            }
+                            onRevoke={(email) => void invitations.revoke(email)}
+                        />
+                    ))}
+                </Table.Body>
+            </Table>
+            {invitations.hasMore && (
+                <LoadMoreInvitationsButton
+                    isLoadingMore={invitations.isLoadingMore}
+                    onLoadMore={() => void invitations.loadMore()}
+                />
+            )}
+        </Box>
+    );
+}
+
+type LoadMoreInvitationsButtonProps = Readonly<{
+    isLoadingMore: boolean;
+    onLoadMore(): void;
+}>;
+
+function LoadMoreInvitationsButton({
+    isLoadingMore,
+    onLoadMore,
+}: LoadMoreInvitationsButtonProps): ReactElement {
+    const { t } = useAppTranslation();
+    return (
+        <Box direction="row" justify="center">
+            <Button
+                variant="secondary"
+                type="button"
+                disabled={isLoadingMore}
+                onClick={onLoadMore}
+            >
+                {isLoadingMore
+                    ? t("userPage.team.pendingInvitations.loadingMore")
+                    : t("userPage.team.pendingInvitations.loadMore")}
+            </Button>
+        </Box>
     );
 }
 

@@ -11,11 +11,13 @@ import {
     Button,
     Container,
     ModalDialog,
+    Pagination,
     Text,
 } from "@libraries/uikit-web";
 import { useState } from "react";
 import type { ReactElement } from "react";
 
+import { useAppTranslation } from "../../../../i18n/index.ts";
 import { UserPageHeader } from "../user-page-header.js";
 
 import { InviteUserPanel } from "./invite-user-panel.js";
@@ -79,6 +81,8 @@ function TeamContent({
     isTeamOwner,
     onRequestRemove,
 }: TeamContentProps): ReactElement | null {
+    const { t } = useAppTranslation();
+
     if (team.isLoading) {
         return (
             <Box status>
@@ -119,6 +123,14 @@ function TeamContent({
                 members={team.data.members}
                 onRequestRemove={onRequestRemove}
             />
+            {team.pageCount > 1 && (
+                <Pagination
+                    page={team.page}
+                    pageCount={team.pageCount}
+                    onPageChange={team.setPage}
+                    label={t("userPage.team.members.paginationLabel")}
+                />
+            )}
             {isTeamOwner && (
                 <>
                     <PendingInvitationsPanel invitations={invitations} />
