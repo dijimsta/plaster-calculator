@@ -6,7 +6,11 @@ import * as logger from "firebase-functions/logger";
 
 import { requireAuth } from "./auth.js";
 import { toDetail } from "./mappers.js";
-import { requireFloorplanPage, requireOwnedProject } from "./ownership.js";
+import {
+    requireFloorplanPage,
+    requireOwnedProject,
+    requireOwnedProjectSummary,
+} from "./ownership.js";
 import { analyzePageImage } from "./processing-pages.js";
 import { processingStrategies } from "./processing-strategies.js";
 import { fetchStorageImage } from "./storage.js";
@@ -56,7 +60,7 @@ export async function analyzeFloorplanPageCore(
     pageId: string,
     data: AnalyzeFloorplanPageRequest,
 ): Promise<void> {
-    const project = await requireOwnedProject(projectId, uid);
+    const project = await requireOwnedProjectSummary(projectId, uid);
     const page = await requireFloorplanPage(projectId, pageId);
     if (page.status === "PROCESSING") {
         throw new HttpsError(

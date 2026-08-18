@@ -12,7 +12,7 @@ import {
     storageProjectId,
     uploadStorageBuffer,
 } from "./storage.js";
-import type { ProcessingStrategy, ProjectWithPages } from "./types.js";
+import type { ProcessingStrategy, ProjectDetailsRow } from "./types.js";
 
 export interface AnalyzedPageData {
     readonly overlayJson: string;
@@ -26,7 +26,7 @@ export interface AnalyzedPageData {
 
 export async function analyseProjectPages(
     uid: string,
-    project: ProjectWithPages,
+    project: ProjectDetailsRow,
     pageNumbers: number[],
     pdfPageImagePaths: Map<number, string>,
     strategy: ProcessingStrategy,
@@ -47,7 +47,7 @@ export async function analyseProjectPages(
 
 async function analyseOriginalImagePages(
     uid: string,
-    project: ProjectWithPages,
+    project: ProjectDetailsRow,
     pageNumbers: number[],
     strategy: ProcessingStrategy,
 ) {
@@ -67,7 +67,7 @@ async function analyseOriginalImagePages(
 
 async function analysePdfPages(
     uid: string,
-    project: ProjectWithPages,
+    project: ProjectDetailsRow,
     pageNumbers: number[],
     pdfPageImagePaths: Map<number, string>,
     strategy: ProcessingStrategy,
