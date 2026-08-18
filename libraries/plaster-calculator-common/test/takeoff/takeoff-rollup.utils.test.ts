@@ -1,10 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import {
-    QuantityTakeoffCalculatorUtils,
-    TakeoffRollupUtils,
-} from "../../src/index.ts";
+import { computeQuantities, rollup } from "../../src/index.ts";
 import type {
     AreaPolygon,
     Overlay,
@@ -143,8 +140,8 @@ test("rollup of a single page produces identical numbers to calling computeQuant
         pageHeightMm: PAGE_1_HEIGHT_MM,
     };
 
-    const rolledUp = TakeoffRollupUtils.rollup([page], QUANTITY_SOURCES);
-    const direct = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const rolledUp = rollup([page], QUANTITY_SOURCES);
+    const direct = computeQuantities(
         page1Overlay,
         PAGE_1_SCALE_MM_PER_PX,
         PAGE_1_HEIGHT_MM,
@@ -178,7 +175,7 @@ test("rollup sums correctly across pages with different scales", () => {
         },
     ];
 
-    const results = TakeoffRollupUtils.rollup(pages, QUANTITY_SOURCES);
+    const results = rollup(pages, QUANTITY_SOURCES);
 
     // WALL_AREA/STANDARD: page 1's 33.6m2 + page 2's 19.2m2 = 52.8m2.
     assert.equal(quantityFor(results, "qs-wall-standard"), 52.8);
@@ -206,7 +203,7 @@ test("rollup retains contributing page ids across every quantity source", () => 
         },
     ];
 
-    const results = TakeoffRollupUtils.rollup(pages, QUANTITY_SOURCES);
+    const results = rollup(pages, QUANTITY_SOURCES);
 
     QUANTITY_SOURCES.forEach((source) => {
         assert.deepEqual(contributingPageIdsFor(results, source.id), [
@@ -232,7 +229,7 @@ test("rollup skips a page with no scaleMmPerPx rather than failing the whole rol
         },
     ];
 
-    const results = TakeoffRollupUtils.rollup(pages, QUANTITY_SOURCES);
+    const results = rollup(pages, QUANTITY_SOURCES);
 
     // Only page 1 contributes: page 3's large garage is entirely excluded.
     assert.equal(quantityFor(results, "qs-wall-standard"), 33.6);
@@ -260,7 +257,7 @@ test("rollup skips a page whose only areas are deleted rather than failing the w
         },
     ];
 
-    const results = TakeoffRollupUtils.rollup(pages, QUANTITY_SOURCES);
+    const results = rollup(pages, QUANTITY_SOURCES);
 
     assert.equal(quantityFor(results, "qs-wall-standard"), 33.6);
     assert.equal(quantityFor(results, "qs-ceiling-standard"), 12);
@@ -287,7 +284,7 @@ test("rollup with no contributing pages returns zero for every source and no con
         },
     ];
 
-    const results = TakeoffRollupUtils.rollup(pages, QUANTITY_SOURCES);
+    const results = rollup(pages, QUANTITY_SOURCES);
 
     results.forEach((result) => {
         assert.equal(result.quantity, 0);

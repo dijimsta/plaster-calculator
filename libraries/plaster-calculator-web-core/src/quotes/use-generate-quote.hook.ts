@@ -2,7 +2,7 @@
 
 import * as DataConnector from "@generated/data-connector-web";
 import * as DataConnectorReact from "@generated/data-connector-web/react";
-import { ProjectPlanTextCorpusUtils } from "@libraries/plaster-calculator-common";
+import { buildSearchableCorpus } from "@libraries/plaster-calculator-common";
 import { useMutation } from "@tanstack/react-query";
 import type { FirebaseError } from "firebase/app";
 
@@ -22,7 +22,7 @@ const dataConnect = FirebaseService.getDataConnect(
 function buildProjectSearchText(
     data: DataConnector.GetQuoteReadinessData | undefined,
 ): string {
-    return ProjectPlanTextCorpusUtils.buildSearchableCorpus({
+    return buildSearchableCorpus({
         extractedTextJson: data?.project?.extractedTextJson ?? null,
         pages: (data?.floorplanPages ?? []).map((page) => ({
             ocrTextContent: page.ocrTextContent ?? null,

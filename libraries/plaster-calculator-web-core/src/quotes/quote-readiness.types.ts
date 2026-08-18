@@ -21,8 +21,8 @@ import type { FirebaseError } from "firebase/app";
  *
  * `defaultTemplateConfigs` (WORK-193) is the team's default template's own
  * `quoteItemTemplateConfigs`, fetched alongside `data` so a caller can
- * resolve each item's inclusion via `QuoteItemInclusionUtils.
- * resolveInclusion()` (`@libraries/plaster-calculator-common`) against the
+ * resolve each item's inclusion via `resolveInclusion()`
+ * (`@libraries/plaster-calculator-common`) against the
  * default even when `data` came from a variation. Equal to `data.
  * quoteItemTemplateConfigs` when there is no variation in play.
  */

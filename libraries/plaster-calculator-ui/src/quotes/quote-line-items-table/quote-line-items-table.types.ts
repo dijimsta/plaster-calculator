@@ -23,7 +23,7 @@ export type QuoteLineItemsTableRow = {
     readonly name: string;
     readonly quantity: number;
     readonly unit: string | null;
-    /** In integer cents (see `QuoteTotalsUtils`). */
+    /** In integer cents (see `quote-totals.utils.ts`). */
     readonly unitPriceCents: number;
     readonly matchedKeywords: readonly string[];
     readonly quantitySource: QuoteLineItemsTableQuantitySource | null;

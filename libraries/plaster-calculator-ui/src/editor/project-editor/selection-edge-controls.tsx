@@ -1,5 +1,6 @@
 import {
-    BoardMaterialsHelper,
+    normalizeWallBoardProfile,
+    normalizeWallBoardType,
     WALL_BOARD_PROFILES,
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
@@ -142,7 +143,7 @@ function selectedEdgeWallType(
     edgeOverride: EdgeOverride | undefined | null,
     selectedEdgeArea: AreaPolygon,
 ) {
-    return BoardMaterialsHelper.normalizeWallBoardType(
+    return normalizeWallBoardType(
         edgeOverride?.wallBoardType ?? selectedEdgeArea.wallBoardType,
         edgeOverride?.wallPlasterType ?? selectedEdgeArea.wallPlasterType,
     );
@@ -152,7 +153,7 @@ function selectedEdgeWallProfile(
     edgeOverride: EdgeOverride | undefined | null,
     selectedEdgeArea: AreaPolygon,
 ) {
-    return BoardMaterialsHelper.normalizeWallBoardProfile(
+    return normalizeWallBoardProfile(
         edgeOverride?.wallBoardProfile ?? selectedEdgeArea.wallBoardProfile,
     );
 }

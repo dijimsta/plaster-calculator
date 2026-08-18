@@ -1,9 +1,9 @@
-import { BoardMaterialsHelper } from "../../geometry/board-materials.helper.ts";
+import { wallBoardTypeSource } from "../../geometry/board-materials.helper.ts";
 import type {
     ReadinessCheckInput,
     ReadinessResult,
 } from "../readiness-check.types.ts";
-import { ReadinessCheckUtils } from "../readiness-check.utils.ts";
+import { activeAreasAcrossPages } from "../readiness-check.utils.ts";
 
 /**
  * Check #7: a room whose wall type was assumed (defaulted, not set from
@@ -11,11 +11,10 @@ import { ReadinessCheckUtils } from "../readiness-check.utils.ts";
  * already has a literal `source: "detected" | "manual"` field, so
  * `source === "detected"` is used exactly as specified — no guessed field
  * mapping needed there. "Wall type defaulted" reuses
- * `BoardMaterialsHelper.wallBoardTypeSource() === "defaulted"` from check #3
- * (WORK-127), and "no confirmation timestamp" is
- * `AreaPolygon.wallBoardTypeConfirmedAt == null` (WORK-126). Outdoor areas
- * are exempt, same as check #3, since they have no wall board type to
- * confirm.
+ * `wallBoardTypeSource() === "defaulted"` from check #3 (WORK-127), and "no
+ * confirmation timestamp" is `AreaPolygon.wallBoardTypeConfirmedAt == null`
+ * (WORK-126). Outdoor areas are exempt, same as check #3, since they have
+ * no wall board type to confirm.
  */
 export const ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID =
     "ASSUMED_WALL_TYPES_CONFIRMED";
@@ -23,17 +22,13 @@ export const ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID =
 export function resolveAssumedWallTypesConfirmed(
     input: ReadinessCheckInput,
 ): ReadinessResult {
-    const unconfirmed = ReadinessCheckUtils.activeAreasAcrossPages(
-        input.project,
-    ).filter(
+    const unconfirmed = activeAreasAcrossPages(input.project).filter(
         ({ area }) =>
             area.source === "detected" &&
             !area.isOutdoor &&
             area.wallBoardTypeConfirmedAt == null &&
-            BoardMaterialsHelper.wallBoardTypeSource(
-                area.wallBoardType,
-                area.wallPlasterType,
-            ) === "defaulted",
+            wallBoardTypeSource(area.wallBoardType, area.wallPlasterType) ===
+                "defaulted",
     );
     return {
         checkId: ASSUMED_WALL_TYPES_CONFIRMED_CHECK_ID,

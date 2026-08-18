@@ -1,7 +1,7 @@
-interface RelativeTimeDivision {
+type RelativeTimeDivision = {
     amount: number;
     unit: Intl.RelativeTimeFormatUnit;
-}
+};
 
 const RELATIVE_TIME_DIVISIONS: readonly RelativeTimeDivision[] = [
     { amount: 60, unit: "second" },
@@ -17,11 +17,11 @@ const relativeTimeFormatter = new Intl.RelativeTimeFormat("en", {
     numeric: "auto",
 });
 
-interface RelativeTimeState {
+type RelativeTimeState = {
     value: number;
     unit: Intl.RelativeTimeFormatUnit;
     settled: boolean;
-}
+};
 
 function applyDivision(
     state: RelativeTimeState,

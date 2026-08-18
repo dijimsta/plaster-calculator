@@ -1,7 +1,4 @@
-import {
-    OverlayGeometryHelper,
-    type Point,
-} from "@libraries/plaster-calculator-common";
+import { clamp, type Point } from "@libraries/plaster-calculator-common";
 import type { RefObject } from "react";
 
 import type { ViewportSize } from "./use-editor-actions.types.js";
@@ -94,16 +91,8 @@ export function useEditorScaleActions({
         const scrollLeft = element?.scrollLeft ?? 0;
         const scrollTop = element?.scrollTop ?? 0;
         return [
-            OverlayGeometryHelper.clamp(
-                (scrollLeft + viewport.width / 2) / zoom,
-                0,
-                imageWidth,
-            ),
-            OverlayGeometryHelper.clamp(
-                (scrollTop + viewport.height / 2) / zoom,
-                0,
-                imageHeight,
-            ),
+            clamp((scrollLeft + viewport.width / 2) / zoom, 0, imageWidth),
+            clamp((scrollTop + viewport.height / 2) / zoom, 0, imageHeight),
         ];
     }
 

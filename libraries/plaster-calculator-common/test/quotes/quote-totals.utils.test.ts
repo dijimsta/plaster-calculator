@@ -1,32 +1,35 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { GST_RATE, QuoteTotalsUtils } from "../../src/index.ts";
+import {
+    GST_RATE,
+    gstCents,
+    lineAmountCents,
+    subtotalCents,
+    totalIncGstCents,
+} from "../../src/index.ts";
 
 test("GST_RATE is 10%", () => {
     assert.equal(GST_RATE, 0.1);
 });
 
 test("lineAmountCents multiplies an integer quantity by the unit price", () => {
-    assert.equal(QuoteTotalsUtils.lineAmountCents(3, 1999), 5997);
+    assert.equal(lineAmountCents(3, 1999), 5997);
 });
 
 test("lineAmountCents rounds a fractional quantity to the nearest whole cent", () => {
     // 2.5 * 333 = 832.5 exactly in IEEE 754, so this also pins down which way
     // a half-cent rounds (up, via Math.round).
-    assert.equal(QuoteTotalsUtils.lineAmountCents(2.5, 333), 833);
+    assert.equal(lineAmountCents(2.5, 333), 833);
 });
 
 test("subtotalCents sums an empty list of lines to zero", () => {
-    assert.equal(QuoteTotalsUtils.subtotalCents([]), 0);
+    assert.equal(subtotalCents([]), 0);
 });
 
 test("subtotalCents sums line amounts exactly", () => {
-    const lineAmounts = [
-        QuoteTotalsUtils.lineAmountCents(3, 1999),
-        QuoteTotalsUtils.lineAmountCents(1, 995),
-    ];
-    assert.equal(QuoteTotalsUtils.subtotalCents(lineAmounts), 6992);
+    const lineAmounts = [lineAmountCents(3, 1999), lineAmountCents(1, 995)];
+    assert.equal(subtotalCents(lineAmounts), 6992);
 });
 
 test("subtotalCents avoids the floating-point drift naive dollar-float summation hits across many lines", () => {
@@ -49,38 +52,32 @@ test("subtotalCents avoids the floating-point drift naive dollar-float summation
     ];
 
     const lineAmounts = unitPricesCents.map((unitPriceCents, index) =>
-        QuoteTotalsUtils.lineAmountCents(quantities[index], unitPriceCents),
+        lineAmountCents(quantities[index], unitPriceCents),
     );
 
-    assert.equal(QuoteTotalsUtils.subtotalCents(lineAmounts), 7526);
+    assert.equal(subtotalCents(lineAmounts), 7526);
 });
 
 test("gstCents rounds an exact half-cent up", () => {
     // 1005 * 0.1 = 100.5 exactly, so this pins down the rounding direction.
-    assert.equal(QuoteTotalsUtils.gstCents(1005), 101);
+    assert.equal(gstCents(1005), 101);
 });
 
 test("gstCents computes 10% of the subtotal", () => {
-    assert.equal(QuoteTotalsUtils.gstCents(6992), 699);
+    assert.equal(gstCents(6992), 699);
 });
 
 test("totalIncGstCents adds the subtotal and GST", () => {
-    assert.equal(QuoteTotalsUtils.totalIncGstCents(6992, 699), 7691);
+    assert.equal(totalIncGstCents(6992, 699), 7691);
 });
 
 test("end-to-end: 3 units at $19.99 plus 1 unit at $9.95 totals $76.91 inc. GST", () => {
-    const lineAmounts = [
-        QuoteTotalsUtils.lineAmountCents(3, 1999),
-        QuoteTotalsUtils.lineAmountCents(1, 995),
-    ];
-    const subtotalCents = QuoteTotalsUtils.subtotalCents(lineAmounts);
-    const gstCents = QuoteTotalsUtils.gstCents(subtotalCents);
-    const totalIncGstCents = QuoteTotalsUtils.totalIncGstCents(
-        subtotalCents,
-        gstCents,
-    );
+    const lineAmounts = [lineAmountCents(3, 1999), lineAmountCents(1, 995)];
+    const subtotal = subtotalCents(lineAmounts);
+    const gst = gstCents(subtotal);
+    const totalIncGst = totalIncGstCents(subtotal, gst);
 
-    assert.equal(subtotalCents, 6992);
-    assert.equal(gstCents, 699);
-    assert.equal(totalIncGstCents, 7691);
+    assert.equal(subtotal, 6992);
+    assert.equal(gst, 699);
+    assert.equal(totalIncGst, 7691);
 });

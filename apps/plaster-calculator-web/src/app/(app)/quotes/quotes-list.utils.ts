@@ -1,7 +1,10 @@
 import type * as DataConnector from "@generated/data-connector-web";
 import {
+    gstCents as computeGstCents,
+    lineAmountCents,
     QuoteStatusSchema,
-    QuoteTotalsUtils,
+    subtotalCents as computeSubtotalCents,
+    totalIncGstCents,
 } from "@libraries/plaster-calculator-common";
 import type { QuotesTableRow } from "@libraries/plaster-calculator-ui";
 
@@ -9,23 +12,19 @@ export class QuotesListUtils {
     /**
      * Maps `ListQuotesForTeam` rows to `QuotesTableRow`. `totalIncGstCents`
      * isn't a stored column — each row only carries its `QuoteItem`
-     * quantity/unitPriceCents pairs — so it's derived here via
-     * `QuoteTotalsUtils`, the same helper `quote-detail-document` uses for
-     * its own totals block.
+     * quantity/unitPriceCents pairs — so it's derived here via the
+     * quote-totals helpers (`quote-totals.utils.ts`), the same helpers
+     * `quote-detail-document` uses for its own totals block.
      */
     public static toRows(
         quotes: DataConnector.ListQuotesForTeamData["quotes"] | undefined,
     ): readonly QuotesTableRow[] {
         return (quotes ?? []).map((quote) => {
             const lineAmountsCents = quote.items.map((item) =>
-                QuoteTotalsUtils.lineAmountCents(
-                    item.quantity,
-                    item.unitPriceCents,
-                ),
+                lineAmountCents(item.quantity, item.unitPriceCents),
             );
-            const subtotalCents =
-                QuoteTotalsUtils.subtotalCents(lineAmountsCents);
-            const gstCents = QuoteTotalsUtils.gstCents(subtotalCents);
+            const subtotalCents = computeSubtotalCents(lineAmountsCents);
+            const gstCents = computeGstCents(subtotalCents);
 
             return {
                 quoteId: quote.id,
@@ -34,10 +33,7 @@ export class QuotesListUtils {
                 projectName: quote.project.name,
                 companyName: quote.project.company?.companyName ?? null,
                 status: QuoteStatusSchema.parse(quote.status),
-                totalIncGstCents: QuoteTotalsUtils.totalIncGstCents(
-                    subtotalCents,
-                    gstCents,
-                ),
+                totalIncGstCents: totalIncGstCents(subtotalCents, gstCents),
                 createdAt: quote.createdAt,
             };
         });

@@ -1,5 +1,5 @@
 import {
-    BoardMaterialsHelper,
+    normalizeWallBoardType,
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
@@ -40,15 +40,12 @@ function wallBoardTypesInUse(areas: AreaPolygon[]) {
     areas.forEach((area) => {
         if (area.isOutdoor) return;
         usedTypes.add(
-            BoardMaterialsHelper.normalizeWallBoardType(
-                area.wallBoardType,
-                area.wallPlasterType,
-            ),
+            normalizeWallBoardType(area.wallBoardType, area.wallPlasterType),
         );
         Object.values(area.edgeOverrides ?? {}).forEach((override) => {
             if (override.noPlaster) return;
             usedTypes.add(
-                BoardMaterialsHelper.normalizeWallBoardType(
+                normalizeWallBoardType(
                     override.wallBoardType ?? area.wallBoardType,
                     override.wallPlasterType ?? area.wallPlasterType,
                 ),

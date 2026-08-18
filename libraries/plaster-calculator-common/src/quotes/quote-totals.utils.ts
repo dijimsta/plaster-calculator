@@ -18,30 +18,29 @@ export const GST_RATE = 0.1;
  * whole cent immediately with `Math.round`, so error never carries forward
  * into the next calculation.
  */
-export class QuoteTotalsUtils {
-    /** `quantity x unitPriceCents`, rounded to the nearest whole cent. */
-    public static lineAmountCents(
-        quantity: number,
-        unitPriceCents: number,
-    ): number {
-        return Math.round(quantity * unitPriceCents);
-    }
 
-    /** Sum of every line's amount, in cents. */
-    public static subtotalCents(lineAmountsCents: readonly number[]): number {
-        return lineAmountsCents.reduce((sum, cents) => sum + cents, 0);
-    }
+/** `quantity x unitPriceCents`, rounded to the nearest whole cent. */
+export function lineAmountCents(
+    quantity: number,
+    unitPriceCents: number,
+): number {
+    return Math.round(quantity * unitPriceCents);
+}
 
-    /** GST on `subtotalCents` at {@link GST_RATE}, rounded to the nearest cent. */
-    public static gstCents(subtotalCents: number): number {
-        return Math.round(subtotalCents * GST_RATE);
-    }
+/** Sum of every line's amount, in cents. */
+export function subtotalCents(lineAmountsCents: readonly number[]): number {
+    return lineAmountsCents.reduce((sum, cents) => sum + cents, 0);
+}
 
-    /** `subtotalCents + gstCents`, i.e. the total a customer is invoiced. */
-    public static totalIncGstCents(
-        subtotalCents: number,
-        gstCents: number,
-    ): number {
-        return subtotalCents + gstCents;
-    }
+/** GST on `subtotalCents` at {@link GST_RATE}, rounded to the nearest cent. */
+export function gstCents(subtotalCents: number): number {
+    return Math.round(subtotalCents * GST_RATE);
+}
+
+/** `subtotalCents + gstCents`, i.e. the total a customer is invoiced. */
+export function totalIncGstCents(
+    subtotalCents: number,
+    gstCents: number,
+): number {
+    return subtotalCents + gstCents;
 }

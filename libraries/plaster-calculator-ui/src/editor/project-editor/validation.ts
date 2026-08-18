@@ -1,5 +1,6 @@
 import {
-    BoardMaterialsHelper,
+    normalizeWallBoardProfile,
+    normalizeWallBoardType,
     type AreaPolygon,
 } from "@libraries/plaster-calculator-common";
 import type { FloorplanPage } from "@libraries/plaster-calculator-web-core";
@@ -108,9 +109,7 @@ function validateAreaBasics(
     }
     if (
         !area.isOutdoor &&
-        !BoardMaterialsHelper.normalizeWallBoardProfile(
-            area.wallBoardProfile,
-        ).trim()
+        !normalizeWallBoardProfile(area.wallBoardProfile).trim()
     ) {
         addAreaIssue(
             issues,
@@ -122,10 +121,7 @@ function validateAreaBasics(
     }
     if (
         !area.isOutdoor &&
-        !BoardMaterialsHelper.normalizeWallBoardType(
-            area.wallBoardType,
-            area.wallPlasterType,
-        ).trim()
+        !normalizeWallBoardType(area.wallBoardType, area.wallPlasterType).trim()
     ) {
         addAreaIssue(
             issues,

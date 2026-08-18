@@ -1,6 +1,11 @@
 "use client";
 
-import { QuoteTotalsUtils } from "@libraries/plaster-calculator-common";
+import {
+    gstCents as computeGstCents,
+    lineAmountCents,
+    subtotalCents as computeSubtotalCents,
+    totalIncGstCents,
+} from "@libraries/plaster-calculator-common";
 import {
     Box,
     Button,
@@ -58,15 +63,12 @@ export function EditableQuoteForm({
         keyName: "fieldKey",
     });
     const lineItems = useWatch({ control, name: "lineItems" });
-    const subtotalCents = QuoteTotalsUtils.subtotalCents(
+    const subtotalCents = computeSubtotalCents(
         lineItems.map((item) =>
-            QuoteTotalsUtils.lineAmountCents(
-                item.quantity,
-                item.unitPriceCents,
-            ),
+            lineAmountCents(item.quantity, item.unitPriceCents),
         ),
     );
-    const gstCents = QuoteTotalsUtils.gstCents(subtotalCents);
+    const gstCents = computeGstCents(subtotalCents);
 
     useEffect(() => {
         reset(initialValues);
@@ -271,7 +273,7 @@ export function EditableQuoteForm({
                         <QuoteTotalsBlock
                             subtotalCents={subtotalCents}
                             gstCents={gstCents}
-                            totalIncGstCents={QuoteTotalsUtils.totalIncGstCents(
+                            totalIncGstCents={totalIncGstCents(
                                 subtotalCents,
                                 gstCents,
                             )}

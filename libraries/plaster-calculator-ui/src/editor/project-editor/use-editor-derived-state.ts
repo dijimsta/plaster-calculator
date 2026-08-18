@@ -1,5 +1,6 @@
 import {
-    OverlayGeometryHelper,
+    ceilingAreaM2ForArea,
+    wallLengthByType,
     type AreaPolygon,
     type EdgeOverride,
     type Overlay,
@@ -68,16 +69,13 @@ export function useEditorDerivedState({
     const metrics = useMemo(() => {
         if (!selectedArea || !scaleMmPerPx) return null;
         const wallLengthM =
-            (OverlayGeometryHelper.wallLengthByType(selectedArea).reduce(
+            (wallLengthByType(selectedArea).reduce(
                 (total, item) => total + item.lengthPx,
                 0,
             ) *
                 scaleMmPerPx) /
             1000;
-        const ceilingAreaM2 = OverlayGeometryHelper.ceilingAreaM2ForArea(
-            selectedArea,
-            scaleMmPerPx,
-        );
+        const ceilingAreaM2 = ceilingAreaM2ForArea(selectedArea, scaleMmPerPx);
         return { wallLengthM, ceilingAreaM2 };
     }, [selectedArea, scaleMmPerPx]);
 
@@ -86,17 +84,14 @@ export function useEditorDerivedState({
         const wallTotals = new Map<string, number>();
         const ceilingTotals = new Map<string, number>();
         visibleAreas.forEach((area) => {
-            OverlayGeometryHelper.wallLengthByType(area).forEach((item) => {
+            wallLengthByType(area).forEach((item) => {
                 wallTotals.set(
                     item.type,
                     (wallTotals.get(item.type) ?? 0) +
                         (item.lengthPx * scaleMmPerPx) / 1000,
                 );
             });
-            const ceilingAreaM2 = OverlayGeometryHelper.ceilingAreaM2ForArea(
-                area,
-                scaleMmPerPx,
-            );
+            const ceilingAreaM2 = ceilingAreaM2ForArea(area, scaleMmPerPx);
             const ceilingType = normalizeCeilingBoardType(
                 area.ceilingPlasterType,
             );

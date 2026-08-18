@@ -2,8 +2,9 @@ import * as DataConnector from "@generated/data-connector-web";
 import * as DataConnectorReact from "@generated/data-connector-web/react";
 import {
     COMPLETED_COMPLETION_STATE,
+    countAnswered,
+    deriveFrom,
     IN_PROGRESS_COMPLETION_STATE,
-    QuestionnaireCompletionStateHelper,
 } from "@libraries/plaster-calculator-common";
 import type { QuestionnaireCompletionState } from "@libraries/plaster-calculator-common";
 import { FirebaseService } from "@libraries/plaster-calculator-web-core";
@@ -39,13 +40,9 @@ export function useQuestionnaireStats(): QuestionnaireStats {
         projectId: questionnaire.projectId,
         projectName: questionnaire.project.name,
         updatedAt: questionnaire.updatedAt,
-        answeredCount: QuestionnaireCompletionStateHelper.countAnswered(
-            questionnaire.questions,
-        ),
+        answeredCount: countAnswered(questionnaire.questions),
         totalQuestions: questionnaire.questions.length,
-        completionState: QuestionnaireCompletionStateHelper.deriveFrom(
-            questionnaire.questions,
-        ),
+        completionState: deriveFrom(questionnaire.questions),
     }));
 
     return {

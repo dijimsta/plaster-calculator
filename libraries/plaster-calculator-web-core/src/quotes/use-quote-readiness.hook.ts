@@ -76,8 +76,7 @@ function useDefaultQuoteTemplateId(): string | undefined {
  * whichever response is "active" (the company's, when it differs from the
  * default) alongside the default template's own configs, which callers
  * need regardless of which template is actually pricing the quote (see
- * `QuoteItemInclusionUtils.resolveInclusion()` in
- * `@libraries/plaster-calculator-common`).
+ * `resolveInclusion()` in `@libraries/plaster-calculator-common`).
  */
 function useResolvedQuoteReadiness(
     projectId: string,

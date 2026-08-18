@@ -3,7 +3,7 @@ import {
     AMOUNTS_ONLY_PRICING_DETAIL,
     FULL_LINE_ITEMS_PRICING_DETAIL,
     LUMP_SUM_PRICING_DETAIL,
-    QuoteTotalsUtils,
+    lineAmountCents,
 } from "@libraries/plaster-calculator-common";
 import { Box, Table, Text } from "@libraries/uikit-web";
 import { CurrencyUtils } from "@libraries/utilities";
@@ -109,10 +109,7 @@ function FullLineItemsRow({
             </Table.Cell>
             <Table.Cell align="end">
                 {CurrencyUtils.centsToAudDisplayText(
-                    QuoteTotalsUtils.lineAmountCents(
-                        item.quantity,
-                        item.unitPriceCents,
-                    ),
+                    lineAmountCents(item.quantity, item.unitPriceCents),
                 )}
             </Table.Cell>
         </Table.Row>
@@ -146,7 +143,7 @@ function AmountsOnlyTable({ lineItems }: LineItemsProps): ReactElement {
                         <Table.Cell wrap>{item.name}</Table.Cell>
                         <Table.Cell align="end">
                             {CurrencyUtils.centsToAudDisplayText(
-                                QuoteTotalsUtils.lineAmountCents(
+                                lineAmountCents(
                                     item.quantity,
                                     item.unitPriceCents,
                                 ),

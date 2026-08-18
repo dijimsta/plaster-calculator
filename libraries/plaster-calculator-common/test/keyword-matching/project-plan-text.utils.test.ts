@@ -1,13 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import {
-    ProjectPlanTextCorpusUtils,
-    QuoteItemKeywordMatcherUtils,
-} from "../../src/index.ts";
+import { buildSearchableCorpus, match } from "../../src/index.ts";
 
 test("builds a corpus from extractedTextJson pages and OCR pages", () => {
-    const corpus = ProjectPlanTextCorpusUtils.buildSearchableCorpus({
+    const corpus = buildSearchableCorpus({
         extractedTextJson: JSON.stringify([
             { pageNumber: 1, text: "Raised ceiling to living room" },
             { pageNumber: 2, text: "Scaffold hire required" },
@@ -25,7 +22,7 @@ test("builds a corpus from extractedTextJson pages and OCR pages", () => {
 });
 
 test("returns an empty corpus when extractedTextJson is null and no pages have OCR text", () => {
-    const corpus = ProjectPlanTextCorpusUtils.buildSearchableCorpus({
+    const corpus = buildSearchableCorpus({
         extractedTextJson: null,
         pages: [{ ocrTextContent: null }],
     });
@@ -33,7 +30,7 @@ test("returns an empty corpus when extractedTextJson is null and no pages have O
 });
 
 test("ignores malformed extractedTextJson rather than throwing", () => {
-    const corpus = ProjectPlanTextCorpusUtils.buildSearchableCorpus({
+    const corpus = buildSearchableCorpus({
         extractedTextJson: "not valid json",
         pages: [{ ocrTextContent: "Bathroom: raised ceiling" }],
     });
@@ -41,7 +38,7 @@ test("ignores malformed extractedTextJson rather than throwing", () => {
 });
 
 test("skips extractedTextJson pages with empty or missing text", () => {
-    const corpus = ProjectPlanTextCorpusUtils.buildSearchableCorpus({
+    const corpus = buildSearchableCorpus({
         extractedTextJson: JSON.stringify([
             { pageNumber: 1, text: "" },
             { pageNumber: 2 },
@@ -52,15 +49,15 @@ test("skips extractedTextJson pages with empty or missing text", () => {
     assert.equal(corpus, "Skylight to hallway");
 });
 
-test("feeds directly into QuoteItemKeywordMatcherUtils.match()", () => {
-    const corpus = ProjectPlanTextCorpusUtils.buildSearchableCorpus({
+test("feeds directly into match()", () => {
+    const corpus = buildSearchableCorpus({
         extractedTextJson: JSON.stringify([
             { pageNumber: 1, text: "Client requires a raised   ceiling" },
         ]),
         pages: [{ ocrTextContent: "Scaffold hire noted" }],
     });
 
-    const result = QuoteItemKeywordMatcherUtils.match(
+    const result = match(
         { hasKeywords: true, keywords: ["raised ceiling", "scaffold"] },
         corpus,
     );

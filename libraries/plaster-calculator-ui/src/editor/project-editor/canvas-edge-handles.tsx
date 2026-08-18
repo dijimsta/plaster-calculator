@@ -1,4 +1,4 @@
-import { OverlayGeometryHelper } from "@libraries/plaster-calculator-common";
+import { pointAt } from "@libraries/plaster-calculator-common";
 import type {
     AreaPolygon,
     Overlay,
@@ -41,10 +41,7 @@ export function CanvasEdgeHandles({
             {visibleAreas.map((area) =>
                 area.points.map((point, index) => {
                     const nextIndex = (index + 1) % area.points.length;
-                    const next = OverlayGeometryHelper.pointAt(
-                        area.points,
-                        nextIndex,
-                    );
+                    const next = pointAt(area.points, nextIndex);
                     return (
                         <Line
                             key={`edge-hit-${area.id}-${index}`}

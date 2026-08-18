@@ -1,6 +1,6 @@
 import {
-    BoardMaterialsHelper,
-    OverlayGeometryHelper,
+    normalizeWallBoardType,
+    pointAt,
 } from "@libraries/plaster-calculator-common";
 import type {
     AreaPolygon,
@@ -46,10 +46,7 @@ export function CanvasWallEdges({
             {visibleAreas.map((area) =>
                 area.points.map((point, index) => {
                     const nextIndex = (index + 1) % area.points.length;
-                    const next = OverlayGeometryHelper.pointAt(
-                        area.points,
-                        nextIndex,
-                    );
+                    const next = pointAt(area.points, nextIndex);
                     const override = area.edgeOverrides?.[String(index)];
                     const selectedStroke = isSelectedStroke({
                         area,
@@ -63,7 +60,7 @@ export function CanvasWallEdges({
                     const edgeColor = getEdgeColor(
                         rakedEdgeRole,
                         noPlaster,
-                        BoardMaterialsHelper.normalizeWallBoardType(
+                        normalizeWallBoardType(
                             override?.wallBoardType ?? area.wallBoardType,
                             override?.wallPlasterType ?? area.wallPlasterType,
                         ),

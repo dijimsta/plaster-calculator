@@ -1,4 +1,4 @@
-import { QuoteTotalsUtils } from "@libraries/plaster-calculator-common";
+import { lineAmountCents } from "@libraries/plaster-calculator-common";
 import { Box, Table, Text } from "@libraries/uikit-web";
 import { CurrencyUtils } from "@libraries/utilities";
 import type { ReactElement } from "react";
@@ -89,10 +89,7 @@ function QuoteLineItemsTableBodyRow({
             </Table.Cell>
             <Table.Cell align="end">
                 {CurrencyUtils.centsToAudDisplayText(
-                    QuoteTotalsUtils.lineAmountCents(
-                        row.quantity,
-                        row.unitPriceCents,
-                    ),
+                    lineAmountCents(row.quantity, row.unitPriceCents),
                 )}
             </Table.Cell>
         </Table.Row>

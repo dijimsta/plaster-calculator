@@ -1,4 +1,4 @@
-import { OverlayGeometryHelper } from "@libraries/plaster-calculator-common";
+import { pointDistance } from "@libraries/plaster-calculator-common";
 import type { Point } from "@libraries/plaster-calculator-common";
 import type { KonvaEventObject } from "konva/lib/Node.js";
 import { Group, Image as KonvaImage, Layer, Rect, Stage } from "react-konva";
@@ -80,8 +80,7 @@ export function EditorCanvas({
         return (
             draftPoints.length >= 3 &&
             firstPoint != null &&
-            OverlayGeometryHelper.pointDistance(pointer, firstPoint) <=
-                14 / zoom
+            pointDistance(pointer, firstPoint) <= 14 / zoom
         );
     }
 

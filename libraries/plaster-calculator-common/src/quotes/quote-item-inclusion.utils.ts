@@ -1,7 +1,7 @@
 /**
- * The one field `QuoteItemInclusionUtils.resolveInclusion()` needs from the
- * `QuoteTemplate` variation actually pricing a quote's side of the pairing —
- * its `QuoteItemTemplateConfig` row (`data/schemas/quotes.gql`) for one
+ * The one field `resolveInclusion()` needs from the `QuoteTemplate`
+ * variation actually pricing a quote's side of the pairing — its
+ * `QuoteItemTemplateConfig` row (`data/schemas/quotes.gql`) for one
  * `QuoteItemTemplate`. Generic (rather than the full row shape) so callers
  * can pass whatever richer type they already have — e.g. a `Readiness
  * QuoteItemTemplateConfig` (`../readiness/readiness-check.types.ts`) — and
@@ -12,9 +12,9 @@ export type QuoteItemVariationPricingConfig = {
 };
 
 /**
- * The one field `QuoteItemInclusionUtils.resolveInclusion()` needs from the
- * team's default `QuoteTemplate`'s side of the pairing — its
- * `QuoteItemTemplateConfig` row for the same `QuoteItemTemplate`.
+ * The one field `resolveInclusion()` needs from the team's default
+ * `QuoteTemplate`'s side of the pairing — its `QuoteItemTemplateConfig` row
+ * for the same `QuoteItemTemplate`.
  */
 export type QuoteItemDefaultInclusionConfig = {
     readonly enabled: boolean;
@@ -39,14 +39,12 @@ export type QuoteItemDefaultInclusionConfig = {
  * building a `ReadinessCheckInput.quoteItemTemplateConfigs` array for the
  * template that will actually price a quote.
  */
-export class QuoteItemInclusionUtils {
-    public static resolveInclusion<T extends QuoteItemVariationPricingConfig>(
-        variationConfig: T,
-        defaultTemplateConfig: QuoteItemDefaultInclusionConfig,
-    ): T & QuoteItemDefaultInclusionConfig {
-        return {
-            ...variationConfig,
-            enabled: defaultTemplateConfig.enabled,
-        };
-    }
+export function resolveInclusion<T extends QuoteItemVariationPricingConfig>(
+    variationConfig: T,
+    defaultTemplateConfig: QuoteItemDefaultInclusionConfig,
+): T & QuoteItemDefaultInclusionConfig {
+    return {
+        ...variationConfig,
+        enabled: defaultTemplateConfig.enabled,
+    };
 }

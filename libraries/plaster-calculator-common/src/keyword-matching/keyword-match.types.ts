@@ -1,6 +1,7 @@
 /**
- * The `QuoteItemTemplate` fields `QuoteItemKeywordMatcherUtils.match()`
- * needs. This package has no dependency on the generated Data Connect SDK
+ * The `QuoteItemTemplate` fields `match()` (`quote-item-keyword-matcher.
+ * utils.ts`) needs. This package has no dependency on the generated Data
+ * Connect SDK
  * (see `ReadinessQuoteItemTemplateConfig` in `../readiness/readiness-check.
  * types.ts` for the same rationale elsewhere in this package), so this is a
  * minimal local shape rather than `QuoteItemTemplate` (`data/schemas/quotes.
@@ -40,8 +41,8 @@ export type ProjectPlanTextPage = {
 };
 
 /**
- * The `Project`/`FloorplanPage` fields `ProjectPlanTextCorpusUtils.
- * buildSearchableCorpus()` needs. `extractedTextJson` mirrors `Project.
+ * The `Project`/`FloorplanPage` fields `buildSearchableCorpus()`
+ * (`project-plan-text.utils.ts`) needs. `extractedTextJson` mirrors `Project.
  * extractedTextJson` (`data/schemas/projects.gql`): a JSON-encoded array of
  * per-page `{ text: string }` objects (see `flattenExtractedText()` in
  * `functions/plaster-calculator-functions/src/questionnaire-ai.ts` for the

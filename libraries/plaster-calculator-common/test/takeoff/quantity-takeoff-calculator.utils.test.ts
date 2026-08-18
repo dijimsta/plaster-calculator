@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { QuantityTakeoffCalculatorUtils } from "../../src/index.ts";
+import { computeQuantities } from "../../src/index.ts";
 import type {
     AreaPolygon,
     Overlay,
@@ -34,7 +34,7 @@ function areaFixture(overrides: Partial<AreaPolygon>): AreaPolygon {
 // A page at 10mm/px, so `lengthM = lengthPx / 100` and `areaM2 = areaPx /
 // 10000`. Every room is 2400mm high, via the page-level `pageHeightMm`
 // fallback (no `AreaPolygon.ceilingHeightMm` is set), exercising
-// `OverlayGeometryHelper.effectiveFlatHeight()`'s fallback path.
+// `effectiveFlatHeight()`'s fallback path.
 const SCALE_MM_PER_PX = 10;
 const PAGE_HEIGHT_MM = 2400;
 
@@ -134,9 +134,7 @@ const QUANTITY_SOURCES: QuantitySourceDefinition[] = [
 ];
 
 function quantityFor(
-    results: ReturnType<
-        typeof QuantityTakeoffCalculatorUtils.computeQuantities
-    >,
+    results: ReturnType<typeof computeQuantities>,
     quantitySourceId: string,
 ): number {
     const result = results.find(
@@ -147,7 +145,7 @@ function quantityFor(
 }
 
 test("computeQuantities returns one result per input QuantitySourceDefinition, in order", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -161,7 +159,7 @@ test("computeQuantities returns one result per input QuantitySourceDefinition, i
 });
 
 test("WALL_AREA/STANDARD sums only the living room's wall area (33.6m2), excluding the wet-area bathroom, the outdoor patio, and the deleted room", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -171,7 +169,7 @@ test("WALL_AREA/STANDARD sums only the living room's wall area (33.6m2), excludi
 });
 
 test("PLASTERBOARD_AREA totals exact wall type plus mapped regular ceiling area", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -185,7 +183,7 @@ test("PLASTERBOARD_AREA totals exact wall type plus mapped regular ceiling area"
 });
 
 test("PLASTERBOARD_AREA keeps exact villaboard walls separate and maps wet ceilings to 10mm water resistant", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -198,7 +196,7 @@ test("PLASTERBOARD_AREA keeps exact villaboard walls separate and maps wet ceili
 });
 
 test("WALL_AREA/WET_AREA sums only the bathroom's wall area (16.8m2)", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -208,7 +206,7 @@ test("WALL_AREA/WET_AREA sums only the bathroom's wall area (16.8m2)", () => {
 });
 
 test("CEILING_AREA/STANDARD sums the living room, bathroom, and outdoor patio (12 + 3 + 1 = 16m2), excluding the deleted room", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -218,7 +216,7 @@ test("CEILING_AREA/STANDARD sums the living room, bathroom, and outdoor patio (1
 });
 
 test("CORNICE_LENGTH sums every non-deleted room's perimeter (14 + 7 + 4 = 25m), with no plaster-type split", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -228,7 +226,7 @@ test("CORNICE_LENGTH sums every non-deleted room's perimeter (14 + 7 + 4 = 25m),
 });
 
 test("FLOOR_AREA/WET_AREA sums only the bathroom's floor area (3m2) — the only wet-area room", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -238,7 +236,7 @@ test("FLOOR_AREA/WET_AREA sums only the bathroom's floor area (3m2) — the only
 });
 
 test("DOOR_COUNT is 0 — AreaPolygon has no field distinguishing a door opening from a room (WORK-141 blocker)", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -248,7 +246,7 @@ test("DOOR_COUNT is 0 — AreaPolygon has no field distinguishing a door opening
 });
 
 test("computeQuantities quotes an unrecognised measurementSource as 0 rather than throwing", () => {
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlay,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
@@ -265,7 +263,7 @@ test("computeQuantities quotes an unrecognised measurementSource as 0 rather tha
 
 test("computeQuantities excludes deleted areas from every source, not just the ones asserted above", () => {
     const overlayWithOnlyDeleted: Overlay = { areas: [deletedRoom] };
-    const results = QuantityTakeoffCalculatorUtils.computeQuantities(
+    const results = computeQuantities(
         overlayWithOnlyDeleted,
         SCALE_MM_PER_PX,
         PAGE_HEIGHT_MM,
