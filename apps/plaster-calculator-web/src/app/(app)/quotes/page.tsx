@@ -4,7 +4,13 @@ import {
     QuotesTable,
     useQuotesTranslation,
 } from "@libraries/plaster-calculator-ui";
-import { Box, Breadcrumb, PageHeading, Text } from "@libraries/uikit-web";
+import {
+    Box,
+    Breadcrumb,
+    PageHeading,
+    Pagination,
+    Text,
+} from "@libraries/uikit-web";
 import { LoaderCircle, Home } from "lucide-react";
 
 import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item.js";
@@ -21,7 +27,8 @@ import { QuotesTabsNavigation } from "./quotes-tabs-navigation.component.js";
 export default function QuotesPage() {
     const { t } = useQuotesTranslation();
     const { t: tApp } = useAppTranslation();
-    const { rows, isLoading, error } = useQuotesListState();
+    const { rows, isLoading, error, page, pageCount, setPage } =
+        useQuotesListState();
     const openQuote = useOpenQuoteCallback();
     const downloadQuote = useDownloadQuoteCallback();
 
@@ -66,6 +73,14 @@ export default function QuotesPage() {
                         rows={rows}
                         onOpen={openQuote}
                         onDownload={downloadQuote}
+                    />
+                )}
+                {!isLoading && !error && pageCount > 1 && (
+                    <Pagination
+                        page={page}
+                        pageCount={pageCount}
+                        onPageChange={setPage}
+                        label={tApp("quotes.paginationLabel")}
                     />
                 )}
             </Box>

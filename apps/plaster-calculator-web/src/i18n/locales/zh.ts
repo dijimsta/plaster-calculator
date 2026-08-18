@@ -118,6 +118,7 @@ export const zh = createTranslationResource(
             appearanceTab: "报价外观",
             appearanceDescription:
                 "设置每份生成报价所使用的信头、徽标、强调色和条款。",
+            paginationLabel: "报价列表分页",
         }),
         companies: Object.freeze({
             title: "公司",
