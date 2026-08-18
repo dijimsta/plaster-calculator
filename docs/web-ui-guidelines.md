@@ -20,8 +20,10 @@ Applies to the web app, Storybook, `plaster-calculator-ui`, and `uikit-web`.
 
 ## Framework and stories
 
-- Shared UI libraries remain framework-agnostic: no Next.js imports, `"use client"`, routing, or app dependencies.
-  Consuming apps declare framework boundaries.
+- Shared UI libraries remain framework-agnostic: no Next.js imports, routing, or app dependencies. Consuming apps
+  declare framework boundaries. The `"use client"` directive is a React Server Components convention, not a
+  Next.js-specific feature — add it to the top of client-only components, hooks, contexts, and providers as needed.
+  It does not violate this rule.
 - Stories live in `apps/storybook-web` and import UI libraries only through public package entry points.
 
 ## Component styling
