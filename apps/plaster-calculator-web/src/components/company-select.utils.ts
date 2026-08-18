@@ -15,18 +15,6 @@ export function companyInputValue(
     return selectedCompany?.companyName ?? selectedCompanyLabel ?? query;
 }
 
-/** Filters the loaded companies by a case-insensitive company name match. */
-export function filterCompanies(
-    companies: readonly CompanySummary[],
-    query: string,
-): CompanySummary[] {
-    const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return [...companies];
-    return companies.filter((company) =>
-        company.companyName.toLowerCase().includes(normalizedQuery),
-    );
-}
-
 /**
  * Finds up to three already-loaded companies whose name overlaps the given
  * name, so the create panel can suggest an existing company instead of a
