@@ -110,10 +110,12 @@ query ListQuoteItemTemplateConfigsForQuoteTemplate($quoteTemplateId: UUID!)
 # below); the caller runs them through `QuoteTotalsUtils.lineAmountCents` /
 # `subtotalCents` / `gstCents` / `totalIncGstCents` (WORK-110) to compute the
 # total client-side rather than duplicating that maths in the query layer.
-query ListQuotesForTeam @auth(level: USER) {
+query ListQuotesForTeam($limit: Int, $offset: Int) @auth(level: USER) {
     quotes(
         where: { teamId: { eq_expr: "auth.token.teamId" } }
         orderBy: [{ createdAt: DESC }]
+        limit: $limit
+        offset: $offset
     ) {
         id
         reference

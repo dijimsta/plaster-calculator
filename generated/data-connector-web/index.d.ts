@@ -1205,6 +1205,11 @@ export interface ListQuotesForTeamData {
   } & Quote_Key)[];
 }
 
+export interface ListQuotesForTeamVariables {
+  limit?: number | null;
+  offset?: number | null;
+}
+
 export interface ProjectQuestionnaireQuestion_Key {
   id: UUIDString;
   __typename?: 'ProjectQuestionnaireQuestion_Key';
@@ -2199,15 +2204,15 @@ export function listQuoteItemTemplateConfigsForQuoteTemplate(dc: DataConnect, va
 
 interface ListQuotesForTeamRef {
   /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListQuotesForTeamData, undefined>;
+  (vars?: ListQuotesForTeamVariables): QueryRef<ListQuotesForTeamData, ListQuotesForTeamVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListQuotesForTeamData, undefined>;
+  (dc: DataConnect, vars?: ListQuotesForTeamVariables): QueryRef<ListQuotesForTeamData, ListQuotesForTeamVariables>;
   operationName: string;
 }
 export const listQuotesForTeamRef: ListQuotesForTeamRef;
 
-export function listQuotesForTeam(options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, undefined>;
-export function listQuotesForTeam(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, undefined>;
+export function listQuotesForTeam(vars?: ListQuotesForTeamVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, ListQuotesForTeamVariables>;
+export function listQuotesForTeam(dc: DataConnect, vars?: ListQuotesForTeamVariables, options?: ExecuteQueryOptions): QueryPromise<ListQuotesForTeamData, ListQuotesForTeamVariables>;
 
 interface GetQuoteByIdRef {
   /* Allow users to create refs without passing in DataConnect */
