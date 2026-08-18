@@ -36,10 +36,27 @@ export type ReadinessCheckListRenderFixControl = (
     check: ReadinessCheck,
 ) => ReactNode;
 
+/**
+ * Renders one check-level action below its affected-item rows — e.g.
+ * "template priced"'s single "Save all prices" button, which submits every
+ * visible `UnitPriceFixControl`'s draft together rather than each item
+ * saving itself. Unlike `renderFixControl`, this is called once per unmet
+ * check rather than once per affected item, so it's the hook a check uses
+ * when its fix is naturally a single action spanning all its items rather
+ * than one action per item. Most checks have no use for this and can leave
+ * it unhandled (return a falsy value), the same convention
+ * `renderFixControl` uses.
+ */
+export type ReadinessCheckListRenderCheckFooter = (
+    check: ReadinessCheck,
+    result: ReadinessResult | undefined,
+) => ReactNode;
+
 export type ReadinessCheckListProps = {
     readonly checks: readonly ReadinessCheck[];
     readonly results: readonly ReadinessResult[];
     readonly renderFixControl?: ReadinessCheckListRenderFixControl;
+    readonly renderCheckFooter?: ReadinessCheckListRenderCheckFooter;
     readonly variant?: "stacked" | "alerts";
 };
 
@@ -57,6 +74,7 @@ export function ReadinessCheckList({
     checks,
     results,
     renderFixControl,
+    renderCheckFooter,
     variant = "stacked",
 }: ReadinessCheckListProps): ReactElement {
     const toggleId = useId();
@@ -84,6 +102,7 @@ export function ReadinessCheckList({
                             (result) => result.checkId === check.id,
                         )}
                         renderFixControl={renderFixControl}
+                        renderCheckFooter={renderCheckFooter}
                     />
                 ))}
             </Box>
@@ -97,6 +116,7 @@ export function ReadinessCheckList({
                                 (result) => result.checkId === check.id,
                             )}
                             renderFixControl={renderFixControl}
+                            renderCheckFooter={renderCheckFooter}
                         />
                     </StackedList.Item>
                 ))}
@@ -133,12 +153,14 @@ type ReadinessCheckRowProps = {
     readonly check: ReadinessCheck;
     readonly result: ReadinessResult | undefined;
     readonly renderFixControl: ReadinessCheckListRenderFixControl | undefined;
+    readonly renderCheckFooter: ReadinessCheckListRenderCheckFooter | undefined;
 };
 
 function ReadinessCheckAlert({
     check,
     result,
     renderFixControl,
+    renderCheckFooter,
 }: ReadinessCheckRowProps): ReactElement {
     return (
         <Alert
@@ -149,6 +171,7 @@ function ReadinessCheckAlert({
                 check={check}
                 result={result}
                 renderFixControl={renderFixControl}
+                renderCheckFooter={renderCheckFooter}
             />
         </Alert>
     );
@@ -190,6 +213,7 @@ function ReadinessCheckRow({
     check,
     result,
     renderFixControl,
+    renderCheckFooter,
 }: ReadinessCheckRowProps): ReactElement {
     const isMet = result?.isMet ?? false;
     const affectedItems = result?.affectedItems ?? [];
@@ -204,11 +228,13 @@ function ReadinessCheckRow({
             />
             <ReadinessCheckRowItems
                 check={check}
+                result={result}
                 isMet={isMet}
                 affectedItems={affectedItems}
                 isExpanded={isExpanded}
                 onToggleExpanded={() => setIsExpanded((expanded) => !expanded)}
                 renderFixControl={renderFixControl}
+                renderCheckFooter={renderCheckFooter}
             />
         </Box>
     );
@@ -255,25 +281,31 @@ function ReadinessCheckRowHeader({
 
 type ReadinessCheckRowItemsProps = {
     readonly check: ReadinessCheck;
+    readonly result: ReadinessResult | undefined;
     readonly isMet: boolean;
     readonly affectedItems: readonly ReadinessAffectedItem[];
     readonly isExpanded: boolean;
     readonly onToggleExpanded: () => void;
     readonly renderFixControl: ReadinessCheckListRenderFixControl | undefined;
+    readonly renderCheckFooter: ReadinessCheckListRenderCheckFooter | undefined;
 };
 
 /**
  * The unmet-only part of a row: the expand/collapse toggle (only shown once
- * there's more than one affected item to collapse) and the affected-item
- * rows themselves.
+ * there's more than one affected item to collapse), the affected-item rows
+ * themselves, and finally the check's own footer action (if any) — kept
+ * behind the same expand/collapse gate as the items, since a footer like
+ * "Save all prices" only makes sense once its inputs are actually visible.
  */
 function ReadinessCheckRowItems({
     check,
+    result,
     isMet,
     affectedItems,
     isExpanded,
     onToggleExpanded,
     renderFixControl,
+    renderCheckFooter,
 }: ReadinessCheckRowItemsProps): ReactNode {
     const { t } = useQuotesTranslation();
 
@@ -308,6 +340,7 @@ function ReadinessCheckRowItems({
                             renderFixControl={renderFixControl}
                         />
                     ))}
+                    {renderCheckFooter?.(check, result)}
                 </Box>
             )}
         </>

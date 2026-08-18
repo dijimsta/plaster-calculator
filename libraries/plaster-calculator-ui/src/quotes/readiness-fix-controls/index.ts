@@ -8,6 +8,8 @@ export { FloorplanDeepLinkFixControl } from "./floorplan-deep-link-fix-control.c
 export type { FloorplanDeepLinkFixControlProps } from "./floorplan-deep-link-fix-control.component.tsx";
 export { UnitPriceFixControl } from "./unit-price-fix-control.component.tsx";
 export type { UnitPriceFixControlProps } from "./unit-price-fix-control.component.tsx";
+export { UnitPriceBatchSaveControl } from "./unit-price-batch-save-control.component.tsx";
+export type { UnitPriceBatchSaveControlProps } from "./unit-price-batch-save-control.component.tsx";
 export { WallBoardTypeFixControl } from "./wall-board-type-fix-control.component.tsx";
 export { QuoteTemplateDeepLinkFixControl } from "./quote-template-deep-link-fix-control.component.tsx";
 export type { WallBoardTypeFixControlProps } from "./wall-board-type-fix-control.component.tsx";

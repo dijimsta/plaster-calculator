@@ -65,6 +65,9 @@ export const readinessFixControls = Object.freeze({
         label: "单价",
         labelWithTemplate: "单价 — {{template}}",
         error: "无法更新单价，请重试。",
+        // Same single-plural-form note as notReadyDescription above.
+        saveAll_one: "保存 {{count}} 项价格",
+        saveAll_other: "保存 {{count}} 项价格",
     }),
     confirmError: "无法确认，请重试。",
     setTemplateUnits: "设置模板单位",
