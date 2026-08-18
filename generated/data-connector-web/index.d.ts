@@ -1123,6 +1123,11 @@ export interface ListProjectQuestionnairesData {
   } & ProjectQuestionnaire_Key)[];
 }
 
+export interface ListProjectQuestionnairesVariables {
+  limit?: number | null;
+  offset?: number | null;
+}
+
 export interface ListQuestionnaireTemplatesData {
   questionnaireTemplates: ({
     id: UUIDString;
@@ -1904,15 +1909,15 @@ export function getQuestionnaireTemplate(dc: DataConnect, vars: GetQuestionnaire
 
 interface ListProjectQuestionnairesRef {
   /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListProjectQuestionnairesData, undefined>;
+  (vars?: ListProjectQuestionnairesVariables): QueryRef<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<ListProjectQuestionnairesData, undefined>;
+  (dc: DataConnect, vars?: ListProjectQuestionnairesVariables): QueryRef<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
   operationName: string;
 }
 export const listProjectQuestionnairesRef: ListProjectQuestionnairesRef;
 
-export function listProjectQuestionnaires(options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, undefined>;
-export function listProjectQuestionnaires(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, undefined>;
+export function listProjectQuestionnaires(vars?: ListProjectQuestionnairesVariables, options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
+export function listProjectQuestionnaires(dc: DataConnect, vars?: ListProjectQuestionnairesVariables, options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
 
 interface GetProjectQuestionnaireRef {
   /* Allow users to create refs without passing in DataConnect */

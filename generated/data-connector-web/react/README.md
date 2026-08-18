@@ -646,15 +646,22 @@ export default function GetQuestionnaireTemplateComponent() {
 You can execute the `ListProjectQuestionnaires` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
 
 ```javascript
-useListProjectQuestionnaires(dc: DataConnect, options?: useDataConnectQueryOptions<ListProjectQuestionnairesData>): UseDataConnectQueryResult<ListProjectQuestionnairesData, undefined>;
+useListProjectQuestionnaires(dc: DataConnect, vars?: ListProjectQuestionnairesVariables, options?: useDataConnectQueryOptions<ListProjectQuestionnairesData>): UseDataConnectQueryResult<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
 ```
 You can also pass in a `DataConnect` instance to the Query hook function.
 ```javascript
-useListProjectQuestionnaires(options?: useDataConnectQueryOptions<ListProjectQuestionnairesData>): UseDataConnectQueryResult<ListProjectQuestionnairesData, undefined>;
+useListProjectQuestionnaires(vars?: ListProjectQuestionnairesVariables, options?: useDataConnectQueryOptions<ListProjectQuestionnairesData>): UseDataConnectQueryResult<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
 ```
 
 ### Variables
-The `ListProjectQuestionnaires` Query has no variables.
+The `ListProjectQuestionnaires` Query has an optional argument of type `ListProjectQuestionnairesVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ListProjectQuestionnairesVariables {
+  limit?: number | null;
+  offset?: number | null;
+}
+```
 ### Return Type
 Recall that calling the `ListProjectQuestionnaires` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
 
@@ -683,26 +690,40 @@ To learn more about the `UseQueryResult` object, see the [TanStack React Query d
 
 ```javascript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig } from '@generated/data-connector-web';
+import { connectorConfig, ListProjectQuestionnairesVariables } from '@generated/data-connector-web';
 import { useListProjectQuestionnaires } from '@generated/data-connector-web/react'
 
 export default function ListProjectQuestionnairesComponent() {
+  // The `useListProjectQuestionnaires` Query hook has an optional argument of type `ListProjectQuestionnairesVariables`:
+  const listProjectQuestionnairesVars: ListProjectQuestionnairesVariables = {
+    limit: ..., // optional
+    offset: ..., // optional
+  };
+
   // You don't have to do anything to "execute" the Query.
   // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useListProjectQuestionnaires(listProjectQuestionnairesVars);
+  // Variables can be defined inline as well.
+  const query = useListProjectQuestionnaires({ limit: ..., offset: ..., });
+  // Since all variables are optional for this Query, you can omit the `ListProjectQuestionnairesVariables` argument.
+  // (as long as you don't want to provide any `options`!)
   const query = useListProjectQuestionnaires();
 
   // You can also pass in a `DataConnect` instance to the Query hook function.
   const dataConnect = getDataConnect(connectorConfig);
-  const query = useListProjectQuestionnaires(dataConnect);
+  const query = useListProjectQuestionnaires(dataConnect, listProjectQuestionnairesVars);
 
   // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
   const options = { staleTime: 5 * 1000 };
-  const query = useListProjectQuestionnaires(options);
+  const query = useListProjectQuestionnaires(listProjectQuestionnairesVars, options);
+  // If you'd like to provide options without providing any variables, you must
+  // pass `undefined` where you would normally pass the variables.
+  const query = useListProjectQuestionnaires(undefined, options);
 
   // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
   const dataConnect = getDataConnect(connectorConfig);
   const options = { staleTime: 5 * 1000 };
-  const query = useListProjectQuestionnaires(dataConnect, options);
+  const query = useListProjectQuestionnaires(dataConnect, listProjectQuestionnairesVars /** or undefined */, options);
 
   // Then, you can render your component dynamically based on the status of the Query.
   if (query.isPending) {

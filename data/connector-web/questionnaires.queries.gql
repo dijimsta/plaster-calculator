@@ -31,10 +31,12 @@ query GetQuestionnaireTemplate($id: UUID!) @auth(level: USER) {
     }
 }
 
-query ListProjectQuestionnaires @auth(level: USER) {
+query ListProjectQuestionnaires($limit: Int, $offset: Int) @auth(level: USER) {
     projectQuestionnaires(
         where: { project: { teamId: { eq_expr: "auth.token.teamId" } } }
         orderBy: [{ updatedAt: DESC }]
+        limit: $limit
+        offset: $offset
     ) {
         projectId
         updatedAt

@@ -723,22 +723,22 @@ executeQuery(ref).then((response) => {
 ## ListProjectQuestionnaires
 You can execute the `ListProjectQuestionnaires` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
 ```typescript
-listProjectQuestionnaires(options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, undefined>;
+listProjectQuestionnaires(vars?: ListProjectQuestionnairesVariables, options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
 
 interface ListProjectQuestionnairesRef {
   ...
   /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<ListProjectQuestionnairesData, undefined>;
+  (vars?: ListProjectQuestionnairesVariables): QueryRef<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
 }
 export const listProjectQuestionnairesRef: ListProjectQuestionnairesRef;
 ```
 You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
 ```typescript
-listProjectQuestionnaires(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, undefined>;
+listProjectQuestionnaires(dc: DataConnect, vars?: ListProjectQuestionnairesVariables, options?: ExecuteQueryOptions): QueryPromise<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
 
 interface ListProjectQuestionnairesRef {
   ...
-  (dc: DataConnect): QueryRef<ListProjectQuestionnairesData, undefined>;
+  (dc: DataConnect, vars?: ListProjectQuestionnairesVariables): QueryRef<ListProjectQuestionnairesData, ListProjectQuestionnairesVariables>;
 }
 export const listProjectQuestionnairesRef: ListProjectQuestionnairesRef;
 ```
@@ -750,7 +750,14 @@ console.log(name);
 ```
 
 ### Variables
-The `ListProjectQuestionnaires` query has no variables.
+The `ListProjectQuestionnaires` query has an optional argument of type `ListProjectQuestionnairesVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ListProjectQuestionnairesVariables {
+  limit?: number | null;
+  offset?: number | null;
+}
+```
 ### Return Type
 Recall that executing the `ListProjectQuestionnaires` query returns a `QueryPromise` that resolves to an object with a `data` property.
 
@@ -774,21 +781,30 @@ export interface ListProjectQuestionnairesData {
 
 ```typescript
 import { getDataConnect } from 'firebase/data-connect';
-import { connectorConfig, listProjectQuestionnaires } from '@generated/data-connector-web';
+import { connectorConfig, listProjectQuestionnaires, ListProjectQuestionnairesVariables } from '@generated/data-connector-web';
 
+// The `ListProjectQuestionnaires` query has an optional argument of type `ListProjectQuestionnairesVariables`:
+const listProjectQuestionnairesVars: ListProjectQuestionnairesVariables = {
+  limit: ..., // optional
+  offset: ..., // optional
+};
 
 // Call the `listProjectQuestionnaires()` function to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listProjectQuestionnaires(listProjectQuestionnairesVars);
+// Variables can be defined inline as well.
+const { data } = await listProjectQuestionnaires({ limit: ..., offset: ..., });
+// Since all variables are optional for this query, you can omit the `ListProjectQuestionnairesVariables` argument.
 const { data } = await listProjectQuestionnaires();
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
-const { data } = await listProjectQuestionnaires(dataConnect);
+const { data } = await listProjectQuestionnaires(dataConnect, listProjectQuestionnairesVars);
 
 console.log(data.projectQuestionnaires);
 
 // Or, you can use the `Promise` API.
-listProjectQuestionnaires().then((response) => {
+listProjectQuestionnaires(listProjectQuestionnairesVars).then((response) => {
   const data = response.data;
   console.log(data.projectQuestionnaires);
 });
@@ -798,15 +814,24 @@ listProjectQuestionnaires().then((response) => {
 
 ```typescript
 import { getDataConnect, executeQuery } from 'firebase/data-connect';
-import { connectorConfig, listProjectQuestionnairesRef } from '@generated/data-connector-web';
+import { connectorConfig, listProjectQuestionnairesRef, ListProjectQuestionnairesVariables } from '@generated/data-connector-web';
 
+// The `ListProjectQuestionnaires` query has an optional argument of type `ListProjectQuestionnairesVariables`:
+const listProjectQuestionnairesVars: ListProjectQuestionnairesVariables = {
+  limit: ..., // optional
+  offset: ..., // optional
+};
 
 // Call the `listProjectQuestionnairesRef()` function to get a reference to the query.
+const ref = listProjectQuestionnairesRef(listProjectQuestionnairesVars);
+// Variables can be defined inline as well.
+const ref = listProjectQuestionnairesRef({ limit: ..., offset: ..., });
+// Since all variables are optional for this query, you can omit the `ListProjectQuestionnairesVariables` argument.
 const ref = listProjectQuestionnairesRef();
 
 // You can also pass in a `DataConnect` instance to the `QueryRef` function.
 const dataConnect = getDataConnect(connectorConfig);
-const ref = listProjectQuestionnairesRef(dataConnect);
+const ref = listProjectQuestionnairesRef(dataConnect, listProjectQuestionnairesVars);
 
 // Call `executeQuery()` on the reference to execute the query.
 // You can use the `await` keyword to wait for the promise to resolve.

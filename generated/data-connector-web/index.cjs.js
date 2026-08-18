@@ -418,17 +418,17 @@ exports.getQuestionnaireTemplate = function getQuestionnaireTemplate(dcOrVars, v
 }
 ;
 
-const listProjectQuestionnairesRef = (dc) => {
-  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+const listProjectQuestionnairesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars);
   dcInstance._useGeneratedSdk();
-  return queryRef(dcInstance, 'ListProjectQuestionnaires');
+  return queryRef(dcInstance, 'ListProjectQuestionnaires', inputVars);
 }
 listProjectQuestionnairesRef.operationName = 'ListProjectQuestionnaires';
 exports.listProjectQuestionnairesRef = listProjectQuestionnairesRef;
 
-exports.listProjectQuestionnaires = function listProjectQuestionnaires(dcOrOptions, options) {
+exports.listProjectQuestionnaires = function listProjectQuestionnaires(dcOrVars, varsOrOptions, options) {
   
-  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, false);
   return executeQuery(listProjectQuestionnairesRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
 }
 ;
