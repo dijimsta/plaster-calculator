@@ -10,74 +10,23 @@ import {
     recoverConcurrentAcceptance,
     recoverExistingMembership,
 } from "./team-invitation-acceptance.js";
+import type {
+    AuthUser,
+    Membership,
+    TeamInvitationDependencies,
+} from "./team-invitation-types.js";
+
+export type {
+    AuthUser,
+    Invitation,
+    Membership,
+    PendingInvitation,
+    TeamInvitationDependencies,
+} from "./team-invitation-types.js";
 
 const INVITATION_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/u;
-
-export interface Membership {
-    teamId: string;
-    role: string;
-}
-
-export interface Invitation {
-    teamId: string;
-    email: string;
-    tokenHash: string;
-    invitedByUserId: string;
-    expiresAt: string;
-    acceptedAt?: string | null;
-    acceptedByUserId?: string | null;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface PendingInvitation {
-    teamId: string;
-    email: string;
-    invitedByUserId: string;
-    expiresAt: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface AuthUser {
-    email?: string;
-    customClaims?: Record<string, unknown>;
-}
-
-export interface TeamInvitationDependencies {
-    now(): Date;
-    generateToken(): string;
-    getMemberships(userId: string): Promise<Membership[]>;
-    authUserExists(email: string): Promise<boolean>;
-    getAuthUser(userId: string): Promise<AuthUser>;
-    setCustomUserClaims(
-        userId: string,
-        claims: Record<string, unknown>,
-    ): Promise<void>;
-    rotateInvitation(input: {
-        teamId: string;
-        email: string;
-        tokenHash: string;
-        invitedByUserId: string;
-        expiresAt: string;
-    }): Promise<void>;
-    revokeInvitation(teamId: string, email: string, now: string): Promise<void>;
-    listPendingInvitations(
-        teamId: string,
-        now: string,
-    ): Promise<PendingInvitation[]>;
-    getInvitationByTokenHash(
-        tokenHash: string,
-    ): Promise<Invitation | undefined>;
-    acceptInvitation(input: {
-        teamId: string;
-        email: string;
-        tokenHash: string;
-        userId: string;
-    }): Promise<void>;
-}
 
 export function normalizeInvitationEmail(value: unknown): string {
     if (typeof value !== "string" || value.trim().length === 0) {

@@ -1,0 +1,63 @@
+export interface Membership {
+    teamId: string;
+    role: string;
+}
+
+export interface Invitation {
+    teamId: string;
+    email: string;
+    tokenHash: string;
+    invitedByUserId: string;
+    expiresAt: string;
+    acceptedAt?: string | null;
+    acceptedByUserId?: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface PendingInvitation {
+    teamId: string;
+    email: string;
+    invitedByUserId: string;
+    expiresAt: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface AuthUser {
+    email?: string;
+    customClaims?: Record<string, unknown>;
+}
+
+export interface TeamInvitationDependencies {
+    now(): Date;
+    generateToken(): string;
+    getMemberships(userId: string): Promise<Membership[]>;
+    authUserExists(email: string): Promise<boolean>;
+    getAuthUser(userId: string): Promise<AuthUser>;
+    setCustomUserClaims(
+        userId: string,
+        claims: Record<string, unknown>,
+    ): Promise<void>;
+    rotateInvitation(input: {
+        teamId: string;
+        email: string;
+        tokenHash: string;
+        invitedByUserId: string;
+        expiresAt: string;
+    }): Promise<void>;
+    revokeInvitation(teamId: string, email: string, now: string): Promise<void>;
+    listPendingInvitations(
+        teamId: string,
+        now: string,
+    ): Promise<PendingInvitation[]>;
+    getInvitationByTokenHash(
+        tokenHash: string,
+    ): Promise<Invitation | undefined>;
+    acceptInvitation(input: {
+        teamId: string;
+        email: string;
+        tokenHash: string;
+        userId: string;
+    }): Promise<void>;
+}

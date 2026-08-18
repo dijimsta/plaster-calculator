@@ -6,7 +6,7 @@ import type {
     Invitation,
     Membership,
     TeamInvitationDependencies,
-} from "./team-invitation-domain.js";
+} from "./team-invitation-types.js";
 
 export async function recoverExistingMembership(
     dependencies: TeamInvitationDependencies,
