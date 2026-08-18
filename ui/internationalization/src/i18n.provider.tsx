@@ -9,11 +9,11 @@ import { createAppI18nInstance } from "./create-i18n-instance.ts";
 import type { LanguageCookie } from "./create-language-cookie.ts";
 import type { I18nNamespaceTranslations } from "./i18n-namespace-translations.types.ts";
 
-export interface I18nProviderProps extends PropsWithChildren {
+export type I18nProviderProps = PropsWithChildren & {
     readonly translations?: readonly I18nNamespaceTranslations[];
     readonly i18n?: I18nInstance;
     readonly languageCookie?: Pick<LanguageCookie<string>, "read">;
-}
+};
 
 export function I18nProvider({
     children,
