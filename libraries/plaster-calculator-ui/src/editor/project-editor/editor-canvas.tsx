@@ -1,5 +1,6 @@
 import { pointDistance } from "@libraries/plaster-calculator-common";
 import type { Point } from "@libraries/plaster-calculator-common";
+import { Paragraph } from "@libraries/uikit-web";
 import type { KonvaEventObject } from "konva/lib/Node.js";
 import { Group, Image as KonvaImage, Layer, Rect, Stage } from "react-konva";
 
@@ -162,8 +163,16 @@ export function EditorCanvas({
     }
 
     return (
+        // `ui.canvasWrap` is a deliberately-kept gap: this ref is read
+        // directly by the scroll-drag handlers above, and `Box` neither
+        // forwards refs nor supports the responsive height this scrollable
+        // viewport needs. See `project-editor.styles.ts`.
         <div className={ui.canvasWrap} ref={canvasWrapRef}>
-            {imageError && <p className={ui.error}>{imageError}</p>}
+            {imageError && (
+                <Paragraph textSize="sm" variant="danger">
+                    {imageError}
+                </Paragraph>
+            )}
             <Stage
                 width={stageWidth}
                 height={stageHeight}

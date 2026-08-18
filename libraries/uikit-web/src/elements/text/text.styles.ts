@@ -11,6 +11,7 @@ export type TextSize = typeof sizes extends Record<infer K, string> ? K : never;
 export const variants = Object.freeze({
     default: "",
     muted: "text-slate-500 dark:text-slate-400",
+    danger: "text-red-700 dark:text-red-400",
 });
 
 export type TextVariant =

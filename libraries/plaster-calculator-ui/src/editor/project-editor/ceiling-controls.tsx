@@ -1,5 +1,12 @@
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
-import { Button, Input, Label, SelectMenu } from "@libraries/uikit-web";
+import {
+    Box,
+    Button,
+    Input,
+    Label,
+    SelectMenu,
+    Text,
+} from "@libraries/uikit-web";
 
 import { useEditorTranslation } from "../i18n/index.js";
 
@@ -46,7 +53,7 @@ export function CeilingControls({
 
     return (
         <>
-            <div className={ui.field}>
+            <Box direction="column" gap="xs">
                 <Label>{t("ceilingControls.roomCeilingLabel")}</Label>
                 <SelectMenu
                     options={[
@@ -66,7 +73,7 @@ export function CeilingControls({
                         setCeilingMode(event.target.value as "flat" | "raked")
                     }
                 />
-            </div>
+            </Box>
             {mode === "flat" && (
                 <FlatCeilingHeightField
                     ceilingHeightMm={ceilingHeightMm}
@@ -112,7 +119,7 @@ function FlatCeilingHeightField({
             : String(ceilingHeightMm);
 
     return (
-        <div className={ui.field}>
+        <Box direction="column" gap="xs">
             <Label>{t("ceilingControls.roomHeightOverrideLabel")}</Label>
             <Input
                 type="number"
@@ -122,7 +129,7 @@ function FlatCeilingHeightField({
                 onChange={(event) => setSelectedAreaHeight(event.target.value)}
             />
             <ValidationMessage message={error} />
-        </div>
+        </Box>
     );
 }
 
@@ -159,7 +166,7 @@ function RakedCeilingFields({
 
     return (
         <>
-            <div className={ui.buttonRow}>
+            <Box direction="row" wrap gap="sm">
                 <Button
                     variant={lowEdgeError ? "dangerSoft" : "secondary"}
                     onClick={() => setRakedEdge("low")}
@@ -174,8 +181,14 @@ function RakedCeilingFields({
                 >
                     Set selected high edge
                 </Button>
-            </div>
-            {edgeError && <span className={ui.fieldError}>{edgeError}</span>}
+            </Box>
+            {edgeError && (
+                <Text size="xs" weight="semibold" variant="danger">
+                    {edgeError}
+                </Text>
+            )}
+            {/* `ui.metric` is a deliberately-kept gap -- see
+                `project-editor.styles.ts`. */}
             <div className={ui.metric}>
                 Low edge: {edgeLabel(raked?.lowEdgeIndex)} | High edge:{" "}
                 {edgeLabel(raked?.highEdgeIndex)}
@@ -217,7 +230,7 @@ function RakedHeightField({
     setRakedHeight,
 }: RakedHeightFieldProps) {
     return (
-        <div className={ui.field}>
+        <Box direction="column" gap="xs">
             <Label>{label}</Label>
             <Input
                 type="number"
@@ -226,7 +239,7 @@ function RakedHeightField({
                 onChange={(event) => setRakedHeight(field, event.target.value)}
             />
             <ValidationMessage message={error} />
-        </div>
+        </Box>
     );
 }
 

@@ -1,11 +1,14 @@
+import { Text } from "@libraries/uikit-web";
 import type { ReactNode } from "react";
-
-import { ui } from "./project-editor.styles.js";
 
 export function ValidationMessage({
     message,
 }: {
     readonly message: string;
 }): ReactNode {
-    return message ? <span className={ui.fieldError}>{message}</span> : null;
+    return message ? (
+        <Text size="xs" weight="semibold" variant="danger">
+            {message}
+        </Text>
+    ) : null;
 }
