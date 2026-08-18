@@ -3,7 +3,7 @@
 import { useCompaniesService } from "@libraries/plaster-calculator-web-core";
 import { Button } from "@libraries/uikit-web";
 import { Search, X } from "lucide-react";
-import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 import { useAppTranslation } from "../i18n/index.ts";
 import { cx, ui } from "../lib/styles.js";
@@ -18,10 +18,14 @@ import {
 } from "./company-select.types.js";
 import {
     companyInputValue,
-    filterCompanies,
     findNearMatches,
     trimmedOrNull,
 } from "./company-select.utils.js";
+
+/** Matching companies shown per debounced search. */
+const SEARCH_RESULT_LIMIT = 20;
+/** How long to wait after the last keystroke before searching the server. */
+const SEARCH_DEBOUNCE_MS = 300;
 
 export function CompanySelect({
     selectedCompanyId,
@@ -37,8 +41,9 @@ export function CompanySelect({
     const resolvedLabel = label ?? t("companySelect.label");
     const resolvedPlaceholder = placeholder ?? t("companySelect.placeholder");
     const companiesService = useCompaniesService();
-    const [companies, setCompanies] = useState<CompanySummary[] | null>(null);
+    const [companies, setCompanies] = useState<CompanySummary[]>([]);
     const [query, setQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
@@ -58,24 +63,41 @@ export function CompanySelect({
     isCreatingRef.current = isCreating;
 
     const selectedCompany = useMemo(
-        () => companies?.find((company) => company.id === selectedCompanyId),
+        () => companies.find((company) => company.id === selectedCompanyId),
         [companies, selectedCompanyId],
     );
-    const filtered = useMemo(
-        () => filterCompanies(companies ?? [], query),
-        [companies, query],
-    );
     const nearMatches = useMemo(
-        () => findNearMatches(companies ?? [], createDraft.companyName),
+        () => findNearMatches(companies, createDraft.companyName),
         [companies, createDraft.companyName],
     );
 
-    async function ensureLoaded(): Promise<void> {
-        if (companies || isLoading) return;
+    // Debounce the raw query before it drives a server search, matching the
+    // pattern used by the Companies list page's own search box.
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            setDebouncedQuery(query);
+        }, SEARCH_DEBOUNCE_MS);
+        return () => window.clearTimeout(timeoutId);
+    }, [query]);
+
+    // Re-searches whenever the debounced term changes while the popover is
+    // open. Bails out while closed so typing elsewhere on the page (or the
+    // popover being dismissed) doesn't trigger a request.
+    useEffect(() => {
+        if (!isOpen) return;
+        void search(debouncedQuery);
+    }, [isOpen, debouncedQuery, companiesService]);
+
+    async function search(term: string): Promise<void> {
         setIsLoading(true);
         setError("");
         try {
-            setCompanies(await companiesService.listCompanies());
+            setCompanies(
+                await companiesService.listCompanies({
+                    search: term.trim() || undefined,
+                    limit: SEARCH_RESULT_LIMIT,
+                }),
+            );
         } catch (err) {
             setError(
                 err instanceof Error
@@ -127,7 +149,7 @@ export function CompanySelect({
                 businessNumber: trimmedOrNull(createDraft.businessNumber),
                 phoneNumber: trimmedOrNull(createDraft.phoneNumber),
             });
-            setCompanies((current) => [...(current ?? []), created]);
+            setCompanies((current) => [...current, created]);
             onCreated?.(created);
             selectCompany(created);
             setCreateDraft(EMPTY_CREATE_DRAFT);
@@ -169,7 +191,6 @@ export function CompanySelect({
                     onChange={(event) => {
                         setQuery(event.target.value);
                         setIsOpen(true);
-                        void ensureLoaded();
                     }}
                     onFocus={() => {
                         if (!query) {
@@ -180,7 +201,6 @@ export function CompanySelect({
                             );
                         }
                         setIsOpen(true);
-                        void ensureLoaded();
                     }}
                     placeholder={resolvedPlaceholder}
                 />
@@ -216,7 +236,7 @@ export function CompanySelect({
                     ) : (
                         <CompanySelectMenu
                             error={error}
-                            filtered={filtered}
+                            filtered={companies}
                             isLoading={isLoading}
                             onSelect={selectCompany}
                             onStartCreate={startCreate}
