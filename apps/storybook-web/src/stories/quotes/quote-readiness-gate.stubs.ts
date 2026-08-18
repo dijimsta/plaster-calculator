@@ -6,6 +6,7 @@ import {
     READINESS_CHECKS,
     ROOMS_MEASURED_CHECK_ID,
     SCALE_APPLIED_CHECK_ID,
+    TEMPLATE_HAS_ENABLED_ITEMS_CHECK_ID,
     TEMPLATE_PRICED_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
 } from "@libraries/plaster-calculator-common";
@@ -23,7 +24,7 @@ export const ALL_CHECKS_MET_RESULTS: readonly ReadinessResult[] =
         affectedItems: [],
     }));
 
-/** All seven checks unmet, one affected item each. */
+/** All eight checks unmet, one affected item each. */
 export const FULLY_BLOCKED_RESULTS: readonly ReadinessResult[] = [
     {
         checkId: SCALE_APPLIED_CHECK_ID,
@@ -62,6 +63,12 @@ export const FULLY_BLOCKED_RESULTS: readonly ReadinessResult[] = [
                 areaLabel: "Kitchen",
             },
         ],
+    },
+    {
+        checkId: TEMPLATE_HAS_ENABLED_ITEMS_CHECK_ID,
+        isMet: false,
+        affectedItemCount: 1,
+        affectedItems: [{}],
     },
     {
         checkId: TEMPLATE_PRICED_CHECK_ID,
