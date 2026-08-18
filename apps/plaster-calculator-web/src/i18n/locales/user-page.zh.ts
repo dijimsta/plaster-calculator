@@ -22,4 +22,13 @@ export const zhUserPage = Object.freeze({
         title: "语言",
         description: "选择问卷表单使用的语言。",
     }),
+    team: Object.freeze({
+        members: Object.freeze({
+            paginationLabel: "团队成员分页",
+        }),
+        pendingInvitations: Object.freeze({
+            loadMore: "加载更多",
+            loadingMore: "正在加载更多...",
+        }),
+    }),
 });

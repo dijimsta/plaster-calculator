@@ -24,4 +24,13 @@ export const enUserPage = Object.freeze({
         title: "Language",
         description: "Choose the language used for questionnaire forms.",
     }),
+    team: Object.freeze({
+        members: Object.freeze({
+            paginationLabel: "Team members pagination",
+        }),
+        pendingInvitations: Object.freeze({
+            loadMore: "Load more",
+            loadingMore: "Loading more...",
+        }),
+    }),
 });
