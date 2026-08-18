@@ -7,7 +7,7 @@ import type { SelectedEdge } from "./use-editor-selection.js";
 import { ValidationMessage } from "./validation-message.js";
 import type { ValidationIssue } from "./validation.js";
 
-interface EditorValidationOptions {
+type EditorValidationOptions = {
     readonly ceilingHeightMm: number | null;
     readonly selectedEdge: SelectedEdge | null;
     readonly setCeilingMode: (mode: "flat" | "raked") => void;
@@ -18,9 +18,9 @@ interface EditorValidationOptions {
     ) => void;
     readonly setSelectedAreaHeight: (value: string) => void;
     readonly validationIssues: ValidationIssue[];
-}
+};
 
-interface EditorValidation {
+type EditorValidation = {
     readonly areaIssue: (
         areaId: string,
         field: ValidationIssue["field"],
@@ -29,7 +29,7 @@ interface EditorValidation {
     readonly hasPageHeightIssue: () => boolean;
     readonly pageIssue: (field: ValidationIssue["field"]) => string;
     readonly renderCeilingControls: (area: AreaPolygon) => ReactNode;
-}
+};
 
 export function useEditorValidation({
     ceilingHeightMm,

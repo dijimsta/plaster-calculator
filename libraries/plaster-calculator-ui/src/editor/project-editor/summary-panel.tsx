@@ -7,11 +7,11 @@ import type { EditorSummary } from "./editor-sidebar.types.js";
 import { ui } from "./project-editor.styles.js";
 import type { ValidationIssue } from "./validation.js";
 
-interface SummaryPanelProps {
+type SummaryPanelProps = {
     readonly summary: EditorSummary | null;
     readonly pageIssue: (field: ValidationIssue["field"]) => string;
     readonly startReferenceMode: () => void;
-}
+};
 
 export function SummaryPanel({
     summary,

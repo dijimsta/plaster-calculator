@@ -1,7 +1,7 @@
 import type { Overlay } from "@libraries/plaster-calculator-common";
 import { useEffect } from "react";
 
-interface EditorAutosaveOptions {
+type EditorAutosaveOptions = {
     readonly autoSaving: boolean;
     readonly ceilingHeightMm: number | null;
     readonly dirty: boolean;
@@ -10,7 +10,7 @@ interface EditorAutosaveOptions {
     readonly disabled: boolean;
     readonly scaleMmPerPx: number | null;
     readonly save: (refresh?: boolean, automatic?: boolean) => Promise<void>;
-}
+};
 
 export function useEditorAutosave({
     autoSaving,

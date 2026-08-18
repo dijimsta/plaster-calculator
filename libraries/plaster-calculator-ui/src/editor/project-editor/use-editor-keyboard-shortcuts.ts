@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 type KeyboardShortcutAction = "cancel" | "clear" | "delete" | "redo" | "undo";
 
-interface EditorKeyboardShortcutsOptions {
+type EditorKeyboardShortcutsOptions = {
     readonly isDrawingFreeShape: boolean;
     readonly disabled: boolean;
     readonly onCancelFreeShape: () => void;
@@ -11,7 +11,7 @@ interface EditorKeyboardShortcutsOptions {
     readonly onRedo: () => void;
     readonly onUndo: () => void;
     readonly hasSelection: () => boolean;
-}
+};
 
 export function useEditorKeyboardShortcuts(
     options: EditorKeyboardShortcutsOptions,

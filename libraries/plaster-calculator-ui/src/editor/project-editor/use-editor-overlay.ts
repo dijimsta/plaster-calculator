@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import { parseOverlay, parseReferencePoints } from "./overlay-serialization.js";
 import type { PageValidationInput } from "./validation.js";
 
-interface EditorOverlayState {
+type EditorOverlayState = {
     readonly ceilingHeightMm: number | null;
     readonly overlay: Overlay;
     readonly overlayRef: RefObject<Overlay>;
@@ -17,16 +17,16 @@ interface EditorOverlayState {
     readonly setReferenceLengthMm: (value: string) => void;
     readonly setReferencePoints: (points: Point[]) => void;
     readonly setScaleMmPerPx: (value: number | null) => void;
-}
+};
 
-interface EditorOverlayOptions {
+type EditorOverlayOptions = {
     readonly onDraftChange?: (
         pageId: string,
         draft: PageValidationInput,
     ) => void;
     readonly page: FloorplanPage;
     readonly setDirty: (dirty: boolean) => void;
-}
+};
 
 export function useEditorOverlay({
     onDraftChange,

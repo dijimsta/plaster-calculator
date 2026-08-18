@@ -6,7 +6,10 @@ import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { QuoteTemplateItem } from "../quote-template-panel/quote-template-panel.types.ts";
-import { QuoteTemplatePanelUtils } from "../quote-template-panel/quote-template-panel.utils.ts";
+import {
+    refreshQuoteTemplateItems,
+    updateQuoteItemPrice,
+} from "../quote-template-panel/quote-template-panel.utils.ts";
 
 import type { QuoteTemplateVariationFormValues } from "./quote-template-variation-editor.types.ts";
 
@@ -18,7 +21,7 @@ const dataConnect = FirebaseService.getDataConnect(
  * Saves a variation's price changes only -- no create/update/delete of item
  * templates themselves, since this screen has no add/remove and every
  * item's name/unit/keywords are read-only. Reuses
- * `QuoteTemplatePanelUtils.updateQuoteItemPrice()`, the same per-item price
+ * `updateQuoteItemPrice()` (`quote-template-panel.utils.ts`), the same per-item price
  * writer `useSaveQuoteTemplate` uses for the default template's own items,
  * and its `refreshQuoteTemplateItems()` to bring this variation's cached
  * item/config lists back in sync afterward.
@@ -44,7 +47,7 @@ export function useSaveQuoteTemplateVariationPrices(
 
             await Promise.all(
                 values.items.map((item) =>
-                    QuoteTemplatePanelUtils.updateQuoteItemPrice(
+                    updateQuoteItemPrice(
                         quoteTemplateId,
                         item,
                         originalsByItemTemplateId.get(item.itemTemplateId),
@@ -53,7 +56,7 @@ export function useSaveQuoteTemplateVariationPrices(
                 ),
             );
 
-            await QuoteTemplatePanelUtils.refreshQuoteTemplateItems(
+            await refreshQuoteTemplateItems(
                 dataConnect,
                 quoteTemplateId,
                 queryClient,

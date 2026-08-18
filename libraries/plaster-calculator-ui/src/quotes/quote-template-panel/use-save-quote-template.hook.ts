@@ -8,7 +8,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { QuoteTemplateFormValues } from "../quote-template-form/index.ts";
 
 import type { QuoteTemplateItem } from "./quote-template-panel.types.ts";
-import { QuoteTemplatePanelUtils } from "./quote-template-panel.utils.ts";
+import {
+    createCustomQuoteItem,
+    refreshQuoteTemplateItems,
+    updateExistingCustomQuoteItem,
+    updateQuoteItemPrice,
+} from "./quote-template-panel.utils.ts";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -65,7 +70,7 @@ export function useSaveQuoteTemplate(
             await Promise.all(
                 values.customItems.map((item) => {
                     if (item.itemTemplateId === undefined) {
-                        return QuoteTemplatePanelUtils.createCustomQuoteItem(
+                        return createCustomQuoteItem(
                             quoteTemplateId,
                             item,
                             createItemTemplate,
@@ -78,7 +83,7 @@ export function useSaveQuoteTemplate(
                     );
                     return original === undefined
                         ? Promise.resolve()
-                        : QuoteTemplatePanelUtils.updateExistingCustomQuoteItem(
+                        : updateExistingCustomQuoteItem(
                               quoteTemplateId,
                               item.itemTemplateId,
                               item,
@@ -91,7 +96,7 @@ export function useSaveQuoteTemplate(
 
             await Promise.all(
                 values.defaultItems.map((item) =>
-                    QuoteTemplatePanelUtils.updateQuoteItemPrice(
+                    updateQuoteItemPrice(
                         quoteTemplateId,
                         item,
                         originalDefaultItems.find(
@@ -103,7 +108,7 @@ export function useSaveQuoteTemplate(
                 ),
             );
 
-            await QuoteTemplatePanelUtils.refreshQuoteTemplateItems(
+            await refreshQuoteTemplateItems(
                 dataConnect,
                 quoteTemplateId,
                 queryClient,

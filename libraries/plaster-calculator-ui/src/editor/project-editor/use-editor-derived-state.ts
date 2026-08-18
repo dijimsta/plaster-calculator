@@ -14,7 +14,7 @@ import type {
 } from "./editor-sidebar.types.js";
 import type { SelectedEdge } from "./use-editor-selection.js";
 
-interface EditorDerivedStateOptions {
+type EditorDerivedStateOptions = {
     readonly image: HTMLImageElement | null;
     readonly overlay: Overlay;
     readonly scaleMmPerPx: number | null;
@@ -22,9 +22,9 @@ interface EditorDerivedStateOptions {
     readonly selectedAreaIds: string[];
     readonly selectedEdge: SelectedEdge | null;
     readonly zoom: number;
-}
+};
 
-interface EditorDerivedState {
+type EditorDerivedState = {
     readonly selectedArea: AreaPolygon | null;
     readonly visibleAreas: AreaPolygon[];
     readonly selectedAreas: AreaPolygon[];
@@ -36,7 +36,7 @@ interface EditorDerivedState {
     readonly stageHeight: number;
     readonly metrics: SelectionMetrics | null;
     readonly summary: EditorSummary | null;
-}
+};
 
 export function useEditorDerivedState({
     image,

@@ -1,9 +1,9 @@
 import { useEffect, useState, type RefObject } from "react";
 
-interface ViewportSize {
+type ViewportSize = {
     readonly width: number;
     readonly height: number;
-}
+};
 
 export function useEditorViewport(
     canvasWrapRef: RefObject<HTMLDivElement | null>,

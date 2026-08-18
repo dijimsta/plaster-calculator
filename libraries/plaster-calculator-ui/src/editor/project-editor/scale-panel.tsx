@@ -8,7 +8,7 @@ import { useEditorTranslation } from "../i18n/index.js";
 import { ui } from "./project-editor.styles.js";
 import type { ValidationIssue } from "./validation.js";
 
-interface ScalePanelProps {
+type ScalePanelProps = {
     readonly isSettingReference: boolean;
     readonly referenceLengthMm: string;
     readonly referencePoints: Point[];
@@ -22,7 +22,7 @@ interface ScalePanelProps {
     readonly setReferenceLengthMm: (value: string) => void;
     readonly setReferencePoints: (points: Point[]) => void;
     readonly startReferenceMode: () => void;
-}
+};
 
 export function ScalePanel({
     isSettingReference,

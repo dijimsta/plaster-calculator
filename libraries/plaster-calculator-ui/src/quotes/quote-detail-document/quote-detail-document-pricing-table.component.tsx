@@ -12,7 +12,7 @@ import type { ReactElement } from "react";
 import { useQuotesTranslation } from "../i18n/index.ts";
 
 import type { QuoteDetailDocumentLineItem } from "./quote-detail-document.types.ts";
-import { QuoteDetailDocumentUtils } from "./quote-detail-document.utils.ts";
+import { provenanceLabel } from "./quote-detail-document.utils.ts";
 
 export type QuoteDetailDocumentPricingTableProps = {
     readonly pricingDetail: QuotePricingDetail;
@@ -95,10 +95,7 @@ function FullLineItemsRow({
                 <Box direction="column" gap="xs">
                     <Text size="base">{item.name}</Text>
                     <Text size="sm" variant="muted">
-                        {QuoteDetailDocumentUtils.provenanceLabel(
-                            item.quantitySource,
-                            t,
-                        )}
+                        {provenanceLabel(item.quantitySource, t)}
                     </Text>
                 </Box>
             </Table.Cell>
@@ -159,8 +156,8 @@ function AmountsOnlyTable({ lineItems }: LineItemsProps): ReactElement {
 /**
  * Lump sum: one description row and one total, collapsing every line item
  * into a single amount -- `totalCents` is the items' pre-computed subtotal
- * (see `QuoteDetailDocumentUtils.totals`), never a per-item rate or
- * quantity.
+ * (see `totals` in `quote-detail-document.utils.ts`), never a per-item rate
+ * or quantity.
  */
 function LumpSumTable({
     totalCents,

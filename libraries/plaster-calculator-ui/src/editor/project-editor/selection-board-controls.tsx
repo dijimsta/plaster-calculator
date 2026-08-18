@@ -18,7 +18,7 @@ import {
 import type { MaterialField } from "./use-editor-material-actions.js";
 import type { ValidationIssue } from "./validation.js";
 
-interface BoardControlsProps {
+type BoardControlsProps = {
     readonly areaIssue: (
         areaId: string,
         field: ValidationIssue["field"],
@@ -26,7 +26,7 @@ interface BoardControlsProps {
     readonly fieldError: (message: string) => ReactNode;
     readonly selectedArea: AreaPolygon;
     readonly setMaterial: (field: MaterialField, value: string) => void;
-}
+};
 
 export function BoardControls({
     areaIssue,

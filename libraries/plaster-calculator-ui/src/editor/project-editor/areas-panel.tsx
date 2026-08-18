@@ -2,11 +2,11 @@ import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 
 import { cx, ui } from "./project-editor.styles.js";
 
-interface AreasPanelProps {
+type AreasPanelProps = {
     readonly selectedAreaIds: string[];
     readonly visibleAreas: AreaPolygon[];
     readonly selectArea: (areaId: string, additive: boolean) => void;
-}
+};
 
 export function AreasPanel({
     selectedAreaIds,

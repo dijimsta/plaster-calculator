@@ -6,7 +6,7 @@ import type { SnapGuide } from "./project-editor.types.js";
 
 const SELECTED_COLOR = activeTheme.editor.selected;
 
-interface CanvasGuidesProps {
+type CanvasGuidesProps = {
     readonly draftPointer: Point | null;
     readonly draftPoints: Point[];
     readonly imageHeight: number;
@@ -14,7 +14,7 @@ interface CanvasGuidesProps {
     readonly referencePoints: Point[];
     readonly snapGuide: SnapGuide;
     readonly zoom: number;
-}
+};
 
 export function CanvasGuides({
     draftPointer,

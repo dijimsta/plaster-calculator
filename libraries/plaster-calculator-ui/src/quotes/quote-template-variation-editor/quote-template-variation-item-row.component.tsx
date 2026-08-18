@@ -7,7 +7,7 @@ import { useQuotesTranslation } from "../i18n/index.ts";
 import { QuoteTemplateFormPriceInput } from "../quote-template-form/quote-template-form-price-input.component.tsx";
 
 import type { QuoteTemplateVariationFormValues } from "./quote-template-variation-editor.types.ts";
-import { QuoteTemplateVariationEditorUtils } from "./quote-template-variation-editor.utils.ts";
+import { describeRateDelta } from "./quote-template-variation-editor.utils.ts";
 
 export type QuoteTemplateVariationItemRowProps = {
     readonly formId: string;
@@ -87,8 +87,7 @@ type RateDeltaTextProps = {
 
 function RateDeltaText({ deltaCents }: RateDeltaTextProps): ReactElement {
     const { t } = useQuotesTranslation();
-    const delta =
-        QuoteTemplateVariationEditorUtils.describeRateDelta(deltaCents);
+    const delta = describeRateDelta(deltaCents);
 
     switch (delta.kind) {
         case "same":

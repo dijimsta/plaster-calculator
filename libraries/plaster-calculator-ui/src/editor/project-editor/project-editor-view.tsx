@@ -21,7 +21,7 @@ import type { useEditorPersistence } from "./use-editor-persistence.js";
 import type { useEditorSelection } from "./use-editor-selection.js";
 import type { useEditorValidation } from "./use-editor-validation.js";
 
-interface ProjectEditorViewProps {
+type ProjectEditorViewProps = {
     readonly actions: ReturnType<typeof useEditorActions>;
     readonly analyzing: boolean;
     readonly addMenuOpen: boolean;
@@ -54,7 +54,7 @@ interface ProjectEditorViewProps {
     readonly setSnapGuide: (guide: SnapGuide) => void;
     readonly zoom: number;
     readonly onAnalyze: () => void;
-}
+};
 
 export function ProjectEditorView({
     actions,

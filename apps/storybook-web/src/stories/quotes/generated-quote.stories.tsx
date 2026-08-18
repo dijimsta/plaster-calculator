@@ -108,7 +108,7 @@ export const KeywordMatchedExtras: Story = {
     parameters: {
         docs: {
             description: {
-                story: "Every row here has no quantitySource — each was placed on the quote purely because its template's keywords matched the plan's text, not because a measured quantity drove it. QuoteLineItemsTableUtils.provenanceLabel() falls back to matchedKeywords whenever quantitySource is null.",
+                story: "Every row here has no quantitySource — each was placed on the quote purely because its template's keywords matched the plan's text, not because a measured quantity drove it. provenanceLabel() (quote-line-items-table.utils.ts) falls back to matchedKeywords whenever quantitySource is null.",
             },
         },
     },

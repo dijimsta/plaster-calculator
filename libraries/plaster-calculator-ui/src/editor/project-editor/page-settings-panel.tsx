@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import { useEditorTranslation } from "../i18n/index.js";
 
-interface PageSettingsPanelProps {
+type PageSettingsPanelProps = {
     readonly ceilingHeightMm: number | null;
     readonly dirty: boolean;
     readonly status: string;
@@ -12,7 +12,7 @@ interface PageSettingsPanelProps {
     readonly hasPageHeightIssue: () => boolean;
     readonly setCeilingHeightMm: (value: number | null) => void;
     readonly setDirty: (dirty: boolean) => void;
-}
+};
 
 export function PageSettingsPanel({
     ceilingHeightMm,

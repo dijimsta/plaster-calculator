@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { cloneOverlay } from "./overlay-serialization.js";
 
-interface EditorHistoryState {
+type EditorHistoryState = {
     readonly future: Overlay[];
     readonly history: Overlay[];
     readonly commit: (next: Overlay) => void;
@@ -11,14 +11,14 @@ interface EditorHistoryState {
     readonly redo: () => void;
     readonly resetHistory: () => void;
     readonly undo: () => void;
-}
+};
 
-interface EditorHistoryOptions {
+type EditorHistoryOptions = {
     readonly overlay: Overlay;
     readonly setDirty: (dirty: boolean) => void;
     readonly setOverlay: (overlay: Overlay) => void;
     readonly setStatus: (status: string) => void;
-}
+};
 
 export function useEditorHistory({
     overlay,

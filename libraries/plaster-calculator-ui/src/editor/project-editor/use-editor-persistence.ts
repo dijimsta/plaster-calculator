@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 
 import { useEditorAutosave } from "./use-editor-autosave.js";
 
-interface EditorPersistenceOptions {
+type EditorPersistenceOptions = {
     readonly ceilingHeightMm: number | null;
     readonly dirty: boolean;
     readonly disabled: boolean;
@@ -16,9 +16,9 @@ interface EditorPersistenceOptions {
     readonly referencePoints: Point[];
     readonly scaleMmPerPx: number | null;
     readonly setDirty: (dirty: boolean) => void;
-}
+};
 
-interface EditorPersistence {
+type EditorPersistence = {
     readonly autoSaving: boolean;
     readonly saving: boolean;
     readonly status: string;
@@ -26,7 +26,7 @@ interface EditorPersistence {
     readonly applyScaleToAllPages: () => Promise<void>;
     readonly save: (refresh?: boolean, automatic?: boolean) => Promise<void>;
     readonly setStatus: (status: string) => void;
-}
+};
 
 export function useEditorPersistence({
     ceilingHeightMm,

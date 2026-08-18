@@ -9,13 +9,13 @@ import {
 import { DEFAULT_CEILING_BOARD_TYPE } from "./board-materials.js";
 import { splitEdgeOverrides } from "./edge-overrides.js";
 
-interface ViewportCenterOptions {
+type ViewportCenterOptions = {
     readonly element: HTMLDivElement | null;
     readonly imageHeight: number;
     readonly imageWidth: number;
     readonly viewport: { readonly width: number; readonly height: number };
     readonly zoom: number;
-}
+};
 
 export function createManualArea(label: string, points: Point[]): AreaPolygon {
     return {
