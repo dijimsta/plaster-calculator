@@ -6,6 +6,7 @@ import type {
     ValidationIssue,
 } from "@libraries/plaster-calculator-ui";
 import {
+    Heading2,
     InspectorPanel,
     InspectorSection,
     Paragraph,
@@ -116,7 +117,7 @@ export function ProjectStatusContent({
         return (
             <section className={cx(ui.editorShell, "items-start")}>
                 <div className={cx(ui.panel, ui.stack)}>
-                    <h2>{t("projectStatusContent.projectWon")}</h2>
+                    <Heading2>{t("projectStatusContent.projectWon")}</Heading2>
                     <Paragraph textSize="sm" variant="muted">
                         Won project workflow placeholder. The next steps for
                         accepted work will be added here later.
@@ -131,7 +132,7 @@ export function ProjectStatusContent({
         return (
             <section className={cx(ui.editorShell, "items-start")}>
                 <div className={cx(ui.panel, ui.stack)}>
-                    <h2>{t("projectStatusContent.projectLost")}</h2>
+                    <Heading2>{t("projectStatusContent.projectLost")}</Heading2>
                     <Paragraph textSize="sm" variant="muted">
                         Lost project workflow placeholder. Loss reasons can be
                         captured here later.

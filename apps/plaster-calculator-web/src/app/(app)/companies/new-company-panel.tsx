@@ -1,7 +1,7 @@
 "use client";
 
 import { useCompaniesService } from "@libraries/plaster-calculator-web-core";
-import { Button, Paragraph } from "@libraries/uikit-web";
+import { Button, Heading2, Paragraph } from "@libraries/uikit-web";
 import { Plus } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
@@ -62,7 +62,7 @@ export function NewCompanyPanel({
 
     return (
         <form className={cx(ui.panel, ui.stack)} onSubmit={createNewCompany}>
-            <h2>{t("companies.newCompany.title")}</h2>
+            <Heading2>{t("companies.newCompany.title")}</Heading2>
             <CompanyDraftFields
                 draft={draft}
                 setDraft={setDraft}

@@ -1,7 +1,14 @@
 "use client";
 
 import { OPEN_REMINDER_STATUS } from "@libraries/plaster-calculator-common";
-import { Alert, Box, Button, EmptyState, Text } from "@libraries/uikit-web";
+import {
+    Alert,
+    Box,
+    Button,
+    EmptyState,
+    Heading2,
+    Text,
+} from "@libraries/uikit-web";
 import { BellRing, LoaderCircle } from "lucide-react";
 import type { ReactElement } from "react";
 
@@ -25,7 +32,7 @@ export function ProjectFollowUpPanel({
 
     return (
         <div className={cx(ui.panel, ui.stack)}>
-            <h2>{t("projectStatusContent.followUp.title")}</h2>
+            <Heading2>{t("projectStatusContent.followUp.title")}</Heading2>
             <ProjectFollowUpBody projectId={projectId} />
         </div>
     );
