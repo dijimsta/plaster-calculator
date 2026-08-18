@@ -133,7 +133,7 @@ function CompanyDetailSections({
                 onDelete={detail.removeContact}
                 onAddContact={detail.openContactModal}
             />
-            <CompanyProjectsPanel projects={detail.projects} />
+            <CompanyProjectsPanel companyId={company.id} />
         </Box>
     );
 }

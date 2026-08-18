@@ -173,6 +173,10 @@ export const zh = createTranslationResource(
             projectsPanel: Object.freeze({
                 title: "项目",
                 emptyStateTitle: "没有与此公司关联的项目",
+                loading: "正在加载项目...",
+                unableToLoad: "无法加载项目",
+                loadMore: "加载更多",
+                loadingMore: "正在加载更多...",
             }),
             companyRow: Object.freeze({
                 noBusinessNumber: "无企业编号",
