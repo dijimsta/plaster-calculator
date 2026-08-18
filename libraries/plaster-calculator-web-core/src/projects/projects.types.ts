@@ -31,6 +31,8 @@ export type UpdateProjectRequest = {
 
 export type ListProjectsRequest = {
     salesStatus: SalesStatus;
+    limit?: number;
+    offset?: number;
 };
 
 export type ProcessProjectRequest = {

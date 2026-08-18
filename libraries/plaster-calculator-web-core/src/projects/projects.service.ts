@@ -46,12 +46,16 @@ export class ProjectsService {
 
     public async listProjectsByCompany(
         companyId: string,
+        options: { limit?: number; offset?: number } = {},
     ): Promise<ProjectSummary[]> {
         const listProjectsByCompanyCallable = httpsCallable(
             this.functions,
             "listProjectsByCompany",
         );
-        const { data } = await listProjectsByCompanyCallable({ companyId });
+        const { data } = await listProjectsByCompanyCallable({
+            companyId,
+            ...options,
+        });
         return ListProjectsResponseSchema.parse(data).projects;
     }
 
