@@ -2,12 +2,15 @@
 
 import { useCompaniesService } from "@libraries/plaster-calculator-web-core";
 import {
+    Box,
     Button,
     EmptyState,
+    Heading2,
     Input,
     Label,
     Pagination,
     Paragraph,
+    Table,
     Text,
 } from "@libraries/uikit-web";
 import {
@@ -92,9 +95,9 @@ export function CompanyListPanel({
     return (
         <section className={cx(ui.panel, ui.stack)}>
             <div className={ui.editorToolbar}>
-                <h2>{t("companies.list.title")}</h2>
+                <Heading2>{t("companies.list.title")}</Heading2>
                 <div className={cx(ui.buttonRow, "items-end")}>
-                    <div className="grid gap-1.5 min-w-[260px]">
+                    <div className="grid gap-1.5">
                         <Label htmlFor="company-search">
                             {t("companies.list.search")}
                         </Label>
@@ -126,47 +129,48 @@ export function CompanyListPanel({
                 </Paragraph>
             )}
             {isLoading ? (
-                <div className={ui.projectListState}>
+                <Box align="center" justify="center" gap="sm" status>
                     <LoaderCircle className="animate-spin" size={24} />
                     <Text size="sm" variant="muted">
                         {t("companies.list.loading")}
                     </Text>
-                </div>
+                </Box>
+            ) : companies.length === 0 ? (
+                <EmptyState
+                    icon={<Building2 />}
+                    title={t("companies.list.emptyStateTitle")}
+                    actions={
+                        debouncedQuery.trim() ? (
+                            <Button
+                                variant="secondary"
+                                icon={<Plus size={16} aria-hidden="true" />}
+                                onClick={() =>
+                                    onCreateFromSearch(debouncedQuery.trim())
+                                }
+                                type="button"
+                            >
+                                {t("companies.list.createFromSearch", {
+                                    name: debouncedQuery.trim(),
+                                })}
+                            </Button>
+                        ) : undefined
+                    }
+                />
             ) : (
-                <div className={ui.projectList}>
-                    {companies.map((company) => (
-                        <CompanyRow key={company.id} company={company} />
-                    ))}
-                    {companies.length === 0 && (
-                        <EmptyState
-                            icon={<Building2 />}
-                            title={t("companies.list.emptyStateTitle")}
-                            actions={
-                                debouncedQuery.trim() ? (
-                                    <Button
-                                        variant="secondary"
-                                        icon={
-                                            <Plus
-                                                size={16}
-                                                aria-hidden="true"
-                                            />
-                                        }
-                                        onClick={() =>
-                                            onCreateFromSearch(
-                                                debouncedQuery.trim(),
-                                            )
-                                        }
-                                        type="button"
-                                    >
-                                        {t("companies.list.createFromSearch", {
-                                            name: debouncedQuery.trim(),
-                                        })}
-                                    </Button>
-                                ) : undefined
-                            }
-                        />
-                    )}
-                </div>
+                <Table bordered label={t("companies.list.title")}>
+                    <Table.Head>
+                        <Table.Row>
+                            <Table.Header>
+                                {t("companies.fields.companyName")}
+                            </Table.Header>
+                        </Table.Row>
+                    </Table.Head>
+                    <Table.Body>
+                        {companies.map((company) => (
+                            <CompanyRow key={company.id} company={company} />
+                        ))}
+                    </Table.Body>
+                </Table>
             )}
             {!isLoading && pageCount > 1 && (
                 <Pagination
