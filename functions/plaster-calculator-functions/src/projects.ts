@@ -58,8 +58,8 @@ export const listProjects = onCall<
     const response = await DataConnector.listProjectsByTeamAndSalesStatus({
         teamId: await requireTeamId(auth.uid),
         salesStatus,
-        limit,
-        offset,
+        limit: limit ?? undefined,
+        offset: offset ?? undefined,
     });
     return { projects: response.data.projects.map(toSummary) };
 });
@@ -75,8 +75,8 @@ export const listProjectsByCompany = onCall<
     const offset = readNullableNumber(request.data.offset, "Offset");
     const response = await DataConnector.listProjectsByCompany({
         companyId,
-        limit,
-        offset,
+        limit: limit ?? undefined,
+        offset: offset ?? undefined,
     });
     return { projects: response.data.projects.map(toSummary) };
 });
