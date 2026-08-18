@@ -14,12 +14,12 @@ import { useEffect, useState } from "react";
 
 import type { ProjectDetail } from "../../../../../types.js";
 
-export interface ProjectScopeEditorProps {
+export type ProjectScopeEditorProps = {
     readonly project: ProjectDetail | null;
     readonly projectId: string;
     readonly onSaved: (project: ProjectDetail) => void;
     readonly onError: (message: string) => void;
-}
+};
 
 export function ProjectScopeEditor({
     project,

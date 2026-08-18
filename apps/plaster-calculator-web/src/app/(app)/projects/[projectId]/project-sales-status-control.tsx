@@ -7,11 +7,11 @@ import type { SelectMenuOption } from "@libraries/uikit-web";
 import { useAppTranslation } from "../../../../i18n/index.ts";
 import { useSalesStatusLabel } from "../../../../lib/sales-status.js";
 
-interface ProjectSalesStatusControlProps {
+type ProjectSalesStatusControlProps = {
     readonly currentStatus: SalesStatus;
     readonly disabled: boolean;
     readonly onStatusChange: (status: SalesStatus) => Promise<void>;
-}
+};
 
 export function ProjectSalesStatusControl({
     currentStatus,

@@ -13,7 +13,7 @@ import {
     pickReminderToShow,
 } from "./use-project-follow-up.utils.js";
 
-export interface UseProjectFollowUpResult {
+export type UseProjectFollowUpResult = {
     readonly reminder: Reminder | null;
     readonly isLoading: boolean;
     readonly error: string | null;
@@ -23,7 +23,7 @@ export interface UseProjectFollowUpResult {
     readonly cancelReminder: () => Promise<void>;
     readonly rescheduleReminder: (dueAt: string) => Promise<void>;
     readonly reopenReminder: () => Promise<void>;
-}
+};
 
 /**
  * The Quote submitted project page's follow-up reminder: the project's open

@@ -8,12 +8,12 @@ import { useAppTranslation } from "../../../i18n/index.ts";
 import type { ContactDraft } from "./company.types.js";
 import { ContactFormFields } from "./contact-form-fields.js";
 
-interface NewContactModalProps {
+type NewContactModalProps = {
     readonly contactDraft: ContactDraft;
     readonly close: () => void;
     readonly save: (event: FormEvent) => Promise<void>;
     readonly setContactDraft: (draft: ContactDraft) => void;
-}
+};
 
 const FORM_ID = "new-contact-form";
 

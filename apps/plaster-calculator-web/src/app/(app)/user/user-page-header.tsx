@@ -8,9 +8,9 @@ const Link = LinkModule.default;
 
 export type UserPageTab = "general" | "email-signature" | "team";
 
-export interface UserPageHeaderProps {
+export type UserPageHeaderProps = {
     readonly activeTab: UserPageTab;
-}
+};
 
 export function UserPageHeader({ activeTab }: UserPageHeaderProps) {
     return (

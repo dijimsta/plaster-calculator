@@ -8,7 +8,11 @@ import { useEffect, useMemo, useState } from "react";
 
 import type { ProjectSummary } from "../../../types.js";
 
-import { ProjectsListingUtils } from "./use-projects-listing.utils.js";
+import {
+    mergeProjects,
+    projectNotificationAction,
+    upsertProject,
+} from "./use-projects-listing.utils.js";
 
 export type StatusFilter = "ALL" | "QUOTING" | "QUOTE_SUBMITTED";
 export type ProjectsView = "list" | "board";
@@ -22,7 +26,7 @@ const ALL_SALES_STATUSES: readonly SalesStatus[] = [
 
 export type EnrichedProject = ProjectSummary & { companyName: string | null };
 
-export interface ProjectsListingState {
+export type ProjectsListingState = {
     readonly view: ProjectsView;
     readonly statusFilter: StatusFilter;
     readonly query: string;
@@ -50,7 +54,7 @@ export interface ProjectsListingState {
     readonly setProcessingProjectId: (projectId: string | null) => void;
     readonly setRenameValue: (value: string) => void;
     readonly setRenamingId: (projectId: string | null) => void;
-}
+};
 
 export function useProjectsListing(): ProjectsListingState {
     const projectsService = useProjectsService();
@@ -82,16 +86,12 @@ export function useProjectsListing(): ProjectsListingState {
             try {
                 const project =
                     await projectsService.getProjectStatus(processingProjectId);
-                setProjects((current) =>
-                    ProjectsListingUtils.upsertProject(current, project),
-                );
+                setProjects((current) => upsertProject(current, project));
                 if (project.status === "READY") {
                     notify({
                         intent: "success",
                         title: `${project.name} finished processing`,
-                        actions: ProjectsListingUtils.projectNotificationAction(
-                            project.id,
-                        ),
+                        actions: projectNotificationAction(project.id),
                     });
                     setProcessingProjectId(null);
                     window.clearInterval(timer);
@@ -132,7 +132,7 @@ export function useProjectsListing(): ProjectsListingState {
                     projectsService.listProjects({ salesStatus }),
                 ),
             );
-            setProjects(ProjectsListingUtils.mergeProjects(...byStatus));
+            setProjects(mergeProjects(...byStatus));
         } catch (error) {
             notify({
                 intent: "error",

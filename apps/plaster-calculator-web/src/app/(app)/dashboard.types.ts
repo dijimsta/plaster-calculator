@@ -4,13 +4,13 @@ import type { ChangeEvent, DragEvent, FormEvent } from "react";
 import type { PdfPagePreview } from "../../lib/pdf.js";
 import type { CompanyDetail, ProjectSummary } from "../../types.js";
 
-export interface PageUploadProgress {
+export type PageUploadProgress = {
     readonly current: number;
     readonly total: number;
     readonly label: string;
-}
+};
 
-export interface NewProjectFormProps {
+export type NewProjectFormProps = {
     readonly companyCreatePending: boolean;
     readonly companyId: string | null;
     readonly dragActive: boolean;
@@ -26,9 +26,9 @@ export interface NewProjectFormProps {
     readonly setDragActive: (active: boolean) => void;
     readonly setName: (name: string) => void;
     readonly submit: (event: FormEvent) => void;
-}
+};
 
-export interface ProjectHistoryProps {
+export type ProjectHistoryProps = {
     readonly activeSalesStatus: Extract<
         SalesStatus,
         "QUOTING" | "QUOTE_SUBMITTED"
@@ -47,14 +47,14 @@ export interface ProjectHistoryProps {
     ) => void;
     readonly setRenamingId: (projectId: string | null) => void;
     readonly setRenameValue: (value: string) => void;
-}
+};
 
-export interface PdfPageModalContentProps {
+export type PdfPageModalContentProps = {
     readonly errorMessage: string | null;
     readonly pageUploadProgress: PageUploadProgress | null;
     readonly pdfPages: PdfPagePreview[];
     readonly selectedPages: number[];
     readonly togglePage: (pageNumber: number) => void;
-}
+};
 
 export type FileInputChange = ChangeEvent<HTMLInputElement>;

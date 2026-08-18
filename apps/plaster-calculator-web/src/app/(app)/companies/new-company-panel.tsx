@@ -13,13 +13,13 @@ import { EMPTY_ACCOUNT_DRAFT } from "./company.types.js";
 import type { CompanyDraft } from "./company.types.js";
 import { optionalValue } from "./company.utils.js";
 
-interface NewCompanyPanelProps {
+type NewCompanyPanelProps = {
     /** Seeds the company name field, e.g. from a Companies-page search that
      * found no match. Applied once, on mount -- callers that want to seed a
      * new value should remount this component (e.g. via a changing `key`). */
     readonly initialName?: string;
     readonly onCreated: () => void;
-}
+};
 
 export function NewCompanyPanel({
     initialName = "",

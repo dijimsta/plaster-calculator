@@ -9,9 +9,9 @@ import type { CompanySummary } from "../../../types.js";
 
 const Link = LinkModule.default;
 
-interface CompanyRowProps {
+type CompanyRowProps = {
     readonly company: CompanySummary;
-}
+};
 
 export function CompanyRow({ company }: CompanyRowProps) {
     const { t } = useAppTranslation();

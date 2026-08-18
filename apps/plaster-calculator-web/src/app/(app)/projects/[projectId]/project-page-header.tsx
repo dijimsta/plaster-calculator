@@ -16,7 +16,7 @@ import type { ProjectDetail } from "../../../../types.js";
 
 const Link = LinkModule.default;
 
-export interface ProjectHeaderProps {
+export type ProjectHeaderProps = {
     readonly project: ProjectDetail | null;
     readonly projectId: string;
     readonly activeTab: "floorplan" | "questionnaires" | "quote";
@@ -27,7 +27,7 @@ export interface ProjectHeaderProps {
     readonly setRenameValue?: (value: string) => void;
     readonly validateAndExport?: () => Promise<void>;
     readonly additionalActions?: ReactNode;
-}
+};
 
 export function ProjectHeader({
     project,

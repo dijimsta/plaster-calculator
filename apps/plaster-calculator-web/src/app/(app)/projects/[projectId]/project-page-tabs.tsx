@@ -3,12 +3,12 @@ import { Tabs } from "@libraries/uikit-web";
 import { cx, ui } from "../../../../lib/styles.js";
 import type { ProjectDetail } from "../../../../types.js";
 
-interface ProjectPageTabsProps {
+type ProjectPageTabsProps = {
     readonly project: ProjectDetail | null;
     readonly selectedPageId: string | null;
     readonly selectPage: (pageId: string) => Promise<void>;
     readonly switchingPage: boolean;
-}
+};
 
 export function ProjectPageTabs({
     project,

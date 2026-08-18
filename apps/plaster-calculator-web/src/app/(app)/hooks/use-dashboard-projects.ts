@@ -13,7 +13,7 @@ type ActiveProjectSalesStatus = Extract<
     "QUOTING" | "QUOTE_SUBMITTED"
 >;
 
-interface DashboardProjectsState {
+type DashboardProjectsState = {
     readonly activeSalesStatus: ActiveProjectSalesStatus;
     readonly filtered: ProjectSummary[];
     readonly processingProjectId: string | null;
@@ -32,7 +32,7 @@ interface DashboardProjectsState {
     readonly setActiveSalesStatus: (status: ActiveProjectSalesStatus) => void;
     readonly setRenameValue: (value: string) => void;
     readonly setRenamingId: (projectId: string | null) => void;
-}
+};
 
 export function useDashboardProjects(): DashboardProjectsState {
     const projectsService = useProjectsService();

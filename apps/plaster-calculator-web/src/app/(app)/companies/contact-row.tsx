@@ -11,7 +11,7 @@ import type { ContactDraft } from "./company.types.js";
 import { toContactDraft } from "./company.utils.js";
 import { ContactFormFields } from "./contact-form-fields.js";
 
-interface ContactRowProps {
+type ContactRowProps = {
     readonly contact: CompanyContact;
     readonly editContactDraft: ContactDraft;
     readonly editContactId: string | null;
@@ -20,7 +20,7 @@ interface ContactRowProps {
     readonly saveContact: (contactId: string) => Promise<void>;
     readonly setEditContactDraft: (draft: ContactDraft) => void;
     readonly setEditContactId: (contactId: string | null) => void;
-}
+};
 
 export function ContactRow({
     contact,

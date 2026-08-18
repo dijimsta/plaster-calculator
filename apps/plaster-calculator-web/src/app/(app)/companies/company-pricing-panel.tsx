@@ -25,10 +25,10 @@ const dataConnect = FirebaseService.getDataConnect(
 /** Sentinel `<select>` value for "clear the assignment / use the team's default template". */
 const USE_DEFAULT_VALUE = "";
 
-interface CompanyPricingPanelProps {
+type CompanyPricingPanelProps = {
     readonly company: CompanyDetail;
     readonly onCompanyUpdated: (updated: CompanyDetail) => void;
-}
+};
 
 /**
  * The other end of the quote template assignment (WORK-190/WORK-193/

@@ -14,7 +14,7 @@ import { useNotificationsManager } from "@libraries/uikit-web";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef } from "react";
 
-import { QuoteQueryKeyUtils } from "./quote-query-key.utils.js";
+import { forProjectQuote, forQuotesForTeam } from "./quote-query-key.utils.js";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -143,7 +143,7 @@ export function useQuoteStatusActions(
         ): Promise<void> => {
             if (!quoteId) return;
 
-            const projectQuoteQueryKey = QuoteQueryKeyUtils.forProjectQuote(
+            const projectQuoteQueryKey = forProjectQuote(
                 dataConnect,
                 projectId,
             );
@@ -175,8 +175,7 @@ export function useQuoteStatusActions(
                         queryKey: projectQuoteQueryKey,
                     }),
                     queryClient.invalidateQueries({
-                        queryKey:
-                            QuoteQueryKeyUtils.forQuotesForTeam(dataConnect),
+                        queryKey: forQuotesForTeam(dataConnect),
                     }),
                 ]);
             } catch {

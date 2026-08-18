@@ -19,16 +19,16 @@ import type { PageUploadProgress } from "../dashboard.types.js";
 /** One-based step of the new-project wizard: details -> clarifications -> pages (PDF uploads only). */
 export type WizardStep = 1 | 2 | 3;
 
-interface PreparedPdfUpload {
+type PreparedPdfUpload = {
     pdfDocument: PDFDocumentProxy | null;
     pages: PdfPagePreview[];
-}
+};
 
-interface DashboardUploadOptions {
+type DashboardUploadOptions = {
     readonly refresh: () => Promise<void>;
     readonly setMessage: (message: string) => void;
     readonly setProcessingProjectId: (projectId: string | null) => void;
-}
+};
 
 export function useDashboardUpload({
     refresh,

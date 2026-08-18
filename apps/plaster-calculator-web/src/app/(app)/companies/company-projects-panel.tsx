@@ -10,9 +10,9 @@ import type { ProjectSummary } from "../../../types.js";
 
 const Link = LinkModule.default;
 
-interface CompanyProjectsPanelProps {
+type CompanyProjectsPanelProps = {
     readonly projects: readonly ProjectSummary[];
-}
+};
 
 export function CompanyProjectsPanel({ projects }: CompanyProjectsPanelProps) {
     const { t } = useAppTranslation();

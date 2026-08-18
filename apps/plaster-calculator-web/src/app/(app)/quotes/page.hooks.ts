@@ -7,7 +7,7 @@ import { FirebaseService } from "@libraries/plaster-calculator-web-core";
 import { useRouter } from "next/navigation.js";
 import { useCallback } from "react";
 
-import { QuotesListUtils } from "./quotes-list.utils.js";
+import { toRows } from "./quotes-list.utils.js";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -24,7 +24,7 @@ export function useQuotesListState(): QuotesListState {
         DataConnectorReact.useListQuotesForTeam(dataConnect);
 
     return {
-        rows: QuotesListUtils.toRows(data?.quotes),
+        rows: toRows(data?.quotes),
         isLoading,
         error: error ?? null,
     };

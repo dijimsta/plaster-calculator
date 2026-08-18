@@ -13,22 +13,22 @@ const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
 );
 
-export interface QuestionnaireListItem {
+export type QuestionnaireListItem = {
     readonly projectId: string;
     readonly projectName: string;
     readonly updatedAt: string;
     readonly answeredCount: number;
     readonly totalQuestions: number;
     readonly completionState: QuestionnaireCompletionState;
-}
+};
 
-export interface QuestionnaireStats {
+export type QuestionnaireStats = {
     readonly total: number;
     readonly inProgressCount: number;
     readonly completedCount: number;
     readonly isLoading: boolean;
     readonly questionnaires: readonly QuestionnaireListItem[];
-}
+};
 
 export function useQuestionnaireStats(): QuestionnaireStats {
     const { data, isLoading } =

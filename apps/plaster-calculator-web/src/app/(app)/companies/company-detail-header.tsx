@@ -6,10 +6,10 @@ import { RoutedBreadcrumbItem } from "../../../components/routed-breadcrumb-item
 import { useAppTranslation } from "../../../i18n/index.ts";
 import type { CompanyDetail } from "../../../types.js";
 
-interface CompanyDetailHeaderProps {
+type CompanyDetailHeaderProps = {
     readonly company: CompanyDetail | null;
     readonly refresh: () => void;
-}
+};
 
 export function CompanyDetailHeader({
     company,

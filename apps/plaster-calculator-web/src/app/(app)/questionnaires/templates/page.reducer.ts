@@ -1,12 +1,12 @@
 import type { QuestionnaireTemplate } from "@libraries/plaster-calculator-ui";
 
-export interface QuestionnaireTemplatesPageState {
+export type QuestionnaireTemplatesPageState = {
     readonly isDrawerOpen: boolean;
     readonly isDeleting: boolean;
     readonly templatePendingDeletion: QuestionnaireTemplate | null;
     readonly templateBeingEdited: QuestionnaireTemplate | null;
     readonly duplicatingTemplateIds: ReadonlySet<string>;
-}
+};
 
 export type QuestionnaireTemplatesPageAction =
     | { readonly type: "openDrawer" }

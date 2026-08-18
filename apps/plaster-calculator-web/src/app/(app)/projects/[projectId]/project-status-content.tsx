@@ -32,7 +32,7 @@ const ProjectEditor = dynamic(
     },
 );
 
-interface ProjectStatusContentProps {
+type ProjectStatusContentProps = {
     readonly companyId: string | null;
     readonly analyzingPage: boolean;
     /**
@@ -54,7 +54,7 @@ interface ProjectStatusContentProps {
     readonly switchingPage: boolean;
     readonly updateDraft: (pageId: string, draft: PageValidationInput) => void;
     readonly validationIssues: ValidationIssue[];
-}
+};
 
 export function ProjectStatusContent({
     companyId,
