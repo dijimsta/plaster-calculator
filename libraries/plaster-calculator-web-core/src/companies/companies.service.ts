@@ -27,10 +27,22 @@ export class CompaniesService {
         ),
     ) {}
 
-    public async listCompanies(): Promise<CompanySummary[]> {
+    /**
+     * Lists the current team's companies, optionally filtered by search
+     * term and paginated via `limit`/`offset`.
+     *
+     * @param options - Search and pagination controls forwarded to
+     *   `ListMyCompanies`.
+     * @returns The matching companies, most recently updated first.
+     */
+    public async listCompanies(options?: {
+        search?: string;
+        limit?: number;
+        offset?: number;
+    }): Promise<CompanySummary[]> {
         const result = await DataConnector.listMyCompanies(
             this.dataConnect,
-            {},
+            { ...options },
             { fetchPolicy: QueryFetchPolicy.SERVER_ONLY },
         );
         return result.data.companies.map((company) =>
