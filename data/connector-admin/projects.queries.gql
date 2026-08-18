@@ -1,8 +1,14 @@
-query ListProjectsByTeamAndSalesStatus($teamId: String!, $salesStatus: String!)
-@auth(level: NO_ACCESS) {
+query ListProjectsByTeamAndSalesStatus(
+    $teamId: String!
+    $salesStatus: String!
+    $limit: Int
+    $offset: Int
+) @auth(level: NO_ACCESS) {
     projects(
         where: { teamId: { eq: $teamId }, salesStatus: { eq: $salesStatus } }
         orderBy: [{ updatedAt: DESC }]
+        limit: $limit
+        offset: $offset
     ) {
         id
         teamId
@@ -22,10 +28,13 @@ query ListProjectsByTeamAndSalesStatus($teamId: String!, $salesStatus: String!)
     }
 }
 
-query ListProjectsByCompany($companyId: UUID!) @auth(level: NO_ACCESS) {
+query ListProjectsByCompany($companyId: UUID!, $limit: Int, $offset: Int)
+@auth(level: NO_ACCESS) {
     projects(
         where: { companyId: { eq: $companyId } }
         orderBy: [{ updatedAt: DESC }]
+        limit: $limit
+        offset: $offset
     ) {
         id
         teamId

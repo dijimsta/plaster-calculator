@@ -480,6 +480,8 @@ export interface ListProjectsByCompanyData {
 
 export interface ListProjectsByCompanyVariables {
   companyId: UUIDString;
+  limit?: number | null;
+  offset?: number | null;
 }
 
 export interface ListProjectsByTeamAndSalesStatusData {
@@ -505,6 +507,8 @@ export interface ListProjectsByTeamAndSalesStatusData {
 export interface ListProjectsByTeamAndSalesStatusVariables {
   teamId: string;
   salesStatus: string;
+  limit?: number | null;
+  offset?: number | null;
 }
 
 export interface ListTeamMembersData {
