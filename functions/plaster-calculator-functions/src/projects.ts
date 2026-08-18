@@ -38,6 +38,7 @@ import type {
 } from "./types.js";
 import {
     hasField,
+    readNullableNumber,
     readOptionalNullableString,
     readPdfPageCount,
     readRequiredNumber,
@@ -52,9 +53,13 @@ export const listProjects = onCall<
     const auth = requireAuth(request);
     const data = request.data ?? {};
     const salesStatus = readSalesStatus(data.salesStatus);
+    const limit = readNullableNumber(data.limit, "Limit");
+    const offset = readNullableNumber(data.offset, "Offset");
     const response = await DataConnector.listProjectsByTeamAndSalesStatus({
         teamId: await requireTeamId(auth.uid),
         salesStatus,
+        limit: limit ?? undefined,
+        offset: offset ?? undefined,
     });
     return { projects: response.data.projects.map(toSummary) };
 });
@@ -66,8 +71,12 @@ export const listProjectsByCompany = onCall<
     const auth = requireAuth(request);
     const companyId = readRequiredString(request.data.companyId, "Company ID");
     await requireOwnedCompany(companyId, auth.uid);
+    const limit = readNullableNumber(request.data.limit, "Limit");
+    const offset = readNullableNumber(request.data.offset, "Offset");
     const response = await DataConnector.listProjectsByCompany({
         companyId,
+        limit: limit ?? undefined,
+        offset: offset ?? undefined,
     });
     return { projects: response.data.projects.map(toSummary) };
 });
