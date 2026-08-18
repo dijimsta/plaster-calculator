@@ -20,7 +20,10 @@ import {
     TEMPLATE_UNIT_SET_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
 } from "@libraries/plaster-calculator-common";
-import type { ReadinessCheckListRenderFixControl } from "@libraries/plaster-calculator-ui";
+import type {
+    ReadinessCheckListRenderCheckFooter,
+    ReadinessCheckListRenderFixControl,
+} from "@libraries/plaster-calculator-ui";
 import {
     CeilingHeightFixControl,
     CompanyContactDetailsFixControl,
@@ -28,8 +31,6 @@ import {
     FloorplanDeepLinkFixControl,
     parseOverlay,
     QuoteTemplateDeepLinkFixControl,
-    UnitPriceFixControl,
-    useActiveQuoteTemplate,
     useQuotesTranslation,
     WallBoardTypeFixControl,
 } from "@libraries/plaster-calculator-ui";
@@ -38,7 +39,6 @@ import {
     useProjectsService,
     useQuoteReadiness,
 } from "@libraries/plaster-calculator-web-core";
-import { QueryFetchPolicy } from "firebase/data-connect";
 import { useRouter } from "next/navigation.js";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
@@ -49,11 +49,11 @@ import {
     currentCeilingHeightMm,
     currentQuestionnaireAnswer,
     currentReferencePoints,
-    currentUnitPriceCents,
     currentWallBoardType,
     pageDefaultCeilingHeightMm,
     patchArea,
 } from "./quote-readiness-fix.utils.js";
+import { useQuoteReadinessUnitPriceFixControls } from "./quote-readiness-unit-price.hooks.js";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -108,64 +108,6 @@ function useUpdateAreaOverlayFieldCallback(
 }
 
 /**
- * Reuses `UpdateQuoteItemTemplateConfig` (already used by the quote-
- * template-form/panel feature to save prices) and resolves `quoteTemplateId`
- * the same way that feature does — `useActiveQuoteTemplate()`, the team's
- * first/only `QuoteTemplate`. That mutation updates the whole config row
- * (`enabled`/`unitPriceCents`/`materialUnitPriceCents`/`labourUnitPriceCents`
- * are all required arguments), so this re-reads the specific row fresh via
- * `ListQuoteItemTemplateConfigsForQuoteTemplate` immediately before writing
- * — the same "fetch fresh, patch one field, write the rest back unchanged"
- * shape as the overlay fix above — so an `enabled`/material/labour edit made
- * elsewhere (e.g. the quote template form) isn't clobbered by this price-only
- * change.
- */
-function useUpdateUnitPriceCallback(
-    projectId: string,
-): (item: ReadinessAffectedItem, unitPriceCents: number) => Promise<void> {
-    const { activeTemplate } = useActiveQuoteTemplate();
-    const { mutateAsync: updateItemTemplateConfig } =
-        DataConnectorReact.useUpdateQuoteItemTemplateConfig(dataConnect);
-    const { refresh } = useQuoteReadiness(projectId);
-
-    return useCallback(
-        async (item: ReadinessAffectedItem, unitPriceCents: number) => {
-            const itemTemplateId = item.quoteItemTemplateId;
-            if (!itemTemplateId || !activeTemplate) {
-                throw new Error("This fix is missing its quote item template.");
-            }
-
-            const quoteTemplateId = activeTemplate.id;
-            const { data } =
-                await DataConnector.listQuoteItemTemplateConfigsForQuoteTemplate(
-                    dataConnect,
-                    { quoteTemplateId },
-                    { fetchPolicy: QueryFetchPolicy.SERVER_ONLY },
-                );
-            const config = data.quoteItemTemplateConfigs.find(
-                (candidate) => candidate.itemTemplateId === itemTemplateId,
-            );
-            if (!config) {
-                throw new Error(
-                    "This item is no longer in the quote template.",
-                );
-            }
-
-            await updateItemTemplateConfig({
-                quoteTemplateId,
-                itemTemplateId,
-                enabled: config.enabled,
-                unitPriceCents,
-                materialUnitPriceCents: config.materialUnitPriceCents,
-                labourUnitPriceCents: config.labourUnitPriceCents,
-            });
-            await refresh();
-        },
-        [activeTemplate, refresh, updateItemTemplateConfig],
-    );
-}
-
-/**
  * Reuses `UpdateProjectQuestionnaireQuestionAnswerSource` — already wired up
  * on the questionnaires page (`useConfirmProjectQuestionnaireQuestionAnswerCallback`)
  * for its own AI-confirm action. The mutation only ever sets `answerSource`,
@@ -198,24 +140,30 @@ function useConfirmAnswerSourceCallback(
     );
 }
 
+export type QuoteReadinessFixControls = {
+    readonly renderFixControl: ReadinessCheckListRenderFixControl;
+    readonly renderCheckFooter: ReadinessCheckListRenderCheckFooter;
+};
+
 /**
- * Builds the `renderFixControl` passed to `ReadinessCheckList`, persisting
- * every WORK-134 inline fix control and re-evaluating the readiness gate
- * (`useQuoteReadiness().refresh()`, called inside each callback above) on
- * success — without a full page reload, since `refresh()` just re-runs the
- * `GetQuoteReadiness` query. `SCALE_APPLIED` and `ROOMS_MEASURED` are
- * `DEEP_LINK` checks and stay unchanged from WORK-139: their fix is a link
- * to the floorplan editor, not a value submitted here. `COMPANY_CONTACT_DETAILS`
- * (WORK-226) is the same idea, but routes to `/companies/{companyId}`
- * instead of the floorplan editor — since `CompanyContactDetailsFixControl`
- * calls back into the app rather than rendering a plain `href` (its
- * destination may become a dialog scoped to one company rather than a
- * stable route), that navigation happens via `useRouter().push()` here
- * instead of a built `href` like the floorplan cases use. No `refresh()`
- * call is needed for either: leaving this page unmounts it, and returning
- * remounts `useQuoteReadiness`, which re-fetches `GetQuoteReadiness` fresh
- * (react-query's default `refetchOnMount` behaviour) the same way the
- * floorplan deep links already rely on.
+ * Builds the `renderFixControl`/`renderCheckFooter` passed to
+ * `ReadinessCheckList`, persisting every WORK-134 inline fix control and
+ * re-evaluating the readiness gate (`useQuoteReadiness().refresh()`, called
+ * inside each callback above) on success — without a full page reload,
+ * since `refresh()` just re-runs the `GetQuoteReadiness` query.
+ * `SCALE_APPLIED` and `ROOMS_MEASURED` are `DEEP_LINK` checks and stay
+ * unchanged from WORK-139: their fix is a link to the floorplan editor, not
+ * a value submitted here. `COMPANY_CONTACT_DETAILS` (WORK-226) is the same
+ * idea, but routes to `/companies/{companyId}` instead of the floorplan
+ * editor — since `CompanyContactDetailsFixControl` calls back into the app
+ * rather than rendering a plain `href` (its destination may become a dialog
+ * scoped to one company rather than a stable route), that navigation
+ * happens via `useRouter().push()` here instead of a built `href` like the
+ * floorplan cases use. No `refresh()` call is needed for either: leaving
+ * this page unmounts it, and returning remounts `useQuoteReadiness`, which
+ * re-fetches `GetQuoteReadiness` fresh (react-query's default
+ * `refetchOnMount` behaviour) the same way the floorplan deep links already
+ * rely on.
  *
  * Each control's starting value (e.g. the room's current wall board type)
  * is sourced from `useQuoteReadiness(projectId).data` directly (WORK-191),
@@ -225,18 +173,26 @@ function useConfirmAnswerSourceCallback(
  * *display* seeding; every write path above re-fetches its own fresh copy
  * immediately before saving, rather than trusting this potentially-stale
  * snapshot.
+ *
+ * `TEMPLATE_PRICED` is the one exception to "each control persists itself
+ * on its own Save button" — its fix controls (a `UnitPriceFixControl` per
+ * affected item, plus the check's single "Save all prices" footer) and the
+ * batched save behind them live in `useQuoteReadinessUnitPriceFixControls`
+ * instead of inline below, since that state (each item's draft price) is
+ * shared across every item's control rather than owned by one.
  */
 export function useQuoteReadinessFixControlRenderer(
     projectId: string,
-): ReadinessCheckListRenderFixControl {
+): QuoteReadinessFixControls {
     const { t } = useQuotesTranslation();
     const router = useRouter();
     const { data: readinessData } = useQuoteReadiness(projectId);
     const updateAreaField = useUpdateAreaOverlayFieldCallback(projectId);
-    const updateUnitPrice = useUpdateUnitPriceCallback(projectId);
     const confirmAnswerSource = useConfirmAnswerSourceCallback(projectId);
+    const { renderUnitPriceFixControl, renderCheckFooter } =
+        useQuoteReadinessUnitPriceFixControls(projectId);
 
-    return useCallback(
+    const renderFixControl = useCallback(
         (item: ReadinessAffectedItem, check: ReadinessCheck): ReactNode => {
             switch (check.id) {
                 case SCALE_APPLIED_CHECK_ID:
@@ -294,18 +250,7 @@ export function useQuoteReadinessFixControlRenderer(
                         />
                     );
                 case TEMPLATE_PRICED_CHECK_ID:
-                    return (
-                        <UnitPriceFixControl
-                            item={item}
-                            valueCents={currentUnitPriceCents(
-                                readinessData,
-                                item,
-                            )}
-                            onChange={(unitPriceCents) =>
-                                updateUnitPrice(item, unitPriceCents)
-                            }
-                        />
-                    );
+                    return renderUnitPriceFixControl(item);
                 case TEMPLATE_HAS_ENABLED_ITEMS_CHECK_ID:
                     return (
                         <QuoteTemplateDeepLinkFixControl
@@ -365,10 +310,12 @@ export function useQuoteReadinessFixControlRenderer(
             confirmAnswerSource,
             projectId,
             readinessData,
+            renderUnitPriceFixControl,
             router,
             t,
             updateAreaField,
-            updateUnitPrice,
         ],
     );
+
+    return { renderFixControl, renderCheckFooter };
 }
