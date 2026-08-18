@@ -1,11 +1,30 @@
 "use client";
 
 import type { QuoteAppearance } from "@libraries/plaster-calculator-common";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+    useIsMutating,
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from "@tanstack/react-query";
 
 import { quoteAppearanceService } from "./quote-appearance.service.ts";
 
 const quoteAppearanceQueryKey = ["quote-appearance"] as const;
+/**
+ * A stable key for the "save" mutation, separate from
+ * `quoteAppearanceQueryKey` -- lets `useQuoteAppearanceSaving()` observe
+ * this mutation's pending state from a component that never calls
+ * `useQuoteAppearance()` itself (e.g. a save button rendered in a page
+ * header, outside the form). `useMutation`'s `isPending` is per-hook-call,
+ * not shared across instances the way `useQuery`'s cache is, so a second
+ * `useQuoteAppearance()` call elsewhere on the page would otherwise have no
+ * way to see this one's in-flight save.
+ */
+export const QUOTE_APPEARANCE_SAVE_MUTATION_KEY = [
+    "quote-appearance",
+    "save",
+] as const;
 
 export type UseQuoteAppearanceResult = {
     readonly appearance: QuoteAppearance | undefined;
@@ -42,6 +61,7 @@ export function useQuoteAppearance(): UseQuoteAppearanceResult {
     });
 
     const mutation = useMutation({
+        mutationKey: QUOTE_APPEARANCE_SAVE_MUTATION_KEY,
         mutationFn: (payload: Partial<QuoteAppearance>) =>
             quoteAppearanceService.saveAppearance(payload),
         onSuccess: (next) => {
@@ -82,4 +102,21 @@ export function useQuoteAppearance(): UseQuoteAppearanceResult {
         uploadLogo: uploadLogoMutation.mutateAsync,
         removeLogo: removeLogoMutation.mutateAsync,
     };
+}
+
+/**
+ * Whether a `useQuoteAppearance().save()` triggered by *any* mounted
+ * component is currently in flight -- for a save button rendered somewhere
+ * that doesn't otherwise need `useQuoteAppearance()` itself (e.g. a page
+ * header action, while the form and its own `saving` flag live in the
+ * panel below it). Backed by `useIsMutating`, which counts pending
+ * mutations sharing `QUOTE_APPEARANCE_SAVE_MUTATION_KEY` across every
+ * `useQuoteAppearance()` instance, rather than a second, unrelated
+ * mutation's own `isPending`.
+ */
+export function useQuoteAppearanceSaving(): boolean {
+    const pendingCount = useIsMutating({
+        mutationKey: QUOTE_APPEARANCE_SAVE_MUTATION_KEY,
+    });
+    return pendingCount > 0;
 }
