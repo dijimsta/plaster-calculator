@@ -29,7 +29,6 @@
         "@types/node": "^22.20.1",
         "firebase-functions-test": "^3.5.0",
         "genkit-cli": "^1.40.1",
-        "jest": "^30.4.2",
         "tsx": "^4.23.5",
         "typescript": "^6.0.3"
     },
