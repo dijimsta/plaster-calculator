@@ -35,6 +35,7 @@ export const readinessCheckList = Object.freeze({
         ROOMS_MEASURED: "房间已测量",
         WALL_TYPE_SET: "已设置墙板类型",
         CEILING_HEIGHT_SET: "已设置天花板高度",
+        TEMPLATE_HAS_ENABLED_ITEMS: "报价模板已启用项目",
         TEMPLATE_PRICED: "模板已定价",
         TEMPLATE_UNIT_SET: "模板单位已设置",
         INFERRED_ANSWERS_CONFIRMED: "已确认推断答案",
@@ -67,6 +68,7 @@ export const readinessFixControls = Object.freeze({
     }),
     confirmError: "无法确认，请重试。",
     setTemplateUnits: "设置模板单位",
+    manageQuoteItems: "管理报价项目",
     confirmAccessibleLabelWithLocation:
         "确认{{location}}的{{label}}“{{value}}”",
     confirmAccessibleLabel: "确认{{label}}“{{value}}”",

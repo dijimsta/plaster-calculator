@@ -9,6 +9,7 @@ import {
     INFERRED_ANSWERS_CONFIRMED_CHECK_ID,
     ROOMS_MEASURED_CHECK_ID,
     SCALE_APPLIED_CHECK_ID,
+    TEMPLATE_HAS_ENABLED_ITEMS_CHECK_ID,
     TEMPLATE_PRICED_CHECK_ID,
     TEMPLATE_UNIT_SET_CHECK_ID,
     WALL_TYPE_SET_CHECK_ID,
@@ -41,6 +42,10 @@ export function checkTitle(
             return t("readinessCheckList.checkLabels.WALL_TYPE_SET");
         case CEILING_HEIGHT_SET_CHECK_ID:
             return t("readinessCheckList.checkLabels.CEILING_HEIGHT_SET");
+        case TEMPLATE_HAS_ENABLED_ITEMS_CHECK_ID:
+            return t(
+                "readinessCheckList.checkLabels.TEMPLATE_HAS_ENABLED_ITEMS",
+            );
         case TEMPLATE_PRICED_CHECK_ID:
             return t("readinessCheckList.checkLabels.TEMPLATE_PRICED");
         case TEMPLATE_UNIT_SET_CHECK_ID:

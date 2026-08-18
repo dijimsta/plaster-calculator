@@ -37,6 +37,7 @@ export const readinessCheckList = Object.freeze({
         ROOMS_MEASURED: "Rooms measured",
         WALL_TYPE_SET: "Wall type set",
         CEILING_HEIGHT_SET: "Ceiling height set",
+        TEMPLATE_HAS_ENABLED_ITEMS: "Quote template has enabled items",
         TEMPLATE_PRICED: "Template priced",
         TEMPLATE_UNIT_SET: "Template units set",
         INFERRED_ANSWERS_CONFIRMED: "Inferred answers confirmed",
@@ -69,6 +70,7 @@ export const readinessFixControls = Object.freeze({
     }),
     confirmError: "Couldn't confirm. Try again.",
     setTemplateUnits: "Set template units",
+    manageQuoteItems: "Manage quote items",
     confirmAccessibleLabelWithLocation:
         'Confirm {{label}} "{{value}}" for {{location}}',
     confirmAccessibleLabel: 'Confirm {{label}} "{{value}}"',
