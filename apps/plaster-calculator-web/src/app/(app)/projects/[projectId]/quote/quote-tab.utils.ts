@@ -8,6 +8,7 @@ import type {
     EditableQuoteFormValues,
     QuoteDetailDocumentProps,
 } from "@libraries/plaster-calculator-ui";
+import { formatQuantityText } from "@libraries/utilities";
 
 type ProjectQuote = NonNullable<
     NonNullable<GetProjectQuoteData["project"]>["quote"]
@@ -214,7 +215,7 @@ export class QuoteTabUtils {
     private static formatTakeoffSummaryEntry(
         entry: TakeoffSummaryEntry,
     ): string {
-        const quantityText = String(Number(entry.quantity.toFixed(2)));
+        const quantityText = formatQuantityText(entry.quantity);
         return entry.unit
             ? `${entry.label}: ${quantityText} ${entry.unit}`
             : `${entry.label}: ${quantityText}`;

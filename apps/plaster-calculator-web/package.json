@@ -16,6 +16,7 @@
         "@libraries/plaster-calculator-ui": "workspace:*",
         "@libraries/plaster-calculator-web-core": "workspace:*",
         "@libraries/uikit-web": "workspace:*",
+        "@libraries/utilities": "workspace:*",
         "@tanstack-query-firebase/react": "^2.1.1",
         "@tanstack/react-query": "^5.101.4",
         "@ui/internationalization": "workspace:*",
