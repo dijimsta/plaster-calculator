@@ -110,6 +110,7 @@ export const zh = createTranslationResource(
             title: "工作范围",
             projectsTab: "工作范围",
             templatesTab: "澄清模板",
+            paginationLabel: "问卷列表分页",
         }),
         quotes: Object.freeze({
             title: "报价",

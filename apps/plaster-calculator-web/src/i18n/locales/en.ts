@@ -107,6 +107,7 @@ export const en = Object.freeze({
         title: "Scope of work",
         projectsTab: "Scope of work",
         templatesTab: "Clarification Template",
+        paginationLabel: "Questionnaires list pagination",
     }),
     quotes: Object.freeze({
         title: "Quotes",

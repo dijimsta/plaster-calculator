@@ -9,6 +9,7 @@ import {
     Breadcrumb,
     EmptyState,
     PageHeading,
+    Pagination,
     ProgressBar,
     Stats,
     Table,
@@ -40,6 +41,7 @@ export default function QuestionnairesPage() {
     const { t } = useQuestionnairesTranslation();
     const { t: tApp } = useAppTranslation();
     const stats = useQuestionnaireStats();
+    const { page, pageCount, setPage } = stats;
 
     function answeredSummary(
         questionnaire: Pick<
@@ -227,6 +229,14 @@ export default function QuestionnairesPage() {
                             })}
                         </Table.Body>
                     </Table>
+                )}
+                {!stats.isLoading && pageCount > 1 && (
+                    <Pagination
+                        page={page}
+                        pageCount={pageCount}
+                        onPageChange={setPage}
+                        label={tApp("questionnaires.paginationLabel")}
+                    />
                 )}
             </Box>
         </>
