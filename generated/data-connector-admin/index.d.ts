@@ -420,6 +420,8 @@ export interface ListOpenRemindersData {
 
 export interface ListOpenRemindersVariables {
   teamId: string;
+  limit?: number | null;
+  offset?: number | null;
 }
 
 export interface ListPendingTeamInvitationsData {
