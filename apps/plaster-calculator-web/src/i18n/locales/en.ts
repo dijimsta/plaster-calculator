@@ -170,6 +170,10 @@ export const en = Object.freeze({
         projectsPanel: Object.freeze({
             title: "Projects",
             emptyStateTitle: "No projects are linked to this company",
+            loading: "Loading projects...",
+            unableToLoad: "Unable to load projects",
+            loadMore: "Load more",
+            loadingMore: "Loading more...",
         }),
         companyRow: Object.freeze({
             noBusinessNumber: "No business number",
