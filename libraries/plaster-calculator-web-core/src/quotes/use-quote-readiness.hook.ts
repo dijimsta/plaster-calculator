@@ -10,7 +10,7 @@ import { useCallback, useMemo } from "react";
 import { FirebaseService } from "../firebase/firebase.service.ts";
 
 import type { UseQuoteReadinessResult } from "./quote-readiness.types.ts";
-import { QuoteReadinessUtils } from "./quote-readiness.utils.ts";
+import { evaluate, isReady } from "./quote-readiness.utils.ts";
 
 const dataConnect = FirebaseService.getDataConnect(
     DataConnector.connectorConfig,
@@ -143,10 +143,7 @@ export function useQuoteReadiness(projectId: string): UseQuoteReadinessResult {
         useResolvedQuoteReadiness(projectId, defaultTemplateId);
 
     const results = useMemo(
-        () =>
-            data
-                ? QuoteReadinessUtils.evaluate(data, defaultTemplateConfigs)
-                : [],
+        () => (data ? evaluate(data, defaultTemplateConfigs) : []),
         [data, defaultTemplateConfigs],
     );
     const refresh = useCallback(async (): Promise<void> => {
@@ -170,8 +167,7 @@ export function useQuoteReadiness(projectId: string): UseQuoteReadinessResult {
 
     return {
         results,
-        isReady:
-            quoteTemplateId != null && QuoteReadinessUtils.isReady(results),
+        isReady: quoteTemplateId != null && isReady(results),
         loading: isLoading || quoteTemplateId == null,
         error,
         refresh,

@@ -3,7 +3,7 @@ import type { AnswerSource } from "@libraries/plaster-calculator-common";
 
 /**
  * A clarification row's status, derived purely from its persisted `answer`/
- * `answerSource` (see `ClarificationsStepUtils.deriveRowStatus()`) — never
+ * `answerSource` (see `deriveRowStatus()`, `clarifications-step.utils.ts`) — never
  * from local-only wizard state. This is what makes the scope-of-work tab
  * (which reads the same two columns via `answerSource ===
  * AI_SUGGESTED_ANSWER_SOURCE`, see `ProjectQuestionnaireQuestionList`) show
@@ -50,7 +50,8 @@ export type ClarificationsTemplateQuestion = {
 };
 
 /**
- * Why `ClarificationsStepUtils.buildBatchApplyTemplateVariables()` refused
+ * Why `buildBatchApplyTemplateVariables()` (`clarifications-step.utils.ts`)
+ * refused
  * to build a `BatchApplyQuestionnaireTemplateToProject` payload:
  * `TOO_MANY_QUESTIONS` when the template has more questions than that
  * mutation's 20 fixed slots can hold — see that mutation's own doc comment

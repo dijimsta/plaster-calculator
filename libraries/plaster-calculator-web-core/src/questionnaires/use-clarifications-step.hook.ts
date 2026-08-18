@@ -17,7 +17,10 @@ import type {
     ClarificationsStepError,
     ClarificationsTemplateOption,
 } from "./clarifications-step.types.ts";
-import { ClarificationsStepUtils } from "./clarifications-step.utils.ts";
+import {
+    countNotAnsweredOnPlan,
+    toClarificationRows,
+} from "./clarifications-step.utils.ts";
 import { QuestionnairesService } from "./questionnaires.service.ts";
 
 const dataConnect = FirebaseService.getDataConnect(
@@ -103,10 +106,7 @@ function useClarificationsRows(projectId: string): ClarificationsRowsState {
         },
     );
     const rows = useMemo(
-        () =>
-            ClarificationsStepUtils.toClarificationRows(
-                data?.projectQuestionnaire?.questions ?? [],
-            ),
+        () => toClarificationRows(data?.projectQuestionnaire?.questions ?? []),
         [data],
     );
 
@@ -236,7 +236,7 @@ function useClarificationsStepMutations(
  * (template picker, editable clarification rows, the AI run, and what gets
  * persisted). Mirrors the scope-of-work tab's `page.hooks.ts` — same
  * `GetProjectQuestionnaire` query, same status derivation
- * (`ClarificationsStepUtils.deriveRowStatus()`), same
+ * (`deriveRowStatus()`, `clarifications-step.utils.ts`), same
  * ensure-then-create/update/delete mutations — but lives in web-core so the
  * wizard's modal (a later ticket) stays purely presentational, and persists
  * as the user goes rather than batching writes until a final "save" step:
@@ -257,8 +257,7 @@ export function useClarificationsStep(
     const { templates, selectedTemplateId, selectTemplate } =
         useClarificationsTemplatePicker();
     const { rows, isLoading } = useClarificationsRows(projectId);
-    const notAnsweredOnPlanCount =
-        ClarificationsStepUtils.countNotAnsweredOnPlan(rows);
+    const notAnsweredOnPlanCount = countNotAnsweredOnPlan(rows);
 
     const refresh = useRefreshProjectQuestionnaireCallback(projectId);
     const dependencies = useClarificationsStepDependencies(refresh);

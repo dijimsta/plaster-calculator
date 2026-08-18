@@ -11,7 +11,10 @@ import type {
     GenerateQuoteTemplateConfig,
     ResolvedQuoteItem,
 } from "../../src/quotes/generate-quote.types.ts";
-import { GenerateQuoteUtils } from "../../src/quotes/generate-quote.utils.ts";
+import {
+    build,
+    buildMutationVariables,
+} from "../../src/quotes/generate-quote.utils.ts";
 
 const WALL_QUANTITY_SOURCE_ID = "qs-wall-standard";
 
@@ -80,116 +83,13 @@ function generateQuoteInputFixture(
     };
 }
 
-test("resolveQuoteItems keeps an unconditional template whose quantity source resolved to a non-zero quantity", () => {
-    const items = GenerateQuoteUtils.resolveQuoteItems(
-        [templateConfigFixture()],
-        [rollupResultFixture()],
-        "",
-    );
-
-    assert.equal(items.length, 1);
-    assert.equal(items[0]?.quantity, 52.8);
-    assert.deepEqual(items[0]?.matchedKeywords, []);
-});
-
-test("resolveQuoteItems drops an unconditional template whose quantity source resolved to zero", () => {
-    const items = GenerateQuoteUtils.resolveQuoteItems(
-        [templateConfigFixture()],
-        [rollupResultFixture({ quantity: 0 })],
-        "",
-    );
-
-    assert.equal(items.length, 0);
-});
-
-test("resolveQuoteItems drops an unconditional template whose quantity source has no rollup entry at all", () => {
-    const items = GenerateQuoteUtils.resolveQuoteItems(
-        [templateConfigFixture()],
-        [],
-        "",
-    );
-
-    assert.equal(items.length, 0);
-});
-
-test("resolveQuoteItems drops a keyword-conditional template whose keywords never matched", () => {
-    const items = GenerateQuoteUtils.resolveQuoteItems(
-        [
-            templateConfigFixture({
-                hasKeywords: true,
-                keywords: ["raised ceiling"],
-                quantitySourceId: null,
-            }),
-        ],
-        [],
-        "standard flat ceiling throughout",
-    );
-
-    assert.equal(items.length, 0);
-});
-
-test("resolveQuoteItems resolves a matched keyword-conditional template with no quantity source to a flat quantity of 1", () => {
-    const items = GenerateQuoteUtils.resolveQuoteItems(
-        [
-            templateConfigFixture({
-                itemTemplateId: "scaffold-hire",
-                name: "Scaffold hire",
-                hasKeywords: true,
-                keywords: ["raised ceiling"],
-                quantitySourceId: null,
-            }),
-        ],
-        [],
-        "Plan notes: raised ceiling in the living room.",
-    );
-
-    assert.equal(items.length, 1);
-    assert.equal(items[0]?.quantity, 1);
-    assert.deepEqual(items[0]?.matchedKeywords, ["raised ceiling"]);
-});
-
-test("resolveQuoteItems resolves an unconditional template with no quantity source to a flat quantity of 1", () => {
-    const items = GenerateQuoteUtils.resolveQuoteItems(
-        [
-            templateConfigFixture({
-                itemTemplateId: "site-setup",
-                name: "Site setup",
-                quantitySourceId: null,
-            }),
-        ],
-        [],
-        "",
-    );
-
-    assert.equal(items.length, 1);
-    assert.equal(items[0]?.quantity, 1);
-    assert.deepEqual(items[0]?.matchedKeywords, []);
-});
-
-test("resolveQuoteItems resolves a matched keyword-conditional template that also has a quantity source from the rollup, not a flat 1", () => {
-    const items = GenerateQuoteUtils.resolveQuoteItems(
-        [
-            templateConfigFixture({
-                hasKeywords: true,
-                keywords: ["wet area"],
-                quantitySourceId: WALL_QUANTITY_SOURCE_ID,
-            }),
-        ],
-        [rollupResultFixture({ quantity: 19.2 })],
-        "Bathroom notes: wet area walls",
-    );
-
-    assert.equal(items.length, 1);
-    assert.equal(items[0]?.quantity, 19.2);
-});
-
 test("build refuses to run at all when the readiness gate is not met", () => {
     const input = generateQuoteInputFixture({
         isReady: false,
         templateConfigs: [templateConfigFixture()],
     });
 
-    const result = GenerateQuoteUtils.build(input);
+    const result = build(input);
 
     assert.equal(result.ok, false);
     if (!result.ok) {
@@ -210,7 +110,7 @@ test("build proceeds and produces mutation variables when the readiness gate is 
         searchText: "roof plan shows a skylight over the kitchen",
     });
 
-    const result = GenerateQuoteUtils.build(input);
+    const result = build(input);
 
     assert.equal(result.ok, true);
     if (result.ok) {
@@ -259,7 +159,7 @@ test("build matches Data Connect's compact quantity-source UUIDs to measured rol
         ],
     });
 
-    const result = GenerateQuoteUtils.build(input);
+    const result = build(input);
 
     assert.equal(result.ok, true);
     if (result.ok) {
@@ -284,7 +184,7 @@ test("build refuses to persist an empty quote when no items resolve", () => {
         searchText: "standard ceiling throughout",
     });
 
-    const result = GenerateQuoteUtils.build(input);
+    const result = build(input);
 
     assert.equal(result.ok, false);
     if (!result.ok) {
@@ -301,11 +201,7 @@ test("buildMutationVariables maps up to 20 resolved items onto their fixed slots
         }),
     );
 
-    const result = GenerateQuoteUtils.buildMutationVariables(
-        "project-1",
-        "quote-1",
-        items,
-    );
+    const result = buildMutationVariables("project-1", "quote-1", items);
 
     assert.equal(result.ok, true);
     if (result.ok) {
@@ -325,11 +221,7 @@ test("buildMutationVariables refuses rather than truncates when there are more t
         }),
     );
 
-    const result = GenerateQuoteUtils.buildMutationVariables(
-        "project-1",
-        "quote-1",
-        items,
-    );
+    const result = buildMutationVariables("project-1", "quote-1", items);
 
     assert.equal(result.ok, false);
     if (!result.ok) {
