@@ -1,7 +1,7 @@
 export const styles = Object.freeze({
     root: "fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none overflow-hidden bg-transparent p-0 backdrop:bg-transparent",
     rootNonModal:
-        "absolute inset-0 z-40 m-0 max-h-none max-w-none overflow-hidden bg-transparent p-0 pointer-events-none backdrop:bg-transparent",
+        "absolute inset-0 z-40 m-0 h-full w-full max-h-none max-w-none overflow-hidden bg-transparent p-0 pointer-events-none backdrop:bg-transparent",
     positioner: "pointer-events-none relative flex h-full w-full",
     // Insets the panel from every edge of its container so the non-modal
     // panel reads as floating rather than docked. Padding on the positioner
