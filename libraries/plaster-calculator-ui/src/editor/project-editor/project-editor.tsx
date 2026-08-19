@@ -153,6 +153,44 @@ export function ProjectEditor({
         setZoom,
     });
 
+    const appliedFullScreenFitRef = useRef(false);
+    useEffect(() => {
+        if (!fullScreenState.fullScreen) {
+            // Reset so the *next* full-screen entry fits again, rather than
+            // only ever fitting once for the lifetime of this editor.
+            appliedFullScreenFitRef.current = false;
+            return;
+        }
+        if (appliedFullScreenFitRef.current) return;
+        // Entering full screen swaps in a brand-new canvas-wrap DOM node
+        // (see `use-editor-viewport.ts`), and `viewport` only catches up to
+        // that node's real size once its `ResizeObserver` effect has run
+        // and measured it -- which can be a render or two after this
+        // `fullScreen` flip, since `viewport` is React state updated
+        // asynchronously by that effect. `canvasWrapRef.current` itself is
+        // already the new node by this point (React attaches refs
+        // synchronously during commit, strictly before this passive effect
+        // runs), so comparing `viewport` against a *live* read of it
+        // confirms `viewport` reflects this exact node before it's used to
+        // compute a fit -- otherwise we'd silently fit against whatever the
+        // previous (two-pane, or default-fallback) size was.
+        const element = canvasWrapRef.current;
+        if (
+            !element ||
+            viewport.width !== element.clientWidth ||
+            viewport.height !== element.clientHeight
+        ) {
+            return;
+        }
+        appliedFullScreenFitRef.current = true;
+        actions.fitToViewport();
+        // Deliberately omits `actions` (a fresh object every render) from
+        // the dependency array: this should only re-evaluate when
+        // full-screen entry or the viewport measurement for that entry
+        // changes, not on every unrelated render -- the guard above already
+        // keeps it idempotent per entry.
+    }, [fullScreenState.fullScreen, viewport.width, viewport.height]);
+
     const appliedInitialToolRef = useRef(false);
     useEffect(() => {
         if (appliedInitialToolRef.current) return;

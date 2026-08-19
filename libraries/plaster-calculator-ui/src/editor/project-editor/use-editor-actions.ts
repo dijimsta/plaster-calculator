@@ -121,6 +121,7 @@ export function useEditorActions(options: EditorActionsOptions) {
         ...materialActions,
         applyScale: scaleActions.applyScale,
         changeZoom: scaleActions.changeZoom,
+        fitToViewport: scaleActions.fitToViewport,
         resetView: scaleActions.resetView,
         startReferenceMode: scaleActions.startReferenceMode,
         updateArea,
