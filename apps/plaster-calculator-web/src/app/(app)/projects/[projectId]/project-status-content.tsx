@@ -77,6 +77,16 @@ function computePagePickerPanel(input: PageNavigationInput): ReactNode {
     );
 }
 
+/**
+ * The full-screen editor's `fixed inset-0 z-30` shell covers the app's
+ * normal document flow, so the analysis-failure banner needs a fixed,
+ * above-the-shell treatment while full screen is active instead of its
+ * usual in-flow styling.
+ */
+function computeErrorBannerClassName(floorplanFullScreen: boolean): string {
+    return cx(ui.error, floorplanFullScreen && ui.errorFullScreen);
+}
+
 type ProjectStatusContentProps = {
     readonly companyId: string | null;
     readonly analyzingPage: boolean;
@@ -230,7 +240,10 @@ export function ProjectStatusContent({
                 />
             )}
             {selectedPage?.processingError && (
-                <p className={ui.error} role="alert">
+                <p
+                    className={computeErrorBannerClassName(floorplanFullScreen)}
+                    role="alert"
+                >
                     Analysis failed: {selectedPage.processingError}
                 </p>
             )}
