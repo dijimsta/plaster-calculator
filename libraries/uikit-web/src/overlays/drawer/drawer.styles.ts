@@ -1,7 +1,7 @@
 export const styles = Object.freeze({
     root: "fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none overflow-hidden bg-transparent p-0 backdrop:bg-transparent",
     rootNonModal:
-        "fixed inset-0 z-40 m-0 h-dvh max-h-none w-screen max-w-none overflow-hidden bg-transparent p-0 pointer-events-none backdrop:bg-transparent",
+        "absolute inset-0 z-40 m-0 max-h-none max-w-none overflow-hidden bg-transparent p-0 pointer-events-none backdrop:bg-transparent",
     positioner: "pointer-events-none relative flex h-full w-full",
     leftPositioner: "justify-start",
     rightPositioner: "justify-end",
