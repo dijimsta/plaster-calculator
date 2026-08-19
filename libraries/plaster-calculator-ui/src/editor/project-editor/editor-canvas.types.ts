@@ -22,6 +22,8 @@ export type EditorCanvasProps = {
     readonly commitFromSnapshot: (before: Overlay, next: Overlay) => void;
     readonly draftPointer: Point | null;
     readonly draftPoints: Point[];
+    /** Drops `canvasWrap`'s two-pane `min-h-[560px]` floor; see `project-editor.styles.ts`. */
+    readonly fullScreen?: boolean;
     readonly image: HTMLImageElement | null;
     readonly imageError: string;
     readonly imageHeight: number;

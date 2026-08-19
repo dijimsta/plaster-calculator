@@ -1,5 +1,5 @@
 import type { Point } from "@libraries/plaster-calculator-common";
-import { Box, Button, Drawer, Paragraph, Text } from "@libraries/uikit-web";
+import { Box, Button, Paragraph, Text } from "@libraries/uikit-web";
 import type { ReactNode } from "react";
 
 import { useEditorTranslation } from "../i18n/index.js";
@@ -7,10 +7,10 @@ import { useEditorTranslation } from "../i18n/index.js";
 import { EditorCanvas } from "./editor-canvas.js";
 import type { EditorCanvasProps } from "./editor-canvas.types.js";
 import { EditorLegend } from "./editor-legend.js";
-import { EditorSidebar } from "./editor-sidebar.js";
 import { EditorToolbar } from "./editor-toolbar.js";
 import { EditorZoomChip } from "./editor-zoom-chip.js";
-import { cx, editorDrawerSize, ui } from "./project-editor.styles.js";
+import { FullScreenInspectorDrawer } from "./full-screen-inspector-drawer.js";
+import { cx, ui } from "./project-editor.styles.js";
 import type {
     OverlayMode,
     ProjectEditorProps,
@@ -107,7 +107,6 @@ export function ProjectEditorFullScreenView({
     zoom,
     onAnalyze,
 }: ProjectEditorFullScreenViewProps) {
-    const { t } = useEditorTranslation();
     const { drawerOpen, closeDrawer, openDrawer } = fullScreenState;
     const showSelectionCard = !drawerOpen && selection.hasSelection();
 
@@ -119,6 +118,7 @@ export function ProjectEditorFullScreenView({
                     autoSaving={persistence.autoSaving}
                     analyzing={analyzing}
                     dirty={dirty}
+                    drawerOpen={drawerOpen}
                     fullScreen
                     futureCount={historyState.future.length}
                     historyCount={historyState.history.length}
@@ -143,6 +143,7 @@ export function ProjectEditorFullScreenView({
                     onStraightenSelectedPoints={
                         actions.straightenSelectedPoints
                     }
+                    onToggleDrawer={drawerOpen ? closeDrawer : openDrawer}
                     onToggleFullScreen={fullScreenState.exit}
                     onUndo={historyState.undo}
                     hasSelection={selection.hasSelection}
@@ -170,6 +171,7 @@ export function ProjectEditorFullScreenView({
                     commitFromSnapshot={historyState.commitFromSnapshot}
                     draftPointer={draftPointer}
                     draftPoints={draftPoints}
+                    fullScreen
                     image={imageState.image}
                     imageError={imageState.imageError}
                     imageHeight={derivedState.imageHeight}
@@ -233,63 +235,24 @@ export function ProjectEditorFullScreenView({
                     </div>
                 </div>
             </div>
-            <Drawer
-                modal={false}
-                placement="right"
-                open={drawerOpen}
-                onClose={closeDrawer}
-                size={editorDrawerSize}
-                title={t("editorSidebar.pageDrawerTitle", {
-                    page: page.pageNumber,
-                })}
-            >
-                <EditorSidebar
-                    page={page}
-                    status={persistence.status}
-                    dirty={dirty}
-                    ceilingHeightMm={overlayState.ceilingHeightMm}
-                    scaleMmPerPx={overlayState.scaleMmPerPx}
-                    referencePoints={overlayState.referencePoints}
-                    referenceLengthMm={overlayState.referenceLengthMm}
-                    isSettingReference={isSettingReference}
-                    summary={derivedState.summary}
-                    visibleAreas={derivedState.visibleAreas}
-                    selectedAreaIds={selection.selectedAreaIds}
-                    selectedArea={derivedState.selectedArea}
-                    selectedEdgeArea={derivedState.selectedEdgeArea}
-                    selectedEdge={selection.selectedEdge}
-                    selectedEdgeOverride={derivedState.selectedEdgeOverride}
-                    selectedPointIndexes={selection.selectedPointIndexes}
-                    metrics={derivedState.metrics}
-                    projectCompanyPanel={projectCompanyPanel}
-                    salesStatusPanel={salesStatusPanel}
-                    pagePickerPanel={pagePickerPanel}
-                    areaIssue={validation.areaIssue}
-                    applyHeightToAllPages={persistence.applyHeightToAllPages}
-                    applyScale={actions.applyScale}
-                    applyScaleToAllPages={persistence.applyScaleToAllPages}
-                    clearSelectedEdgeOverride={
-                        actions.clearSelectedEdgeOverride
-                    }
-                    commonMaterialValue={actions.commonMaterialValue}
-                    fieldError={validation.fieldError}
-                    hasPageHeightIssue={validation.hasPageHeightIssue}
-                    pageIssue={validation.pageIssue}
-                    renderCeilingControls={validation.renderCeilingControls}
-                    selectArea={selection.selectArea}
-                    setCeilingHeightMm={overlayState.setCeilingHeightMm}
-                    setDirty={setDirty}
-                    setIsSettingReference={setIsSettingReference}
-                    setMaterial={actions.setMaterial}
-                    setReferenceLengthMm={overlayState.setReferenceLengthMm}
-                    setReferencePoints={overlayState.setReferencePoints}
-                    setSelectedEdgeMaterial={actions.setSelectedEdgeMaterial}
-                    setSelectedEdgeNoPlaster={actions.setSelectedEdgeNoPlaster}
-                    startReferenceMode={actions.startReferenceMode}
-                    toggleOutdoor={actions.toggleOutdoor}
-                    updateArea={actions.updateArea}
-                />
-            </Drawer>
+            <FullScreenInspectorDrawer
+                actions={actions}
+                derivedState={derivedState}
+                dirty={dirty}
+                drawerOpen={drawerOpen}
+                isSettingReference={isSettingReference}
+                overlayState={overlayState}
+                page={page}
+                pagePickerPanel={pagePickerPanel}
+                persistence={persistence}
+                projectCompanyPanel={projectCompanyPanel}
+                salesStatusPanel={salesStatusPanel}
+                selection={selection}
+                validation={validation}
+                closeDrawer={closeDrawer}
+                setDirty={setDirty}
+                setIsSettingReference={setIsSettingReference}
+            />
         </div>
     );
 }

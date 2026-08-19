@@ -19,6 +19,7 @@ export function EditorCanvas({
     commitFromSnapshot,
     draftPointer,
     draftPoints,
+    fullScreen = false,
     image,
     imageError,
     imageHeight,
@@ -163,11 +164,15 @@ export function EditorCanvas({
     }
 
     return (
-        // `ui.canvasWrap` is a deliberately-kept gap: this ref is read
-        // directly by the scroll-drag handlers above, and `Box` neither
-        // forwards refs nor supports the responsive height this scrollable
-        // viewport needs. See `project-editor.styles.ts`.
-        <div className={ui.canvasWrap} ref={canvasWrapRef}>
+        // `ui.canvasWrap` / `ui.canvasWrapFullScreen` are a deliberately-kept
+        // gap: this ref is read directly by the scroll-drag handlers above,
+        // and `Box` neither forwards refs nor supports the responsive
+        // height this scrollable viewport needs. See
+        // `project-editor.styles.ts`.
+        <div
+            className={fullScreen ? ui.canvasWrapFullScreen : ui.canvasWrap}
+            ref={canvasWrapRef}
+        >
             {imageError && (
                 <Paragraph textSize="sm" variant="danger">
                     {imageError}

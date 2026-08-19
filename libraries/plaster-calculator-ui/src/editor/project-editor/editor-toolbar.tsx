@@ -1,7 +1,15 @@
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import { Box, Button } from "@libraries/uikit-web";
 import type { ButtonSize } from "@libraries/uikit-web";
-import { Loader2, Maximize2, Minimize2, Save, ScanLine } from "lucide-react";
+import {
+    Loader2,
+    Maximize2,
+    Minimize2,
+    PanelRightClose,
+    PanelRightOpen,
+    Save,
+    ScanLine,
+} from "lucide-react";
 
 import { useEditorTranslation } from "../i18n/index.js";
 
@@ -16,6 +24,7 @@ export type EditorToolbarProps = {
     readonly autoSaving: boolean;
     readonly dirty: boolean;
     readonly analyzing: boolean;
+    readonly drawerOpen?: boolean;
     readonly fullScreen?: boolean;
     readonly futureCount: number;
     readonly historyCount: number;
@@ -38,6 +47,7 @@ export type EditorToolbarProps = {
     readonly onSplitArea: () => void;
     readonly onStartFreeShape: () => void;
     readonly onStraightenSelectedPoints: () => void;
+    readonly onToggleDrawer?: () => void;
     readonly onToggleFullScreen?: () => void;
     readonly onUndo: () => void;
     readonly hasSelection: () => boolean;
@@ -48,6 +58,7 @@ export function EditorToolbar({
     autoSaving,
     dirty,
     analyzing,
+    drawerOpen = false,
     fullScreen = false,
     futureCount,
     historyCount,
@@ -70,6 +81,7 @@ export function EditorToolbar({
     onSplitArea,
     onStartFreeShape,
     onStraightenSelectedPoints,
+    onToggleDrawer,
     onToggleFullScreen,
     onUndo,
     hasSelection,
@@ -97,7 +109,11 @@ export function EditorToolbar({
         return (
             <div className={ui.toolbarScrollRow}>
                 <fieldset className="contents" disabled={analyzing}>
-                    <ToolbarCoreControls {...coreProps} size="large" />
+                    <ToolbarCoreControls
+                        {...coreProps}
+                        portalPopover
+                        size="large"
+                    />
                     <OverlayModeSelector
                         overlayMode={overlayMode}
                         size="md"
@@ -116,6 +132,11 @@ export function EditorToolbar({
                         onAnalyze={onAnalyze}
                     />
                 </fieldset>
+                <DrawerToggleButton
+                    drawerOpen={drawerOpen}
+                    size="large"
+                    onToggleDrawer={onToggleDrawer}
+                />
                 <FullScreenToggleButton
                     fullScreen={fullScreen}
                     size="large"
@@ -154,12 +175,12 @@ export function EditorToolbar({
                         saving={saving}
                         onSave={onSave}
                     />
-                    <FullScreenToggleButton
-                        fullScreen={fullScreen}
-                        onToggleFullScreen={onToggleFullScreen}
-                    />
                 </Box>
             </fieldset>
+            <FullScreenToggleButton
+                fullScreen={fullScreen}
+                onToggleFullScreen={onToggleFullScreen}
+            />
             <AnalyzeButton analyzing={analyzing} onAnalyze={onAnalyze} />
         </Box>
     );
@@ -266,6 +287,46 @@ function FullScreenToggleButton({
                 fullScreen
                     ? t("editorToolbar.exitFullScreen")
                     : t("editorToolbar.enterFullScreen")
+            }
+        />
+    );
+}
+
+/**
+ * Opens or closes the full-screen inspector `Drawer` -- the only way to
+ * reach it when nothing is selected (`SelectionCard`'s "Edit properties"
+ * button otherwise requires a selection). Only rendered in the full-screen
+ * toolbar layout, so renders nothing when the consumer doesn't wire
+ * `onToggleDrawer` (the two-pane layout has no drawer to toggle).
+ */
+function DrawerToggleButton({
+    drawerOpen,
+    size = "medium",
+    onToggleDrawer,
+}: {
+    readonly drawerOpen: boolean;
+    readonly size?: ButtonSize;
+    readonly onToggleDrawer?: () => void;
+}) {
+    const { t } = useEditorTranslation();
+    if (!onToggleDrawer) return null;
+
+    return (
+        <Button
+            variant="secondary"
+            size={size}
+            icon={
+                drawerOpen ? (
+                    <PanelRightClose size={18} aria-hidden="true" />
+                ) : (
+                    <PanelRightOpen size={18} aria-hidden="true" />
+                )
+            }
+            onClick={onToggleDrawer}
+            label={
+                drawerOpen
+                    ? t("editorToolbar.hidePanels")
+                    : t("editorToolbar.showPanels")
             }
         />
     );

@@ -21,14 +21,31 @@ export function cx(
  *   itself -- full-screen mode (`use-editor-full-screen.ts`) auto-enters
  *   below that same width instead, so the two-pane shell only ever renders
  *   at widths wide enough for its fixed sidebar column.
- * - `canvasWrap`: the scrollable canvas viewport needs a raw `ref` (read
- *   directly by the scroll-drag handlers in `editor-canvas.tsx`) and a
- *   responsive height. `Box` doesn't forward refs or support arbitrary/
- *   responsive sizing.
+ * - `canvasWrap` / `canvasWrapFullScreen`: the scrollable canvas viewport
+ *   needs a raw `ref` (read directly by the scroll-drag handlers in
+ *   `editor-canvas.tsx`) and a responsive height. `Box` doesn't forward
+ *   refs or support arbitrary/responsive sizing. `canvasWrapFullScreen`
+ *   drops `canvasWrap`'s `min-h-[560px]` floor (meant for the two-pane
+ *   layout's other stacked content) in favour of `min-h-0`, so the
+ *   full-screen canvas can shrink to fit whatever viewport height is
+ *   actually available instead of forcing scroll/clip on short viewports
+ *   (e.g. a tablet in portrait).
  * - `popoverMenu`: an anchored, absolutely-positioned dropdown of buttons.
  *   UIKit's `overlays/` components are all full-screen/modal (`Backdrop`,
  *   `BusyOverlay`, `Drawer`, `ModalDialog`, `Notification`) -- there's no
  *   small inline popover/menu primitive.
+ * - `popoverMenuPortal`: the same dropdown's presentation for the
+ *   full-screen toolbar, where `toolbarScrollRow`'s `overflow-x-auto`
+ *   forces `overflow-y` to `auto` too (per the CSS Overflow spec, setting
+ *   one axis to a non-`visible` value computes the other as `auto` as
+ *   well when it isn't set explicitly), clipping an absolutely-positioned
+ *   popover to the row's own height. `toolbar-core-controls.tsx` portals
+ *   this variant to `document.body` and positions it with inline
+ *   `top`/`left` computed from the trigger's `getBoundingClientRect()`, so
+ *   it drops `popoverMenu`'s `absolute left-0 top-[46px]` in favour of
+ *   `fixed` (the inline style's `position`/`top`/`left` win over these
+ *   classes) and raises `z-10` to `z-50` so it renders above both the
+ *   full-screen shell (`z-30`) and the inspector `Drawer` (`z-40`).
  * - `editorLegend`: a `border-t`-separated footer row. `Box` has no border
  *   capability.
  * - `areaList` / `areaRow` / `areaRowActive`: a scrollable, multi-selectable
@@ -165,6 +182,11 @@ function createUi(theme: Theme) {
             theme.canvasBg,
             theme.line,
         ),
+        canvasWrapFullScreen: cx(
+            "flex-1 min-h-0 overflow-auto rounded-lg border",
+            theme.canvasBg,
+            theme.line,
+        ),
         editorCanvasContainer: "flex flex-col flex-1 min-h-0",
         editorLeftPanel: cx(
             "flex flex-col min-h-0 rounded-lg border shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",
@@ -181,6 +203,11 @@ function createUi(theme: Theme) {
         metric: cx("rounded-lg border p-2.5", theme.softBg, theme.line),
         popoverMenu: cx(
             "absolute left-0 top-[46px] z-10 grid min-w-[170px] gap-1.5 rounded-lg border p-2 shadow-lg",
+            theme.panelBg,
+            theme.line,
+        ),
+        popoverMenuPortal: cx(
+            "fixed z-50 grid min-w-[170px] gap-1.5 rounded-lg border p-2 shadow-lg",
             theme.panelBg,
             theme.line,
         ),

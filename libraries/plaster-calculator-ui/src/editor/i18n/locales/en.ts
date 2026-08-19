@@ -13,6 +13,8 @@ export const en = Object.freeze({
         straightenSelectedPoints: "Straighten between selected points",
         enterFullScreen: "Enter full screen",
         exitFullScreen: "Exit full screen",
+        showPanels: "Show panels",
+        hidePanels: "Hide panels",
         fullScreenBanner: Object.freeze({
             message:
                 "Full screen opened automatically because this window is narrow.",

@@ -19,6 +19,8 @@ export const zh = createTranslationResource(
             straightenSelectedPoints: "拉直所选两点之间的线段",
             enterFullScreen: "进入全屏",
             exitFullScreen: "退出全屏",
+            showPanels: "显示面板",
+            hidePanels: "隐藏面板",
             fullScreenBanner: Object.freeze({
                 message: "由于窗口较窄，已自动进入全屏。",
                 keepPanels: "保留面板",
