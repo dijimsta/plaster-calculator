@@ -202,21 +202,20 @@ export default function ProjectPage({
 
     return (
         <div className={ui.projectPage}>
-            {!floorplanFullScreen && (
-                <div className={ui.projectPageHeader}>
-                    <ProjectHeader
-                        project={project}
-                        projectId={projectId}
-                        activeTab="floorplan"
-                        renaming={renaming}
-                        renameValue={renameValue}
-                        saveRename={saveRename}
-                        setRenaming={setRenaming}
-                        setRenameValue={setRenameValue}
-                        validateAndExport={validateAndExport}
-                    />
-                </div>
-            )}
+            <div className={ui.projectPageHeader}>
+                <ProjectHeader
+                    project={project}
+                    projectId={projectId}
+                    activeTab="floorplan"
+                    renaming={renaming}
+                    renameValue={renameValue}
+                    saveRename={saveRename}
+                    setRenaming={setRenaming}
+                    setRenameValue={setRenameValue}
+                    validateAndExport={validateAndExport}
+                    breadcrumbsOnly={floorplanFullScreen}
+                />
+            </div>
             <Box
                 padding="none"
                 direction="column"

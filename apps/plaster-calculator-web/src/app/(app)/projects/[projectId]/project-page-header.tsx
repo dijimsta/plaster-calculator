@@ -27,6 +27,13 @@ export type ProjectHeaderProps = {
     readonly setRenameValue?: (value: string) => void;
     readonly validateAndExport?: () => Promise<void>;
     readonly additionalActions?: ReactNode;
+    /**
+     * Renders only the breadcrumbs, omitting the title/rename, meta row,
+     * actions, and tab strip. Used while the floorplan editor is full
+     * screen, where those sections are removed from the DOM entirely
+     * rather than merely hidden.
+     */
+    readonly breadcrumbsOnly?: boolean;
 };
 
 export function ProjectHeader({
@@ -40,24 +47,21 @@ export function ProjectHeader({
     setRenameValue,
     validateAndExport,
     additionalActions,
+    breadcrumbsOnly = false,
 }: ProjectHeaderProps) {
     const { t } = useAppTranslation();
 
+    if (breadcrumbsOnly) {
+        return (
+            <PageHeading>
+                <ProjectHeaderBreadcrumbs project={project} />
+            </PageHeading>
+        );
+    }
+
     return (
         <PageHeading>
-            <PageHeading.Breadcrumbs>
-                <Breadcrumb>
-                    <RoutedBreadcrumbItem href="/">
-                        <Home size={16} aria-label="Home" />
-                    </RoutedBreadcrumbItem>
-                    <RoutedBreadcrumbItem href="/projects">
-                        Projects
-                    </RoutedBreadcrumbItem>
-                    <Breadcrumb.Item current>
-                        {project?.name ?? t("projectHeader.projectFallback")}
-                    </Breadcrumb.Item>
-                </Breadcrumb>
-            </PageHeading.Breadcrumbs>
+            <ProjectHeaderBreadcrumbs project={project} />
             <PageHeading.Content>
                 <ProjectHeaderTitle
                     project={project}
@@ -102,6 +106,28 @@ export function ProjectHeader({
                 </Tabs>
             </PageHeading.Navigation>
         </PageHeading>
+    );
+}
+
+function ProjectHeaderBreadcrumbs({
+    project,
+}: Pick<ProjectHeaderProps, "project">) {
+    const { t } = useAppTranslation();
+
+    return (
+        <PageHeading.Breadcrumbs>
+            <Breadcrumb>
+                <RoutedBreadcrumbItem href="/">
+                    <Home size={16} aria-label="Home" />
+                </RoutedBreadcrumbItem>
+                <RoutedBreadcrumbItem href="/projects">
+                    Projects
+                </RoutedBreadcrumbItem>
+                <Breadcrumb.Item current>
+                    {project?.name ?? t("projectHeader.projectFallback")}
+                </Breadcrumb.Item>
+            </Breadcrumb>
+        </PageHeading.Breadcrumbs>
     );
 }
 
