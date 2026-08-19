@@ -42,9 +42,9 @@ export function SelectionCard({
         selectedPointIndexes,
         metrics,
         scaleMmPerPx,
-        pointSelectedLabel: t("selectionCard.pointSelected"),
-        roomLabel: t("selectionCard.roomLabel"),
-        wallLabel: t("selectionCard.wallLabel"),
+        pointSelectedLabel: t("editorSidebar.selectionCard.pointSelected"),
+        roomLabel: t("editorSidebar.selectionCard.roomLabel"),
+        wallLabel: t("editorSidebar.selectionCard.wallLabel"),
     });
     if (!content) return null;
 
@@ -63,7 +63,7 @@ export function SelectionCard({
                     icon={<SlidersHorizontal size={16} aria-hidden="true" />}
                     onClick={onEditProperties}
                 >
-                    {t("selectionCard.editProperties")}
+                    {t("editorSidebar.selectionCard.editProperties")}
                 </Button>
             </Box>
         </Card>

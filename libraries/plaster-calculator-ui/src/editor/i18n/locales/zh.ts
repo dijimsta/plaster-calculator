@@ -19,6 +19,10 @@ export const zh = createTranslationResource(
             straightenSelectedPoints: "拉直所选两点之间的线段",
             enterFullScreen: "进入全屏",
             exitFullScreen: "退出全屏",
+            fullScreenBanner: Object.freeze({
+                message: "由于窗口较窄，已自动进入全屏。",
+                keepPanels: "保留面板",
+            }),
         }),
         editorSidebar: Object.freeze({
             statusTitle: "状态",
@@ -29,6 +33,12 @@ export const zh = createTranslationResource(
             summaryTitle: "摘要",
             areasTitle: "区域",
             selectionTitle: "选择",
+            selectionCard: Object.freeze({
+                roomLabel: "房间",
+                wallLabel: "墙面",
+                pointSelected: "已选择点",
+                editProperties: "编辑属性",
+            }),
         }),
         ceilingControls: Object.freeze({
             roomCeilingLabel: "房间天花板",
@@ -71,16 +81,6 @@ export const zh = createTranslationResource(
             analyzingStatus: "正在分析平面图...",
             analysisCompleteStatus: "分析完成",
             analysisFailedStatus: "分析失败",
-        }),
-        fullScreenBanner: Object.freeze({
-            message: "由于窗口较窄，已自动进入全屏。",
-            keepPanels: "保留面板",
-        }),
-        selectionCard: Object.freeze({
-            roomLabel: "房间",
-            wallLabel: "墙面",
-            pointSelected: "已选择点",
-            editProperties: "编辑属性",
         }),
     }),
 );

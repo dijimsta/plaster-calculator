@@ -304,10 +304,10 @@ function FullScreenAutoEnterBanner({
     return (
         <Box direction="row" align="center" justify="between" gap="sm">
             <Text size="sm" variant="muted">
-                {t("fullScreenBanner.message")}
+                {t("editorToolbar.fullScreenBanner.message")}
             </Text>
             <Button variant="secondary" size="small" onClick={onKeepPanels}>
-                {t("fullScreenBanner.keepPanels")}
+                {t("editorToolbar.fullScreenBanner.keepPanels")}
             </Button>
         </Box>
     );

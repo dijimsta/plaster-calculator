@@ -13,6 +13,11 @@ export const en = Object.freeze({
         straightenSelectedPoints: "Straighten between selected points",
         enterFullScreen: "Enter full screen",
         exitFullScreen: "Exit full screen",
+        fullScreenBanner: Object.freeze({
+            message:
+                "Full screen opened automatically because this window is narrow.",
+            keepPanels: "Keep panels",
+        }),
     }),
     editorSidebar: Object.freeze({
         statusTitle: "Status",
@@ -23,6 +28,12 @@ export const en = Object.freeze({
         summaryTitle: "Summary",
         areasTitle: "Areas",
         selectionTitle: "Selection",
+        selectionCard: Object.freeze({
+            roomLabel: "Room",
+            wallLabel: "Wall",
+            pointSelected: "Point selected",
+            editProperties: "Edit properties",
+        }),
     }),
     ceilingControls: Object.freeze({
         roomCeilingLabel: "Room ceiling",
@@ -67,16 +78,5 @@ export const en = Object.freeze({
         analyzingStatus: "Analyzing floorplan...",
         analysisCompleteStatus: "Analysis complete",
         analysisFailedStatus: "Analysis failed",
-    }),
-    fullScreenBanner: Object.freeze({
-        message:
-            "Full screen opened automatically because this window is narrow.",
-        keepPanels: "Keep panels",
-    }),
-    selectionCard: Object.freeze({
-        roomLabel: "Room",
-        wallLabel: "Wall",
-        pointSelected: "Point selected",
-        editProperties: "Edit properties",
     }),
 });
