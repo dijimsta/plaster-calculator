@@ -108,15 +108,34 @@ function isRedoShortcut(event: KeyboardEvent, key: string): boolean {
  * Escape closed the drawer, exited full screen, or cleared a selection all
  * at once. `Drawer` itself deliberately has no internal Escape handling
  * (see its `modal` prop doc) so this stays the only listener.
+ *
+ * Deliberate order, in priority:
+ *   1. Close the drawer, if open.
+ *   2. Cancel an in-progress free-shape draw.
+ *   3. Clear the current selection.
+ *   4. Exit full screen.
+ *   5. Otherwise, nothing.
+ *
+ * Steps 2-3 are exactly what Escape already does in the two-pane layout
+ * (see `legacyEscapeAction`), and they intentionally run *before*
+ * full-screen exit: full screen changes layout only, so it must not steal
+ * Escape from an in-progress draw or a selection the two-pane layout would
+ * have handled first. Exiting full screen is Escape's last resort, used
+ * only once there is truly nothing else for it to do.
  */
 function escapeActionFor(
     options: EditorKeyboardShortcutsOptions,
 ): KeyboardShortcutAction | null {
     if (options.drawerOpen) return "closeDrawer";
+
+    const legacyAction = legacyEscapeAction(options);
+    if (legacyAction) return legacyAction;
+
     if (options.fullScreen) return "exitFullScreen";
-    return legacyEscapeAction(options);
+    return null;
 }
 
+/** Escape's behaviour in the two-pane layout: cancel a draw, else clear a selection, else do nothing. */
 function legacyEscapeAction(
     options: EditorKeyboardShortcutsOptions,
 ): KeyboardShortcutAction | null {

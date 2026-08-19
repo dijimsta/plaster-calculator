@@ -92,12 +92,17 @@ export function useEditorFullScreen(): EditorFullScreenState {
 
     const enter = useCallback(() => enterInternal(false), [enterInternal]);
 
-    const exit = useCallback(() => {
+    /** Resets this hook's own state to "not full screen", without touching the native Fullscreen API. */
+    const exitInternal = useCallback(() => {
         setFullScreen(false);
         setAutoEntered(false);
         setDrawerOpen(false);
-        exitNativeFullScreen();
     }, []);
+
+    const exit = useCallback(() => {
+        exitInternal();
+        exitNativeFullScreen();
+    }, [exitInternal]);
 
     const keepPanels = useCallback(() => {
         optedOutRef.current = true;
@@ -109,6 +114,7 @@ export function useEditorFullScreen(): EditorFullScreenState {
     const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
     useAutoEnterOnNarrowViewport(optedOutRef, enterInternal);
+    useSyncWithNativeFullScreenExit(exitInternal);
 
     return {
         fullScreen,
@@ -143,4 +149,35 @@ function useAutoEnterOnNarrowViewport(
         mediaQuery.addEventListener("change", onChange);
         return () => mediaQuery.removeEventListener("change", onChange);
     }, [optedOutRef, enterInternal]);
+}
+
+/**
+ * Keeps this hook's `fullScreen` state in sync with the browser's actual
+ * native fullscreen state. The app can call `document.exitFullscreen()`
+ * itself (via `exit()`), but the browser can also leave native fullscreen
+ * through routes the app doesn't control -- F11, an OS fullscreen-exit
+ * gesture, or browser chrome -- and without this listener the hook's state
+ * would stay `true` while the browser is no longer actually fullscreen.
+ *
+ * This only ever syncs *from* the browser's state to React state via
+ * `exitInternal`, never calls `document.exitFullscreen()` itself, so it
+ * can't create a loop with `exit()`'s own native-exit call: `exitInternal`
+ * is idempotent, so re-entering "not full screen" here when `exit()` just
+ * triggered the same transition is a no-op.
+ */
+function useSyncWithNativeFullScreenExit(exitInternal: () => void): void {
+    useEffect(() => {
+        function onFullScreenChange() {
+            if (!document.fullscreenElement) {
+                exitInternal();
+            }
+        }
+
+        document.addEventListener("fullscreenchange", onFullScreenChange);
+        return () =>
+            document.removeEventListener(
+                "fullscreenchange",
+                onFullScreenChange,
+            );
+    }, [exitInternal]);
 }
