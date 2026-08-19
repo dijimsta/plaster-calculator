@@ -278,6 +278,14 @@ export function ProjectEditor({
             pagePickerPanel={pagePickerPanel}
         />
     ) : (
-        <ProjectEditorView {...sharedViewProps} />
+        <ProjectEditorView
+            {...sharedViewProps}
+            fullScreen={fullScreenState.fullScreen}
+            onToggleFullScreen={
+                fullScreenState.fullScreen
+                    ? fullScreenState.exit
+                    : fullScreenState.enter
+            }
+        />
     );
 }

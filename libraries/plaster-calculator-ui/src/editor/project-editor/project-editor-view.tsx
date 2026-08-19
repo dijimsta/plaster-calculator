@@ -29,6 +29,7 @@ type ProjectEditorViewProps = {
     readonly dirty: boolean;
     readonly draftPointer: Point | null;
     readonly draftPoints: Point[];
+    readonly fullScreen?: boolean;
     readonly historyState: ReturnType<typeof useEditorHistory>;
     readonly imageState: ReturnType<typeof useEditorImage>;
     readonly isDrawingFreeShape: boolean;
@@ -54,6 +55,7 @@ type ProjectEditorViewProps = {
     readonly setSnapGuide: (guide: SnapGuide) => void;
     readonly zoom: number;
     readonly onAnalyze: () => void;
+    readonly onToggleFullScreen?: () => void;
 };
 
 export function ProjectEditorView({
@@ -64,6 +66,7 @@ export function ProjectEditorView({
     dirty,
     draftPointer,
     draftPoints,
+    fullScreen,
     historyState,
     imageState,
     isDrawingFreeShape,
@@ -89,6 +92,7 @@ export function ProjectEditorView({
     setSnapGuide,
     zoom,
     onAnalyze,
+    onToggleFullScreen,
 }: ProjectEditorViewProps) {
     return (
         // `ui.editorShell` / `ui.editorLeftPanel` are deliberately-kept
@@ -104,6 +108,7 @@ export function ProjectEditorView({
                     autoSaving={persistence.autoSaving}
                     analyzing={analyzing}
                     dirty={dirty}
+                    fullScreen={fullScreen}
                     futureCount={historyState.future.length}
                     historyCount={historyState.history.length}
                     overlayMode={overlayMode}
@@ -127,6 +132,7 @@ export function ProjectEditorView({
                     onStraightenSelectedPoints={
                         actions.straightenSelectedPoints
                     }
+                    onToggleFullScreen={onToggleFullScreen}
                     onUndo={historyState.undo}
                     hasSelection={selection.hasSelection}
                 />
