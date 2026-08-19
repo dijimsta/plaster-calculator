@@ -87,7 +87,15 @@ export function cx(
  *   absolutely-positioned floating overlays (legend, selection summary,
  *   zoom controls) within the full-screen shell. No UIKit primitive offers
  *   arbitrary fixed/absolute overlay positioning -- `Card` (reused for
- *   their visual chrome) is a static, in-flow box.
+ *   their visual chrome) is a static, in-flow box. `floatingChipRow` adds
+ *   `flex-wrap` (rather than the single non-wrapping line a `justify-between`
+ *   row would otherwise force) so the zoom chip drops to its own line
+ *   instead of getting squeezed past its minimum content width -- and
+ *   potentially off the visible row -- on narrow full-screen widths where
+ *   `bottomLeftChipStack` (legend + selection card, capped `max-w-[70%]`)
+ *   is also present. Neither `fullScreenCanvasArea` nor `fullScreenShell`
+ *   sets `overflow: hidden`, so nothing in the ancestor chain would clip
+ *   this row instead of letting it wrap.
  *
  * See the PR description for the full list, including gaps noted inline at
  * their call sites instead of here (e.g. the toolbar's fieldset-disable
@@ -236,7 +244,7 @@ function createUi(theme: Theme) {
         // see `editorDrawerSize` below, which must stay in sync with this.
         fullScreenCanvasShifted: "sm:pr-[28rem]",
         floatingChipRow:
-            "pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3",
+            "pointer-events-none absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-2 p-3",
         // Bottom-left stack: legend chip above selection card, so the two
         // don't overlap when both are visible.
         bottomLeftChipStack:
