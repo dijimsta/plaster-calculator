@@ -27,6 +27,35 @@ function drawerRootClassName(modal: boolean): string {
 }
 
 /**
+ * The positioner class for a drawer's placement, adding the non-modal
+ * floating inset only when the drawer isn't modal.
+ */
+function drawerPositionerClassName(modal: boolean, isLeft: boolean): string {
+    return clsx(
+        styles.positioner,
+        isLeft ? styles.leftPositioner : styles.rightPositioner,
+        !modal && styles.positionerNonModal,
+    );
+}
+
+/**
+ * The panel class for a drawer's placement and size, adding the non-modal
+ * floating rounded corners only when the drawer isn't modal.
+ */
+function drawerPanelClassName(
+    modal: boolean,
+    isLeft: boolean,
+    size: DrawerSize,
+): string {
+    return clsx(
+        styles.panel,
+        drawerSizes[size],
+        isLeft ? styles.leftPanel : styles.rightPanel,
+        !modal && styles.panelNonModal,
+    );
+}
+
+/**
  * The `aria-modal` value for a drawer's dialog. Modal drawers leave this
  * `undefined` because `showModal()` already computes `aria-modal="true"`
  * automatically per the HTML spec; non-modal drawers set it explicitly so
@@ -113,19 +142,8 @@ export function Drawer({
             }}
         >
             <DrawerBackdrop modal={modal} onClose={onClose} />
-            <div
-                className={clsx(
-                    styles.positioner,
-                    isLeft ? styles.leftPositioner : styles.rightPositioner,
-                )}
-            >
-                <section
-                    className={clsx(
-                        styles.panel,
-                        drawerSizes[size],
-                        isLeft ? styles.leftPanel : styles.rightPanel,
-                    )}
-                >
+            <div className={drawerPositionerClassName(modal, isLeft)}>
+                <section className={drawerPanelClassName(modal, isLeft, size)}>
                     <header className={styles.header}>
                         <div className={styles.heading}>
                             <h2 id={titleId} className={styles.title}>
