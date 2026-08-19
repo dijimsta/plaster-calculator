@@ -19,11 +19,13 @@ import { useEditorDerivedState } from "./use-editor-derived-state.js";
 import { useEditorFullScreen } from "./use-editor-full-screen.js";
 import { useEditorHistory } from "./use-editor-history.js";
 import { useEditorImage } from "./use-editor-image.js";
+import { useEditorInitialTool } from "./use-editor-initial-tool.js";
 import { useEditorKeyboardShortcuts } from "./use-editor-keyboard-shortcuts.js";
 import { useEditorOverlay } from "./use-editor-overlay.js";
 import { useEditorPersistence } from "./use-editor-persistence.js";
 import { useEditorSelection } from "./use-editor-selection.js";
 import { useEditorValidation } from "./use-editor-validation.js";
+import { useEditorViewportFit } from "./use-editor-viewport-fit.js";
 import { useEditorViewport } from "./use-editor-viewport.js";
 
 export function ProjectEditor({
@@ -153,57 +155,19 @@ export function ProjectEditor({
         setZoom,
     });
 
-    const appliedFullScreenFitRef = useRef(false);
-    useEffect(() => {
-        if (!fullScreenState.fullScreen) {
-            // Reset so the *next* full-screen entry fits again, rather than
-            // only ever fitting once for the lifetime of this editor.
-            appliedFullScreenFitRef.current = false;
-            return;
-        }
-        if (appliedFullScreenFitRef.current) return;
-        // Entering full screen swaps in a brand-new canvas-wrap DOM node
-        // (see `use-editor-viewport.ts`), and `viewport` only catches up to
-        // that node's real size once its `ResizeObserver` effect has run
-        // and measured it -- which can be a render or two after this
-        // `fullScreen` flip, since `viewport` is React state updated
-        // asynchronously by that effect. `canvasWrapRef.current` itself is
-        // already the new node by this point (React attaches refs
-        // synchronously during commit, strictly before this passive effect
-        // runs), so comparing `viewport` against a *live* read of it
-        // confirms `viewport` reflects this exact node before it's used to
-        // compute a fit -- otherwise we'd silently fit against whatever the
-        // previous (two-pane, or default-fallback) size was.
-        const element = canvasWrapRef.current;
-        if (
-            !element ||
-            viewport.width !== element.clientWidth ||
-            viewport.height !== element.clientHeight
-        ) {
-            return;
-        }
-        appliedFullScreenFitRef.current = true;
-        actions.fitToViewport();
-        // Deliberately omits `actions` (a fresh object every render) from
-        // the dependency array: this should only re-evaluate when
-        // full-screen entry or the viewport measurement for that entry
-        // changes, not on every unrelated render -- the guard above already
-        // keeps it idempotent per entry.
-    }, [fullScreenState.fullScreen, viewport.width, viewport.height]);
+    useEditorViewportFit({
+        canvasWrapRef,
+        fitToViewport: actions.fitToViewport,
+        fullScreen: fullScreenState.fullScreen,
+        pageId: page.id,
+        viewport,
+    });
 
-    const appliedInitialToolRef = useRef(false);
-    useEffect(() => {
-        if (appliedInitialToolRef.current) return;
-        appliedInitialToolRef.current = true;
-        if (initialTool === "scale") {
-            actions.startReferenceMode();
-        } else if (initialTool === "draw-room") {
-            actions.startFreeShape();
-        }
-        // Deliberately runs once, keyed off nothing but mount: a deep link
-        // should set the initial tool and then get out of the way, not
-        // fight the user (or a page switch) for control afterward.
-    }, []);
+    useEditorInitialTool({
+        initialTool,
+        startFreeShape: actions.startFreeShape,
+        startReferenceMode: actions.startReferenceMode,
+    });
 
     const validation = useEditorValidation({
         ceilingHeightMm: overlayState.ceilingHeightMm,
