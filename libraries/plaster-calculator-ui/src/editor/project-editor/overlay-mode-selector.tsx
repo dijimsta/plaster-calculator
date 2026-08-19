@@ -1,4 +1,5 @@
 import { RadioGroup, RadioGroupOption } from "@libraries/uikit-web";
+import type { RadioSize } from "@libraries/uikit-web";
 
 import { useEditorTranslation } from "../i18n/index.js";
 
@@ -8,11 +9,13 @@ const OVERLAY_MODES: OverlayMode[] = ["walls", "ceilings", "both"];
 
 export type OverlayModeSelectorProps = {
     readonly overlayMode: OverlayMode;
+    readonly size?: RadioSize;
     readonly onSetOverlayMode: (mode: OverlayMode) => void;
 };
 
 export function OverlayModeSelector({
     overlayMode,
+    size = "md",
     onSetOverlayMode,
 }: OverlayModeSelectorProps) {
     const { t } = useEditorTranslation();
@@ -27,6 +30,7 @@ export function OverlayModeSelector({
             name="overlay-mode"
             legend="Overlay mode"
             variant="segmented"
+            size={size}
             hideLegend
         >
             {OVERLAY_MODES.map((mode) => (

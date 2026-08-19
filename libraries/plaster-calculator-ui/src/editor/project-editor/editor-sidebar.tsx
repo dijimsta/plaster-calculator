@@ -29,6 +29,7 @@ export function EditorSidebar({
     metrics,
     projectCompanyPanel,
     salesStatusPanel,
+    pagePickerPanel,
     areaIssue,
     applyHeightToAllPages,
     applyScale,
@@ -70,6 +71,14 @@ export function EditorSidebar({
             >
                 {projectCompanyPanel}
             </InspectorSection>
+            {pagePickerPanel && (
+                <InspectorSection
+                    title={t("editorSidebar.pagesTitle")}
+                    defaultOpen
+                >
+                    {pagePickerPanel}
+                </InspectorSection>
+            )}
             <InspectorSection title={`Page ${page.pageNumber}`} defaultOpen>
                 <PageSettingsPanel
                     ceilingHeightMm={ceilingHeightMm}

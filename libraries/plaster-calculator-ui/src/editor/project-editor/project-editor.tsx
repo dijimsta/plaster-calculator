@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useEditorTranslation } from "../i18n/index.js";
 
+import { ProjectEditorFullScreenView } from "./project-editor-fullscreen-view.js";
 import { ProjectEditorView } from "./project-editor-view.js";
 import type {
     OverlayMode,
@@ -15,13 +16,17 @@ import type {
 } from "./project-editor.types.js";
 import { useEditorActions } from "./use-editor-actions.js";
 import { useEditorDerivedState } from "./use-editor-derived-state.js";
+import { useEditorFullScreen } from "./use-editor-full-screen.js";
 import { useEditorHistory } from "./use-editor-history.js";
 import { useEditorImage } from "./use-editor-image.js";
+import { useEditorInitialTool } from "./use-editor-initial-tool.js";
+import { useEditorInspector } from "./use-editor-inspector.js";
 import { useEditorKeyboardShortcuts } from "./use-editor-keyboard-shortcuts.js";
 import { useEditorOverlay } from "./use-editor-overlay.js";
 import { useEditorPersistence } from "./use-editor-persistence.js";
 import { useEditorSelection } from "./use-editor-selection.js";
 import { useEditorValidation } from "./use-editor-validation.js";
+import { useEditorViewportFit } from "./use-editor-viewport-fit.js";
 import { useEditorViewport } from "./use-editor-viewport.js";
 
 export function ProjectEditor({
@@ -31,6 +36,8 @@ export function ProjectEditor({
     onAnalyzingChange,
     projectCompanyPanel,
     salesStatusPanel,
+    pagePickerPanel,
+    onFullScreenChange,
     onDraftChange,
     validationIssues = [],
     initialTool,
@@ -64,7 +71,12 @@ export function ProjectEditor({
         scrollTop: number;
         moved: boolean;
     } | null>(null);
-    const viewport = useEditorViewport(canvasWrapRef);
+    const fullScreenState = useEditorFullScreen();
+    const inspectorState = useEditorInspector();
+    const viewport = useEditorViewport(
+        canvasWrapRef,
+        fullScreenState.fullScreen,
+    );
     const derivedState = useEditorDerivedState({
         image: imageState.image,
         overlay: overlayState.overlay,
@@ -93,6 +105,10 @@ export function ProjectEditor({
         setOverlay: overlayState.setOverlay,
         setStatus: persistence.setStatus,
     });
+
+    useEffect(() => {
+        onFullScreenChange?.(fullScreenState.fullScreen);
+    }, [fullScreenState.fullScreen, onFullScreenChange]);
 
     useEffect(() => {
         historyState.resetHistory();
@@ -141,19 +157,20 @@ export function ProjectEditor({
         setZoom,
     });
 
-    const appliedInitialToolRef = useRef(false);
-    useEffect(() => {
-        if (appliedInitialToolRef.current) return;
-        appliedInitialToolRef.current = true;
-        if (initialTool === "scale") {
-            actions.startReferenceMode();
-        } else if (initialTool === "draw-room") {
-            actions.startFreeShape();
-        }
-        // Deliberately runs once, keyed off nothing but mount: a deep link
-        // should set the initial tool and then get out of the way, not
-        // fight the user (or a page switch) for control afterward.
-    }, []);
+    useEditorViewportFit({
+        canvasWrapRef,
+        fitToViewport: actions.fitToViewport,
+        fullScreen: fullScreenState.fullScreen,
+        hasImageSize: derivedState.hasImageSize,
+        pageId: page.id,
+        viewport,
+    });
+
+    useEditorInitialTool({
+        initialTool,
+        startFreeShape: actions.startFreeShape,
+        startReferenceMode: actions.startReferenceMode,
+    });
 
     const validation = useEditorValidation({
         ceilingHeightMm: overlayState.ceilingHeightMm,
@@ -167,10 +184,19 @@ export function ProjectEditor({
 
     useEditorKeyboardShortcuts({
         disabled: analyzing,
+        // Escape's close-drawer-first precedence only applies while in
+        // full screen -- the two-pane layout's inspector is a persistent
+        // grid column, not an overlay, so Escape doesn't collapse it there
+        // (see `use-editor-keyboard-shortcuts.ts`'s `escapeActionFor`).
+        drawerOpen: fullScreenState.fullScreen && inspectorState.inspectorOpen,
+        fullScreen: fullScreenState.fullScreen,
         isDrawingFreeShape,
         onCancelFreeShape: actions.cancelFreeShape,
         onClearSelection: selection.clearSelection,
+        onCloseDrawer: inspectorState.closeInspector,
         onDeleteSelection: actions.deleteSelection,
+        onEnterFullScreen: fullScreenState.enter,
+        onExitFullScreen: fullScreenState.exit,
         onRedo: historyState.redo,
         onUndo: historyState.undo,
         hasSelection: selection.hasSelection,
@@ -218,40 +244,64 @@ export function ProjectEditor({
         }
     }
 
-    return (
+    const sharedViewProps = {
+        actions,
+        analyzing,
+        addMenuOpen,
+        canvasWrapRef,
+        dirty,
+        draftPointer,
+        draftPoints,
+        historyState,
+        imageState,
+        inspectorOpen: inspectorState.inspectorOpen,
+        isDrawingFreeShape,
+        isSettingReference,
+        overlayMode,
+        overlayState,
+        page,
+        persistence,
+        projectCompanyPanel,
+        salesStatusPanel,
+        scrollDragRef,
+        selection,
+        snapGuide,
+        stageRef,
+        validation,
+        derivedState,
+        setAddMenuOpen,
+        setDirty,
+        setDraftPointer,
+        setDraftPoints,
+        setIsSettingReference,
+        setOverlayMode,
+        setSnapGuide,
+        zoom,
+        onAnalyze: () => void analyze(),
+        onToggleInspector: inspectorState.toggleInspector,
+    };
+
+    // Both views are pure presentational consumers of the exact same state
+    // this container assembles above -- neither owns state of its own
+    // (the full-screen view's own local UI state, e.g. auto-entered, comes
+    // from `fullScreenState`, not from a hook it instantiates itself; the
+    // shared inspector-open state comes from `inspectorState` instead, via
+    // `sharedViewProps`, since both layouts use the same toggle).
+    return fullScreenState.fullScreen ? (
+        <ProjectEditorFullScreenView
+            {...sharedViewProps}
+            fullScreenState={fullScreenState}
+            pagePickerPanel={pagePickerPanel}
+        />
+    ) : (
         <ProjectEditorView
-            actions={actions}
-            analyzing={analyzing}
-            addMenuOpen={addMenuOpen}
-            canvasWrapRef={canvasWrapRef}
-            dirty={dirty}
-            draftPointer={draftPointer}
-            draftPoints={draftPoints}
-            historyState={historyState}
-            imageState={imageState}
-            isDrawingFreeShape={isDrawingFreeShape}
-            isSettingReference={isSettingReference}
-            overlayMode={overlayMode}
-            overlayState={overlayState}
-            page={page}
-            persistence={persistence}
-            projectCompanyPanel={projectCompanyPanel}
-            salesStatusPanel={salesStatusPanel}
-            scrollDragRef={scrollDragRef}
-            selection={selection}
-            snapGuide={snapGuide}
-            stageRef={stageRef}
-            validation={validation}
-            derivedState={derivedState}
-            setAddMenuOpen={setAddMenuOpen}
-            setDirty={setDirty}
-            setDraftPointer={setDraftPointer}
-            setDraftPoints={setDraftPoints}
-            setIsSettingReference={setIsSettingReference}
-            setOverlayMode={setOverlayMode}
-            setSnapGuide={setSnapGuide}
-            zoom={zoom}
-            onAnalyze={() => void analyze()}
+            {...sharedViewProps}
+            fullScreen={fullScreenState.fullScreen}
+            onToggleFullScreen={
+                fullScreenState.fullScreen
+                    ? fullScreenState.exit
+                    : fullScreenState.enter
+            }
         />
     );
 }

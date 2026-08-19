@@ -3,6 +3,14 @@ import type { RefObject } from "react";
 
 import type { ViewportSize } from "./use-editor-actions.types.js";
 
+/** The zoom scale factor's allowed range -- `1` is 100%/actual-size. */
+const MIN_ZOOM = 0.25;
+const MAX_ZOOM = 4;
+
+function clampZoom(zoom: number): number {
+    return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom));
+}
+
 type ScaleActionsOptions = {
     readonly canvasWrapRef: RefObject<HTMLDivElement | null>;
     readonly imageHeight: number;
@@ -61,7 +69,7 @@ export function useEditorScaleActions({
     }
 
     function changeZoom(nextZoom: number) {
-        const clamped = Math.min(4, Math.max(0.25, nextZoom));
+        const clamped = clampZoom(nextZoom);
         const element = canvasWrapRef.current;
         const centerX = element
             ? (element.scrollLeft + element.clientWidth / 2) / zoom
@@ -86,6 +94,31 @@ export function useEditorScaleActions({
         }
     }
 
+    /**
+     * Scales the floorplan to fit entirely within the current viewport
+     * (the smaller of the width and height ratios, so neither dimension
+     * overflows), clamped to the same zoom range `changeZoom` enforces.
+     * Since the fitted plan never exceeds the viewport in either
+     * dimension, there's nothing to scroll to -- top-left (0, 0) already
+     * shows the whole thing, same as `resetView`.
+     */
+    function fitToViewport() {
+        if (imageWidth <= 0 || imageHeight <= 0) return;
+        const fitZoom = clampZoom(
+            Math.min(
+                viewport.width / imageWidth,
+                viewport.height / imageHeight,
+            ),
+        );
+        if (!Number.isFinite(fitZoom)) return;
+        setZoom(fitZoom);
+        const element = canvasWrapRef.current;
+        if (element) {
+            element.scrollLeft = 0;
+            element.scrollTop = 0;
+        }
+    }
+
     function viewportCenterInImage(): Point {
         const element = canvasWrapRef.current;
         const scrollLeft = element?.scrollLeft ?? 0;
@@ -99,6 +132,7 @@ export function useEditorScaleActions({
     return {
         applyScale,
         changeZoom,
+        fitToViewport,
         resetView,
         startReferenceMode,
         viewportCenterInImage,

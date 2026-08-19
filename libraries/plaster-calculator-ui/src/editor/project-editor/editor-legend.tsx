@@ -2,25 +2,58 @@ import {
     normalizeWallBoardType,
     WALL_BOARD_TYPES,
 } from "@libraries/plaster-calculator-common";
-import type { AreaPolygon } from "@libraries/plaster-calculator-common";
-import { Box, Text } from "@libraries/uikit-web";
+import type {
+    AreaPolygon,
+    WallBoardType,
+} from "@libraries/plaster-calculator-common";
+import { Box, Card, Text } from "@libraries/uikit-web";
+import type { ReactElement } from "react";
 
 import { BOARD_SWATCH_CLASSES } from "./board-materials.js";
 import { cx, ui } from "./project-editor.styles.js";
 
+export type EditorLegendVariant = "inline" | "chip";
+
 type EditorLegendProps = {
     readonly visibleAreas: AreaPolygon[];
+    /** "inline" (default) keeps the current footer-row look. "chip" renders the same data as a floating pill for the full-screen layout. */
+    readonly variant?: EditorLegendVariant;
 };
 
-export function EditorLegend({ visibleAreas }: EditorLegendProps) {
+export function EditorLegend({
+    visibleAreas,
+    variant = "inline",
+}: EditorLegendProps) {
     const legendBoardTypes = wallBoardTypesInUse(visibleAreas);
     if (legendBoardTypes.length === 0) return null;
+
+    const swatches = <LegendSwatches legendBoardTypes={legendBoardTypes} />;
+
+    if (variant === "chip") {
+        return (
+            <Card>
+                <Box direction="row" wrap gap="sm">
+                    {swatches}
+                </Box>
+            </Card>
+        );
+    }
 
     return (
         // `ui.editorLegend` is a deliberately-kept gap: `Box` has no
         // border capability, and this footer needs a `border-t` separator
         // from the canvas above it. See `project-editor.styles.ts`.
-        <footer className={ui.editorLegend}>
+        <footer className={ui.editorLegend}>{swatches}</footer>
+    );
+}
+
+function LegendSwatches({
+    legendBoardTypes,
+}: {
+    readonly legendBoardTypes: WallBoardType[];
+}): ReactElement {
+    return (
+        <>
             {legendBoardTypes.map((type) => (
                 <Box align="center" gap="xs" key={type}>
                     {/* This colour swatch is a deliberately-kept gap: it
@@ -40,7 +73,7 @@ export function EditorLegend({ visibleAreas }: EditorLegendProps) {
                     </Text>
                 </Box>
             ))}
-        </footer>
+        </>
     );
 }
 
