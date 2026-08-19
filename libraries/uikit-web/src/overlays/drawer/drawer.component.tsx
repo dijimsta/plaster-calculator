@@ -26,6 +26,16 @@ function drawerRootClassName(modal: boolean): string {
     return modal ? styles.root : styles.rootNonModal;
 }
 
+/**
+ * The `aria-modal` value for a drawer's dialog. Modal drawers leave this
+ * `undefined` because `showModal()` already computes `aria-modal="true"`
+ * automatically per the HTML spec; non-modal drawers set it explicitly so
+ * assistive tech announces them as non-modal instead of leaving it ambiguous.
+ */
+function drawerAriaModal(modal: boolean): "false" | undefined {
+    return modal ? undefined : "false";
+}
+
 /** A modal drawer renders a Backdrop; a non-modal drawer leaves the page uncovered. */
 function DrawerBackdrop({
     modal,
@@ -92,8 +102,10 @@ export function Drawer({
     return (
         <dialog
             ref={dialogRef}
+            role="dialog"
             aria-describedby={description ? descriptionId : undefined}
             aria-labelledby={titleId}
+            aria-modal={drawerAriaModal(modal)}
             className={drawerRootClassName(modal)}
             onCancel={(event) => {
                 event.preventDefault();
