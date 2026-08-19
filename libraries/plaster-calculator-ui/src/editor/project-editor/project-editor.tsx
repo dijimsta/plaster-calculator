@@ -68,7 +68,11 @@ export function ProjectEditor({
         scrollTop: number;
         moved: boolean;
     } | null>(null);
-    const viewport = useEditorViewport(canvasWrapRef);
+    const fullScreenState = useEditorFullScreen();
+    const viewport = useEditorViewport(
+        canvasWrapRef,
+        fullScreenState.fullScreen,
+    );
     const derivedState = useEditorDerivedState({
         image: imageState.image,
         overlay: overlayState.overlay,
@@ -97,7 +101,6 @@ export function ProjectEditor({
         setOverlay: overlayState.setOverlay,
         setStatus: persistence.setStatus,
     });
-    const fullScreenState = useEditorFullScreen();
 
     useEffect(() => {
         onFullScreenChange?.(fullScreenState.fullScreen);
