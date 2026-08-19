@@ -26,6 +26,8 @@ import type { PropsWithChildren } from "react";
 
 import { useAppTranslation } from "../i18n/index.ts";
 
+import { useSidebarInert } from "./sidebar-inert.hooks.js";
+
 const Link = LinkModule.default;
 
 const navItems = [
@@ -60,6 +62,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
     const team = useMyTeamSummary();
     const { t } = useAppTranslation();
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const sidebarInert = useSidebarInert();
 
     async function handleLogout() {
         await signOut(FirebaseService.getAuth());
@@ -78,7 +81,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
 
     return (
         <SidebarLayout>
-            <SidebarLayout.Sidebar>
+            <SidebarLayout.Sidebar inert={sidebarInert}>
                 <SidebarNavigation
                     collapsed={isSidebarCollapsed}
                     onCollapsedChange={setIsSidebarCollapsed}

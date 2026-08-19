@@ -6,6 +6,7 @@ import { Box, useNotificationsManager } from "@libraries/uikit-web";
 import { useSearchParams } from "next/navigation.js";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
+import { useSetSidebarInert } from "../../../../components/sidebar-inert.hooks.js";
 import { useAppTranslation } from "../../../../i18n/index.ts";
 import { useSalesStatusLabel } from "../../../../lib/sales-status.js";
 import { ui } from "../../../../lib/styles.js";
@@ -44,6 +45,10 @@ export default function ProjectPage({
     const [savingSalesStatus, setSavingSalesStatus] = useState(false);
     const [analyzingPage, setAnalyzingPage] = useState(false);
     const [floorplanFullScreen, setFloorplanFullScreen] = useState(false);
+    // Full screen visually covers the app sidebar via a fixed overlay, but
+    // CSS stacking doesn't affect Tab order -- mark the sidebar inert (and
+    // restore it on unmount/navigation) so it stops being tabbable too.
+    useSetSidebarInert(floorplanFullScreen);
     const {
         switchingPage,
         validationIssues,
@@ -212,7 +217,12 @@ export default function ProjectPage({
                     />
                 </div>
             )}
-            <Box padding="none" direction="column" grow scroll>
+            <Box
+                padding="none"
+                direction="column"
+                grow
+                scroll={!floorplanFullScreen}
+            >
                 {error && <p className={ui.error}>{error}</p>}
                 {project && (
                     <ProjectStatusContent
