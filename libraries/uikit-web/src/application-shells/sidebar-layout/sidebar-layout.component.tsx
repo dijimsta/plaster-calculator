@@ -25,6 +25,12 @@ export type SidebarLayoutProps = {
 
 export type SidebarLayoutSidebarProps = SidebarLayoutProps & {
     readonly label?: string;
+    /**
+     * Forces the sidebar `inert` (non-interactive and untabbable)
+     * regardless of the mobile/desktop open state -- e.g. while a
+     * full-screen overlay elsewhere in the app visually covers it.
+     */
+    readonly inert?: boolean;
 };
 
 export type SidebarLayoutMainProps = SidebarLayoutProps;
@@ -60,6 +66,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps): ReactElement {
 export namespace SidebarLayout {
     export function Sidebar({
         label = "Application navigation",
+        inert = false,
         children,
     }: SidebarLayoutSidebarProps): ReactElement {
         const context = useSidebarLayoutContext();
@@ -79,6 +86,7 @@ export namespace SidebarLayout {
                 ref={sidebarRef}
                 aria-label={label}
                 inert={
+                    inert ||
                     (!context.state.isDesktop &&
                         !context.state.isSidebarOpen) ||
                     undefined
