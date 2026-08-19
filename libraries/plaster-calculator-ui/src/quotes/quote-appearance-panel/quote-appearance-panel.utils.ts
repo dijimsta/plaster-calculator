@@ -135,8 +135,8 @@ export const QUOTE_APPEARANCE_PANEL_SAMPLE_LINE_ITEMS: readonly QuoteDetailDocum
     [
         {
             id: "sample-line-1",
-            name: "10mm Plasterboard — walls",
-            quantity: 128,
+            name: "10mm Plasterboard",
+            quantity: 212,
             unit: "m²",
             unitPriceCents: 1250,
             quantitySource: {
@@ -146,13 +146,13 @@ export const QUOTE_APPEARANCE_PANEL_SAMPLE_LINE_ITEMS: readonly QuoteDetailDocum
         },
         {
             id: "sample-line-2",
-            name: "10mm Plasterboard — ceilings",
-            quantity: 84,
+            name: "6mm Villaboard - wet areas",
+            quantity: 18,
             unit: "m²",
-            unitPriceCents: 1350,
+            unitPriceCents: 1890,
             quantitySource: {
                 measurementSource: "PLASTERBOARD_AREA",
-                measurementPlasterType: "10mm Plasterboard",
+                measurementPlasterType: "6mm Villaboard",
             },
         },
         {
@@ -192,7 +192,7 @@ export const QUOTE_APPEARANCE_PANEL_SAMPLE_ISSUED_AT = new Date(
 ).toISOString();
 
 export const QUOTE_APPEARANCE_PANEL_SAMPLE_SCOPE_OF_WORK_TEXT =
-    "Supply and install 10mm plasterboard to all internal walls and ceilings as per plan, including 90mm cove cornice throughout.";
+    "Supply and install 10mm plasterboard to all internal walls and ceilings as per plan, including 90mm cove cornice throughout. Install 6mm villaboard to wet areas.";
 
 export const QUOTE_APPEARANCE_PANEL_SAMPLE_TAKEOFF_SUMMARY_TEXT =
-    "Wall area: 128 m² · Ceiling area: 84 m² · Cornice: 52 m linear.";
+    "Wall area: 128 m² · Ceiling area: 84 m² · Wet-area walls: 18 m² · Cornice: 52 m linear.";
