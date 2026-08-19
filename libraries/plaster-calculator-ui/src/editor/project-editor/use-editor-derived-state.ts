@@ -32,6 +32,7 @@ type EditorDerivedState = {
     readonly selectedEdgeOverride: EdgeOverride | null;
     readonly imageWidth: number;
     readonly imageHeight: number;
+    readonly hasImageSize: boolean;
     readonly stageWidth: number;
     readonly stageHeight: number;
     readonly metrics: SelectionMetrics | null;
@@ -63,6 +64,15 @@ export function useEditorDerivedState({
     );
     const imageWidth = imageDimension(image, overlay, "width", 1200);
     const imageHeight = imageDimension(image, overlay, "height", 900);
+    // Whether `imageWidth`/`imageHeight` reflect a real, known image size --
+    // either the loaded `<img>` element's natural dimensions, or a
+    // previously-analyzed page's persisted `overlay.imageSizePx` -- rather
+    // than the last-resort 1200x900 placeholder `imageDimension` falls back
+    // to before either is available. Callers that compute a size-sensitive
+    // result from `imageWidth`/`imageHeight` (e.g. zoom-to-fit) must wait
+    // for this to be `true`, or they'll compute against the placeholder and
+    // never revisit that result once the real size arrives.
+    const hasImageSize = image != null || overlay.imageSizePx != null;
     const stageWidth = imageWidth * zoom;
     const stageHeight = imageHeight * zoom;
 
@@ -118,6 +128,7 @@ export function useEditorDerivedState({
         selectedEdgeOverride,
         imageWidth,
         imageHeight,
+        hasImageSize,
         stageWidth,
         stageHeight,
         metrics,

@@ -159,6 +159,7 @@ export function ProjectEditor({
         canvasWrapRef,
         fitToViewport: actions.fitToViewport,
         fullScreen: fullScreenState.fullScreen,
+        hasImageSize: derivedState.hasImageSize,
         pageId: page.id,
         viewport,
     });

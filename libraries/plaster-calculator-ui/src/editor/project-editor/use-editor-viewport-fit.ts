@@ -6,6 +6,7 @@ type EditorViewportFitOptions = {
     readonly canvasWrapRef: RefObject<HTMLDivElement | null>;
     readonly fitToViewport: () => void;
     readonly fullScreen: boolean;
+    readonly hasImageSize: boolean;
     readonly pageId: string;
     readonly viewport: ViewportSize;
 };
@@ -17,12 +18,19 @@ type EditorViewportFitOptions = {
  * staying in two-pane. All three share one "wait for a freshly-measured
  * viewport" guard, since each can follow a canvas-wrap DOM node swap (see
  * `use-editor-viewport.ts`) that leaves `viewport` state stale for a render
- * or two.
+ * or two -- and one "wait for a known image size" guard (`hasImageSize`,
+ * see `use-editor-derived-state.ts`), since the floorplan image loads
+ * asynchronously and `fitToViewport()` would otherwise compute a "correct"
+ * fit against the placeholder 1200x900 size, then never revisit it once the
+ * real (usually much larger, differently-shaped) image size arrives -- the
+ * ref-tracked "already applied" guards below are one-shot per entry/page, so
+ * a fit computed against the wrong size sticks.
  */
 export function useEditorViewportFit({
     canvasWrapRef,
     fitToViewport,
     fullScreen,
+    hasImageSize,
     pageId,
     viewport,
 }: EditorViewportFitOptions): void {
@@ -35,6 +43,7 @@ export function useEditorViewportFit({
             return;
         }
         if (appliedFullScreenFitRef.current) return;
+        if (!hasImageSize) return;
         // Entering full screen swaps in a brand-new canvas-wrap DOM node
         // (see `use-editor-viewport.ts`), and `viewport` only catches up to
         // that node's real size once its `ResizeObserver` effect has run
@@ -59,10 +68,10 @@ export function useEditorViewportFit({
         fitToViewport();
         // Deliberately omits `fitToViewport` (a fresh function every
         // render) from the dependency array: this should only re-evaluate
-        // when full-screen entry or the viewport measurement for that
-        // entry changes, not on every unrelated render -- the guard above
-        // already keeps it idempotent per entry.
-    }, [fullScreen, viewport.width, viewport.height]);
+        // when full-screen entry, the viewport measurement for that entry,
+        // or the image-size readiness changes, not on every unrelated
+        // render -- the guard above already keeps it idempotent per entry.
+    }, [fullScreen, hasImageSize, viewport.width, viewport.height]);
 
     // The two-pane layout's own zoom-to-fit: applies on first mount and on
     // every page switch while staying in two-pane, mirroring full screen's
@@ -77,11 +86,17 @@ export function useEditorViewportFit({
     // for a page this ref hasn't seen fit for. Keyed on `pageId` alone, not
     // any "updated at" timestamp -- an autosave of the current page must
     // not yank the user's zoom/scroll out from under them the way an
-    // actual page switch should.
+    // actual page switch should. Also reuses the `hasImageSize` guard: on
+    // mount (and right after a page switch), the floorplan `<img>` hasn't
+    // loaded yet, well before the viewport guard above is satisfied, so
+    // without this guard the fit would apply immediately against the
+    // placeholder image size and never revisit it once the real image
+    // loads a moment later.
     const appliedTwoPaneFitPageIdRef = useRef<string | null>(null);
     useEffect(() => {
         if (fullScreen) return;
         if (appliedTwoPaneFitPageIdRef.current === pageId) return;
+        if (!hasImageSize) return;
         const element = canvasWrapRef.current;
         if (
             !element ||
@@ -94,5 +109,5 @@ export function useEditorViewportFit({
         fitToViewport();
         // Deliberately omits `fitToViewport` for the same reason as the
         // full-screen effect above.
-    }, [pageId, fullScreen, viewport.width, viewport.height]);
+    }, [pageId, fullScreen, hasImageSize, viewport.width, viewport.height]);
 }
