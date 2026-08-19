@@ -226,7 +226,7 @@ function AnalyzeButton({
 }) {
     return (
         <Button
-            variant="secondary"
+            variant="ai"
             size={size}
             onClick={onAnalyze}
             disabled={analyzing}
