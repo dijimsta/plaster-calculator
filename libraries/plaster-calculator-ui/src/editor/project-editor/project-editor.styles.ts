@@ -11,16 +11,25 @@ export function cx(
  * cannot express yet (see `docs/web-ui-guidelines.md`'s Presentation
  * section). Every entry here is a deliberately-kept gap, not an oversight:
  *
- * - `editorShell` / `editorLeftPanel` / `editorCanvasContainer` /
- *   `editorRightPanel`: the two-pane editor shell needs a fixed-width
- *   (320px) sidebar column, plus regions that must receive `inert` directly
- *   (no UIKit layout primitive forwards `inert` or an arbitrary `ref`).
- *   `Grid` only supports discrete equal column counts; `SidebarLayout` is a
- *   full-page app shell with a mobile hamburger/backdrop, not a nested
- *   two-pane layout. This shell no longer collapses at a narrow breakpoint
- *   itself -- full-screen mode (`use-editor-full-screen.ts`) auto-enters
- *   below that same width instead, so the two-pane shell only ever renders
- *   at widths wide enough for its fixed sidebar column.
+ * - `editorShell` / `editorShellInspectorClosed` / `editorLeftPanel` /
+ *   `editorCanvasContainer` / `editorRightPanel`: the two-pane editor shell
+ *   needs a fixed-width (320px) sidebar column, plus regions that must
+ *   receive `inert` directly (no UIKit layout primitive forwards `inert` or
+ *   an arbitrary `ref`). `Grid` only supports discrete equal column counts;
+ *   `SidebarLayout` is a full-page app shell with a mobile
+ *   hamburger/backdrop, not a nested two-pane layout. This shell no longer
+ *   collapses at a narrow breakpoint itself -- full-screen mode
+ *   (`use-editor-full-screen.ts`) auto-enters below that same width
+ *   instead, so the two-pane shell only ever renders at widths wide enough
+ *   for its fixed sidebar column. `editorShellInspectorClosed` is a
+ *   complete alternate variant (selected instead of, never combined with,
+ *   `editorShell` -- the same pattern as `canvasWrap`/`canvasWrapFullScreen`
+ *   below) dropping the second grid-template-columns track entirely, used
+ *   together with omitting `editorRightPanel` from the tree, so the canvas
+ *   column actually reclaims the freed width instead of merely hiding an
+ *   empty column. `editorCanvasContainer` is also `position: relative`, the
+ *   positioned ancestor `ui.canvasFloatingTogglePosition` (below) sizes the
+ *   floating full-screen toggle against.
  * - `canvasWrap` / `canvasWrapFullScreen`: the scrollable canvas viewport
  *   needs a raw `ref` (read directly by the scroll-drag handlers in
  *   `editor-canvas.tsx`) and a responsive height. `Box` doesn't forward
@@ -96,6 +105,17 @@ export function cx(
  *   is also present. Neither `fullScreenCanvasArea` nor `fullScreenShell`
  *   sets `overflow: hidden`, so nothing in the ancestor chain would clip
  *   this row instead of letting it wrap.
+ * - `canvasFloatingTogglePosition`: the floating full-screen enter/exit
+ *   button, absolutely positioned at the canvas's top-left corner in *both*
+ *   layouts (`editorCanvasContainer` for two-pane, `fullScreenCanvasArea`
+ *   for full screen -- the latter is already `position: relative`, see
+ *   `fullScreenShell` above). Top-left, rather than top-right, deliberately
+ *   avoids the inspector `Drawer`, which overlays full screen's right edge
+ *   when open (`fullScreenCanvasShifted`'s `28rem` reflow only affects
+ *   in-flow content, not this absolutely-positioned sibling) -- and stays
+ *   clear of `floatingChipRow`'s bottom-anchored legend/selection/zoom chips
+ *   in both layouts. No UIKit primitive offers arbitrary overlay
+ *   positioning, same reasoning as `floatingChipRow` above.
  *
  * See the PR description for the full list, including gaps noted inline at
  * their call sites instead of here (e.g. the toolbar's fieldset-disable
@@ -205,7 +225,7 @@ function createUi(theme: Theme) {
             theme.canvasBg,
             theme.line,
         ),
-        editorCanvasContainer: "flex flex-col flex-1 min-h-0",
+        editorCanvasContainer: "relative flex flex-col flex-1 min-h-0",
         editorLeftPanel: cx(
             "flex flex-col min-h-0 rounded-lg border shadow-lg [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h3]:mb-3.5 [&_h3]:mt-0",
             theme.panelBg,
@@ -218,6 +238,8 @@ function createUi(theme: Theme) {
         editorRightPanel: "min-h-0",
         editorShell:
             "grid grid-cols-[minmax(0,1fr)_320px] grid-rows-[minmax(0,1fr)] flex-1 min-h-0",
+        editorShellInspectorClosed:
+            "grid grid-cols-[minmax(0,1fr)] grid-rows-[minmax(0,1fr)] flex-1 min-h-0",
         metric: cx("rounded-lg border p-2.5", theme.softBg, theme.line),
         popoverMenu: cx(
             "absolute left-0 top-[46px] z-10 grid min-w-[170px] gap-1.5 rounded-lg border p-2 shadow-lg",
@@ -250,6 +272,7 @@ function createUi(theme: Theme) {
         bottomLeftChipStack:
             "pointer-events-auto flex max-w-[70%] flex-col items-start gap-2",
         zoomChipPosition: "pointer-events-auto",
+        canvasFloatingTogglePosition: "absolute left-3 top-3 z-10",
     };
 }
 

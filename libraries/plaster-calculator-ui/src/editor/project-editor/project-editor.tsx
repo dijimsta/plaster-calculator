@@ -20,6 +20,7 @@ import { useEditorFullScreen } from "./use-editor-full-screen.js";
 import { useEditorHistory } from "./use-editor-history.js";
 import { useEditorImage } from "./use-editor-image.js";
 import { useEditorInitialTool } from "./use-editor-initial-tool.js";
+import { useEditorInspector } from "./use-editor-inspector.js";
 import { useEditorKeyboardShortcuts } from "./use-editor-keyboard-shortcuts.js";
 import { useEditorOverlay } from "./use-editor-overlay.js";
 import { useEditorPersistence } from "./use-editor-persistence.js";
@@ -71,6 +72,7 @@ export function ProjectEditor({
         moved: boolean;
     } | null>(null);
     const fullScreenState = useEditorFullScreen();
+    const inspectorState = useEditorInspector();
     const viewport = useEditorViewport(
         canvasWrapRef,
         fullScreenState.fullScreen,
@@ -182,12 +184,16 @@ export function ProjectEditor({
 
     useEditorKeyboardShortcuts({
         disabled: analyzing,
-        drawerOpen: fullScreenState.drawerOpen,
+        // Escape's close-drawer-first precedence only applies while in
+        // full screen -- the two-pane layout's inspector is a persistent
+        // grid column, not an overlay, so Escape doesn't collapse it there
+        // (see `use-editor-keyboard-shortcuts.ts`'s `escapeActionFor`).
+        drawerOpen: fullScreenState.fullScreen && inspectorState.inspectorOpen,
         fullScreen: fullScreenState.fullScreen,
         isDrawingFreeShape,
         onCancelFreeShape: actions.cancelFreeShape,
         onClearSelection: selection.clearSelection,
-        onCloseDrawer: fullScreenState.closeDrawer,
+        onCloseDrawer: inspectorState.closeInspector,
         onDeleteSelection: actions.deleteSelection,
         onEnterFullScreen: fullScreenState.enter,
         onExitFullScreen: fullScreenState.exit,
@@ -248,6 +254,7 @@ export function ProjectEditor({
         draftPoints,
         historyState,
         imageState,
+        inspectorOpen: inspectorState.inspectorOpen,
         isDrawingFreeShape,
         isSettingReference,
         overlayMode,
@@ -271,12 +278,15 @@ export function ProjectEditor({
         setSnapGuide,
         zoom,
         onAnalyze: () => void analyze(),
+        onToggleInspector: inspectorState.toggleInspector,
     };
 
     // Both views are pure presentational consumers of the exact same state
     // this container assembles above -- neither owns state of its own
-    // (the full-screen view's own local UI state, e.g. drawer-open, comes
-    // from `fullScreenState`, not from a hook it instantiates itself).
+    // (the full-screen view's own local UI state, e.g. auto-entered, comes
+    // from `fullScreenState`, not from a hook it instantiates itself; the
+    // shared inspector-open state comes from `inspectorState` instead, via
+    // `sharedViewProps`, since both layouts use the same toggle).
     return fullScreenState.fullScreen ? (
         <ProjectEditorFullScreenView
             {...sharedViewProps}

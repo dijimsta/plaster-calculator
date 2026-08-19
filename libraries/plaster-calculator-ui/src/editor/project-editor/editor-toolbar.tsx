@@ -3,8 +3,6 @@ import { Box, Button } from "@libraries/uikit-web";
 import type { ButtonSize } from "@libraries/uikit-web";
 import {
     Loader2,
-    Maximize2,
-    Minimize2,
     PanelRightClose,
     PanelRightOpen,
     Save,
@@ -24,10 +22,10 @@ export type EditorToolbarProps = {
     readonly autoSaving: boolean;
     readonly dirty: boolean;
     readonly analyzing: boolean;
-    readonly drawerOpen?: boolean;
     readonly fullScreen?: boolean;
     readonly futureCount: number;
     readonly historyCount: number;
+    readonly inspectorOpen: boolean;
     readonly overlayMode: OverlayMode;
     readonly saving: boolean;
     readonly selectedArea: AreaPolygon | null;
@@ -47,8 +45,7 @@ export type EditorToolbarProps = {
     readonly onSplitArea: () => void;
     readonly onStartFreeShape: () => void;
     readonly onStraightenSelectedPoints: () => void;
-    readonly onToggleDrawer?: () => void;
-    readonly onToggleFullScreen?: () => void;
+    readonly onToggleInspector: () => void;
     readonly onUndo: () => void;
     readonly hasSelection: () => boolean;
 };
@@ -58,10 +55,10 @@ export function EditorToolbar({
     autoSaving,
     dirty,
     analyzing,
-    drawerOpen = false,
     fullScreen = false,
     futureCount,
     historyCount,
+    inspectorOpen,
     overlayMode,
     saving,
     selectedArea,
@@ -81,8 +78,7 @@ export function EditorToolbar({
     onSplitArea,
     onStartFreeShape,
     onStraightenSelectedPoints,
-    onToggleDrawer,
-    onToggleFullScreen,
+    onToggleInspector,
     onUndo,
     hasSelection,
 }: EditorToolbarProps) {
@@ -132,15 +128,10 @@ export function EditorToolbar({
                         onAnalyze={onAnalyze}
                     />
                 </fieldset>
-                <DrawerToggleButton
-                    drawerOpen={drawerOpen}
+                <InspectorToggleButton
+                    inspectorOpen={inspectorOpen}
                     size="large"
-                    onToggleDrawer={onToggleDrawer}
-                />
-                <FullScreenToggleButton
-                    fullScreen={fullScreen}
-                    size="large"
-                    onToggleFullScreen={onToggleFullScreen}
+                    onToggleInspector={onToggleInspector}
                 />
             </div>
         );
@@ -177,11 +168,11 @@ export function EditorToolbar({
                     />
                 </Box>
             </fieldset>
-            <FullScreenToggleButton
-                fullScreen={fullScreen}
-                onToggleFullScreen={onToggleFullScreen}
-            />
             <AnalyzeButton analyzing={analyzing} onAnalyze={onAnalyze} />
+            <InspectorToggleButton
+                inspectorOpen={inspectorOpen}
+                onToggleInspector={onToggleInspector}
+            />
         </Box>
     );
 }
@@ -254,77 +245,38 @@ function AnalyzeButton({
 }
 
 /**
- * Enters or exits full-screen mode. Present in both toolbar layouts so
- * two-pane users can reach full screen too; renders nothing when the
- * consumer doesn't wire `onToggleFullScreen` (the current two-pane call
- * site doesn't -- see `project-editor-view.tsx`'s zero-diff constraint).
+ * Opens or closes the editor inspector -- the two-pane layout's fixed
+ * sidebar column, or the full-screen layout's non-modal `Drawer` -- via one
+ * consistently-positioned button at the right end of the toolbar row,
+ * present in both toolbar layouts. It's also the only way to reach the
+ * full-screen inspector when nothing is selected (`SelectionCard`'s "Edit
+ * properties" button otherwise requires a selection).
  */
-function FullScreenToggleButton({
-    fullScreen,
+function InspectorToggleButton({
+    inspectorOpen,
     size = "medium",
-    onToggleFullScreen,
+    onToggleInspector,
 }: {
-    readonly fullScreen: boolean;
+    readonly inspectorOpen: boolean;
     readonly size?: ButtonSize;
-    readonly onToggleFullScreen?: () => void;
+    readonly onToggleInspector: () => void;
 }) {
     const { t } = useEditorTranslation();
-    if (!onToggleFullScreen) return null;
 
     return (
         <Button
             variant="secondary"
             size={size}
             icon={
-                fullScreen ? (
-                    <Minimize2 size={18} aria-hidden="true" />
-                ) : (
-                    <Maximize2 size={18} aria-hidden="true" />
-                )
-            }
-            onClick={onToggleFullScreen}
-            label={
-                fullScreen
-                    ? t("editorToolbar.exitFullScreen")
-                    : t("editorToolbar.enterFullScreen")
-            }
-        />
-    );
-}
-
-/**
- * Opens or closes the full-screen inspector `Drawer` -- the only way to
- * reach it when nothing is selected (`SelectionCard`'s "Edit properties"
- * button otherwise requires a selection). Only rendered in the full-screen
- * toolbar layout, so renders nothing when the consumer doesn't wire
- * `onToggleDrawer` (the two-pane layout has no drawer to toggle).
- */
-function DrawerToggleButton({
-    drawerOpen,
-    size = "medium",
-    onToggleDrawer,
-}: {
-    readonly drawerOpen: boolean;
-    readonly size?: ButtonSize;
-    readonly onToggleDrawer?: () => void;
-}) {
-    const { t } = useEditorTranslation();
-    if (!onToggleDrawer) return null;
-
-    return (
-        <Button
-            variant="secondary"
-            size={size}
-            icon={
-                drawerOpen ? (
+                inspectorOpen ? (
                     <PanelRightClose size={18} aria-hidden="true" />
                 ) : (
                     <PanelRightOpen size={18} aria-hidden="true" />
                 )
             }
-            onClick={onToggleDrawer}
+            onClick={onToggleInspector}
             label={
-                drawerOpen
+                inspectorOpen
                     ? t("editorToolbar.hidePanels")
                     : t("editorToolbar.showPanels")
             }

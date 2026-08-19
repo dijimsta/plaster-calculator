@@ -6,6 +6,7 @@ import type { EditorCanvasProps } from "./editor-canvas.types.js";
 import { EditorLegend } from "./editor-legend.js";
 import { EditorSidebar } from "./editor-sidebar.js";
 import { EditorToolbar } from "./editor-toolbar.js";
+import { FullScreenFloatingToggle } from "./full-screen-floating-toggle.js";
 import { ui } from "./project-editor.styles.js";
 import type {
     OverlayMode,
@@ -32,6 +33,7 @@ type ProjectEditorViewProps = {
     readonly fullScreen?: boolean;
     readonly historyState: ReturnType<typeof useEditorHistory>;
     readonly imageState: ReturnType<typeof useEditorImage>;
+    readonly inspectorOpen: boolean;
     readonly isDrawingFreeShape: boolean;
     readonly isSettingReference: boolean;
     readonly overlayMode: OverlayMode;
@@ -55,7 +57,8 @@ type ProjectEditorViewProps = {
     readonly setSnapGuide: (guide: SnapGuide) => void;
     readonly zoom: number;
     readonly onAnalyze: () => void;
-    readonly onToggleFullScreen?: () => void;
+    readonly onToggleFullScreen: () => void;
+    readonly onToggleInspector: () => void;
 };
 
 export function ProjectEditorView({
@@ -69,6 +72,7 @@ export function ProjectEditorView({
     fullScreen,
     historyState,
     imageState,
+    inspectorOpen,
     isDrawingFreeShape,
     isSettingReference,
     overlayMode,
@@ -93,6 +97,7 @@ export function ProjectEditorView({
     zoom,
     onAnalyze,
     onToggleFullScreen,
+    onToggleInspector,
 }: ProjectEditorViewProps) {
     return (
         // `ui.editorShell` / `ui.editorLeftPanel` are deliberately-kept
@@ -101,7 +106,11 @@ export function ProjectEditorView({
         // (discrete equal columns only) nor `SidebarLayout` (a full-page
         // shell with a mobile hamburger/backdrop) can express. See
         // `project-editor.styles.ts`.
-        <section className={ui.editorShell}>
+        <section
+            className={
+                inspectorOpen ? ui.editorShell : ui.editorShellInspectorClosed
+            }
+        >
             <div className={ui.editorLeftPanel}>
                 <EditorToolbar
                     addMenuOpen={addMenuOpen}
@@ -111,6 +120,7 @@ export function ProjectEditorView({
                     fullScreen={fullScreen}
                     futureCount={historyState.future.length}
                     historyCount={historyState.history.length}
+                    inspectorOpen={inspectorOpen}
                     overlayMode={overlayMode}
                     saving={persistence.saving}
                     selectedArea={derivedState.selectedArea}
@@ -132,7 +142,7 @@ export function ProjectEditorView({
                     onStraightenSelectedPoints={
                         actions.straightenSelectedPoints
                     }
-                    onToggleFullScreen={onToggleFullScreen}
+                    onToggleInspector={onToggleInspector}
                     onUndo={historyState.undo}
                     hasSelection={selection.hasSelection}
                 />
@@ -185,57 +195,69 @@ export function ProjectEditorView({
                         setReferencePoints={overlayState.setReferencePoints}
                         setSnapGuide={setSnapGuide}
                     />
+                    <FullScreenFloatingToggle
+                        fullScreen={Boolean(fullScreen)}
+                        onToggleFullScreen={onToggleFullScreen}
+                    />
                 </div>
                 <EditorLegend visibleAreas={derivedState.visibleAreas} />
             </div>
 
-            <div inert={analyzing} className={ui.editorRightPanel}>
-                <EditorSidebar
-                    page={page}
-                    status={persistence.status}
-                    dirty={dirty}
-                    ceilingHeightMm={overlayState.ceilingHeightMm}
-                    scaleMmPerPx={overlayState.scaleMmPerPx}
-                    referencePoints={overlayState.referencePoints}
-                    referenceLengthMm={overlayState.referenceLengthMm}
-                    isSettingReference={isSettingReference}
-                    summary={derivedState.summary}
-                    visibleAreas={derivedState.visibleAreas}
-                    selectedAreaIds={selection.selectedAreaIds}
-                    selectedArea={derivedState.selectedArea}
-                    selectedEdgeArea={derivedState.selectedEdgeArea}
-                    selectedEdge={selection.selectedEdge}
-                    selectedEdgeOverride={derivedState.selectedEdgeOverride}
-                    selectedPointIndexes={selection.selectedPointIndexes}
-                    metrics={derivedState.metrics}
-                    projectCompanyPanel={projectCompanyPanel}
-                    salesStatusPanel={salesStatusPanel}
-                    areaIssue={validation.areaIssue}
-                    applyHeightToAllPages={persistence.applyHeightToAllPages}
-                    applyScale={actions.applyScale}
-                    applyScaleToAllPages={persistence.applyScaleToAllPages}
-                    clearSelectedEdgeOverride={
-                        actions.clearSelectedEdgeOverride
-                    }
-                    commonMaterialValue={actions.commonMaterialValue}
-                    fieldError={validation.fieldError}
-                    hasPageHeightIssue={validation.hasPageHeightIssue}
-                    pageIssue={validation.pageIssue}
-                    renderCeilingControls={validation.renderCeilingControls}
-                    selectArea={selection.selectArea}
-                    setCeilingHeightMm={overlayState.setCeilingHeightMm}
-                    setDirty={setDirty}
-                    setIsSettingReference={setIsSettingReference}
-                    setMaterial={actions.setMaterial}
-                    setReferenceLengthMm={overlayState.setReferenceLengthMm}
-                    setReferencePoints={overlayState.setReferencePoints}
-                    setSelectedEdgeMaterial={actions.setSelectedEdgeMaterial}
-                    setSelectedEdgeNoPlaster={actions.setSelectedEdgeNoPlaster}
-                    startReferenceMode={actions.startReferenceMode}
-                    toggleOutdoor={actions.toggleOutdoor}
-                    updateArea={actions.updateArea}
-                />
-            </div>
+            {inspectorOpen && (
+                <div inert={analyzing} className={ui.editorRightPanel}>
+                    <EditorSidebar
+                        page={page}
+                        status={persistence.status}
+                        dirty={dirty}
+                        ceilingHeightMm={overlayState.ceilingHeightMm}
+                        scaleMmPerPx={overlayState.scaleMmPerPx}
+                        referencePoints={overlayState.referencePoints}
+                        referenceLengthMm={overlayState.referenceLengthMm}
+                        isSettingReference={isSettingReference}
+                        summary={derivedState.summary}
+                        visibleAreas={derivedState.visibleAreas}
+                        selectedAreaIds={selection.selectedAreaIds}
+                        selectedArea={derivedState.selectedArea}
+                        selectedEdgeArea={derivedState.selectedEdgeArea}
+                        selectedEdge={selection.selectedEdge}
+                        selectedEdgeOverride={derivedState.selectedEdgeOverride}
+                        selectedPointIndexes={selection.selectedPointIndexes}
+                        metrics={derivedState.metrics}
+                        projectCompanyPanel={projectCompanyPanel}
+                        salesStatusPanel={salesStatusPanel}
+                        areaIssue={validation.areaIssue}
+                        applyHeightToAllPages={
+                            persistence.applyHeightToAllPages
+                        }
+                        applyScale={actions.applyScale}
+                        applyScaleToAllPages={persistence.applyScaleToAllPages}
+                        clearSelectedEdgeOverride={
+                            actions.clearSelectedEdgeOverride
+                        }
+                        commonMaterialValue={actions.commonMaterialValue}
+                        fieldError={validation.fieldError}
+                        hasPageHeightIssue={validation.hasPageHeightIssue}
+                        pageIssue={validation.pageIssue}
+                        renderCeilingControls={validation.renderCeilingControls}
+                        selectArea={selection.selectArea}
+                        setCeilingHeightMm={overlayState.setCeilingHeightMm}
+                        setDirty={setDirty}
+                        setIsSettingReference={setIsSettingReference}
+                        setMaterial={actions.setMaterial}
+                        setReferenceLengthMm={overlayState.setReferenceLengthMm}
+                        setReferencePoints={overlayState.setReferencePoints}
+                        setSelectedEdgeMaterial={
+                            actions.setSelectedEdgeMaterial
+                        }
+                        setSelectedEdgeNoPlaster={
+                            actions.setSelectedEdgeNoPlaster
+                        }
+                        startReferenceMode={actions.startReferenceMode}
+                        toggleOutdoor={actions.toggleOutdoor}
+                        updateArea={actions.updateArea}
+                    />
+                </div>
+            )}
         </section>
     );
 }

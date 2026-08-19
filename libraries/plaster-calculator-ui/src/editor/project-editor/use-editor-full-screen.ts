@@ -20,16 +20,6 @@ export type EditorFullScreenState = {
     readonly exit: () => void;
     /** Opts out of auto-enter for the rest of this session, then exits. */
     readonly keepPanels: () => void;
-    /**
-     * Whether the full-screen inspector `Drawer` is open. Owned here,
-     * rather than as local state in the full-screen view, so the single
-     * `useEditorKeyboardShortcuts` call in `project-editor.tsx` -- which
-     * needs this value for Escape's close-drawer-first precedence -- can
-     * read it without lifting it into that container's own state.
-     */
-    readonly drawerOpen: boolean;
-    readonly openDrawer: () => void;
-    readonly closeDrawer: () => void;
 };
 
 function hasKeptPanelsThisSession(): boolean {
@@ -59,7 +49,6 @@ function rememberKeepPanelsThisSession(): void {
 export function useEditorFullScreen(): EditorFullScreenState {
     const [fullScreen, setFullScreen] = useState(false);
     const [autoEntered, setAutoEntered] = useState(false);
-    const [drawerOpen, setDrawerOpen] = useState(false);
     const optedOutRef = useRef(hasKeptPanelsThisSession());
 
     const enterInternal = useCallback((auto: boolean) => {
@@ -72,7 +61,6 @@ export function useEditorFullScreen(): EditorFullScreenState {
     const exit = useCallback(() => {
         setFullScreen(false);
         setAutoEntered(false);
-        setDrawerOpen(false);
     }, []);
 
     const keepPanels = useCallback(() => {
@@ -80,9 +68,6 @@ export function useEditorFullScreen(): EditorFullScreenState {
         rememberKeepPanelsThisSession();
         exit();
     }, [exit]);
-
-    const openDrawer = useCallback(() => setDrawerOpen(true), []);
-    const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
     useAutoEnterOnNarrowViewport(optedOutRef, enterInternal);
 
@@ -92,9 +77,6 @@ export function useEditorFullScreen(): EditorFullScreenState {
         enter,
         exit,
         keepPanels,
-        drawerOpen,
-        openDrawer,
-        closeDrawer,
     };
 }
 

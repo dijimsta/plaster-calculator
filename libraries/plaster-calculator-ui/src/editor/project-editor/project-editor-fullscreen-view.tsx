@@ -9,6 +9,7 @@ import type { EditorCanvasProps } from "./editor-canvas.types.js";
 import { EditorLegend } from "./editor-legend.js";
 import { EditorToolbar } from "./editor-toolbar.js";
 import { EditorZoomChip } from "./editor-zoom-chip.js";
+import { FullScreenFloatingToggle } from "./full-screen-floating-toggle.js";
 import { FullScreenInspectorDrawer } from "./full-screen-inspector-drawer.js";
 import { cx, ui } from "./project-editor.styles.js";
 import type {
@@ -37,6 +38,7 @@ type ProjectEditorFullScreenViewProps = {
     readonly draftPoints: Point[];
     readonly historyState: ReturnType<typeof useEditorHistory>;
     readonly imageState: ReturnType<typeof useEditorImage>;
+    readonly inspectorOpen: boolean;
     readonly isDrawingFreeShape: boolean;
     readonly isSettingReference: boolean;
     readonly overlayMode: OverlayMode;
@@ -62,6 +64,7 @@ type ProjectEditorFullScreenViewProps = {
     readonly setSnapGuide: (guide: SnapGuide) => void;
     readonly zoom: number;
     readonly onAnalyze: () => void;
+    readonly onToggleInspector: () => void;
 };
 
 /**
@@ -81,6 +84,7 @@ export function ProjectEditorFullScreenView({
     draftPoints,
     historyState,
     imageState,
+    inspectorOpen,
     isDrawingFreeShape,
     isSettingReference,
     overlayMode,
@@ -106,9 +110,9 @@ export function ProjectEditorFullScreenView({
     setSnapGuide,
     zoom,
     onAnalyze,
+    onToggleInspector,
 }: ProjectEditorFullScreenViewProps) {
-    const { drawerOpen, closeDrawer, openDrawer } = fullScreenState;
-    const showSelectionCard = !drawerOpen && selection.hasSelection();
+    const showSelectionCard = !inspectorOpen && selection.hasSelection();
 
     return (
         <div className={ui.fullScreenShell}>
@@ -118,10 +122,10 @@ export function ProjectEditorFullScreenView({
                     autoSaving={persistence.autoSaving}
                     analyzing={analyzing}
                     dirty={dirty}
-                    drawerOpen={drawerOpen}
                     fullScreen
                     futureCount={historyState.future.length}
                     historyCount={historyState.history.length}
+                    inspectorOpen={inspectorOpen}
                     overlayMode={overlayMode}
                     saving={persistence.saving}
                     selectedArea={derivedState.selectedArea}
@@ -143,8 +147,7 @@ export function ProjectEditorFullScreenView({
                     onStraightenSelectedPoints={
                         actions.straightenSelectedPoints
                     }
-                    onToggleDrawer={drawerOpen ? closeDrawer : openDrawer}
-                    onToggleFullScreen={fullScreenState.exit}
+                    onToggleInspector={onToggleInspector}
                     onUndo={historyState.undo}
                     hasSelection={selection.hasSelection}
                 />
@@ -163,7 +166,7 @@ export function ProjectEditorFullScreenView({
                 inert={analyzing}
                 className={cx(
                     ui.fullScreenCanvasArea,
-                    drawerOpen && ui.fullScreenCanvasShifted,
+                    inspectorOpen && ui.fullScreenCanvasShifted,
                 )}
             >
                 <EditorCanvas
@@ -205,6 +208,10 @@ export function ProjectEditorFullScreenView({
                     setReferencePoints={overlayState.setReferencePoints}
                     setSnapGuide={setSnapGuide}
                 />
+                <FullScreenFloatingToggle
+                    fullScreen={fullScreenState.fullScreen}
+                    onToggleFullScreen={fullScreenState.exit}
+                />
                 <div className={ui.floatingChipRow}>
                     <div className={ui.bottomLeftChipStack}>
                         <EditorLegend
@@ -221,7 +228,7 @@ export function ProjectEditorFullScreenView({
                                 }
                                 metrics={derivedState.metrics}
                                 scaleMmPerPx={overlayState.scaleMmPerPx}
-                                onEditProperties={openDrawer}
+                                onEditProperties={onToggleInspector}
                             />
                         )}
                     </div>
@@ -239,7 +246,7 @@ export function ProjectEditorFullScreenView({
                 actions={actions}
                 derivedState={derivedState}
                 dirty={dirty}
-                drawerOpen={drawerOpen}
+                drawerOpen={inspectorOpen}
                 isSettingReference={isSettingReference}
                 overlayState={overlayState}
                 page={page}
@@ -249,7 +256,7 @@ export function ProjectEditorFullScreenView({
                 salesStatusPanel={salesStatusPanel}
                 selection={selection}
                 validation={validation}
-                closeDrawer={closeDrawer}
+                closeDrawer={onToggleInspector}
                 setDirty={setDirty}
                 setIsSettingReference={setIsSettingReference}
             />
