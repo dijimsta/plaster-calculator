@@ -26,6 +26,8 @@ import type { PropsWithChildren } from "react";
 
 import { useAppTranslation } from "../i18n/index.ts";
 
+import { useFloorplanFullScreen } from "./floorplan-full-screen.hooks.js";
+
 const Link = LinkModule.default;
 
 const navItems = [
@@ -60,6 +62,11 @@ export default function Sidebar({ children }: PropsWithChildren) {
     const team = useMyTeamSummary();
     const { t } = useAppTranslation();
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const floorplanFullScreen = useFloorplanFullScreen();
+    // Force the sidebar into its collapsed rail while the floorplan editor
+    // is full screen, without discarding the user's own manual preference --
+    // it takes back over once full screen ends.
+    const effectiveCollapsed = floorplanFullScreen || isSidebarCollapsed;
 
     async function handleLogout() {
         await signOut(FirebaseService.getAuth());
@@ -80,16 +87,16 @@ export default function Sidebar({ children }: PropsWithChildren) {
         <SidebarLayout>
             <SidebarLayout.Sidebar>
                 <SidebarNavigation
-                    collapsed={isSidebarCollapsed}
+                    collapsed={effectiveCollapsed}
                     onCollapsedChange={setIsSidebarCollapsed}
                 >
                     <SidebarNavigation.Header>
                         <Box
                             direction="row"
                             align="center"
-                            justify={isSidebarCollapsed ? "center" : "between"}
+                            justify={effectiveCollapsed ? "center" : "between"}
                         >
-                            {!isSidebarCollapsed && (
+                            {!effectiveCollapsed && (
                                 <Link href="/">
                                     <Box
                                         direction="row"
@@ -136,7 +143,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
                         </VerticalNavigation>
                     </SidebarNavigation.Body>
                     <SidebarNavigation.Footer>
-                        {isSidebarCollapsed ? (
+                        {effectiveCollapsed ? (
                             <Box direction="column" align="center" gap="sm">
                                 <ButtonLink href="/user" variant="ghost">
                                     <Avatar

@@ -6,6 +6,7 @@ import { Box, useNotificationsManager } from "@libraries/uikit-web";
 import { useSearchParams } from "next/navigation.js";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 
+import { useSetFloorplanFullScreen } from "../../../../components/floorplan-full-screen.hooks.js";
 import { useAppTranslation } from "../../../../i18n/index.ts";
 import { useSalesStatusLabel } from "../../../../lib/sales-status.js";
 import { ui } from "../../../../lib/styles.js";
@@ -43,6 +44,11 @@ export default function ProjectPage({
     const [savingCompany, setSavingCompany] = useState(false);
     const [savingSalesStatus, setSavingSalesStatus] = useState(false);
     const [analyzingPage, setAnalyzingPage] = useState(false);
+    const [floorplanFullScreen, setFloorplanFullScreen] = useState(false);
+    // Full screen fills this page's own content area beside the sidebar, so
+    // collapse the sidebar into an icon-only rail (and restore it on
+    // unmount/navigation) to give the editor room without hiding navigation.
+    useSetFloorplanFullScreen(floorplanFullScreen);
     const {
         switchingPage,
         validationIssues,
@@ -207,14 +213,22 @@ export default function ProjectPage({
                     setRenaming={setRenaming}
                     setRenameValue={setRenameValue}
                     validateAndExport={validateAndExport}
+                    breadcrumbsOnly={floorplanFullScreen}
                 />
             </div>
-            <Box padding="none" direction="column" grow scroll>
+            <Box
+                padding="none"
+                direction="column"
+                grow
+                scroll={!floorplanFullScreen}
+            >
                 {error && <p className={ui.error}>{error}</p>}
                 {project && (
                     <ProjectStatusContent
                         companyId={companyId}
+                        floorplanFullScreen={floorplanFullScreen}
                         initialTool={deepLinkTool}
+                        onFullScreenChange={setFloorplanFullScreen}
                         project={project}
                         salesStatusPanel={
                             <ProjectSalesStatusControl

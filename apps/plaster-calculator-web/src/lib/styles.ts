@@ -42,6 +42,20 @@ function createUi(theme: Theme) {
             "grid grid-cols-[minmax(0,1fr)_320px] grid-rows-[minmax(0,1fr)] flex-1 min-h-0 max-[980px]:grid-cols-1",
         editorToolbar: "mb-3 flex flex-wrap items-center justify-between gap-2",
         error: cx("text-sm", theme.danger),
+        // The full-screen floorplan editor (`fullScreenShell` in
+        // `project-editor.styles.ts`) renders `fixed inset-0 z-30`, covering
+        // this app's normal document flow entirely. An analysis-failure
+        // banner rendered in flow while full screen is active would be
+        // visually hidden behind that layer, so it needs a fixed, opaque
+        // treatment above it -- `z-50` clears both the editor's `z-30` shell
+        // and its inspector `Drawer`'s non-modal `z-40`
+        // (`drawer.styles.ts`), so the error stays visible even with the
+        // drawer open.
+        errorFullScreen: cx(
+            "fixed inset-x-4 top-4 z-50 rounded-lg border p-3 shadow-lg",
+            theme.panelBg,
+            theme.line,
+        ),
         field: cx(
             "grid gap-1.5 [&_label]:text-[13px] [&_label]:font-bold",
             theme.fieldTextNested,
