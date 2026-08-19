@@ -20,6 +20,7 @@ import type { ProjectDetail } from "../../../../types.js";
 import { ProjectCompanyPanel } from "../project-company-panel.js";
 
 import { ProjectFollowUpPanel } from "./project-follow-up-panel.js";
+import { ProjectPagePickerPanel } from "./project-page-picker-panel.js";
 import { ProjectPageTabs } from "./project-page-tabs.js";
 
 const dynamic = DynamicModule.default;
@@ -33,6 +34,49 @@ const ProjectEditor = dynamic(
     },
 );
 
+type PageNavigationInput = {
+    readonly project: ProjectDetail;
+    readonly selectedPageId: string | null;
+    readonly selectPage: (pageId: string) => Promise<void>;
+    readonly switchingPage: boolean;
+};
+
+/**
+ * The standalone page-tab row is a full-screen-only concern: it disappears
+ * once the floorplan editor takes over page switching via its drawer's
+ * `pagePickerPanel` slot instead.
+ */
+function computePageTabs(
+    input: PageNavigationInput & { readonly floorplanFullScreen: boolean },
+): ReactNode {
+    if (input.floorplanFullScreen) return null;
+    return (
+        <ProjectPageTabs
+            project={input.project}
+            selectedPageId={input.selectedPageId}
+            selectPage={input.selectPage}
+            switchingPage={input.switchingPage}
+        />
+    );
+}
+
+/**
+ * Mirrors `ProjectPageTabs`'s own single-page guard so the editor drawer
+ * doesn't grow an empty "Pages" section when there's nothing to switch
+ * between.
+ */
+function computePagePickerPanel(input: PageNavigationInput): ReactNode {
+    if (input.project.pages.length <= 1) return undefined;
+    return (
+        <ProjectPagePickerPanel
+            project={input.project}
+            selectedPageId={input.selectedPageId}
+            selectPage={input.selectPage}
+            switchingPage={input.switchingPage}
+        />
+    );
+}
+
 type ProjectStatusContentProps = {
     readonly companyId: string | null;
     readonly analyzingPage: boolean;
@@ -42,7 +86,11 @@ type ProjectStatusContentProps = {
      * normal default.
      */
     readonly initialTool?: EditorInitialTool | null;
+    /** Whether the floorplan editor is currently in full-screen mode. */
+    readonly floorplanFullScreen: boolean;
     readonly load: () => Promise<void>;
+    /** Notified whenever the floorplan editor's full-screen mode changes. */
+    readonly onFullScreenChange: (fullScreen: boolean) => void;
     readonly project: ProjectDetail;
     readonly salesStatusPanel: ReactNode;
     readonly saveCompany: (companyId?: string) => Promise<void>;
@@ -60,8 +108,10 @@ type ProjectStatusContentProps = {
 export function ProjectStatusContent({
     companyId,
     analyzingPage,
+    floorplanFullScreen,
     initialTool,
     load,
+    onFullScreenChange,
     project,
     salesStatusPanel,
     saveCompany,
@@ -143,18 +193,25 @@ export function ProjectStatusContent({
         );
     }
 
+    const pageSwitchDisabled =
+        switchingPage ||
+        analyzingPage ||
+        project.pages.some((page) => page.status === "PROCESSING");
+    const pageNavigationInput: PageNavigationInput = {
+        project,
+        selectedPageId,
+        selectPage,
+        switchingPage: pageSwitchDisabled,
+    };
+    const pageTabs = computePageTabs({
+        ...pageNavigationInput,
+        floorplanFullScreen,
+    });
+    const pagePickerPanel = computePagePickerPanel(pageNavigationInput);
+
     return (
         <>
-            <ProjectPageTabs
-                project={project}
-                selectedPageId={selectedPageId}
-                selectPage={selectPage}
-                switchingPage={
-                    switchingPage ||
-                    analyzingPage ||
-                    project.pages.some((page) => page.status === "PROCESSING")
-                }
-            />
+            {pageTabs}
             {selectedPage && (
                 <ProjectEditor
                     project={project}
@@ -163,6 +220,8 @@ export function ProjectStatusContent({
                     onAnalyzingChange={setAnalyzingPage}
                     projectCompanyPanel={companyPanel}
                     salesStatusPanel={salesStatusPanel}
+                    pagePickerPanel={pagePickerPanel}
+                    onFullScreenChange={onFullScreenChange}
                     onDraftChange={updateDraft}
                     validationIssues={validationIssues.filter(
                         (issue) => issue.pageId === selectedPage.id,

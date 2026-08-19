@@ -43,6 +43,7 @@ export default function ProjectPage({
     const [savingCompany, setSavingCompany] = useState(false);
     const [savingSalesStatus, setSavingSalesStatus] = useState(false);
     const [analyzingPage, setAnalyzingPage] = useState(false);
+    const [floorplanFullScreen, setFloorplanFullScreen] = useState(false);
     const {
         switchingPage,
         validationIssues,
@@ -196,25 +197,29 @@ export default function ProjectPage({
 
     return (
         <div className={ui.projectPage}>
-            <div className={ui.projectPageHeader}>
-                <ProjectHeader
-                    project={project}
-                    projectId={projectId}
-                    activeTab="floorplan"
-                    renaming={renaming}
-                    renameValue={renameValue}
-                    saveRename={saveRename}
-                    setRenaming={setRenaming}
-                    setRenameValue={setRenameValue}
-                    validateAndExport={validateAndExport}
-                />
-            </div>
+            {!floorplanFullScreen && (
+                <div className={ui.projectPageHeader}>
+                    <ProjectHeader
+                        project={project}
+                        projectId={projectId}
+                        activeTab="floorplan"
+                        renaming={renaming}
+                        renameValue={renameValue}
+                        saveRename={saveRename}
+                        setRenaming={setRenaming}
+                        setRenameValue={setRenameValue}
+                        validateAndExport={validateAndExport}
+                    />
+                </div>
+            )}
             <Box padding="none" direction="column" grow scroll>
                 {error && <p className={ui.error}>{error}</p>}
                 {project && (
                     <ProjectStatusContent
                         companyId={companyId}
+                        floorplanFullScreen={floorplanFullScreen}
                         initialTool={deepLinkTool}
+                        onFullScreenChange={setFloorplanFullScreen}
                         project={project}
                         salesStatusPanel={
                             <ProjectSalesStatusControl
