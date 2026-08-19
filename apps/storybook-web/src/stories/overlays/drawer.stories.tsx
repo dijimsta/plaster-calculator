@@ -52,6 +52,39 @@ export const Default: Story = {
     },
 };
 
+export const NonModal: Story = {
+    args: {
+        open: false,
+        onClose: () => undefined,
+        title: "Layer options",
+        children: null,
+    },
+    render: () => {
+        const [isOpen, setIsOpen] = useState(false);
+
+        return (
+            <>
+                <Button onClick={() => setIsOpen(true)}>
+                    Open non-modal drawer
+                </Button>
+                <Drawer
+                    open={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    modal={false}
+                    title="Layer options"
+                    description="Page content behind this panel stays interactive."
+                >
+                    <Text>
+                        Non-modal drawers leave the rest of the page interactive
+                        and expect the consumer to own dismissal, such as an
+                        Escape key handler.
+                    </Text>
+                </Drawer>
+            </>
+        );
+    },
+};
+
 export const FromLeft: Story = {
     args: {
         open: false,
