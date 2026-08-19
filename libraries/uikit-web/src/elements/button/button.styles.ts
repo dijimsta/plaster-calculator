@@ -30,6 +30,7 @@ export type ButtonVariant =
 
 export const variants = Object.freeze({
     primary: "rounded-lg bg-indigo-600 text-white enabled:hover:bg-indigo-700",
+    ai: "rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-sm shadow-purple-600/30 enabled:hover:from-indigo-500 enabled:hover:via-purple-500 enabled:hover:to-pink-500 enabled:hover:shadow-md enabled:hover:shadow-purple-600/50 focus-visible:ring-purple-600",
     danger: "rounded-lg bg-red-600 text-white enabled:hover:bg-red-700 focus-visible:ring-red-600",
     dangerSoft:
         "rounded-lg bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 enabled:hover:bg-red-100 focus-visible:ring-red-600 dark:bg-red-500/10 dark:text-red-300 dark:ring-red-500/20 dark:enabled:hover:bg-red-500/20",
