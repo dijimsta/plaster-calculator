@@ -198,6 +198,22 @@ function wallHeightMmAt(
     );
 }
 
+/**
+ * Pixel length of one polygon edge, from `points[edgeIndex]` to the next
+ * point (wrapping to the first point after the last edge) — the same
+ * point-to-point walk `wallEdgeLengths()` uses internally, exposed
+ * directly so a caller that only has an area and an edge index (e.g. the
+ * floorplan editor's selection UI) doesn't need to re-derive the
+ * wrap-around index math itself. Unlike `wallEdgeLengths()`, this doesn't
+ * resolve board type or skip outdoor/`noPlaster` edges — it's a purely
+ * geometric length, valid for any edge index regardless of plaster status.
+ */
+export function edgeLengthPx(area: AreaPolygon, edgeIndex: number): number {
+    const start = pointAt(area.points, edgeIndex);
+    const end = pointAt(area.points, (edgeIndex + 1) % area.points.length);
+    return pointDistance(start, end);
+}
+
 export function polygonArea(points: Point[]): number {
     if (points.length < 3) return 0;
     const sum = points.reduce((total, point, index) => {
