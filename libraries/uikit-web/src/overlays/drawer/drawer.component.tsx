@@ -12,6 +12,70 @@ import type { DrawerSize } from "./drawer.styles.ts";
 
 export type DrawerPlacement = "left" | "right";
 
+/** Opens a drawer's underlying dialog using the mode its `modal` prop requires. */
+function openDrawerDialog(dialog: HTMLDialogElement, modal: boolean): void {
+    if (modal) {
+        dialog.showModal();
+    } else {
+        dialog.show();
+    }
+}
+
+/** The root `<dialog>` class for a drawer's modal or non-modal mode. */
+function drawerRootClassName(modal: boolean): string {
+    return modal ? styles.root : styles.rootNonModal;
+}
+
+/**
+ * The positioner class for a drawer's placement, adding the non-modal
+ * floating inset only when the drawer isn't modal.
+ */
+function drawerPositionerClassName(modal: boolean, isLeft: boolean): string {
+    return clsx(
+        styles.positioner,
+        isLeft ? styles.leftPositioner : styles.rightPositioner,
+        !modal && styles.positionerNonModal,
+    );
+}
+
+/**
+ * The panel class for a drawer's placement and size, adding the non-modal
+ * floating rounded corners only when the drawer isn't modal.
+ */
+function drawerPanelClassName(
+    modal: boolean,
+    isLeft: boolean,
+    size: DrawerSize,
+): string {
+    return clsx(
+        styles.panel,
+        drawerSizes[size],
+        isLeft ? styles.leftPanel : styles.rightPanel,
+        !modal && styles.panelNonModal,
+    );
+}
+
+/**
+ * The `aria-modal` value for a drawer's dialog. Modal drawers leave this
+ * `undefined` because `showModal()` already computes `aria-modal="true"`
+ * automatically per the HTML spec; non-modal drawers set it explicitly so
+ * assistive tech announces them as non-modal instead of leaving it ambiguous.
+ */
+function drawerAriaModal(modal: boolean): "false" | undefined {
+    return modal ? undefined : "false";
+}
+
+/** A modal drawer renders a Backdrop; a non-modal drawer leaves the page uncovered. */
+function DrawerBackdrop({
+    modal,
+    onClose,
+}: {
+    readonly modal: boolean;
+    readonly onClose: () => void;
+}): ReactElement | null {
+    return modal ? <Backdrop onClick={onClose} /> : null;
+}
+
 export type DrawerProps = {
     readonly open: boolean;
     readonly onClose: () => void;
@@ -22,9 +86,20 @@ export type DrawerProps = {
     readonly placement?: DrawerPlacement;
     readonly size?: DrawerSize;
     readonly closeLabel?: string;
+    /**
+     * Modal (default): browser-level focus trap, inert background, and a Backdrop.
+     * Non-modal: a positioned, non-blocking panel over still-interactive page content —
+     * the consumer owns dismissal (e.g. Escape) and any layout reflow around it.
+     *
+     * Deliberately does not add its own Escape-key handling for the non-modal case: a
+     * consumer that owns dismissal precedence (e.g. closing this before another
+     * overlay) needs a single source of truth for that key, and a second internal
+     * listener here would race it non-deterministically.
+     */
+    readonly modal?: boolean;
 };
 
-/** An accessible, modal panel that slides in from either side of the viewport. */
+/** An accessible panel that slides in from either side of the viewport, modal or non-modal. */
 export function Drawer({
     open,
     onClose,
@@ -35,6 +110,7 @@ export function Drawer({
     placement = "right",
     size = "md",
     closeLabel = "Close panel",
+    modal = true,
 }: DrawerProps): ReactElement {
     const dialogRef = useRef<HTMLDialogElement>(null);
     const titleId = useId();
@@ -44,39 +120,30 @@ export function Drawer({
         const dialog = dialogRef.current;
 
         if (open && dialog && !dialog.open) {
-            dialog.showModal();
+            openDrawerDialog(dialog, modal);
         } else if (!open && dialog?.open) {
             dialog.close();
         }
-    }, [open]);
+    }, [open, modal]);
 
     const isLeft = placement === "left";
 
     return (
         <dialog
             ref={dialogRef}
+            role="dialog"
             aria-describedby={description ? descriptionId : undefined}
             aria-labelledby={titleId}
-            className={styles.root}
+            aria-modal={drawerAriaModal(modal)}
+            className={drawerRootClassName(modal)}
             onCancel={(event) => {
                 event.preventDefault();
                 onClose();
             }}
         >
-            <Backdrop onClick={onClose} />
-            <div
-                className={clsx(
-                    styles.positioner,
-                    isLeft ? styles.leftPositioner : styles.rightPositioner,
-                )}
-            >
-                <section
-                    className={clsx(
-                        styles.panel,
-                        drawerSizes[size],
-                        isLeft ? styles.leftPanel : styles.rightPanel,
-                    )}
-                >
+            <DrawerBackdrop modal={modal} onClose={onClose} />
+            <div className={drawerPositionerClassName(modal, isLeft)}>
+                <section className={drawerPanelClassName(modal, isLeft, size)}>
                     <header className={styles.header}>
                         <div className={styles.heading}>
                             <h2 id={titleId} className={styles.title}>

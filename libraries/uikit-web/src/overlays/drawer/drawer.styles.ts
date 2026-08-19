@@ -1,9 +1,20 @@
 export const styles = Object.freeze({
     root: "fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none overflow-hidden bg-transparent p-0 backdrop:bg-transparent",
+    rootNonModal:
+        "absolute inset-0 z-40 m-0 h-full w-full max-h-none max-w-none overflow-hidden bg-transparent p-0 pointer-events-none backdrop:bg-transparent",
     positioner: "pointer-events-none relative flex h-full w-full",
+    // Insets the panel from every edge of its container so the non-modal
+    // panel reads as floating rather than docked. Padding on the positioner
+    // (not margin on the panel) keeps the panel's own `h-full`/`w-full`
+    // sizing correct: flex children size against the parent's padded
+    // content box automatically, so no separate height math is needed.
+    positionerNonModal: "p-4",
     leftPositioner: "justify-start",
     rightPositioner: "justify-end",
     panel: "pointer-events-auto flex h-full w-full flex-col bg-white text-gray-900 shadow-xl transition-transform duration-300 ease-in-out dark:bg-slate-900 dark:text-white",
+    // Rounds every corner for the floating non-modal panel; the modal panel
+    // stays flush and square against the viewport edge.
+    panelNonModal: "rounded-lg",
     leftPanel: "starting:-translate-x-full",
     rightPanel: "starting:translate-x-full",
     header: "flex shrink-0 items-start justify-between gap-4 border-b border-slate-200 px-4 py-5 sm:px-6 dark:border-white/10",
