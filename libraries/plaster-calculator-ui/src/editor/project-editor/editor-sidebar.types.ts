@@ -40,6 +40,7 @@ export type EditorSidebarProps = {
     readonly metrics: SelectionMetrics | null;
     readonly projectCompanyPanel?: ReactNode;
     readonly salesStatusPanel?: ReactNode;
+    readonly pagePickerPanel?: ReactNode;
     readonly areaIssue: (
         areaId: string,
         field: ValidationIssue["field"],

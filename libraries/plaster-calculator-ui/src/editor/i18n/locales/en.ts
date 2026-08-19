@@ -11,10 +11,14 @@ export const en = Object.freeze({
         deselectAll: "Deselect all",
         addPoint: "Add point",
         straightenSelectedPoints: "Straighten between selected points",
+        enterFullScreen: "Enter full screen",
+        exitFullScreen: "Exit full screen",
     }),
     editorSidebar: Object.freeze({
         statusTitle: "Status",
         companyTitle: "Company",
+        pagesTitle: "Pages",
+        pageDrawerTitle: "Page {{page}}",
         scaleTitle: "Scale",
         summaryTitle: "Summary",
         areasTitle: "Areas",
@@ -63,5 +67,16 @@ export const en = Object.freeze({
         analyzingStatus: "Analyzing floorplan...",
         analysisCompleteStatus: "Analysis complete",
         analysisFailedStatus: "Analysis failed",
+    }),
+    fullScreenBanner: Object.freeze({
+        message:
+            "Full screen opened automatically because this window is narrow.",
+        keepPanels: "Keep panels",
+    }),
+    selectionCard: Object.freeze({
+        roomLabel: "Room",
+        wallLabel: "Wall",
+        pointSelected: "Point selected",
+        editProperties: "Edit properties",
     }),
 });

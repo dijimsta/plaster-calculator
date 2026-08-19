@@ -1,3 +1,5 @@
+import type { DrawerSize } from "@libraries/uikit-web";
+
 export function cx(
     ...classes: Array<string | false | null | undefined>
 ): string {
@@ -11,11 +13,14 @@ export function cx(
  *
  * - `editorShell` / `editorLeftPanel` / `editorCanvasContainer` /
  *   `editorRightPanel`: the two-pane editor shell needs a fixed-width
- *   (320px) sidebar column with a custom `max-[980px]` breakpoint collapse,
- *   plus regions that must receive `inert` directly (no UIKit layout
- *   primitive forwards `inert` or an arbitrary `ref`). `Grid` only supports
- *   discrete equal column counts; `SidebarLayout` is a full-page app shell
- *   with a mobile hamburger/backdrop, not a nested two-pane layout.
+ *   (320px) sidebar column, plus regions that must receive `inert` directly
+ *   (no UIKit layout primitive forwards `inert` or an arbitrary `ref`).
+ *   `Grid` only supports discrete equal column counts; `SidebarLayout` is a
+ *   full-page app shell with a mobile hamburger/backdrop, not a nested
+ *   two-pane layout. This shell no longer collapses at a narrow breakpoint
+ *   itself -- full-screen mode (`use-editor-full-screen.ts`) auto-enters
+ *   below that same width instead, so the two-pane shell only ever renders
+ *   at widths wide enough for its fixed sidebar column.
  * - `canvasWrap`: the scrollable canvas viewport needs a raw `ref` (read
  *   directly by the scroll-drag handlers in `editor-canvas.tsx`) and a
  *   responsive height. `Box` doesn't forward refs or support arbitrary/
@@ -36,6 +41,26 @@ export function cx(
  *   this codebase otherwise only nests once per panel as an outer container
  *   (see `readiness-summary-header.component.tsx`), not repeated inline for
  *   dense stat rows -- and its padding/shadow are heavier than this needs.
+ * - `toolbarScrollRow`: a single non-wrapping, horizontally-scrollable
+ *   button row for the full-screen toolbar. `Box` supports `wrap` (multi-
+ *   line) but has no horizontal-scroll option -- its `scroll` prop is
+ *   vertical-only (`overflow-y-auto`).
+ * - `fullScreenShell` / `fullScreenToolbarArea` / `fullScreenCanvasArea`:
+ *   the full-bleed full-screen layout needs to cover the viewport
+ *   (`fixed inset-0`) independent of whether the native Fullscreen API
+ *   actually engages (see `use-editor-full-screen.ts`) -- no UIKit layout
+ *   primitive offers a full-viewport overlay shell.
+ * - `fullScreenCanvasShifted`: right padding on the canvas area, applied
+ *   only while the inspector `Drawer` is open in full-screen mode, so the
+ *   plan reflows left instead of hiding behind the drawer. Its width
+ *   (`28rem`) is hand-matched to `editorDrawerSize`'s rendered width (the
+ *   `Drawer`'s `size="md"` -> `sm:max-w-md` breakpoint) -- see
+ *   `editorDrawerSize` below; the two must stay in sync.
+ * - `floatingChipRow` / `bottomLeftChipStack` / `zoomChipPosition`:
+ *   absolutely-positioned floating overlays (legend, selection summary,
+ *   zoom controls) within the full-screen shell. No UIKit primitive offers
+ *   arbitrary fixed/absolute overlay positioning -- `Card` (reused for
+ *   their visual chrome) is a static, in-flow box.
  *
  * See the PR description for the full list, including gaps noted inline at
  * their call sites instead of here (e.g. the toolbar's fieldset-disable
@@ -136,7 +161,7 @@ function createUi(theme: Theme) {
         ),
         areaRowActive: theme.active,
         canvasWrap: cx(
-            "flex-1 min-h-[560px] overflow-auto rounded-lg border max-[980px]:h-[70vh]",
+            "flex-1 min-h-[560px] overflow-auto rounded-lg border",
             theme.canvasBg,
             theme.line,
         ),
@@ -152,14 +177,42 @@ function createUi(theme: Theme) {
         ),
         editorRightPanel: "min-h-0",
         editorShell:
-            "grid grid-cols-[minmax(0,1fr)_320px] grid-rows-[minmax(0,1fr)] flex-1 min-h-0 max-[980px]:grid-cols-1",
+            "grid grid-cols-[minmax(0,1fr)_320px] grid-rows-[minmax(0,1fr)] flex-1 min-h-0",
         metric: cx("rounded-lg border p-2.5", theme.softBg, theme.line),
         popoverMenu: cx(
             "absolute left-0 top-[46px] z-10 grid min-w-[170px] gap-1.5 rounded-lg border p-2 shadow-lg",
             theme.panelBg,
             theme.line,
         ),
+        toolbarScrollRow: "flex flex-nowrap items-center gap-2 overflow-x-auto",
+        fullScreenShell: cx(
+            "fixed inset-0 z-30 flex h-dvh flex-col",
+            theme.panelBg,
+        ),
+        fullScreenToolbarArea: cx(
+            "flex shrink-0 flex-col gap-2 border-b p-2",
+            theme.line,
+        ),
+        fullScreenCanvasArea: "relative flex flex-1 min-h-0 flex-col",
+        // `28rem` mirrors `drawerSizes.md` (`sm:max-w-md`) in
+        // `libraries/uikit-web/src/overlays/drawer/drawer.styles.ts` --
+        // see `editorDrawerSize` below, which must stay in sync with this.
+        fullScreenCanvasShifted: "sm:pr-[28rem]",
+        floatingChipRow:
+            "pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3",
+        // Bottom-left stack: legend chip above selection card, so the two
+        // don't overlap when both are visible.
+        bottomLeftChipStack:
+            "pointer-events-auto flex max-w-[70%] flex-col items-start gap-2",
+        zoomChipPosition: "pointer-events-auto",
     };
 }
 
 export const ui = createUi(activeTheme);
+
+/**
+ * The `Drawer` `size` the full-screen inspector uses -- kept as a named
+ * constant, alongside `ui.fullScreenCanvasShifted` above, because both
+ * encode the same rendered drawer width and must be changed together.
+ */
+export const editorDrawerSize: DrawerSize = "md";

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useEditorTranslation } from "../i18n/index.js";
 
+import { ProjectEditorFullScreenView } from "./project-editor-fullscreen-view.js";
 import { ProjectEditorView } from "./project-editor-view.js";
 import type {
     OverlayMode,
@@ -15,6 +16,7 @@ import type {
 } from "./project-editor.types.js";
 import { useEditorActions } from "./use-editor-actions.js";
 import { useEditorDerivedState } from "./use-editor-derived-state.js";
+import { useEditorFullScreen } from "./use-editor-full-screen.js";
 import { useEditorHistory } from "./use-editor-history.js";
 import { useEditorImage } from "./use-editor-image.js";
 import { useEditorKeyboardShortcuts } from "./use-editor-keyboard-shortcuts.js";
@@ -31,6 +33,8 @@ export function ProjectEditor({
     onAnalyzingChange,
     projectCompanyPanel,
     salesStatusPanel,
+    pagePickerPanel,
+    onFullScreenChange,
     onDraftChange,
     validationIssues = [],
     initialTool,
@@ -93,6 +97,11 @@ export function ProjectEditor({
         setOverlay: overlayState.setOverlay,
         setStatus: persistence.setStatus,
     });
+    const fullScreenState = useEditorFullScreen();
+
+    useEffect(() => {
+        onFullScreenChange?.(fullScreenState.fullScreen);
+    }, [fullScreenState.fullScreen, onFullScreenChange]);
 
     useEffect(() => {
         historyState.resetHistory();
@@ -167,10 +176,15 @@ export function ProjectEditor({
 
     useEditorKeyboardShortcuts({
         disabled: analyzing,
+        drawerOpen: fullScreenState.drawerOpen,
+        fullScreen: fullScreenState.fullScreen,
         isDrawingFreeShape,
         onCancelFreeShape: actions.cancelFreeShape,
         onClearSelection: selection.clearSelection,
+        onCloseDrawer: fullScreenState.closeDrawer,
         onDeleteSelection: actions.deleteSelection,
+        onEnterFullScreen: fullScreenState.enter,
+        onExitFullScreen: fullScreenState.exit,
         onRedo: historyState.redo,
         onUndo: historyState.undo,
         hasSelection: selection.hasSelection,
@@ -218,40 +232,52 @@ export function ProjectEditor({
         }
     }
 
-    return (
-        <ProjectEditorView
-            actions={actions}
-            analyzing={analyzing}
-            addMenuOpen={addMenuOpen}
-            canvasWrapRef={canvasWrapRef}
-            dirty={dirty}
-            draftPointer={draftPointer}
-            draftPoints={draftPoints}
-            historyState={historyState}
-            imageState={imageState}
-            isDrawingFreeShape={isDrawingFreeShape}
-            isSettingReference={isSettingReference}
-            overlayMode={overlayMode}
-            overlayState={overlayState}
-            page={page}
-            persistence={persistence}
-            projectCompanyPanel={projectCompanyPanel}
-            salesStatusPanel={salesStatusPanel}
-            scrollDragRef={scrollDragRef}
-            selection={selection}
-            snapGuide={snapGuide}
-            stageRef={stageRef}
-            validation={validation}
-            derivedState={derivedState}
-            setAddMenuOpen={setAddMenuOpen}
-            setDirty={setDirty}
-            setDraftPointer={setDraftPointer}
-            setDraftPoints={setDraftPoints}
-            setIsSettingReference={setIsSettingReference}
-            setOverlayMode={setOverlayMode}
-            setSnapGuide={setSnapGuide}
-            zoom={zoom}
-            onAnalyze={() => void analyze()}
+    const sharedViewProps = {
+        actions,
+        analyzing,
+        addMenuOpen,
+        canvasWrapRef,
+        dirty,
+        draftPointer,
+        draftPoints,
+        historyState,
+        imageState,
+        isDrawingFreeShape,
+        isSettingReference,
+        overlayMode,
+        overlayState,
+        page,
+        persistence,
+        projectCompanyPanel,
+        salesStatusPanel,
+        scrollDragRef,
+        selection,
+        snapGuide,
+        stageRef,
+        validation,
+        derivedState,
+        setAddMenuOpen,
+        setDirty,
+        setDraftPointer,
+        setDraftPoints,
+        setIsSettingReference,
+        setOverlayMode,
+        setSnapGuide,
+        zoom,
+        onAnalyze: () => void analyze(),
+    };
+
+    // Both views are pure presentational consumers of the exact same state
+    // this container assembles above -- neither owns state of its own
+    // (the full-screen view's own local UI state, e.g. drawer-open, comes
+    // from `fullScreenState`, not from a hook it instantiates itself).
+    return fullScreenState.fullScreen ? (
+        <ProjectEditorFullScreenView
+            {...sharedViewProps}
+            fullScreenState={fullScreenState}
+            pagePickerPanel={pagePickerPanel}
         />
+    ) : (
+        <ProjectEditorView {...sharedViewProps} />
     );
 }

@@ -1,33 +1,22 @@
 import type { AreaPolygon } from "@libraries/plaster-calculator-common";
 import { Box, Button } from "@libraries/uikit-web";
-import {
-    AlignHorizontalJustifyCenter,
-    CopyPlus,
-    Loader2,
-    MousePointer2,
-    Minus,
-    Plus,
-    Redo2,
-    ScanLine,
-    Save,
-    Scissors,
-    Square,
-    Trash2,
-    Undo2,
-    ZoomIn,
-} from "lucide-react";
+import type { ButtonSize } from "@libraries/uikit-web";
+import { Loader2, Maximize2, Minimize2, Save, ScanLine } from "lucide-react";
 
 import { useEditorTranslation } from "../i18n/index.js";
 
 import { OverlayModeSelector } from "./overlay-mode-selector.js";
 import { ui } from "./project-editor.styles.js";
 import type { OverlayMode } from "./project-editor.types.js";
+import { ToolbarCoreControls } from "./toolbar-core-controls.js";
+import { ZoomControls } from "./zoom-controls.js";
 
-type EditorToolbarProps = {
+export type EditorToolbarProps = {
     readonly addMenuOpen: boolean;
     readonly autoSaving: boolean;
     readonly dirty: boolean;
     readonly analyzing: boolean;
+    readonly fullScreen?: boolean;
     readonly futureCount: number;
     readonly historyCount: number;
     readonly overlayMode: OverlayMode;
@@ -49,6 +38,7 @@ type EditorToolbarProps = {
     readonly onSplitArea: () => void;
     readonly onStartFreeShape: () => void;
     readonly onStraightenSelectedPoints: () => void;
+    readonly onToggleFullScreen?: () => void;
     readonly onUndo: () => void;
     readonly hasSelection: () => boolean;
 };
@@ -58,6 +48,7 @@ export function EditorToolbar({
     autoSaving,
     dirty,
     analyzing,
+    fullScreen = false,
     futureCount,
     historyCount,
     overlayMode,
@@ -79,10 +70,60 @@ export function EditorToolbar({
     onSplitArea,
     onStartFreeShape,
     onStraightenSelectedPoints,
+    onToggleFullScreen,
     onUndo,
     hasSelection,
 }: EditorToolbarProps) {
-    const { t } = useEditorTranslation();
+    const coreProps = {
+        addMenuOpen,
+        historyCount,
+        futureCount,
+        selectedArea,
+        selectedPointCount,
+        onAddPoint,
+        onAddRectangle,
+        onClearSelection,
+        onDeleteSelection,
+        onRedo,
+        onSetAddMenuOpen,
+        onSplitArea,
+        onStartFreeShape,
+        onStraightenSelectedPoints,
+        onUndo,
+        hasSelection,
+    };
+
+    if (fullScreen) {
+        return (
+            <div className={ui.toolbarScrollRow}>
+                <fieldset className="contents" disabled={analyzing}>
+                    <ToolbarCoreControls {...coreProps} size="large" />
+                    <OverlayModeSelector
+                        overlayMode={overlayMode}
+                        size="md"
+                        onSetOverlayMode={onSetOverlayMode}
+                    />
+                    <SaveButton
+                        autoSaving={autoSaving}
+                        dirty={dirty}
+                        saving={saving}
+                        size="large"
+                        onSave={onSave}
+                    />
+                    <AnalyzeButton
+                        analyzing={analyzing}
+                        size="large"
+                        onAnalyze={onAnalyze}
+                    />
+                </fieldset>
+                <FullScreenToggleButton
+                    fullScreen={fullScreen}
+                    size="large"
+                    onToggleFullScreen={onToggleFullScreen}
+                />
+            </div>
+        );
+    }
 
     return (
         <Box direction="row" wrap align="center" justify="between" gap="sm">
@@ -95,84 +136,13 @@ export function EditorToolbar({
                 this stays a deliberately-kept gap. */}
             <fieldset className="contents" disabled={analyzing}>
                 <Box direction="row" wrap gap="sm">
-                    <Button
-                        variant="secondary"
-                        icon={<Undo2 size={18} aria-hidden="true" />}
-                        onClick={onUndo}
-                        disabled={historyCount === 0}
-                        label={t("editorToolbar.undo")}
-                    />
-                    <Button
-                        variant="secondary"
-                        icon={<Redo2 size={18} aria-hidden="true" />}
-                        onClick={onRedo}
-                        disabled={futureCount === 0}
-                        label={t("editorToolbar.redo")}
-                    />
-                    <Button
-                        variant="secondary"
-                        icon={<MousePointer2 size={18} aria-hidden="true" />}
-                        onClick={onClearSelection}
-                        disabled={!hasSelection()}
-                        label={t("editorToolbar.deselectAll")}
-                    />
-                    <AddAreaControls
-                        addMenuOpen={addMenuOpen}
-                        onAddRectangle={onAddRectangle}
-                        onSetAddMenuOpen={onSetAddMenuOpen}
-                        onStartFreeShape={onStartFreeShape}
-                    />
-                    <Button
-                        variant="secondary"
-                        icon={<CopyPlus size={18} aria-hidden="true" />}
-                        onClick={onAddPoint}
-                        disabled={!selectedArea}
-                        label={t("editorToolbar.addPoint")}
-                    />
-                    <Button
-                        variant="secondary"
-                        icon={
-                            <AlignHorizontalJustifyCenter
-                                size={18}
-                                aria-hidden="true"
-                            />
-                        }
-                        onClick={onStraightenSelectedPoints}
-                        disabled={!selectedArea || selectedPointCount !== 2}
-                        label={t("editorToolbar.straightenSelectedPoints")}
-                    />
-                    <Button
-                        variant="secondary"
-                        icon={<Scissors size={18} aria-hidden="true" />}
-                        onClick={onSplitArea}
-                        disabled={!selectedArea || selectedPointCount !== 2}
-                        label="Split selected polygon"
-                    />
-                    <DeleteSelectionButton
-                        selectedArea={selectedArea}
-                        selectedPointCount={selectedPointCount}
-                        onDeleteSelection={onDeleteSelection}
-                    />
+                    <ToolbarCoreControls {...coreProps} />
                 </Box>
                 <Box direction="row" wrap gap="sm">
-                    <Button
-                        variant="secondary"
-                        icon={<Minus size={18} aria-hidden="true" />}
-                        onClick={() => onChangeZoom(zoom - 0.15)}
-                        label="Zoom out"
-                    />
-                    <Button
-                        variant="secondary"
-                        onClick={onResetView}
-                        title="Reset zoom"
-                    >
-                        <ZoomIn size={18} /> {Math.round(zoom * 100)}%
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        icon={<Plus size={18} aria-hidden="true" />}
-                        onClick={() => onChangeZoom(zoom + 0.15)}
-                        label="Zoom in"
+                    <ZoomControls
+                        zoom={zoom}
+                        onChangeZoom={onChangeZoom}
+                        onResetView={onResetView}
                     />
                     <OverlayModeSelector
                         overlayMode={overlayMode}
@@ -184,85 +154,14 @@ export function EditorToolbar({
                         saving={saving}
                         onSave={onSave}
                     />
+                    <FullScreenToggleButton
+                        fullScreen={fullScreen}
+                        onToggleFullScreen={onToggleFullScreen}
+                    />
                 </Box>
             </fieldset>
-            <Button
-                variant="secondary"
-                onClick={onAnalyze}
-                disabled={analyzing}
-            >
-                {/* `className="animate-spin"` on this leaf Lucide icon is a
-                    deliberately-kept gap: no UIKit component exposes a
-                    spinner/loading treatment (`Button` has no `loading`
-                    prop). */}
-                {analyzing ? (
-                    <Loader2 className="animate-spin" size={18} />
-                ) : (
-                    <ScanLine size={18} />
-                )}
-                {analyzing ? "Analyzing..." : "Analyze"}
-            </Button>
+            <AnalyzeButton analyzing={analyzing} onAnalyze={onAnalyze} />
         </Box>
-    );
-}
-
-function AddAreaControls({
-    addMenuOpen,
-    onAddRectangle,
-    onSetAddMenuOpen,
-    onStartFreeShape,
-}: Pick<
-    EditorToolbarProps,
-    "addMenuOpen" | "onAddRectangle" | "onSetAddMenuOpen" | "onStartFreeShape"
->) {
-    return (
-        // `className="relative"` + `ui.popoverMenu` are a deliberately-kept
-        // gap: an anchored, absolutely-positioned dropdown of buttons has no
-        // UIKit equivalent -- `overlays/` only has full-screen/modal
-        // components (`Backdrop`, `BusyOverlay`, `Drawer`, `ModalDialog`,
-        // `Notification`), not a small inline popover/menu primitive.
-        <div className="relative">
-            <Button
-                variant="secondary"
-                icon={<Plus size={18} aria-hidden="true" />}
-                onClick={() => onSetAddMenuOpen(!addMenuOpen)}
-                label="Add area"
-            />
-            {addMenuOpen && (
-                <div className={ui.popoverMenu}>
-                    <Button variant="secondary" onClick={onAddRectangle}>
-                        <Square size={16} /> Rectangle
-                    </Button>
-                    <Button variant="secondary" onClick={onStartFreeShape}>
-                        <MousePointer2 size={16} /> Free shape
-                    </Button>
-                </div>
-            )}
-        </div>
-    );
-}
-
-function DeleteSelectionButton({
-    selectedArea,
-    selectedPointCount,
-    onDeleteSelection,
-}: Pick<
-    EditorToolbarProps,
-    "onDeleteSelection" | "selectedArea" | "selectedPointCount"
->) {
-    const label =
-        selectedPointCount > 0
-            ? "Delete selected points"
-            : "Delete selected area";
-
-    return (
-        <Button
-            variant="secondary"
-            icon={<Trash2 size={18} aria-hidden="true" />}
-            onClick={onDeleteSelection}
-            disabled={!selectedArea}
-            label={label}
-        />
     );
 }
 
@@ -270,11 +169,15 @@ function SaveButton({
     autoSaving,
     dirty,
     saving,
+    size = "medium",
     onSave,
-}: Pick<EditorToolbarProps, "autoSaving" | "dirty" | "onSave" | "saving">) {
+}: Pick<EditorToolbarProps, "autoSaving" | "dirty" | "onSave" | "saving"> & {
+    readonly size?: ButtonSize;
+}) {
     return (
         <Button
             variant="primary"
+            size={size}
             onClick={onSave}
             disabled={saving || autoSaving || !dirty}
         >
@@ -300,4 +203,70 @@ function SaveButtonIcon({
 function saveButtonLabel(autoSaving: boolean, saving: boolean) {
     if (autoSaving) return "Auto Saving";
     return saving ? "Saving" : "Save";
+}
+
+function AnalyzeButton({
+    analyzing,
+    size = "medium",
+    onAnalyze,
+}: Pick<EditorToolbarProps, "analyzing" | "onAnalyze"> & {
+    readonly size?: ButtonSize;
+}) {
+    return (
+        <Button
+            variant="secondary"
+            size={size}
+            onClick={onAnalyze}
+            disabled={analyzing}
+        >
+            {/* `className="animate-spin"` on this leaf Lucide icon is a
+                deliberately-kept gap: no UIKit component exposes a
+                spinner/loading treatment (`Button` has no `loading` prop). */}
+            {analyzing ? (
+                <Loader2 className="animate-spin" size={18} />
+            ) : (
+                <ScanLine size={18} />
+            )}
+            {analyzing ? "Analyzing..." : "Analyze"}
+        </Button>
+    );
+}
+
+/**
+ * Enters or exits full-screen mode. Present in both toolbar layouts so
+ * two-pane users can reach full screen too; renders nothing when the
+ * consumer doesn't wire `onToggleFullScreen` (the current two-pane call
+ * site doesn't -- see `project-editor-view.tsx`'s zero-diff constraint).
+ */
+function FullScreenToggleButton({
+    fullScreen,
+    size = "medium",
+    onToggleFullScreen,
+}: {
+    readonly fullScreen: boolean;
+    readonly size?: ButtonSize;
+    readonly onToggleFullScreen?: () => void;
+}) {
+    const { t } = useEditorTranslation();
+    if (!onToggleFullScreen) return null;
+
+    return (
+        <Button
+            variant="secondary"
+            size={size}
+            icon={
+                fullScreen ? (
+                    <Minimize2 size={18} aria-hidden="true" />
+                ) : (
+                    <Maximize2 size={18} aria-hidden="true" />
+                )
+            }
+            onClick={onToggleFullScreen}
+            label={
+                fullScreen
+                    ? t("editorToolbar.exitFullScreen")
+                    : t("editorToolbar.enterFullScreen")
+            }
+        />
+    );
 }

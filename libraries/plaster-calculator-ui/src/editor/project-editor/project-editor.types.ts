@@ -25,6 +25,14 @@ export type ProjectEditorProps = {
     readonly onAnalyzingChange?: (analyzing: boolean) => void;
     readonly projectCompanyPanel?: ReactNode;
     readonly salesStatusPanel?: ReactNode;
+    /** An optional page-picker slot, rendered as its own inspector section in full-screen mode. */
+    readonly pagePickerPanel?: ReactNode;
+    /**
+     * Notified whenever the editor's full-screen mode changes -- entered or
+     * exited, manually or automatically. Uncontrolled: nothing outside the
+     * editor can command `fullScreen`, this is a read-only notification.
+     */
+    readonly onFullScreenChange?: (fullScreen: boolean) => void;
     readonly onDraftChange?: (
         pageId: string,
         draft: PageValidationInput,
