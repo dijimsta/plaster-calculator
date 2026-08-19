@@ -44,8 +44,8 @@ export function cx(
  *   `top`/`left` computed from the trigger's `getBoundingClientRect()`, so
  *   it drops `popoverMenu`'s `absolute left-0 top-[46px]` in favour of
  *   `fixed` (the inline style's `position`/`top`/`left` win over these
- *   classes) and raises `z-10` to `z-50` so it renders above both the
- *   full-screen shell (`z-30`) and the inspector `Drawer` (`z-40`).
+ *   classes) and raises `z-10` to `z-50` so it renders above the inspector
+ *   `Drawer` (`z-40`) regardless of where in the shell it's triggered from.
  * - `editorLegend`: a `border-t`-separated footer row. `Box` has no border
  *   capability.
  * - `areaList` / `areaRow` / `areaRowActive`: a scrollable, multi-selectable
@@ -63,10 +63,20 @@ export function cx(
  *   line) but has no horizontal-scroll option -- its `scroll` prop is
  *   vertical-only (`overflow-y-auto`).
  * - `fullScreenShell` / `fullScreenToolbarArea` / `fullScreenCanvasArea`:
- *   the full-bleed full-screen layout needs to cover the viewport
- *   (`fixed inset-0`) independent of whether the native Fullscreen API
- *   actually engages (see `use-editor-full-screen.ts`) -- no UIKit layout
- *   primitive offers a full-viewport overlay shell.
+ *   full-screen mode fills its own normal content area -- the space beside
+ *   the app's sidebar rail -- with ordinary in-flow sizing rather than a
+ *   viewport-spanning overlay; there's no native Fullscreen API involved
+ *   (see `use-editor-full-screen.ts`). `fullScreenShell` uses `flex-1
+ *   min-h-0`, the same pattern `editorShell` (the two-pane sibling this
+ *   component alternates with, at the same position in the tree) already
+ *   relies on to get a definite height from the app's own flex-column
+ *   scroll container, rather than `h-full`, which would need that
+ *   ancestor's height to resolve as a CSS percentage instead of via
+ *   flex-grow. `fullScreenShell` is also `position: relative` so it's the
+ *   positioned ancestor the non-modal inspector `Drawer` (`absolute
+ *   inset-0`, see `editorDrawerSize` below) sizes against, instead of
+ *   falling back to the viewport. No UIKit layout primitive offers this
+ *   in-flow, locally-positioned full-bleed shell.
  * - `fullScreenCanvasShifted`: right padding on the canvas area, applied
  *   only while the inspector `Drawer` is open in full-screen mode, so the
  *   plan reflows left instead of hiding behind the drawer. Its width
@@ -213,7 +223,7 @@ function createUi(theme: Theme) {
         ),
         toolbarScrollRow: "flex flex-nowrap items-center gap-2 overflow-x-auto",
         fullScreenShell: cx(
-            "fixed inset-0 z-30 flex h-dvh flex-col",
+            "relative flex flex-1 min-h-0 flex-col",
             theme.panelBg,
         ),
         fullScreenToolbarArea: cx(
