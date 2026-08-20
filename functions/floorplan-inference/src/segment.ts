@@ -4,6 +4,7 @@ import { Tensor } from "onnxruntime-node";
 import { HttpStatusError, readImageBytes } from "./http.js";
 import { getSession, segmentationShape } from "./model.js";
 import { prepare } from "./preprocess.js";
+import { INFERENCE_RUNTIME_OPTIONS } from "./runtime-options.js";
 
 /** Image-in convenience endpoint: decodes and preprocesses an uploaded
  * image (resize to a 32-multiple, normalize) in-service via `sharp`, then
@@ -25,35 +26,40 @@ import { prepare } from "./preprocess.js";
  * reconsider payload size (e.g. float16, capping input resolution, or only
  * requesting the channel groups actually needed) before relying on this
  * for arbitrarily large real-world uploads. */
-export const segment = onRequest(async (request, response) => {
-    try {
-        const imageBytes = await readImageBytes(request);
-        const prepared = await prepare(imageBytes);
+export const segment = onRequest(
+    INFERENCE_RUNTIME_OPTIONS,
+    async (request, response) => {
+        try {
+            const imageBytes = await readImageBytes(request);
+            const prepared = await prepare(imageBytes);
 
-        const session = await getSession();
-        const feeds = {
-            image: new Tensor("float32", prepared.data, prepared.shape),
-        };
-        const results = await session.run(feeds);
-        const output = results["segmentation"];
-        if (!output) {
-            throw new Error("Model did not return a 'segmentation' output.");
-        }
+            const session = await getSession();
+            const feeds = {
+                image: new Tensor("float32", prepared.data, prepared.shape),
+            };
+            const results = await session.run(feeds);
+            const output = results["segmentation"];
+            if (!output) {
+                throw new Error(
+                    "Model did not return a 'segmentation' output.",
+                );
+            }
 
-        const { channels, height, width } = segmentationShape(output.dims);
-        response.set("X-Tensor-Shape", `1,${channels},${height},${width}`);
-        response.set(
-            "X-Original-Size",
-            `${prepared.originalWidth},${prepared.originalHeight}`,
-        );
-        response.set("Content-Type", "application/octet-stream");
-        response.send(Buffer.from((output.data as Float32Array).buffer));
-    } catch (error) {
-        if (error instanceof HttpStatusError) {
-            response.status(error.status).json({ detail: error.message });
-            return;
+            const { channels, height, width } = segmentationShape(output.dims);
+            response.set("X-Tensor-Shape", `1,${channels},${height},${width}`);
+            response.set(
+                "X-Original-Size",
+                `${prepared.originalWidth},${prepared.originalHeight}`,
+            );
+            response.set("Content-Type", "application/octet-stream");
+            response.send(Buffer.from((output.data as Float32Array).buffer));
+        } catch (error) {
+            if (error instanceof HttpStatusError) {
+                response.status(error.status).json({ detail: error.message });
+                return;
+            }
+            console.error("Segmentation inference failed", error);
+            response.status(500).json({ detail: "Inference failed" });
         }
-        console.error("Segmentation inference failed", error);
-        response.status(500).json({ detail: "Inference failed" });
-    }
-});
+    },
+);
