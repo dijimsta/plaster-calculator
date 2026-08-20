@@ -28,7 +28,7 @@ drawings (not just the summary numbers) shows that framing understates the failu
 being explicit about:
 
 **A "labeled" room is only actually usable if it is its own distinct, correctly-shaped polygon.** The `label` field
-production renders in the UI/overlay is only the *first* OCR seed that happened to land in a region — when a wall-mask
+production renders in the UI/overlay is only the _first_ OCR seed that happened to land in a region — when a wall-mask
 leak merges several real rooms into one flood-filled blob, every merged room's name lands in a `merged_labels` list
 that **is not rendered anywhere in the overlay and is not shown to the user** (`_render_floorplan()` in
 `ocr_flood_fill_smoothed.py` draws only `room["label"]`). So a room that is technically "labeled" by being folded
@@ -39,12 +39,12 @@ Doing a full manual room-by-room accounting against `screenshots/01_room_merging
 (cross-checked against the real drawing) for a single-storey house with roughly 18 distinct labelled room-instances
 on the source drawing:
 
-| Outcome | Count | Rooms |
-| --- | --- | --- |
-| Own distinct, correctly-labeled polygon | ~6 | Bed 2, Bed 4 (with a robe silently folded in), a robe/Bed-3 pair, both WIRs, Bath (OCR-mangled to "Bathl") |
-| Geometrically found, but unlabeled ("Unknown") | ~7 | both ensuites, laundry, and other small fragments — present as a shape, needs full manual re-labeling |
-| Buried in another room's `merged_labels`, invisible in the UI | ~4 | Family, Lounge, Master Bedroom, one robe — their names exist in the JSON but nothing on screen shows them as separate spaces |
-| **Completely absent — no seed, no fallback region, no trace anywhere** | **~3–4** | **Garage, Kitchen, Entry, Porch** |
+| Outcome                                                                | Count    | Rooms                                                                                                                        |
+| ---------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Own distinct, correctly-labeled polygon                                | ~6       | Bed 2, Bed 4 (with a robe silently folded in), a robe/Bed-3 pair, both WIRs, Bath (OCR-mangled to "Bathl")                   |
+| Geometrically found, but unlabeled ("Unknown")                         | ~7       | both ensuites, laundry, and other small fragments — present as a shape, needs full manual re-labeling                        |
+| Buried in another room's `merged_labels`, invisible in the UI          | ~4       | Family, Lounge, Master Bedroom, one robe — their names exist in the JSON but nothing on screen shows them as separate spaces |
+| **Completely absent — no seed, no fallback region, no trace anywhere** | **~3–4** | **Garage, Kitchen, Entry, Porch**                                                                                            |
 
 Repeating this against `screenshots/05_room_merging_25taihu.png` (a second, different house) found the **same
 pattern with the same two specific rooms recurring**: Kitchen merges invisibly into an open-plan blob (`merged_labels`
@@ -59,7 +59,7 @@ labeling failure.
 text layer (see "PDF text-layer extraction" below) shows several room labels on this drawing are rendered **rotated
 90°** — "Kitchen", "Entry", "Porch", "L'Dry", and "Ens" among them. Neither OCR engine, as configured in production
 (`ocr/service.py`'s plain `reader.readtext(image_rgb)`, no rotation handling), detects rotated text at all — both
-`easyocr` and `paddleocr` found only two unrelated, horizontally-printed *mentions* of "kitchen" and "entry" in
+`easyocr` and `paddleocr` found only two unrelated, horizontally-printed _mentions_ of "kitchen" and "entry" in
 regulatory note paragraphs elsewhere on the page, never the actual rotated room label (`compare_ocr_engines.py
 --keyword kitchen` output, both engines, reproduced in full further down). This is a concrete, verified mechanism —
 not a hypothesis — for why those specific rooms vanish: no OCR seed is ever placed inside them, so
@@ -109,13 +109,13 @@ Architectural drawings run dimension chains and (as found in this pass) some roo
 page margins. Tested whether this specifically degrades each method's accuracy:
 
 - **PDF text layer**: verified correct on both axes that matter. Content is trivially rotation-proof (it's encoded
-  characters, not pixels) — but *position* handling could still have been wrong, so this was checked directly, not
+  characters, not pixels) — but _position_ handling could still have been wrong, so this was checked directly, not
   assumed: `page.get_text("dict")`'s per-span `dir` vector correctly reports `(0.0, -1.0)` for genuinely rotated
   spans, and their bounding boxes are correctly tall/narrow rectangles at the true rotated position on the page
   (cross-checked: a rotated "Kitchen" span's PDF-layer bbox, converted to 200 DPI pixel space, predicted a center
   within 2px of where `easyocr`'s rotation-aware pass independently found the same word). Note: a naive first
   attempt at this check used bounding-box aspect ratio (tall vs. wide) as a rotation proxy and got misleading
-  results — many short *horizontal* words ("is", "to", "&") are naturally taller than wide at normal font sizes,
+  results — many short _horizontal_ words ("is", "to", "&") are naturally taller than wide at normal font sizes,
   which looks like "vertical" by that heuristic but isn't. The `dir` vector is the correct signal; aspect ratio is
   not.
 - **easyocr and paddleocr, as configured in production/this research (no rotation handling enabled)**: both
@@ -146,7 +146,7 @@ comparison — text layer vs. easyocr vs. paddleocr — on the same real pages a
   itself takes under 1 millisecond per page (no model, no inference) versus multiple seconds for either OCR engine,
   and every dimension value it returns matches the drawing exactly, with zero digit-truncation risk.
 - **Rotation is where the text layer's advantage is largest in practice**, not just in principle — see above: it is
-  the only one of the three methods that finds rotated content (dimension chains *and* room labels) at both zero
+  the only one of the three methods that finds rotated content (dimension chains _and_ room labels) at both zero
   extra engineering cost and effectively zero extra runtime cost, where both OCR engines either miss rotated text
   entirely (default config) or pay a 7x time penalty to catch some of it (`rotation_info`).
 - **Still not a full replacement for OCR**: the 12% of pages with no text layer (scanned/flattened single-page
@@ -161,7 +161,7 @@ Run: `../../venv/bin/python3 extract_dimensions_from_pdf_text_layer.py --pdf <pa
 Literature check first: recent (2025) work — FloorSAM, "Segmenting Anything in Architecture," a few-shot
 SAM-for-floorplans paper — specifically validates SAM-family models for point-prompted room segmentation, which
 matters here because **production already has a free point prompt for every room it detects**: the OCR seed
-coordinate. No other credible, *installable-today* alternative turned up — CubiCasa5k's own improved model is what
+coordinate. No other credible, _installable-today_ alternative turned up — CubiCasa5k's own improved model is what
 this repo already runs, and the other floorplan-segmentation GitHub projects found (e.g.
 `ozturkoktay/floor-plan-room-segmentation`) ship training code and architecture only, with **no pretrained weights
 available for download** — using them would mean training from scratch on annotated floorplan data, which is real,
@@ -182,7 +182,7 @@ own real OCR seed coordinates:
   sliver) nor the largest-area mask (itself an over-merge spanning more than half the house, arguably worse than
   production's own blob) was usable automatically. The **middle** candidate, however —
   `screenshots/04b_sam_alternative_meals_partial.png` — is a genuinely good result: a clean Kitchen+Meals+Family
-  open-plan boundary that correctly stops before the bedroom wing, arguably *more* accurate than production's own
+  open-plan boundary that correctly stops before the bedroom wing, arguably _more_ accurate than production's own
   merged blob (which incorrectly reaches all the way to a separate Lounge room). **Automatic mask selection among
   SAM's multiple candidates is a real, unsolved problem in this quick test** — picking "highest score" or "largest
   area" both failed here; something smarter (e.g. cross-referencing the existing wall-mask CNN output, or a
@@ -208,18 +208,18 @@ what the output looks like.
 `screenshots/` (committed, addresses/client names/permit numbers redacted with solid black boxes over the source
 drawings' title blocks and identifying callouts — verify this holds if you add more):
 
-| File | Shows |
-| --- | --- |
-| `00_source_drawing_729plimsoll_redacted.png` | The real source drawing, unannotated, for reference against the overlays below |
-| `01_room_merging_and_dropout_native_729plimsoll.png` | Production's actual output at native resolution — the giant merged blob and the blank (undetected) garage, both visible directly |
-| `02a_downscaled_fit768_729plimsoll.png` / `02b_downscaled_fit1536_729plimsoll.png` | Same drawing, resized before inference — visibly *fewer* correctly-shaped rooms than native, not more |
-| `03_multiscale_averaged_729plimsoll.png` | The multiscale-averaged variant — same merge failure, cleaner small-room fragments |
-| `04a_sam_alternative_garage_success.png` / `04b_sam_alternative_meals_partial.png` | SAM's point-prompted results on the same drawing |
-| `05_room_merging_25taihu.png` | The same merge-and-garage-dropout pattern reproduced on a second, unrelated house |
-| `06_numbered_room_failure_76scott.png` | The boarding house — nearly every room renders as unlabeled "Unknown" |
-| `07_cornice_note_8darter.png` | A real "selected cornice to specification" construction note, the kind `scan_drawing_notes_for_quoting_attributes.py` extracts |
-| `08_ceiling_height_fcl_8darter.png` | A real section-view "FCL" ceiling-height annotation with its reduced-level dimension line |
-| `09_door_window_schedule_8darter.png` | A real door/window schedule sheet, showing exact per-door mm widths (the basis for the angle-2 door-width cross-check idea) |
+| File                                                                               | Shows                                                                                                                            |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `00_source_drawing_729plimsoll_redacted.png`                                       | The real source drawing, unannotated, for reference against the overlays below                                                   |
+| `01_room_merging_and_dropout_native_729plimsoll.png`                               | Production's actual output at native resolution — the giant merged blob and the blank (undetected) garage, both visible directly |
+| `02a_downscaled_fit768_729plimsoll.png` / `02b_downscaled_fit1536_729plimsoll.png` | Same drawing, resized before inference — visibly _fewer_ correctly-shaped rooms than native, not more                            |
+| `03_multiscale_averaged_729plimsoll.png`                                           | The multiscale-averaged variant — same merge failure, cleaner small-room fragments                                               |
+| `04a_sam_alternative_garage_success.png` / `04b_sam_alternative_meals_partial.png` | SAM's point-prompted results on the same drawing                                                                                 |
+| `05_room_merging_25taihu.png`                                                      | The same merge-and-garage-dropout pattern reproduced on a second, unrelated house                                                |
+| `06_numbered_room_failure_76scott.png`                                             | The boarding house — nearly every room renders as unlabeled "Unknown"                                                            |
+| `07_cornice_note_8darter.png`                                                      | A real "selected cornice to specification" construction note, the kind `scan_drawing_notes_for_quoting_attributes.py` extracts   |
+| `08_ceiling_height_fcl_8darter.png`                                                | A real section-view "FCL" ceiling-height annotation with its reduced-level dimension line                                        |
+| `09_door_window_schedule_8darter.png`                                              | A real door/window schedule sheet, showing exact per-door mm widths (the basis for the angle-2 door-width cross-check idea)      |
 
 ## First-pass scripts and findings
 
