@@ -15,7 +15,7 @@ production) and against this repo's own `tmp/` sample images; none of that image
 
 ### `catalog_segmentation_failures.py` — room-detection accuracy
 
-Runs the *actual* production room-extraction code (`OcrFloodFillSmoothedStrategy`'s private helpers, imported
+Runs the _actual_ production room-extraction code (`OcrFloodFillSmoothedStrategy`'s private helpers, imported
 directly, not reimplemented) with the model's input resolution varied: the native-resolution baseline (what
 production does today — `inference/preprocess.py`'s `prepare(image)` with no resize, just rounded up to the next
 multiple of 32), several smaller `fit_long` sizes, and a multiscale-logit-average variant (the idea behind the
@@ -27,7 +27,7 @@ so differences are attributable to segmentation resolution alone.
 house/multi-unit dwelling) plus this repo's `tmp/` samples, all 200 DPI A2/A3-equivalent rasterized pages
 (3300–4700px per side):**
 
-- **Downscaling before inference makes room detection *worse*, not better, on every image tested.** Labeled-room
+- **Downscaling before inference makes room detection _worse_, not better, on every image tested.** Labeled-room
   count dropped monotonically as `fit_long` decreased (e.g. one house went from 7 labeled rooms at native resolution
   to 2 at `fit_long=768`). This is the opposite of what the abandoned `fit_scale.py`/`multiscale.py` docstrings'
   stated rationale would predict ("the network was trained on ~256–512px crops, so a huge native-resolution input
@@ -64,7 +64,7 @@ house/multi-unit dwelling) plus this repo's `tmp/` samples, all 200 DPI A2/A3-eq
   accuracy problem at all: **the entire room-labeling mechanism is structurally dependent on OCR finding one of a
   fixed set of English descriptive keywords, and fails almost completely on drawings that label rooms differently**
   (numbered rooms, unit numbering, non-English labels, or just uncommon synonyms). The existing
-  `_unknown_rooms_from_closed_regions` fallback already finds the *geometry* of these rooms correctly (19 regions
+  `_unknown_rooms_from_closed_regions` fallback already finds the _geometry_ of these rooms correctly (19 regions
   found) — it just never attempts a CNN-based room-type label for them the way the OCR-seeded path does via
   `_get_room_type`. Wiring that in is a small, concrete, high-leverage fix, and it reuses exactly the technique the
   abandoned `mask_rooms.py`/`segmap_rooms.py` strategies already implemented (segmap-connected-component rooms with
@@ -78,7 +78,7 @@ Run: `../../venv/bin/python3 catalog_segmentation_failures.py --image <path> --f
 Two independent scale-estimation methods, both on infrastructure the repo already has:
 
 1. **Dimension-chain OCR**: clusters OCR'd numeric tokens that align into a straight horizontal/vertical run (a
-   dimension chain), and for each chain compares the *sum* of its labelled mm values to the *pixel span* the chain's
+   dimension chain), and for each chain compares the _sum_ of its labelled mm values to the _pixel span_ the chain's
    text covers.
 2. **Door-width cross-check**: matches the model's detected door icon polygons to nearby standalone OCR numbers in a
    plausible door-width range, using label_mm / door_pixel_width per matched door.
@@ -95,7 +95,7 @@ different real drawings.
   outright: -5.5% error on one drawing, -28.5% on another** (median across all detected chains on each). The error is
   not random — it has a clear, consistent, mechanistic explanation: the script approximates a chain's pixel span
   using its OCR text bounding boxes' outer edges, but dimension text sits inset from the actual tick marks it labels,
-  so the estimate systematically *understates* the true span. That bias is small for a chain with few, large segments
+  so the estimate systematically _understates_ the true span. That bias is small for a chain with few, large segments
   and compounds badly for a chain with many small filler segments (e.g. repeated ~90mm stud-allowance gaps). **On
   both test drawings, the single most accurate individual chain was the coarsest one available (fewest tokens,
   largest average segment) — one came out at -2.6% error, well within usable range.** A "prefer the chain with the
@@ -114,7 +114,7 @@ different real drawings.
   images. This was tried two ways: first reading the icon-class argmax the way `ocr_flood_fill_smoothed.py`'s
   `_sink_icons` reads sinks (produced near-single-pixel noise), then switching to the model's proper heatmap-based
   polygon extractor (`polygons_from_predictions`, the same path the abandoned `analyse`/`debug_get_polygons`
-  endpoints use) — which fixed nothing, ruling out "wrong extraction method" as the cause. The doors themselves *are*
+  endpoints use) — which fixed nothing, ruling out "wrong extraction method" as the cause. The doors themselves _are_
   reliably mm-labelled directly on these drawings (confirmed by eye on multiple real drawings, e.g. door swings
   individually labelled 720/820/920/1200mm) so the idea is sound; the blocker is that this model's door/icon
   detection itself appears to produce implausible geometry at the native resolution production runs at — the same
@@ -137,22 +137,22 @@ Run: `../../venv/bin/python3 estimate_scale_from_drawing.py --image <path> [--kn
 Pattern-matches OCR text against three signal types found by manually inspecting real take-off drawings (floor
 plans, section views, and construction-detail sheets): ceiling-height call-outs, cornice/no-cornice finish notes,
 and wet-area standard references. Deliberately simple regex/keyword matching, not a trained model — the point is to
-test *whether the signal is extractable at all* from a 200 DPI rasterized page via the OCR infrastructure already in
+test _whether the signal is extractable at all_ from a 200 DPI rasterized page via the OCR infrastructure already in
 production, not to ship a production parser.
 
 **Findings:**
 
 - **All three signal types were confirmed present on real drawings and successfully extracted by this script**,
   each on a different real drawing/page:
-  - A ceiling-height call-out written directly on a floor plan next to a raised/feature-ceiling room (a value in mm
-    next to the word "ceiling") — matched at 0.92 OCR confidence, but only via the script's windowed multi-detection
-    join, because OCR split the number and the word "Ceiling" into two separate text boxes. The single-detection-only
-    matcher alone would have missed it entirely.
-  - A section-view ceiling-height annotation using the "FCL" (finished ceiling level) abbreviation next to a metres
-    value — also matched at 0.92 confidence, independently cross-checked by hand against the same section's two
-    reduced-level figures (their difference matched the stated height exactly).
-  - A cornice construction note ("Selected cornice to specification") in a wall/ceiling detail sheet, read as a
-    single OCR box at 0.75–0.77 confidence — no windowing needed for this one.
+    - A ceiling-height call-out written directly on a floor plan next to a raised/feature-ceiling room (a value in mm
+      next to the word "ceiling") — matched at 0.92 OCR confidence, but only via the script's windowed multi-detection
+      join, because OCR split the number and the word "Ceiling" into two separate text boxes. The single-detection-only
+      matcher alone would have missed it entirely.
+    - A section-view ceiling-height annotation using the "FCL" (finished ceiling level) abbreviation next to a metres
+      value — also matched at 0.92 confidence, independently cross-checked by hand against the same section's two
+      reduced-level figures (their difference matched the stated height exactly).
+    - A cornice construction note ("Selected cornice to specification") in a wall/ceiling detail sheet, read as a
+      single OCR box at 0.75–0.77 confidence — no windowing needed for this one.
 - **A raked-ceiling legend note ("dashed area indicates raked ceiling...") was visually confirmed on a real drawing
   but not caught by this script** — it only pattern-matches raked-ceiling and cornice/square-set keywords against
   single OCR detections, not the windowed join used for ceiling-height patterns, so a phrase OCR splits across boxes
@@ -167,9 +167,9 @@ production, not to ship a production parser.
 - **Cornice length is already auto-computed** (`corniceLengthQuantity()` in
   `libraries/plaster-calculator-common/src/takeoff/quantity-takeoff-calculator.utils.ts` sums every room's full
   perimeter) — but with **no way to exclude a room from cornice**, even though real take-off records (see the
-  broader discovery report) track a distinct "square set" line item specifically because those rooms get *no*
+  broader discovery report) track a distinct "square set" line item specifically because those rooms get _no_
   cornice. So the concrete gap for cornice is not "detect a quantity" (done) but "detect which rooms/edges should be
-  *excluded*" — exactly the square-set/shadowline signal this script already demonstrates it can find in a
+  _excluded_" — exactly the square-set/shadowline signal this script already demonstrates it can find in a
   construction-detail note.
 - **The existing wet-area default has a specific, confirmed coverage gap**: `defaultWallBoardTypeForRoom` in
   `functions/plaster-calculator-functions/src/analyzer.ts` only special-cases room type `"Bath"`. But
@@ -186,7 +186,7 @@ Run: `../../venv/bin/python3 scan_drawing_notes_for_quoting_attributes.py --imag
 Two independent angles (room-merging in angle 1, door-icon detection in angle 2) both point at the same underlying
 suspect: the model runs in production at native image resolution (commonly 3300–4700px/side for a 200 DPI A2/A3
 page) against a network whose own abandoned-strategy documentation says it was trained on ~256–512px crops. The
-room-detection experiments here found that naively downscaling made results *worse*, not better, so the fix is
+room-detection experiments here found that naively downscaling made results _worse_, not better, so the fix is
 unlikely to be as simple as "resize before inference" — but the resolution mismatch itself remains a plausible
 common root cause worth investigating directly (e.g. fine-tuning, or a smarter multi-crop/tiling approach that
 doesn't lose small-room wall detail) before either failure mode is treated as fully independent.
