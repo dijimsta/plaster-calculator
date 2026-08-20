@@ -17,6 +17,7 @@ dependencies = [
     "opencv-python-headless>=4.11.0.86",
     "scipy-stubs~=1.17.1",
     "easyocr>=1.7.2",
+    "requests>=2.32.0",
 ]
 
 [dependency-groups]

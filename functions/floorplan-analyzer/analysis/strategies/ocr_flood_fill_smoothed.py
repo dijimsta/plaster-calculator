@@ -5,7 +5,7 @@ import math
 
 import cv2
 import numpy as np
-from inference.service import InferenceService
+from inference.client import InferenceClient
 from ocr.schemas import OcrSeed
 from ocr.service import OcrService
 from PIL import Image, ImageDraw, ImageFont
@@ -29,7 +29,7 @@ DEFAULT_UNKNOWN_ROOM_MIN_AREA = 1000
 class OcrFloodFillSmoothedStrategy:
     def __init__(
         self,
-        inference: InferenceService,
+        inference: InferenceClient,
         segmentation: SegmentationService,
         ocr: OcrService,
     ) -> None:

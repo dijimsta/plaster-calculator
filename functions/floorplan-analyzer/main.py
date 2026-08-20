@@ -209,7 +209,7 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
             DEFAULT_UNKNOWN_ROOM_MIN_AREA,
             OcrFloodFillSmoothedStrategy,
         )
-        from inference.service import InferenceService, load_model
+        from inference.http_client import HttpInferenceClient
         from ocr.service import OcrService
         from segmentation.service import SegmentationService
 
@@ -233,17 +233,9 @@ def ocr_flood_fill_smoothed(req: https_fn.Request) -> https_fn.Response:
             unknown_room_min_area=unknown_room_min_area,
         )
 
-        model_started_at = time.perf_counter()
-        model = load_model()
-        _log_info(
-            "ocr_flood_fill_smoothed model loaded",
-            elapsed_ms=_elapsed_ms(started_at),
-            model_ms=_elapsed_ms(model_started_at),
-        )
-
         process_started_at = time.perf_counter()
         strategy = OcrFloodFillSmoothedStrategy(
-            InferenceService(model), SegmentationService(), OcrService()
+            HttpInferenceClient(), SegmentationService(), OcrService()
         )
         params = OcrFloodFillSmoothedParams(
             source_file=filename,
