@@ -22,6 +22,13 @@ logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 options.set_global_options(region="us-west1", max_instances=5, enforce_app_check=True)
 
 INFERENCE_MEMORY = options.MemoryOption.GB_4
+# Measured, don't guess-reduce this (WORK-304): on a 200 DPI full-sheet scan,
+# ocr_flood_fill_smoothed peaked at ~23.6GB before the WORK-303 migration off
+# local PyTorch, and ~14.9GB after -- a real ~37% cut, but still close enough
+# to this limit that the pre-migration figure implies today's production code
+# can already OOM on large uploads. That's a separate, pre-existing risk this
+# migration happens to improve, not one it fully resolves; the fix here
+# widened the margin under GB_16, it didn't create room to shrink it.
 OCR_MEMORY = options.MemoryOption.GB_16
 INFERENCE_TIMEOUT = 60 * 60
 INFERENCE_CPU = 2
