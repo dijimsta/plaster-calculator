@@ -2,20 +2,21 @@
 
 ## Packages
 
-| Package                                                                             | Description                                                                          |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [`@apps/admin-cli`](apps/admin-cli)                                                 | Internal command-line tooling for Plaster Calculator administration.                 |
-| [`@apps/dev-cli`](apps/dev-cli)                                                     | Repository development and deployment tooling, exposed through the `dev-cli` binary. |
-| [`@apps/plaster-calculator-web`](apps/plaster-calculator-web)                       | Next.js web application for Plaster Calculator.                                      |
-| [`@apps/storybook-web`](apps/storybook-web)                                         | Production-like component workshop for the workspace's web UI libraries.             |
-| [`@functions/plaster-calculator-functions`](functions/plaster-calculator-functions) | Node.js 24 Firebase Functions backend for Plaster Calculator.                        |
-| [`@libraries/plaster-calculator-common`](libraries/plaster-calculator-common)       | Platform-neutral domain contracts shared by browser and Node.js packages.            |
-| [`@libraries/plaster-calculator-node-core`](libraries/plaster-calculator-node-core) | Reusable Node.js services and adapters for Plaster Calculator.                       |
-| [`@libraries/plaster-calculator-ui`](libraries/plaster-calculator-ui)               | Reusable, domain-aware React patterns for Plaster Calculator applications.           |
-| [`@libraries/plaster-calculator-web-core`](libraries/plaster-calculator-web-core)   | Reusable browser and Firebase client SDK adapters for Plaster Calculator.            |
-| [`@libraries/uikit-web`](libraries/uikit-web)                                       | Framework- and application-agnostic React component library for web interfaces.      |
-| [`@libraries/utilities`](libraries/utilities)                                       | Framework-agnostic shared utility functions.                                         |
-| [`@ui/internationalization`](ui/internationalization)                               | Framework- and application-agnostic internationalization layer for web interfaces.   |
+| Package                                                                             | Description                                                                             |
+| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [`@apps/admin-cli`](apps/admin-cli)                                                 | Internal command-line tooling for Plaster Calculator administration.                    |
+| [`@apps/dev-cli`](apps/dev-cli)                                                     | Repository development and deployment tooling, exposed through the `dev-cli` binary.    |
+| [`@apps/plaster-calculator-web`](apps/plaster-calculator-web)                       | Next.js web application for Plaster Calculator.                                         |
+| [`@apps/storybook-web`](apps/storybook-web)                                         | Production-like component workshop for the workspace's web UI libraries.                |
+| [`@functions/floorplan-inference`](functions/floorplan-inference)                   | TypeScript Firebase Function serving the floorplan segmentation model via ONNX Runtime. |
+| [`@functions/plaster-calculator-functions`](functions/plaster-calculator-functions) | Node.js 24 Firebase Functions backend for Plaster Calculator.                           |
+| [`@libraries/plaster-calculator-common`](libraries/plaster-calculator-common)       | Platform-neutral domain contracts shared by browser and Node.js packages.               |
+| [`@libraries/plaster-calculator-node-core`](libraries/plaster-calculator-node-core) | Reusable Node.js services and adapters for Plaster Calculator.                          |
+| [`@libraries/plaster-calculator-ui`](libraries/plaster-calculator-ui)               | Reusable, domain-aware React patterns for Plaster Calculator applications.              |
+| [`@libraries/plaster-calculator-web-core`](libraries/plaster-calculator-web-core)   | Reusable browser and Firebase client SDK adapters for Plaster Calculator.               |
+| [`@libraries/uikit-web`](libraries/uikit-web)                                       | Framework- and application-agnostic React component library for web interfaces.         |
+| [`@libraries/utilities`](libraries/utilities)                                       | Framework-agnostic shared utility functions.                                            |
+| [`@ui/internationalization`](ui/internationalization)                               | Framework- and application-agnostic internationalization layer for web interfaces.      |
 
 The `floorplan-analyzer` Firebase Function (`functions/floorplan-analyzer`) is a Python package, outside the pnpm
 workspace — see [floorplan-analyzer local setup](#floorplan-analyzer-local-setup) below. The `generated/` packages

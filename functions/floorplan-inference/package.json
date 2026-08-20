@@ -1,0 +1,31 @@
+{
+    "name": "@functions/floorplan-inference",
+    "private": true,
+    "type": "module",
+    "exports": "./out/index.js",
+    "main": "./out/index.js",
+    "scripts": {
+        "build": "tsc --build tsconfig.build.json",
+        "bundle": "dev-cli bundle",
+        "deploy": "firebase deploy --only functions:floorplan-inference",
+        "logs": "firebase functions:log",
+        "test": "node --test"
+    },
+    "dependencies": {
+        "busboy": "^1.6.0",
+        "firebase-admin": "^14.2.0",
+        "firebase-functions": "^7.3.2",
+        "onnxruntime-node": "^1.23.0",
+        "sharp": "^0.34.0"
+    },
+    "devDependencies": {
+        "@apps/dev-cli": "workspace:*",
+        "@types/busboy": "^1.5.4",
+        "@types/node": "^22.20.1",
+        "firebase-functions-test": "^3.5.0",
+        "typescript": "^6.0.3"
+    },
+    "engines": {
+        "node": "22"
+    }
+}

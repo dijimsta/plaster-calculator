@@ -13,6 +13,9 @@
             "path": "./apps/storybook-web/tsconfig.json"
         },
         {
+            "path": "./functions/floorplan-inference/tsconfig.build.json"
+        },
+        {
             "path": "./functions/plaster-calculator-functions/tsconfig.build.json"
         }
     ],
