@@ -14,10 +14,10 @@ committed here. The `screenshots/` directory **does** commit rendered overlay PN
 below) — every one has had its address, client name, lot number, and permit/surveyor stamp blacked out before being
 saved; only the floor plan geometry and generic drawing notes remain.
 
-This research was done in three passes. **Everything under a "(third pass)" or "(second pass)" marker below corrects,
-extends, or supersedes framing from an earlier pass** — most importantly, the original room-detection findings
-undersold how bad the room-merging problem actually is (see "Room boundary/geometry detection"). Read markers in
-order; a later marker on the same point wins.
+This research was done in four passes. **Everything under a "(fourth pass)", "(third pass)", or "(second pass)"
+marker below corrects, extends, or supersedes framing from an earlier pass** — most importantly, the original
+room-detection findings undersold how bad the room-merging problem actually is (see "Room boundary/geometry
+detection"). Read markers in order; a later marker on the same point wins.
 
 **Structure note (third pass):** the first two passes reported room-_label_ detection (can OCR/text-extraction find
 a room's name) and room-_boundary_ detection (can flood-fill find a room's shape) under one combined "room-detection
@@ -31,30 +31,40 @@ belongs to, with its original pass marked.
 ## Screenshots
 
 `screenshots/` (committed, addresses/client names/permit numbers redacted with solid black boxes over the source
-drawings' title blocks and identifying callouts — verify this holds if you add more):
+drawings' title blocks and identifying callouts — verify this holds if you add more).
 
-| File                                                                               | Shows                                                                                                                                                                                              |
-| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `00_source_drawing_729plimsoll_redacted.png`                                       | The real source drawing, unannotated, for reference against the overlays below                                                                                                                     |
-| `01_room_merging_and_dropout_native_729plimsoll.png`                               | Production's actual output at native resolution — the giant merged blob and the blank (undetected) garage, both visible directly                                                                   |
-| `02a_downscaled_fit768_729plimsoll.png` / `02b_downscaled_fit1536_729plimsoll.png` | Same drawing, resized before inference — visibly _fewer_ correctly-shaped rooms than native, not more                                                                                              |
-| `03_multiscale_averaged_729plimsoll.png`                                           | The multiscale-averaged variant — same merge failure, cleaner small-room fragments                                                                                                                 |
-| `04a_sam_alternative_garage_success.png` / `04b_sam_alternative_meals_partial.png` | SAM's point-prompted results on the same drawing                                                                                                                                                   |
-| `05_room_merging_25taihu.png`                                                      | The same merge-and-garage-dropout pattern reproduced on a second, unrelated house                                                                                                                  |
-| `06_numbered_room_failure_76scott.png`                                             | The boarding house — nearly every room renders as unlabeled "Unknown"                                                                                                                              |
-| `07_cornice_note_8darter.png`                                                      | A real "selected cornice to specification" construction note, the kind `scan_drawing_notes_for_quoting_attributes.py` extracts                                                                     |
-| `08_ceiling_height_fcl_8darter.png`                                                | A real section-view "FCL" ceiling-height annotation with its reduced-level dimension line                                                                                                          |
-| `09_door_window_schedule_8darter.png`                                              | A real door/window schedule sheet, showing exact per-door mm widths (the basis for the scale-detection door-width cross-check idea)                                                                |
-| `10_font_signature_numbered_rooms_76scott.png`                                     | **(third pass)** Font-signature detection finding "Room 1".."Room 8" on the boarding-house drawing — the case a keyword list structurally cannot label                                             |
-| `11_font_signature_rotated_labels_729plimsoll.png`                                 | **(third pass)** Keyword-matched training spans landing correctly on rotated "Kitchen"/"Entry"/"L'Dry"/"Ens" labels, positions intact despite rotation                                             |
-| `12_font_signature_false_positives_76scott.png`                                    | **(third pass)** The honest downside of the same technique: this drafting office's title-block field labels ("SCALE:", "DRAWN:", etc.) share the room-label font too                               |
-| `13_garage_leak_diagnostic_8darter.png`                                            | **(third pass)** The Garage OCR seed's raw flood fill, unrejected — it consumes the entire page outside the building envelope                                                                      |
-| `14_garage_icon_reinforced_result_729plimsoll.png`                                 | **(third pass)** Attempt 1's actual output: icon-aware wall reinforcement applied, then run through the real pipeline — Garage still blank, everything else unchanged                              |
-| `15_garage_missing_door_icon_729plimsoll.png`                                      | **(third pass)** Why attempt 1 can't work: every detected door/window icon on the page (orange/blue rings) vs. the Garage seed (red) — nothing detected near the garage door                       |
-| `16_garage_kernel_sweep_destroys_rooms_729plimsoll.png`                            | **(third pass)** Attempt 2's actual output: a wall-closing kernel large enough to _approach_ bridging the garage door still doesn't find Garage, and has already destroyed nearly every other room |
-| `17_garage_sam2_729plimsoll.png`                                                   | **(third pass)** Attempt 3's actual output: SAM2 (`sam2.1-hiera-base-plus`) point-prompted at the Garage seed — a real, comparable result to first-pass SAM1, same unsolved mask-selection problem |
-| `18_tiling_vs_native_729plimsoll.png`                                              | **(third pass)** Tiled/patch-based inference's actual output — comparable to native, doesn't independently fix the merge or dropout failures                                                       |
-| `19_flip_ensemble_729plimsoll.png`                                                 | **(third pass)** Flip-based test-time-augmentation ensembling's actual output — same merge, same blank Garage, at ~4.5x the runtime                                                                |
+**Redaction correction (fourth pass):** re-deriving every source page's identifying text and image bounding boxes
+directly from the PDFs (rather than trusting the existing redaction) found two real gaps in already-committed
+screenshots: the 729-Plimsoll surveyor-stamp redaction box was 80px shorter than the actual stamp image, leaving a
+real company name and permit number visible in 14 files, and `09_door_window_schedule_8darter.png` had no
+title-block redaction at all, exposing a real client name and street address. Both are fixed (see the redaction fix
+commit); if you add new screenshots, don't assume an existing box set fully covers a new page — a drafting office's
+stamp/title-block position can shift between sheets in the same drawing set, and a raster stamp image won't show up
+in a text-layer search at all.
+
+| File                                                                                                                                                                                      | Shows                                                                                                                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `00_source_drawing_729plimsoll_redacted.png`                                                                                                                                              | The real source drawing, unannotated, for reference against the overlays below                                                                                                                     |
+| `01_room_merging_and_dropout_native_729plimsoll.png`                                                                                                                                      | Production's actual output at native resolution — the giant merged blob and the blank (undetected) garage, both visible directly                                                                   |
+| `02a_downscaled_fit768_729plimsoll.png` / `02b_downscaled_fit1536_729plimsoll.png`                                                                                                        | Same drawing, resized before inference — visibly _fewer_ correctly-shaped rooms than native, not more                                                                                              |
+| `03_multiscale_averaged_729plimsoll.png`                                                                                                                                                  | The multiscale-averaged variant — same merge failure, cleaner small-room fragments                                                                                                                 |
+| `04a_sam_alternative_garage_success.png` / `04b_sam_alternative_meals_partial.png`                                                                                                        | SAM's point-prompted results on the same drawing                                                                                                                                                   |
+| `05_room_merging_25taihu.png`                                                                                                                                                             | The same merge-and-garage-dropout pattern reproduced on a second, unrelated house                                                                                                                  |
+| `06_numbered_room_failure_76scott.png`                                                                                                                                                    | The boarding house — nearly every room renders as unlabeled "Unknown"                                                                                                                              |
+| `07_cornice_note_8darter.png`                                                                                                                                                             | A real "selected cornice to specification" construction note, the kind `scan_drawing_notes_for_quoting_attributes.py` extracts                                                                     |
+| `08_ceiling_height_fcl_8darter.png`                                                                                                                                                       | A real section-view "FCL" ceiling-height annotation with its reduced-level dimension line                                                                                                          |
+| `09_door_window_schedule_8darter.png`                                                                                                                                                     | A real door/window schedule sheet, showing exact per-door mm widths (the basis for the scale-detection door-width cross-check idea)                                                                |
+| `10_font_signature_numbered_rooms_76scott.png`                                                                                                                                            | **(third pass)** Font-signature detection finding "Room 1".."Room 8" on the boarding-house drawing — the case a keyword list structurally cannot label                                             |
+| `11_font_signature_rotated_labels_729plimsoll.png`                                                                                                                                        | **(third pass)** Keyword-matched training spans landing correctly on rotated "Kitchen"/"Entry"/"L'Dry"/"Ens" labels, positions intact despite rotation                                             |
+| `12_font_signature_false_positives_76scott.png`                                                                                                                                           | **(third pass)** The honest downside of the same technique: this drafting office's title-block field labels ("SCALE:", "DRAWN:", etc.) share the room-label font too                               |
+| `13_garage_leak_diagnostic_8darter.png`                                                                                                                                                   | **(third pass)** The Garage OCR seed's raw flood fill, unrejected — it consumes the entire page outside the building envelope                                                                      |
+| `14_garage_icon_reinforced_result_729plimsoll.png`                                                                                                                                        | **(third pass)** Attempt 1's actual output: icon-aware wall reinforcement applied, then run through the real pipeline — Garage still blank, everything else unchanged                              |
+| `15_garage_missing_door_icon_729plimsoll.png`                                                                                                                                             | **(third pass)** Why attempt 1 can't work: every detected door/window icon on the page (orange/blue rings) vs. the Garage seed (red) — nothing detected near the garage door                       |
+| `16_garage_kernel_sweep_destroys_rooms_729plimsoll.png`                                                                                                                                   | **(third pass)** Attempt 2's actual output: a wall-closing kernel large enough to _approach_ bridging the garage door still doesn't find Garage, and has already destroyed nearly every other room |
+| `17_garage_sam2_729plimsoll.png`                                                                                                                                                          | **(third pass)** Attempt 3's actual output: SAM2 (`sam2.1-hiera-base-plus`) point-prompted at the Garage seed — a real, comparable result to first-pass SAM1, same unsolved mask-selection problem |
+| `18_tiling_vs_native_729plimsoll.png`                                                                                                                                                     | **(third pass)** Tiled/patch-based inference's actual output — comparable to native, doesn't independently fix the merge or dropout failures                                                       |
+| `19_flip_ensemble_729plimsoll.png`                                                                                                                                                        | **(third pass)** Flip-based test-time-augmentation ensembling's actual output — same merge, same blank Garage, at ~4.5x the runtime                                                                |
+| `20_multiplan_survey_76scott.png` / `21_multiplan_survey_729plimsoll.png` / `22_multiplan_survey_25taihu.png` / `23_multiplan_survey_37clarendon.png` / `24_multiplan_survey_8darter.png` | **(fourth pass)** `survey_labels_across_real_plans.py`'s overlay output for each of the 5 real houses — see "Multi-plan label survey" below                                                        |
 
 ---
 
@@ -191,6 +201,36 @@ rather than cropped out of the results:
   data rather than a font genuinely shared with non-room text, fixable by requiring a larger minimum training-set
   size before trusting a cluster.
 
+### Follow-up: the title-block false positives were a rounding-granularity bug, not fundamental **(fourth pass)**
+
+Direct visual inspection of `screenshots/12_font_signature_false_positives_76scott.png` raised a specific question:
+the false-positive title-block text visually looks smaller than the genuine room labels in the same cluster — if
+`font_signature()` compares size, why would two different sizes cluster together at all? Checking the actual
+(unrounded) `span.size` values directly confirms the room labels ("ROOM 1".."ROOM 8", "GARAGE", "KITCHEN", "LIVING")
+are set at **6.601pt**, while the title-block field labels ("SCALE:", "DRAWN:", etc.) are set at **6.276pt** — a
+real, measurable ~4.9% difference, not the same size. They only collided into one cluster because
+`font_signature()`'s size-rounding granularity (`SIZE_ROUND_PT`, previously a fixed 0.5) was coarse enough that both
+values round to the same 6.5pt bucket.
+
+**Fix, verified not assumed**: tightened the default rounding granularity from 0.5pt to 0.1pt (now a
+`--size-round-pt` CLI flag, still overridable — see `detect_room_labels_by_font_signature.py`). Re-ran both existing
+test drawings at the new default:
+
+- 76 Scott: the room-label cluster's signature now separates cleanly into a `6.6pt` bucket (room labels + ambiguous
+  "R" fragments only) and a distinct `6.3pt` bucket the title-block spans fall into instead — **all 9 false
+  positives gone**, all 8 genuine hits and all 8 ambiguous fragments untouched (16 new matches in the room-label
+  cluster, down from 25, with zero of the 9 removed matches being a real room label).
+- 729 Plimsoll (the rotated-label drawing): re-ran the same rotated-label cluster at the new granularity —
+  **byte-identical new-match list** to the 0.5pt baseline (same 10 new finds, same rotated flags). Confirms the
+  tighter granularity doesn't fragment or lose anything on the one other real drawing this technique has been tested
+  against.
+
+This changes the false-positive framing from earlier in this section: the fix for _these_ false positives isn't a
+title-block-region-exclusion heuristic (which would need to know the page's layout conventions) — it's simply
+comparing font size at a realistic precision. A genuine same-size collision (a drafting office that sets its
+title-block boilerplate in the _exact_ same rounded size as its room names, not just close) would still need a
+title-block exclusion; neither real office tested here turned out to be that case.
+
 **Run against the first drawing's rotated-label failure (Kitchen/Entry/Porch/L'Dry/Ens, all rotated 90°)**: the
 dominant training cluster (18 spans, the largest and most reliable seen in either drawing) is populated by exactly
 these labels already — see "Rotated text", above, for why: keyword-matching against PDF text-layer _content_ was
@@ -224,15 +264,76 @@ swallowed into a merge (Entry, Kitchen — still needs the boundary fix to actua
 
 Run: `../../venv/bin/python3 detect_room_labels_by_font_signature.py --pdf <path> --page <n> [--top-n-signatures 3] [--render-overlay <path>]`
 
+### Multi-plan label survey **(fourth pass)**
+
+Everything above was tested on one or two drawings at a time. `survey_labels_across_real_plans.py` runs the same,
+unmodified `detect_room_labels_by_font_signature.py` detector (imported, not reimplemented) across all **five** real
+houses used throughout this research, and emits one consolidated table — `label_survey.csv`, 792 rows — with every
+detected label's text, source (keyword-matched training vs. font-signature-only new find), cluster rank, font
+family/size/bold/italic, colour, pixel seed position, and rotation. Each house's actual floor-plan page was found
+the same evidence-based way as the rest of this research: scan every page of every PDF in the house's folder for
+`OCR_KEYWORDS` density, not guessed from filenames — this is how 729 Plimsoll's real page turned out to be page 10
+of a third, differently-named `Architectural Drawings.pdf`, since the two street-address-named files in its folder
+are both scanned/rasterized with no PDF text layer at all.
+
+**The top-3 font-signature clusters per page are not all room-label clusters — reported honestly per cluster, not
+lumped into one "detected labels" count:**
+
+| House        | Cluster (font, size)                       | Training | New | What it actually is                                                                                                                       |
+| ------------ | ------------------------------------------ | -------- | --- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 76 Scott     | `ArialMT` 6.6pt                            | 5        | 16  | **Room names** (see above) — 8 genuine, 8 ambiguous fragments                                                                             |
+| 729 Plimsoll | `CIDFont+F1` 8.8pt                         | 18       | 10  | Door/window/fixture reference codes (D1–D3, F/P, AA) — not room names, but real, usable drawing annotations                               |
+| 729 Plimsoll | `CIDFont+F1` 8.4pt                         | 6        | 4   | Area-schedule figures ("Dwelling – 198.00 m2", "Total Ground – 235.00 m2")                                                                |
+| 729 Plimsoll | `CIDFont+F1` 8.8pt (distinct colour/flags) | 3        | 14  | Window reference codes (W1–W10)                                                                                                           |
+| 25 Taihu     | `CIDFont+F1` 3.9pt                         | 11       | 103 | A **symbol/fixture legend table** ("SYMBOL", "DESCRIPTION", "ARTICULATION JOINT", "DOWNPIPE", "FIRE PLACE"…) — not room names, a schedule |
+| 25 Taihu     | `CIDFont+F1` 4.5pt                         | 4        | 34  | A door/window schedule mixed with floor references ("D01", "W01", "GF")                                                                   |
+| 37 Clarendon | `Swiss721BT-LightExtended` 7.9pt           | 34       | 16  | Plausible room/space names (COURTYARD, PWD) mixed with fixture labels (COATS)                                                             |
+| 37 Clarendon | `Swiss721BT-LightExtended` 5.9pt           | 10       | 62  | Furniture/fixture callouts and door specs — see the Garage-relevant finding below                                                         |
+| 37 Clarendon | `Calibri-Light` 8.4pt                      | 8        | 35  | General waterproofing/regulatory note text (AS4654 compliance boilerplate)                                                                |
+| 8 Darter     | `ArialMT` 7.9pt                            | 36       | 205 | **A second, distinct false-positive pattern** — see below                                                                                 |
+| 8 Darter     | `Arial-BoldMT` 9.9pt                       | 15       | 3   | **Room names** — clean, high-confidence (SITTING, B.I.R, WALKWAY)                                                                         |
+| 8 Darter     | `ArialMT` 8.1pt                            | 4        | 56  | A utilities/services legend (GAS METER, METER BOX, TELSTRA BOX, HOT WATER SYSTEM)                                                         |
+
+**Two new findings worth flagging on their own:**
+
+- **8 Darter's dominant cluster is a dimension-number collision, not a title-block one.** Its 205 new "matches" are
+  overwhelmingly bare dimension figures ("190", "5500", "3940", "6000") interleaved with genuine room names
+  ("SITTING") — this drafting office's template sets dimension-string text in the _exact_ same font/size/style/colour
+  as room names, not merely a close rounding-boundary collision like 76 Scott's. Confirmed this is a different root
+  cause, not a repeat of the same rounding bug: the actual room names on this page cluster separately and cleanly at
+  `Arial-BoldMT` 9.9pt (bold, distinct from the dimension text's plain `ArialMT` 7.9pt) — so the fix here isn't
+  finer size-rounding, it's that `flags` (bold) already does the discriminating work correctly, provided the
+  training set favours the bold cluster. This is exactly the scenario the earlier "requires a false-positive filter"
+  caveat was anticipating, now seen for real on a second house with a different mechanism than the first.
+- **37 Clarendon's secondary cluster includes the literal text "PANEL LIFT DOOR"** next to a "2800W x 2400H"
+  dimension callout — a real, independent, _text-based_ signal for garage-style doors on at least one real drawing.
+  This is directly relevant to the Garage-specific failure below: Attempt 1 there failed because the model's _icon_
+  detector never recognises a garage door as a "Door" icon. A text-based detector reading the drawing's own door
+  labels wouldn't have that problem — worth a follow-up spike specifically checking whether other real garage doors
+  are labelled this explicitly, since this research's Garage sample (5 houses) didn't previously check for a text
+  callout at the door location, only for an icon.
+
+**What this does and doesn't establish**: this is a survey of what the technique returns, not a new accuracy claim
+for room-label detection specifically — most of the "new" volume across these 5 houses is schedules, legends, and
+reference codes, not missed room names (76 Scott and 8 Darter's bold cluster remain the only two clean room-name
+wins in this sample). The useful result is the full attribute table (`label_survey.csv`) itself: position, rotation,
+and font metadata for every detected span, real data a downstream flood-fill-seeding or schedule-extraction step
+could consume directly, rather than a claim that font-signature clustering alone reliably separates "room name" from
+"everything else" without also looking at what the training-set content itself suggests a cluster is.
+
+Run: `../../venv/bin/python3 survey_labels_across_real_plans.py --out-dir <dir> [--top-n-signatures 3]`
+
 ### What's promising vs. not (room label detection)
 
-| Idea                                                          | Verdict                                                                                                                                                                                                                |
-| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Wire CNN-based room typing into the unlabeled-region fallback | **Cheapest fix available** — geometry already found for numbered/unusual-label rooms, only labeling is missing                                                                                                         |
-| PaddleOCR as an alternative engine                            | Real, measured accuracy win, especially on label-punctuation noise; real 3–5x speed cost                                                                                                                               |
-| Rotation-aware OCR (`rotation_info`)                          | Real, working fix for rotated labels; real ~7x cost; strictly dominated by the text layer where available                                                                                                              |
-| PDF text-layer keyword matching                               | Best foundation in this section — near-instant, rotation-immune for free, ~88% page coverage                                                                                                                           |
-| **Font-signature detection (new, third pass)**                | **Real, verified win on exactly the case it was built for** (all 8 numbered rooms) — needs a false-positive filter (title-block exclusion, minimum training-set size) before production use, not a fundamental blocker |
+| Idea                                                                                         | Verdict                                                                                                                                                                                                                                                                                                    |
+| -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wire CNN-based room typing into the unlabeled-region fallback                                | **Cheapest fix available** — geometry already found for numbered/unusual-label rooms, only labeling is missing                                                                                                                                                                                             |
+| PaddleOCR as an alternative engine                                                           | Real, measured accuracy win, especially on label-punctuation noise; real 3–5x speed cost                                                                                                                                                                                                                   |
+| Rotation-aware OCR (`rotation_info`)                                                         | Real, working fix for rotated labels; real ~7x cost; strictly dominated by the text layer where available                                                                                                                                                                                                  |
+| PDF text-layer keyword matching                                                              | Best foundation in this section — near-instant, rotation-immune for free, ~88% page coverage                                                                                                                                                                                                               |
+| **Font-signature detection (new, third pass; false positives fixed fourth pass)**            | **Real, verified win on exactly the case it was built for** (all 8 numbered rooms) — the title-block collision was a rounding-granularity bug, now fixed (0.1pt default), verified with zero regression on the other test drawing; a thin-training-set minimum is still worth adding before production use |
+| Bold (`flags`) as a discriminating field, across a 5-house survey **(fourth pass)**          | **Promising, seen for real on 8 Darter** — its bold room-name cluster is completely clean where its plain-weight cluster collides with dimension numbers; worth checking whether a training set can be told to prefer a bold cluster when one exists                                                       |
+| Text-based door-type detection (e.g. "PANEL LIFT DOOR" callouts) **(fourth pass, untested)** | **New lead, not yet tried against the Garage failure** — sidesteps the icon-detector gap Attempt 1 hit; needs checking across more real garage doors before it's more than a one-house observation                                                                                                         |
 
 ---
 

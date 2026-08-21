@@ -60,7 +60,13 @@ import fitz  # noqa: E402  (pymupdf)
 from ocr.keywords import OCR_KEYWORDS  # noqa: E402
 
 PRODUCTION_DPI = 200
-SIZE_ROUND_PT = 0.5  # group font sizes to the nearest half-point
+SIZE_ROUND_PT = 0.1  # default grouping granularity -- see --size-round-pt and the
+# README's "False-positive fix: tighter size-rounding granularity" section. Started
+# at 0.5pt; verified against real drawings that 0.5pt was coarse enough to collide
+# two genuinely different sizes (a drafting office's room-name callouts and its
+# title-block field labels, 6.601pt vs 6.276pt -- 4.9% apart) into one false-positive
+# -laden cluster. 0.1pt separates them cleanly with zero change to any other
+# already-reported cluster on either test drawing (byte-identical new-span lists).
 
 
 @dataclass(frozen=True)
@@ -136,13 +142,21 @@ def match_keyword(text: str) -> str | None:
     return next((keyword for keyword in OCR_KEYWORDS if keyword in lower), None)
 
 
-def font_signature(span: TextSpan) -> FontSignature:
-    rounded_size = round(span.size / SIZE_ROUND_PT) * SIZE_ROUND_PT
+def font_signature(
+    span: TextSpan, size_round_pt: float = SIZE_ROUND_PT
+) -> FontSignature:
+    # round() twice: first to snap to the nearest size_round_pt multiple, then to a
+    # fixed 4 decimal places purely to clean up the binary-float representation
+    # error that multiplying by a non-power-of-two step (e.g. 0.1) introduces
+    # (6.6000000000000005 instead of 6.6) -- cosmetic only, doesn't change bucketing.
+    rounded_size = round(round(span.size / size_round_pt) * size_round_pt, 4)
     return (span.font, rounded_size, span.flags, span.color)
 
 
-def dominant_signature(training_spans: list[TextSpan]) -> tuple[FontSignature, Counter]:
-    counts = Counter(font_signature(s) for s in training_spans)
+def dominant_signature(
+    training_spans: list[TextSpan], size_round_pt: float = SIZE_ROUND_PT
+) -> tuple[FontSignature, Counter]:
+    counts = Counter(font_signature(s, size_round_pt) for s in training_spans)
     if not counts:
         raise ValueError("No keyword-matched training spans found on this page")
     return counts.most_common(1)[0][0], counts
@@ -158,9 +172,14 @@ class FontSignatureResult:
 
 
 def _spans_for_signature(
-    all_spans: list[TextSpan], keyword_spans: list[TextSpan], signature: FontSignature
+    all_spans: list[TextSpan],
+    keyword_spans: list[TextSpan],
+    signature: FontSignature,
+    size_round_pt: float = SIZE_ROUND_PT,
 ) -> tuple[list[TextSpan], list[TextSpan]]:
-    signature_spans = [s for s in all_spans if font_signature(s) == signature]
+    signature_spans = [
+        s for s in all_spans if font_signature(s, size_round_pt) == signature
+    ]
     keyword_positions = {(round(s.bbox[0]), round(s.bbox[1])) for s in keyword_spans}
     new_spans = [
         s
@@ -170,7 +189,9 @@ def _spans_for_signature(
     return signature_spans, new_spans
 
 
-def detect(all_spans: list[TextSpan]) -> FontSignatureResult:
+def detect(
+    all_spans: list[TextSpan], size_round_pt: float = SIZE_ROUND_PT
+) -> FontSignatureResult:
     """Single-signature version: just the one most common font signature
     among the training set. Simple, but -- see README -- a page can
     legitimately have more than one room-label-ish font cluster (e.g. a
@@ -181,9 +202,9 @@ def detect(all_spans: list[TextSpan]) -> FontSignatureResult:
     kept because it's the simplest-possible version of the idea and is
     worth reporting as its own (weaker) data point."""
     keyword_spans = [s for s in all_spans if match_keyword(s.text) is not None]
-    signature, counts = dominant_signature(keyword_spans)
+    signature, counts = dominant_signature(keyword_spans, size_round_pt)
     signature_spans, new_spans = _spans_for_signature(
-        all_spans, keyword_spans, signature
+        all_spans, keyword_spans, signature, size_round_pt
     )
     return FontSignatureResult(
         keyword_spans, signature, counts, signature_spans, new_spans
@@ -191,7 +212,11 @@ def detect(all_spans: list[TextSpan]) -> FontSignatureResult:
 
 
 def detect_top_signatures(
-    all_spans: list[TextSpan], *, top_n: int = 3, min_training_count: int = 2
+    all_spans: list[TextSpan],
+    *,
+    top_n: int = 3,
+    min_training_count: int = 2,
+    size_round_pt: float = SIZE_ROUND_PT,
 ) -> list[FontSignatureResult]:
     """Every font signature with at least `min_training_count` training-set
     (keyword-matched) spans, up to `top_n` clusters -- not just the single
@@ -199,13 +224,13 @@ def detect_top_signatures(
     cluster's own new-find/false-positive rate can be judged on its own,
     rather than silently unioning them into one number."""
     keyword_spans = [s for s in all_spans if match_keyword(s.text) is not None]
-    counts = Counter(font_signature(s) for s in keyword_spans)
+    counts = Counter(font_signature(s, size_round_pt) for s in keyword_spans)
     results = []
     for signature, count in counts.most_common(top_n):
         if count < min_training_count:
             continue
         signature_spans, new_spans = _spans_for_signature(
-            all_spans, keyword_spans, signature
+            all_spans, keyword_spans, signature, size_round_pt
         )
         results.append(
             FontSignatureResult(
@@ -267,6 +292,17 @@ def _parse_args() -> argparse.Namespace:
         default=3,
         help="Report this many common training-set font signatures, not just #1",
     )
+    parser.add_argument(
+        "--size-round-pt",
+        type=float,
+        default=SIZE_ROUND_PT,
+        help=(
+            "Group font sizes to the nearest multiple of this many points before "
+            "clustering (default 0.5). Finer values separate signatures that only "
+            "differ by a fraction of a point -- see the README's false-positive "
+            "granularity finding."
+        ),
+    )
     parser.add_argument("--render-overlay", type=Path, default=None)
     return parser.parse_args()
 
@@ -303,8 +339,11 @@ def main() -> None:
 
     spans = extract_text_spans(page)
     print(f"{len(spans)} total non-empty text spans on this page")
+    print(f"Size-rounding granularity: {args.size_round_pt}pt")
 
-    results = detect_top_signatures(spans, top_n=args.top_n_signatures)
+    results = detect_top_signatures(
+        spans, top_n=args.top_n_signatures, size_round_pt=args.size_round_pt
+    )
     if not results:
         print("No keyword-matched training spans found on this page -- nothing to do.")
         return
