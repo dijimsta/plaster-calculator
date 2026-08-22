@@ -24,6 +24,7 @@ import {
     useGenerateQuoteAction,
     useProjectQuoteState,
 } from "./quote-generation.hooks.js";
+import { useQuoteMarginEstimate } from "./quote-margin.hooks.js";
 
 export default function ProjectQuoteReadinessPage({
     params,
@@ -38,6 +39,7 @@ export default function ProjectQuoteReadinessPage({
         useQuoteReadinessFixControlRenderer(projectId);
     const projectQuote = useProjectQuoteState(projectId, projectState.project);
     const editor = useProjectQuoteEditor(projectId, projectQuote);
+    const marginEstimate = useQuoteMarginEstimate(projectId);
     const { isGenerating, errorMessage, handleGenerateQuote } =
         useGenerateQuoteAction(projectId, projectQuote.refresh);
     const { printQuoteDocument } = usePrintQuoteDocument();
@@ -82,6 +84,7 @@ export default function ProjectQuoteReadinessPage({
                 renderCheckFooter={renderCheckFooter}
                 projectQuote={projectQuote}
                 editor={editor}
+                marginEstimate={marginEstimate}
                 isGenerating={isGenerating}
                 generationErrorMessage={errorMessage}
                 onGenerateQuote={handleGenerateQuote}
