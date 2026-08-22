@@ -60,6 +60,17 @@ type Supplier
     team: Team! @ref(fields: "teamId", references: "id")
     teamId: String!
     name: String!
+    isDefault: Boolean! @default(value: false)
+
+    # Contact details. Nullable with no defaults, rather than "" defaults:
+    # "not filled in yet" must stay distinguishable from "deliberately
+    # blank".
+    contactName: String
+    phoneNumber: String
+    email: String
+    address: String
+    accountNumber: String
+
     createdAt: Timestamp! @default(expr: "request.time")
     updatedAt: Timestamp! @default(expr: "request.time")
 }
