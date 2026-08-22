@@ -630,6 +630,20 @@ exports.updateQuoteDetails = function updateQuoteDetails(dcOrVars, vars) {
 }
 ;
 
+const setMyQuoteSupplierRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'SetMyQuoteSupplier', inputVars);
+}
+setMyQuoteSupplierRef.operationName = 'SetMyQuoteSupplier';
+exports.setMyQuoteSupplierRef = setMyQuoteSupplierRef;
+
+exports.setMyQuoteSupplier = function setMyQuoteSupplier(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(setMyQuoteSupplierRef(dcInstance, inputVars));
+}
+;
+
 const updateQuoteItemRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();

@@ -540,6 +540,18 @@ export function updateQuoteDetails(dcOrVars, vars) {
   return executeMutation(updateQuoteDetailsRef(dcInstance, inputVars));
 }
 
+export const setMyQuoteSupplierRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'SetMyQuoteSupplier', inputVars);
+}
+setMyQuoteSupplierRef.operationName = 'SetMyQuoteSupplier';
+
+export function setMyQuoteSupplier(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(setMyQuoteSupplierRef(dcInstance, inputVars));
+}
+
 export const updateQuoteItemRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();

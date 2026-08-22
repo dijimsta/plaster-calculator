@@ -1078,6 +1078,40 @@ mutation UpdateQuoteDetails($id: UUID!, $reference: String)
     )
 }
 
+# Changes a `Quote`'s supplier (WORK-379), for the supplier picker on the
+# margin card. Both `$quoteId` and `$supplierId` are ownership-checked
+# against `auth.token.teamId` in the same `query @redact` block, following
+# the dual-ownership-check pattern `AssignQuoteTemplateToCompany`
+# (companies.mutations.gql) uses for `$companyId`/`$quoteTemplateId`, so
+# neither a quote nor a supplier belonging to another team can be linked
+# together.
+mutation SetMyQuoteSupplier($quoteId: UUID!, $supplierId: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        quote(key: { id: $quoteId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this quote"
+            ) {
+            id
+            teamId
+        }
+        supplier(key: { id: $supplierId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this supplier"
+            ) {
+            id
+            teamId
+        }
+    }
+    quote_update(
+        id: $quoteId
+        data: { supplierId: $supplierId, updatedAt_expr: "request.time" }
+    )
+}
+
 mutation UpdateQuoteItem(
     $id: UUID!
     $displayOrder: Int!
@@ -1227,9 +1261,21 @@ mutation DeleteQuoteItem($id: UUID!) @auth(level: USER) @transaction {
 # enforce, matching how `UpdateQuoteStatus` above defers
 # transition-order enforcement to the web app layer rather than guessing
 # at it here.
+#
+# `$supplierId` (WORK-379) is optional and nullable, following the same
+# no-default nullable-variable shape as `$item1Unit`/`$item1SourceTemplateId`
+# above, so a team with no suppliers yet still generates successfully — it
+# is written straight to `Quote.supplierId` without an ownership `@check`,
+# the same as every per-item `$itemNSourceTemplateId`/`$itemNQuantitySourceId`
+# in this mutation: those FKs come from the trusted match/price pipeline
+# (`generate-quote.utils.ts`), not raw user input, so this mutation checks
+# only `$projectId` ownership up front and trusts the rest of its payload.
+# `SetMyQuoteSupplier` below is the ownership-checked path for a user
+# directly picking a supplier post-generation.
 mutation CreateQuoteWithItems(
     $projectId: UUID!
     $quoteId: UUID!
+    $supplierId: UUID
     $includeItem1: Boolean = false
     $item1Name: String = ""
     $item1DisplayOrder: Int = 0
@@ -1474,6 +1520,7 @@ mutation CreateQuoteWithItems(
             id: $quoteId
             projectId: $projectId
             teamId_expr: "auth.token.teamId"
+            supplierId: $supplierId
             status: "draft"
             createdAt_expr: "request.time"
             updatedAt_expr: "request.time"
