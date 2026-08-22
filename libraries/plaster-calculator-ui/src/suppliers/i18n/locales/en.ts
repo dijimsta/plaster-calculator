@@ -1,0 +1,52 @@
+export const en = Object.freeze({
+    supplierRow: Object.freeze({
+        defaultBadge: "Default",
+        noContactName: "No contact",
+        noPhoneNumber: "No phone",
+        coverage: "{{estimated}} of {{total}} estimated",
+        notEstimatedYet: "Not estimated yet",
+    }),
+    supplierDetailCard: Object.freeze({
+        title: "Details",
+        fields: Object.freeze({
+            contactName: "Contact person",
+            phoneNumber: "Phone",
+            email: "Email",
+            address: "Address",
+            accountNumber: "Account number",
+        }),
+        defaultBadge: "Default supplier",
+        setAsDefault: "Set as default",
+        deleteTitle: "Delete supplier",
+        cannotDeleteDefaultTitle: "The default supplier can't be deleted",
+        delete: "Delete supplier",
+        deleteDialogTitle: "Delete {{name}}?",
+        deleteDialogDescription:
+            "This removes {{name}} and its cost estimates. This can't be undone.",
+        deleteCancel: "Cancel",
+        deleteSubmit: "Delete supplier",
+        deletingAction: "Deleting…",
+        save: "Save changes",
+    }),
+    supplierCostEstimationCard: Object.freeze({
+        title: "Material cost estimation",
+        columnItem: "Item",
+        columnUnit: "Unit",
+        columnEstimate: "Est. cost / unit",
+        noUnit: "No unit",
+        noEstimate: "No estimate",
+        estimateLabel: "Estimated cost per unit for {{name}}",
+        coverage: "{{estimated}} of {{total}} estimated",
+        emptyStateTitle: "No priceable items yet",
+    }),
+    newSupplierPanel: Object.freeze({
+        title: "New supplier",
+        fields: Object.freeze({
+            name: "Supplier name",
+            phoneNumber: "Phone",
+            accountNumber: "Account number",
+        }),
+        create: "Create supplier",
+        cancel: "Cancel",
+    }),
+});
