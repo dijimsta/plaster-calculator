@@ -32,6 +32,9 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*GetQuoteById*](#getquotebyid)
   - [*GetQuoteReadiness*](#getquotereadiness)
   - [*GetProjectQuote*](#getprojectquote)
+  - [*ListMySuppliers*](#listmysuppliers)
+  - [*GetMySupplier*](#getmysupplier)
+  - [*ListMySupplierPrices*](#listmysupplierprices)
   - [*GetMyTeam*](#getmyteam)
   - [*GetMyUserSettings*](#getmyusersettings)
   - [*GetMyUserSignature*](#getmyusersignature)
@@ -79,6 +82,12 @@ You can also follow the instructions from the [Data Connect documentation](https
   - [*CreateQuoteWithItems*](#createquotewithitems)
   - [*UpsertMyQuoteAppearance*](#upsertmyquoteappearance)
   - [*UpdateMyQuoteAppearanceLogo*](#updatemyquoteappearancelogo)
+  - [*CreateMySupplier*](#createmysupplier)
+  - [*UpdateMySupplier*](#updatemysupplier)
+  - [*DeleteMySupplier*](#deletemysupplier)
+  - [*SetMyDefaultSupplier*](#setmydefaultsupplier)
+  - [*UpsertMySupplierItemPrice*](#upsertmysupplieritemprice)
+  - [*DeleteMySupplierItemPrice*](#deletemysupplieritemprice)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
   - [*UpsertMyUserSignature*](#upsertmyusersignature)
 
@@ -1708,6 +1717,307 @@ export default function GetProjectQuoteComponent() {
   if (query.isSuccess) {
     console.log(query.data.project);
     console.log(query.data.appearance);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## ListMySuppliers
+You can execute the `ListMySuppliers` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useListMySuppliers(dc: DataConnect, vars?: ListMySuppliersVariables, options?: useDataConnectQueryOptions<ListMySuppliersData>): UseDataConnectQueryResult<ListMySuppliersData, ListMySuppliersVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useListMySuppliers(vars?: ListMySuppliersVariables, options?: useDataConnectQueryOptions<ListMySuppliersData>): UseDataConnectQueryResult<ListMySuppliersData, ListMySuppliersVariables>;
+```
+
+### Variables
+The `ListMySuppliers` Query has an optional argument of type `ListMySuppliersVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ListMySuppliersVariables {
+  search?: string | null;
+  limit?: number | null;
+  offset?: number | null;
+}
+```
+### Return Type
+Recall that calling the `ListMySuppliers` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ListMySuppliers` Query is of type `ListMySuppliersData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ListMySuppliersData {
+  suppliers: ({
+    id: UUIDString;
+    teamId: string;
+    name: string;
+    isDefault: boolean;
+    contactName?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    address?: string | null;
+    accountNumber?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    prices: ({
+      templateId: UUIDString;
+    })[];
+  } & Supplier_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `ListMySuppliers`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, ListMySuppliersVariables } from '@generated/data-connector-web';
+import { useListMySuppliers } from '@generated/data-connector-web/react'
+
+export default function ListMySuppliersComponent() {
+  // The `useListMySuppliers` Query hook has an optional argument of type `ListMySuppliersVariables`:
+  const listMySuppliersVars: ListMySuppliersVariables = {
+    search: ..., // optional
+    limit: ..., // optional
+    offset: ..., // optional
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useListMySuppliers(listMySuppliersVars);
+  // Variables can be defined inline as well.
+  const query = useListMySuppliers({ search: ..., limit: ..., offset: ..., });
+  // Since all variables are optional for this Query, you can omit the `ListMySuppliersVariables` argument.
+  // (as long as you don't want to provide any `options`!)
+  const query = useListMySuppliers();
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useListMySuppliers(dataConnect, listMySuppliersVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useListMySuppliers(listMySuppliersVars, options);
+  // If you'd like to provide options without providing any variables, you must
+  // pass `undefined` where you would normally pass the variables.
+  const query = useListMySuppliers(undefined, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useListMySuppliers(dataConnect, listMySuppliersVars /** or undefined */, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.suppliers);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## GetMySupplier
+You can execute the `GetMySupplier` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useGetMySupplier(dc: DataConnect, vars: GetMySupplierVariables, options?: useDataConnectQueryOptions<GetMySupplierData>): UseDataConnectQueryResult<GetMySupplierData, GetMySupplierVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useGetMySupplier(vars: GetMySupplierVariables, options?: useDataConnectQueryOptions<GetMySupplierData>): UseDataConnectQueryResult<GetMySupplierData, GetMySupplierVariables>;
+```
+
+### Variables
+The `GetMySupplier` Query requires an argument of type `GetMySupplierVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface GetMySupplierVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `GetMySupplier` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `GetMySupplier` Query is of type `GetMySupplierData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface GetMySupplierData {
+  supplier?: {
+    id: UUIDString;
+    teamId: string;
+    name: string;
+    isDefault: boolean;
+    contactName?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    address?: string | null;
+    accountNumber?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    supplierQuoteItemPrices_on_supplier: ({
+      supplierId: UUIDString;
+      templateId: UUIDString;
+      materialUnitPriceCents: number;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+    } & SupplierQuoteItemPrice_Key)[];
+  } & Supplier_Key;
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `GetMySupplier`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, GetMySupplierVariables } from '@generated/data-connector-web';
+import { useGetMySupplier } from '@generated/data-connector-web/react'
+
+export default function GetMySupplierComponent() {
+  // The `useGetMySupplier` Query hook requires an argument of type `GetMySupplierVariables`:
+  const getMySupplierVars: GetMySupplierVariables = {
+    id: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useGetMySupplier(getMySupplierVars);
+  // Variables can be defined inline as well.
+  const query = useGetMySupplier({ id: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useGetMySupplier(dataConnect, getMySupplierVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetMySupplier(getMySupplierVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useGetMySupplier(dataConnect, getMySupplierVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.supplier);
+  }
+  return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## ListMySupplierPrices
+You can execute the `ListMySupplierPrices` Query using the following Query hook function, which is defined in [data-connector-web/react/index.d.ts](./index.d.ts):
+
+```javascript
+useListMySupplierPrices(dc: DataConnect, vars: ListMySupplierPricesVariables, options?: useDataConnectQueryOptions<ListMySupplierPricesData>): UseDataConnectQueryResult<ListMySupplierPricesData, ListMySupplierPricesVariables>;
+```
+You can also pass in a `DataConnect` instance to the Query hook function.
+```javascript
+useListMySupplierPrices(vars: ListMySupplierPricesVariables, options?: useDataConnectQueryOptions<ListMySupplierPricesData>): UseDataConnectQueryResult<ListMySupplierPricesData, ListMySupplierPricesVariables>;
+```
+
+### Variables
+The `ListMySupplierPrices` Query requires an argument of type `ListMySupplierPricesVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface ListMySupplierPricesVariables {
+  supplierId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `ListMySupplierPrices` Query hook function returns a `UseQueryResult` object. This object holds the state of your Query, including whether the Query is loading, has completed, or has succeeded/failed, and any data returned by the Query, among other things.
+
+To check the status of a Query, use the `UseQueryResult.status` field. You can also check for pending / success / error status using the `UseQueryResult.isPending`, `UseQueryResult.isSuccess`, and `UseQueryResult.isError` fields.
+
+To access the data returned by a Query, use the `UseQueryResult.data` field. The data for the `ListMySupplierPrices` Query is of type `ListMySupplierPricesData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface ListMySupplierPricesData {
+  supplierQuoteItemPrices: ({
+    supplierId: UUIDString;
+    templateId: UUIDString;
+    materialUnitPriceCents: number;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    template: {
+      id: UUIDString;
+      name: string;
+      unit?: string | null;
+    } & QuoteItemTemplate_Key;
+  } & SupplierQuoteItemPrice_Key)[];
+}
+```
+
+To learn more about the `UseQueryResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery).
+
+### Using `ListMySupplierPrices`'s Query hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, ListMySupplierPricesVariables } from '@generated/data-connector-web';
+import { useListMySupplierPrices } from '@generated/data-connector-web/react'
+
+export default function ListMySupplierPricesComponent() {
+  // The `useListMySupplierPrices` Query hook requires an argument of type `ListMySupplierPricesVariables`:
+  const listMySupplierPricesVars: ListMySupplierPricesVariables = {
+    supplierId: ..., 
+  };
+
+  // You don't have to do anything to "execute" the Query.
+  // Call the Query hook function to get a `UseQueryResult` object which holds the state of your Query.
+  const query = useListMySupplierPrices(listMySupplierPricesVars);
+  // Variables can be defined inline as well.
+  const query = useListMySupplierPrices({ supplierId: ..., });
+
+  // You can also pass in a `DataConnect` instance to the Query hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const query = useListMySupplierPrices(dataConnect, listMySupplierPricesVars);
+
+  // You can also pass in a `useDataConnectQueryOptions` object to the Query hook function.
+  const options = { staleTime: 5 * 1000 };
+  const query = useListMySupplierPrices(listMySupplierPricesVars, options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectQueryOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = { staleTime: 5 * 1000 };
+  const query = useListMySupplierPrices(dataConnect, listMySupplierPricesVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Query.
+  if (query.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (query.isError) {
+    return <div>Error: {query.error.message}</div>;
+  }
+
+  // If the Query is successful, you can access the data returned using the `UseQueryResult.data` field.
+  if (query.isSuccess) {
+    console.log(query.data.supplierQuoteItemPrices);
   }
   return <div>Query execution {query.isSuccess ? 'successful' : 'failed'}!</div>;
 }
@@ -7166,6 +7476,606 @@ export default function UpdateMyQuoteAppearanceLogoComponent() {
   // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
   if (mutation.isSuccess) {
     console.log(mutation.data.quoteAppearance_upsert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## CreateMySupplier
+You can execute the `CreateMySupplier` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useCreateMySupplier(options?: useDataConnectMutationOptions<CreateMySupplierData, FirebaseError, CreateMySupplierVariables>): UseDataConnectMutationResult<CreateMySupplierData, CreateMySupplierVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useCreateMySupplier(dc: DataConnect, options?: useDataConnectMutationOptions<CreateMySupplierData, FirebaseError, CreateMySupplierVariables>): UseDataConnectMutationResult<CreateMySupplierData, CreateMySupplierVariables>;
+```
+
+### Variables
+The `CreateMySupplier` Mutation requires an argument of type `CreateMySupplierVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface CreateMySupplierVariables {
+  id: UUIDString;
+  name: string;
+  contactName?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  address?: string | null;
+  accountNumber?: string | null;
+}
+```
+### Return Type
+Recall that calling the `CreateMySupplier` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `CreateMySupplier` Mutation is of type `CreateMySupplierData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface CreateMySupplierData {
+  supplier_insert: Supplier_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `CreateMySupplier`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, CreateMySupplierVariables } from '@generated/data-connector-web';
+import { useCreateMySupplier } from '@generated/data-connector-web/react'
+
+export default function CreateMySupplierComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useCreateMySupplier();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useCreateMySupplier(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateMySupplier(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useCreateMySupplier(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useCreateMySupplier` Mutation requires an argument of type `CreateMySupplierVariables`:
+  const createMySupplierVars: CreateMySupplierVariables = {
+    id: ..., 
+    name: ..., 
+    contactName: ..., // optional
+    phoneNumber: ..., // optional
+    email: ..., // optional
+    address: ..., // optional
+    accountNumber: ..., // optional
+  };
+  mutation.mutate(createMySupplierVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ id: ..., name: ..., contactName: ..., phoneNumber: ..., email: ..., address: ..., accountNumber: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(createMySupplierVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.supplier_insert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpdateMySupplier
+You can execute the `UpdateMySupplier` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpdateMySupplier(options?: useDataConnectMutationOptions<UpdateMySupplierData, FirebaseError, UpdateMySupplierVariables>): UseDataConnectMutationResult<UpdateMySupplierData, UpdateMySupplierVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpdateMySupplier(dc: DataConnect, options?: useDataConnectMutationOptions<UpdateMySupplierData, FirebaseError, UpdateMySupplierVariables>): UseDataConnectMutationResult<UpdateMySupplierData, UpdateMySupplierVariables>;
+```
+
+### Variables
+The `UpdateMySupplier` Mutation requires an argument of type `UpdateMySupplierVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpdateMySupplierVariables {
+  id: UUIDString;
+  name: string;
+  contactName?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  address?: string | null;
+  accountNumber?: string | null;
+}
+```
+### Return Type
+Recall that calling the `UpdateMySupplier` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpdateMySupplier` Mutation is of type `UpdateMySupplierData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpdateMySupplierData {
+  supplier_update?: Supplier_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpdateMySupplier`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpdateMySupplierVariables } from '@generated/data-connector-web';
+import { useUpdateMySupplier } from '@generated/data-connector-web/react'
+
+export default function UpdateMySupplierComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpdateMySupplier();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpdateMySupplier(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateMySupplier(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpdateMySupplier(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpdateMySupplier` Mutation requires an argument of type `UpdateMySupplierVariables`:
+  const updateMySupplierVars: UpdateMySupplierVariables = {
+    id: ..., 
+    name: ..., 
+    contactName: ..., // optional
+    phoneNumber: ..., // optional
+    email: ..., // optional
+    address: ..., // optional
+    accountNumber: ..., // optional
+  };
+  mutation.mutate(updateMySupplierVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ id: ..., name: ..., contactName: ..., phoneNumber: ..., email: ..., address: ..., accountNumber: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(updateMySupplierVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.supplier_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## DeleteMySupplier
+You can execute the `DeleteMySupplier` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useDeleteMySupplier(options?: useDataConnectMutationOptions<DeleteMySupplierData, FirebaseError, DeleteMySupplierVariables>): UseDataConnectMutationResult<DeleteMySupplierData, DeleteMySupplierVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useDeleteMySupplier(dc: DataConnect, options?: useDataConnectMutationOptions<DeleteMySupplierData, FirebaseError, DeleteMySupplierVariables>): UseDataConnectMutationResult<DeleteMySupplierData, DeleteMySupplierVariables>;
+```
+
+### Variables
+The `DeleteMySupplier` Mutation requires an argument of type `DeleteMySupplierVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface DeleteMySupplierVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `DeleteMySupplier` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeleteMySupplier` Mutation is of type `DeleteMySupplierData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface DeleteMySupplierData {
+  quote_updateMany: number;
+  supplierQuoteItemPrice_deleteMany: number;
+  supplier_delete?: Supplier_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `DeleteMySupplier`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, DeleteMySupplierVariables } from '@generated/data-connector-web';
+import { useDeleteMySupplier } from '@generated/data-connector-web/react'
+
+export default function DeleteMySupplierComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useDeleteMySupplier();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useDeleteMySupplier(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeleteMySupplier(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeleteMySupplier(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useDeleteMySupplier` Mutation requires an argument of type `DeleteMySupplierVariables`:
+  const deleteMySupplierVars: DeleteMySupplierVariables = {
+    id: ..., 
+  };
+  mutation.mutate(deleteMySupplierVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ id: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(deleteMySupplierVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.quote_updateMany);
+    console.log(mutation.data.supplierQuoteItemPrice_deleteMany);
+    console.log(mutation.data.supplier_delete);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## SetMyDefaultSupplier
+You can execute the `SetMyDefaultSupplier` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useSetMyDefaultSupplier(options?: useDataConnectMutationOptions<SetMyDefaultSupplierData, FirebaseError, SetMyDefaultSupplierVariables>): UseDataConnectMutationResult<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useSetMyDefaultSupplier(dc: DataConnect, options?: useDataConnectMutationOptions<SetMyDefaultSupplierData, FirebaseError, SetMyDefaultSupplierVariables>): UseDataConnectMutationResult<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+```
+
+### Variables
+The `SetMyDefaultSupplier` Mutation requires an argument of type `SetMyDefaultSupplierVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface SetMyDefaultSupplierVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `SetMyDefaultSupplier` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `SetMyDefaultSupplier` Mutation is of type `SetMyDefaultSupplierData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface SetMyDefaultSupplierData {
+  supplier_updateMany: number;
+  supplier_update?: Supplier_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `SetMyDefaultSupplier`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, SetMyDefaultSupplierVariables } from '@generated/data-connector-web';
+import { useSetMyDefaultSupplier } from '@generated/data-connector-web/react'
+
+export default function SetMyDefaultSupplierComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useSetMyDefaultSupplier();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useSetMyDefaultSupplier(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useSetMyDefaultSupplier(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useSetMyDefaultSupplier(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useSetMyDefaultSupplier` Mutation requires an argument of type `SetMyDefaultSupplierVariables`:
+  const setMyDefaultSupplierVars: SetMyDefaultSupplierVariables = {
+    id: ..., 
+  };
+  mutation.mutate(setMyDefaultSupplierVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ id: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(setMyDefaultSupplierVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.supplier_updateMany);
+    console.log(mutation.data.supplier_update);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## UpsertMySupplierItemPrice
+You can execute the `UpsertMySupplierItemPrice` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useUpsertMySupplierItemPrice(options?: useDataConnectMutationOptions<UpsertMySupplierItemPriceData, FirebaseError, UpsertMySupplierItemPriceVariables>): UseDataConnectMutationResult<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useUpsertMySupplierItemPrice(dc: DataConnect, options?: useDataConnectMutationOptions<UpsertMySupplierItemPriceData, FirebaseError, UpsertMySupplierItemPriceVariables>): UseDataConnectMutationResult<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+```
+
+### Variables
+The `UpsertMySupplierItemPrice` Mutation requires an argument of type `UpsertMySupplierItemPriceVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface UpsertMySupplierItemPriceVariables {
+  supplierId: UUIDString;
+  templateId: UUIDString;
+  materialUnitPriceCents: number;
+}
+```
+### Return Type
+Recall that calling the `UpsertMySupplierItemPrice` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `UpsertMySupplierItemPrice` Mutation is of type `UpsertMySupplierItemPriceData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface UpsertMySupplierItemPriceData {
+  supplierQuoteItemPrice_upsert: SupplierQuoteItemPrice_Key;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `UpsertMySupplierItemPrice`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, UpsertMySupplierItemPriceVariables } from '@generated/data-connector-web';
+import { useUpsertMySupplierItemPrice } from '@generated/data-connector-web/react'
+
+export default function UpsertMySupplierItemPriceComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useUpsertMySupplierItemPrice();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useUpsertMySupplierItemPrice(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpsertMySupplierItemPrice(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useUpsertMySupplierItemPrice(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useUpsertMySupplierItemPrice` Mutation requires an argument of type `UpsertMySupplierItemPriceVariables`:
+  const upsertMySupplierItemPriceVars: UpsertMySupplierItemPriceVariables = {
+    supplierId: ..., 
+    templateId: ..., 
+    materialUnitPriceCents: ..., 
+  };
+  mutation.mutate(upsertMySupplierItemPriceVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ supplierId: ..., templateId: ..., materialUnitPriceCents: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(upsertMySupplierItemPriceVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.supplierQuoteItemPrice_upsert);
+  }
+  return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
+}
+```
+
+## DeleteMySupplierItemPrice
+You can execute the `DeleteMySupplierItemPrice` Mutation using the `UseMutationResult` object returned by the following Mutation hook function (which is defined in [data-connector-web/react/index.d.ts](./index.d.ts)):
+```javascript
+useDeleteMySupplierItemPrice(options?: useDataConnectMutationOptions<DeleteMySupplierItemPriceData, FirebaseError, DeleteMySupplierItemPriceVariables>): UseDataConnectMutationResult<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+```
+You can also pass in a `DataConnect` instance to the Mutation hook function.
+```javascript
+useDeleteMySupplierItemPrice(dc: DataConnect, options?: useDataConnectMutationOptions<DeleteMySupplierItemPriceData, FirebaseError, DeleteMySupplierItemPriceVariables>): UseDataConnectMutationResult<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+```
+
+### Variables
+The `DeleteMySupplierItemPrice` Mutation requires an argument of type `DeleteMySupplierItemPriceVariables`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+
+```javascript
+export interface DeleteMySupplierItemPriceVariables {
+  supplierId: UUIDString;
+  templateId: UUIDString;
+}
+```
+### Return Type
+Recall that calling the `DeleteMySupplierItemPrice` Mutation hook function returns a `UseMutationResult` object. This object holds the state of your Mutation, including whether the Mutation is loading, has completed, or has succeeded/failed, among other things.
+
+To check the status of a Mutation, use the `UseMutationResult.status` field. You can also check for pending / success / error status using the `UseMutationResult.isPending`, `UseMutationResult.isSuccess`, and `UseMutationResult.isError` fields.
+
+To execute the Mutation, call `UseMutationResult.mutate()`. This function executes the Mutation, but does not return the data from the Mutation.
+
+To access the data returned by a Mutation, use the `UseMutationResult.data` field. The data for the `DeleteMySupplierItemPrice` Mutation is of type `DeleteMySupplierItemPriceData`, which is defined in [data-connector-web/index.d.ts](../index.d.ts). It has the following fields:
+```javascript
+export interface DeleteMySupplierItemPriceData {
+  supplierQuoteItemPrice_delete?: SupplierQuoteItemPrice_Key | null;
+}
+```
+
+To learn more about the `UseMutationResult` object, see the [TanStack React Query documentation](https://tanstack.com/query/v5/docs/framework/react/reference/useMutation).
+
+### Using `DeleteMySupplierItemPrice`'s Mutation hook function
+
+```javascript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, DeleteMySupplierItemPriceVariables } from '@generated/data-connector-web';
+import { useDeleteMySupplierItemPrice } from '@generated/data-connector-web/react'
+
+export default function DeleteMySupplierItemPriceComponent() {
+  // Call the Mutation hook function to get a `UseMutationResult` object which holds the state of your Mutation.
+  const mutation = useDeleteMySupplierItemPrice();
+
+  // You can also pass in a `DataConnect` instance to the Mutation hook function.
+  const dataConnect = getDataConnect(connectorConfig);
+  const mutation = useDeleteMySupplierItemPrice(dataConnect);
+
+  // You can also pass in a `useDataConnectMutationOptions` object to the Mutation hook function.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeleteMySupplierItemPrice(options);
+
+  // You can also pass both a `DataConnect` instance and a `useDataConnectMutationOptions` object.
+  const dataConnect = getDataConnect(connectorConfig);
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  const mutation = useDeleteMySupplierItemPrice(dataConnect, options);
+
+  // After calling the Mutation hook function, you must call `UseMutationResult.mutate()` to execute the Mutation.
+  // The `useDeleteMySupplierItemPrice` Mutation requires an argument of type `DeleteMySupplierItemPriceVariables`:
+  const deleteMySupplierItemPriceVars: DeleteMySupplierItemPriceVariables = {
+    supplierId: ..., 
+    templateId: ..., 
+  };
+  mutation.mutate(deleteMySupplierItemPriceVars);
+  // Variables can be defined inline as well.
+  mutation.mutate({ supplierId: ..., templateId: ..., });
+
+  // You can also pass in a `useDataConnectMutationOptions` object to `UseMutationResult.mutate()`.
+  const options = {
+    onSuccess: () => { console.log('Mutation succeeded!'); }
+  };
+  mutation.mutate(deleteMySupplierItemPriceVars, options);
+
+  // Then, you can render your component dynamically based on the status of the Mutation.
+  if (mutation.isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (mutation.isError) {
+    return <div>Error: {mutation.error.message}</div>;
+  }
+
+  // If the Mutation is successful, you can access the data returned using the `UseMutationResult.data` field.
+  if (mutation.isSuccess) {
+    console.log(mutation.data.supplierQuoteItemPrice_delete);
   }
   return <div>Mutation execution {mutation.isSuccess ? 'successful' : 'failed'}!</div>;
 }
