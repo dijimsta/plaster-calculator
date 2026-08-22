@@ -76,6 +76,7 @@ function generateQuoteInputFixture(
         projectId: "project-1",
         quoteId: "quote-1",
         quoteTemplateId: "template-set-1",
+        defaultSupplierId: null,
         pages: [],
         templateConfigs: [],
         searchText: "",
@@ -108,6 +109,7 @@ test("build proceeds and produces mutation variables when the readiness gate is 
             }),
         ],
         searchText: "roof plan shows a skylight over the kitchen",
+        defaultSupplierId: "supplier-1",
     });
 
     const result = build(input);
@@ -117,10 +119,32 @@ test("build proceeds and produces mutation variables when the readiness gate is 
         assert.equal(result.itemCount, 1);
         assert.equal(result.variables.projectId, "project-1");
         assert.equal(result.variables.quoteId, "quote-1");
+        assert.equal(result.variables.supplierId, "supplier-1");
         assert.equal(result.variables.includeItem1, true);
         assert.equal(result.variables.item1Quantity, 1);
         assert.equal(result.variables.item1Unit, "m²");
         assert.deepEqual(result.variables.item1MatchedKeywords, ["skylight"]);
+    }
+});
+
+test("build stamps a null supplierId when the team has no default supplier", () => {
+    const input = generateQuoteInputFixture({
+        templateConfigs: [
+            templateConfigFixture({
+                hasKeywords: true,
+                keywords: ["skylight"],
+                quantitySourceId: null,
+            }),
+        ],
+        searchText: "roof plan shows a skylight over the kitchen",
+        defaultSupplierId: null,
+    });
+
+    const result = build(input);
+
+    assert.equal(result.ok, true);
+    if (result.ok) {
+        assert.equal(result.variables.supplierId, null);
     }
 });
 
@@ -201,7 +225,12 @@ test("buildMutationVariables maps up to 20 resolved items onto their fixed slots
         }),
     );
 
-    const result = buildMutationVariables("project-1", "quote-1", items);
+    const result = buildMutationVariables({
+        projectId: "project-1",
+        quoteId: "quote-1",
+        supplierId: null,
+        items,
+    });
 
     assert.equal(result.ok, true);
     if (result.ok) {
@@ -221,7 +250,12 @@ test("buildMutationVariables refuses rather than truncates when there are more t
         }),
     );
 
-    const result = buildMutationVariables("project-1", "quote-1", items);
+    const result = buildMutationVariables({
+        projectId: "project-1",
+        quoteId: "quote-1",
+        supplierId: null,
+        items,
+    });
 
     assert.equal(result.ok, false);
     if (!result.ok) {
