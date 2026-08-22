@@ -6,5 +6,7 @@ export type {
     ProjectDetail,
     ProjectSummary,
     Reminder,
+    Supplier,
+    SupplierItemEstimate,
     UserSettings,
 } from "@libraries/plaster-calculator-web-core";

@@ -6,6 +6,7 @@ import {
     projectsTranslations,
     questionnairesTranslations,
     quotesTranslations,
+    suppliersTranslations,
 } from "@libraries/plaster-calculator-ui";
 import { I18nProvider } from "@ui/internationalization";
 import type { PropsWithChildren, ReactElement } from "react";
@@ -26,6 +27,7 @@ export function AppTranslationsProvider({
                 projectsTranslations,
                 questionnairesTranslations,
                 quotesTranslations,
+                suppliersTranslations,
             ]}
             languageCookie={languageCookie}
         >

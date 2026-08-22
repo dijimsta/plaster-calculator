@@ -41,6 +41,7 @@ export const en = Object.freeze({
             questionnaires: "Scope of work",
             quotes: "Quotes",
             companies: "Companies",
+            suppliers: "Suppliers",
         }),
         userFallback: "User",
         roleLabels: Object.freeze({
@@ -187,6 +188,37 @@ export const en = Object.freeze({
             title: "New Contact",
             cancel: "Cancel",
             add: "Add contact",
+        }),
+    }),
+    suppliers: Object.freeze({
+        title: "Suppliers",
+        description: "Manage the suppliers you buy materials from.",
+        fields: Object.freeze({
+            supplierName: "Supplier name",
+        }),
+        list: Object.freeze({
+            title: "Supplier List",
+            search: "Search",
+            loading: "Loading suppliers...",
+            emptyStateTitle: "No suppliers found",
+            unableToLoad: "Unable to load suppliers",
+            createFromSearch: 'Create "{{name}}"',
+            paginationLabel: "Supplier list pagination",
+        }),
+        newSupplier: Object.freeze({
+            unableToCreate: "Unable to create supplier",
+        }),
+        detailHeader: Object.freeze({
+            supplierFallback: "Supplier",
+        }),
+        detail: Object.freeze({
+            loading: "Loading supplier...",
+            notFound: "Supplier not found",
+            unableToSave: "Unable to save supplier",
+            unableToDelete: "Unable to delete supplier",
+            setDefaultNotification: "Now the default supplier.",
+            unableToSetDefault: "Unable to set default supplier",
+            unableToSaveEstimate: "Unable to save cost estimate",
         }),
     }),
     userPage: enUserPage,

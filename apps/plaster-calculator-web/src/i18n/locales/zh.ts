@@ -44,6 +44,7 @@ export const zh = createTranslationResource(
                 questionnaires: "工作范围",
                 quotes: "报价",
                 companies: "公司",
+                suppliers: "供应商",
             }),
             userFallback: "用户",
             roleLabels: Object.freeze({
@@ -190,6 +191,37 @@ export const zh = createTranslationResource(
                 title: "新建联系人",
                 cancel: "取消",
                 add: "添加联系人",
+            }),
+        }),
+        suppliers: Object.freeze({
+            title: "供应商",
+            description: "管理您采购材料的供应商。",
+            fields: Object.freeze({
+                supplierName: "供应商名称",
+            }),
+            list: Object.freeze({
+                title: "供应商列表",
+                search: "搜索",
+                loading: "正在加载供应商...",
+                emptyStateTitle: "未找到供应商",
+                unableToLoad: "无法加载供应商",
+                createFromSearch: "创建“{{name}}”",
+                paginationLabel: "供应商列表分页",
+            }),
+            newSupplier: Object.freeze({
+                unableToCreate: "无法创建供应商",
+            }),
+            detailHeader: Object.freeze({
+                supplierFallback: "供应商",
+            }),
+            detail: Object.freeze({
+                loading: "正在加载供应商...",
+                notFound: "未找到供应商",
+                unableToSave: "无法保存供应商",
+                unableToDelete: "无法删除供应商",
+                setDefaultNotification: "现在是默认供应商。",
+                unableToSetDefault: "无法设置默认供应商",
+                unableToSaveEstimate: "无法保存成本估算",
             }),
         }),
         userPage: zhUserPage,
