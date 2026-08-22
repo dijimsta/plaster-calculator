@@ -1,6 +1,7 @@
 import { READINESS_CHECKS } from "@libraries/plaster-calculator-common";
 import {
     EditableQuoteForm,
+    MarginEstimateCard,
     QuoteDetailDocument,
     ReadinessSummaryHeader,
     useQuotesTranslation,
@@ -18,6 +19,7 @@ import { ui } from "../../../../../lib/styles.js";
 
 import type { ProjectQuoteEditorState } from "./project-quote-page.hooks.js";
 import type { ProjectQuoteState } from "./quote-generation.hooks.js";
+import type { QuoteMarginEstimateState } from "./quote-margin.hooks.js";
 
 export type ProjectQuoteContentProps = {
     readonly projectError: string;
@@ -26,6 +28,8 @@ export type ProjectQuoteContentProps = {
     readonly renderCheckFooter: ReadinessCheckListRenderCheckFooter;
     readonly projectQuote: ProjectQuoteState;
     readonly editor: ProjectQuoteEditorState;
+    /** Internal-only margin readout (WORK-386) -- never rendered inside `ProjectQuoteBody`'s `QuoteDetailDocument`, see this component's `MarginEstimateCard` usage below. */
+    readonly marginEstimate: QuoteMarginEstimateState;
     readonly isGenerating: boolean;
     readonly generationErrorMessage: string | null;
     readonly onGenerateQuote: () => void;
@@ -38,6 +42,7 @@ export function ProjectQuoteContent({
     renderCheckFooter,
     projectQuote,
     editor,
+    marginEstimate,
     isGenerating,
     generationErrorMessage,
     onGenerateQuote,
@@ -54,6 +59,26 @@ export function ProjectQuoteContent({
                 onGenerateQuote={onGenerateQuote}
             />
             <ProjectQuoteBody projectQuote={projectQuote} editor={editor} />
+            {/*
+             * Outside ProjectQuoteBody/QuoteDetailDocument by construction,
+             * so it's excluded from print/PDF output as a structural
+             * property of the page (see quote-detail-document.print.css,
+             * which hides everything on the page except the document's own
+             * print-root id) -- not a per-component opt-out this card would
+             * need to implement itself. Only shown once a quote exists;
+             * MarginEstimateCard itself renders null when the team has no
+             * suppliers (WORK-384).
+             */}
+            {projectQuote.hasQuote && (
+                <MarginEstimateCard
+                    summary={marginEstimate.summary}
+                    lines={marginEstimate.lines}
+                    suppliers={marginEstimate.suppliers}
+                    selectedSupplierId={marginEstimate.selectedSupplierId}
+                    onSupplierChange={marginEstimate.onSupplierChange}
+                    onPriceUncoveredLines={marginEstimate.onPriceUncoveredLines}
+                />
+            )}
         </Box>
     );
 }
