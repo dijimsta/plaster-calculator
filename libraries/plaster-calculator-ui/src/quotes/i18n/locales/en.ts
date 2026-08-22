@@ -98,6 +98,31 @@ export const en = Object.freeze({
         gst: "GST (10%)",
         totalIncGst: "Total inc. GST",
     }),
+    marginEstimateCard: Object.freeze({
+        title: "Margin estimate",
+        internalOnlyBadge: "Internal only",
+        supplierLabel: "Supplier",
+        selectSupplier: "Select a supplier",
+        sellLabel: "Sell (ex GST)",
+        estimatedCostLabel: "Estimated material cost",
+        estimatedMarginLabel: "Estimated margin",
+        marginPercentDescription: "{{percent}} margin",
+        noMarginData: "Not yet measurable",
+        tableLabel: "Line margin estimate",
+        columnItem: "Item",
+        columnSell: "Sell",
+        columnEstimatedCostPerUnit: "Est. cost / unit",
+        columnLineCost: "Line cost",
+        columnLineMargin: "Line margin",
+        noEstimate: "No estimate",
+        uncoveredNoticeTitle_one:
+            "{{count}} line has no estimate from this supplier",
+        uncoveredNoticeTitle_other:
+            "{{count}} lines have no estimate from this supplier",
+        uncoveredNoticeDescription:
+            "No estimate yet from this supplier for: {{names}}.",
+        priceThemAction: "Price them",
+    }),
     generateQuote: Object.freeze({
         pending: "Generating quote…",
         errorMessages: Object.freeze({
