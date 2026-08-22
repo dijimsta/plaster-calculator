@@ -100,6 +100,31 @@ export const zh = createTranslationResource(
             gst: "增值税（10%）",
             totalIncGst: "含税总额",
         }),
+        marginEstimateCard: Object.freeze({
+            title: "毛利预估",
+            internalOnlyBadge: "仅供内部",
+            supplierLabel: "供应商",
+            selectSupplier: "选择供应商",
+            sellLabel: "销售额（不含税）",
+            estimatedCostLabel: "预估材料成本",
+            estimatedMarginLabel: "预估毛利",
+            marginPercentDescription: "毛利率 {{percent}}",
+            noMarginData: "暂无法计算",
+            tableLabel: "项目毛利明细",
+            columnItem: "项目",
+            columnSell: "销售额",
+            columnEstimatedCostPerUnit: "预估单价",
+            columnLineCost: "项目成本",
+            columnLineMargin: "项目毛利",
+            noEstimate: "无估算",
+            // zh has a single plural form (CLDR "other"); `_one` mirrors
+            // `_other` verbatim, matching the note on quotesTable.quoteCount above.
+            uncoveredNoticeTitle_one: "{{count}} 个项目没有该供应商的估算",
+            uncoveredNoticeTitle_other: "{{count}} 个项目没有该供应商的估算",
+            uncoveredNoticeDescription:
+                "该供应商尚未提供以下项目的估算：{{names}}。",
+            priceThemAction: "为它们估算",
+        }),
         generateQuote: Object.freeze({
             pending: "正在生成报价…",
             errorMessages: Object.freeze({
