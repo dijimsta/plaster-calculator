@@ -52,6 +52,11 @@ const navItems = [
         labelKey: "companies" as const,
         Icon: Icons.Users,
     },
+    {
+        href: "/suppliers" as const,
+        labelKey: "suppliers" as const,
+        Icon: Icons.Truck,
+    },
 ];
 
 export default function Sidebar({ children }: PropsWithChildren) {
@@ -81,6 +86,7 @@ export default function Sidebar({ children }: PropsWithChildren) {
         questionnaires: t("sidebar.navLabels.questionnaires"),
         quotes: t("sidebar.navLabels.quotes"),
         companies: t("sidebar.navLabels.companies"),
+        suppliers: t("sidebar.navLabels.suppliers"),
     };
 
     return (
