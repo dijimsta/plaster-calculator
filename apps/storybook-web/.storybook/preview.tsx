@@ -5,6 +5,7 @@ import {
     projectsTranslations,
     questionnairesTranslations,
     quotesTranslations,
+    suppliersTranslations,
 } from "@libraries/plaster-calculator-ui";
 import { NotificationsProvider } from "@libraries/uikit-web";
 import type { Preview } from "@storybook/react-vite";
@@ -20,6 +21,7 @@ const preview: Preview = {
                     projectsTranslations,
                     questionnairesTranslations,
                     quotesTranslations,
+                    suppliersTranslations,
                 ]}
             >
                 <NotificationsProvider>
