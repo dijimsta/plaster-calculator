@@ -361,6 +361,27 @@ query GetQuoteReadiness($projectId: UUID!, $quoteTemplateId: UUID!)
 # through, so it's fetched the same team-scoped way `GetMyQuoteAppearance`
 # does — in the same round trip so the Quote tab gets it alongside the quote
 # itself.
+#
+# `supplier` (WORK-379) nests the quote's assigned `Supplier`'s display name
+# via the plain, unguarded `@ref` selection `sourceTemplate`/`quantitySource`
+# below already use — no `@redact`/`@check` needed, since `quote` itself is
+# already ownership-checked via `project` above it. Each item's `sourceTemplate`
+# is extended with `supplierPrices: supplierQuoteItemPrices_on_template`, the
+# reverse relation `SupplierQuoteItemPrice.template` generates on
+# `QuoteItemTemplate`, mirroring the `_on_supplier` reverse relation
+# `ListMySuppliers` (suppliers.queries.gql) already nests as `prices`. It is
+# filtered `teamId: { eq_expr: "auth.token.teamId" }` rather than by this
+# quote's specific `supplierId`, because a nested `where` can only reference
+# `auth`/`request` — not another field's already-resolved value in the same
+# document — so supplier-level filtering isn't expressible here. Team-level
+# filtering is still required, not optional: `QuoteItemTemplate` includes the
+# globally-shared `SYSTEM`-scope templates (plasterboard etc.), so an
+# unfiltered reverse relation on one of those would return every team's
+# supplier prices for it, not just the caller's own. The caller matches each
+# returned row's `supplierId` against the quote's own `supplierId`
+# client-side — the same "select broadly, reduce client-side" precedent
+# `ListQuotesForTeam`'s doc comment above establishes for totals — to find
+# the specific estimate for this quote's supplier, if any.
 query GetProjectQuote($projectId: UUID!) @auth(level: USER) {
     project(key: { id: $projectId })
         @check(
@@ -374,6 +395,10 @@ query GetProjectQuote($projectId: UUID!) @auth(level: USER) {
             teamId
             projectId
             supplierId
+            supplier {
+                id
+                name
+            }
             status
             reference
             issuedAt
@@ -398,6 +423,12 @@ query GetProjectQuote($projectId: UUID!) @auth(level: USER) {
                     name
                     scope
                     systemKey
+                    supplierPrices: supplierQuoteItemPrices_on_template(
+                        where: { teamId: { eq_expr: "auth.token.teamId" } }
+                    ) {
+                        supplierId
+                        materialUnitPriceCents
+                    }
                 }
                 quantitySource {
                     id

@@ -447,6 +447,7 @@ export interface CreateQuoteWithItemsData {
 export interface CreateQuoteWithItemsVariables {
   projectId: UUIDString;
   quoteId: UUIDString;
+  supplierId?: UUIDString | null;
   includeItem1?: boolean | null;
   item1Name?: string | null;
   item1DisplayOrder?: number | null;
@@ -919,6 +920,10 @@ export interface GetProjectQuoteData {
       teamId: string;
       projectId: UUIDString;
       supplierId?: UUIDString | null;
+      supplier?: {
+        id: UUIDString;
+        name: string;
+      } & Supplier_Key;
       status: string;
       reference?: string | null;
       issuedAt?: TimestampString | null;
@@ -943,6 +948,10 @@ export interface GetProjectQuoteData {
           name: string;
           scope: string;
           systemKey?: string | null;
+          supplierPrices: ({
+            supplierId: UUIDString;
+            materialUnitPriceCents: number;
+          })[];
         } & QuoteItemTemplate_Key;
         quantitySource?: {
           id: UUIDString;
@@ -1441,6 +1450,15 @@ export interface SetMyDefaultSupplierData {
 
 export interface SetMyDefaultSupplierVariables {
   id: UUIDString;
+}
+
+export interface SetMyQuoteSupplierData {
+  quote_update?: Quote_Key | null;
+}
+
+export interface SetMyQuoteSupplierVariables {
+  quoteId: UUIDString;
+  supplierId: UUIDString;
 }
 
 export interface SetQuoteTemplateAsDefaultData {
@@ -2223,6 +2241,18 @@ export const updateQuoteDetailsRef: UpdateQuoteDetailsRef;
 
 export function updateQuoteDetails(vars: UpdateQuoteDetailsVariables): MutationPromise<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
 export function updateQuoteDetails(dc: DataConnect, vars: UpdateQuoteDetailsVariables): MutationPromise<UpdateQuoteDetailsData, UpdateQuoteDetailsVariables>;
+
+interface SetMyQuoteSupplierRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: SetMyQuoteSupplierVariables): MutationRef<SetMyQuoteSupplierData, SetMyQuoteSupplierVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: SetMyQuoteSupplierVariables): MutationRef<SetMyQuoteSupplierData, SetMyQuoteSupplierVariables>;
+  operationName: string;
+}
+export const setMyQuoteSupplierRef: SetMyQuoteSupplierRef;
+
+export function setMyQuoteSupplier(vars: SetMyQuoteSupplierVariables): MutationPromise<SetMyQuoteSupplierData, SetMyQuoteSupplierVariables>;
+export function setMyQuoteSupplier(dc: DataConnect, vars: SetMyQuoteSupplierVariables): MutationPromise<SetMyQuoteSupplierData, SetMyQuoteSupplierVariables>;
 
 interface UpdateQuoteItemRef {
   /* Allow users to create refs without passing in DataConnect */
