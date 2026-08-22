@@ -25,6 +25,9 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetQuoteById*](#getquotebyid)
   - [*GetQuoteReadiness*](#getquotereadiness)
   - [*GetProjectQuote*](#getprojectquote)
+  - [*ListMySuppliers*](#listmysuppliers)
+  - [*GetMySupplier*](#getmysupplier)
+  - [*ListMySupplierPrices*](#listmysupplierprices)
   - [*GetMyTeam*](#getmyteam)
   - [*GetMyUserSettings*](#getmyusersettings)
   - [*GetMyUserSignature*](#getmyusersignature)
@@ -72,6 +75,12 @@ This README will guide you through the process of using the generated JavaScript
   - [*CreateQuoteWithItems*](#createquotewithitems)
   - [*UpsertMyQuoteAppearance*](#upsertmyquoteappearance)
   - [*UpdateMyQuoteAppearanceLogo*](#updatemyquoteappearancelogo)
+  - [*CreateMySupplier*](#createmysupplier)
+  - [*UpdateMySupplier*](#updatemysupplier)
+  - [*DeleteMySupplier*](#deletemysupplier)
+  - [*SetMyDefaultSupplier*](#setmydefaultsupplier)
+  - [*UpsertMySupplierItemPrice*](#upsertmysupplieritemprice)
+  - [*DeleteMySupplierItemPrice*](#deletemysupplieritemprice)
   - [*UpsertMyUserSettings*](#upsertmyusersettings)
   - [*UpsertMyUserSignature*](#upsertmyusersignature)
 
@@ -2057,6 +2066,388 @@ executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.project);
   console.log(data.appearance);
+});
+```
+
+## ListMySuppliers
+You can execute the `ListMySuppliers` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+listMySuppliers(vars?: ListMySuppliersVariables, options?: ExecuteQueryOptions): QueryPromise<ListMySuppliersData, ListMySuppliersVariables>;
+
+interface ListMySuppliersRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars?: ListMySuppliersVariables): QueryRef<ListMySuppliersData, ListMySuppliersVariables>;
+}
+export const listMySuppliersRef: ListMySuppliersRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listMySuppliers(dc: DataConnect, vars?: ListMySuppliersVariables, options?: ExecuteQueryOptions): QueryPromise<ListMySuppliersData, ListMySuppliersVariables>;
+
+interface ListMySuppliersRef {
+  ...
+  (dc: DataConnect, vars?: ListMySuppliersVariables): QueryRef<ListMySuppliersData, ListMySuppliersVariables>;
+}
+export const listMySuppliersRef: ListMySuppliersRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listMySuppliersRef:
+```typescript
+const name = listMySuppliersRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListMySuppliers` query has an optional argument of type `ListMySuppliersVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ListMySuppliersVariables {
+  search?: string | null;
+  limit?: number | null;
+  offset?: number | null;
+}
+```
+### Return Type
+Recall that executing the `ListMySuppliers` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListMySuppliersData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListMySuppliersData {
+  suppliers: ({
+    id: UUIDString;
+    teamId: string;
+    name: string;
+    isDefault: boolean;
+    contactName?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    address?: string | null;
+    accountNumber?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    prices: ({
+      templateId: UUIDString;
+    })[];
+  } & Supplier_Key)[];
+}
+```
+### Using `ListMySuppliers`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listMySuppliers, ListMySuppliersVariables } from '@generated/data-connector-web';
+
+// The `ListMySuppliers` query has an optional argument of type `ListMySuppliersVariables`:
+const listMySuppliersVars: ListMySuppliersVariables = {
+  search: ..., // optional
+  limit: ..., // optional
+  offset: ..., // optional
+};
+
+// Call the `listMySuppliers()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listMySuppliers(listMySuppliersVars);
+// Variables can be defined inline as well.
+const { data } = await listMySuppliers({ search: ..., limit: ..., offset: ..., });
+// Since all variables are optional for this query, you can omit the `ListMySuppliersVariables` argument.
+const { data } = await listMySuppliers();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listMySuppliers(dataConnect, listMySuppliersVars);
+
+console.log(data.suppliers);
+
+// Or, you can use the `Promise` API.
+listMySuppliers(listMySuppliersVars).then((response) => {
+  const data = response.data;
+  console.log(data.suppliers);
+});
+```
+
+### Using `ListMySuppliers`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listMySuppliersRef, ListMySuppliersVariables } from '@generated/data-connector-web';
+
+// The `ListMySuppliers` query has an optional argument of type `ListMySuppliersVariables`:
+const listMySuppliersVars: ListMySuppliersVariables = {
+  search: ..., // optional
+  limit: ..., // optional
+  offset: ..., // optional
+};
+
+// Call the `listMySuppliersRef()` function to get a reference to the query.
+const ref = listMySuppliersRef(listMySuppliersVars);
+// Variables can be defined inline as well.
+const ref = listMySuppliersRef({ search: ..., limit: ..., offset: ..., });
+// Since all variables are optional for this query, you can omit the `ListMySuppliersVariables` argument.
+const ref = listMySuppliersRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listMySuppliersRef(dataConnect, listMySuppliersVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.suppliers);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.suppliers);
+});
+```
+
+## GetMySupplier
+You can execute the `GetMySupplier` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+getMySupplier(vars: GetMySupplierVariables, options?: ExecuteQueryOptions): QueryPromise<GetMySupplierData, GetMySupplierVariables>;
+
+interface GetMySupplierRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetMySupplierVariables): QueryRef<GetMySupplierData, GetMySupplierVariables>;
+}
+export const getMySupplierRef: GetMySupplierRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getMySupplier(dc: DataConnect, vars: GetMySupplierVariables, options?: ExecuteQueryOptions): QueryPromise<GetMySupplierData, GetMySupplierVariables>;
+
+interface GetMySupplierRef {
+  ...
+  (dc: DataConnect, vars: GetMySupplierVariables): QueryRef<GetMySupplierData, GetMySupplierVariables>;
+}
+export const getMySupplierRef: GetMySupplierRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getMySupplierRef:
+```typescript
+const name = getMySupplierRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetMySupplier` query requires an argument of type `GetMySupplierVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetMySupplierVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `GetMySupplier` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetMySupplierData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetMySupplierData {
+  supplier?: {
+    id: UUIDString;
+    teamId: string;
+    name: string;
+    isDefault: boolean;
+    contactName?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    address?: string | null;
+    accountNumber?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    supplierQuoteItemPrices_on_supplier: ({
+      supplierId: UUIDString;
+      templateId: UUIDString;
+      materialUnitPriceCents: number;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+    } & SupplierQuoteItemPrice_Key)[];
+  } & Supplier_Key;
+}
+```
+### Using `GetMySupplier`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getMySupplier, GetMySupplierVariables } from '@generated/data-connector-web';
+
+// The `GetMySupplier` query requires an argument of type `GetMySupplierVariables`:
+const getMySupplierVars: GetMySupplierVariables = {
+  id: ..., 
+};
+
+// Call the `getMySupplier()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getMySupplier(getMySupplierVars);
+// Variables can be defined inline as well.
+const { data } = await getMySupplier({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getMySupplier(dataConnect, getMySupplierVars);
+
+console.log(data.supplier);
+
+// Or, you can use the `Promise` API.
+getMySupplier(getMySupplierVars).then((response) => {
+  const data = response.data;
+  console.log(data.supplier);
+});
+```
+
+### Using `GetMySupplier`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getMySupplierRef, GetMySupplierVariables } from '@generated/data-connector-web';
+
+// The `GetMySupplier` query requires an argument of type `GetMySupplierVariables`:
+const getMySupplierVars: GetMySupplierVariables = {
+  id: ..., 
+};
+
+// Call the `getMySupplierRef()` function to get a reference to the query.
+const ref = getMySupplierRef(getMySupplierVars);
+// Variables can be defined inline as well.
+const ref = getMySupplierRef({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getMySupplierRef(dataConnect, getMySupplierVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.supplier);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.supplier);
+});
+```
+
+## ListMySupplierPrices
+You can execute the `ListMySupplierPrices` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+listMySupplierPrices(vars: ListMySupplierPricesVariables, options?: ExecuteQueryOptions): QueryPromise<ListMySupplierPricesData, ListMySupplierPricesVariables>;
+
+interface ListMySupplierPricesRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListMySupplierPricesVariables): QueryRef<ListMySupplierPricesData, ListMySupplierPricesVariables>;
+}
+export const listMySupplierPricesRef: ListMySupplierPricesRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+listMySupplierPrices(dc: DataConnect, vars: ListMySupplierPricesVariables, options?: ExecuteQueryOptions): QueryPromise<ListMySupplierPricesData, ListMySupplierPricesVariables>;
+
+interface ListMySupplierPricesRef {
+  ...
+  (dc: DataConnect, vars: ListMySupplierPricesVariables): QueryRef<ListMySupplierPricesData, ListMySupplierPricesVariables>;
+}
+export const listMySupplierPricesRef: ListMySupplierPricesRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the listMySupplierPricesRef:
+```typescript
+const name = listMySupplierPricesRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `ListMySupplierPrices` query requires an argument of type `ListMySupplierPricesVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface ListMySupplierPricesVariables {
+  supplierId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `ListMySupplierPrices` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListMySupplierPricesData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface ListMySupplierPricesData {
+  supplierQuoteItemPrices: ({
+    supplierId: UUIDString;
+    templateId: UUIDString;
+    materialUnitPriceCents: number;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    template: {
+      id: UUIDString;
+      name: string;
+      unit?: string | null;
+    } & QuoteItemTemplate_Key;
+  } & SupplierQuoteItemPrice_Key)[];
+}
+```
+### Using `ListMySupplierPrices`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, listMySupplierPrices, ListMySupplierPricesVariables } from '@generated/data-connector-web';
+
+// The `ListMySupplierPrices` query requires an argument of type `ListMySupplierPricesVariables`:
+const listMySupplierPricesVars: ListMySupplierPricesVariables = {
+  supplierId: ..., 
+};
+
+// Call the `listMySupplierPrices()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listMySupplierPrices(listMySupplierPricesVars);
+// Variables can be defined inline as well.
+const { data } = await listMySupplierPrices({ supplierId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listMySupplierPrices(dataConnect, listMySupplierPricesVars);
+
+console.log(data.supplierQuoteItemPrices);
+
+// Or, you can use the `Promise` API.
+listMySupplierPrices(listMySupplierPricesVars).then((response) => {
+  const data = response.data;
+  console.log(data.supplierQuoteItemPrices);
+});
+```
+
+### Using `ListMySupplierPrices`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listMySupplierPricesRef, ListMySupplierPricesVariables } from '@generated/data-connector-web';
+
+// The `ListMySupplierPrices` query requires an argument of type `ListMySupplierPricesVariables`:
+const listMySupplierPricesVars: ListMySupplierPricesVariables = {
+  supplierId: ..., 
+};
+
+// Call the `listMySupplierPricesRef()` function to get a reference to the query.
+const ref = listMySupplierPricesRef(listMySupplierPricesVars);
+// Variables can be defined inline as well.
+const ref = listMySupplierPricesRef({ supplierId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listMySupplierPricesRef(dataConnect, listMySupplierPricesVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.supplierQuoteItemPrices);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.supplierQuoteItemPrices);
 });
 ```
 
@@ -8985,6 +9376,720 @@ console.log(data.quoteAppearance_upsert);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.quoteAppearance_upsert);
+});
+```
+
+## CreateMySupplier
+You can execute the `CreateMySupplier` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+createMySupplier(vars: CreateMySupplierVariables): MutationPromise<CreateMySupplierData, CreateMySupplierVariables>;
+
+interface CreateMySupplierRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateMySupplierVariables): MutationRef<CreateMySupplierData, CreateMySupplierVariables>;
+}
+export const createMySupplierRef: CreateMySupplierRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+createMySupplier(dc: DataConnect, vars: CreateMySupplierVariables): MutationPromise<CreateMySupplierData, CreateMySupplierVariables>;
+
+interface CreateMySupplierRef {
+  ...
+  (dc: DataConnect, vars: CreateMySupplierVariables): MutationRef<CreateMySupplierData, CreateMySupplierVariables>;
+}
+export const createMySupplierRef: CreateMySupplierRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createMySupplierRef:
+```typescript
+const name = createMySupplierRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `CreateMySupplier` mutation requires an argument of type `CreateMySupplierVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface CreateMySupplierVariables {
+  id: UUIDString;
+  name: string;
+  contactName?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  address?: string | null;
+  accountNumber?: string | null;
+}
+```
+### Return Type
+Recall that executing the `CreateMySupplier` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `CreateMySupplierData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface CreateMySupplierData {
+  supplier_insert: Supplier_Key;
+}
+```
+### Using `CreateMySupplier`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, createMySupplier, CreateMySupplierVariables } from '@generated/data-connector-web';
+
+// The `CreateMySupplier` mutation requires an argument of type `CreateMySupplierVariables`:
+const createMySupplierVars: CreateMySupplierVariables = {
+  id: ..., 
+  name: ..., 
+  contactName: ..., // optional
+  phoneNumber: ..., // optional
+  email: ..., // optional
+  address: ..., // optional
+  accountNumber: ..., // optional
+};
+
+// Call the `createMySupplier()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await createMySupplier(createMySupplierVars);
+// Variables can be defined inline as well.
+const { data } = await createMySupplier({ id: ..., name: ..., contactName: ..., phoneNumber: ..., email: ..., address: ..., accountNumber: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await createMySupplier(dataConnect, createMySupplierVars);
+
+console.log(data.supplier_insert);
+
+// Or, you can use the `Promise` API.
+createMySupplier(createMySupplierVars).then((response) => {
+  const data = response.data;
+  console.log(data.supplier_insert);
+});
+```
+
+### Using `CreateMySupplier`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, createMySupplierRef, CreateMySupplierVariables } from '@generated/data-connector-web';
+
+// The `CreateMySupplier` mutation requires an argument of type `CreateMySupplierVariables`:
+const createMySupplierVars: CreateMySupplierVariables = {
+  id: ..., 
+  name: ..., 
+  contactName: ..., // optional
+  phoneNumber: ..., // optional
+  email: ..., // optional
+  address: ..., // optional
+  accountNumber: ..., // optional
+};
+
+// Call the `createMySupplierRef()` function to get a reference to the mutation.
+const ref = createMySupplierRef(createMySupplierVars);
+// Variables can be defined inline as well.
+const ref = createMySupplierRef({ id: ..., name: ..., contactName: ..., phoneNumber: ..., email: ..., address: ..., accountNumber: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = createMySupplierRef(dataConnect, createMySupplierVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.supplier_insert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.supplier_insert);
+});
+```
+
+## UpdateMySupplier
+You can execute the `UpdateMySupplier` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+updateMySupplier(vars: UpdateMySupplierVariables): MutationPromise<UpdateMySupplierData, UpdateMySupplierVariables>;
+
+interface UpdateMySupplierRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateMySupplierVariables): MutationRef<UpdateMySupplierData, UpdateMySupplierVariables>;
+}
+export const updateMySupplierRef: UpdateMySupplierRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateMySupplier(dc: DataConnect, vars: UpdateMySupplierVariables): MutationPromise<UpdateMySupplierData, UpdateMySupplierVariables>;
+
+interface UpdateMySupplierRef {
+  ...
+  (dc: DataConnect, vars: UpdateMySupplierVariables): MutationRef<UpdateMySupplierData, UpdateMySupplierVariables>;
+}
+export const updateMySupplierRef: UpdateMySupplierRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateMySupplierRef:
+```typescript
+const name = updateMySupplierRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateMySupplier` mutation requires an argument of type `UpdateMySupplierVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateMySupplierVariables {
+  id: UUIDString;
+  name: string;
+  contactName?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  address?: string | null;
+  accountNumber?: string | null;
+}
+```
+### Return Type
+Recall that executing the `UpdateMySupplier` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateMySupplierData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateMySupplierData {
+  supplier_update?: Supplier_Key | null;
+}
+```
+### Using `UpdateMySupplier`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateMySupplier, UpdateMySupplierVariables } from '@generated/data-connector-web';
+
+// The `UpdateMySupplier` mutation requires an argument of type `UpdateMySupplierVariables`:
+const updateMySupplierVars: UpdateMySupplierVariables = {
+  id: ..., 
+  name: ..., 
+  contactName: ..., // optional
+  phoneNumber: ..., // optional
+  email: ..., // optional
+  address: ..., // optional
+  accountNumber: ..., // optional
+};
+
+// Call the `updateMySupplier()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateMySupplier(updateMySupplierVars);
+// Variables can be defined inline as well.
+const { data } = await updateMySupplier({ id: ..., name: ..., contactName: ..., phoneNumber: ..., email: ..., address: ..., accountNumber: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateMySupplier(dataConnect, updateMySupplierVars);
+
+console.log(data.supplier_update);
+
+// Or, you can use the `Promise` API.
+updateMySupplier(updateMySupplierVars).then((response) => {
+  const data = response.data;
+  console.log(data.supplier_update);
+});
+```
+
+### Using `UpdateMySupplier`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateMySupplierRef, UpdateMySupplierVariables } from '@generated/data-connector-web';
+
+// The `UpdateMySupplier` mutation requires an argument of type `UpdateMySupplierVariables`:
+const updateMySupplierVars: UpdateMySupplierVariables = {
+  id: ..., 
+  name: ..., 
+  contactName: ..., // optional
+  phoneNumber: ..., // optional
+  email: ..., // optional
+  address: ..., // optional
+  accountNumber: ..., // optional
+};
+
+// Call the `updateMySupplierRef()` function to get a reference to the mutation.
+const ref = updateMySupplierRef(updateMySupplierVars);
+// Variables can be defined inline as well.
+const ref = updateMySupplierRef({ id: ..., name: ..., contactName: ..., phoneNumber: ..., email: ..., address: ..., accountNumber: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateMySupplierRef(dataConnect, updateMySupplierVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.supplier_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.supplier_update);
+});
+```
+
+## DeleteMySupplier
+You can execute the `DeleteMySupplier` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+deleteMySupplier(vars: DeleteMySupplierVariables): MutationPromise<DeleteMySupplierData, DeleteMySupplierVariables>;
+
+interface DeleteMySupplierRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteMySupplierVariables): MutationRef<DeleteMySupplierData, DeleteMySupplierVariables>;
+}
+export const deleteMySupplierRef: DeleteMySupplierRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deleteMySupplier(dc: DataConnect, vars: DeleteMySupplierVariables): MutationPromise<DeleteMySupplierData, DeleteMySupplierVariables>;
+
+interface DeleteMySupplierRef {
+  ...
+  (dc: DataConnect, vars: DeleteMySupplierVariables): MutationRef<DeleteMySupplierData, DeleteMySupplierVariables>;
+}
+export const deleteMySupplierRef: DeleteMySupplierRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteMySupplierRef:
+```typescript
+const name = deleteMySupplierRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeleteMySupplier` mutation requires an argument of type `DeleteMySupplierVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeleteMySupplierVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeleteMySupplier` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeleteMySupplierData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeleteMySupplierData {
+  quote_updateMany: number;
+  supplierQuoteItemPrice_deleteMany: number;
+  supplier_delete?: Supplier_Key | null;
+}
+```
+### Using `DeleteMySupplier`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deleteMySupplier, DeleteMySupplierVariables } from '@generated/data-connector-web';
+
+// The `DeleteMySupplier` mutation requires an argument of type `DeleteMySupplierVariables`:
+const deleteMySupplierVars: DeleteMySupplierVariables = {
+  id: ..., 
+};
+
+// Call the `deleteMySupplier()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deleteMySupplier(deleteMySupplierVars);
+// Variables can be defined inline as well.
+const { data } = await deleteMySupplier({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deleteMySupplier(dataConnect, deleteMySupplierVars);
+
+console.log(data.quote_updateMany);
+console.log(data.supplierQuoteItemPrice_deleteMany);
+console.log(data.supplier_delete);
+
+// Or, you can use the `Promise` API.
+deleteMySupplier(deleteMySupplierVars).then((response) => {
+  const data = response.data;
+  console.log(data.quote_updateMany);
+  console.log(data.supplierQuoteItemPrice_deleteMany);
+  console.log(data.supplier_delete);
+});
+```
+
+### Using `DeleteMySupplier`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deleteMySupplierRef, DeleteMySupplierVariables } from '@generated/data-connector-web';
+
+// The `DeleteMySupplier` mutation requires an argument of type `DeleteMySupplierVariables`:
+const deleteMySupplierVars: DeleteMySupplierVariables = {
+  id: ..., 
+};
+
+// Call the `deleteMySupplierRef()` function to get a reference to the mutation.
+const ref = deleteMySupplierRef(deleteMySupplierVars);
+// Variables can be defined inline as well.
+const ref = deleteMySupplierRef({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deleteMySupplierRef(dataConnect, deleteMySupplierVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.quote_updateMany);
+console.log(data.supplierQuoteItemPrice_deleteMany);
+console.log(data.supplier_delete);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.quote_updateMany);
+  console.log(data.supplierQuoteItemPrice_deleteMany);
+  console.log(data.supplier_delete);
+});
+```
+
+## SetMyDefaultSupplier
+You can execute the `SetMyDefaultSupplier` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+setMyDefaultSupplier(vars: SetMyDefaultSupplierVariables): MutationPromise<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+
+interface SetMyDefaultSupplierRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: SetMyDefaultSupplierVariables): MutationRef<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+}
+export const setMyDefaultSupplierRef: SetMyDefaultSupplierRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+setMyDefaultSupplier(dc: DataConnect, vars: SetMyDefaultSupplierVariables): MutationPromise<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+
+interface SetMyDefaultSupplierRef {
+  ...
+  (dc: DataConnect, vars: SetMyDefaultSupplierVariables): MutationRef<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+}
+export const setMyDefaultSupplierRef: SetMyDefaultSupplierRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the setMyDefaultSupplierRef:
+```typescript
+const name = setMyDefaultSupplierRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `SetMyDefaultSupplier` mutation requires an argument of type `SetMyDefaultSupplierVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface SetMyDefaultSupplierVariables {
+  id: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `SetMyDefaultSupplier` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `SetMyDefaultSupplierData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface SetMyDefaultSupplierData {
+  supplier_updateMany: number;
+  supplier_update?: Supplier_Key | null;
+}
+```
+### Using `SetMyDefaultSupplier`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, setMyDefaultSupplier, SetMyDefaultSupplierVariables } from '@generated/data-connector-web';
+
+// The `SetMyDefaultSupplier` mutation requires an argument of type `SetMyDefaultSupplierVariables`:
+const setMyDefaultSupplierVars: SetMyDefaultSupplierVariables = {
+  id: ..., 
+};
+
+// Call the `setMyDefaultSupplier()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await setMyDefaultSupplier(setMyDefaultSupplierVars);
+// Variables can be defined inline as well.
+const { data } = await setMyDefaultSupplier({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await setMyDefaultSupplier(dataConnect, setMyDefaultSupplierVars);
+
+console.log(data.supplier_updateMany);
+console.log(data.supplier_update);
+
+// Or, you can use the `Promise` API.
+setMyDefaultSupplier(setMyDefaultSupplierVars).then((response) => {
+  const data = response.data;
+  console.log(data.supplier_updateMany);
+  console.log(data.supplier_update);
+});
+```
+
+### Using `SetMyDefaultSupplier`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, setMyDefaultSupplierRef, SetMyDefaultSupplierVariables } from '@generated/data-connector-web';
+
+// The `SetMyDefaultSupplier` mutation requires an argument of type `SetMyDefaultSupplierVariables`:
+const setMyDefaultSupplierVars: SetMyDefaultSupplierVariables = {
+  id: ..., 
+};
+
+// Call the `setMyDefaultSupplierRef()` function to get a reference to the mutation.
+const ref = setMyDefaultSupplierRef(setMyDefaultSupplierVars);
+// Variables can be defined inline as well.
+const ref = setMyDefaultSupplierRef({ id: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = setMyDefaultSupplierRef(dataConnect, setMyDefaultSupplierVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.supplier_updateMany);
+console.log(data.supplier_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.supplier_updateMany);
+  console.log(data.supplier_update);
+});
+```
+
+## UpsertMySupplierItemPrice
+You can execute the `UpsertMySupplierItemPrice` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+upsertMySupplierItemPrice(vars: UpsertMySupplierItemPriceVariables): MutationPromise<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+
+interface UpsertMySupplierItemPriceRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpsertMySupplierItemPriceVariables): MutationRef<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+}
+export const upsertMySupplierItemPriceRef: UpsertMySupplierItemPriceRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+upsertMySupplierItemPrice(dc: DataConnect, vars: UpsertMySupplierItemPriceVariables): MutationPromise<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+
+interface UpsertMySupplierItemPriceRef {
+  ...
+  (dc: DataConnect, vars: UpsertMySupplierItemPriceVariables): MutationRef<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+}
+export const upsertMySupplierItemPriceRef: UpsertMySupplierItemPriceRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the upsertMySupplierItemPriceRef:
+```typescript
+const name = upsertMySupplierItemPriceRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpsertMySupplierItemPrice` mutation requires an argument of type `UpsertMySupplierItemPriceVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpsertMySupplierItemPriceVariables {
+  supplierId: UUIDString;
+  templateId: UUIDString;
+  materialUnitPriceCents: number;
+}
+```
+### Return Type
+Recall that executing the `UpsertMySupplierItemPrice` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpsertMySupplierItemPriceData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpsertMySupplierItemPriceData {
+  supplierQuoteItemPrice_upsert: SupplierQuoteItemPrice_Key;
+}
+```
+### Using `UpsertMySupplierItemPrice`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, upsertMySupplierItemPrice, UpsertMySupplierItemPriceVariables } from '@generated/data-connector-web';
+
+// The `UpsertMySupplierItemPrice` mutation requires an argument of type `UpsertMySupplierItemPriceVariables`:
+const upsertMySupplierItemPriceVars: UpsertMySupplierItemPriceVariables = {
+  supplierId: ..., 
+  templateId: ..., 
+  materialUnitPriceCents: ..., 
+};
+
+// Call the `upsertMySupplierItemPrice()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await upsertMySupplierItemPrice(upsertMySupplierItemPriceVars);
+// Variables can be defined inline as well.
+const { data } = await upsertMySupplierItemPrice({ supplierId: ..., templateId: ..., materialUnitPriceCents: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await upsertMySupplierItemPrice(dataConnect, upsertMySupplierItemPriceVars);
+
+console.log(data.supplierQuoteItemPrice_upsert);
+
+// Or, you can use the `Promise` API.
+upsertMySupplierItemPrice(upsertMySupplierItemPriceVars).then((response) => {
+  const data = response.data;
+  console.log(data.supplierQuoteItemPrice_upsert);
+});
+```
+
+### Using `UpsertMySupplierItemPrice`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, upsertMySupplierItemPriceRef, UpsertMySupplierItemPriceVariables } from '@generated/data-connector-web';
+
+// The `UpsertMySupplierItemPrice` mutation requires an argument of type `UpsertMySupplierItemPriceVariables`:
+const upsertMySupplierItemPriceVars: UpsertMySupplierItemPriceVariables = {
+  supplierId: ..., 
+  templateId: ..., 
+  materialUnitPriceCents: ..., 
+};
+
+// Call the `upsertMySupplierItemPriceRef()` function to get a reference to the mutation.
+const ref = upsertMySupplierItemPriceRef(upsertMySupplierItemPriceVars);
+// Variables can be defined inline as well.
+const ref = upsertMySupplierItemPriceRef({ supplierId: ..., templateId: ..., materialUnitPriceCents: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = upsertMySupplierItemPriceRef(dataConnect, upsertMySupplierItemPriceVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.supplierQuoteItemPrice_upsert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.supplierQuoteItemPrice_upsert);
+});
+```
+
+## DeleteMySupplierItemPrice
+You can execute the `DeleteMySupplierItemPrice` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [data-connector-web/index.d.ts](./index.d.ts):
+```typescript
+deleteMySupplierItemPrice(vars: DeleteMySupplierItemPriceVariables): MutationPromise<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+
+interface DeleteMySupplierItemPriceRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteMySupplierItemPriceVariables): MutationRef<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+}
+export const deleteMySupplierItemPriceRef: DeleteMySupplierItemPriceRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deleteMySupplierItemPrice(dc: DataConnect, vars: DeleteMySupplierItemPriceVariables): MutationPromise<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+
+interface DeleteMySupplierItemPriceRef {
+  ...
+  (dc: DataConnect, vars: DeleteMySupplierItemPriceVariables): MutationRef<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+}
+export const deleteMySupplierItemPriceRef: DeleteMySupplierItemPriceRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteMySupplierItemPriceRef:
+```typescript
+const name = deleteMySupplierItemPriceRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeleteMySupplierItemPrice` mutation requires an argument of type `DeleteMySupplierItemPriceVariables`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface DeleteMySupplierItemPriceVariables {
+  supplierId: UUIDString;
+  templateId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `DeleteMySupplierItemPrice` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeleteMySupplierItemPriceData`, which is defined in [data-connector-web/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeleteMySupplierItemPriceData {
+  supplierQuoteItemPrice_delete?: SupplierQuoteItemPrice_Key | null;
+}
+```
+### Using `DeleteMySupplierItemPrice`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deleteMySupplierItemPrice, DeleteMySupplierItemPriceVariables } from '@generated/data-connector-web';
+
+// The `DeleteMySupplierItemPrice` mutation requires an argument of type `DeleteMySupplierItemPriceVariables`:
+const deleteMySupplierItemPriceVars: DeleteMySupplierItemPriceVariables = {
+  supplierId: ..., 
+  templateId: ..., 
+};
+
+// Call the `deleteMySupplierItemPrice()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deleteMySupplierItemPrice(deleteMySupplierItemPriceVars);
+// Variables can be defined inline as well.
+const { data } = await deleteMySupplierItemPrice({ supplierId: ..., templateId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deleteMySupplierItemPrice(dataConnect, deleteMySupplierItemPriceVars);
+
+console.log(data.supplierQuoteItemPrice_delete);
+
+// Or, you can use the `Promise` API.
+deleteMySupplierItemPrice(deleteMySupplierItemPriceVars).then((response) => {
+  const data = response.data;
+  console.log(data.supplierQuoteItemPrice_delete);
+});
+```
+
+### Using `DeleteMySupplierItemPrice`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deleteMySupplierItemPriceRef, DeleteMySupplierItemPriceVariables } from '@generated/data-connector-web';
+
+// The `DeleteMySupplierItemPrice` mutation requires an argument of type `DeleteMySupplierItemPriceVariables`:
+const deleteMySupplierItemPriceVars: DeleteMySupplierItemPriceVariables = {
+  supplierId: ..., 
+  templateId: ..., 
+};
+
+// Call the `deleteMySupplierItemPriceRef()` function to get a reference to the mutation.
+const ref = deleteMySupplierItemPriceRef(deleteMySupplierItemPriceVars);
+// Variables can be defined inline as well.
+const ref = deleteMySupplierItemPriceRef({ supplierId: ..., templateId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deleteMySupplierItemPriceRef(dataConnect, deleteMySupplierItemPriceVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.supplierQuoteItemPrice_delete);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.supplierQuoteItemPrice_delete);
 });
 ```
 

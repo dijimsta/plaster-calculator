@@ -1,0 +1,220 @@
+mutation CreateMySupplier(
+    $id: UUID!
+    $name: String!
+    $contactName: String
+    $phoneNumber: String
+    $email: String
+    $address: String
+    $accountNumber: String
+) @auth(level: USER) {
+    supplier_insert(
+        data: {
+            id: $id
+            teamId_expr: "auth.token.teamId"
+            name: $name
+            contactName: $contactName
+            phoneNumber: $phoneNumber
+            email: $email
+            address: $address
+            accountNumber: $accountNumber
+            createdAt_expr: "request.time"
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+mutation UpdateMySupplier(
+    $id: UUID!
+    $name: String!
+    $contactName: String
+    $phoneNumber: String
+    $email: String
+    $address: String
+    $accountNumber: String
+) @auth(level: USER) @transaction {
+    query @redact {
+        supplier(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this supplier"
+            ) {
+            id
+            teamId
+        }
+    }
+    supplier_update(
+        id: $id
+        data: {
+            name: $name
+            contactName: $contactName
+            phoneNumber: $phoneNumber
+            email: $email
+            address: $address
+            accountNumber: $accountNumber
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+# Deletes a `Supplier`, cascading both of its dependents in the same
+# `@transaction`. `Quote.supplierId` is nullable, so any quote pointing at
+# this supplier has that reference cleared first (`quote_updateMany`) — the
+# same nullable-FK-clearing shape `DeleteQuoteTemplate`
+# (quotes.mutations.gql) uses for `Company.quoteTemplateId` before deleting a
+# `QuoteTemplate` — leaving the quote itself intact.
+# `SupplierQuoteItemPrice.supplierId` is non-null, so its rows can't be
+# nulled the same way: they're deleted outright via
+# `supplierQuoteItemPrice_deleteMany`, the same delete-children-before-parent
+# shape `DeleteMyCompany` (companies.mutations.gql) uses for
+# `companyContact_deleteMany` before `company_delete`.
+mutation DeleteMySupplier($id: UUID!) @auth(level: USER) @transaction {
+    query @redact {
+        supplier(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this supplier"
+            ) {
+            id
+            teamId
+        }
+    }
+    quote_updateMany(
+        where: { supplierId: { eq: $id } }
+        data: { supplierId: null, updatedAt_expr: "request.time" }
+    )
+    supplierQuoteItemPrice_deleteMany(where: { supplierId: { eq: $id } })
+    supplier_delete(id: $id)
+        @check(expr: "this != null", message: "Supplier not found")
+}
+
+# Promotes a `Supplier` to the team's default, demoting whichever supplier
+# currently holds `isDefault: true`, following the same
+# clear-then-set-in-one-transaction shape `SetQuoteTemplateAsDefault`
+# (quotes.mutations.gql) uses for `QuoteTemplate.isDefault`: `isDefault`
+# carries no database-level uniqueness constraint, so both writes happen in
+# the same `@transaction` here too, and clearing by
+# `where: { isDefault: { eq: true } }` rather than a previously-fetched id
+# keeps this idempotent the same way — calling it again on the current
+# default just clears and immediately re-sets the same row.
+mutation SetMyDefaultSupplier($id: UUID!) @auth(level: USER) @transaction {
+    query @redact {
+        supplier(key: { id: $id })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this supplier"
+            ) {
+            id
+            teamId
+        }
+    }
+    supplier_updateMany(
+        where: {
+            teamId: { eq_expr: "auth.token.teamId" }
+            isDefault: { eq: true }
+        }
+        data: { isDefault: false, updatedAt_expr: "request.time" }
+    )
+    supplier_update(
+        id: $id
+        data: { isDefault: true, updatedAt_expr: "request.time" }
+    )
+}
+
+# Sets (or replaces) a `Supplier`'s price for one `QuoteItemTemplate`.
+# `$supplierId` and `$templateId` are both ownership-checked against
+# `auth.token.teamId` in the same `query @redact` block, following the
+# dual-ownership-check pattern `AssignQuoteTemplateToCompany`
+# (companies.mutations.gql) uses for `$companyId`/`$quoteTemplateId` — so
+# neither a supplier nor an item template belonging to another team can be
+# priced together.
+#
+# `quoteItemTemplate`'s check expression is deliberately not the plain
+# `this.teamId == auth.token.teamId` that `AssignQuoteTemplateToCompany` uses
+# for `QuoteTemplate` (every `QuoteTemplate` belongs to exactly one team). It
+# instead matches `ListQuoteItemTemplates`'s visibility rule
+# (`this.scope == 'SYSTEM' || this.teamId == auth.token.teamId`), because
+# `QuoteItemTemplate.teamId` is nullable for the 13 system plasterboard
+# templates seeded by `ReconcileSystemQuoteItemTemplates` — which are the
+# primary thing a supplier's prices get set against. The plain
+# team-equality check used by `UpdateQuoteItemTemplateWithUnit`/
+# `DeleteQuoteItemTemplate` is right for *editing* a template (only a team's
+# own custom templates are editable) but would incorrectly reject every
+# system template here, where the check is about *pricing visibility*, not
+# edit ownership.
+#
+# `SupplierQuoteItemPrice` is keyed on `(supplierId, templateId)` (no `id`
+# field), so this is an upsert rather than an insert, matching how
+# `UpsertMyQuoteAppearance`/`UpsertMyUserSettings` upsert their own
+# single/composite-keyed rows: the first price set for a given
+# supplier/template pair creates the row, a later call for the same pair
+# updates it in place. `createdAt` is intentionally omitted from `data`, the
+# same way every other `_upsert` in this connector (e.g. `quantitySource_upsert`
+# in `ReconcileSystemQuoteItemTemplates`) leaves it out — the column default
+# stamps it once on insert, and omitting it from `data` means a later update
+# never overwrites the original value.
+mutation UpsertMySupplierItemPrice(
+    $supplierId: UUID!
+    $templateId: UUID!
+    $materialUnitPriceCents: Int!
+) @auth(level: USER) @transaction {
+    query @redact {
+        supplier(key: { id: $supplierId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this supplier"
+            ) {
+            id
+            teamId
+        }
+        quoteItemTemplate(key: { id: $templateId })
+            @check(
+                expr: "this != null && (this.scope == 'SYSTEM' || this.teamId == auth.token.teamId)"
+                message: "You do not have access to this quote item template"
+            ) {
+            id
+            teamId
+            scope
+        }
+    }
+    supplierQuoteItemPrice_upsert(
+        data: {
+            supplierId: $supplierId
+            templateId: $templateId
+            teamId_expr: "auth.token.teamId"
+            materialUnitPriceCents: $materialUnitPriceCents
+            updatedAt_expr: "request.time"
+        }
+    )
+}
+
+# Blanking a cost deletes the row rather than storing `0`, so "no estimate"
+# and "free" stay distinguishable. Ownership-checks both `$supplierId` and
+# `$templateId` the same way `UpsertMySupplierItemPrice` above does,
+# including the same system-template-aware visibility check for
+# `quoteItemTemplate`.
+mutation DeleteMySupplierItemPrice($supplierId: UUID!, $templateId: UUID!)
+@auth(level: USER)
+@transaction {
+    query @redact {
+        supplier(key: { id: $supplierId })
+            @check(
+                expr: "this != null && this.teamId == auth.token.teamId"
+                message: "You do not have access to this supplier"
+            ) {
+            id
+            teamId
+        }
+        quoteItemTemplate(key: { id: $templateId })
+            @check(
+                expr: "this != null && (this.scope == 'SYSTEM' || this.teamId == auth.token.teamId)"
+                message: "You do not have access to this quote item template"
+            ) {
+            id
+            teamId
+            scope
+        }
+    }
+    supplierQuoteItemPrice_delete(
+        key: { supplierId: $supplierId, templateId: $templateId }
+    ) @check(expr: "this != null", message: "Price not found")
+}

@@ -177,6 +177,20 @@ export interface CreateMyCompanyVariables {
   phoneNumber?: string | null;
 }
 
+export interface CreateMySupplierData {
+  supplier_insert: Supplier_Key;
+}
+
+export interface CreateMySupplierVariables {
+  id: UUIDString;
+  name: string;
+  contactName?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  address?: string | null;
+  accountNumber?: string | null;
+}
+
 export interface CreateProjectQuestionnaireQuestionData {
   projectQuestionnaireQuestion_insert: ProjectQuestionnaireQuestion_Key;
 }
@@ -674,6 +688,25 @@ export interface DeleteMyCompanyVariables {
   id: UUIDString;
 }
 
+export interface DeleteMySupplierData {
+  quote_updateMany: number;
+  supplierQuoteItemPrice_deleteMany: number;
+  supplier_delete?: Supplier_Key | null;
+}
+
+export interface DeleteMySupplierItemPriceData {
+  supplierQuoteItemPrice_delete?: SupplierQuoteItemPrice_Key | null;
+}
+
+export interface DeleteMySupplierItemPriceVariables {
+  supplierId: UUIDString;
+  templateId: UUIDString;
+}
+
+export interface DeleteMySupplierVariables {
+  id: UUIDString;
+}
+
 export interface DeleteProjectQuestionnaireQuestionData {
   projectQuestionnaireQuestion_delete?: ProjectQuestionnaireQuestion_Key | null;
 }
@@ -793,6 +826,33 @@ export interface GetMyQuoteAppearanceData {
     createdAt: TimestampString;
     updatedAt: TimestampString;
   } & QuoteAppearance_Key)[];
+}
+
+export interface GetMySupplierData {
+  supplier?: {
+    id: UUIDString;
+    teamId: string;
+    name: string;
+    isDefault: boolean;
+    contactName?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    address?: string | null;
+    accountNumber?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    supplierQuoteItemPrices_on_supplier: ({
+      supplierId: UUIDString;
+      templateId: UUIDString;
+      materialUnitPriceCents: number;
+      createdAt: TimestampString;
+      updatedAt: TimestampString;
+    } & SupplierQuoteItemPrice_Key)[];
+  } & Supplier_Key;
+}
+
+export interface GetMySupplierVariables {
+  id: UUIDString;
 }
 
 export interface GetMyTeamData {
@@ -1109,6 +1169,50 @@ export interface ListMyCompanyContactsVariables {
   companyId: UUIDString;
 }
 
+export interface ListMySupplierPricesData {
+  supplierQuoteItemPrices: ({
+    supplierId: UUIDString;
+    templateId: UUIDString;
+    materialUnitPriceCents: number;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    template: {
+      id: UUIDString;
+      name: string;
+      unit?: string | null;
+    } & QuoteItemTemplate_Key;
+  } & SupplierQuoteItemPrice_Key)[];
+}
+
+export interface ListMySupplierPricesVariables {
+  supplierId: UUIDString;
+}
+
+export interface ListMySuppliersData {
+  suppliers: ({
+    id: UUIDString;
+    teamId: string;
+    name: string;
+    isDefault: boolean;
+    contactName?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    address?: string | null;
+    accountNumber?: string | null;
+    createdAt: TimestampString;
+    updatedAt: TimestampString;
+    prices: ({
+      templateId: UUIDString;
+    })[];
+  } & Supplier_Key)[];
+}
+
+export interface ListMySuppliersVariables {
+  search?: string | null;
+  limit?: number | null;
+  offset?: number | null;
+}
+
 export interface ListProjectQuestionnairesData {
   projectQuestionnaires: ({
     projectId: UUIDString;
@@ -1330,6 +1434,15 @@ export interface SetMyCompanyPrimaryContactVariables {
   contactId: UUIDString;
 }
 
+export interface SetMyDefaultSupplierData {
+  supplier_updateMany: number;
+  supplier_update?: Supplier_Key | null;
+}
+
+export interface SetMyDefaultSupplierVariables {
+  id: UUIDString;
+}
+
 export interface SetQuoteTemplateAsDefaultData {
   quoteTemplate_updateMany: number;
   quoteTemplate_update?: QuoteTemplate_Key | null;
@@ -1397,6 +1510,20 @@ export interface UpdateMyQuoteAppearanceLogoData {
 
 export interface UpdateMyQuoteAppearanceLogoVariables {
   logoStoragePath?: string | null;
+}
+
+export interface UpdateMySupplierData {
+  supplier_update?: Supplier_Key | null;
+}
+
+export interface UpdateMySupplierVariables {
+  id: UUIDString;
+  name: string;
+  contactName?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  address?: string | null;
+  accountNumber?: string | null;
 }
 
 export interface UpdateProjectQuestionnaireQuestionAnswerData {
@@ -1525,6 +1652,16 @@ export interface UpsertMyQuoteAppearanceVariables {
   showSignatureBlock: boolean;
   validForDays: number;
   terms?: string | null;
+}
+
+export interface UpsertMySupplierItemPriceData {
+  supplierQuoteItemPrice_upsert: SupplierQuoteItemPrice_Key;
+}
+
+export interface UpsertMySupplierItemPriceVariables {
+  supplierId: UUIDString;
+  templateId: UUIDString;
+  materialUnitPriceCents: number;
 }
 
 export interface UpsertMyUserSettingsData {
@@ -2254,6 +2391,114 @@ export const getProjectQuoteRef: GetProjectQuoteRef;
 
 export function getProjectQuote(vars: GetProjectQuoteVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuoteData, GetProjectQuoteVariables>;
 export function getProjectQuote(dc: DataConnect, vars: GetProjectQuoteVariables, options?: ExecuteQueryOptions): QueryPromise<GetProjectQuoteData, GetProjectQuoteVariables>;
+
+interface CreateMySupplierRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateMySupplierVariables): MutationRef<CreateMySupplierData, CreateMySupplierVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateMySupplierVariables): MutationRef<CreateMySupplierData, CreateMySupplierVariables>;
+  operationName: string;
+}
+export const createMySupplierRef: CreateMySupplierRef;
+
+export function createMySupplier(vars: CreateMySupplierVariables): MutationPromise<CreateMySupplierData, CreateMySupplierVariables>;
+export function createMySupplier(dc: DataConnect, vars: CreateMySupplierVariables): MutationPromise<CreateMySupplierData, CreateMySupplierVariables>;
+
+interface UpdateMySupplierRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateMySupplierVariables): MutationRef<UpdateMySupplierData, UpdateMySupplierVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateMySupplierVariables): MutationRef<UpdateMySupplierData, UpdateMySupplierVariables>;
+  operationName: string;
+}
+export const updateMySupplierRef: UpdateMySupplierRef;
+
+export function updateMySupplier(vars: UpdateMySupplierVariables): MutationPromise<UpdateMySupplierData, UpdateMySupplierVariables>;
+export function updateMySupplier(dc: DataConnect, vars: UpdateMySupplierVariables): MutationPromise<UpdateMySupplierData, UpdateMySupplierVariables>;
+
+interface DeleteMySupplierRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteMySupplierVariables): MutationRef<DeleteMySupplierData, DeleteMySupplierVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteMySupplierVariables): MutationRef<DeleteMySupplierData, DeleteMySupplierVariables>;
+  operationName: string;
+}
+export const deleteMySupplierRef: DeleteMySupplierRef;
+
+export function deleteMySupplier(vars: DeleteMySupplierVariables): MutationPromise<DeleteMySupplierData, DeleteMySupplierVariables>;
+export function deleteMySupplier(dc: DataConnect, vars: DeleteMySupplierVariables): MutationPromise<DeleteMySupplierData, DeleteMySupplierVariables>;
+
+interface SetMyDefaultSupplierRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: SetMyDefaultSupplierVariables): MutationRef<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: SetMyDefaultSupplierVariables): MutationRef<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+  operationName: string;
+}
+export const setMyDefaultSupplierRef: SetMyDefaultSupplierRef;
+
+export function setMyDefaultSupplier(vars: SetMyDefaultSupplierVariables): MutationPromise<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+export function setMyDefaultSupplier(dc: DataConnect, vars: SetMyDefaultSupplierVariables): MutationPromise<SetMyDefaultSupplierData, SetMyDefaultSupplierVariables>;
+
+interface UpsertMySupplierItemPriceRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpsertMySupplierItemPriceVariables): MutationRef<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpsertMySupplierItemPriceVariables): MutationRef<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+  operationName: string;
+}
+export const upsertMySupplierItemPriceRef: UpsertMySupplierItemPriceRef;
+
+export function upsertMySupplierItemPrice(vars: UpsertMySupplierItemPriceVariables): MutationPromise<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+export function upsertMySupplierItemPrice(dc: DataConnect, vars: UpsertMySupplierItemPriceVariables): MutationPromise<UpsertMySupplierItemPriceData, UpsertMySupplierItemPriceVariables>;
+
+interface DeleteMySupplierItemPriceRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteMySupplierItemPriceVariables): MutationRef<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteMySupplierItemPriceVariables): MutationRef<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+  operationName: string;
+}
+export const deleteMySupplierItemPriceRef: DeleteMySupplierItemPriceRef;
+
+export function deleteMySupplierItemPrice(vars: DeleteMySupplierItemPriceVariables): MutationPromise<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+export function deleteMySupplierItemPrice(dc: DataConnect, vars: DeleteMySupplierItemPriceVariables): MutationPromise<DeleteMySupplierItemPriceData, DeleteMySupplierItemPriceVariables>;
+
+interface ListMySuppliersRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars?: ListMySuppliersVariables): QueryRef<ListMySuppliersData, ListMySuppliersVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars?: ListMySuppliersVariables): QueryRef<ListMySuppliersData, ListMySuppliersVariables>;
+  operationName: string;
+}
+export const listMySuppliersRef: ListMySuppliersRef;
+
+export function listMySuppliers(vars?: ListMySuppliersVariables, options?: ExecuteQueryOptions): QueryPromise<ListMySuppliersData, ListMySuppliersVariables>;
+export function listMySuppliers(dc: DataConnect, vars?: ListMySuppliersVariables, options?: ExecuteQueryOptions): QueryPromise<ListMySuppliersData, ListMySuppliersVariables>;
+
+interface GetMySupplierRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetMySupplierVariables): QueryRef<GetMySupplierData, GetMySupplierVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetMySupplierVariables): QueryRef<GetMySupplierData, GetMySupplierVariables>;
+  operationName: string;
+}
+export const getMySupplierRef: GetMySupplierRef;
+
+export function getMySupplier(vars: GetMySupplierVariables, options?: ExecuteQueryOptions): QueryPromise<GetMySupplierData, GetMySupplierVariables>;
+export function getMySupplier(dc: DataConnect, vars: GetMySupplierVariables, options?: ExecuteQueryOptions): QueryPromise<GetMySupplierData, GetMySupplierVariables>;
+
+interface ListMySupplierPricesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: ListMySupplierPricesVariables): QueryRef<ListMySupplierPricesData, ListMySupplierPricesVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: ListMySupplierPricesVariables): QueryRef<ListMySupplierPricesData, ListMySupplierPricesVariables>;
+  operationName: string;
+}
+export const listMySupplierPricesRef: ListMySupplierPricesRef;
+
+export function listMySupplierPrices(vars: ListMySupplierPricesVariables, options?: ExecuteQueryOptions): QueryPromise<ListMySupplierPricesData, ListMySupplierPricesVariables>;
+export function listMySupplierPrices(dc: DataConnect, vars: ListMySupplierPricesVariables, options?: ExecuteQueryOptions): QueryPromise<ListMySupplierPricesData, ListMySupplierPricesVariables>;
 
 interface GetMyTeamRef {
   /* Allow users to create refs without passing in DataConnect */

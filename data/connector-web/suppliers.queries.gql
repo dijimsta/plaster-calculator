@@ -1,0 +1,100 @@
+# Feeds the suppliers list view. Team-scoped and searchable by name, ordered
+# newest-updated-first via the `(teamId, updatedAt)` index on `Supplier`
+# (WORK-377) — the same shape `ListMyCompanies` (companies.queries.gql) uses
+# for `Company`. Each row also selects its priced items
+# (`supplierQuoteItemPrices_on_supplier`, aliased `prices`) so the list can
+# render a coverage bar ("N of M items priced"), the same way
+# `ListQuotesForTeam` (quotes.queries.gql) nests `items: quoteItems_on_quote`
+# per row so the client can derive a total, rather than the query layer
+# precomputing an aggregate — there is no aggregate/count field used
+# anywhere else in this connector.
+query ListMySuppliers($search: String, $limit: Int, $offset: Int)
+@auth(level: USER) {
+    suppliers(
+        where: {
+            teamId: { eq_expr: "auth.token.teamId" }
+            name: { contains: $search }
+        }
+        orderBy: [{ updatedAt: DESC }]
+        limit: $limit
+        offset: $offset
+    ) {
+        id
+        teamId
+        name
+        isDefault
+        contactName
+        phoneNumber
+        email
+        address
+        accountNumber
+        createdAt
+        updatedAt
+        prices: supplierQuoteItemPrices_on_supplier {
+            templateId
+        }
+    }
+}
+
+query GetMySupplier($id: UUID!) @auth(level: USER) {
+    supplier(key: { id: $id })
+        @check(
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this supplier"
+        ) {
+        id
+        teamId
+        name
+        isDefault
+        contactName
+        phoneNumber
+        email
+        address
+        accountNumber
+        createdAt
+        updatedAt
+        supplierQuoteItemPrices_on_supplier {
+            supplierId
+            templateId
+            materialUnitPriceCents
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+# The cost table for one supplier: every `SupplierQuoteItemPrice` row it has,
+# joined with the priced `QuoteItemTemplate`'s display fields, following the
+# `itemTemplate { id name unit ... }` nesting
+# `ListQuoteItemTemplateConfigsForQuoteTemplate` (quotes.queries.gql) uses for
+# the equivalent per-team pricing table. `supplier` is `@redact`ed and
+# ownership-`@check`ed the same way `ListMyCompanyContacts`
+# (companies.queries.gql) guards `company` above `companyContacts` — a lookup
+# solely to validate access, not to return supplier fields (the caller
+# already has those from `GetMySupplier` or `ListMySuppliers`).
+query ListMySupplierPrices($supplierId: UUID!) @auth(level: USER) {
+    supplier(key: { id: $supplierId })
+        @redact
+        @check(
+            expr: "this != null && this.teamId == auth.token.teamId"
+            message: "You do not have access to this supplier"
+        ) {
+        id
+        teamId
+    }
+    supplierQuoteItemPrices(
+        where: { supplierId: { eq: $supplierId } }
+        orderBy: [{ createdAt: ASC }]
+    ) {
+        supplierId
+        templateId
+        materialUnitPriceCents
+        createdAt
+        updatedAt
+        template {
+            id
+            name
+            unit
+        }
+    }
+}

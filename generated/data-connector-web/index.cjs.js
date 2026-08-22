@@ -834,6 +834,135 @@ exports.getProjectQuote = function getProjectQuote(dcOrVars, varsOrOptions, opti
 }
 ;
 
+const createMySupplierRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateMySupplier', inputVars);
+}
+createMySupplierRef.operationName = 'CreateMySupplier';
+exports.createMySupplierRef = createMySupplierRef;
+
+exports.createMySupplier = function createMySupplier(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createMySupplierRef(dcInstance, inputVars));
+}
+;
+
+const updateMySupplierRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateMySupplier', inputVars);
+}
+updateMySupplierRef.operationName = 'UpdateMySupplier';
+exports.updateMySupplierRef = updateMySupplierRef;
+
+exports.updateMySupplier = function updateMySupplier(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateMySupplierRef(dcInstance, inputVars));
+}
+;
+
+const deleteMySupplierRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteMySupplier', inputVars);
+}
+deleteMySupplierRef.operationName = 'DeleteMySupplier';
+exports.deleteMySupplierRef = deleteMySupplierRef;
+
+exports.deleteMySupplier = function deleteMySupplier(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteMySupplierRef(dcInstance, inputVars));
+}
+;
+
+const setMyDefaultSupplierRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'SetMyDefaultSupplier', inputVars);
+}
+setMyDefaultSupplierRef.operationName = 'SetMyDefaultSupplier';
+exports.setMyDefaultSupplierRef = setMyDefaultSupplierRef;
+
+exports.setMyDefaultSupplier = function setMyDefaultSupplier(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(setMyDefaultSupplierRef(dcInstance, inputVars));
+}
+;
+
+const upsertMySupplierItemPriceRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpsertMySupplierItemPrice', inputVars);
+}
+upsertMySupplierItemPriceRef.operationName = 'UpsertMySupplierItemPrice';
+exports.upsertMySupplierItemPriceRef = upsertMySupplierItemPriceRef;
+
+exports.upsertMySupplierItemPrice = function upsertMySupplierItemPrice(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(upsertMySupplierItemPriceRef(dcInstance, inputVars));
+}
+;
+
+const deleteMySupplierItemPriceRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteMySupplierItemPrice', inputVars);
+}
+deleteMySupplierItemPriceRef.operationName = 'DeleteMySupplierItemPrice';
+exports.deleteMySupplierItemPriceRef = deleteMySupplierItemPriceRef;
+
+exports.deleteMySupplierItemPrice = function deleteMySupplierItemPrice(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteMySupplierItemPriceRef(dcInstance, inputVars));
+}
+;
+
+const listMySuppliersRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListMySuppliers', inputVars);
+}
+listMySuppliersRef.operationName = 'ListMySuppliers';
+exports.listMySuppliersRef = listMySuppliersRef;
+
+exports.listMySuppliers = function listMySuppliers(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, false);
+  return executeQuery(listMySuppliersRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
+const getMySupplierRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetMySupplier', inputVars);
+}
+getMySupplierRef.operationName = 'GetMySupplier';
+exports.getMySupplierRef = getMySupplierRef;
+
+exports.getMySupplier = function getMySupplier(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
+  return executeQuery(getMySupplierRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
+const listMySupplierPricesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'ListMySupplierPrices', inputVars);
+}
+listMySupplierPricesRef.operationName = 'ListMySupplierPrices';
+exports.listMySupplierPricesRef = listMySupplierPricesRef;
+
+exports.listMySupplierPrices = function listMySupplierPrices(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
+  return executeQuery(listMySupplierPricesRef(dcInstance, inputVars), inputOpts && { fetchPolicy: inputOpts.fetchPolicy });
+}
+;
+
 const getMyTeamRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
