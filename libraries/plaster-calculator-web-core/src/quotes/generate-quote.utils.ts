@@ -95,7 +95,12 @@ export function build(input: GenerateQuoteInput): GenerateQuoteResult {
         rollupResults,
         input.searchText,
     );
-    return buildMutationVariables(input.projectId, input.quoteId, items);
+    return buildMutationVariables({
+        projectId: input.projectId,
+        quoteId: input.quoteId,
+        supplierId: input.defaultSupplierId,
+        items,
+    });
 }
 
 /**
@@ -120,20 +125,27 @@ export function resolveQuoteItems(
 
 /**
  * Maps up to `MAX_QUOTE_ITEMS` resolved items onto `CreateQuoteWithItems`'s
- * fixed `includeItemN`/`itemN*` slots. Refuses — rather than truncating —
- * when `items.length` exceeds `MAX_QUOTE_ITEMS`: `CreateQuoteWithItems`
- * has no way to accept more, and silently dropping lines from a
- * customer-facing quote without telling anyone is worse than failing
- * loudly and letting a human decide what to do (e.g. split the
- * project's catalog, or extend the mutation with more slots — see that
- * mutation's own doc comment). Exposed publicly for the same testability
- * reason as `resolveQuoteItems()`.
+ * fixed `includeItemN`/`itemN*` slots, plus the top-level `$supplierId`
+ * (WORK-382) — passed through as-is, including `null` for a team with no
+ * default supplier, matching `CreateQuoteWithItems`'s nullable `$supplierId`
+ * variable. Refuses — rather than truncating — when `items.length` exceeds
+ * `MAX_QUOTE_ITEMS`: `CreateQuoteWithItems` has no way to accept more, and
+ * silently dropping lines from a customer-facing quote without telling
+ * anyone is worse than failing loudly and letting a human decide what to do
+ * (e.g. split the project's catalog, or extend the mutation with more slots
+ * — see that mutation's own doc comment). Takes an options object rather
+ * than four positional parameters, per this package's TypeScript
+ * guidelines. Exposed publicly for the same testability reason as
+ * `resolveQuoteItems()`.
  */
-export function buildMutationVariables(
-    projectId: string,
-    quoteId: string,
-    items: readonly ResolvedQuoteItem[],
-): GenerateQuoteResult {
+export function buildMutationVariables(input: {
+    readonly projectId: string;
+    readonly quoteId: string;
+    readonly supplierId: string | null;
+    readonly items: readonly ResolvedQuoteItem[];
+}): GenerateQuoteResult {
+    const { projectId, quoteId, supplierId, items } = input;
+
     if (items.length === 0) {
         return {
             ok: false,
@@ -151,7 +163,11 @@ export function buildMutationVariables(
         };
     }
 
-    const variables: Record<string, unknown> = { projectId, quoteId };
+    const variables: Record<string, unknown> = {
+        projectId,
+        quoteId,
+        supplierId,
+    };
     items.forEach((item, index) => assignSlot(variables, index + 1, item));
 
     return {

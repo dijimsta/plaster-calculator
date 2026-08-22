@@ -19,9 +19,12 @@ import type { FirebaseError } from "firebase/app";
  * not the other two `QuoteItemTemplateConfig` price columns. `unitPriceCents`
  * is the field the quote-totals helpers (`quote-totals.utils.ts`) actually
  * price a quote line from, so this doesn't affect a generated quote's
- * totals — but the material/labour
- * breakdown will read as `0` until a future ticket extends that query (out
- * of scope here: this package cannot add Data Connect queries).
+ * totals. Since WORK-382, a generated quote's real material cost is read
+ * live from its stamped supplier's `SupplierItemEstimate`s instead
+ * (`estimateQuoteMargin()`, `margin-estimate.utils.ts`), matched by
+ * `QuoteItem.sourceTemplateId` — not from this snapshot column — so these
+ * two fields stay `0` deliberately rather than something a future ticket
+ * should "fix" by populating them from `GetQuoteReadiness`.
  */
 export type GenerateQuoteTemplateConfig = {
     readonly itemTemplateId: string;
@@ -79,6 +82,16 @@ export type GenerateQuoteInput = {
      * having actually resolved a template for them.
      */
     readonly quoteTemplateId: string;
+    /**
+     * The team's default supplier (`useSuppliers()`, `../suppliers/`,
+     * WORK-380) at generation time, or `null` when the team has no
+     * suppliers yet. `buildMutationVariables()` (`generate-quote.utils.ts`)
+     * writes this straight to `CreateQuoteWithItems`'s `$supplierId`
+     * (WORK-379/WORK-382), so a generated quote is stamped with the same
+     * supplier the margin card will estimate its cost against, instead of
+     * leaving `Quote.supplierId` unset until a user opens the picker.
+     */
+    readonly defaultSupplierId: string | null;
     readonly pages: readonly PageTakeoffInput[];
     readonly templateConfigs: readonly GenerateQuoteTemplateConfig[];
     readonly searchText: string;

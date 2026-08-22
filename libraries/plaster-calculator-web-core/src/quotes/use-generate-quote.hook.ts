@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { FirebaseError } from "firebase/app";
 
 import { FirebaseService } from "../firebase/firebase.service.ts";
+import { useSuppliers } from "../suppliers/suppliers.hooks.ts";
 
 import {
     GenerateQuoteError,
@@ -45,6 +46,13 @@ function buildProjectSearchText(
  * take-off/match/price/slot-mapping logic to `generate-quote.utils.ts`,
  * matching `useSaveQuoteTemplate()`'s "thin hook, pure utils" split.
  *
+ * Also reads the team's suppliers via `useSuppliers()` (`../suppliers/`,
+ * WORK-380) and passes whichever one has `isDefault: true` as `build()`'s
+ * `defaultSupplierId` (WORK-382) — `null` when the team has none yet — so a
+ * generated quote is stamped with the same supplier the margin card will
+ * estimate its cost against, rather than leaving `Quote.supplierId` unset
+ * until a user opens the picker.
+ *
  * `build()` (`generate-quote.utils.ts`) refuses to run at all — no
  * `CreateQuoteWithItems` call — when the readiness gate isn't met, the
  * pricing template hasn't resolved yet, or matching+quantity-resolution
@@ -56,6 +64,7 @@ function buildProjectSearchText(
 export function useGenerateQuote(projectId: string): UseGenerateQuoteResult {
     const { isReady, data, quoteTemplateId, defaultTemplateConfigs } =
         useQuoteReadiness(projectId);
+    const { suppliers } = useSuppliers();
     const { mutateAsync: createQuoteWithItems } =
         DataConnectorReact.useCreateQuoteWithItems(dataConnect);
 
@@ -69,11 +78,14 @@ export function useGenerateQuote(projectId: string): UseGenerateQuoteResult {
             }
 
             const quoteId = crypto.randomUUID();
+            const defaultSupplierId =
+                suppliers?.find((supplier) => supplier.isDefault)?.id ?? null;
             const result = build({
                 isReady,
                 projectId,
                 quoteId,
                 quoteTemplateId,
+                defaultSupplierId,
                 pages: buildPageTakeoffInputs(data?.floorplanPages ?? []),
                 templateConfigs: buildTemplateConfigs(
                     data?.quoteItemTemplateConfigs ?? [],
