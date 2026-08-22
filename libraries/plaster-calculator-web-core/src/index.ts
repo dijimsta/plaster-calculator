@@ -6,6 +6,7 @@ export * from "./questionnaires/index.ts";
 export * from "./quotes/index.ts";
 export * from "./reminders/index.ts";
 export * from "./settings/index.ts";
+export * from "./suppliers/index.ts";
 export * from "./teams/index.ts";
 export * from "./users/index.ts";
 export * from "./utils/index.ts";
